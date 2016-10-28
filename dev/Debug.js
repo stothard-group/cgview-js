@@ -39,9 +39,9 @@
     // }
     // 
     // Draws any information in 'data' onto the left side of the viewer
-    draw(ctx, x = 10, y = 10) {
+    draw(ctx, x = 10, y = 20) {
       var data = this._data;
-      var sections = this._section;
+      var sections = this._sections;
 
       ctx.font = '12pt Sans-Serif';
       ctx.fillStyle = 'black';

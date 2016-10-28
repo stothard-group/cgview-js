@@ -65,6 +65,11 @@
     }
   }
 
+  CGV.elapsed_time = function(old_time) {
+    var elapsed = (new Date().getTime()) - old_time;
+    return elapsed + ' ms';
+  }
+
   // /**
   //  * Merges top level properties of each supplied object.
   //  * ```javascript

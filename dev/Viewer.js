@@ -49,12 +49,14 @@ if (window.CGV === undefined) window.CGV = CGView;
         .domain([0, bp_length])
         .range([-1/2*Math.PI, 3/2*Math.PI]);
 
-      this.draw_test();
+      this.initialize_dragging();
+      // this.draw_test();
+      this.draw();
     }
 
     // Static classs methods
     static get debug_sections() {
-      return ['times'];
+      return ['time'];
     }
 
     get width() {
@@ -92,12 +94,38 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     
 
-    draw_arc(start, end, radius, color) {
+    draw_arc(start, end, radius, color = '#000000', width = 1) {
       var scale = this.scale;
       var ctx = this.ctx;
       this.ctx.beginPath();
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = width;
       this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(radius), scale.bp(start), scale.bp(end), false);
       this.ctx.stroke();
+    }
+
+    /**
+     * Clear the viewer canvas
+     */
+    clear() {
+      this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    }
+
+    draw() {
+      this.clear();
+      for (let i = 1; i < 100; i++) {
+        this.draw_arc(0, 1000, 30+i*5);
+        for (let j = 1; j < 1000; j=j+10) {
+          this.draw_arc(j, j+5, 30+i*5, '#00BB00', 3);
+        }
+        for (let j = 1; j < 1000; j=j+10) {
+          this.draw_arc(j+7, j+8, 30+i*5, '#0000BB', 3);
+        }
+      }
+      if (this.debug) {
+        // this.debug_data.time['draw'] = JSV.elapsed_time(start_time);
+        this.debug.draw(this.ctx);
+      }
     }
 
 
