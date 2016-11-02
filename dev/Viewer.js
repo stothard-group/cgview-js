@@ -10,8 +10,11 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     constructor(container_id, options = {}) {
       this._container = d3.select(container_id);
+      // Get options
       this._width = CGV.default_for(options.width, 600);
       this._height = CGV.default_for(options.height, 600);
+      this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
+      this.backboneRadius = options.backboneRadius;
       this.debug = CGV.default_for(options.debug, false);
 
       // Create the viewer canvas
@@ -49,7 +52,13 @@ if (window.CGV === undefined) window.CGV = CGView;
         .domain([0, bp_length])
         .range([-1/2*Math.PI, 3/2*Math.PI]);
 
+      this._io = new CGV.IO(this);
+
       this.initialize_dragging();
+
+      this._featureSlots = new CGV.CGArray();
+
+
       // this.draw_test();
       this.draw();
     }
@@ -67,6 +76,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._height;
     }
 
+    set backboneRadius(radius) {
+      if (radius) {
+        this._backboneRadius = radius;
+      } else {
+        this._backboneRadius = d3.min([this.width, this.height]) * 0.4;
+      }
+    }
+
+    get backboneRadius() {
+      return this._backboneRadius;
+    }
+
     get debug() {
       return this._debug;
     }
@@ -82,6 +103,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._debug = undefined;
       }
+    }
+
+    load_json(json) {
+      this._io.load_json(json);
+    }
+
+    load_xml(xml) {
+      this._io.load_xml(xml);
     }
 
     draw_test() {
@@ -111,6 +140,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
     }
 
+    /**
+    * Flash a message on the center of the viewer.
+    */
+    flash(msg) {
+      var ctx = this.ctx;
+      // this.ctx.font = this.adjust_font(1.5);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'center';
+      var x = CGV.pixel(this.width) / 2
+      var y = CGV.pixel(this.height) / 2
+      ctx.fillText(msg, x, y);
+    }
+
     draw() {
       this.clear();
       for (let i = 1; i < 100; i++) {
@@ -126,6 +168,12 @@ if (window.CGV === undefined) window.CGV = CGView;
         // this.debug_data.time['draw'] = JSV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
+    }
+
+    addFeatureSlot(featureSlot) {
+      // TODO: error check that this is a featureSlot
+      this._featureSlots.push(featureSlot);
+      featureSlot._viewer = this;
     }
 
 

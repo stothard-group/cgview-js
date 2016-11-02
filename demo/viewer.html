@@ -1,14 +1,19 @@
 <html>
 <head>
   <title>CGView</title>
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
   <!-- Local -->
-  <!-- <script src='javascript/d3.v3.min.js'></script> -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <!-- <script src='src/jspectra_viewer.js'></script> -->
   <script src='dev/Viewer.js'></script>
   <script src='dev/Viewer-Drag.js'></script>
+  <script src='dev/IO.js'></script>
+  <script src='dev/CGArray.js'></script>
+  <script src='dev/FeatureSlot.js'></script>
   <script src='dev/Debug.js'></script>
   <script src='dev/Utils.js'></script>
+
+  <script src="javascript/xml2json.min.js"></script>
   <!-- <link rel="stylesheet" href="stylesheets/cgview.css" /> -->
 </head>
 <body>
@@ -19,6 +24,18 @@
         debug: true
     });
     window.cgv = cgv;
+    // cgv.flash('Loading...');
+
+    $.ajax({
+        // url: 'data/cgview_1.xml',
+        url: 'data/reduced_cgview.xml',
+        dataType: 'text',
+        success: function(cgv_xml) {
+          var json = CGV.IO.xml_to_json(cgv_xml);
+          window.xml = cgv_xml;
+          window.data = json;
+        }
+    });
 
   </script>
 </body>
