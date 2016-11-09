@@ -7,9 +7,13 @@
   <!-- <script src='src/jspectra_viewer.js'></script> -->
   <script src='dev/Viewer.js'></script>
   <script src='dev/Viewer-Drag.js'></script>
+  <script src='dev/Viewer-Zoom.js'></script>
   <script src='dev/IO.js'></script>
   <script src='dev/CGArray.js'></script>
   <script src='dev/FeatureSlot.js'></script>
+  <script src='dev/Feature.js'></script>
+  <script src='dev/FeatureRange.js'></script>
+  <script src='dev/FeaturePath.js'></script>
   <script src='dev/Debug.js'></script>
   <script src='dev/Utils.js'></script>
 
@@ -27,15 +31,36 @@
     // cgv.flash('Loading...');
 
     $.ajax({
-        // url: 'data/cgview_1.xml',
-        url: 'data/reduced_cgview.xml',
-        dataType: 'text',
-        success: function(cgv_xml) {
-          var json = CGV.IO.xml_to_json(cgv_xml);
-          window.xml = cgv_xml;
+        // url: 'data/cgview_1_no_cg.json',
+        url: 'data/cgview_1.json',
+        // url: 'data/cgview_3.json',
+        dataType: 'json',
+        success: function(json) {
+          console.log('loading...')
           window.data = json;
+          cgv.load_json(json.cgview);
+          console.log('done!');
+          cgv.draw();
+        },
+        error: function(xhr, status, error) {
+          console.log(status)
+          console.log(error)
         }
     });
+    // $.ajax({
+    //     url: 'data/cgview_1.xml',
+    //     // url: 'data/reduced_cgview.xml',
+    //     dataType: 'text',
+    //     success: function(cgv_xml) {
+    //       console.log('loading...')
+    //       console.log(cgv_xml.length)
+    //       window.xml = cgv_xml;
+    //       // var json = CGV.IO.xml_to_json(cgv_xml);
+    //       var json = CGV.IO.xml_to_json($.parseXML(cgv_xml));
+    //       window.data = json;
+    //       // cgv.load_json(json);
+    //     }
+    // });
 
   </script>
 </body>

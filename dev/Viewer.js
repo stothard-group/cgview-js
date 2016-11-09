@@ -10,11 +10,15 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     constructor(container_id, options = {}) {
       this._container = d3.select(container_id);
+      this.scale = {};
       // Get options
       this._width = CGV.default_for(options.width, 600);
       this._height = CGV.default_for(options.height, 600);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
-      this.backboneRadius = options.backboneRadius;
+      this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
+      // this.backboneRadius = options.backboneRadius;
+      this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
+      this._zoomFactor = 1;
       this.debug = CGV.default_for(options.debug, false);
 
       // Create the viewer canvas
@@ -40,24 +44,31 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ctx = this.canvas.getContext('2d');
 
       // Set up scales
-      this.scale = {};
       this.scale.x = d3.scaleLinear()
         .domain([CGV.pixel(-this.width/2), CGV.pixel(this.width/2)])
         .range([0, CGV.pixel(this.width)]);
       this.scale.y = d3.scaleLinear()
-        .domain([CGV.pixel(-this.height/2), CGV.pixel(this.height/2)])
+        .domain([CGV.pixel(this.height/2), CGV.pixel(-this.height/2)])
         .range([0, CGV.pixel(this.height)]);
-      var bp_length = 1000;
-      this.scale.bp = d3.scaleLinear()
-        .domain([0, bp_length])
-        .range([-1/2*Math.PI, 3/2*Math.PI]);
+      // this.scale.bp = d3.scaleLinear()
+      //   .domain([0, this.sequence_length])
+      //   .range([-1/2*Math.PI, 3/2*Math.PI]);
 
       this._io = new CGV.IO(this);
 
       this.initialize_dragging();
+      this.initialize_zooming();
 
       this._featureSlots = new CGV.CGArray();
 
+      // this.canvas.on('mousemove', function() {
+      //   var pos = d3.mouse(sv.canvas);
+      //   sv.mx = sv.scale.x.invert(JSV.pixel(pos[0]))
+      //   sv.my = sv.scale.y.invert(JSV.pixel(pos[1]))
+      //   // console.log([sv.mx, sv.my]);
+      //   sv.highlight.hover();
+      //   sv.annotation.check_hover();
+      // });
 
       // this.draw_test();
       this.draw();
@@ -65,7 +76,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     // Static classs methods
     static get debug_sections() {
-      return ['time'];
+      return ['time', 'zoom'];
     }
 
     get width() {
@@ -85,7 +96,20 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     get backboneRadius() {
-      return this._backboneRadius;
+      return this._backboneRadius * this._zoomFactor
+    }
+
+    set sequenceLength(bp) {
+      if (bp) {
+        this._sequenceLength = Number(bp);
+        this.scale.bp = d3.scaleLinear()
+          .domain([0, this._sequenceLength])
+          .range([-1/2*Math.PI, 3/2*Math.PI]);
+      }
+    }
+
+    get sequenceLength() {
+      return this._sequenceLength;
     }
 
     get debug() {
@@ -113,23 +137,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io.load_xml(xml);
     }
 
-    draw_test() {
-      var scale = this.scale;
-      var ctx = this.ctx;
-      this.ctx.beginPath();
-      this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(200), 0, 2*Math.PI, false);
-      this.ctx.stroke();
-    }
-
-    
-
     draw_arc(start, end, radius, color = '#000000', width = 1) {
       var scale = this.scale;
       var ctx = this.ctx;
       this.ctx.beginPath();
       this.ctx.strokeStyle = color;
+      // this.ctx.strokeStyle = 'rgba(0,0,200,0.5)'
       this.ctx.lineWidth = width;
-      this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(radius), scale.bp(start), scale.bp(end), false);
+      // this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(radius), scale.bp(start), scale.bp(end), false);
+      this.ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(end), false);
       this.ctx.stroke();
     }
 
@@ -153,21 +169,82 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.fillText(msg, x, y);
     }
 
-    draw() {
+    draw(fast) {
+      var start_time = new Date().getTime();
       this.clear();
-      for (let i = 1; i < 100; i++) {
-        this.draw_arc(0, 1000, 30+i*5);
-        for (let j = 1; j < 1000; j=j+10) {
-          this.draw_arc(j, j+5, 30+i*5, '#00BB00', 3);
+      var backboneThickness = CGV.pixel(3);
+      var radius = CGV.pixel(this.backboneRadius);
+      // var radius = this.backboneRadius;
+      var directRadius = radius + (backboneThickness / 2);
+      var reverseRadius = radius - (backboneThickness / 2);
+      var spacing = CGV.pixel(this.featureSlotSpacing);
+      var minDimension = CGV.pixel(Math.min(this.height, this.width));
+      var maxRadius = minDimension; // TODO: need to add up all proportions
+
+      // Draw Backbone
+      this.draw_arc(0, this.sequenceLength, radius, 'black', backboneThickness);
+
+      var residualThickness = 0;
+      this._featureSlots.forEach((slot) => {
+        var thickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
+        // var thickness = Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius;
+        if (slot.isDirect()) {
+          directRadius += ( (thickness / 2) + spacing + residualThickness);
+          radius = directRadius;
+        } else {
+          reverseRadius -= ( (thickness / 2) + spacing + residualThickness);
+          radius = reverseRadius;
         }
-        for (let j = 1; j < 1000; j=j+10) {
-          this.draw_arc(j+7, j+8, 30+i*5, '#0000BB', 3);
+        residualThickness = thickness / 2;
+        if (fast && slot._features.length > 500) {
+          this.draw_arc(0, this.sequenceLength, radius, 'rgba(0,0,200,0.1)', thickness);
+        } else {
+          slot._features.forEach((feature) => {
+            feature._featureRanges.forEach((range) => {
+              this.draw_arc(range._start, range._stop, radius, feature._color, thickness);
+            });
+            feature._featurePaths.forEach((path) => {
+              path.draw(this.ctx, this.scale, radius, thickness);
+            });
+          });
         }
-      }
+
+      });
+      this.drawAxis(directRadius);
+      this.drawAxis(reverseRadius - 50);
       if (this.debug) {
-        // this.debug_data.time['draw'] = JSV.elapsed_time(start_time);
+        this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
+    }
+
+    drawAxis(radius) {
+      var scale = this.scale;
+      var tickCount = 10;
+      var tickWidth = CGV.pixel(1);
+      var tickLength = CGV.pixel(5);
+      scale.bp.ticks(tickCount).forEach((tick) => {
+        this.radiantLine(tick, radius, tickLength, tickWidth);
+      });
+
+    }
+
+    radiantLine(bp, radius, length, lineWidth = 1, color = 'black') {
+      var radians = this.scale.bp(bp);
+      var centerX = this.scale.x(0);
+      var centerY = this.scale.y(0);
+      var innerX = centerX + radius * Math.cos(radians);
+      var innerY = centerY + radius * Math.sin(radians);
+      var outerX = centerX + (radius + length) * Math.cos(radians);
+      var outerY = centerY + (radius + length) * Math.sin(radians);
+      var ctx = this.ctx;
+
+      ctx.beginPath();
+      ctx.moveTo(innerX,innerY);
+      ctx.lineTo(outerX,outerY);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
     }
 
     addFeatureSlot(featureSlot) {
@@ -176,6 +253,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       featureSlot._viewer = this;
     }
 
+
+    // Get mouse position in the 'container' taking into account the pixel ratio
+    // mouse(container) {
+    //   if (container == undefined) {
+    //     container = self.canvas
+    //   }
+    //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
+    // }
 
   }
 

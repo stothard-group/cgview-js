@@ -40,10 +40,12 @@
     // 
     // Draws any information in 'data' onto the left side of the viewer
     draw(ctx, x = 10, y = 20) {
+      x = CGV.pixel(x);
+      y = CGV.pixel(y);
       var data = this._data;
       var sections = this._sections;
 
-      ctx.font = '12pt Sans-Serif';
+      ctx.font = CGV.pixel(10) + 'pt Sans-Serif';
       ctx.fillStyle = 'black';
       var line_height = CGV.pixel(18);
       ctx.textAlign = 'left';

@@ -70,6 +70,48 @@
     return elapsed + ' ms';
   }
 
+  // Circle Quadrants and Angles in Radians
+  //        3/2π
+  //       -----
+  //     / 3 | 4 \
+  //  π|---------| 0
+  //     \ 2 | 1 /
+  //       -----
+  //        1/2π
+  // Note, for CGView, quadrant 4 has both x and y as positive
+  CGV.angleFromPosition = function(x, y) {
+    var angle = 1/2*Math.PI;
+    if (x != 0) {
+      angle = Math.atan(Math.abs(y / x));
+    }
+    if (y >= 0 && x >= 0) {
+      // quadrant 4
+      angle = 2*Math.PI - angle;
+    } else if (y < 0 && x >= 0) {
+      // quandrant 1
+    } else if (y < 0 && x < 0) {
+      // quandrant 2
+      angle = Math.PI - angle;
+    } else if (y >= 0 && x < 0) {
+      // quandrant 3
+      angle = Math.PI + angle;
+    }
+    return angle
+  }
+
+  /**
+   * Rounds the number use d3.format.
+   * @param {Number} value Number to round
+   * @param {Integer} places Number of decimal places to round [Default: 2]
+   * @return {Number}
+   */
+  CGV.round = function(value, places) {
+    var places = places || 2;
+    // return d3.round(value, places);
+    return Number(value.toFixed(places));
+  }
+
+
   // /**
   //  * Merges top level properties of each supplied object.
   //  * ```javascript
@@ -118,18 +160,6 @@
   //   return id;
   // }
   //
-  //
-  // /**
-  //  * Rounds the number use d3.round. The only reason to use this method
-  //  * is that it sets the default number of decimal places to 2.
-  //  * @param {Number} value Number to round
-  //  * @param {Integer} places Number of decimal places to round [Default: 2]
-  //  * @return {Number}
-  //  */
-  // JSV.round = function(value, places) {
-  //   var places = places || 2;
-  //   return d3.round(value, places);
-  // }
   //
   // /**
   //  * Returns the number of milliseconds elapsed since the supplied time.
