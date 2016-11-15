@@ -169,6 +169,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.fillText(msg, x, y);
     }
 
+    visibleRangesForRadius(radius) {
+      var angles = CGV.circleAnglesFromIntersectingRect(radius,
+        this.scale.x.invert(0),
+        this.scale.y.invert(0),
+        CGV.pixel(this.width),
+        CGV.pixel(this.height)
+      )
+      return angles.map( (a) => {return this.scale.bp.invert(a)})
+    }
+
     draw(fast) {
       var start_time = new Date().getTime();
       this.clear();
@@ -187,17 +197,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var residualThickness = 0;
 
       // TESTING
-      var angles = CGV.circleAnglesFromIntersectingRect(radius,
-        this.scale.x.invert(0),
-        this.scale.y.invert(0),
-        CGV.pixel(this.width),
-        CGV.pixel(this.height)
-      )
-      console.log(angles)
-
-
-
-
+      // console.log(this.visibleRangesForRadius(radius))
 
       this._featureSlots.forEach((slot) => {
         var thickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
@@ -210,6 +210,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           radius = reverseRadius;
         }
         residualThickness = thickness / 2;
+        // slot.draw();
         if (fast && slot._features.length > 500) {
           this.draw_arc(0, this.sequenceLength, radius, 'rgba(0,0,200,0.1)', thickness);
         } else {

@@ -79,6 +79,7 @@
   //       -----
   //        1/2π
   // Note, for CGView, quadrant 4 has both x and y as positive
+  // Also, quandrant 4 has minus angles to match up with the bp scale
   CGV.angleFromPosition = function(x, y) {
     var angle = 1/2*Math.PI;
     if (x != 0) {
@@ -86,7 +87,8 @@
     }
     if (y >= 0 && x >= 0) {
       // quadrant 4
-      angle = 2*Math.PI - angle;
+      // angle = 2*Math.PI - angle;
+      angle = 0 - angle;
     } else if (y < 0 && x >= 0) {
       // quandrant 1
     } else if (y < 0 && x < 0) {
@@ -97,6 +99,16 @@
       angle = Math.PI + angle;
     }
     return angle
+  }
+
+  CGV.withinRange = function(bp, start, end) {
+    if (end > start) {
+      // Typical Range
+      return (bp >= start && bp <= end)
+    } else {
+      // Range spans 0
+      return (bp >= start || bp <= end)
+    }
   }
 
   /**
@@ -232,9 +244,14 @@
 
     angles = angles.filter( (a) => { return Object.keys(a).length > 0 })
 
-    console.log(angles)
+    // console.log(angles)
     if (angles.length > 0) {
       // Resort the angles
+      // T1 and T2 are what percent along a line that intersect with the circle
+      // T1 is closest to the line start
+      // Essentially, with the ways the lines of the rect have been set up
+      // T2 is always a start angle and T1 is always an end angle.
+      // So if the very first angle is a T1 we want to move it to the end of the list of angles
       var firstKeys = Object.keys(angles[0]);
       if (firstKeys.length == 1 && firstKeys[0] == 't1') {
         angles.push(angles.shift());

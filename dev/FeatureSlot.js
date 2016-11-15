@@ -45,6 +45,22 @@
       return this.strand == 'reverse'
     }
 
+    draw(fast, slotRadius, slotThickness) {
+      if (fast && slot._features.length > 500) {
+        this.draw_arc(0, this.sequenceLength, slotRadius, 'rgba(0,0,200,0.1)', slotThickness);
+      } else {
+        slot._features.forEach((feature) => {
+          feature._featureRanges.forEach((range) => {
+            // this.draw_arc(range._start, range._stop, slotRadius, feature._color, slotThickness);
+            range.draw(this.ctx, this.scale, slotRadius, slotThickness);
+          });
+          feature._featurePaths.forEach((path) => {
+            path.draw(this.ctx, this.scale, slotRadius, slotThickness);
+          });
+        });
+      }
+    }
+
   }
 
   CGV.FeatureSlot = FeatureSlot;
