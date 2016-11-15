@@ -28,7 +28,7 @@
         debug: true
     });
     window.cgv = cgv;
-    // cgv.flash('Loading...');
+    cgv.flash('Loading...');
 
     $.ajax({
         // url: 'data/cgview_1_no_cg.json',
@@ -47,20 +47,6 @@
           console.log(error)
         }
     });
-    // $.ajax({
-    //     url: 'data/cgview_1.xml',
-    //     // url: 'data/reduced_cgview.xml',
-    //     dataType: 'text',
-    //     success: function(cgv_xml) {
-    //       console.log('loading...')
-    //       console.log(cgv_xml.length)
-    //       window.xml = cgv_xml;
-    //       // var json = CGV.IO.xml_to_json(cgv_xml);
-    //       var json = CGV.IO.xml_to_json($.parseXML(cgv_xml));
-    //       window.data = json;
-    //       // cgv.load_json(json);
-    //     }
-    // });
 
   </script>
 </body>

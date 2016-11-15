@@ -111,6 +111,170 @@
     return Number(value.toFixed(places));
   }
 
+  // a and b should be arrays of equal length
+  CGV.dotProduct = function(a, b) {
+    var value = 0;
+    for (var i = 0, len = a.length; i < len; i++) {
+      value += a[i] * b[i];
+    }
+    return value
+  }
+
+  CGV.pointsAdd = function(a, b) {
+    var value =  [0, 0];
+    value[0] = a[0] + b[0];
+    value[1] = a[1] + b[1];
+    return value
+  }
+
+  CGV.pointsSubtract = function(a, b) {
+    var value = [0, 0];
+    value[0] = a[0] - b[0];
+    value[1] = a[1] - b[1];
+    return value
+  }
+  //
+  // // Using code from:
+  // // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
+  // CGV.circleAnglesFromIntersectingLine = function(radius, x1, y1, x2, y2) {
+  //   // Direction vector of line segment, from start to end
+  //   var d = CGV.pointsSubtract([x2,y2], [x1,y1]);
+  //   // Vector from center of circle to line segment start
+  //   // Center of circle is alwas [0,0]
+  //   var f = [x1, y1]
+  //
+  //   // t2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r2 ) = 0
+  //   var a = CGV.dotProduct(d, d);
+  //   var b = 2 * CGV.dotProduct(f, d);
+  //   var c = CGV.dotProduct(f, f) - (radius * radius);
+  //
+  //   var discriminant = b*b - 4*a*c;
+  //
+  //   var angles = [];
+  //   if (discriminant >= 0) {
+  //     discriminant = Math.sqrt(discriminant);
+  //     var t1 = (-b - discriminant)/(2*a);
+  //     var t2 = (-b + discriminant)/(2*a);
+  //     if (t1 >= 0 && t1 <=1) {
+  //       var px = x1 + (t1 * (x2 - x1));
+  //       var py = y1 + (t1 * (y2 - y1));
+  //       angles.push(CGV.angleFromPosition(px, py))
+  //       // angles.t1 = CGV.angleFromPosition(px, py)
+  //     }
+  //     if (t2 >= 0 && t2 <=1) {
+  //       var px = x1 + (t2 * (x2 - x1));
+  //       var py = y1 + (t2 * (y2 - y1));
+  //       angles.push(CGV.angleFromPosition(px, py))
+  //       // angles.t2 = CGV.angleFromPosition(px, py)
+  //     }
+  //   }
+  //   return angles
+  // }
+  //
+  // Using code from:
+  // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
+  CGV.circleAnglesFromIntersectingLine = function(radius, x1, y1, x2, y2) {
+    // Direction vector of line segment, from start to end
+    var d = CGV.pointsSubtract([x2,y2], [x1,y1]);
+    // Vector from center of circle to line segment start
+    // Center of circle is alwas [0,0]
+    var f = [x1, y1]
+
+    // t2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r2 ) = 0
+    var a = CGV.dotProduct(d, d);
+    var b = 2 * CGV.dotProduct(f, d);
+    var c = CGV.dotProduct(f, f) - (radius * radius);
+
+    var discriminant = b*b - 4*a*c;
+
+    var angles = {};
+    if (discriminant >= 0) {
+      discriminant = Math.sqrt(discriminant);
+      var t1 = (-b - discriminant)/(2*a);
+      var t2 = (-b + discriminant)/(2*a);
+      if (t1 >= 0 && t1 <=1) {
+        var px = x1 + (t1 * (x2 - x1));
+        var py = y1 + (t1 * (y2 - y1));
+        // angles.push(CGV.angleFromPosition(px, py))
+        angles.t1 = CGV.angleFromPosition(px, py)
+      }
+      if (t2 >= 0 && t2 <=1) {
+        var px = x1 + (t2 * (x2 - x1));
+        var py = y1 + (t2 * (y2 - y1));
+        // angles.push(CGV.angleFromPosition(px, py))
+        angles.t2 = CGV.angleFromPosition(px, py)
+      }
+    }
+    return angles
+  }
+
+
+  // Return 2 angles that intersect with rectangle defined by xy, height, and width
+  // Center of circle is always (0,0)
+  CGV.circleAnglesFromIntersectingRect = function(radius, x, y, width, height) {
+    var angles = [];
+    // // Top
+    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y));
+    // // Right
+    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x + width, y, x + width, y - height));
+    // // Bottom
+    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x + width, y - height, x, y - height));
+    // // Left
+    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x, y));
+    // Top
+    angles.push(CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y));
+    // Right
+    angles.push(CGV.circleAnglesFromIntersectingLine(radius, x + width, y, x + width, y - height));
+    // Bottom
+    angles.push(CGV.circleAnglesFromIntersectingLine(radius, x + width, y - height, x, y - height));
+    // Left
+    angles.push(CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x, y));
+
+    angles = angles.filter( (a) => { return Object.keys(a).length > 0 })
+
+    console.log(angles)
+    if (angles.length > 0) {
+      // Resort the angles
+      var firstKeys = Object.keys(angles[0]);
+      if (firstKeys.length == 1 && firstKeys[0] == 't1') {
+        angles.push(angles.shift());
+      } 
+      if (firstKeys.length == 2) {
+        angles.push({t1: angles[0].t1});
+        angles[0].t1 = undefined;
+      }
+      angles = angles.map( (a) => {
+        var r = []
+        if (a.t1 != undefined) {
+          r.push(a.t1)
+        }
+        if (a.t2 != undefined) {
+          r.push(a.t2)
+        }
+        return r
+      });
+      angles = [].concat.apply([], angles);
+    }
+
+    // Top
+    // topAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y);
+    // if (topAngles.t2) {
+    //   angles.push(topAngles.t2);
+    // }
+    // // Right
+    // rightAngles = CGV.circleAnglesFromIntersectingLine(radius, x + width, y, x + width, y - height);
+    // if (rightAngles.t1) {
+    //   angles.push(topAngles.t1);
+    // }
+    // // Bottom
+    // bottomAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x + width, y - height);
+    // // Left
+    // leftAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y, x, y - height);
+
+
+    return angles
+  }
+
 
   // /**
   //  * Merges top level properties of each supplied object.

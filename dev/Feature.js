@@ -38,6 +38,10 @@
       }
     }
 
+    get color() {
+      return this._color || (this._featureSlot && this._featureSlot.color) || 'blue';
+    }
+
     addFeatureRange(featureRange) {
       this._featureRanges.push(featureRange);
       featureRange._feature = this;

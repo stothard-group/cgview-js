@@ -185,6 +185,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.draw_arc(0, this.sequenceLength, radius, 'black', backboneThickness);
 
       var residualThickness = 0;
+
+      // TESTING
+      var angles = CGV.circleAnglesFromIntersectingRect(radius,
+        this.scale.x.invert(0),
+        this.scale.y.invert(0),
+        CGV.pixel(this.width),
+        CGV.pixel(this.height)
+      )
+      console.log(angles)
+
+
+
+
+
       this._featureSlots.forEach((slot) => {
         var thickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
         // var thickness = Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius;
@@ -201,7 +215,8 @@ if (window.CGV === undefined) window.CGV = CGView;
         } else {
           slot._features.forEach((feature) => {
             feature._featureRanges.forEach((range) => {
-              this.draw_arc(range._start, range._stop, radius, feature._color, thickness);
+              // this.draw_arc(range._start, range._stop, radius, feature._color, thickness);
+              range.draw(this.ctx, this.scale, radius, thickness);
             });
             feature._featurePaths.forEach((path) => {
               path.draw(this.ctx, this.scale, radius, thickness);
@@ -211,7 +226,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       });
       this.drawAxis(directRadius);
-      this.drawAxis(reverseRadius - 50);
+      this.drawAxis(reverseRadius - CGV.pixel(5));
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
