@@ -38,15 +38,10 @@
       return this._color || (this.feature && this.feature.color) || 'blue';
     }
 
-
-    draw(ctx, scale, slotRadius, slotThickness) {
-      // this.draw_arc(range._start, range._stop, radius, feature._color, thickness);
-      ctx.beginPath();
-      ctx.strokeStyle = this.color;
-      ctx.lineWidth = this.adjustedWidth(slotThickness);
-      ctx.arc(scale.x(0), scale.y(0), this.adjustedRadius(slotRadius, slotThickness), scale.bp(this.start), scale.bp(this.stop), false);
-      // ctx.arc(scale.x(0), scale.y(0), slotRadius, scale.bp(this.start), scale.bp(this.stop), false);
-      ctx.stroke();
+    draw(canvas, slotRadius, slotThickness) {
+      canvas.drawArc(this.start, this.stop,
+        this.adjustedRadius(slotRadius, slotThickness),
+        this.color, this.adjustedWidth(slotThickness));
     }
 
     // radius by default would be the center of the slot as provided unless:

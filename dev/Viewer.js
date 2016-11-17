@@ -6,14 +6,21 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 (function(CGV) {
 
+  /** My main class */
   class Viewer {
 
+    /**
+     * Create a viewer
+     * @param {string} container_id - The ID of the element to contain the viewer
+     */
     constructor(container_id, options = {}) {
       this._container = d3.select(container_id);
-      this.scale = {};
+      // this.scale = {};
       // Get options
       this._width = CGV.default_for(options.width, 600);
       this._height = CGV.default_for(options.height, 600);
+      this.canvas = new CGV.Canvas(this._container, {width: this._width, height: this._height});
+      this.axis = new CGV.Axis(this.canvas);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
       // this.backboneRadius = options.backboneRadius;
@@ -24,32 +31,32 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Create the viewer canvas
       // NOTE: anything drawn to the canvas must take the pixel ratio into account
       //       and should use the CGV.pixel() method.
-      this.canvas = this._container.append("canvas")
-        .classed('cgv-viewer', true)
-        .style('border', '1px solid #DDD')
-        .attr("width", this.width)
-        .attr("height", this.height).node();
+      // this.canvas = this._container.append("canvas")
+      //   .classed('cgv-viewer', true)
+      //   .style('border', '1px solid #DDD')
+      //   .attr("width", this.width)
+      //   .attr("height", this.height).node();
 
       // Check for canvas support
-      if (!this.canvas.getContext) {
-        this._container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
-      }
+      // if (!this.canvas.getContext) {
+      //   this._container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
+      // }
 
       // Get pixel ratio and upscale canvas depending on screen resolution
       // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      CGV.pixel_ratio = CGV.get_pixel_ratio(this.canvas);
-      CGV.scale_resolution(this.canvas, CGV.pixel_ratio);
+      // CGV.pixel_ratio = CGV.get_pixel_ratio(this.canvas);
+      // CGV.scale_resolution(this.canvas, CGV.pixel_ratio);
 
       // Set viewer context
-      this.ctx = this.canvas.getContext('2d');
+      // this.ctx = this.canvas.getContext('2d');
 
       // Set up scales
-      this.scale.x = d3.scaleLinear()
-        .domain([CGV.pixel(-this.width/2), CGV.pixel(this.width/2)])
-        .range([0, CGV.pixel(this.width)]);
-      this.scale.y = d3.scaleLinear()
-        .domain([CGV.pixel(this.height/2), CGV.pixel(-this.height/2)])
-        .range([0, CGV.pixel(this.height)]);
+      // this.scale.x = d3.scaleLinear()
+      //   .domain([CGV.pixel(-this.width/2), CGV.pixel(this.width/2)])
+      //   .range([0, CGV.pixel(this.width)]);
+      // this.scale.y = d3.scaleLinear()
+      //   .domain([CGV.pixel(this.height/2), CGV.pixel(-this.height/2)])
+      //   .range([0, CGV.pixel(this.height)]);
       // this.scale.bp = d3.scaleLinear()
       //   .domain([0, this.sequence_length])
       //   .range([-1/2*Math.PI, 3/2*Math.PI]);
@@ -61,22 +68,24 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this._featureSlots = new CGV.CGArray();
 
-      // this.canvas.on('mousemove', function() {
-      //   var pos = d3.mouse(sv.canvas);
-      //   sv.mx = sv.scale.x.invert(JSV.pixel(pos[0]))
-      //   sv.my = sv.scale.y.invert(JSV.pixel(pos[1]))
-      //   // console.log([sv.mx, sv.my]);
-      //   sv.highlight.hover();
-      //   sv.annotation.check_hover();
-      // });
+      d3.select(this.canvas.canvasNode).on('mousemove', () => {
+        if (this.debug) {
+          var pos = d3.mouse(this.canvas.canvasNode);
+          var mx = this.scale.x.invert(CGV.pixel(pos[0]))
+          var my = this.scale.y.invert(CGV.pixel(pos[1]))
+          // console.log([mx, my]);
+          // console.log(this.canvas.bpForPoint({x: mx, y: my}));
+          this.debug.data.position['xy'] = Math.round(mx) + ', ' + Math.round(my);
+          this.debug.data.position['bp'] = this.canvas.bpForPoint({x: mx, y: my})
+        }
+      });
 
-      // this.draw_test();
-      this.draw();
+      // this.full_draw();
     }
 
     // Static classs methods
     static get debug_sections() {
-      return ['time', 'zoom'];
+      return ['time', 'zoom', 'position'];
     }
 
     get width() {
@@ -99,11 +108,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._backboneRadius * this._zoomFactor
     }
 
+    get scale() {
+      return this.canvas.scale
+    }
+
+    get ctx() {
+      return this.canvas.ctx
+    }
+
     set sequenceLength(bp) {
       if (bp) {
         this._sequenceLength = Number(bp);
-        this.scale.bp = d3.scaleLinear()
-          .domain([0, this._sequenceLength])
+        this.canvas.scale.bp = d3.scaleLinear()
+          .domain([1, this._sequenceLength])
           .range([-1/2*Math.PI, 3/2*Math.PI]);
       }
     }
@@ -137,130 +154,69 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io.load_xml(xml);
     }
 
-    draw_arc(start, end, radius, color = '#000000', width = 1) {
-      var scale = this.scale;
-      var ctx = this.ctx;
-      this.ctx.beginPath();
-      this.ctx.strokeStyle = color;
-      // this.ctx.strokeStyle = 'rgba(0,0,200,0.5)'
-      this.ctx.lineWidth = width;
-      // this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(radius), scale.bp(start), scale.bp(end), false);
-      this.ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(end), false);
-      this.ctx.stroke();
-    }
-
     /**
      * Clear the viewer canvas
      */
     clear() {
-      this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+      this.canvas.clear();
     }
 
     /**
     * Flash a message on the center of the viewer.
     */
     flash(msg) {
-      var ctx = this.ctx;
-      // this.ctx.font = this.adjust_font(1.5);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'center';
-      var x = CGV.pixel(this.width) / 2
-      var y = CGV.pixel(this.height) / 2
-      ctx.fillText(msg, x, y);
+      this.canvas.flash(msg);
     }
 
-    visibleRangesForRadius(radius) {
-      var angles = CGV.circleAnglesFromIntersectingRect(radius,
-        this.scale.x.invert(0),
-        this.scale.y.invert(0),
-        CGV.pixel(this.width),
-        CGV.pixel(this.height)
-      )
-      return angles.map( (a) => {return this.scale.bp.invert(a)})
+
+    draw_full() {
+      this.draw();
+    }
+
+    draw_fast() {
+      this.draw(true);
     }
 
     draw(fast) {
       var start_time = new Date().getTime();
       this.clear();
       var backboneThickness = CGV.pixel(3);
-      var radius = CGV.pixel(this.backboneRadius);
-      // var radius = this.backboneRadius;
-      var directRadius = radius + (backboneThickness / 2);
-      var reverseRadius = radius - (backboneThickness / 2);
+      var slotRadius = CGV.pixel(this.backboneRadius);
+      var directRadius = slotRadius + (backboneThickness / 2);
+      var reverseRadius = slotRadius - (backboneThickness / 2);
       var spacing = CGV.pixel(this.featureSlotSpacing);
       var minDimension = CGV.pixel(Math.min(this.height, this.width));
       var maxRadius = minDimension; // TODO: need to add up all proportions
 
       // Draw Backbone
-      this.draw_arc(0, this.sequenceLength, radius, 'black', backboneThickness);
+      this.canvas.drawArc(0, this.sequenceLength, slotRadius, 'black', backboneThickness);
 
-      var residualThickness = 0;
+      var residualSlotThickness = 0;
 
       // TESTING
-      // console.log(this.visibleRangesForRadius(radius))
+      // console.log(this.canvas.visibleRangesForRadius(slotRadius))
 
       this._featureSlots.forEach((slot) => {
-        var thickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
-        // var thickness = Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius;
+        // Calculate Slot dimensions
+        // The slotRadius is the radius at the center of the slot
+        var slotThickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
         if (slot.isDirect()) {
-          directRadius += ( (thickness / 2) + spacing + residualThickness);
-          radius = directRadius;
+          directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
+          slotRadius = directRadius;
         } else {
-          reverseRadius -= ( (thickness / 2) + spacing + residualThickness);
-          radius = reverseRadius;
+          reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
+          slotRadius = reverseRadius;
         }
-        residualThickness = thickness / 2;
-        // slot.draw();
-        if (fast && slot._features.length > 500) {
-          this.draw_arc(0, this.sequenceLength, radius, 'rgba(0,0,200,0.1)', thickness);
-        } else {
-          slot._features.forEach((feature) => {
-            feature._featureRanges.forEach((range) => {
-              // this.draw_arc(range._start, range._stop, radius, feature._color, thickness);
-              range.draw(this.ctx, this.scale, radius, thickness);
-            });
-            feature._featurePaths.forEach((path) => {
-              path.draw(this.ctx, this.scale, radius, thickness);
-            });
-          });
-        }
-
+        residualSlotThickness = slotThickness / 2;
+        // Draw Slot
+        slot.draw(this.canvas, fast, slotRadius, slotThickness);
       });
-      this.drawAxis(directRadius);
-      this.drawAxis(reverseRadius - CGV.pixel(5));
+
+      this.axis.draw(reverseRadius, directRadius);
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
-    }
-
-    drawAxis(radius) {
-      var scale = this.scale;
-      var tickCount = 10;
-      var tickWidth = CGV.pixel(1);
-      var tickLength = CGV.pixel(5);
-      scale.bp.ticks(tickCount).forEach((tick) => {
-        this.radiantLine(tick, radius, tickLength, tickWidth);
-      });
-
-    }
-
-    radiantLine(bp, radius, length, lineWidth = 1, color = 'black') {
-      var radians = this.scale.bp(bp);
-      var centerX = this.scale.x(0);
-      var centerY = this.scale.y(0);
-      var innerX = centerX + radius * Math.cos(radians);
-      var innerY = centerY + radius * Math.sin(radians);
-      var outerX = centerX + (radius + length) * Math.cos(radians);
-      var outerY = centerY + (radius + length) * Math.sin(radians);
-      var ctx = this.ctx;
-
-      ctx.beginPath();
-      ctx.moveTo(innerX,innerY);
-      ctx.lineTo(outerX,outerY);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = lineWidth;
-      ctx.stroke();
     }
 
     addFeatureSlot(featureSlot) {

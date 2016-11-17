@@ -12,12 +12,12 @@
       .on('start', dragstart)
       .on('drag',  dragging)
       .on('end',   dragend);
-    d3.select(self.canvas).call(self._drag);
+    d3.select(self.canvas.canvasNode).call(self._drag);
 
     function dragstart() {
       // d3.event.sourceEvent.preventDefault(); // Prevent text cursor
       // self.svg.style('cursor', 'all-scroll');
-      d3.select(self.canvas).style('cursor', 'all-scroll');
+      d3.select(self.canvas.canvasNode).style('cursor', 'all-scroll');
       // self.trigger('drag-start');
     }
 

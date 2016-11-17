@@ -56,6 +56,29 @@
       return this._featureSlot.viewer
     }
 
+    get start() {
+      // TODO: What about paths
+      return (this._featureRanges.length > 0) ? this._featureRanges[0].start : 0
+    }
+
+    get stop() {
+      // TODO: What about paths
+      return (this._featureRanges.length > 0) ? this._featureRanges[this._featureRanges.length - 1].stop : 0
+    }
+
+    get length() {
+      if (this.stop >= this.start) {
+        return this.stop - this.start
+      } else {
+        return this.viewer.sequenceLength + (this.stop - this.start)
+      } 
+    }
+
+    // get count() {
+      // TODO: What about paths
+    //   return this._featureRanges.length
+    // }
+
   }
 
   CGV.Feature = Feature;

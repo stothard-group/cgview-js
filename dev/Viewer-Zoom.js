@@ -5,12 +5,13 @@
 
   CGV.Viewer.prototype.initialize_zooming = function() {
     var self = this;
+    var zoomMax = 200;
     self._zoom = d3.zoom()
-      .scaleExtent([1, 100])
+      .scaleExtent([1, zoomMax])
       .on('start', zoomstart)
       .on('zoom',  zooming)
       .on('end',   zoomend);
-    d3.select(self.canvas).call(self._zoom);
+    d3.select(self.canvas.canvasNode).call(self._zoom);
 
     function zoomstart() {
       // self.trigger('zoom-start');
@@ -18,7 +19,7 @@
 
     function zooming() {
       var start_time = new Date().getTime();
-      var pos = d3.mouse(self.canvas);
+      var pos = d3.mouse(self.canvas.canvasNode);
       var mx = self.scale.x.invert(CGV.pixel(pos[0]))
       var my = self.scale.y.invert(CGV.pixel(pos[1]))
 

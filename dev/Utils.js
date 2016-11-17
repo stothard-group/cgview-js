@@ -78,8 +78,10 @@
   //     \ 2 | 1 /
   //       -----
   //        1/2π
-  // Note, for CGView, quadrant 4 has both x and y as positive
-  // Also, quandrant 4 has minus angles to match up with the bp scale
+  // Note:
+  //   - For CGView, quadrant 4 has both x and y as positive
+  //   - Quandrant 4 has minus angles to match up with the bp scale
+  //   - The center of the circle is always (0,0)
   CGV.angleFromPosition = function(x, y) {
     var angle = 1/2*Math.PI;
     if (x != 0) {
@@ -102,7 +104,7 @@
   }
 
   CGV.withinRange = function(bp, start, end) {
-    if (end > start) {
+    if (end >= start) {
       // Typical Range
       return (bp >= start && bp <= end)
     } else {
@@ -145,44 +147,7 @@
     value[1] = a[1] - b[1];
     return value
   }
-  //
-  // // Using code from:
-  // // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
-  // CGV.circleAnglesFromIntersectingLine = function(radius, x1, y1, x2, y2) {
-  //   // Direction vector of line segment, from start to end
-  //   var d = CGV.pointsSubtract([x2,y2], [x1,y1]);
-  //   // Vector from center of circle to line segment start
-  //   // Center of circle is alwas [0,0]
-  //   var f = [x1, y1]
-  //
-  //   // t2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r2 ) = 0
-  //   var a = CGV.dotProduct(d, d);
-  //   var b = 2 * CGV.dotProduct(f, d);
-  //   var c = CGV.dotProduct(f, f) - (radius * radius);
-  //
-  //   var discriminant = b*b - 4*a*c;
-  //
-  //   var angles = [];
-  //   if (discriminant >= 0) {
-  //     discriminant = Math.sqrt(discriminant);
-  //     var t1 = (-b - discriminant)/(2*a);
-  //     var t2 = (-b + discriminant)/(2*a);
-  //     if (t1 >= 0 && t1 <=1) {
-  //       var px = x1 + (t1 * (x2 - x1));
-  //       var py = y1 + (t1 * (y2 - y1));
-  //       angles.push(CGV.angleFromPosition(px, py))
-  //       // angles.t1 = CGV.angleFromPosition(px, py)
-  //     }
-  //     if (t2 >= 0 && t2 <=1) {
-  //       var px = x1 + (t2 * (x2 - x1));
-  //       var py = y1 + (t2 * (y2 - y1));
-  //       angles.push(CGV.angleFromPosition(px, py))
-  //       // angles.t2 = CGV.angleFromPosition(px, py)
-  //     }
-  //   }
-  //   return angles
-  // }
-  //
+
   // Using code from:
   // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
   CGV.circleAnglesFromIntersectingLine = function(radius, x1, y1, x2, y2) {
@@ -221,18 +186,10 @@
   }
 
 
-  // Return 2 angles that intersect with rectangle defined by xy, height, and width
+  // Return 2 or more angles that intersect with rectangle defined by xy, height, and width
   // Center of circle is always (0,0)
   CGV.circleAnglesFromIntersectingRect = function(radius, x, y, width, height) {
     var angles = [];
-    // // Top
-    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y));
-    // // Right
-    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x + width, y, x + width, y - height));
-    // // Bottom
-    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x + width, y - height, x, y - height));
-    // // Left
-    // angles = angles.concat(CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x, y));
     // Top
     angles.push(CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y));
     // Right
@@ -241,10 +198,7 @@
     angles.push(CGV.circleAnglesFromIntersectingLine(radius, x + width, y - height, x, y - height));
     // Left
     angles.push(CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x, y));
-
     angles = angles.filter( (a) => { return Object.keys(a).length > 0 })
-
-    // console.log(angles)
     if (angles.length > 0) {
       // Resort the angles
       // T1 and T2 are what percent along a line that intersect with the circle
@@ -273,25 +227,43 @@
       angles = [].concat.apply([], angles);
     }
 
-    // Top
-    // topAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y);
-    // if (topAngles.t2) {
-    //   angles.push(topAngles.t2);
-    // }
-    // // Right
-    // rightAngles = CGV.circleAnglesFromIntersectingLine(radius, x + width, y, x + width, y - height);
-    // if (rightAngles.t1) {
-    //   angles.push(topAngles.t1);
-    // }
-    // // Bottom
-    // bottomAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y - height, x + width, y - height);
-    // // Left
-    // leftAngles = CGV.circleAnglesFromIntersectingLine(radius, x, y, x, y - height);
-
-
     return angles
   }
 
+  /**
+   * Binary search to find the index of data where data[index] equals _search_value_.
+   * If no element equals value, the returned index will be the upper or lower [default]
+   * index that surrounds the value.
+   *
+   * @param {Array} data Array of numbers. Must be sorted from lowest to highest.
+   * @param {Number} search_value The value to search for.
+   * @param {Boolean} upper Only used if no element equals the _search_value_ 
+   *
+   *    - _true_: return index to right of value
+   *    - _false_: return index to left of value [default]
+   *
+   * @return {Number}
+   */
+  CGV.indexOfValue = function(data, search_value, upper) {
+    var min_index = 0;
+    var max_index = data.length - 1;
+    var current_index, current_value;
+    if (data[min_index] >= search_value) return min_index;
+    if (data[max_index] <= search_value) return max_index;
+
+    while (max_index - min_index > 1) {
+      current_index = (min_index + max_index) / 2 | 0;
+      current_value = data[current_index];
+      if (current_value < search_value) {
+        min_index = current_index;
+      } else if (current_value > search_value){
+        max_index = current_index;
+      } else {
+        return current_index;
+      }
+    }
+    return (upper ? max_index : min_index);
+  }
 
   // /**
   //  * Merges top level properties of each supplied object.
@@ -353,40 +325,6 @@
   //   return elapsed + ' ms';
   // }
   //
-  // /**
-  //  * Binary search to find the index of data where data[index] equals _search_value_.
-  //  * If no element equals value, the returned index will be the upper or lower [default]
-  //  * index that surrounds the value.
-  //  *
-  //  * @param {Array} data Array of numbers. Must be sorted from lowest to highest.
-  //  * @param {Number} search_value The value to search for.
-  //  * @param {Boolean} upper Only used if no element equals the _search_value_ 
-  //  *
-  //  *    - _true_: return index to right of value
-  //  *    - _false_: return index to left of value [default]
-  //  *
-  //  * @return {Number}
-  //  */
-  // JSV.index_of_value = function(data, search_value, upper) {
-  //   var min_index = 0;
-  //   var max_index = data.length - 1;
-  //   var current_index, current_value;
-  //   if (data[min_index] >= search_value) return min_index;
-  //   if (data[max_index] <= search_value) return max_index;
-  //
-  //   while (max_index - min_index > 1) {
-  //     current_index = (min_index + max_index) / 2 | 0;
-  //     current_value = data[current_index];
-  //     if (current_value < search_value) {
-  //       min_index = current_index;
-  //     } else if (current_value > search_value){
-  //       max_index = current_index;
-  //     } else {
-  //       return current_index;
-  //     }
-  //   }
-  //   return (upper ? max_index : min_index);
-  // }
   //
   // /**
   //  * Returns a number unless _n_ is undefined in which case _undefined_ is returned.
