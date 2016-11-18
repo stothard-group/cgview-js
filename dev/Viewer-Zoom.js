@@ -53,7 +53,7 @@
       // DEBUG INFO
       if (self.debug) {
         self.debug.data.time['zoom'] = CGV.elapsed_time(start_time);
-        self.debug.data.zoom['scale'] = CGV.round(self._zoomFactor, 3);
+        self.debug.data.zoom['scale'] = CGV.round(self._zoomFactor, 1);
       }
     }
 

@@ -7,11 +7,24 @@
 
     constructor(data = {}, display = {}, meta = {}) {
       // this._viewer = viewer;
-      this._bp = CGV.default_for(data.bp, []);
-      this._proportionOfThickness = CGV.default_for(data.proportionOfThickness, []);
+      // this._bp = CGV.default_for(data.bp, []);
+      // this._proportionOfThickness = CGV.default_for(data.proportionOfThickness, []);
+      this._bp = new CGV.CGArray();
+      this._proportionOfThickness =  new CGV.CGArray();
       this._color = CGV.default_for(data.color, 'black');
       this._colorPositive = data.colorPositive;
       this._colorNegative = data.colorNegative;
+
+      if (data.bp) {
+        for (var i = 0, len = data.bp.length; i < len; i ++) {
+          this._bp.push(data.bp[i]);
+        }
+      }
+      if (data.proportionOfThickness) {
+        for (var i = 0, len = data.proportionOfThickness.length; i < len; i ++) {
+          this._proportionOfThickness.push(data.proportionOfThickness[i]);
+        }
+      }
     }
 
     get color() {

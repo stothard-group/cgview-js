@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-// CGSet
+// CGArray
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
@@ -102,6 +102,42 @@
     }
     return this;
   }
+
+  CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
+    var startIndex = CGV.indexOfValue(this, startValue, true);
+    var stopIndex = CGV.indexOfValue(this, stopValue, false);
+    if (stopValue >= startValue) {
+      for (var i = startIndex; i <= stopIndex; i++) {
+        callback.call(this[i], i, this[i]);
+      }
+    } else {
+      for (var i = startIndex, len = this.length; i < len; i++) {
+        callback.call(this[i], i, this[i]);
+      }
+      for (var i = 0; i <= stopIndex; i++) {
+        callback.call(this[i], i, this[i]);
+      }
+    }
+    return this;
+  }
+
+  CGArray.prototype.countFromRange = function(startValue, stopValue, step) {
+    var startIndex = CGV.indexOfValue(this, startValue, true);
+    var stopIndex = CGV.indexOfValue(this, stopValue, false);
+
+    if (startValue > this[this.length - 1]) {
+      startIndex++;
+    }
+    if (stopValue < this[0]) {
+      stopIndex--;
+    }
+    if (stopValue >= startValue) {
+      return stopIndex - startIndex + 1
+    } else {
+      return (this.length - startIndex) + stopIndex + 1
+    }
+  }
+
 
   /**
    * Returns true if the CGArray contains the element.

@@ -11,6 +11,7 @@
       this._featurePaths = new CGV.CGArray();
       this._color = data.color;
 
+
       if (data.featureRanges) {
         var featureRanges
         if (!Array.isArray(data.featureRanges)) {

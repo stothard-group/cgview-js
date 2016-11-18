@@ -78,8 +78,8 @@
       // this.ctx.font = this.adjust_font(1.5);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'center';
-      var x = CGV.pixel(this.width) / 2
-      var y = CGV.pixel(this.height) / 2
+      var x = this.width / 2
+      var y = this.height / 2
       ctx.fillText(msg, x, y);
     }
 

@@ -11,6 +11,8 @@
       this._features = new CGV.CGArray();
       this._proportionOfRadius = CGV.default_for(data.proportionOfRadius, 0.1)
 
+      this._featureStarts = new CGV.CGArray();
+
       if (data.features) {
         var features
         if (!Array.isArray(data.features)) {
@@ -22,12 +24,33 @@
           var feature = new CGV.Feature(featureData);
           this.addFeature(feature);
         });
+        this.refresh();
       }
     }
 
     addFeature(feature) {
       this._features.push(feature);
       feature._featureSlot = this;
+    }
+
+    // Refresh needs to be called when new features are added, etc
+    // FeatureRanges need to be sort by start position
+    refresh() {
+      // Sort the features by start
+      // TODO: Hack to avoid paths for now
+      if (this._features.length > 0 && this._features[0]._featureRanges.length > 0) {
+        this._features.sort( (a, b) => {
+          return a._featureRanges[0].start - b._featureRanges[0].start
+        });
+        // Clear feature starts
+        this._featureStarts = new CGV.CGArray();
+        for (var i = 0, len = this._features.length; i < len; i++) {
+          if (this._features[i]._featureRanges[0]) {
+            this._featureStarts.push(this._features[i]._featureRanges[0].start);
+          }
+        }
+        this._largestFeatureLength = this.findLargestFeatureLength();
+      }
     }
 
     get viewer() {
@@ -58,6 +81,10 @@
       } else {
         return undefined
       }
+    }
+
+    get largestFeatureLength() {
+      return this._largestFeatureLength
     }
 
 
@@ -103,8 +130,7 @@
     //   }
     // }
 
-    // TODO: this should be saved until refresh
-    largestFeatureLength() {
+    findLargestFeatureLength() {
       var length = 0;
       for (var i = 0, len = this._features.length; i < len; i++) {
         var nextLength = this._features[i].length;
@@ -119,7 +145,8 @@
       var features = [];
       var largestLength = this.largestFeatureLength();
       // The start can not be less than the stop
-      start = (largestLength >= (start - stop)) ? stop + 1 : start - largestLength;
+      // start = (largestLength >= (start - stop)) ? stop + 1 : start - largestLength;
+      start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : start - largestLength;
       for (var i = 0, len = this._features.length; i < len; i++) {
         if (CGV.withinRange(this._features[i].start, start, stop)) {
           features.push(this._features[i]);
@@ -129,6 +156,35 @@
     }
 
     draw(canvas, fast, slotRadius, slotThickness) {
+      var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
+      var start = ranges ? ranges[0] : 1;
+      var stop = ranges ? ranges[1] : this._viewer.sequenceLength;
+      var largestLength = this.largestFeatureLength;
+      var orig_start = start
+      start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : this.viewer.subtractBp(start, largestLength);
+      // console.log(orig_start, start, stop)
+      var featureCount = this._featureStarts.countFromRange(start, stop);
+      // console.log(featureCount)
+      if (fast && featureCount > 2000) {
+        canvas.drawArc(1, this._viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
+      } else {
+        this._featureStarts.eachFromRange(start, stop, 1, (i) => {
+          if (this._features[i]) {
+            this._features[i]._featureRanges.forEach((range) => {
+              range.draw(canvas, slotRadius, slotThickness);
+            });
+          }
+          // features[i]._featurePaths.forEach((path) => {
+          //   if (ranges) {
+          //     path.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
+          //   } else {
+          //     path.draw(canvas, slotRadius, slotThickness, fast);
+          //   }
+          // });
+        })
+      }
+    }
+    draw2(canvas, fast, slotRadius, slotThickness) {
       var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
       var features = ranges ? this.extractFeaturesByRange(ranges[0], ranges[1]) : this._features;
       if (fast && features.length > 500) {

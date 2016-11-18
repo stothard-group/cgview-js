@@ -195,7 +195,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // TESTING
       // console.log(this.canvas.visibleRangesForRadius(slotRadius))
+      //
+      this.TEST_featureSlots = [this._featureSlots[0]]
 
+      // this.TEST_featureSlots.forEach((slot) => {
       this._featureSlots.forEach((slot) => {
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
@@ -223,6 +226,22 @@ if (window.CGV === undefined) window.CGV = CGView;
       // TODO: error check that this is a featureSlot
       this._featureSlots.push(featureSlot);
       featureSlot._viewer = this;
+    }
+
+    subtractBp(position, bpToSubtract) {
+      if (bpToSubtract <= position) {
+        return position - bpToSubtract
+      } else {
+        return this.sequenceLength + position - bpToSubtract
+      }
+    }
+
+    addBp(position, bpToAdd) {
+      if (this.sequenceLength >= (bpToAdd + position)) {
+        return bpToAdd + position
+      } else {
+        return position - this.sequenceLength + bpToAdd
+      }
     }
 
 
