@@ -28,39 +28,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._zoomFactor = 1;
       this.debug = CGV.default_for(options.debug, false);
 
-      // Create the viewer canvas
-      // NOTE: anything drawn to the canvas must take the pixel ratio into account
-      //       and should use the CGV.pixel() method.
-      // this.canvas = this._container.append("canvas")
-      //   .classed('cgv-viewer', true)
-      //   .style('border', '1px solid #DDD')
-      //   .attr("width", this.width)
-      //   .attr("height", this.height).node();
-
-      // Check for canvas support
-      // if (!this.canvas.getContext) {
-      //   this._container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
-      // }
-
-      // Get pixel ratio and upscale canvas depending on screen resolution
-      // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      // CGV.pixel_ratio = CGV.get_pixel_ratio(this.canvas);
-      // CGV.scale_resolution(this.canvas, CGV.pixel_ratio);
-
-      // Set viewer context
-      // this.ctx = this.canvas.getContext('2d');
-
-      // Set up scales
-      // this.scale.x = d3.scaleLinear()
-      //   .domain([CGV.pixel(-this.width/2), CGV.pixel(this.width/2)])
-      //   .range([0, CGV.pixel(this.width)]);
-      // this.scale.y = d3.scaleLinear()
-      //   .domain([CGV.pixel(this.height/2), CGV.pixel(-this.height/2)])
-      //   .range([0, CGV.pixel(this.height)]);
-      // this.scale.bp = d3.scaleLinear()
-      //   .domain([0, this.sequence_length])
-      //   .range([-1/2*Math.PI, 3/2*Math.PI]);
-
       this._io = new CGV.IO(this);
 
       this.initialize_dragging();

@@ -9,22 +9,28 @@
       // this._viewer = viewer;
       this._strand = CGV.default_for(data.strand, 'direct');
       this._features = new CGV.CGArray();
+      this._arcPlot;
       this._proportionOfRadius = CGV.default_for(data.proportionOfRadius, 0.1)
 
       this._featureStarts = new CGV.CGArray();
 
       if (data.features) {
-        var features
-        if (!Array.isArray(data.features)) {
-          features = [data.features];
-        } else {
-          features = data.features
-        }
-        features.forEach((featureData) => {
+        // var features
+        // if (!Array.isArray(data.features)) {
+        //   features = [data.features];
+        // } else {
+        //   features = data.features
+        // }
+        data.features.forEach((featureData) => {
           var feature = new CGV.Feature(featureData);
           this.addFeature(feature);
         });
         this.refresh();
+      }
+
+      if (data.arcPlot) {
+        // var arcPlot = new CGV.ArcPlot(data.arcPlot);
+        // this.addArcPlot(arcPlot)
       }
     }
 
@@ -38,16 +44,18 @@
     refresh() {
       // Sort the features by start
       // TODO: Hack to avoid paths for now
-      if (this._features.length > 0 && this._features[0]._featureRanges.length > 0) {
+      if (this._features.length > 0) {
         this._features.sort( (a, b) => {
-          return a._featureRanges[0].start - b._featureRanges[0].start
+          // return a._featureRanges[0].start - b._featureRanges[0].start
+          return a.start - b.start
         });
         // Clear feature starts
         this._featureStarts = new CGV.CGArray();
         for (var i = 0, len = this._features.length; i < len; i++) {
-          if (this._features[i]._featureRanges[0]) {
-            this._featureStarts.push(this._features[i]._featureRanges[0].start);
-          }
+          this._featureStarts.push(this._features[i].start);
+          // if (this._features[i]._featureRanges[0]) {
+          //   this._featureStarts.push(this._features[i]._featureRanges[0].start);
+          // }
         }
         this._largestFeatureLength = this.findLargestFeatureLength();
       }
@@ -66,6 +74,14 @@
 
     isReverse() {
       return this.strand == 'reverse'
+    }
+
+    get hasFeatures() {
+      return this._features.length > 0
+    }
+
+    get hasArcPlot() {
+      return this._arcPlot
     }
 
     length() {
@@ -141,26 +157,25 @@
       return length
     }
 
-    extractFeaturesByRange(start, stop) {
-      var features = [];
-      var largestLength = this.largestFeatureLength();
-      // The start can not be less than the stop
-      // start = (largestLength >= (start - stop)) ? stop + 1 : start - largestLength;
-      start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : start - largestLength;
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        if (CGV.withinRange(this._features[i].start, start, stop)) {
-          features.push(this._features[i]);
-        }
-      }
-      return features
-    }
+    // extractFeaturesByRange(start, stop) {
+    //   var features = [];
+    //   var largestLength = this.largestFeatureLength();
+    //   // The start can not be less than the stop
+    //   // start = (largestLength >= (start - stop)) ? stop + 1 : start - largestLength;
+    //   start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : start - largestLength;
+    //   for (var i = 0, len = this._features.length; i < len; i++) {
+    //     if (CGV.withinRange(this._features[i].start, start, stop)) {
+    //       features.push(this._features[i]);
+    //     }
+    //   }
+    //   return features
+    // }
 
     draw(canvas, fast, slotRadius, slotThickness) {
       var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
       var start = ranges ? ranges[0] : 1;
       var stop = ranges ? ranges[1] : this._viewer.sequenceLength;
       var largestLength = this.largestFeatureLength;
-      var orig_start = start
       start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : this.viewer.subtractBp(start, largestLength);
       // console.log(orig_start, start, stop)
       var featureCount = this._featureStarts.countFromRange(start, stop);
@@ -169,11 +184,15 @@
         canvas.drawArc(1, this._viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
       } else {
         this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-          if (this._features[i]) {
-            this._features[i]._featureRanges.forEach((range) => {
-              range.draw(canvas, slotRadius, slotThickness);
-            });
+          // console.log(this._features[i])
+          if (this.hasFeatures) {
+            this._features[i].draw(canvas, slotRadius, slotThickness);
           }
+          // if (this._features[i]) {
+          //   this._features[i]._featureRanges.forEach((range) => {
+          //     range.draw(canvas, slotRadius, slotThickness);
+          //   });
+          // }
           // features[i]._featurePaths.forEach((path) => {
           //   if (ranges) {
           //     path.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
@@ -184,26 +203,26 @@
         })
       }
     }
-    draw2(canvas, fast, slotRadius, slotThickness) {
-      var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
-      var features = ranges ? this.extractFeaturesByRange(ranges[0], ranges[1]) : this._features;
-      if (fast && features.length > 500) {
-        canvas.drawArc(0, this._viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
-      } else {
-        for (var i = 0, len = features.length; i < len; i++) {
-          features[i]._featureRanges.forEach((range) => {
-            range.draw(canvas, slotRadius, slotThickness);
-          });
-          features[i]._featurePaths.forEach((path) => {
-            if (ranges) {
-              path.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
-            } else {
-              path.draw(canvas, slotRadius, slotThickness, fast);
-            }
-          });
-        }
-      }
-    }
+    // draw2(canvas, fast, slotRadius, slotThickness) {
+    //   var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
+    //   var features = ranges ? this.extractFeaturesByRange(ranges[0], ranges[1]) : this._features;
+    //   if (fast && features.length > 500) {
+    //     canvas.drawArc(0, this._viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
+    //   } else {
+    //     for (var i = 0, len = features.length; i < len; i++) {
+    //       features[i]._featureRanges.forEach((range) => {
+    //         range.draw(canvas, slotRadius, slotThickness);
+    //       });
+    //       features[i]._featurePaths.forEach((path) => {
+    //         if (ranges) {
+    //           path.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
+    //         } else {
+    //           path.draw(canvas, slotRadius, slotThickness, fast);
+    //         }
+    //       });
+    //     }
+    //   }
+    // }
     // draw(canvas, fast, slotRadius, slotThickness) {
     //   this.visibleExtents(canvas, slotRadius, slotThickness)
     //   var features = extractFeaturesByRange();
