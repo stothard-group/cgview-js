@@ -29,8 +29,9 @@
       }
 
       if (data.arcPlot) {
-        // var arcPlot = new CGV.ArcPlot(data.arcPlot);
-        // this.addArcPlot(arcPlot)
+        var arcPlot = new CGV.ArcPlot(data.arcPlot);
+        arcPlot._featureSlot = this;
+        this._arcPlot = arcPlot;
       }
     }
 
@@ -38,6 +39,7 @@
       this._features.push(feature);
       feature._featureSlot = this;
     }
+
 
     // Refresh needs to be called when new features are added, etc
     // FeatureRanges need to be sort by start position
@@ -200,7 +202,15 @@
           //     path.draw(canvas, slotRadius, slotThickness, fast);
           //   }
           // });
+          //
         })
+        if (this.hasArcPlot) {
+          if (ranges) {
+            this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
+          } else {
+            this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
+          }
+        }
       }
     }
     // draw2(canvas, fast, slotRadius, slotThickness) {

@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
-// FeaturePath
+// ArcPlot
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class FeaturePath {
+  class ArcPlot {
 
     constructor(data = {}, display = {}, meta = {}) {
       // this._viewer = viewer;
@@ -161,11 +161,11 @@
     }
 
     get viewer() {
-      return this._feature.viewer
+      return this._featureSlot.viewer
     }
   }
 
 
-  CGV.FeaturePath = FeaturePath;
+  CGV.ArcPlot = ArcPlot;
 
 })(CGView);
