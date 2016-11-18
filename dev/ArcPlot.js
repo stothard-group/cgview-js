@@ -7,8 +7,6 @@
 
     constructor(data = {}, display = {}, meta = {}) {
       // this._viewer = viewer;
-      // this._bp = CGV.default_for(data.bp, []);
-      // this._proportionOfThickness = CGV.default_for(data.proportionOfThickness, []);
       this._bp = new CGV.CGArray();
       this._proportionOfThickness =  new CGV.CGArray();
       this._color = CGV.default_for(data.color, 'black');
@@ -36,7 +34,6 @@
     }
 
     get colorNegative() {
-      // return this._colorNegative || this._color
       return this._colorNegative || this._color
     }
 

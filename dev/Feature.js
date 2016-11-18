@@ -16,21 +16,6 @@
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       this._opacity = data.opacity;
       this._decoration = data.decoration;
-
-
-      // if (data.featureRanges) {
-      //   // var featureRanges
-      //   // if (!Array.isArray(data.featureRanges)) {
-      //   //   featureRanges = [data.featureRanges];
-      //   // } else {
-      //   //   featureRanges = data.featureRanges;
-      //   // }
-      //   data.featureRanges.forEach((featureRangeData) => {
-      //       var featureRange = new CGV.FeatureRange(featureRangeData);
-      //       this.addFeatureRange(featureRange);
-      //   });
-      // }
-
     }
 
     get start() {
@@ -76,29 +61,10 @@
     adjustedWidth(width) {
       return this._proportionOfThickness * width;
     }
-    // addFeatureRange(featureRange) {
-    //   this._featureRanges.push(featureRange);
-    //   featureRange._feature = this;
-    // }
-
-    // addFeaturePath(featurePath) {
-    //   this._featurePaths.push(featurePath);
-    //   featurePath._feature = this;
-    // }
 
     get viewer() {
       return this._featureSlot.viewer
     }
-
-    // get start() {
-    //   // TODO: What about paths
-    //   return (this._featureRanges.length > 0) ? this._featureRanges[0].start : 0
-    // }
-    //
-    // get stop() {
-    //   // TODO: What about paths
-    //   return (this._featureRanges.length > 0) ? this._featureRanges[this._featureRanges.length - 1].stop : 0
-    // }
 
     get length() {
       // TODO: use generic method
@@ -108,11 +74,6 @@
         return this.viewer.sequenceLength + (this.stop - this.start)
       } 
     }
-
-    // get count() {
-      // TODO: What about paths
-    //   return this._featureRanges.length
-    // }
 
   }
 
