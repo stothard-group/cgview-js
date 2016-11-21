@@ -63,6 +63,66 @@
       // var radialDiff = fast ? 1 : 0.5;
       var radialDiff = 0.5;
 
+      // // Find position indices that include start and stop bp
+      // var indices;
+      // var startBp = start ? start : 1;
+      // var stopBp = stop ? stop : this.viewer.sequenceLength;
+      // var startIndex = CGV.indexOfValue(this._bp, startBp, false);
+      // var stopIndex = CGV.indexOfValue(this._bp, stopBp, true);
+      // var step = fast ? 2 : 1
+      // if (stopBp >= startBp) {
+      //   indices = d3.range(startIndex, stopIndex + 1, step);
+      // } else {
+      //   // Start and stop overlap 1
+      //   indices = d3.range(startIndex, this._bp.length, step);
+      //   indices = indices.concat(d3.range(0, stopIndex + 1, step));
+      // }
+
+      var startBp = start ? start : 1;
+      var stopBp = stop ? stop : this.viewer.sequenceLength;
+
+      ctx.beginPath();
+      ctx.lineWidth = 0.0001;
+      var centerX = scale.x(0);
+      var centerY = scale.y(0);
+
+      var savedR = slotRadius;
+      var saved_bp = startBp;
+      var currentR;
+      var index, currentProp, currentBp;
+      // var step = fast ? 2 : 1
+      bp.eachFromRange(startBp, stopBp, 1, (i) => {
+        currentProp = prop[i];
+        currentBp = bp[i];
+        currentR = slotRadius + prop[i] * slotThickness;
+        // TODO: if going from positive to negative need to save currentR as 0 (slotRadius)
+        if ( this._keepPoint(currentProp, orientation) ){
+          if ( Math.abs(currentR - savedR) >= radialDiff ){
+            ctx.arc(centerX, centerY, currentR, scale.bp(saved_bp), scale.bp(currentBp), false);
+            savedR = currentR;
+            saved_bp = currentBp
+          }
+        } else {
+          savedR = slotRadius;
+        }
+      });
+      ctx.arc(centerX, centerY, savedR, scale.bp(saved_bp), scale.bp(stopBp), false);
+      ctx.arc(centerX, centerY, slotRadius, scale.bp(stopBp), scale.bp(startBp), true);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    // To add a fast mode use a step when creating the indices
+    _drawPath2(canvas, slotRadius, slotThickness, fast,  start, stop, color, orientation) {
+      fast = false
+      var ctx = canvas.ctx;
+      var scale = canvas.scale;
+      var bp = this._bp;
+      var prop = this._proportionOfThickness;
+      // This is the difference in radial pixels required before a new arc is draw
+      // var radialDiff = fast ? 1 : 0.5;
+      var radialDiff = 0.5;
+
       // Find position indices that include start and stop bp
       var indices;
       var startBp = start ? start : 1;
@@ -110,6 +170,14 @@
     }
 
 
+
+
+
+
+
+
+
+
     // draw(canvas, slotRadius, slotThickness) {
     //   if (this.colorNegative == this.colorPositive) {
     //     this._drawPath(canvas, slotRadius, slotThickness, this.colorPositive);
@@ -119,7 +187,7 @@
     //   }
     // }
     //
-    _drawPath2(canvas, slotRadius, slotThickness, color, position) {
+    _drawPathOLD(canvas, slotRadius, slotThickness, color, position) {
       var ctx = canvas.ctx
       var scale = canvas.scale
       ctx.beginPath();

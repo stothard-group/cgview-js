@@ -77,7 +77,7 @@
     }
 
     visibleRanges(canvas, slotRadius, slotThickness) {
-      var ranges = canvas.visibleRangesForRadius(slotRadius);
+      var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
       if (ranges.length == 2) {
         return ranges
       } else if (ranges.length > 2) {
@@ -106,19 +106,30 @@
       var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
       var start = ranges ? ranges[0] : 1;
       var stop = ranges ? ranges[1] : this._viewer.sequenceLength;
+      var featureCount = this._features.length;
       if (this.hasFeatures) {
         var largestLength = this.largestFeatureLength;
-        start = (largestLength >= (this._viewer.sequenceLength - Math.abs(start - stop))) ? stop + 1 : this.viewer.subtractBp(start, largestLength);
-        var featureCount = this._featureStarts.countFromRange(start, stop);
+        // Case where the largest feature should not be subtracted
+        // _____ Visible
+        // ----- Not Visbile
+        // Do no subtract the largest feature so that the start loops around to before the stop
+        // -----Start_____Stop-----
+        // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
+        // _____Stop-----Start_____
+        if (ranges &&
+             (largestLength <= (this._viewer.sequenceLength - Math.abs(start - stop))) &&
+             (this.viewer.subtractBp(start, stop) > largestLength) ) {
+          start = this.viewer.subtractBp(start, largestLength);
+          featureCount = this._featureStarts.countFromRange(start, stop);
+        }
         if (fast && featureCount > 2000) {
           canvas.drawArc(1, this._viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
         } else {
           this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-            if (this.hasFeatures) {
-              this._features[i].draw(canvas, slotRadius, slotThickness);
-            }
+            this._features[i].draw(canvas, slotRadius, slotThickness);
           })
         }
+        // console.log(featureCount)
       } else if (this.hasArcPlot) {
         if (ranges) {
           this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);

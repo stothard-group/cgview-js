@@ -103,6 +103,7 @@
     return this;
   }
 
+  // TODO: add step
   CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
     var startIndex = CGV.indexOfValue(this, startValue, true);
     var stopIndex = CGV.indexOfValue(this, stopValue, false);

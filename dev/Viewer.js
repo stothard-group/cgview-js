@@ -135,7 +135,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.flash(msg);
     }
 
-
     draw_full() {
       this.draw();
     }
@@ -155,18 +154,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       var minDimension = CGV.pixel(Math.min(this.height, this.width));
       var maxRadius = minDimension; // TODO: need to add up all proportions
 
+      var visibleRadii = this.canvas.visibleRadii();
+
       // Draw Backbone
       this.canvas.drawArc(0, this.sequenceLength, slotRadius, 'black', backboneThickness);
 
       var residualSlotThickness = 0;
 
-      // TESTING
-      // console.log(this.canvas.visibleRangesForRadius(slotRadius))
-      //
-      this.TEST_featureSlots = [this._featureSlots[0]]
+      for (var i = 0, len = this._featureSlots.length; i < len; i++) {
+        // TESTING
+        // if ([0].indexOf(i) == -1) {
+        //   continue
+        // }
 
-      // this.TEST_featureSlots.forEach((slot) => {
-      this._featureSlots.forEach((slot) => {
+        var slot = this._featureSlots[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
         var slotThickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
@@ -178,9 +179,12 @@ if (window.CGV === undefined) window.CGV = CGView;
           slotRadius = reverseRadius;
         }
         residualSlotThickness = slotThickness / 2;
-        // Draw Slot
-        slot.draw(this.canvas, fast, slotRadius, slotThickness);
-      });
+        // Only draw visible slots
+        if ( ( (slotRadius - residualSlotThickness) <= visibleRadii.max ) && ( (slotRadius + residualSlotThickness) >= visibleRadii.min) ) {
+          // Draw Slot
+          slot.draw(this.canvas, fast, slotRadius, slotThickness);
+        }
+      }
 
       this.axis.draw(reverseRadius, directRadius);
       if (this.debug) {

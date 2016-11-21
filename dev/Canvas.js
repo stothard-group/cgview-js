@@ -121,14 +121,60 @@
       return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) )
     }
 
-    visibleRangesForRadius(radius) {
+    visibleRangesForRadius(radius, margin = 0) {
       var angles = CGV.circleAnglesFromIntersectingRect(radius,
-        this.scale.x.invert(0),
-        this.scale.y.invert(0),
-        this.width,
-        this.height
+        this.scale.x.invert(0 - margin),
+        this.scale.y.invert(0 - margin),
+        this.width + margin * 2,
+        this.height + margin * 2
       )
       return angles.map( (a) => { return Math.round(this.scale.bp.invert(a)) })
+    }
+
+    centerVisible() {
+      var x = this.scale.x(0);
+      var y = this.scale.y(0);
+      return (x >= 0 &&
+              x <= this.width &&
+              y >= 0 &&
+              y <= this.height)
+    }
+
+    /**
+     * Return the distance between the circle center and the farthest corner of the canvas
+     */
+    maximumVisibleRadius() {
+      // Maximum distance on x axis between circle center and the canvas 0 or width
+      var maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+      // Maximum distance on y axis between circle center and the canvas 0 or height
+      var maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+      // Return the hypotenuse
+      return Math.sqrt( maxX * maxX + maxY * maxY)
+    }
+
+    minimumVisibleRadius() {
+      if (this.centerVisible()) {
+        // Center is visible so the minimum radius has to be 0
+        return 0
+      } else if ( CGV.oppositeSigns(this.scale.x.invert(0), this.scale.x.invert(this.width)) ) {
+        // The canvas straddles 0 on the x axis, so the minimum radius is the distance to the closest horizontal line
+        return Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)))
+      } else if ( CGV.oppositeSigns(this.scale.y.invert(0), this.scale.y.invert(this.height)) ) {
+        // The canvas straddles 0 on the y axis, so the minimum radius is the distance to the closest vertical line
+        return Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)))
+      } else {
+        // Closest corner of the canvas
+        // Minimum distance on x axis between circle center and the canvas 0 or width
+        var minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+        // Minimum distance on y axis between circle center and the canvas 0 or height
+        var minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+        // Return the hypotenuse
+        return Math.sqrt( minX * minX + minY * minY)
+      }
+    }
+
+    visibleRadii(margin) {
+      return {min: this.minimumVisibleRadius(), max: this.maximumVisibleRadius()}
     }
 
   }

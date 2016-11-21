@@ -265,6 +265,14 @@
     return (upper ? max_index : min_index);
   }
 
+
+  /**
+   * Return true of nubmer a and b have opposite signs
+   */
+  CGV.oppositeSigns = function(a, b) {
+    return (a * b) < 0
+  }
+
   // /**
   //  * Merges top level properties of each supplied object.
   //  * ```javascript
