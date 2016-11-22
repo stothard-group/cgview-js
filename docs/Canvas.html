@@ -135,78 +135,340 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Viewer-Drag.js.html">Source: Viewer-Drag.js</h1>
+        <h1 class="page-title" data-filename="Canvas.html">Class: Canvas</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Initializing Dragging
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    Canvas
+    </h2>
+    
+</header>  
 
-  /**
-   * Initialize Spectra Viewer Dragging.
-   */
-  CGV.Viewer.prototype.initialize_dragging = function() {
-    var self = this;
-    self._drag = d3.drag()
-      .on('start', dragstart)
-      .on('drag',  dragging)
-      .on('end',   dragend);
-    d3.select(self.canvas.canvasNode).call(self._drag);
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Canvas">
+            
+            new Canvas<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Canvas.js.html">Canvas.js</a>, <a href="Canvas.js.html#line14">line 14</a>
+        </div>
+        
+    </div>
 
-    function dragstart() {
-      // d3.event.sourceEvent.preventDefault(); // Prevent text cursor
-      // self.svg.style('cursor', 'all-scroll');
-      d3.select(self.canvas.canvasNode).style('cursor', 'all-scroll');
-      // self.trigger('drag-start');
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <ul>
+<li>Sets up the canvas for drawing</li>
+<li>Contains the x, y, bp scales</li>
+<li>has methods for for determining visible regions of the circle at a particular radius</li>
+<li>TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas</li>
+</ul>
+    </div>
+    
 
-    function dragging() {
-      var start_time = new Date().getTime();
-      // // Restore selected peaks
-      // // if (self.selection.empty()) self.selection._elements = current_selected_elements;
-      // self.translate_axis('x', d3.event.dx);
-      // self.translate_axis('y', d3.event.dy);
-      domain_x = self.scale.x.domain();
-      domain_y = self.scale.y.domain();
-      var dx = CGV.pixel(d3.event.dx);
-      var dy = CGV.pixel(d3.event.dy);
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-      self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])
-      self.scale.y.domain([domain_y[0] + dy, domain_y[1] + dy])
-      self.draw(true);
-      // self.trigger('drag');
-      // self.fast_draw();
-      //
-      // DEBUG INFO
-      if (self.debug) {
-        self.debug.data.time['drag'] = CGV.elapsed_time(start_time);
-        // self.debug_data.drag['dX'] = CGV.round(d3.event.dx);
-        // self.debug_data.drag['dY'] = CGV.round(d3.event.dy);
-        // self.debug_data.drag['zX'] = CGV.round(self.zoom_x);
-        // self.debug_data.drag['zY'] = CGV.round(self.zoom_y);
-      }
-    }
+    
+    
 
-    function dragend() {
-      // self.trigger('drag-end');
-      // self.full_draw();
-      self.draw()
-    }
-  }
+    
 
-})(CGView);
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="clear">
+            
+            clear<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Canvas.js.html">Canvas.js</a>, <a href="Canvas.js.html#line75">line 75</a>
+        </div>
+        
+    </div>
 
-</code></pre>
-        </article>
-    </section>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Clear the viewer canvas</p>
+    </div>
+    
 
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="flash">
+            
+            flash<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Canvas.js.html">Canvas.js</a>, <a href="Canvas.js.html#line82">line 82</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Flash a message on the center of the viewer.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="maximumVisibleRadius">
+            
+            maximumVisibleRadius<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Canvas.js.html">Canvas.js</a>, <a href="Canvas.js.html#line152">line 152</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return the distance between the circle center and the farthest corner of the canvas</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -215,7 +477,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

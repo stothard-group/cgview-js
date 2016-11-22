@@ -135,74 +135,121 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Viewer-Drag.js.html">Source: Viewer-Drag.js</h1>
+        <h1 class="page-title" data-filename="IO.js.html">Source: IO.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Initializing Dragging
+            <pre class="prettyprint source "><code>// Static methods for converting XML &lt;-> JSON
+// NOTE: xml2json required for conversions
+// https://github.com/abdmob/x2js
+// Class for reading and writing JSON
+//////////////////////////////////////////////////////////////////////////////
+// IO
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  /**
-   * Initialize Spectra Viewer Dragging.
-   */
-  CGV.Viewer.prototype.initialize_dragging = function() {
-    var self = this;
-    self._drag = d3.drag()
-      .on('start', dragstart)
-      .on('drag',  dragging)
-      .on('end',   dragend);
-    d3.select(self.canvas.canvasNode).call(self._drag);
+  class IO {
 
-    function dragstart() {
-      // d3.event.sourceEvent.preventDefault(); // Prevent text cursor
-      // self.svg.style('cursor', 'all-scroll');
-      d3.select(self.canvas.canvasNode).style('cursor', 'all-scroll');
-      // self.trigger('drag-start');
+    /**
+     * Interface for reading and writing data to and from CGView
+     * @param {Viewer} viewer - Viewer stuff...
+     */
+    constructor(viewer) {
+      this._viewer = viewer;
     }
 
-    function dragging() {
-      var start_time = new Date().getTime();
-      // // Restore selected peaks
-      // // if (self.selection.empty()) self.selection._elements = current_selected_elements;
-      // self.translate_axis('x', d3.event.dx);
-      // self.translate_axis('y', d3.event.dy);
-      domain_x = self.scale.x.domain();
-      domain_y = self.scale.y.domain();
-      var dx = CGV.pixel(d3.event.dx);
-      var dy = CGV.pixel(d3.event.dy);
+    /**
+     * Load data from new JSON format (modeled after XML from original CGView).
+     * Removes any previous viewer data and overrides options that are already set.
+     * @param {Object} data - TODO
+     */
+    load_json(json) {
+      var viewer = this._viewer;
 
+      // Override Main Viewer settings
+      viewer.sequenceLength = CGV.default_for(json.sequenceLength, viewer.sequenceLength)
+      // ...
 
-      self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])
-      self.scale.y.domain([domain_y[0] + dy, domain_y[1] + dy])
-      self.draw(true);
-      // self.trigger('drag');
-      // self.fast_draw();
-      //
-      // DEBUG INFO
-      if (self.debug) {
-        self.debug.data.time['drag'] = CGV.elapsed_time(start_time);
-        // self.debug_data.drag['dX'] = CGV.round(d3.event.dx);
-        // self.debug_data.drag['dY'] = CGV.round(d3.event.dy);
-        // self.debug_data.drag['zX'] = CGV.round(self.zoom_x);
-        // self.debug_data.drag['zY'] = CGV.round(self.zoom_y);
+      if (json.featureSlots) {
+        json.featureSlots.forEach((slotData) => {
+          var slot = new CGV.FeatureSlot(slotData);
+          viewer.addFeatureSlot(slot);
+        });
       }
+
     }
 
-    function dragend() {
-      // self.trigger('drag-end');
-      // self.full_draw();
-      self.draw()
+    // Load data from conventionaly CGView XML file.
+    load_xml(xml) {
+      var json = IO.xml_to_json(xml);
+      this.load_json(json);
     }
+
+    static xml_to_json(xml) {
+      if (!window.X2JS) {
+        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
+        return
+      }
+      var x2js = new X2JS({ attributePrefix: '' });
+      // var json = x2js.xml_str2json(xml);
+      var json = xmlToJson(xml);
+      // var cgview = json.cgview
+      // cgview.featureSlots = cgview.featureSlot
+      // delete cgview.featureSlot
+      
+
+      return json
+    }
+
+    static json_to_xml(json) {
+    }
+
   }
 
+  // Changes XML to JSON
+  // function xmlToJson(xml) {
+  //   // Create the return object
+  //   var obj = {};
+  //
+  //   if (xml.nodeType == 1) { // element
+  //     // do attributes
+  //     if (xml.attributes.length > 0) {
+  //     obj["@attributes"] = {};
+  //       for (var j = 0; j &lt; xml.attributes.length; j++) {
+  //         var attribute = xml.attributes.item(j);
+  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+  //       }
+  //     }
+  //   } else if (xml.nodeType == 3) { // text
+  //     obj = xml.nodeValue;
+  //   }
+  //
+  //   // do children
+  //   if (xml.hasChildNodes()) {
+  //     for(var i = 0; i &lt; xml.childNodes.length; i++) {
+  //       var item = xml.childNodes.item(i);
+  //       var nodeName = item.nodeName;
+  //       if (typeof(obj[nodeName]) == "undefined") {
+  //         obj[nodeName] = xmlToJson(item);
+  //       } else {
+  //         if (typeof(obj[nodeName].push) == "undefined") {
+  //           var old = obj[nodeName];
+  //           obj[nodeName] = [];
+  //           obj[nodeName].push(old);
+  //         }
+  //         obj[nodeName].push(xmlToJson(item));
+  //       }
+  //     }
+  //   }
+  //   return obj;
+  // };
+
+  CGV.IO = IO;
+
 })(CGView);
-
-
 </code></pre>
         </article>
     </section>

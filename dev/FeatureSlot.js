@@ -129,7 +129,6 @@
             this._features[i].draw(canvas, slotRadius, slotThickness);
           })
         }
-        // console.log(featureCount)
       } else if (this.hasArcPlot) {
         if (ranges) {
           this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);

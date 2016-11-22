@@ -43,9 +43,9 @@
     </div>
     <ul class="list">
     
-        <li class="item" data-name="Viewer">
+        <li class="item" data-name="Canvas">
             <span class="title">
-                <a href="Viewer.html">Viewer</a>
+                <a href="Canvas.html">Canvas</a>
                 
             </span>
             <ul class="members itemMembers">
@@ -58,9 +58,73 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
+            
+                <li data-name="Canvas#flash"><a href="Canvas.html#flash">flash</a></li>
+            
+                <li data-name="Canvas#maximumVisibleRadius"><a href="Canvas.html#maximumVisibleRadius">maximumVisibleRadius</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="IO">
+            <span class="title">
+                <a href="IO.html">IO</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="IO#load_json"><a href="IO.html#load_json">load_json</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Viewer">
+            <span class="title">
+                <a href="Viewer.html">Viewer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Viewer#backboneRadius"><a href="Viewer.html#backboneRadius">backboneRadius</a></li>
+            
+                <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
+            
+                <li data-name="Viewer#sequenceLength"><a href="Viewer.html#sequenceLength">sequenceLength</a></li>
+            
+                <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
+            
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
             
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
+            
+                <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -221,11 +285,334 @@
     
     
     
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="backboneRadius">backboneRadius</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Set or get the backbone radius</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="height">height</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the width of the Viewer</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="sequenceLength">sequenceLength</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the sequence length</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="width">width<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the width of the Viewer</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
     
     
         <h3 class="subsection-title">Methods</h3>
         
         <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="addBp">
+            
+            addBp<span class="signature">(position, bpToAdd)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line249">line 249</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Add <em>bpToAdd</em> to <em>position</em>, taking into account the sequenceLength</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>position (in bp) to add to</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bpToAdd</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>number of bp to add</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
             
 <dt>
     <div class="nameContainer">
@@ -236,7 +623,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line160">line 160</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line156">line 156</a>
         </div>
         
     </div>
@@ -307,7 +694,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line167">line 167</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line163">line 163</a>
         </div>
         
     </div>
@@ -367,6 +754,145 @@
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="subtractBp">
+            
+            subtractBp<span class="signature">(position, bpToSubtract)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line236">line 236</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Subtract <em>bpToSubtract</em> from <em>position</em>, taking into account the sequenceLength</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>position (in bp) to subtract from</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bpToSubtract</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>number of bp to subtract</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -384,7 +910,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 17 2016 09:10:52 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

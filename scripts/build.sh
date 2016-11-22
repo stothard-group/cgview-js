@@ -15,6 +15,12 @@ echo "Building CGView.js"
 # Help:
 #   http://usejsdoc.org/index.html
 #   https://github.com/davidshimjs/jaguarjs-jsdoc
+# NOTE:
+# Issue with tutorials:
+# - http://stackoverflow.com/questions/26531651/jaguarjs-jsdoc-fails-with-referenceerror-when-using-tutorials
 echo "Building Documentation..."
-jsdoc --configure scripts/jsdoc_conf.json --template scripts/jaguarjs-jsdoc --tutorials demo/ --destination docs --readme README.txt dev/*
+jsdoc --configure scripts/jsdoc_conf.json --template scripts/jaguarjs-jsdoc --destination docs --readme README.txt dev/* 
 echo "Done!"
+
+
+

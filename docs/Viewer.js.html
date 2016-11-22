@@ -43,9 +43,9 @@
     </div>
     <ul class="list">
     
-        <li class="item" data-name="Viewer">
+        <li class="item" data-name="Canvas">
             <span class="title">
-                <a href="Viewer.html">Viewer</a>
+                <a href="Canvas.html">Canvas</a>
                 
             </span>
             <ul class="members itemMembers">
@@ -58,9 +58,73 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
+            
+                <li data-name="Canvas#flash"><a href="Canvas.html#flash">flash</a></li>
+            
+                <li data-name="Canvas#maximumVisibleRadius"><a href="Canvas.html#maximumVisibleRadius">maximumVisibleRadius</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="IO">
+            <span class="title">
+                <a href="IO.html">IO</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="IO#load_json"><a href="IO.html#load_json">load_json</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Viewer">
+            <span class="title">
+                <a href="Viewer.html">Viewer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Viewer#backboneRadius"><a href="Viewer.html#backboneRadius">backboneRadius</a></li>
+            
+                <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
+            
+                <li data-name="Viewer#sequenceLength"><a href="Viewer.html#sequenceLength">sequenceLength</a></li>
+            
+                <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
+            
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
             
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
+            
+                <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -103,43 +167,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.axis = new CGV.Axis(this.canvas);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
-      // this.backboneRadius = options.backboneRadius;
       this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
       this._zoomFactor = 1;
       this.debug = CGV.default_for(options.debug, false);
-
-      // Create the viewer canvas
-      // NOTE: anything drawn to the canvas must take the pixel ratio into account
-      //       and should use the CGV.pixel() method.
-      // this.canvas = this._container.append("canvas")
-      //   .classed('cgv-viewer', true)
-      //   .style('border', '1px solid #DDD')
-      //   .attr("width", this.width)
-      //   .attr("height", this.height).node();
-
-      // Check for canvas support
-      // if (!this.canvas.getContext) {
-      //   this._container.html('&lt;h3>CGView requires Canvas, which is not supported by this browser.&lt;/h3>');
-      // }
-
-      // Get pixel ratio and upscale canvas depending on screen resolution
-      // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      // CGV.pixel_ratio = CGV.get_pixel_ratio(this.canvas);
-      // CGV.scale_resolution(this.canvas, CGV.pixel_ratio);
-
-      // Set viewer context
-      // this.ctx = this.canvas.getContext('2d');
-
-      // Set up scales
-      // this.scale.x = d3.scaleLinear()
-      //   .domain([CGV.pixel(-this.width/2), CGV.pixel(this.width/2)])
-      //   .range([0, CGV.pixel(this.width)]);
-      // this.scale.y = d3.scaleLinear()
-      //   .domain([CGV.pixel(this.height/2), CGV.pixel(-this.height/2)])
-      //   .range([0, CGV.pixel(this.height)]);
-      // this.scale.bp = d3.scaleLinear()
-      //   .domain([0, this.sequence_length])
-      //   .range([-1/2*Math.PI, 3/2*Math.PI]);
 
       this._io = new CGV.IO(this);
 
@@ -163,19 +193,42 @@ if (window.CGV === undefined) window.CGV = CGView;
       // this.full_draw();
     }
 
-    // Static classs methods
+    //////////////////////////////////////////////////////////////////////////
+    // STATIC CLASSS METHODS
+    //////////////////////////////////////////////////////////////////////////
     static get debug_sections() {
       return ['time', 'zoom', 'position'];
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    // MEMBERS
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @member {Number} - Get or set the width of the Viewer
+     */
     get width() {
       return this._width;
     }
 
+    set width(value) {
+      // TODO: update canvas
+    }
+
+    /**
+     * Get or set the width of the Viewer
+     */
     get height() {
       return this._height;
     }
 
+    set height(value) {
+      // TODO: update canvas
+    }
+
+    /**
+     * Set or get the backbone radius
+     */
     set backboneRadius(radius) {
       if (radius) {
         this._backboneRadius = radius;
@@ -196,17 +249,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.canvas.ctx
     }
 
+    /**
+     * Get or set the sequence length
+     */
+    get sequenceLength() {
+      return this._sequenceLength;
+    }
+
     set sequenceLength(bp) {
       if (bp) {
         this._sequenceLength = Number(bp);
         this.canvas.scale.bp = d3.scaleLinear()
-          .domain([0, this._sequenceLength])
+          .domain([1, this._sequenceLength])
           .range([-1/2*Math.PI, 3/2*Math.PI]);
       }
-    }
-
-    get sequenceLength() {
-      return this._sequenceLength;
     }
 
     get debug() {
@@ -226,13 +282,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    // METHODS
+    //////////////////////////////////////////////////////////////////////////
+
     load_json(json) {
       this._io.load_json(json);
     }
 
-    load_xml(xml) {
-      this._io.load_xml(xml);
-    }
+    // load_xml(xml) {
+    //   this._io.load_xml(xml);
+    // }
 
     /**
      * Clear the viewer canvas
@@ -247,7 +307,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     flash(msg) {
       this.canvas.flash(msg);
     }
-
 
     draw_full() {
       this.draw();
@@ -268,15 +327,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       var minDimension = CGV.pixel(Math.min(this.height, this.width));
       var maxRadius = minDimension; // TODO: need to add up all proportions
 
+      var visibleRadii = this.canvas.visibleRadii();
+
       // Draw Backbone
       this.canvas.drawArc(0, this.sequenceLength, slotRadius, 'black', backboneThickness);
 
       var residualSlotThickness = 0;
 
-      // TESTING
-      // console.log(this.canvas.visibleRangesForRadius(slotRadius))
+      for (var i = 0, len = this._featureSlots.length; i &lt; len; i++) {
+        // TESTING
+        // if ([0].indexOf(i) == -1) {
+        //   continue
+        // }
 
-      this._featureSlots.forEach((slot) => {
+        var slot = this._featureSlots[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
         var slotThickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
@@ -288,9 +352,12 @@ if (window.CGV === undefined) window.CGV = CGView;
           slotRadius = reverseRadius;
         }
         residualSlotThickness = slotThickness / 2;
-        // Draw Slot
-        slot.draw(this.canvas, fast, slotRadius, slotThickness);
-      });
+        // Only draw visible slots
+        if ( ( (slotRadius - residualSlotThickness) &lt;= visibleRadii.max ) &amp;&amp; ( (slotRadius + residualSlotThickness) >= visibleRadii.min) ) {
+          // Draw Slot
+          slot.draw(this.canvas, fast, slotRadius, slotThickness);
+        }
+      }
 
       this.axis.draw(reverseRadius, directRadius);
       if (this.debug) {
@@ -303,6 +370,32 @@ if (window.CGV === undefined) window.CGV = CGView;
       // TODO: error check that this is a featureSlot
       this._featureSlots.push(featureSlot);
       featureSlot._viewer = this;
+    }
+
+    /**
+     * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
+     * @param {Number} position - position (in bp) to subtract from
+     * @param {Number} bpToSubtract - number of bp to subtract
+     */
+    subtractBp(position, bpToSubtract) {
+      if (bpToSubtract &lt;= position) {
+        return position - bpToSubtract
+      } else {
+        return this.sequenceLength + position - bpToSubtract
+      }
+    }
+
+    /**
+     * Add *bpToAdd* to *position*, taking into account the sequenceLength
+     * @param {Number} position - position (in bp) to add to
+     * @param {Number} bpToAdd - number of bp to add
+     */
+    addBp(position, bpToAdd) {
+      if (this.sequenceLength >= (bpToAdd + position)) {
+        return bpToAdd + position
+      } else {
+        return position - this.sequenceLength + bpToAdd
+      }
     }
 
 
@@ -331,7 +424,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 17 2016 09:10:52 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

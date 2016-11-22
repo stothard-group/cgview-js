@@ -43,9 +43,9 @@
     </div>
     <ul class="list">
     
-        <li class="item" data-name="Viewer">
+        <li class="item" data-name="Canvas">
             <span class="title">
-                <a href="Viewer.html">Viewer</a>
+                <a href="Canvas.html">Canvas</a>
                 
             </span>
             <ul class="members itemMembers">
@@ -58,9 +58,73 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
+            
+                <li data-name="Canvas#flash"><a href="Canvas.html#flash">flash</a></li>
+            
+                <li data-name="Canvas#maximumVisibleRadius"><a href="Canvas.html#maximumVisibleRadius">maximumVisibleRadius</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="IO">
+            <span class="title">
+                <a href="IO.html">IO</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="IO#load_json"><a href="IO.html#load_json">load_json</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Viewer">
+            <span class="title">
+                <a href="Viewer.html">Viewer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Viewer#backboneRadius"><a href="Viewer.html#backboneRadius">backboneRadius</a></li>
+            
+                <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
+            
+                <li data-name="Viewer#sequenceLength"><a href="Viewer.html#sequenceLength">sequenceLength</a></li>
+            
+                <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
+            
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
             
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
+            
+                <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -310,6 +374,48 @@
     return angles
   }
 
+  /**
+   * Binary search to find the index of data where data[index] equals _search_value_.
+   * If no element equals value, the returned index will be the upper or lower [default]
+   * index that surrounds the value.
+   *
+   * @param {Array} data Array of numbers. Must be sorted from lowest to highest.
+   * @param {Number} search_value The value to search for.
+   * @param {Boolean} upper Only used if no element equals the _search_value_ 
+   *
+   *    - _true_: return index to right of value
+   *    - _false_: return index to left of value [default]
+   *
+   * @return {Number}
+   */
+  CGV.indexOfValue = function(data, search_value, upper) {
+    var min_index = 0;
+    var max_index = data.length - 1;
+    var current_index, current_value;
+    if (data[min_index] >= search_value) return min_index;
+    if (data[max_index] &lt;= search_value) return max_index;
+
+    while (max_index - min_index > 1) {
+      current_index = (min_index + max_index) / 2 | 0;
+      current_value = data[current_index];
+      if (current_value &lt; search_value) {
+        min_index = current_index;
+      } else if (current_value > search_value){
+        max_index = current_index;
+      } else {
+        return current_index;
+      }
+    }
+    return (upper ? max_index : min_index);
+  }
+
+
+  /**
+   * Return true of nubmer a and b have opposite signs
+   */
+  CGV.oppositeSigns = function(a, b) {
+    return (a * b) &lt; 0
+  }
 
   // /**
   //  * Merges top level properties of each supplied object.
@@ -371,40 +477,6 @@
   //   return elapsed + ' ms';
   // }
   //
-  // /**
-  //  * Binary search to find the index of data where data[index] equals _search_value_.
-  //  * If no element equals value, the returned index will be the upper or lower [default]
-  //  * index that surrounds the value.
-  //  *
-  //  * @param {Array} data Array of numbers. Must be sorted from lowest to highest.
-  //  * @param {Number} search_value The value to search for.
-  //  * @param {Boolean} upper Only used if no element equals the _search_value_ 
-  //  *
-  //  *    - _true_: return index to right of value
-  //  *    - _false_: return index to left of value [default]
-  //  *
-  //  * @return {Number}
-  //  */
-  // JSV.index_of_value = function(data, search_value, upper) {
-  //   var min_index = 0;
-  //   var max_index = data.length - 1;
-  //   var current_index, current_value;
-  //   if (data[min_index] >= search_value) return min_index;
-  //   if (data[max_index] &lt;= search_value) return max_index;
-  //
-  //   while (max_index - min_index > 1) {
-  //     current_index = (min_index + max_index) / 2 | 0;
-  //     current_value = data[current_index];
-  //     if (current_value &lt; search_value) {
-  //       min_index = current_index;
-  //     } else if (current_value > search_value){
-  //       max_index = current_index;
-  //     } else {
-  //       return current_index;
-  //     }
-  //   }
-  //   return (upper ? max_index : min_index);
-  // }
   //
   // /**
   //  * Returns a number unless _n_ is undefined in which case _undefined_ is returned.
@@ -490,7 +562,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 17 2016 09:10:52 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

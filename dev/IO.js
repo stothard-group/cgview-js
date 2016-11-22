@@ -9,12 +9,19 @@
 
   class IO {
 
+    /**
+     * Interface for reading and writing data to and from CGView
+     * @param {Viewer} viewer - Viewer stuff...
+     */
     constructor(viewer) {
       this._viewer = viewer;
     }
 
-    // Load data from new JSON format (modeled after XML from original CGView).
-    // Removes any previous viewer data and overrides options that are already set.
+    /**
+     * Load data from new JSON format (modeled after XML from original CGView).
+     * Removes any previous viewer data and overrides options that are already set.
+     * @param {Object} data - TODO
+     */
     load_json(json) {
       var viewer = this._viewer;
 

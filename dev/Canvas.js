@@ -5,6 +5,12 @@
 
   class Canvas {
 
+    /**
+     * - Sets up the canvas for drawing
+     * - Contains the x, y, bp scales
+     * - has methods for for determining visible regions of the circle at a particular radius
+     * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
+     */
     constructor(container, options = {}) {
       this.width = CGV.default_for(options.width, 600);
       this.height = CGV.default_for(options.height, 600);
@@ -109,6 +115,9 @@
       ctx.lineWidth = lineWidth;
       ctx.stroke();
     }
+
+    // lengthOfRange(start, stop) {
+    // }
 
     pointFor(bp, radius) {
       var radians = this.scale.bp(bp);

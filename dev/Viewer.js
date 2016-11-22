@@ -23,7 +23,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.axis = new CGV.Axis(this.canvas);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
-      // this.backboneRadius = options.backboneRadius;
       this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
       this._zoomFactor = 1;
       this.debug = CGV.default_for(options.debug, false);
@@ -50,19 +49,42 @@ if (window.CGV === undefined) window.CGV = CGView;
       // this.full_draw();
     }
 
-    // Static classs methods
+    //////////////////////////////////////////////////////////////////////////
+    // STATIC CLASSS METHODS
+    //////////////////////////////////////////////////////////////////////////
     static get debug_sections() {
       return ['time', 'zoom', 'position'];
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    // MEMBERS
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @member {Number} - Get or set the width of the Viewer
+     */
     get width() {
       return this._width;
     }
 
+    set width(value) {
+      // TODO: update canvas
+    }
+
+    /**
+     * Get or set the width of the Viewer
+     */
     get height() {
       return this._height;
     }
 
+    set height(value) {
+      // TODO: update canvas
+    }
+
+    /**
+     * Set or get the backbone radius
+     */
     set backboneRadius(radius) {
       if (radius) {
         this._backboneRadius = radius;
@@ -83,6 +105,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.canvas.ctx
     }
 
+    /**
+     * Get or set the sequence length
+     */
+    get sequenceLength() {
+      return this._sequenceLength;
+    }
+
     set sequenceLength(bp) {
       if (bp) {
         this._sequenceLength = Number(bp);
@@ -90,10 +119,6 @@ if (window.CGV === undefined) window.CGV = CGView;
           .domain([1, this._sequenceLength])
           .range([-1/2*Math.PI, 3/2*Math.PI]);
       }
-    }
-
-    get sequenceLength() {
-      return this._sequenceLength;
     }
 
     get debug() {
@@ -113,13 +138,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    // METHODS
+    //////////////////////////////////////////////////////////////////////////
+
     load_json(json) {
       this._io.load_json(json);
     }
 
-    load_xml(xml) {
-      this._io.load_xml(xml);
-    }
+    // load_xml(xml) {
+    //   this._io.load_xml(xml);
+    // }
 
     /**
      * Clear the viewer canvas
@@ -199,6 +228,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       featureSlot._viewer = this;
     }
 
+    /**
+     * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
+     * @param {Number} position - position (in bp) to subtract from
+     * @param {Number} bpToSubtract - number of bp to subtract
+     */
     subtractBp(position, bpToSubtract) {
       if (bpToSubtract <= position) {
         return position - bpToSubtract
@@ -207,6 +241,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * Add *bpToAdd* to *position*, taking into account the sequenceLength
+     * @param {Number} position - position (in bp) to add to
+     * @param {Number} bpToAdd - number of bp to add
+     */
     addBp(position, bpToAdd) {
       if (this.sequenceLength >= (bpToAdd + position)) {
         return bpToAdd + position
