@@ -5,8 +5,11 @@
 
   class ArcPlot {
 
-    constructor(data = {}, display = {}, meta = {}) {
-      // this._viewer = viewer;
+    /**
+     * Draw a plot consisting of arcs
+     */
+    constructor(featureSlot, data = {}, display = {}, meta = {}) {
+      this.featureSlot = featureSlot;
       this._bp = new CGV.CGArray();
       this._proportionOfThickness =  new CGV.CGArray();
       this._color = CGV.default_for(data.color, 'black');
@@ -14,19 +17,38 @@
       this._colorNegative = data.colorNegative;
 
       if (data.bp) {
-        for (var i = 0, len = data.bp.length; i < len; i ++) {
-          this._bp.push(data.bp[i]);
-        }
+        this._bp = new CGV.CGArray(data.bp);
       }
       if (data.proportionOfThickness) {
-        for (var i = 0, len = data.proportionOfThickness.length; i < len; i ++) {
-          this._proportionOfThickness.push(data.proportionOfThickness[i]);
-        }
+        this._proportionOfThickness = new CGV.CGArray(data.proportionOfThickness);
       }
     }
 
+    /**
+     * @member {FeatureSlot} - Get or set the *FeatureSlot*
+     */
+    get featureSlot() {
+      return this._featureSlot
+    }
+
+    set featureSlot(slot) {
+      if (this.featureSlot) {
+        // TODO: Remove if already attached to FeatureSlot
+      }
+      this._featureSlot = slot;
+      slot._arcPlot = this;
+      this._viewer = slot.viewer;
+    }
+
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
+
     get color() {
-      return this._color || 'black'
+      return this._color || this.featureSlot.color
     }
 
     get colorPositive() {
@@ -62,21 +84,6 @@
       // This is the difference in radial pixels required before a new arc is draw
       // var radialDiff = fast ? 1 : 0.5;
       var radialDiff = 0.5;
-
-      // // Find position indices that include start and stop bp
-      // var indices;
-      // var startBp = start ? start : 1;
-      // var stopBp = stop ? stop : this.viewer.sequenceLength;
-      // var startIndex = CGV.indexOfValue(this._bp, startBp, false);
-      // var stopIndex = CGV.indexOfValue(this._bp, stopBp, true);
-      // var step = fast ? 2 : 1
-      // if (stopBp >= startBp) {
-      //   indices = d3.range(startIndex, stopIndex + 1, step);
-      // } else {
-      //   // Start and stop overlap 1
-      //   indices = d3.range(startIndex, this._bp.length, step);
-      //   indices = indices.concat(d3.range(0, stopIndex + 1, step));
-      // }
 
       var startBp = start ? start : 1;
       var stopBp = stop ? stop : this.viewer.sequenceLength;
@@ -225,9 +232,6 @@
       return false
     }
 
-    get viewer() {
-      return this._featureSlot.viewer
-    }
   }
 
 

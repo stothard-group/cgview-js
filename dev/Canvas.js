@@ -116,8 +116,6 @@
       ctx.stroke();
     }
 
-    // lengthOfRange(start, stop) {
-    // }
 
     pointFor(bp, radius) {
       var radians = this.scale.bp(bp);
@@ -138,6 +136,18 @@
         this.height + margin * 2
       )
       return angles.map( (a) => { return Math.round(this.scale.bp.invert(a)) })
+    }
+
+    //TODO if undefined, see if radius is visible
+    visibleRangeForRadius(radius, margin = 0) {
+      var ranges = this.visibleRangesForRadius(radius, margin);
+      if (ranges.length == 2) {
+        return ranges
+      } else if (ranges.length > 2) {
+        return [ ranges[0], ranges[ranges.length -1] ]
+      } else {
+        return undefined
+      }
     }
 
     centerVisible() {

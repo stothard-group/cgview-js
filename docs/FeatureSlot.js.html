@@ -231,283 +231,178 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.html">Class: IO</h1>
+        <h1 class="page-title" data-filename="FeatureSlot.js.html">Source: FeatureSlot.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// FeatureSlot
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    IO
-    </h2>
-    
-</header>  
+  class FeatureSlot {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="IO">
-            
-            new IO<span class="signature">(viewer)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line16">line 16</a>
-        </div>
-        
-    </div>
+    /**
+     * TEST
+     */
+    constructor(viewer, data = {}, display = {}, meta = {}) {
+      this.viewer = viewer;
+      this._strand = CGV.default_for(data.strand, 'direct');
+      this._features = new CGV.CGArray();
+      this._arcPlot;
+      this._proportionOfRadius = CGV.default_for(data.proportionOfRadius, 0.1)
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Interface for reading and writing data to and from CGView</p>
-    </div>
-    
+      this._featureStarts = new CGV.CGArray();
 
-    
-    
-    
-    
-    
-        
+      if (data.features) {
+        data.features.forEach((featureData) => {
+          var feature = new CGV.Feature(this, featureData);
+          // this.addFeature(feature);
+        });
+        this.refresh();
+      }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Viewer.html">Viewer</a></span>
+      if (data.arcPlot) {
+        var arcPlot = new CGV.ArcPlot(this, data.arcPlot);
+        // arcPlot._featureSlot = this;
+        // this._arcPlot = arcPlot;
+      }
+    }
 
+    // addFeature(feature) {
+    //   this._features.push(feature);
+    //   feature._featureSlot = this;
+    // }
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Viewer stuff...</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    // Refresh needs to be called when new features are added, etc
+    // Features need to be sorted by start position
+    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
+    refresh() {
+      // Sort the features by start
+      this._features.sort( (a, b) => {
+        return a.start - b.start
+      });
+      // Clear feature starts
+      this._featureStarts = new CGV.CGArray();
+      for (var i = 0, len = this._features.length; i &lt; len; i++) {
+        this._featureStarts.push(this._features[i].start);
+      }
+      this._largestFeatureLength = this.findLargestFeatureLength();
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Viewer} - Get or set the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
 
-    
-    
+    set viewer(viewer) {
+      if (this.viewer) {
+        // TODO: Remove if already attached to Viewer
+      }
+      this._viewer = viewer;
+      viewer._featureSlots.push(this);
+    }
 
-    
+    get strand() {
+      return this._strand;
+    }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    isDirect() {
+      return this.strand == 'direct'
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="load_json">
-            
-            load_json<span class="signature">(data)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line25">line 25</a>
-        </div>
-        
-    </div>
+    isReverse() {
+      return this.strand == 'reverse'
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Load data from new JSON format (modeled after XML from original CGView).<br>Removes any previous viewer data and overrides options that are already set.</p>
-    </div>
-    
+    get hasFeatures() {
+      return this._features.length > 0
+    }
 
-    
-    
-    
-    
-    
-        
+    get hasArcPlot() {
+      return this._arcPlot
+    }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+    length() {
+      return this.viewer.sequenceLength;
+    }
 
+    visibleRanges(canvas, slotRadius, slotThickness) {
+      var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
+      if (ranges.length == 2) {
+        return ranges
+      } else if (ranges.length > 2) {
+        return [ ranges[0], ranges[ranges.length -1] ]
+      } else {
+        return undefined
+      }
+    }
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>TODO</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    get largestFeatureLength() {
+      return this._largestFeatureLength
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    findLargestFeatureLength() {
+      var length = 0;
+      for (var i = 0, len = this._features.length; i &lt; len; i++) {
+        var nextLength = this._features[i].length;
+        if (nextLength > length) {
+          length = nextLength
+        }
+      }
+      return length
+    }
 
-    
-    
+    draw(canvas, fast, slotRadius, slotThickness) {
+      var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
+      var start = ranges ? ranges[0] : 1;
+      var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
+      var featureCount = this._features.length;
+      if (this.hasFeatures) {
+        var largestLength = this.largestFeatureLength;
+        // Case where the largest feature should not be subtracted
+        // _____ Visible
+        // ----- Not Visbile
+        // Do no subtract the largest feature so that the start loops around to before the stop
+        // -----Start_____Stop-----
+        // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
+        // _____Stop-----Start_____
+        if (ranges &amp;&amp;
+             (largestLength &lt;= (this.viewer.sequenceLength - Math.abs(start - stop))) &amp;&amp;
+             (this.viewer.subtractBp(start, stop) > largestLength) ) {
+          start = this.viewer.subtractBp(start, largestLength);
+          featureCount = this._featureStarts.countFromRange(start, stop);
+        }
+        if (fast &amp;&amp; featureCount > 2000) {
+          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
+        } else {
+          this._featureStarts.eachFromRange(start, stop, 1, (i) => {
+            this._features[i].draw(canvas, slotRadius, slotThickness);
+          })
+        }
+      } else if (this.hasArcPlot) {
+        if (ranges) {
+          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
+        } else {
+          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
+        }
+      }
+    }
 
-    
+  }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+  CGV.FeatureSlot = FeatureSlot;
 
-        </dl>
-    
-    
-    
-    
-    
-</article>
+})(CGView);
+</code></pre>
+        </article>
+    </section>
 
-</section>  
 
 
 
@@ -516,7 +411,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
         </footer>
     </div>
 </div>

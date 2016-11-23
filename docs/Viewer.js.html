@@ -43,6 +43,31 @@
     </div>
     <ul class="list">
     
+        <li class="item" data-name="ArcPlot">
+            <span class="title">
+                <a href="ArcPlot.html">ArcPlot</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="ArcPlot#featureSlot"><a href="ArcPlot.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="ArcPlot#viewer"><a href="ArcPlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Canvas">
             <span class="title">
                 <a href="Canvas.html">Canvas</a>
@@ -63,6 +88,56 @@
                 <li data-name="Canvas#flash"><a href="Canvas.html#flash">flash</a></li>
             
                 <li data-name="Canvas#maximumVisibleRadius"><a href="Canvas.html#maximumVisibleRadius">maximumVisibleRadius</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Feature">
+            <span class="title">
+                <a href="Feature.html">Feature</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Feature#color"><a href="Feature.html#color">color</a></li>
+            
+                <li data-name="Feature#featureSlot"><a href="Feature.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="Feature#viewer"><a href="Feature.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="FeatureSlot">
+            <span class="title">
+                <a href="FeatureSlot.html">FeatureSlot</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="FeatureSlot#viewer"><a href="FeatureSlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -93,6 +168,25 @@
             </ul>
         </li>
     
+        <li class="item" data-name="Ruler">
+            <span class="title">
+                <a href="Ruler.html">Ruler</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -109,6 +203,8 @@
                 <li data-name="Viewer#sequenceLength"><a href="Viewer.html#sequenceLength">sequenceLength</a></li>
             
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
+            
+                <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -164,7 +260,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._width = CGV.default_for(options.width, 600);
       this._height = CGV.default_for(options.height, 600);
       this.canvas = new CGV.Canvas(this._container, {width: this._width, height: this._height});
-      this.axis = new CGV.Axis(this.canvas);
+      this.ruler = new CGV.Ruler(this);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
       this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
@@ -216,7 +312,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Get or set the width of the Viewer
+     * @member {Number} - Get or set the width of the Viewer
      */
     get height() {
       return this._height;
@@ -227,7 +323,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Set or get the backbone radius
+     * @member {Number} - Set or get the backbone radius
      */
     set backboneRadius(radius) {
       if (radius) {
@@ -239,6 +335,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get backboneRadius() {
       return this._backboneRadius * this._zoomFactor
+    }
+
+    /**
+     * @member {Number} - Get or set the zoom level of the image
+     */
+    get zoomFactor() {
+      return this._zoomFactor;
+    }
+
+    set zoomeFactor(value) {
+      this._zoomFactor = value;
+      // TODO: update anything related to zoom
     }
 
     get scale() {
@@ -359,18 +467,18 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
       }
 
-      this.axis.draw(reverseRadius, directRadius);
+      this.ruler.draw(reverseRadius, directRadius);
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
     }
 
-    addFeatureSlot(featureSlot) {
-      // TODO: error check that this is a featureSlot
-      this._featureSlots.push(featureSlot);
-      featureSlot._viewer = this;
-    }
+    // addFeatureSlot(featureSlot) {
+    //   // TODO: error check that this is a featureSlot
+    //   this._featureSlots.push(featureSlot);
+    //   featureSlot._viewer = this;
+    // }
 
     /**
      * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
@@ -407,6 +515,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
     // }
 
+    lengthOfRange(start, stop) {
+      if (stop >= start) {
+        return stop - start
+      } else {
+        return this.sequencelength + (stop - start)
+      } 
+    }
+
   }
 
   CGV.Viewer = Viewer;
@@ -424,7 +540,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 10:18:11 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
         </footer>
     </div>
 </div>

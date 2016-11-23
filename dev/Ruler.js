@@ -1,13 +1,16 @@
 //////////////////////////////////////////////////////////////////////////////
-// Axis
+// Ruler
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  // TODO: should this be called Ruler
-  class Axis {
+  class Ruler {
 
-    constructor(canvas, options = {}) {
-      this.canvas = canvas;
+    /**
+     * The *Ruler* controls and draws the sequence ruler in bp.
+     */
+    constructor(viewer, options = {}) {
+      this.viewer = viewer;
+      this.canvas = viewer.canvas;
       this.tickCount = CGV.default_for(options.tickCount, 10);
       this.tickWidth = CGV.default_for(options.tickWidth, 1);
       this.tickLength = CGV.default_for(options.tickLength, 5);
@@ -47,41 +50,43 @@
     }
 
     draw(innerRadius, outerRadius) {
-      this.drawForRadius(innerRadius - this.tickLength);
-      this.drawForRadius(outerRadius, false);
+      // this.drawForRadius(innerRadius - this.tickLength, 'inner');
+      this.drawForRadius(innerRadius, 'inner');
+      this.drawForRadius(outerRadius, 'outer', false);
     }
 
-    // drawForRadius(radius) {
-    //   var scale = this.canvas.scale;
-    //   scale.bp.ticks(this.tickCount).forEach((tick) => {
-    //      this.canvas.radiantLine(tick, radius, this.tickLength, this.tickWidth);
-    //      this.drawLabel(tick, radius);
-    //   });
-    // }
-
-    drawForRadius(radius, drawLabels = true) {
+    drawForRadius(radius, position = 'inner', drawLabels = true) {
       var scale = this.canvas.scale;
-      var ticks = scale.bp.ticks(this.tickCount);
-      var tickFormat = scale.bp.tickFormat(this.tickCount, 's');
+      var ranges = this.canvas.visibleRangeForRadius(radius);
+      var start = ranges ? ranges[0] : 1;
+      var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
+      var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
+
+      // Tick format for labels
+      var tickFormat = scale.bp.tickFormat(this.tickCount * this.viewer.zoomFactor, 's');
       // Draw Tick for 1 bp
-      this.canvas.radiantLine(1, radius, this.tickLength, this.tickWidth);
-      ticks.forEach((bp) => {
-        this.canvas.radiantLine(bp, radius, this.tickLength, this.tickWidth);
+      this.canvas.radiantLine(1, radius, tickLength, this.tickWidth);
+      // Draw Major ticks
+      var majorTicks = new CGV.CGArray(scale.bp.ticks(this.tickCount * this.viewer.zoomFactor))
+      majorTicks.eachFromRange(start, stop, 1, (i, bp) => {
+        this.canvas.radiantLine(bp, radius, tickLength, this.tickWidth);
         if (drawLabels) {
           var label = tickFormat(bp);
-          this.drawLabel(bp, label, radius);
+          this.drawLabel(bp, label, radius, position);
         }
+      });
+      // Draw Minor ticks
+      var minorTicks = new CGV.CGArray(scale.bp.ticks(majorTicks.length * 5))
+      minorTicks.eachFromRange(start, stop, 1, (i, bp) => {
+        this.canvas.radiantLine(bp, radius, tickLength / 2, this.tickWidth);
       });
     }
 
     drawLabel(bp, label, radius, position = 'inner') {
       var scale = this.canvas.scale;
       var ctx = this.canvas.ctx;
+      // Put space between number and units
       var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      if (bp == 0) {
-        label = '';
-      }
-      // TODO: adjust fonts
       var fontSize = CGV.pixel(10);
       var font = fontSize + 'px Sans-Serif';
       ctx.font = font
@@ -93,6 +98,6 @@
 
   }
 
-  CGV.Axis = Axis;
+  CGV.Ruler = Ruler;
 
 })(CGView);

@@ -231,283 +231,123 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.html">Class: IO</h1>
+        <h1 class="page-title" data-filename="Feature.js.html">Source: Feature.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Feature
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    IO
-    </h2>
-    
-</header>  
+  class Feature {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="IO">
-            
-            new IO<span class="signature">(viewer)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line16">line 16</a>
-        </div>
-        
-    </div>
+    /**
+     * A Feature
+     */
+    constructor(featureSlot, data = {}, display = {}, meta = {}) {
+      this.featureSlot = featureSlot;
+      this.color = data.color;
+      this._start = Number(data.start);
+      this._stop = Number(data.stop);
+      this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
+      this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
+      this._opacity = data.opacity;
+      this._decoration = data.decoration;
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Interface for reading and writing data to and from CGView</p>
-    </div>
-    
+    /**
+     * @member {FeatureSlot} - Get or set the *FeatureSlot*
+     */
+    get featureSlot() {
+      return this._featureSlot
+    }
 
-    
-    
-    
-    
-    
-        
+    set featureSlot(slot) {
+      if (this.featureSlot) {
+        // TODO: Remove if already attached to FeatureSlot
+      }
+      this._featureSlot = slot;
+      slot._features.push(this);
+      this._viewer = slot.viewer;
+    }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Viewer.html">Viewer</a></span>
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
 
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Viewer stuff...</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    get start() {
+      return this._start
+    }
 
-    
-    
+    set start(bp) {
+      this._start = bp;
+    }
 
-    
+    get stop() {
+      return this._stop
+    }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    set stop(bp) {
+      this._stop = bp;
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="load_json">
-            
-            load_json<span class="signature">(data)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line25">line 25</a>
-        </div>
-        
-    </div>
+    /**
+     * Get or set the color. Defaults to the *FeatureSlot* color.
+     */
+    get color() {
+      return this._color || this.featureSlot.color
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Load data from new JSON format (modeled after XML from original CGView).<br>Removes any previous viewer data and overrides options that are already set.</p>
-    </div>
-    
+    set color(color) {
+      this._color = color;
+    }
 
-    
-    
-    
-    
-    
-        
+    draw(canvas, slotRadius, slotThickness) {
+      canvas.drawArc(this.start, this.stop,
+        this.adjustedRadius(slotRadius, slotThickness),
+        this.color, this.adjustedWidth(slotThickness));
+    }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+    // radius by default would be the center of the slot as provided unless:
+    // - _radiusAdjustment is not 0
+    // - _proportionOfThickness is not 1
+    adjustedRadius(radius, slotThickness) {
+      if (this._radiusAdjustment == 0 &amp;&amp; this._proportionOfThickness == 1) {
+        return radius
+      } else if (this._radiusAdjustment == 0) {
+        return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
+      } else {
+        // TODO:
+        return radius
+      }
+    }
 
+    adjustedWidth(width) {
+      return this._proportionOfThickness * width;
+    }
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>TODO</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    get length() {
+      return this.viewer.lengthOfRange(this.start, this.stop)
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+  }
 
-    
-    
+  CGV.Feature = Feature;
 
-    
+})(CGView);
+</code></pre>
+        </article>
+    </section>
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -516,7 +356,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
         </footer>
     </div>
 </div>

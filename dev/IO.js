@@ -31,8 +31,7 @@
 
       if (json.featureSlots) {
         json.featureSlots.forEach((slotData) => {
-          var slot = new CGV.FeatureSlot(slotData);
-          viewer.addFeatureSlot(slot);
+          var slot = new CGV.FeatureSlot(viewer, slotData);
         });
       }
 

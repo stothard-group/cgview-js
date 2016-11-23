@@ -20,7 +20,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._width = CGV.default_for(options.width, 600);
       this._height = CGV.default_for(options.height, 600);
       this.canvas = new CGV.Canvas(this._container, {width: this._width, height: this._height});
-      this.axis = new CGV.Axis(this.canvas);
+      this.ruler = new CGV.Ruler(this);
       this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
       this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
@@ -72,7 +72,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Get or set the width of the Viewer
+     * @member {Number} - Get or set the width of the Viewer
      */
     get height() {
       return this._height;
@@ -83,7 +83,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Set or get the backbone radius
+     * @member {Number} - Set or get the backbone radius
      */
     set backboneRadius(radius) {
       if (radius) {
@@ -95,6 +95,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get backboneRadius() {
       return this._backboneRadius * this._zoomFactor
+    }
+
+    /**
+     * @member {Number} - Get or set the zoom level of the image
+     */
+    get zoomFactor() {
+      return this._zoomFactor;
+    }
+
+    set zoomeFactor(value) {
+      this._zoomFactor = value;
+      // TODO: update anything related to zoom
     }
 
     get scale() {
@@ -215,18 +227,18 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
       }
 
-      this.axis.draw(reverseRadius, directRadius);
+      this.ruler.draw(reverseRadius, directRadius);
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
     }
 
-    addFeatureSlot(featureSlot) {
-      // TODO: error check that this is a featureSlot
-      this._featureSlots.push(featureSlot);
-      featureSlot._viewer = this;
-    }
+    // addFeatureSlot(featureSlot) {
+    //   // TODO: error check that this is a featureSlot
+    //   this._featureSlots.push(featureSlot);
+    //   featureSlot._viewer = this;
+    // }
 
     /**
      * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
@@ -262,6 +274,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   }
     //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
     // }
+
+    lengthOfRange(start, stop) {
+      if (stop >= start) {
+        return stop - start
+      } else {
+        return this.sequencelength + (stop - start)
+      } 
+    }
 
   }
 

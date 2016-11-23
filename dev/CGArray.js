@@ -13,7 +13,9 @@
    */
   var CGArray = function() {
     if ( (arguments.length == 1) && (Array.isArray(arguments[0])) ) {
-      this.push.apply(this, arguments[0])
+      for (var i = 0, len = arguments[0].length; i < len; i++) {
+        this.push(arguments[0][i]);
+      }
     } else if (arguments.length > 0) {
       this.push.apply(this, arguments)
     }

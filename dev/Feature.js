@@ -5,11 +5,12 @@
 
   class Feature {
 
-    constructor(data = {}, display = {}, meta = {}) {
-      // this._viewer = viewer;
-      // this._featureRanges = new CGV.CGArray();
-      // this._featurePaths = new CGV.CGArray();
-      this._color = data.color;
+    /**
+     * A Feature
+     */
+    constructor(featureSlot, data = {}, display = {}, meta = {}) {
+      this.featureSlot = featureSlot;
+      this.color = data.color;
       this._start = Number(data.start);
       this._stop = Number(data.stop);
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
@@ -17,6 +18,31 @@
       this._opacity = data.opacity;
       this._decoration = data.decoration;
     }
+
+    /**
+     * @member {FeatureSlot} - Get or set the *FeatureSlot*
+     */
+    get featureSlot() {
+      return this._featureSlot
+    }
+
+    set featureSlot(slot) {
+      if (this.featureSlot) {
+        // TODO: Remove if already attached to FeatureSlot
+      }
+      this._featureSlot = slot;
+      slot._features.push(this);
+      this._viewer = slot.viewer;
+    }
+
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+
 
     get start() {
       return this._start
@@ -34,8 +60,15 @@
       this._stop = bp;
     }
 
+    /**
+     * Get or set the color. Defaults to the *FeatureSlot* color.
+     */
     get color() {
-      return this._color || (this._featureSlot && this._featureSlot.color) || 'blue';
+      return this._color || this.featureSlot.color
+    }
+
+    set color(color) {
+      this._color = color;
     }
 
     draw(canvas, slotRadius, slotThickness) {
@@ -62,17 +95,8 @@
       return this._proportionOfThickness * width;
     }
 
-    get viewer() {
-      return this._featureSlot.viewer
-    }
-
     get length() {
-      // TODO: use generic method
-      if (this.stop >= this.start) {
-        return this.stop - this.start
-      } else {
-        return this.viewer.sequenceLength + (this.stop - this.start)
-      } 
+      return this.viewer.lengthOfRange(this.start, this.stop)
     }
 
   }

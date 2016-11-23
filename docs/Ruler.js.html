@@ -231,283 +231,120 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.html">Class: IO</h1>
+        <h1 class="page-title" data-filename="Ruler.js.html">Source: Ruler.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Ruler
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    IO
-    </h2>
-    
-</header>  
+  class Ruler {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="IO">
-            
-            new IO<span class="signature">(viewer)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line16">line 16</a>
-        </div>
-        
-    </div>
+    /**
+     * The *Ruler* controls and draws the sequence ruler in bp.
+     */
+    constructor(viewer, options = {}) {
+      this.viewer = viewer;
+      this.canvas = viewer.canvas;
+      this.tickCount = CGV.default_for(options.tickCount, 10);
+      this.tickWidth = CGV.default_for(options.tickWidth, 1);
+      this.tickLength = CGV.default_for(options.tickLength, 5);
+      this.rulerPadding = CGV.default_for(options.rulerPadding, 20);
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Interface for reading and writing data to and from CGView</p>
-    </div>
-    
+    get tickCount() {
+      return this._tickCount
+    }
 
-    
-    
-    
-    
-    
-        
+    set tickCount(count) {
+      this._tickCount = count; 
+    }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>viewer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Viewer.html">Viewer</a></span>
+    get tickWidth() {
+      return this._tickWidth
+    }
 
+    set tickWidth(width) {
+      this._tickWidth = CGV.pixel(width);
+    }
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Viewer stuff...</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    get tickLength() {
+      return this._tickLength
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    set tickLength(length) {
+      this._tickLength = CGV.pixel(length);
+    }
 
-    
-    
+    get rulerPadding() {
+      return this._rulerPadding
+    }
 
-    
+    set rulerPadding(padding) {
+      this._rulerPadding = CGV.pixel(padding);
+    }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    draw(innerRadius, outerRadius) {
+      // this.drawForRadius(innerRadius - this.tickLength, 'inner');
+      this.drawForRadius(innerRadius, 'inner');
+      this.drawForRadius(outerRadius, 'outer', false);
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="load_json">
-            
-            load_json<span class="signature">(data)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="IO.js.html">IO.js</a>, <a href="IO.js.html#line25">line 25</a>
-        </div>
-        
-    </div>
+    drawForRadius(radius, position = 'inner', drawLabels = true) {
+      var scale = this.canvas.scale;
+      var ranges = this.canvas.visibleRangeForRadius(radius);
+      var start = ranges ? ranges[0] : 1;
+      var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
+      var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Load data from new JSON format (modeled after XML from original CGView).<br>Removes any previous viewer data and overrides options that are already set.</p>
-    </div>
-    
+      // Tick format for labels
+      var tickFormat = scale.bp.tickFormat(this.tickCount * this.viewer.zoomFactor, 's');
+      // Draw Tick for 1 bp
+      this.canvas.radiantLine(1, radius, tickLength, this.tickWidth);
+      // Draw Major ticks
+      var majorTicks = new CGV.CGArray(scale.bp.ticks(this.tickCount * this.viewer.zoomFactor))
+      majorTicks.eachFromRange(start, stop, 1, (i, bp) => {
+        this.canvas.radiantLine(bp, radius, tickLength, this.tickWidth);
+        if (drawLabels) {
+          var label = tickFormat(bp);
+          this.drawLabel(bp, label, radius, position);
+        }
+      });
+      // Draw Minor ticks
+      var minorTicks = new CGV.CGArray(scale.bp.ticks(majorTicks.length * 5))
+      minorTicks.eachFromRange(start, stop, 1, (i, bp) => {
+        this.canvas.radiantLine(bp, radius, tickLength / 2, this.tickWidth);
+      });
+    }
 
-    
-    
-    
-    
-    
-        
+    drawLabel(bp, label, radius, position = 'inner') {
+      var scale = this.canvas.scale;
+      var ctx = this.canvas.ctx;
+      // Put space between number and units
+      var label = label.replace(/([^\d\.]+)/, ' $1bp');
+      var fontSize = CGV.pixel(10);
+      var font = fontSize + 'px Sans-Serif';
+      ctx.font = font
+      ctx.textAlign = 'center'
+      // INNER
+      var center = this.canvas.pointFor(bp, radius - this.rulerPadding);
+      ctx.fillText(label, center.x, center.y);
+    }
 
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+  }
 
+  CGV.Ruler = Ruler;
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>TODO</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+})(CGView);
+</code></pre>
+        </article>
+    </section>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -516,7 +353,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Nov 23 2016 09:54:24 GMT-0700 (MST)
         </footer>
     </div>
 </div>
