@@ -120,6 +120,28 @@
       var scale = this.scale;
       var ctx = this.ctx;
 
+      // FIXME:
+      // TEMP HACK/FIX for the issue of the moving slot separators.
+      // For some reason at center angles, when fully zoomed in, the slot separator move
+      // and overalp features.
+      // This hack doesn't draw the complete separator but only the portion visible on the screen.
+      // This should be moved to featureSlots...
+      if ( start == 1 && stop == this.viewer.sequenceLength) {
+        var ranges = this.visibleRangesForRadius(radius, 50);
+        if (ranges.length == 2) {
+        } else if (ranges.length > 2) {
+          ranges = [ ranges[0], ranges[ranges.length -1] ]
+        } else {
+          ranges =  undefined
+        }
+        if (ranges) {
+          start = ranges[0];
+          stop = ranges[1];
+        }
+      }
+
+
+
       if (decoration == 'arc') {
         ctx.beginPath();
         // ctx.strokeStyle = color;

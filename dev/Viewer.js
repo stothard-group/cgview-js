@@ -198,7 +198,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var visibleRadii = this.canvas.visibleRadii();
 
       // Draw Backbone
-      this.canvas.drawArc(0, this.sequenceLength, slotRadius, 'black', backboneThickness);
+      this.canvas.drawArc(1, this.sequenceLength, slotRadius, 'black', backboneThickness);
 
       var residualSlotThickness = 0;
 
