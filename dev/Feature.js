@@ -10,12 +10,14 @@
      */
     constructor(featureSlot, data = {}, display = {}, meta = {}) {
       this.featureSlot = featureSlot;
-      this.color = data.color;
+      // this.color = data.color;
+      // this._opacity = data.opacity;
+      this._color = new CGV.Color(data.color);
+      this.opacity = data.opacity;
       this._start = Number(data.start);
       this._stop = Number(data.stop);
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-      this._opacity = data.opacity;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
     }
@@ -68,14 +70,26 @@
     }
 
     /**
-     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color.
+     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
      */
     get color() {
-      return this._color || this.featureSlot.color
+      // return this._color || this.featureSlot.color
+      return this._color.rgba
     }
 
     set color(color) {
-      this._color = color;
+      this._color.color = color;
+    }
+
+    /**
+     * @member {String} - Get or set the opacity. 
+     */
+    get opacity() {
+      return this._color.opacity
+    }
+
+    set opacity(value) {
+      this._color.opacity = value;
     }
 
     /**

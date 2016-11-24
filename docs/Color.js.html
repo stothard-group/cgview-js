@@ -260,7 +260,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="FeatureSlot.js.html">Source: FeatureSlot.js</h1>
+        <h1 class="page-title" data-filename="Color.js.html">Source: Color.js</h1>
         
 
 
@@ -268,164 +268,108 @@
     <section>
         <article>
             <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// FeatureSlot
+// Color
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class FeatureSlot {
+  class Color {
 
     /**
-     * TEST
+     * The Color class is meant to contain colors in a consistant manner as
+     * well as the opacity. All colors are stored as RGBA.
      */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
-      this.viewer = viewer;
-      this._strand = CGV.defaultFor(data.strand, 'direct');
-      this._features = new CGV.CGArray();
-      this._arcPlot;
-      this._proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
-
-      this._featureStarts = new CGV.CGArray();
-
-      if (data.features) {
-        data.features.forEach((featureData) => {
-          var feature = new CGV.Feature(this, featureData);
-          // this.addFeature(feature);
-        });
-        this.refresh();
-      }
-
-      if (data.arcPlot) {
-        var arcPlot = new CGV.ArcPlot(this, data.arcPlot);
-        // arcPlot._featureSlot = this;
-        // this._arcPlot = arcPlot;
-      }
+    constructor(color, options = {}) {
+      this.color = color;
     }
 
-    // addFeature(feature) {
-    //   this._features.push(feature);
-    //   feature._featureSlot = this;
+    get color() {
+      return this._color
+    }
+
+    set color(value) {
+      this._color = this.convertToRgba(value);
+    }
+
+    // get raw() {
+    //   return this._color
+    // }
+    //
+    // set raw(value) {
+    //   this._color = convertToRGBA(value);
     // }
 
-    // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
-    refresh() {
-      // Sort the features by start
-      this._features.sort( (a, b) => {
-        return a.start - b.start
-      });
-      // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i &lt; len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
+
+
+    get opacity() {
+      return this._opacity || 1
     }
 
-    /**
-     * @member {Viewer} - Get or set the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
+    set opacity(value) {
+      this._opacity = value;
+      // update rgba (this._color)
     }
 
-    set viewer(viewer) {
-      if (this.viewer) {
-        // TODO: Remove if already attached to Viewer
-      }
-      this._viewer = viewer;
-      viewer._featureSlots.push(this);
+    get rgba() {
+      return this.color;
     }
 
-    get strand() {
-      return this._strand;
+    get hex() {
     }
 
-    isDirect() {
-      return this.strand == 'direct'
+    get hla() {
     }
 
-    isReverse() {
-      return this.strand == 'reverse'
-    }
-
-    get hasFeatures() {
-      return this._features.length > 0
-    }
-
-    get hasArcPlot() {
-      return this._arcPlot
-    }
-
-    length() {
-      return this.viewer.sequenceLength;
-    }
-
-    visibleRanges(canvas, slotRadius, slotThickness) {
-      var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
-      if (ranges.length == 2) {
-        return ranges
-      } else if (ranges.length > 2) {
-        return [ ranges[0], ranges[ranges.length -1] ]
+    convertToRgba(value) {
+      if ( /^#/.test(value) ) {
+        return Color.hexToRgba(value)
+      } else if ( /^rgb\(/.test(value) ) {
+        return rgbToRgba(value)
+      } else if ( /^hsl\(/.test(value) ) {
+        return hlaToRgba(value)
       } else {
-        return undefined
+        return nameToRgba(value)
       }
     }
 
-    get largestFeatureLength() {
-      return this._largestFeatureLength
+
+    nameToRgba(name) {
     }
 
-    findLargestFeatureLength() {
-      var length = 0;
-      for (var i = 0, len = this._features.length; i &lt; len; i++) {
-        var nextLength = this._features[i].length;
-        if (nextLength > length) {
-          length = nextLength
-        }
-      }
-      return length
-    }
-
-    draw(canvas, fast, slotRadius, slotThickness) {
-      var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
-      var start = ranges ? ranges[0] : 1;
-      var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
-      var featureCount = this._features.length;
-      if (this.hasFeatures) {
-        var largestLength = this.largestFeatureLength;
-        // Case where the largest feature should not be subtracted
-        // _____ Visible
-        // ----- Not Visbile
-        // Do no subtract the largest feature so that the start loops around to before the stop
-        // -----Start_____Stop-----
-        // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-        // _____Stop-----Start_____
-        if (ranges &amp;&amp;
-             (largestLength &lt;= (this.viewer.sequenceLength - Math.abs(start - stop))) &amp;&amp;
-             (this.viewer.subtractBp(start, stop) > largestLength) ) {
-          start = this.viewer.subtractBp(start, largestLength);
-          featureCount = this._featureStarts.countFromRange(start, stop);
-        }
-        if (fast &amp;&amp; featureCount > 2000) {
-          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
-        } else {
-          this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-            this._features[i].draw(canvas, slotRadius, slotThickness);
-          })
-        }
-      } else if (this.hasArcPlot) {
-        if (ranges) {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
-        } else {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
-        }
-      }
+    hlaToRgba(hla) {
     }
 
   }
 
-  CGV.FeatureSlot = FeatureSlot;
+  // Adapted from:
+  // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  /**
+   * Convert a Hexidecimal color to RGBA.
+   * @function hexToRgba
+   * @memberof Color
+   * @param {String} hex - *hex* can be shorthand (e.g. "03F") or fullform (e.g. "0033FF"), with or without the starting '#'.
+   * @return {String} The color as RGBA.
+   * @static
+   */
+  Color.hexToRgba = function(hex) {
+    var shorthandRegex = /^#([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+    var result = /^#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    // Defaults:
+    var red = 0;
+    var green = 0;
+    var blue = 0;
+    if (result) {
+      red = parseInt(result[1], 16);
+      green = parseInt(result[2], 16);
+      blue = parseInt(result[3], 16);
+    }
+    return "rgba(" + red + "," + green + "," + blue + ")"
+  }
+
+  CGV.Color = Color;
 
 })(CGView);
 </code></pre>

@@ -122,8 +122,8 @@
 
       if (decoration == 'arc') {
         ctx.beginPath();
-        ctx.strokeStyle = color;
-        // ctx.strokeStyle = 'rgba(100, 0, 0, 0.5)';
+        // ctx.strokeStyle = color;
+        ctx.strokeStyle = 'rgba(100, 0, 0, 0.5)';
         ctx.lineWidth = width;
         ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
         ctx.stroke();
@@ -163,7 +163,7 @@
 
         // Draw arc with arrow head
         ctx.beginPath();
-        // ctx.fillStyle = color;
+        ctx.fillStyle = color;
         // ctx.fillStyle = 'rgba(100, 0, 0, 0.5)';
         ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
