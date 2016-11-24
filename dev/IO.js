@@ -26,7 +26,7 @@
       var viewer = this._viewer;
 
       // Override Main Viewer settings
-      viewer.sequenceLength = CGV.default_for(json.sequenceLength, viewer.sequenceLength)
+      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
       // ...
 
       if (json.featureSlots) {

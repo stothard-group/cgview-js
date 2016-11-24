@@ -12,7 +12,7 @@
       this.featureSlot = featureSlot;
       this._bp = new CGV.CGArray();
       this._proportionOfThickness =  new CGV.CGArray();
-      this._color = CGV.default_for(data.color, 'black');
+      this._color = CGV.defaultFor(data.color, 'black');
       this._colorPositive = data.colorPositive;
       this._colorNegative = data.colorNegative;
 

@@ -16,7 +16,8 @@
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       this._opacity = data.opacity;
-      this._decoration = data.decoration;
+      // Decoration: arc, clockwise-arrow, counterclockwise-arrow
+      this._decoration = CGV.defaultFor(data.decoration, 'arc');
     }
 
     /**
@@ -42,8 +43,10 @@
       return this._viewer
     }
 
-
-
+    /**
+     * @member {Number} - Get or set the start position of the feature in basepair (bp).
+     *   All start and stop positions are assumed to be going in a clockwise direction.
+     */
     get start() {
       return this._start
     }
@@ -52,6 +55,10 @@
       this._start = bp;
     }
 
+    /**
+     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
+     *   All start and stop positions are assumed to be going in a clockwise direction.
+     */
     get stop() {
       return this._stop
     }
@@ -61,7 +68,7 @@
     }
 
     /**
-     * Get or set the color. Defaults to the *FeatureSlot* color.
+     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color.
      */
     get color() {
       return this._color || this.featureSlot.color
@@ -71,10 +78,23 @@
       this._color = color;
     }
 
+    /**
+     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *clockwise-arrow*, *counterclockwise-arrow*
+     */
+    get decoration() {
+      return this._decoration;
+    }
+
+    set decoration(value) {
+      this._decoration = value;
+    }
+
+
+
     draw(canvas, slotRadius, slotThickness) {
       canvas.drawArc(this.start, this.stop,
         this.adjustedRadius(slotRadius, slotThickness),
-        this.color, this.adjustedWidth(slotThickness));
+        this.color, this.adjustedWidth(slotThickness), this.decoration);
     }
 
     // radius by default would be the center of the slot as provided unless:

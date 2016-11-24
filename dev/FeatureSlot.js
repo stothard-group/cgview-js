@@ -10,10 +10,10 @@
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      this._strand = CGV.default_for(data.strand, 'direct');
+      this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._arcPlot;
-      this._proportionOfRadius = CGV.default_for(data.proportionOfRadius, 0.1)
+      this._proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
 
       this._featureStarts = new CGV.CGArray();
 

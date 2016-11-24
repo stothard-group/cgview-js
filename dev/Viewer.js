@@ -17,15 +17,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._container = d3.select(container_id);
       // this.scale = {};
       // Get options
-      this._width = CGV.default_for(options.width, 600);
-      this._height = CGV.default_for(options.height, 600);
-      this.canvas = new CGV.Canvas(this._container, {width: this._width, height: this._height});
+      this._width = CGV.defaultFor(options.width, 600);
+      this._height = CGV.defaultFor(options.height, 600);
+      this.canvas = new CGV.Canvas(this, this._container, {width: this._width, height: this._height});
       this.ruler = new CGV.Ruler(this);
-      this.sequenceLength = CGV.default_for(options.sequenceLength, 1000);
-      this.featureSlotSpacing = CGV.default_for(options.featureSlotSpacing, 1);
-      this.backboneRadius = CGV.default_for(options.backboneRadius, 200);
+      this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
+      this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
+      this.backboneRadius = CGV.defaultFor(options.backboneRadius, 200);
       this._zoomFactor = 1;
-      this.debug = CGV.default_for(options.debug, false);
+      this.debug = CGV.defaultFor(options.debug, false);
 
       this._io = new CGV.IO(this);
 

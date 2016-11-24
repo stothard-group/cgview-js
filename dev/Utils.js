@@ -9,7 +9,7 @@
    * @param {Object} default_value Returned if _value_ is undefined
    * @return {Object}
    */
-  CGV.default_for = function(value, default_value) {
+  CGV.defaultFor = function(value, default_value) {
     return (value === undefined) ? default_value : value;
   }
 

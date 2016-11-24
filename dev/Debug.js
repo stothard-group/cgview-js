@@ -7,7 +7,7 @@
 
     constructor(options = {}) {
       this._data = {};
-      this._sections = CGV.default_for(options.sections, []);
+      this._sections = CGV.defaultFor(options.sections, []);
       // Create object for each section
       for (var section of this.sections) {
         this.data[section] = {}

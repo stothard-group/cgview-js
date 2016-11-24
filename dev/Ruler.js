@@ -11,10 +11,10 @@
     constructor(viewer, options = {}) {
       this.viewer = viewer;
       this.canvas = viewer.canvas;
-      this.tickCount = CGV.default_for(options.tickCount, 10);
-      this.tickWidth = CGV.default_for(options.tickWidth, 1);
-      this.tickLength = CGV.default_for(options.tickLength, 5);
-      this.rulerPadding = CGV.default_for(options.rulerPadding, 20);
+      this.tickCount = CGV.defaultFor(options.tickCount, 10);
+      this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
+      this.tickLength = CGV.defaultFor(options.tickLength, 5);
+      this.rulerPadding = CGV.defaultFor(options.rulerPadding, 20);
     }
 
     get tickCount() {

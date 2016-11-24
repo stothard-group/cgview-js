@@ -11,9 +11,10 @@
      * - has methods for for determining visible regions of the circle at a particular radius
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
-    constructor(container, options = {}) {
-      this.width = CGV.default_for(options.width, 600);
-      this.height = CGV.default_for(options.height, 600);
+    constructor(viewer, container, options = {}) {
+      this.viewer = viewer;
+      this.width = CGV.defaultFor(options.width, 600);
+      this.height = CGV.defaultFor(options.height, 600);
       this.scale = {};
 
       // Create the viewer canvas
@@ -89,16 +90,101 @@
       ctx.fillText(msg, x, y);
     }
 
-    drawArc(start, end, radius, color = '#000000', width = 1) {
+    // Decoration: arc, clockwise-arrow, counterclockwise-arrow
+    //
+    //  clockwise-arrow (drawn clockwise from arcStartBp; direction = 1):
+    //
+    //    arcStartBp (feature start)      arcStopBp
+    //           |                        |
+    //           --------------------------  arrowTipBp
+    //           |                          \|
+    //           |                           x - arrowTipPt (feature stop)
+    //           |                          /
+    //           -------------------------x
+    //                                    |
+    //                                    innerArcStartPt
+    //
+    //  counterclockwise-arrow (drawn counterclockwise from arcStartBp; direction = -1):
+    //
+    //                arcStopBp                      arcStartBp (feature stop)
+    //                       |                        |
+    //           arrowTipBp   -------------------------
+    //                    | /                         |
+    //       arrowTipPt - x                           |
+    //  (feature start)    \                          |
+    //                       x-------------------------
+    //                       |
+    //                       innerArcStartPt
+    //
+    drawArc(start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
       var ctx = this.ctx;
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
-      // this.ctx.arc(scale.x(0), scale.y(0), CGV.pixel(radius), scale.bp(start), scale.bp(end), false);
-      ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(end), false);
-      ctx.stroke();
+
+      if (decoration == 'arc') {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        // ctx.strokeStyle = 'rgba(100, 0, 0, 0.5)';
+        ctx.lineWidth = width;
+        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
+        ctx.stroke();
+      }
+
+      // Looks like we're drawing an arrow
+      if (decoration != 'arc') {
+        // Determine Arrowhead length
+        // TODO: this should be done when the zoom level changes and be a variable of the viewer or canvas
+        //       There is no need to calculate this for each feature
+        //       Mmmmm....although the length depends on radius, so we might be able to do this at the slot level????
+        // Using width which changes according zoom factor upto a point
+        var arrowHeadLengthPixels = CGV.pixel(width / 4);
+        // Convert arrowHeadLength (pixels) to Radians:
+        //   arrowHeadRadians = ( (Math.PI * 2) / (2 * Math.PI * radius) ) * arrowHeadLength;
+        // Subtract Pi/2 to determine radians at 0 point of circle. Then convert to BP.
+        var arrowHeadLengthBp = scale.bp.invert( (arrowHeadLengthPixels / radius) - Math.PI/2 );
+
+        // If arrow head length is longer than feature length, adjust start and stop
+        var featureLength = this.viewer.lengthOfRange(start, stop);
+        if ( featureLength < arrowHeadLengthBp ) {
+          var middleBP = start + ( featureLength / 2 );
+          start = middleBP - arrowHeadLengthBp / 2;
+          stop = middleBP + arrowHeadLengthBp / 2;
+        }
+
+        // Set up drawing direction
+        var arcStartBp = (decoration == 'clockwise-arrow') ? start : stop;
+        var arrowTipBp = (decoration == 'clockwise-arrow') ? stop : start;
+        var direction = (decoration == 'clockwise-arrow') ? 1 : -1;
+
+        // Calculate important points
+        var halfWidth = width / 2;
+        var arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
+        var arrowTipPt = this.pointFor(arrowTipBp, radius);
+        var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
+
+        // Draw arc with arrow head
+        ctx.beginPath();
+        // ctx.fillStyle = color;
+        // ctx.fillStyle = 'rgba(100, 0, 0, 0.5)';
+        ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
+        ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+        ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
+        ctx.arc(scale.x(0), scale.y(0), radius - halfWidth, scale.bp(arcStopBp), scale.bp(arcStartBp), direction == 1);
+        ctx.closePath();
+        ctx.fill();
+      }
+
     }
+
+
+    // drawArc(start, stop, radius, color = '#000000', width = 1) {
+    //   var scale = this.scale;
+    //   var ctx = this.ctx;
+    //   ctx.beginPath();
+    //   ctx.strokeStyle = color;
+    //   ctx.lineWidth = width;
+    //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
+    //   ctx.stroke();
+    // }
 
     radiantLine(bp, radius, length, lineWidth = 1, color = 'black') {
       var radians = this.scale.bp(bp);
