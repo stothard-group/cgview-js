@@ -28,6 +28,9 @@ class CGViewXML
 
   def pluralize_nodes
     # Make nodes that will become arrays plural
+    @xml_string.gsub!('legend ', 'legends ')
+    @xml_string.gsub!('legend>', 'legends>')
+    @xml_string.gsub!('legendItem', 'legendItems')
     @xml_string.gsub!('featureSlot', 'featureSlots')
     @xml_string.gsub!('feature ', 'features ')
     @xml_string.gsub!('feature>', 'features>')
@@ -54,6 +57,8 @@ class CGViewXML
     add_gc_skew
     confirm_featureslots_is_array
     confirm_features_is_array
+    confirm_legends_is_array
+    confirm_legend_items_is_array
     move_ranges_to_features
     adjust_feature_thickness
   end
@@ -122,6 +127,22 @@ class CGViewXML
     @xml_hash['cgview']['featureSlots'].each do |slot|
       if slot['features'].class == Hash
         slot['features'] = [ slot['features'] ]
+      end
+    end
+  end
+
+  # Legends should be an array but if only one is present is will be a hash
+  def confirm_legends_is_array
+    if @xml_hash['cgview']['legends'].class == Hash
+      @xml_hash['cgview']['legends'] = [ @xml_hash['cgview']['legends'] ]
+    end
+  end
+
+  # LegendItems should be an array but if only one is present is will be a hash
+  def confirm_legend_items_is_array
+    @xml_hash['cgview']['legends'].each do |legend|
+      if legend['legendItems'].class == Hash
+        legend['legendItems'] = [ legend['legendItems'] ]
       end
     end
   end

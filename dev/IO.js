@@ -29,9 +29,17 @@
       viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
       // ...
 
+      // Load FeatureSlots
       if (json.featureSlots) {
         json.featureSlots.forEach((slotData) => {
-          var slot = new CGV.FeatureSlot(viewer, slotData);
+          new CGV.FeatureSlot(viewer, slotData);
+        });
+      }
+
+      // Load Legends
+      if (json.legends) {
+        json.legends.forEach((legendData) => {
+          new CGV.Legend(viewer, legendData);
         });
       }
 

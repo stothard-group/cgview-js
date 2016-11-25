@@ -33,6 +33,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.initialize_zooming();
 
       this._featureSlots = new CGV.CGArray();
+      this._legends = new CGV.CGArray();
 
       d3.select(this.canvas.canvasNode).on('mousemove', () => {
         if (this.debug) {
@@ -192,7 +193,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
       var spacing = CGV.pixel(this.featureSlotSpacing);
-      var minDimension = CGV.pixel(Math.min(this.height, this.width));
+      // var minDimension = CGV.pixel(Math.min(this.height, this.width));
+      var minDimension = Math.min(this.height, this.width);
       var maxRadius = minDimension; // TODO: need to add up all proportions
 
       var visibleRadii = this.canvas.visibleRadii();

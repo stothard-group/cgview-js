@@ -15,6 +15,16 @@
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 20);
+
+      this.font = 'Sans-Serif, plain, 10'
+    }
+
+    get font() {
+      return this._font.asCss
+    }
+
+    set font(value) {
+      this._font = new CGV.Font(value);
     }
 
     get tickCount() {
@@ -87,9 +97,7 @@
       var ctx = this.canvas.ctx;
       // Put space between number and units
       var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      var fontSize = CGV.pixel(10);
-      var font = fontSize + 'px Sans-Serif';
-      ctx.font = font
+      ctx.font = this.font
       ctx.textAlign = 'center'
       // INNER
       var center = this.canvas.pointFor(bp, radius - this.rulerPadding);

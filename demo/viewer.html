@@ -15,28 +15,36 @@
   <script src='dev/FeatureSlot.js'></script>
   <script src='dev/Feature.js'></script>
   <script src='dev/ArcPlot.js'></script>
+  <script src='dev/Legend.js'></script>
+  <script src='dev/LegendItem.js'></script>
   <script src='dev/Debug.js'></script>
   <script src='dev/Color.js'></script>
+  <script src='dev/Font.js'></script>
   <script src='dev/Utils.js'></script>
 
   <script src="javascript/xml2json.min.js"></script>
+  <script src="javascript/canvas2svg.js"></script>
   <!-- <link rel="stylesheet" href="stylesheets/cgview.css" /> -->
 </head>
 <body>
   <div id='cgview'></div>
+  <a id='download-svg' href='#'>SVG</a>
+  <div id='svg-out'></div>
 
   <script>
     var cgv = new CGV.Viewer('#cgview', {
-        debug: true
+      // width: 1000,
+      debug: true
     });
     window.cgv = cgv;
     cgv.flash('Loading...');
 
     $.ajax({
         // url: 'data/cgview_1_no_cg.json',
-        url: 'data/TEST_cgview_1.json',
+        // url: 'data/TEST_cgview_1.json',
         url: 'data/cgview_1.json',
         // url: 'data/cgview_3.json',
+        // url: 'data/cgview-94889.json',
         dataType: 'json',
         success: function(json) {
           console.log('loading...')
@@ -49,6 +57,16 @@
           console.log(status)
           console.log(error)
         }
+    });
+
+    $('#download-svg').on('click', function() {
+      var origCtx = cgv.canvas.ctx;
+      var ctx = new C2S(1200, 1200);
+      cgv.canvas.ctx = ctx;
+      cgv.draw_full();
+      var svg = ctx.getSerializedSvg();
+      $('#svg-out').html(svg);
+      cgv.canvas.ctx = origCtx;
     });
 
   </script>

@@ -19,38 +19,14 @@
 
       if (data.features) {
         data.features.forEach((featureData) => {
-          var feature = new CGV.Feature(this, featureData);
-          // this.addFeature(feature);
+          new CGV.Feature(this, featureData);
         });
         this.refresh();
       }
 
       if (data.arcPlot) {
-        var arcPlot = new CGV.ArcPlot(this, data.arcPlot);
-        // arcPlot._featureSlot = this;
-        // this._arcPlot = arcPlot;
+        new CGV.ArcPlot(this, data.arcPlot);
       }
-    }
-
-    // addFeature(feature) {
-    //   this._features.push(feature);
-    //   feature._featureSlot = this;
-    // }
-
-    // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
-    refresh() {
-      // Sort the features by start
-      this._features.sort( (a, b) => {
-        return a.start - b.start
-      });
-      // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -86,6 +62,23 @@
 
     get hasArcPlot() {
       return this._arcPlot
+    }
+
+
+    // Refresh needs to be called when new features are added, etc
+    // Features need to be sorted by start position
+    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
+    refresh() {
+      // Sort the features by start
+      this._features.sort( (a, b) => {
+        return a.start - b.start
+      });
+      // Clear feature starts
+      this._featureStarts = new CGV.CGArray();
+      for (var i = 0, len = this._features.length; i < len; i++) {
+        this._featureStarts.push(this._features[i].start);
+      }
+      this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     length() {
@@ -139,7 +132,7 @@
           featureCount = this._featureStarts.countFromRange(start, stop);
         }
         if (fast && featureCount > 2000) {
-          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
+          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
         } else {
           this._featureStarts.eachFromRange(start, stop, 1, (i) => {
             this._features[i].draw(canvas, slotRadius, slotThickness);
