@@ -42,6 +42,21 @@
       return this.color;
     }
 
+    get red() {
+      var result = /^rgba\((\d+),\d+,\d+/.exec(this.color);
+      return result ? Number(result[1]) : undefined
+    }
+
+    get green() {
+      var result = /^rgba\(\d+,(\d+),\d+/.exec(this.color);
+      return result ? Number(result[1]) : undefined
+    }
+
+    get blue() {
+      var result = /^rgba\(\d+,\d+,(\d+)/.exec(this.color);
+      return result ? Number(result[1]) : undefined
+    }
+
     get hex() {
     }
 

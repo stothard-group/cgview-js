@@ -24,14 +24,54 @@
 
   <script src="javascript/xml2json.min.js"></script>
   <script src="javascript/canvas2svg.js"></script>
-  <script src="javascript/jscolor.min.js"></script>
+  <script src="javascript/colorpicker.js"></script>
   <!-- <link rel="stylesheet" href="stylesheets/cgview.css" /> -->
+  <style type="text/css">
+    #picker-wrapper {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      display: inline-block;
+      border: 1px black solid;
+      cursor: pointer;
+    }
+    #slider-wrapper {
+      width: 20px;
+      height: 100px;
+      position: relative;
+      display: inline-block;
+      border: 1px black solid;
+      cursor: pointer;
+    }
+    #picker-indicator {
+      width: 3px;
+      height: 3px;
+      position: absolute;
+      border: 1px solid white;
+    }
+    #slider-indicator {
+      /* width: 100%; */
+      left: -2;
+      width: 22px; 
+      height: 3px;
+      position: absolute;
+      border: 1px solid black;
+    }
+  </style>
 </head>
 <body>
   <div id='cgview'></div>
   <a id='download-svg' href='#'>SVG</a>
   <a href='docs/index.html'>Docs</a>
   <div id='svg-out'></div>
+  <div id="picker-wrapper">
+    <div id="picker"></div>
+    <div id="picker-indicator"></div>
+  </div>
+  <div id="slider-wrapper">
+    <div id="slider"></div>
+    <div id="slider-indicator"></div>
+  </div>
 
   <script>
     var cgv = new CGV.Viewer('#cgview', {
@@ -44,24 +84,26 @@
     cgv.flash('Loading...');
 
     $.ajax({
-        // url: 'data/cgview_1_no_cg.json',
-        // url: 'data/TEST_cgview_1.json',
-        // url: 'data/cgview_1.json',
-        url: 'data/cgview_legends.json',
-        // url: 'data/cgview_3.json',
-        // url: 'data/cgview-94889.json',
-        dataType: 'json',
-        success: function(json) {
-          console.log('loading...')
-          window.data = json;
-          cgv.load_json(json.cgview);
-          console.log('done!');
-          cgv.draw();
-        },
-        error: function(xhr, status, error) {
-          console.log(status)
-          console.log(error)
-        }
+      // url: 'data/cgview_1_no_cg.json',
+      // url: 'data/TEST_cgview_1.json',
+      // url: 'data/cgview_1.json',
+      url: 'data/cgview_legends.json',
+      // url: 'data/cgview_3.json',
+      // url: 'data/cgview-94889.json',
+      dataType: 'json',
+      success: function(json) {
+        console.log('loading...')
+        window.data = json;
+        cgv.load_json(json.cgview);
+        console.log('done!');
+        cgv.draw();
+        var color = cgv.swatchedLegendItems(1)._swatchColor;
+        cp.setRgb({r: color.red, g: color.green, b: color.blue});
+      },
+      error: function(xhr, status, error) {
+        console.log(status)
+        console.log(error)
+      }
     });
 
     $('#download-svg').on('click', function() {
@@ -73,6 +115,22 @@
       $('#svg-out').html(svg);
       cgv.canvas.ctx = origCtx;
     });
+
+    ColorPicker.fixIndicators(
+      document.getElementById('slider-indicator'),
+      document.getElementById('picker-indicator'));
+    var cp = ColorPicker(
+      document.getElementById('slider'),
+      document.getElementById('picker'),
+      function(hex, hsv, rgb, pickerCoordinate, sliderCoordinate) {
+        ColorPicker.positionIndicators(
+          document.getElementById('slider-indicator'),
+          document.getElementById('picker-indicator'),
+          sliderCoordinate, pickerCoordinate
+        );
+        cgv.swatchedLegendItems(1).swatchColor = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
+        cgv.draw_fast()
+      });
 
   </script>
 </body>
