@@ -102,6 +102,12 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -111,6 +117,14 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
+            
+                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
+            
+                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -132,6 +146,10 @@
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
             
                 <li data-name="Feature#featureSlot"><a href="Feature.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Feature#opacity"><a href="Feature.html#opacity">opacity</a></li>
             
                 <li data-name="Feature#start"><a href="Feature.html#start">start</a></li>
             
@@ -161,6 +179,33 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="FeatureSlot#viewer"><a href="FeatureSlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Font">
+            <span class="title">
+                <a href="Font.html">Font</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Font#asCss"><a href="Font.html#asCss">asCss</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -247,6 +292,8 @@
             
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
             
+                <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
+            
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
@@ -279,12 +326,14 @@
      */
     constructor(featureSlot, data = {}, display = {}, meta = {}) {
       this.featureSlot = featureSlot;
-      this.color = data.color;
+      // this.color = data.color;
+      // this._opacity = data.opacity;
+      this._color = new CGV.Color(data.color);
+      this.opacity = data.opacity;
       this._start = Number(data.start);
       this._stop = Number(data.stop);
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-      this._opacity = data.opacity;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
     }
@@ -337,14 +386,27 @@
     }
 
     /**
-     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color.
+     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
      */
     get color() {
-      return this._color || this.featureSlot.color
+      // return this._color.rgba
+      return (this.legendItem) ? this.legendItem.swatchColor.rgba : this._color.rgba;
     }
 
     set color(color) {
-      this._color = color;
+      this._color.color = color;
+    }
+
+    /**
+     * @member {String} - Get or set the opacity. 
+     */
+    get opacity() {
+      // return this._color.opacity
+      return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
+    }
+
+    set opacity(value) {
+      this._color.opacity = value;
     }
 
     /**
@@ -356,6 +418,19 @@
 
     set decoration(value) {
       this._decoration = value;
+    }
+
+    /**
+     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
+     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
+     *   override the color and opacity set for this feature.
+     */
+    get legendItem() {
+      return this._legendItem;
+    }
+
+    set legendItem(value) {
+      this._legendItem = value;
     }
 
 
@@ -405,7 +480,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 24 2016 13:16:49 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
         </footer>
     </div>
 </div>

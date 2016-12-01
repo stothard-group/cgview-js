@@ -102,6 +102,12 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -111,6 +117,14 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
+            
+                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
+            
+                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -132,6 +146,10 @@
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
             
                 <li data-name="Feature#featureSlot"><a href="Feature.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Feature#opacity"><a href="Feature.html#opacity">opacity</a></li>
             
                 <li data-name="Feature#start"><a href="Feature.html#start">start</a></li>
             
@@ -161,6 +179,33 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="FeatureSlot#viewer"><a href="FeatureSlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Font">
+            <span class="title">
+                <a href="Font.html">Font</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Font#asCss"><a href="Font.html#asCss">asCss</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -247,6 +292,8 @@
             
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
             
+                <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
+            
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
@@ -288,38 +335,14 @@
 
       if (data.features) {
         data.features.forEach((featureData) => {
-          var feature = new CGV.Feature(this, featureData);
-          // this.addFeature(feature);
+          new CGV.Feature(this, featureData);
         });
         this.refresh();
       }
 
       if (data.arcPlot) {
-        var arcPlot = new CGV.ArcPlot(this, data.arcPlot);
-        // arcPlot._featureSlot = this;
-        // this._arcPlot = arcPlot;
+        new CGV.ArcPlot(this, data.arcPlot);
       }
-    }
-
-    // addFeature(feature) {
-    //   this._features.push(feature);
-    //   feature._featureSlot = this;
-    // }
-
-    // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
-    refresh() {
-      // Sort the features by start
-      this._features.sort( (a, b) => {
-        return a.start - b.start
-      });
-      // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i &lt; len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -355,6 +378,23 @@
 
     get hasArcPlot() {
       return this._arcPlot
+    }
+
+
+    // Refresh needs to be called when new features are added, etc
+    // Features need to be sorted by start position
+    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
+    refresh() {
+      // Sort the features by start
+      this._features.sort( (a, b) => {
+        return a.start - b.start
+      });
+      // Clear feature starts
+      this._featureStarts = new CGV.CGArray();
+      for (var i = 0, len = this._features.length; i &lt; len; i++) {
+        this._featureStarts.push(this._features[i].start);
+      }
+      this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     length() {
@@ -408,7 +448,7 @@
           featureCount = this._featureStarts.countFromRange(start, stop);
         }
         if (fast &amp;&amp; featureCount > 2000) {
-          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.05)', slotThickness);
+          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
         } else {
           this._featureStarts.eachFromRange(start, stop, 1, (i) => {
             this._features[i].draw(canvas, slotRadius, slotThickness);
@@ -440,7 +480,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 24 2016 13:16:49 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
         </footer>
     </div>
 </div>

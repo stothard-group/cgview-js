@@ -307,126 +307,157 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.js.html">Source: IO.js</h1>
+        <h1 class="page-title" data-filename="LegendItem.js.html">Source: LegendItem.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source "><code>// Static methods for converting XML &lt;-> JSON
-// NOTE: xml2json required for conversions
-// https://github.com/abdmob/x2js
-// Class for reading and writing JSON
-//////////////////////////////////////////////////////////////////////////////
-// IO
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// LegendItem
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class IO {
+  class LegendItem {
+
+    constructor(legend, data = {}, display = {}, meta = {}) {
+      this.legend = legend;
+      this._text = CGV.defaultFor(data.text, '');
+      this._drawSwatch = CGV.defaultFor(data.drawSwatch, false);
+      this.font = data.font
+      this.fontColor = data.fontColor;
+      this.textAlignment = data.textAlignment;
+      this.drawSwatch = CGV.defaultFor(data.drawSwatch, false);
+      this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
+      this.swatchOpacity = CGV.defaultFor(data.swatchOpacity, 1);
+    }
+
 
     /**
-     * Interface for reading and writing data to and from CGView
-     * @param {Viewer} viewer - Viewer stuff...
+     * @member {Legend} - Get or set the *Legend*
      */
-    constructor(viewer) {
-      this._viewer = viewer;
+    get legend() {
+      return this._legend
+    }
+
+    set legend(legend) {
+      if (this.legend) {
+        // TODO: Remove if already attached to FeatureSlot
+      }
+      this._legend = legend;
+      legend._legendItems.push(this);
+      this._viewer = legend.viewer;
     }
 
     /**
-     * Load data from new JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
+     * @member {String} - Get or set the text
      */
-    load_json(json) {
-      var viewer = this._viewer;
+    get text() {
+      return this._text
+    }
 
-      // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
-      // ...
+    set text(text) {
+      this._text = text;
+    }
 
-      // Load FeatureSlots
-      if (json.featureSlots) {
-        json.featureSlots.forEach((slotData) => {
-          new CGV.FeatureSlot(viewer, slotData);
-        });
+    /**
+     * @member {String} - Get or set the text alignment
+     */
+    get textAlignment() {
+      return this._textAlignment
+    }
+
+    set textAlignment(value) {
+      if (value == undefined) {
+        this._textAlignment = this.legend.textAlignment;
+      } else {
+        this._textAlignment = value;
       }
+    }
 
-      // Load Legends
-      if (json.legends) {
-        json.legends.forEach((legendData) => {
-          new CGV.Legend(viewer, legendData);
-        });
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    get width() {
+      return this._width
+    }
+
+    get height() {
+      return this._font.height
+    }
+
+    /**
+     * @member {String} - Get or set the font.
+     */
+    get font() {
+      return this._font.asCss
+    }
+
+    set font(value) {
+      if (value == undefined) {
+        this._font = this.legend._font;
+      } else {
+        this._font = new CGV.Font(value);
       }
-
     }
 
-    // Load data from conventionaly CGView XML file.
-    load_xml(xml) {
-      var json = IO.xml_to_json(xml);
-      this.load_json(json);
+    /**
+     * @member {String} - Get or set the fontColor. TODO: reference COLOR class
+     */
+    get fontColor() {
+      // TODO set to cgview font color if not defined
+      return this._fontColor.rgba
     }
 
-    static xml_to_json(xml) {
-      if (!window.X2JS) {
-        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
-        return
+    set fontColor(color) {
+      if (color == undefined) {
+        this._fontColor = this.legend._fontColor;
+      } else {
+        this._fontColor = new CGV.Color(color);
       }
-      var x2js = new X2JS({ attributePrefix: '' });
-      // var json = x2js.xml_str2json(xml);
-      var json = xmlToJson(xml);
-      // var cgview = json.cgview
-      // cgview.featureSlots = cgview.featureSlot
-      // delete cgview.featureSlot
-      
-
-      return json
     }
 
-    static json_to_xml(json) {
+    /**
+     * @member {String} - Get or set the swatchColor. TODO: reference COLOR class
+     */
+    get swatchColor() {
+      return this._swatchColor.rgba
     }
 
+    set swatchColor(color) {
+      this._swatchColor.color = color;
+    }
+
+    /**
+     * @member {String} - Get or set the opacity.
+     */
+    get swatchOpacity() {
+      return this._swatchColor.opacity
+    }
+
+    set swatchOpacity(value) {
+      this._swatchColor.opacity = value;
+    }
+
+
+    /**
+     * @member {String} - Get or set the swatch opacity.
+     */
+    get swatchOpacity() {
+      return this._swatchColor.opacity
+    }
+
+    set swatchOpacity(value) {
+      this._swatchColor.opacity = value;
+    }
   }
 
-  // Changes XML to JSON
-  // function xmlToJson(xml) {
-  //   // Create the return object
-  //   var obj = {};
-  //
-  //   if (xml.nodeType == 1) { // element
-  //     // do attributes
-  //     if (xml.attributes.length > 0) {
-  //     obj["@attributes"] = {};
-  //       for (var j = 0; j &lt; xml.attributes.length; j++) {
-  //         var attribute = xml.attributes.item(j);
-  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-  //       }
-  //     }
-  //   } else if (xml.nodeType == 3) { // text
-  //     obj = xml.nodeValue;
-  //   }
-  //
-  //   // do children
-  //   if (xml.hasChildNodes()) {
-  //     for(var i = 0; i &lt; xml.childNodes.length; i++) {
-  //       var item = xml.childNodes.item(i);
-  //       var nodeName = item.nodeName;
-  //       if (typeof(obj[nodeName]) == "undefined") {
-  //         obj[nodeName] = xmlToJson(item);
-  //       } else {
-  //         if (typeof(obj[nodeName].push) == "undefined") {
-  //           var old = obj[nodeName];
-  //           obj[nodeName] = [];
-  //           obj[nodeName].push(old);
-  //         }
-  //         obj[nodeName].push(xmlToJson(item));
-  //       }
-  //     }
-  //   }
-  //   return obj;
-  // };
-
-  CGV.IO = IO;
+  CGV.LegendItem = LegendItem;
 
 })(CGView);
 </code></pre>

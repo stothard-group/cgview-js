@@ -307,126 +307,148 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.js.html">Source: IO.js</h1>
+        <h1 class="page-title" data-filename="Font.js.html">Source: Font.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source "><code>// Static methods for converting XML &lt;-> JSON
-// NOTE: xml2json required for conversions
-// https://github.com/abdmob/x2js
-// Class for reading and writing JSON
-//////////////////////////////////////////////////////////////////////////////
-// IO
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Font
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class IO {
+  class Font {
 
     /**
-     * Interface for reading and writing data to and from CGView
-     * @param {Viewer} viewer - Viewer stuff...
+     * The Font class is meant to store fonts in a simple and consistent manner..
      */
-    constructor(viewer) {
-      this._viewer = viewer;
+    constructor(font, options = {}) {
+      this.font = font;
     }
 
     /**
-     * Load data from new JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
+     * Return the font as canvas usable string.
      */
-    load_json(json) {
-      var viewer = this._viewer;
-
-      // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
-      // ...
-
-      // Load FeatureSlots
-      if (json.featureSlots) {
-        json.featureSlots.forEach((slotData) => {
-          new CGV.FeatureSlot(viewer, slotData);
-        });
-      }
-
-      // Load Legends
-      if (json.legends) {
-        json.legends.forEach((legendData) => {
-          new CGV.Legend(viewer, legendData);
-        });
-      }
-
+    get font() {
+      return this._font
     }
 
-    // Load data from conventionaly CGView XML file.
-    load_xml(xml) {
-      var json = IO.xml_to_json(xml);
-      this.load_json(json);
-    }
-
-    static xml_to_json(xml) {
-      if (!window.X2JS) {
-        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
-        return
+    /**
+     * Set the font using a string with the format: font-family,style,size
+     */
+    set font(value) {
+      value = value.replace(/ +/g, '');
+      var parts = value.split(',');
+      if (parts.length == 3) {
+        this.family = parts[0];
+        this.style = parts[1];
+        this.size = parts[2];
+      } else {
+        console.log('Font must have 3 parts')
       }
-      var x2js = new X2JS({ attributePrefix: '' });
-      // var json = x2js.xml_str2json(xml);
-      var json = xmlToJson(xml);
-      // var cgview = json.cgview
-      // cgview.featureSlots = cgview.featureSlot
-      // delete cgview.featureSlot
-      
-
-      return json
+      this._generateFont();
     }
 
-    static json_to_xml(json) {
+    /**
+     * Return the font as canvas usable string.
+     */
+    get asCss() {
+      return this._font
+    }
+
+    get family() {
+      return this._family || 'arial'
+    }
+
+    set family(value) {
+      this._family = value;
+      this._generateFont();
+    }
+
+    get size() {
+      return this._size || 12
+    }
+
+    set size(value) {
+      this._size = CGV.pixel(Number(value));
+      this._generateFont();
+    }
+
+    get style() {
+      return this._style || 'plain'
+    }
+
+    set style(value) {
+      this._style = value;
+      this._generateFont();
+    }
+
+    get height() {
+      return this.size
+    }
+
+    // FIXME: This is going to be slow if used a lot
+    width(ctx, text) {
+      ctx.font = this.font;
+      return ctx.measureText(text).width
+    }
+
+    _styleAsCss() {
+      if (this.style == 'plain') {
+        return 'normal'
+      } else if (this.style == 'bold') {
+        return 'bold'
+      } else if (this.style == 'italic') {
+        return 'italic'
+      } else if (this.style == 'bold-italic') {
+        return 'italic bold'
+      } else {
+        return ''
+      }
+    }
+
+    _generateFont() {
+      this._font = this._styleAsCss() + ' ' + this.size + 'px ' + this.family;
     }
 
   }
 
-  // Changes XML to JSON
-  // function xmlToJson(xml) {
-  //   // Create the return object
-  //   var obj = {};
-  //
-  //   if (xml.nodeType == 1) { // element
-  //     // do attributes
-  //     if (xml.attributes.length > 0) {
-  //     obj["@attributes"] = {};
-  //       for (var j = 0; j &lt; xml.attributes.length; j++) {
-  //         var attribute = xml.attributes.item(j);
-  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-  //       }
-  //     }
-  //   } else if (xml.nodeType == 3) { // text
-  //     obj = xml.nodeValue;
-  //   }
-  //
-  //   // do children
-  //   if (xml.hasChildNodes()) {
-  //     for(var i = 0; i &lt; xml.childNodes.length; i++) {
-  //       var item = xml.childNodes.item(i);
-  //       var nodeName = item.nodeName;
-  //       if (typeof(obj[nodeName]) == "undefined") {
-  //         obj[nodeName] = xmlToJson(item);
-  //       } else {
-  //         if (typeof(obj[nodeName].push) == "undefined") {
-  //           var old = obj[nodeName];
-  //           obj[nodeName] = [];
-  //           obj[nodeName].push(old);
-  //         }
-  //         obj[nodeName].push(xmlToJson(item));
-  //       }
-  //     }
-  //   }
-  //   return obj;
-  // };
+  // 
+  Font.calculateWidths = function(ctx, fonts, texts) {
+    ctx.save();
+    var widths = [];
+    var map = [];
 
-  CGV.IO = IO;
+    for (var i = 0, len = fonts.length; i &lt; len; i++) {
+      map.push({
+        index: i,
+        font: fonts[i],
+        text: texts[i]
+      });
+    }
+
+    map.sort( (a,b) => {
+      return a.font > b.font ? 1 : -1;
+    });
+
+    var currentFont = ''
+    var font;
+    for (var i = 0, len = map.length; i &lt; len; i++) {
+      font = map[i].font;
+      text = map[i].text;
+      if (font != currentFont) {
+        ctx.font = font;
+        currentFont = font;
+      }
+      widths[i] = ctx.measureText(text).width;
+    }
+    ctx.restore();
+    return widths
+  }
+
+  CGV.Font = Font;
 
 })(CGView);
 </code></pre>

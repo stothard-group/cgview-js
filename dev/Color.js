@@ -96,6 +96,12 @@
    * @static
    */
     Color.nameToRgba = function(name, opacity = 1) {
+      name = name.toLowerCase();
+      if (name == 'white') {
+        return Color.rgbToRgba('rgb(255,255,255)', opacity);
+      } else if (name == 'black') {
+        return Color.rgbToRgba('rgb(0,0,0)', opacity);
+      }
     }
 
   /**

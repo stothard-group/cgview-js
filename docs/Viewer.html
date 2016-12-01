@@ -102,6 +102,12 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -111,6 +117,14 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
+            
+                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
+            
+                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -132,6 +146,10 @@
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
             
                 <li data-name="Feature#featureSlot"><a href="Feature.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Feature#opacity"><a href="Feature.html#opacity">opacity</a></li>
             
                 <li data-name="Feature#start"><a href="Feature.html#start">start</a></li>
             
@@ -161,6 +179,33 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="FeatureSlot#viewer"><a href="FeatureSlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Font">
+            <span class="title">
+                <a href="Font.html">Font</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Font#asCss"><a href="Font.html#asCss">asCss</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -246,6 +291,8 @@
                 <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
             
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
+            
+                <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
             
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
@@ -654,7 +701,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line261">line 261</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line279">line 279</a>
         </div>
         
     </div>
@@ -793,7 +840,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line168">line 168</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line177">line 177</a>
         </div>
         
     </div>
@@ -857,6 +904,163 @@
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="features">
+            
+            features<span class="signature">(term)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{CGArray|or|Peak}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line167">line 167</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns an <a href="CGArray.js.html">CGArray</a> of Features or a single Feature from all the FeatureSlots in the viewer.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>See <a href="CGArray.js.html#get">CGArray.get</a> for details.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        CGArray
+                         | 
+                    
+                        or
+                         | 
+                    
+                        Peak
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="flash">
             
             flash<span class="signature">()</span>
@@ -864,7 +1068,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line175">line 175</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line184">line 184</a>
         </div>
         
     </div>
@@ -935,7 +1139,7 @@
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line248">line 248</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line266">line 266</a>
         </div>
         
     </div>
@@ -1080,7 +1284,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 24 2016 13:16:49 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
         </footer>
     </div>
 </div>

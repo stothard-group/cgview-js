@@ -102,6 +102,12 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
+                <li data-name="Color#color"><a href="Color.html#color">color</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -111,6 +117,14 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
+            
+                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
+            
+                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
+            
+                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -132,6 +146,10 @@
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
             
                 <li data-name="Feature#featureSlot"><a href="Feature.html#featureSlot">featureSlot</a></li>
+            
+                <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Feature#opacity"><a href="Feature.html#opacity">opacity</a></li>
             
                 <li data-name="Feature#start"><a href="Feature.html#start">start</a></li>
             
@@ -161,6 +179,33 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="FeatureSlot#viewer"><a href="FeatureSlot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Font">
+            <span class="title">
+                <a href="Font.html">Font</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Font#asCss"><a href="Font.html#asCss">asCss</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
+            
+                <li data-name="Font#font"><a href="Font.html#font">font</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -246,6 +291,8 @@
                 <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
             
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
+            
+                <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
             
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
@@ -389,10 +436,31 @@
       var scale = this.scale;
       var ctx = this.ctx;
 
+      // FIXME:
+      // TEMP HACK/FIX for the issue of the moving slot separators.
+      // For some reason at center angles, when fully zoomed in, the slot separator move
+      // and overalp features.
+      // This hack doesn't draw the complete separator but only the portion visible on the screen.
+      // This should be moved to featureSlots...
+      if ( start == 1 &amp;&amp; stop == this.viewer.sequenceLength) {
+        var ranges = this.visibleRangesForRadius(radius, 50);
+        if (ranges.length == 2) {
+        } else if (ranges.length > 2) {
+          ranges = [ ranges[0], ranges[ranges.length -1] ]
+        } else {
+          ranges =  undefined
+        }
+        if (ranges) {
+          start = ranges[0];
+          stop = ranges[1];
+        }
+      }
+
+
+
       if (decoration == 'arc') {
         ctx.beginPath();
         ctx.strokeStyle = color;
-        // ctx.strokeStyle = 'rgba(100, 0, 0, 0.5)';
         ctx.lineWidth = width;
         ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
         ctx.stroke();
@@ -432,8 +500,7 @@
 
         // Draw arc with arrow head
         ctx.beginPath();
-        // ctx.fillStyle = color;
-        ctx.fillStyle = 'rgba(100, 0, 0, 0.5)';
+        ctx.fillStyle = color;
         ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
@@ -568,7 +635,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Nov 24 2016 13:16:49 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
         </footer>
     </div>
 </div>

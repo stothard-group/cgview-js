@@ -73,8 +73,8 @@
      * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
      */
     get color() {
-      // return this._color || this.featureSlot.color
-      return this._color.rgba
+      // return this._color.rgba
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgba;
     }
 
     set color(color) {
@@ -85,7 +85,8 @@
      * @member {String} - Get or set the opacity. 
      */
     get opacity() {
-      return this._color.opacity
+      // return this._color.opacity
+      return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
     }
 
     set opacity(value) {
@@ -101,6 +102,19 @@
 
     set decoration(value) {
       this._decoration = value;
+    }
+
+    /**
+     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
+     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
+     *   override the color and opacity set for this feature.
+     */
+    get legendItem() {
+      return this._legendItem;
+    }
+
+    set legendItem(value) {
+      this._legendItem = value;
     }
 
 

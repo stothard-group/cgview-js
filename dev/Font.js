@@ -69,8 +69,8 @@
       this._generateFont();
     }
 
-    height() {
-      return size
+    get height() {
+      return this.size
     }
 
     // FIXME: This is going to be slow if used a lot

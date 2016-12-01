@@ -24,16 +24,20 @@
 
   <script src="javascript/xml2json.min.js"></script>
   <script src="javascript/canvas2svg.js"></script>
+  <script src="javascript/jscolor.min.js"></script>
   <!-- <link rel="stylesheet" href="stylesheets/cgview.css" /> -->
 </head>
 <body>
   <div id='cgview'></div>
   <a id='download-svg' href='#'>SVG</a>
+  <a href='docs/index.html'>Docs</a>
   <div id='svg-out'></div>
 
   <script>
     var cgv = new CGV.Viewer('#cgview', {
       // width: 1000,
+      // width: 1500,
+      // height: 950,
       debug: true
     });
     window.cgv = cgv;
@@ -42,7 +46,8 @@
     $.ajax({
         // url: 'data/cgview_1_no_cg.json',
         // url: 'data/TEST_cgview_1.json',
-        url: 'data/cgview_1.json',
+        // url: 'data/cgview_1.json',
+        url: 'data/cgview_legends.json',
         // url: 'data/cgview_3.json',
         // url: 'data/cgview-94889.json',
         dataType: 'json',

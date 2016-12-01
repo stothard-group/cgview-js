@@ -43,6 +43,21 @@
         });
       }
 
+      // Associate features with LegendItems
+      var features = viewer.features();
+      var swatchedLegendItems = viewer.swatchedLegendItems();
+      var itemsLength = swatchedLegendItems.length;
+      var feature, legendItem;
+      for (var i = 0, len = features.length; i < len; i++) {
+        feature = features[i];
+        for (var j = 0; j < itemsLength; j++) {
+          legendItem = swatchedLegendItems[j];
+          if (feature._color.rgba == legendItem.swatchColor) {
+            feature.legendItem = legendItem;
+            break
+          }
+        }
+      }
     }
 
     // Load data from conventionaly CGView XML file.

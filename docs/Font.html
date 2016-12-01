@@ -307,132 +307,257 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.js.html">Source: IO.js</h1>
+        <h1 class="page-title" data-filename="Font.html">Class: Font</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>// Static methods for converting XML &lt;-> JSON
-// NOTE: xml2json required for conversions
-// https://github.com/abdmob/x2js
-// Class for reading and writing JSON
-//////////////////////////////////////////////////////////////////////////////
-// IO
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    Font
+    </h2>
+    
+</header>  
 
-  class IO {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Font">
+            
+            new Font<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Font.js.html">Font.js</a>, <a href="Font.js.html#line11">line 11</a>
+        </div>
+        
+    </div>
 
-    /**
-     * Interface for reading and writing data to and from CGView
-     * @param {Viewer} viewer - Viewer stuff...
-     */
-    constructor(viewer) {
-      this._viewer = viewer;
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The Font class is meant to store fonts in a simple and consistent manner..</p>
+    </div>
+    
 
-    /**
-     * Load data from new JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
-     */
-    load_json(json) {
-      var viewer = this._viewer;
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-      // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
-      // ...
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-      // Load FeatureSlots
-      if (json.featureSlots) {
-        json.featureSlots.forEach((slotData) => {
-          new CGV.FeatureSlot(viewer, slotData);
-        });
-      }
+    
+    
 
-      // Load Legends
-      if (json.legends) {
-        json.legends.forEach((legendData) => {
-          new CGV.Legend(viewer, legendData);
-        });
-      }
+    
 
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    // Load data from conventionaly CGView XML file.
-    load_xml(xml) {
-      var json = IO.xml_to_json(xml);
-      this.load_json(json);
-    }
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="asCss">asCss</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the font as canvas usable string.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    static xml_to_json(xml) {
-      if (!window.X2JS) {
-        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
-        return
-      }
-      var x2js = new X2JS({ attributePrefix: '' });
-      // var json = x2js.xml_str2json(xml);
-      var json = xmlToJson(xml);
-      // var cgview = json.cgview
-      // cgview.featureSlots = cgview.featureSlot
-      // delete cgview.featureSlot
-      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-      return json
-    }
+    
+    
+</dd>
 
-    static json_to_xml(json) {
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="font">font</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the font as canvas usable string.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-  }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-  // Changes XML to JSON
-  // function xmlToJson(xml) {
-  //   // Create the return object
-  //   var obj = {};
-  //
-  //   if (xml.nodeType == 1) { // element
-  //     // do attributes
-  //     if (xml.attributes.length > 0) {
-  //     obj["@attributes"] = {};
-  //       for (var j = 0; j &lt; xml.attributes.length; j++) {
-  //         var attribute = xml.attributes.item(j);
-  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-  //       }
-  //     }
-  //   } else if (xml.nodeType == 3) { // text
-  //     obj = xml.nodeValue;
-  //   }
-  //
-  //   // do children
-  //   if (xml.hasChildNodes()) {
-  //     for(var i = 0; i &lt; xml.childNodes.length; i++) {
-  //       var item = xml.childNodes.item(i);
-  //       var nodeName = item.nodeName;
-  //       if (typeof(obj[nodeName]) == "undefined") {
-  //         obj[nodeName] = xmlToJson(item);
-  //       } else {
-  //         if (typeof(obj[nodeName].push) == "undefined") {
-  //           var old = obj[nodeName];
-  //           obj[nodeName] = [];
-  //           obj[nodeName].push(old);
-  //         }
-  //         obj[nodeName].push(xmlToJson(item));
-  //       }
-  //     }
-  //   }
-  //   return obj;
-  // };
+    
+    
+</dd>
 
-  CGV.IO = IO;
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="font">font</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Set the font using a string with the format: font-family,style,size</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-})(CGView);
-</code></pre>
-        </article>
-    </section>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -441,7 +566,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 01 2016 09:28:17 GMT-0700 (MST)
         </footer>
     </div>
 </div>

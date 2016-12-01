@@ -47,6 +47,18 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
       });
 
+      d3.select(this.canvas.canvasNode).on('click', () => {
+        console.log('CLICK')
+        var swatchedLegendItems = this.swatchedLegendItems();
+        var pos = d3.mouse(this.canvas.canvasNode);
+        var pt = {x: CGV.pixel(pos[0]), y: CGV.pixel(pos[1])};
+        for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
+          if ( swatchedLegendItems[i].swatchContainsPoint(pt) ) {
+            console.log('SWATCH')
+          }
+        }
+
+      });
       // this.full_draw();
     }
 
@@ -159,6 +171,27 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io.load_json(json);
     }
 
+  /**
+   * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the FeatureSlots in the viewer.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+   * @return {CGArray}
+   */
+    features(term) {
+      var features = new CGV.CGArray();
+      for (var i=0, len=this._featureSlots.length; i < len; i++) {
+        features.merge(this._featureSlots[i]._features);
+      }
+      return features.get(term);
+    }
+
+    swatchedLegendItems(term) {
+      var items = new CGV.CGArray();
+      for (var i=0, len=this._legends.length; i < len; i++) {
+        items.merge( this._legends[i]._legendItems.filter( (item) => {return item.drawSwatch}) );
+      }
+      return items.get(term);
+    }
+
     // load_xml(xml) {
     //   this._io.load_xml(xml);
     // }
@@ -204,6 +237,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       var residualSlotThickness = 0;
 
+      // FetaureSlots
       for (var i = 0, len = this._featureSlots.length; i < len; i++) {
         // TESTING
         // if ([0].indexOf(i) == -1) {
@@ -227,8 +261,15 @@ if (window.CGV === undefined) window.CGV = CGView;
           // Draw Slot
           slot.draw(this.canvas, fast, slotRadius, slotThickness);
         }
+
       }
 
+      // Legends
+      for (var i = 0, len = this._legends.length; i < len; i++) {
+        this._legends[i].draw(this.ctx);
+      }
+
+      // Ruler
       this.ruler.draw(reverseRadius, directRadius);
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);

@@ -5,7 +5,7 @@
 
   CGV.Viewer.prototype.initialize_zooming = function() {
     var self = this;
-    var zoomMax = 200;
+    var zoomMax = 1000;
     self._zoom = d3.zoom()
       .scaleExtent([1, zoomMax])
       .on('start', zoomstart)
