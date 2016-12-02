@@ -4,7 +4,7 @@
  */
 (function(window, document, undefined) {
 
-    var picker, slide, hueOffset = 15, svgNS = 'http://www.w3.org/2000/svg';
+    var picker, slide, alpha, hueOffset = 15, svgNS = 'http://www.w3.org/2000/svg';
 
     // This HTML snippet is inserted into the innerHTML property of the passed color picker element
     // when the no-hassle call to ColorPicker() is used, i.e. ColorPicker(function(hex, hsv, rgb) { ... });
@@ -43,19 +43,6 @@
       }
       return mouse
     }
-    // function mousePosition(evt) {
-    //     // IE:
-    //     if (window.event && window.event.contentOverflow !== undefined) {
-    //         return { x: window.event.offsetX, y: window.event.offsetY };
-    //     }
-    //     // Webkit:
-    //     if (evt.offsetX !== undefined && evt.offsetY !== undefined) {
-    //         return { x: evt.offsetX, y: evt.offsetY };
-    //     }
-    //     // Firefox:
-    //     var wrapper = evt.target.parentNode.parentNode;
-    //     return { x: evt.layerX - wrapper.offsetLeft, y: evt.layerY - wrapper.offsetTop };
-    // }
 
     /**
      * Create SVG element.
@@ -118,6 +105,29 @@
                  ]
                 );
 
+      alpha = $('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100%', height: '100%' },
+                [
+                    $('defs', {}, 
+                      [
+                        $('linearGradient', { id: 'gradient-alpha' },
+                          [
+                              $('stop', { offset: '0%', 'stop-color': '#FFFFFF', 'stop-opacity': '0' }),
+                              $('stop', { offset: '100%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' })
+                          ]
+                         ),
+                        $('pattern', { id: 'alpha-squares', x: '0', y: '0', width: '10', height: '10', patternUnits: 'userSpaceOnUse' },
+                          [
+                            $('rect', { x: '0', y: '0', width: '10', height: '10', fill: 'white'}),
+                            $('rect', { x: '0', y: '0', width: '5', height: '5', fill: 'lightgray'}),
+                            $('rect', { x: '5', y: '5', width: '5', height: '5', fill: 'lightgray'})
+                          ]
+                        )
+                      ]
+                    ),
+                    $('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#alpha-squares)'}),
+                    $('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#gradient-alpha)'})
+                ]
+               );
 
     /**
      * Convert HSV representation to RGB HEX string.
@@ -182,6 +192,9 @@
         var pickerColor = hsv2rgb({ h: ctx.h, s: 1, v: 1 });
         var c = hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v });
         pickerElement.style.backgroundColor = pickerColor.hex;
+        // ctx.alphaElement.style.backgroundColor = hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex;
+        d3.selectAll('#alpha stop').attr('stop-color', hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex);
+         console.log(ctx.alphaElement.style.backgroundColor)
         ctx.callback && ctx.callback(c.hex, { h: ctx.h - hueOffset, s: ctx.s, v: ctx.v }, { r: c.r, g: c.g, b: c.b }, undefined, mouse);
       }
     };
@@ -198,6 +211,8 @@
         ctx.s = mouse.x / width;
         ctx.v = (height - mouse.y) / height;
         var c = hsv2rgb(ctx);
+        // ctx.alphaElement.style.backgroundColor = hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex;
+        d3.selectAll('#alpha stop').attr('stop-color', hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex);
         ctx.callback && ctx.callback(c.hex, { h: ctx.h - hueOffset, s: ctx.s, v: ctx.v }, { r: c.r, g: c.g, b: c.b }, mouse);
       }
     };
@@ -212,9 +227,9 @@
      * @param {DOMElement} pickerElement HSV picker element.
      * @param {Function} callback Called whenever the color is changed provided chosen color in RGB HEX format as the only argument.
      */
-    function ColorPicker(slideElement, pickerElement, callback) {
+    function ColorPicker(slideElement, pickerElement, alphaElement, callback) {
         
-        if (!(this instanceof ColorPicker)) return new ColorPicker(slideElement, pickerElement, callback);
+        if (!(this instanceof ColorPicker)) return new ColorPicker(slideElement, pickerElement, alphaElement, callback);
 
         this.h = 0;
         this.s = 1;
@@ -245,6 +260,7 @@
             this.callback = callback;
             this.pickerElement = pickerElement;
             this.slideElement = slideElement;
+            this.alphaElement = alphaElement;
         }
 
         // Generate uniq IDs for linearGradients so that we don't have the same IDs within one document.
@@ -274,6 +290,7 @@
 
         this.slideElement.appendChild(slideClone);
         this.pickerElement.appendChild(pickerClone);
+        this.alphaElement.appendChild(alpha);
 
         uniqID++;
 
@@ -285,18 +302,6 @@
         enableDragging(this, this.slideElement, slideListener(this, this.slideElement, this.pickerElement));
         enableDragging(this, this.pickerElement, pickerListener(this, this.pickerElement));
     };
-
-    function addEventListener(element, event, listener) {
-
-        if (element.attachEvent) {
-            
-            element.attachEvent('on' + event, listener);
-            
-        } else if (element.addEventListener) {
-
-            element.addEventListener(event, listener, false);
-        }
-    }
 
    /**
     * Enable drag&drop color selection.
@@ -319,49 +324,6 @@
           d3.select(document).on('mousemove.colordrag', null);
         });
       });
-
-
-        // addEventListener(element, 'mousedown', function(evt) {
-        //   mousedown = true; 
-        //   evt.preventDefault();
-        //   addEventListener(document, 'mousemove', listenerFunction);
-        // });
-        // addEventListener(document, 'mouseup',   function(evt) {
-        //   if (mousedown) {
-        //     // removeEventListener(document, 'mousemove', listenerFunction);
-        //     document.removeEventListener('mousemove', listenerFunction, false);
-        //   }
-        //   mousedown = false;
-        // });
-        // addEventListener(element, 'mouseout',  function(evt) { mousedown = false;  });
-        // addEventListener(element, 'mousemove', function(evt) {
-        //
-        //     if (mousedown) {
-        //
-        //         listener(evt);
-        //     }
-        // });
-
-        // addEventListener(element, 'mousedown', function(evt) { mousedown = true;  });
-        // addEventListener(document, 'mouseup',   function(evt) { mousedown = false;  });
-        // // addEventListener(element, 'mouseout',  function(evt) { mousedown = false;  });
-        // addEventListener(element, 'mousemove', function(evt) {
-        //
-        //     if (mousedown) {
-        //
-        //         listener(evt);
-        //     }
-        // });
-        // addEventListener(element, 'mousedown', function(evt) { mousedown = true;  });
-        // addEventListener(element, 'mouseup',   function(evt) { mousedown = false;  });
-        // addEventListener(element, 'mouseout',  function(evt) { mousedown = false;  });
-        // addEventListener(element, 'mousemove', function(evt) {
-        //
-        //     if (mousedown) {
-        //
-        //         listener(evt);
-        //     }
-        // });
     }
 
 
@@ -416,6 +378,8 @@
          };
          
          ctx.pickerElement.style.backgroundColor = hsv2rgb({ h: ctx.h, s: 1, v: 1 }).hex;
+         // ctx.alphaElement.style.backgroundColor = hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex;
+         d3.selectAll('#alpha stop').attr('stop-color', hsv2rgb({ h: ctx.h, s: ctx.s, v: ctx.v }).hex);
          ctx.callback && ctx.callback(hex || c.hex, { h: ctx.h, s: ctx.s, v: ctx.v }, rgb || { r: c.r, g: c.g, b: c.b }, mousePicker, mouseSlide);
          
          return ctx;

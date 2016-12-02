@@ -52,7 +52,7 @@
         feature = features[i];
         for (var j = 0; j < itemsLength; j++) {
           legendItem = swatchedLegendItems[j];
-          if (feature._color.rgba == legendItem.swatchColor) {
+          if (feature._color.rgbaString == legendItem.swatchColor) {
             feature.legendItem = legendItem;
             break
           }

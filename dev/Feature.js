@@ -74,11 +74,11 @@
      */
     get color() {
       // return this._color.rgba
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgba;
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
     }
 
     set color(color) {
-      this._color.color = color;
+      this._color.colorString = color;
     }
 
     /**

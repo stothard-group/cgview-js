@@ -95,7 +95,7 @@
      */
     get fontColor() {
       // TODO set to cgview font color if not defined
-      return this._fontColor.rgba
+      return this._fontColor.rgbaString
     }
 
     set fontColor(color) {
@@ -110,11 +110,11 @@
      * @member {String} - Get or set the swatchColor. TODO: reference COLOR class
      */
     get swatchColor() {
-      return this._swatchColor.rgba
+      return this._swatchColor.rgbaString
     }
 
     set swatchColor(color) {
-      this._swatchColor.color = color;
+      this._swatchColor.colorString = color;
     }
 
     /**

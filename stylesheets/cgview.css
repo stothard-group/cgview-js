@@ -1,0 +1,54 @@
+.cp-color-picker-wrapper {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  display: inline-block;
+  border: 1px black solid;
+  cursor: pointer;
+  overflow: hidden;
+}
+.cp-color-picker-indicator {
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  border: 2px groove black;
+  border-radius: 3px;
+}
+.cp-color-slider-wrapper {
+  width: 20px;
+  height: 100px;
+  margin-left: 5px;
+  position: relative;
+  display: inline-block;
+  border: 1px black solid;
+  cursor: pointer;
+}
+.cp-color-slider-indicator {
+  /* width: 100%; */
+  left: -2;
+  width: 22px; 
+  height: 3px;
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: white;
+}
+.cp-alpha-slider-wrapper {
+  width: 127px;
+  height: 10px;
+  margin-top: 5px;
+  position: relative;
+  display: block;
+  border: 1px black solid;
+  cursor: pointer;
+}
+.cp-alpha-slider-indicator {
+  width: 3px; 
+  /* height: 100%; */
+  height: 12px;
+  top: -2px;
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: white;
+}

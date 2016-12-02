@@ -57,7 +57,7 @@
      */
     get backgroundColor() {
       // TODO set to cgview background color if not defined
-      return this._backgroundColor.rgba
+      return this._backgroundColor.rgbaString
     }
 
     set backgroundColor(color) {
@@ -91,7 +91,7 @@
      */
     get fontColor() {
       // TODO set to cgview font color if not defined
-      return this._fontColor.rgba
+      return this._fontColor.rgbaString
     }
 
     set fontColor(color) {

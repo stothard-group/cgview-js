@@ -19,24 +19,17 @@
   <script src='dev/LegendItem.js'></script>
   <script src='dev/Debug.js'></script>
   <script src='dev/Color.js'></script>
+  <script src='dev/ColorPicker.js'></script>
   <script src='dev/Font.js'></script>
   <script src='dev/Utils.js'></script>
 
   <script src="javascript/xml2json.min.js"></script>
   <script src="javascript/canvas2svg.js"></script>
   <script src="javascript/colorpicker.js"></script>
-  <!-- <link rel="stylesheet" href="stylesheets/cgview.css" /> -->
+  <link rel="stylesheet" href="stylesheets/cgview.css" />
   <style type="text/css">
     #picker-wrapper {
       width: 100px;
-      height: 100px;
-      position: relative;
-      display: inline-block;
-      border: 1px black solid;
-      cursor: pointer;
-    }
-    #slider-wrapper {
-      width: 20px;
       height: 100px;
       position: relative;
       display: inline-block;
@@ -49,11 +42,35 @@
       position: absolute;
       border: 1px solid white;
     }
+    #slider-wrapper {
+      width: 20px;
+      height: 100px;
+      position: relative;
+      display: inline-block;
+      border: 1px black solid;
+      cursor: pointer;
+    }
     #slider-indicator {
       /* width: 100%; */
       left: -2;
       width: 22px; 
       height: 3px;
+      position: absolute;
+      border: 1px solid black;
+    }
+    #alpha-wrapper {
+      width: 120px;
+      height: 10px;
+      position: relative;
+      display: block;
+      border: 1px black solid;
+      cursor: pointer;
+    }
+    #alpha-indicator {
+      /* width: 100%; */
+      /* left: -2; */
+      width: 5px; 
+      height: 100%;
       position: absolute;
       border: 1px solid black;
     }
@@ -72,7 +89,12 @@
     <div id="slider"></div>
     <div id="slider-indicator"></div>
   </div>
+  <div id="alpha-wrapper">
+    <div id="alpha"></div>
+    <div id="alpha-indicator"></div>
+  </div>
 
+  <div id='my-color-picker'></div>
   <script>
     var cgv = new CGV.Viewer('#cgview', {
       // width: 1000,
@@ -98,7 +120,9 @@
         console.log('done!');
         cgv.draw();
         var color = cgv.swatchedLegendItems(1)._swatchColor;
-        cp.setRgb({r: color.red, g: color.green, b: color.blue});
+        // cp.setRgb({r: color.rgb.r, g: color.rgb.g, b: color.rgb.b});
+        cp.color = color;
+        cp.updateIndicators();
       },
       error: function(xhr, status, error) {
         console.log(status)
@@ -119,17 +143,27 @@
     ColorPicker.fixIndicators(
       document.getElementById('slider-indicator'),
       document.getElementById('picker-indicator'));
-    var cp = ColorPicker(
+    var cp2 = ColorPicker(
       document.getElementById('slider'),
       document.getElementById('picker'),
+      document.getElementById('alpha'),
       function(hex, hsv, rgb, pickerCoordinate, sliderCoordinate) {
         ColorPicker.positionIndicators(
           document.getElementById('slider-indicator'),
           document.getElementById('picker-indicator'),
           sliderCoordinate, pickerCoordinate
         );
-        cgv.swatchedLegendItems(1).swatchColor = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
-        cgv.draw_fast()
+        // cgv.swatchedLegendItems(1).swatchColor = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
+        // cgv.draw_fast()
+      });
+
+      var cp = new CGV.ColorPicker('my-color-picker', {
+        onChange: function(color) {
+          console.log(color.hsv)
+          cgv.swatchedLegendItems(1).swatchColor = color.rgbaString;
+          cgv.draw_fast();
+
+        }
       });
 
   </script>
