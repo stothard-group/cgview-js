@@ -52,3 +52,13 @@
   border-radius: 3px;
   background-color: white;
 }
+
+.cp-container {
+  position: absolute;
+}
+
+#my-color-picker {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+}

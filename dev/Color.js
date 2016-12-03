@@ -10,8 +10,15 @@
      * well as the opacity. All colors are stored as RGBA.
      * The colorString can be in these formats: ...
      */
-    constructor(colorString, options = {}) {
-      this.colorString = colorString;
+    constructor(color, options = {}) {
+      if (typeof color === 'string' || color instanceof String) {
+        this.colorString = color;
+      } else {
+        var keys = new CGV.CGArray(Object.keys(color));
+        if (keys.contains('h') && keys.contains('s') && keys.contains('v')) {
+          this.hsv = color;
+        }
+      }
     }
 
     /**

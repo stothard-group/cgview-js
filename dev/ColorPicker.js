@@ -15,7 +15,12 @@
       this.container = d3.select('#' + containerId).node();
       this._width = CGV.defaultFor(options.width, 100);
       this._height = CGV.defaultFor(options.height, 100);
-      this.color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
+
+      // this.color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
+      var color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
+      this.hsv = color.hsv;
+      this.opacity = color.opacity;
+
       this.onChange = options.onChange;
 
       this.container.innerHTML = this._colorpickerHTMLSnippet();
@@ -42,12 +47,12 @@
     }
 
     updateIndicators() {
-      var hsv = this.color.hsv;
+      var hsv = this.hsv;
       var slideY = hsv.h * this.slideElement.offsetHeight / 360;
       var pickerHeight = this.pickerElement.offsetHeight;
       var pickerX = hsv.s * this.pickerElement.offsetWidth;
       var pickerY = pickerHeight - (hsv.v * pickerHeight);
-      var alphaX = this.alphaElement.offsetWidth * this.color.opacity;
+      var alphaX = this.alphaElement.offsetWidth * this.opacity;
 
       var pickerIndicator = this.pickerIndicator;
       var slideIndicator = this.slideIndicator;
@@ -192,15 +197,17 @@
 
       return function() {
         var mouse = mousePosition(slideElement);
-        var hsv = cp.color.hsv;
-        hsv.h = mouse.y / slideElement.offsetHeight * 360// + cp.hueOffset;
+        // var hsv = cp.color.hsv;
+        cp.hsv.h = mouse.y / slideElement.offsetHeight * 360// + cp.hueOffset;
         // Hack to fix indicator bug
-        if (hsv.h >= 359) { hsv.h = 359}
-        cp.color.hsv = hsv;
-        pickerElement.style.backgroundColor = cp.color.rgbString;
-        d3.select(alphaElement).selectAll('stop').attr('stop-color', cp.color.rgbString);
+        if (cp.hsv.h >= 359) { cp.hsv.h = 359}
+        var color = new CGV.Color({h: cp.hsv.h, s: 1, v: 1});
+        color.opacity = cp.opacity;
+        pickerElement.style.backgroundColor = color.rgbString;
+        color.hsv = cp.hsv;
+        d3.select(alphaElement).selectAll('stop').attr('stop-color', color.rgbString);
         cp.updateIndicators();
-        cp.onChange && cp.onChange(cp.color);
+        cp.onChange && cp.onChange(color);
       }
     };
 
@@ -216,13 +223,15 @@
         var width = pickerElement.offsetWidth;
         var height = pickerElement.offsetHeight;
         var mouse = mousePosition(pickerElement);
-        var hsv = cp.color.hsv;
-        hsv.s = mouse.x / width;
-        hsv.v = (height - mouse.y) / height;
-        cp.color.hsv = hsv
+        // var hsv = cp.color.hsv;
+        cp.hsv.s = mouse.x / width;
+        cp.hsv.v = (height - mouse.y) / height;
+        var color = new CGV.Color(cp.hsv);
+        color.opacity = cp.opacity;
+        // cp.color.hsv = hsv
         cp.updateIndicators();
-        d3.select(alphaElement).selectAll('stop').attr('stop-color', cp.color.rgbString);
-        cp.onChange && cp.onChange(cp.color);
+        d3.select(alphaElement).selectAll('stop').attr('stop-color', color.rgbString);
+        cp.onChange && cp.onChange(color);
       }
     }
 
@@ -236,9 +245,11 @@
       return function() {
         var mouse = mousePosition(alphaElement);
         var opacity = mouse.x / alphaElement.offsetWidth;
-        cp.color.opacity = opacity;
+        cp.opacity = opacity;
+        var color = new CGV.Color(cp.hsv);
+        color.opacity = opacity;
         cp.updateIndicators();
-        cp.onChange && cp.onChange(cp.color);
+        cp.onChange && cp.onChange(color);
       }
     };
 
