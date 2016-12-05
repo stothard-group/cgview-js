@@ -43,11 +43,13 @@
         });
       }
 
-      // Associate features with LegendItems
-      var features = viewer.features();
+      // Associate features and arcplots with LegendItems
       var swatchedLegendItems = viewer.swatchedLegendItems();
       var itemsLength = swatchedLegendItems.length;
-      var feature, legendItem;
+      var legendItem;
+      // Features
+      var features = viewer.features();
+      var feature;
       for (var i = 0, len = features.length; i < len; i++) {
         feature = features[i];
         for (var j = 0; j < itemsLength; j++) {
@@ -55,6 +57,24 @@
           if (feature._color.rgbaString == legendItem.swatchColor) {
             feature.legendItem = legendItem;
             break
+          }
+        }
+      }
+      // ArcPlots
+      var arcPlots = viewer.arcPlots();
+      var arcPlot;
+      for (var i = 0, len = arcPlots.length; i < len; i++) {
+        arcPlot = arcPlots[i];
+        for (var j = 0; j < itemsLength; j++) {
+          legendItem = swatchedLegendItems[j];
+          if (arcPlot._color.rgbaString == legendItem.swatchColor) {
+            arcPlot.legendItem = legendItem;
+          }
+          if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor) {
+            arcPlot.legendItemPositive = legendItem;
+          }
+          if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor) {
+            arcPlot.legendItemNegative = legendItem;
           }
         }
       }

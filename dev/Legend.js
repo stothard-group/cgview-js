@@ -208,6 +208,13 @@
             swatchX = this.originX + this.width - this.padding - swatchWidth;
             textX = swatchX - swatchPadding;
           }
+          // Swatch is selected
+
+          if (legendItem.swatchSelected) {
+            var border = CGV.pixel(2)
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
+          }
           // Draw Swatch
           ctx.fillStyle = legendItem.swatchColor;
           ctx.fillRect(swatchX, y, swatchWidth, swatchWidth);

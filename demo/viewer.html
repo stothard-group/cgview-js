@@ -1,9 +1,11 @@
 <html>
 <head>
   <title>CGView</title>
-  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- <script src="http://code.jquery.com/jquery&#45;1.11.1.min.js"></script> -->
+  <script src="javascript/jquery-1.11.1.min.js"></script>
   <!-- Local -->
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+  <script src="javascript/d3.v4.min.js"></script>
   <!-- <script src='src/jspectra_viewer.js'></script> -->
   <script src='dev/Viewer.js'></script>
   <script src='dev/Viewer-Drag.js'></script>
@@ -121,9 +123,9 @@
         cgv.draw();
         var color = cgv.swatchedLegendItems(1)._swatchColor;
         // cp.setRgb({r: color.rgb.r, g: color.rgb.g, b: color.rgb.b});
-        cp.hsv = color.hsv;
-        cp.opacity = color.opacity;
-        cp.updateIndicators();
+        // cp.hsv = color.hsv;
+        // cp.opacity = color.opacity;
+        // cp.updateIndicators();
       },
       error: function(xhr, status, error) {
         console.log(status)
@@ -158,14 +160,14 @@
     //     // cgv.draw_fast()
     //   });
 
-      var cp = new CGV.ColorPicker('my-color-picker', {
-        onChange: function(color) {
-          // console.log(color.hsv)
-          cgv.swatchedLegendItems(1).swatchColor = color.rgbaString;
-          cgv.draw_fast();
-
-        }
-      });
+      // var cp = new CGV.ColorPicker('my-color-picker', {
+      //   onChange: function(color) {
+      //     // console.log(color.hsv)
+      //     cgv.swatchedLegendItems(1).swatchColor = color.rgbaString;
+      //     cgv.draw_fast();
+      //
+      //   }
+      // });
 
   </script>
 </body>

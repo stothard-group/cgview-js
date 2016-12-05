@@ -13,7 +13,7 @@
       // this.color = data.color;
       // this._opacity = data.opacity;
       this._color = new CGV.Color(data.color);
-      this.opacity = data.opacity;
+      this.opacity = parseFloat(data.opacity);
       this._start = Number(data.start);
       this._stop = Number(data.stop);
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;

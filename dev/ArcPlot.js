@@ -12,9 +12,9 @@
       this.featureSlot = featureSlot;
       this._bp = new CGV.CGArray();
       this._proportionOfThickness =  new CGV.CGArray();
-      this._color = CGV.defaultFor(data.color, 'black');
-      this._colorPositive = data.colorPositive;
-      this._colorNegative = data.colorNegative;
+      this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
+      this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
+      this._colorNegative = data.colorNegative ? new CGV.Color(data.colorNegative) : undefined;
 
       if (data.bp) {
         this._bp = new CGV.CGArray(data.bp);
@@ -48,15 +48,62 @@
     }
 
     get color() {
-      return this._color || this.featureSlot.color
+      // return this._color || this.featureSlot.color
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
     }
 
     get colorPositive() {
-      return this._colorPositive || this._color
+      // return this._colorPositive || this._color
+      // return (this.legendPositiveItem) ? this.legendItemPositive.swatchColor : this._colorPositive.rgbaString;
+
+      if (this.legendItemPositive) {
+        return this.legendItemPositive.swatchColor
+      } else if (this._colorPositive) {
+        return this._colorPositive.rgbaString
+      } else {
+        return this.color
+      }
     }
 
     get colorNegative() {
-      return this._colorNegative || this._color
+      // return this._colorNegative || this._color
+      // return (this.legendNegativeItem) ? this.legendItemNegative.swatchColor : this._colorNegative.rgbaString;
+      if (this.legendItemNegative) {
+        return this.legendItemNegative.swatchColor
+      } else if (this._colorNegative) {
+        return this._colorNegative.rgbaString
+      } else {
+        return this.color
+      }
+    }
+
+    /**
+     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this plot,
+     *   the LegendItem swatch Color and Opacity will be used for drawing this plot. The swatch settings will
+     *   override the color and opacity set for this plot.
+     */
+    get legendItem() {
+      return this._legendItem;
+    }
+
+    set legendItem(value) {
+      this._legendItem = value;
+    }
+
+    get legendItemPositive() {
+      return this._legendItemPositive;
+    }
+
+    set legendItemPositive(value) {
+      this._legendItemPositive = value;
+    }
+
+    get legendItemNegative() {
+      return this._legendItemNegative;
+    }
+
+    set legendItemNegative(value) {
+      this._legendItemNegative = value;
     }
 
     draw(canvas, slotRadius, slotThickness, fast, start, stop) {
@@ -118,63 +165,63 @@
       ctx.fillStyle = color;
       ctx.fill();
     }
-
-    // To add a fast mode use a step when creating the indices
-    _drawPath2(canvas, slotRadius, slotThickness, fast,  start, stop, color, orientation) {
-      fast = false
-      var ctx = canvas.ctx;
-      var scale = canvas.scale;
-      var bp = this._bp;
-      var prop = this._proportionOfThickness;
-      // This is the difference in radial pixels required before a new arc is draw
-      // var radialDiff = fast ? 1 : 0.5;
-      var radialDiff = 0.5;
-
-      // Find position indices that include start and stop bp
-      var indices;
-      var startBp = start ? start : 1;
-      var stopBp = stop ? stop : this.viewer.sequenceLength;
-      var startIndex = CGV.indexOfValue(this._bp, startBp, false);
-      var stopIndex = CGV.indexOfValue(this._bp, stopBp, true);
-      var step = fast ? 2 : 1
-      if (stopBp >= startBp) {
-        indices = d3.range(startIndex, stopIndex + 1, step);
-      } else {
-        // Start and stop overlap 1
-        indices = d3.range(startIndex, this._bp.length, step);
-        indices = indices.concat(d3.range(0, stopIndex + 1, step));
-      }
-
-      ctx.beginPath();
-      ctx.lineWidth = 0.0001;
-      var centerX = scale.x(0);
-      var centerY = scale.y(0);
-
-      var savedR = slotRadius;
-      var saved_bp = bp[indices[0]];
-      var currentR;
-      var index, currentProp, currentBp;
-      for (var i = 0, len = indices.length; i < len; i++) {
-        index = indices[i];
-        currentProp = prop[index];
-        currentBp = bp[index];
-        currentR = slotRadius + prop[index] * slotThickness;
-        // TODO: if going from positive to negative need to save currentR as 0 (slotRadius)
-        if ( this._keepPoint(currentProp, orientation) ){
-          if ( Math.abs(currentR - savedR) >= radialDiff ){
-            ctx.arc(centerX, centerY, currentR, scale.bp(saved_bp), scale.bp(currentBp), false);
-            savedR = currentR;
-            saved_bp = currentBp
-          }
-        } else {
-          savedR = slotRadius;
-        }
-      }
-      ctx.arc(centerX, centerY, savedR, scale.bp(saved_bp), scale.bp(stopBp), false);
-      ctx.arc(centerX, centerY, slotRadius, scale.bp(stopBp), scale.bp(startBp), true);
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
+    //
+    // // To add a fast mode use a step when creating the indices
+    // _drawPath2(canvas, slotRadius, slotThickness, fast,  start, stop, color, orientation) {
+    //   fast = false
+    //   var ctx = canvas.ctx;
+    //   var scale = canvas.scale;
+    //   var bp = this._bp;
+    //   var prop = this._proportionOfThickness;
+    //   // This is the difference in radial pixels required before a new arc is draw
+    //   // var radialDiff = fast ? 1 : 0.5;
+    //   var radialDiff = 0.5;
+    //
+    //   // Find position indices that include start and stop bp
+    //   var indices;
+    //   var startBp = start ? start : 1;
+    //   var stopBp = stop ? stop : this.viewer.sequenceLength;
+    //   var startIndex = CGV.indexOfValue(this._bp, startBp, false);
+    //   var stopIndex = CGV.indexOfValue(this._bp, stopBp, true);
+    //   var step = fast ? 2 : 1
+    //   if (stopBp >= startBp) {
+    //     indices = d3.range(startIndex, stopIndex + 1, step);
+    //   } else {
+    //     // Start and stop overlap 1
+    //     indices = d3.range(startIndex, this._bp.length, step);
+    //     indices = indices.concat(d3.range(0, stopIndex + 1, step));
+    //   }
+    //
+    //   ctx.beginPath();
+    //   ctx.lineWidth = 0.0001;
+    //   var centerX = scale.x(0);
+    //   var centerY = scale.y(0);
+    //
+    //   var savedR = slotRadius;
+    //   var saved_bp = bp[indices[0]];
+    //   var currentR;
+    //   var index, currentProp, currentBp;
+    //   for (var i = 0, len = indices.length; i < len; i++) {
+    //     index = indices[i];
+    //     currentProp = prop[index];
+    //     currentBp = bp[index];
+    //     currentR = slotRadius + prop[index] * slotThickness;
+    //     // TODO: if going from positive to negative need to save currentR as 0 (slotRadius)
+    //     if ( this._keepPoint(currentProp, orientation) ){
+    //       if ( Math.abs(currentR - savedR) >= radialDiff ){
+    //         ctx.arc(centerX, centerY, currentR, scale.bp(saved_bp), scale.bp(currentBp), false);
+    //         savedR = currentR;
+    //         saved_bp = currentBp
+    //       }
+    //     } else {
+    //       savedR = slotRadius;
+    //     }
+    //   }
+    //   ctx.arc(centerX, centerY, savedR, scale.bp(saved_bp), scale.bp(stopBp), false);
+    //   ctx.arc(centerX, centerY, slotRadius, scale.bp(stopBp), scale.bp(startBp), true);
+    //   ctx.fillStyle = color;
+    //   ctx.fill();
+    // }
 
 
 

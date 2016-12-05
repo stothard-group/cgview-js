@@ -13,8 +13,9 @@ if (window.CGV === undefined) window.CGV = CGView;
      * Create a viewer
      * @param {string} container_id - The ID of the element to contain the viewer
      */
-    constructor(container_id, options = {}) {
-      this._container = d3.select(container_id);
+    constructor(containerId, options = {}) {
+      this.containerId = containerId.replace('#', '');
+      this._container = d3.select(containerId);
       // this.scale = {};
       // Get options
       this._width = CGV.defaultFor(options.width, 600);
@@ -54,7 +55,36 @@ if (window.CGV === undefined) window.CGV = CGView;
         var pt = {x: CGV.pixel(pos[0]), y: CGV.pixel(pos[1])};
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i].swatchContainsPoint(pt) ) {
+            var legendItem = swatchedLegendItems[i];
             console.log('SWATCH')
+            // Clear previous selections
+            for (var j = 0, len = swatchedLegendItems.length; j < len; j++) {
+              swatchedLegendItems[j].swatchSelected = false;
+            }
+            if (this.colorPicker == undefined) {
+              // Add element to contain picker
+              var colorPickerId = this.containerId + '-color-picker';
+              this._container.append('div')
+                .classed('cp-color-picker', true)
+                .attr('id', this.containerId + '-color-picker');
+              // Create Color Picker
+              this.colorPicker = new CGV.ColorPicker(colorPickerId);
+            }
+            var cp = this.colorPicker;
+            // cp.hsv = legendItem._swatchColor.hsv;
+            // cp.opacity = legendItem._swatchColor.opacity;
+            legendItem.swatchSelected = true;
+            cp.setPosition({x: 500, y: 140});
+            cp.onChange = function(color) {
+              legendItem.swatchColor = color.rgbaString;
+              cgv.draw_fast();
+            };
+            cp.onClose = function() {
+              legendItem.swatchSelected = false;
+              cgv.draw_fast();
+            };
+            cp.setColor(legendItem._swatchColor.rgba);
+            cp.open();
           }
         }
 
@@ -182,6 +212,23 @@ if (window.CGV === undefined) window.CGV = CGView;
         features.merge(this._featureSlots[i]._features);
       }
       return features.get(term);
+    }
+
+  /**
+   * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the FeatureSlots in the viewer.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+   * @return {CGArray}
+   */
+    arcPlots(term) {
+      var plots = new CGV.CGArray();
+      var arcPlot;
+      for (var i=0, len=this._featureSlots.length; i < len; i++) {
+        arcPlot = this._featureSlots[i]._arcPlot;
+        if (arcPlot) {
+          plots.push(arcPlot);
+        }
+      }
+      return plots.get(term);
     }
 
     swatchedLegendItems(term) {

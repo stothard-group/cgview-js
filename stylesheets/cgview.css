@@ -53,12 +53,65 @@
   background-color: white;
 }
 
-.cp-container {
+.cp-dialog {
+  position: absolute;
+  border: 1px solid black;
+  padding: 5px;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+/* Area at bottom of dialog buttons */
+.cp-dialog-footer {
+  /* height: 30px; */
+  /* border-top: 1px solid #CCC; */
+  padding-top: 5px;
+  text-align: right;
+}
+.cp-footer-color-section {
+  width: 50%;
+  text-align: left;
+  display: inline-block;
+}
+.cp-footer-button-section {
+  width: 50%;
+  text-align: right;
+  display: inline-block;
+}
+/* CSS styles similar to Bootstrap 3 */
+.cp-button {
+  color: #333;
+  font-size: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.cp-color-original,
+.cp-color-current {
+  display: inline-block;
+  height: 15px;
+  width: 20px;
+  border: 1px solid black;
+}
+.cp-color-current {
+  border-left: none;
+}
+.cp-color-original {
+  border-right: none;
+  cursor: pointer;
+}
+
+.cp-color-picker {
   position: absolute;
 }
 
-#my-color-picker {
-  position: absolute;
-  top: 100px;
-  left: 100px;
-}
+/* #my-color-picker { */
+/*  */
+/*  */
+/*   position: absolute; */
+/*   top: 100px; */
+/*   left: 100px; */
+/* } */

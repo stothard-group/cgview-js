@@ -11,15 +11,27 @@
      * The colorString can be in these formats: ...
      */
     constructor(color, options = {}) {
+      this.rawColor = color;
+    }
+
+    /**
+     * Set the color using, RGB, RGBA, Hex, etc String, or RGB/A, HSV object
+     */
+    set rawColor(color) {
       if (typeof color === 'string' || color instanceof String) {
         this.colorString = color;
       } else {
         var keys = new CGV.CGArray(Object.keys(color));
         if (keys.contains('h') && keys.contains('s') && keys.contains('v')) {
           this.hsv = color;
+        } else if (keys.contains('r') && keys.contains('g') && keys.contains('b') && keys.contains('a')) {
+          this.rgba = color;
+        } else if (keys.contains('r') && keys.contains('g') && keys.contains('b')) {
+          this.rgb = color;
         }
       }
     }
+
 
     /**
      * Return the color as an RGBA string.
@@ -60,7 +72,7 @@
     }
 
     get rgba() {
-      var result = /^rgba\((\d+),(\d+),(\d+),([\d]]+)/.exec(this.rgbaString);
+      var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
     }
 
@@ -120,6 +132,7 @@
     } else if ( /^rgb\(/.test(value) ) {
       return Color.rgbToRgba(value, opacity)
     } else if ( /^rgba\(/.test(value) ) {
+      // Remove spaces
       return value.replace(/ +/g, '')
     } else if ( /^hsl\(/.test(value) ) {
       return Color.hslToRgba(value, opacity)

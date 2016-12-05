@@ -9,6 +9,7 @@
     /**
      * The ColorPicker
      * Based on Flexi Color Picker: http://www.daviddurman.com/flexi-color-picker/
+     * Color is stored interanlly as HSV, as well as a Color object.
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId;
@@ -16,20 +17,25 @@
       this._width = CGV.defaultFor(options.width, 100);
       this._height = CGV.defaultFor(options.height, 100);
 
-      // this.color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
-      var color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
-      this.hsv = color.hsv;
-      this.opacity = color.opacity;
+      this._color = new CGV.Color( CGV.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
+      this.hsv = this._color.hsv;
+      this.opacity = this._color.opacity;
 
       this.onChange = options.onChange;
+      this.onClose = options.onClose;
 
       this.container.innerHTML = this._colorpickerHTMLSnippet();
+      d3.select(this.container).classed('cp-dialog', true);
+      this.dialogElement = this.container.getElementsByClassName('cp-dialog')[0];
       this.slideElement = this.container.getElementsByClassName('cp-color-slider')[0];
       this.pickerElement = this.container.getElementsByClassName('cp-color-picker')[0];
       this.alphaElement = this.container.getElementsByClassName('cp-alpha-slider')[0];
       this.slideIndicator = this.container.getElementsByClassName('cp-color-slider-indicator')[0];
       this.pickerIndicator = this.container.getElementsByClassName('cp-color-picker-indicator')[0];
       this.alphaIndicator = this.container.getElementsByClassName('cp-alpha-slider-indicator')[0];
+      this.currentColorIndicator = this.container.getElementsByClassName('cp-color-current')[0];
+      this.originalColorIndicator = this.container.getElementsByClassName('cp-color-original')[0];
+      this.doneButton = this.container.getElementsByClassName('cp-done-button')[0];
       this._configureView();
 
       // Prevent the indicators from getting in the way of mouse events
@@ -40,10 +46,36 @@
       d3.select(this.slideElement).on('mousedown.click', this.slideListener());
       d3.select(this.pickerElement).on('mousedown.click', this.pickerListener());
       d3.select(this.alphaElement).on('mousedown.click', this.alphaListener());
+      d3.select(this.originalColorIndicator).on('mousedown.click', this.originalColorListener());
+      d3.select(this.doneButton).on('mousedown.click', this.doneListener());
 
       this.enableDragging(this, this.slideElement, this.slideListener());
       this.enableDragging(this, this.pickerElement, this.pickerListener());
       this.enableDragging(this, this.alphaElement, this.alphaListener());
+      this.enableDragging(this, this.container, this.dialogListener());
+    }
+
+    get color() {
+      return this._color
+    }
+
+    updateColor() {
+      this._color.hsv = this.hsv;
+      this._color.opacity = this.opacity;
+      this.updateIndicators();
+      var pickerRgbString = CGV.Color.rgbToString( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
+      this.pickerElement.style.backgroundColor = pickerRgbString;
+      d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
+      this.currentColorIndicator.style.backgroundColor = this.color.rgbaString;
+      this.onChange && this.onChange(this.color);
+    }
+
+    setColor(value) {
+      this._color.rawColor = value;
+      this.hsv = this._color.hsv;
+      this.opacity = this._color.opacity;
+      this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
+      this.updateColor();
     }
 
     updateIndicators() {
@@ -63,6 +95,11 @@
       alphaIndicator.style.left = (alphaX - alphaIndicator.offsetWidth/2) + 'px';
     }
 
+    setPosition(pos) {
+      this.container.style.left = pos.x;
+      this.container.style.top = pos.y;
+    }
+
     _colorpickerHTMLSnippet() {
       return [
         '<div class="cp-color-picker-wrapper">',
@@ -76,7 +113,17 @@
         '<div class="cp-alpha-slider-wrapper">',
               '<div class="cp-alpha-slider"></div>',
               '<div class="cp-alpha-slider-indicator"></div>',
+        '</div>',
+        '<div class="cp-dialog-footer">',
+              '<div class="cp-footer-color-section">',
+                  '<div class="cp-color-original"></div>',
+                  '<div class="cp-color-current"></div>',
+              '</div>',
+              '<div class="cp-footer-button-section">',
+                  '<button class="cp-done-button">Done</button>',
+              '</div>',
         '</div>'
+
       ].join('');
     }
 
@@ -170,14 +217,16 @@
     */
     enableDragging(ctx, element, listener) {
       d3.select(element).on('mousedown', function() {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        var mouseStart = mousePosition(element);
         d3.select(document).on('mousemove.colordrag', function() {
           if (document.selection) {
             document.selection.empty()
           } else {
             window.getSelection().removeAllRanges()
           }
-          // d3.event.preventDefault();
-          listener();
+          listener(mouseStart);
         });
         d3.select(document).on('mouseup', function() {
           d3.select(document).on('mousemove.colordrag', null);
@@ -192,22 +241,12 @@
     slideListener() {
       var cp = this;
       var slideElement = cp.slideElement;
-      var pickerElement = cp.pickerElement;
-      var alphaElement = cp.alphaElement;
-
       return function() {
         var mouse = mousePosition(slideElement);
-        // var hsv = cp.color.hsv;
         cp.hsv.h = mouse.y / slideElement.offsetHeight * 360// + cp.hueOffset;
         // Hack to fix indicator bug
         if (cp.hsv.h >= 359) { cp.hsv.h = 359}
-        var color = new CGV.Color({h: cp.hsv.h, s: 1, v: 1});
-        color.opacity = cp.opacity;
-        pickerElement.style.backgroundColor = color.rgbString;
-        color.hsv = cp.hsv;
-        d3.select(alphaElement).selectAll('stop').attr('stop-color', color.rgbString);
-        cp.updateIndicators();
-        cp.onChange && cp.onChange(color);
+        cp.updateColor();
       }
     };
 
@@ -218,20 +257,13 @@
     pickerListener() {
       var cp = this;
       var pickerElement = cp.pickerElement;
-      var alphaElement = cp.alphaElement;
       return function() {
         var width = pickerElement.offsetWidth;
         var height = pickerElement.offsetHeight;
         var mouse = mousePosition(pickerElement);
-        // var hsv = cp.color.hsv;
         cp.hsv.s = mouse.x / width;
         cp.hsv.v = (height - mouse.y) / height;
-        var color = new CGV.Color(cp.hsv);
-        color.opacity = cp.opacity;
-        // cp.color.hsv = hsv
-        cp.updateIndicators();
-        d3.select(alphaElement).selectAll('stop').attr('stop-color', color.rgbString);
-        cp.onChange && cp.onChange(color);
+        cp.updateColor();
       }
     }
 
@@ -244,15 +276,64 @@
       var alphaElement = cp.alphaElement;
       return function() {
         var mouse = mousePosition(alphaElement);
-        var opacity = mouse.x / alphaElement.offsetWidth;
-        cp.opacity = opacity;
-        var color = new CGV.Color(cp.hsv);
-        color.opacity = opacity;
-        cp.updateIndicators();
-        cp.onChange && cp.onChange(color);
+        cp.opacity = mouse.x / alphaElement.offsetWidth;
+        cp.updateColor();
       }
     };
 
+    /**
+     * Return click event handler for the dialog.
+     */  
+    dialogListener() {
+      var cp = this;
+      var container = cp.container;
+      return function(mouseStart) {
+        container.style.left = d3.event.pageX - mouseStart.x;
+        container.style.top = d3.event.pageY - mouseStart.y;
+      }
+    };
+
+
+    /**
+     * Return click event handler for the original color.
+     */  
+    originalColorListener() {
+      var cp = this;
+      return function() {
+        cp.setColor(cp.originalColorIndicator.style.backgroundColor);
+      }
+    };
+
+    /**
+     * Return click event handler for the done button.
+     */  
+    doneListener() {
+      var cp = this;
+      return function() {
+        cp.onChange = undefined;
+        cp.close()
+      }
+    };
+
+
+    open() {
+      var box = d3.select(this.container);
+      box.style('display', 'block');
+      box.transition().duration(200)
+        .style('opacity', 1);
+      return this;
+    }
+
+    close() {
+      d3.select(this.container).transition().duration(200)
+        .style('opacity', 0)
+        .on('end', function() {
+          d3.select(this).style('display', 'none');
+        });
+      this.onClose && this.onClose();
+      this.onClose = undefined;
+      return this;
+    }
 
   }
 
