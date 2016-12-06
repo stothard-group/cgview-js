@@ -69,12 +69,13 @@ if (window.CGV === undefined) window.CGV = CGView;
                 .attr('id', this.containerId + '-color-picker');
               // Create Color Picker
               this.colorPicker = new CGV.ColorPicker(colorPickerId);
+              legendItem.legend.setColorPickerPosition(this.colorPicker);
             }
             var cp = this.colorPicker;
-            // cp.hsv = legendItem._swatchColor.hsv;
-            // cp.opacity = legendItem._swatchColor.opacity;
             legendItem.swatchSelected = true;
-            cp.setPosition({x: 500, y: 140});
+            if (!cp.visible) {
+              legendItem.legend.setColorPickerPosition(cp);
+            }
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
               cgv.draw_fast();
@@ -372,6 +373,43 @@ if (window.CGV === undefined) window.CGV = CGView;
         return this.sequencelength + (stop - start)
       } 
     }
+
+
+    toImage(width, height) {
+      width = width || this.width;
+      height = height || this.height;
+
+      // Save current settings
+      var orig_context = this.canvas.ctx;
+
+      // Generate new context and scales
+      var temp_canvas = d3.select('body').append('canvas')
+        .attr('width', width).attr('height', height).node()
+
+      CGV.scale_resolution(temp_canvas, CGV.pixel_ratio);
+      this.canvas.ctx = temp_canvas.getContext('2d');
+
+      var scaled_height = CGV.pixel(height);
+      this.canvas.scale.x.range([0, CGV.pixel(width)]);
+      this.canvas.scale.y.range([0, scaled_height]);
+
+
+      // Generate image
+      this.draw_full();
+      var image = temp_canvas.toDataURL();
+
+      // Restore original settings
+      this.scale.x.range([0, this.canvas.width]);
+      this.scale.y.range([0, this.canvas.height]);
+      this.canvas.ctx = orig_context;
+
+      // Delete temp canvas
+      d3.select(temp_canvas).remove();
+
+      // return image;
+      window.open(image)
+    }
+
 
   }
 

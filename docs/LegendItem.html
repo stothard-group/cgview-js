@@ -407,171 +407,733 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.js.html">Source: Feature.js</h1>
+        <h1 class="page-title" data-filename="LegendItem.html">Class: LegendItem</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Feature
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    LegendItem
+    </h2>
+    
+        <div class="class-description"><p>A <em>legendItem</em> is used to add text to a map <em>legend</em>. Individual
+<em>Features</em> and <em>ArcPlots</em> can be linked to a <em>legendItem</em>, so that the feature
+or arcPlot color will use the swatchColor of <em>legendItem</em>.</p></div>
+    
+</header>  
 
-  class Feature {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="LegendItem">
+            
+            new LegendItem<span class="signature">(legend, data, <span class="optional">meta</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="LegendItem.js.html">LegendItem.js</a>, <a href="LegendItem.js.html#line11">line 11</a>
+        </div>
+        
+    </div>
 
-    /**
-     * A Feature
-     */
-    constructor(featureSlot, data = {}, display = {}, meta = {}) {
-      this.featureSlot = featureSlot;
-      // this.color = data.color;
-      // this._opacity = data.opacity;
-      this._color = new CGV.Color(data.color);
-      this.opacity = parseFloat(data.opacity);
-      this._start = Number(data.start);
-      this._stop = Number(data.stop);
-      this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
-      this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-      // Decoration: arc, clockwise-arrow, counterclockwise-arrow
-      this._decoration = CGV.defaultFor(data.decoration, 'arc');
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>A <em>legendItem</em> is used to add text to a map <em>legend</em>. Individual
+<em>Features</em> and <em>ArcPlots</em> can be linked to a <em>legendItem</em>, so that the feature
+or arcPlot color will use the swatchColor of <em>legendItem</em>.</p>
+    </div>
+    
 
-    /**
-     * @member {FeatureSlot} - Get or set the *FeatureSlot*
-     */
-    get featureSlot() {
-      return this._featureSlot
-    }
+    
+    
+    
+    
+    
+        
 
-    set featureSlot(slot) {
-      if (this.featureSlot) {
-        // TODO: Remove if already attached to FeatureSlot
-      }
-      this._featureSlot = slot;
-      slot._features.push(this);
-      this._viewer = slot.viewer;
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Number} - Get or set the start position of the feature in basepair (bp).
-     *   All start and stop positions are assumed to be going in a clockwise direction.
-     */
-    get start() {
-      return this._start
-    }
-
-    set start(bp) {
-      this._start = bp;
-    }
-
-    /**
-     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
-     *   All start and stop positions are assumed to be going in a clockwise direction.
-     */
-    get stop() {
-      return this._stop
-    }
-
-    set stop(bp) {
-      this._stop = bp;
-    }
-
-    /**
-     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
-     */
-    get color() {
-      // return this._color.rgba
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
-    }
-
-    set color(color) {
-      this._color.colorString = color;
-    }
-
-    /**
-     * @member {String} - Get or set the opacity. 
-     */
-    get opacity() {
-      // return this._color.opacity
-      return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
-    }
-
-    set opacity(value) {
-      this._color.opacity = value;
-    }
-
-    /**
-     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *clockwise-arrow*, *counterclockwise-arrow*
-     */
-    get decoration() {
-      return this._decoration;
-    }
-
-    set decoration(value) {
-      this._decoration = value;
-    }
-
-    /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-     *   override the color and opacity set for this feature.
-     */
-    get legendItem() {
-      return this._legendItem;
-    }
-
-    set legendItem(value) {
-      this._legendItem = value;
-    }
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>legend</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Legend.html">Legend</a></span>
 
 
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>The parent <em>Legend</em> for the <em>LegendItem</em>.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
-    draw(canvas, slotRadius, slotThickness) {
-      canvas.drawArc(this.start, this.stop,
-        this.adjustedRadius(slotRadius, slotThickness),
-        this.color, this.adjustedWidth(slotThickness), this.decoration);
-    }
 
-    // radius by default would be the center of the slot as provided unless:
-    // - _radiusAdjustment is not 0
-    // - _proportionOfThickness is not 1
-    adjustedRadius(radius, slotThickness) {
-      if (this._radiusAdjustment == 0 &amp;&amp; this._proportionOfThickness == 1) {
-        return radius
-      } else if (this._radiusAdjustment == 0) {
-        return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
-      } else {
-        // TODO:
-        return radius
-      }
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>Data used to create the legendItem:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> text</td>
+<td>''</td>
+<td>Text to display</td>
+</tr>
+<tr>
+<td> drawSwatch</td>
+<td>false</td>
+<td>Should a swatch be drawn beside the text</td>
+</tr>
+<tr>
+<td> font</td>
+<td>Legend font</td>
+<td>A string describing the font. See <a href="Font.html"><code>Font</code></a> for details.</td>
+</tr>
+<tr>
+<td> fontColor</td>
+<td>Legend fontColor</td>
+<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
+<td> textAlignment</td>
+<td>Legend textAlignment</td>
+<td><em>left</em>, <em>center</em>, or <em>right</em></td>
+</tr>
+<tr>
+<td> swatchColor</td>
+<td>'black'</td>
+<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
+<td> swatchOpacity</td>
+<td>1</td>
+<td>A value between 0 and 1.</td>
+</tr>
+</tbody>
+</table></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>meta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
-    adjustedWidth(width) {
-      return this._proportionOfThickness * width;
-    }
 
-    get length() {
-      return this.viewer.lengthOfRange(this.start, this.stop)
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>User-defined key:value pairs to add to the legendItem.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-  }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-  CGV.Feature = Feature;
+    
+    
 
-})(CGView);
-</code></pre>
-        </article>
-    </section>
+    
 
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="drawSwatch">drawSwatch<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the drawSwatch property. If true a swatch will be
+drawn beside the legendItem text.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="font">font<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the font. A string or font can be used</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="fontColor">fontColor<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the fontColor. TODO: reference COLOR class</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legend">legend<span class="type-signature type legend"><a href="Legend.html">Legend</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the <em>Legend</em></p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="swatchColor">swatchColor<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the swatchColor. TODO: reference COLOR class</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="swatchOpacity">swatchOpacity<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the opacity.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="swatchOpacity">swatchOpacity<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the swatch opacity.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="text">text<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the text</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="textAlignment">textAlignment<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the text alignment</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get the <em>Viewer</em></p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -580,7 +1142,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
         </footer>
     </div>
 </div>

@@ -3,11 +3,36 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  /**
+   * A *legendItem* is used to add text to a map *legend*. Individual
+   * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
+   * or arcPlot color will use the swatchColor of *legendItem*.
+   */
   class LegendItem {
 
+    /**
+     * A *legendItem* is used to add text to a map *legend*. Individual
+     * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
+     * or arcPlot color will use the swatchColor of *legendItem*.
+     *
+     * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
+     * @param {Object} data - Data used to create the legendItem:
+     *
+     *  Option                | Default          | Description
+     *  ----------------------|-------------------------------------------------
+     *  text                  | ''               | Text to display
+     *  drawSwatch            | false            | Should a swatch be drawn beside the text
+     *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
+     *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
+     *  textAlignment         | Legend textAlignment | *left*, *center*, or *right*
+     *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
+     *  swatchOpacity         | 1                | A value between 0 and 1.
+     *
+     * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
+     */
     constructor(legend, data = {}, display = {}, meta = {}) {
       this.legend = legend;
-      this._text = CGV.defaultFor(data.text, '');
+      this.text = CGV.defaultFor(data.text, '');
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, false);
       this.font = data.font
       this.fontColor = data.fontColor;
@@ -46,6 +71,18 @@
     }
 
     /**
+     * @member {Boolean} - Get or set the drawSwatch property. If true a swatch will be
+     * drawn beside the legendItem text.
+     */
+    get drawSwatch() {
+      return this._drawSwatch
+    }
+
+    set drawSwatch(value) {
+      this._drawSwatch = value;
+    }
+
+    /**
      * @member {String} - Get or set the text alignment
      */
     get textAlignment() {
@@ -72,19 +109,22 @@
     }
 
     get height() {
-      return this._font.height
+      return this.font.height
     }
 
     /**
-     * @member {String} - Get or set the font.
+     * @member {String} - Get or set the font. A string or font can be used
      */
     get font() {
-      return this._font.asCss
+      // return this._font.css
+      return this._font
     }
 
     set font(value) {
       if (value == undefined) {
-        this._font = this.legend._font;
+        this._font = this.legend.font;
+      } else if (value.toString() == 'Font'){
+        this._font = value;
       } else {
         this._font = new CGV.Font(value);
       }

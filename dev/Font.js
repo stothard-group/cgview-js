@@ -3,26 +3,62 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  /**
+   * The *Font* class stores the font internally as a CSS font string but makes it
+   * easy to change individual components of the font. For example, the size can be
+   * changed using the [size]{@link Font#size} method. A font consists of 3 components:
+   *
+   *   Component   | Description
+   *   ------------|---------------
+   *   *family*    | This can be a generic family (e.g. Serif, Sans-serif, Monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
+   *   *style*     | One of *plain*, *bold*, *italic*, or *bold-italic*
+   *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
+   *
+   */
   class Font {
 
     /**
-     * The Font class is meant to store fonts in a simple and consistent manner..
+     * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
+     *
+     * @param {(String|Object)} font - If a string is provided, it must have the following format:
+     *   family,style,size (e.g. 'Serif,plain,12'). If an object is provided, it must have a *family*,
+     *   *style* and *size* property (e.g. { family: 'Serif', style: 'plain', size: 12 })
      */
-    constructor(font, options = {}) {
-      this.font = font;
+    constructor(font) {
+      this._rawFont = font;
     }
 
     /**
-     * Return the font as canvas usable string.
+     * Return the class name as a string.
+     * @return {String} - 'Font'
      */
-    get font() {
-      return this._font
+    toString() {
+      return 'Font';
+    }
+
+    set _rawFont(font) {
+      if (typeof font === 'string' || font instanceof String) {
+        this.string = font;
+      } else {
+        var keys = new CGV.CGArray(Object.keys(font));
+        if (keys.contains('family') && keys.contains('style') && keys.contains('size')) {
+          this.family = font.family;
+          this.style = font.style;
+          this.size = font.size;
+        } else {
+          console.log('Font objects require the following keys: family, style, and size');
+        }
+      }
     }
 
     /**
-     * Set the font using a string with the format: font-family,style,size
+     * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'Serif,plain,12').
      */
-    set font(value) {
+    get string() {
+      return this.family + ',' + this.style + ',' + this.size
+    }
+
+    set string(value) {
       value = value.replace(/ +/g, '');
       var parts = value.split(',');
       if (parts.length == 3) {
@@ -35,13 +71,38 @@
       this._generateFont();
     }
 
+    // /** * Return the font as canvas usable string.
+    //  */
+    // get font() {
+    //   return this._font
+    // }
+    //
+    // /**
+    //  * Set the font using a string with the format: font-family,style,size
+    //  */
+    // set font(value) {
+    //   value = value.replace(/ +/g, '');
+    //   var parts = value.split(',');
+    //   if (parts.length == 3) {
+    //     this.family = parts[0];
+    //     this.style = parts[1];
+    //     this.size = Number(parts[2]);
+    //   } else {
+    //     console.log('Font must have 3 parts')
+    //   }
+    //   this._generateFont();
+    // }
+
     /**
-     * Return the font as canvas usable string.
+     * @member {String} - Return the font as CSS usable string. This is also how the font is stored internally for quick access.
      */
-    get asCss() {
+    get css() {
       return this._font
     }
 
+    /**
+     * @member {String} - Get or set the font family. Defaults to *Arial*.
+     */
     get family() {
       return this._family || 'arial'
     }
@@ -51,8 +112,13 @@
       this._generateFont();
     }
 
+    /**
+     * @member {Number} - Get or set the font size. The size is stored as a number and is in pixels.
+     * The actual value may be altered when setting it to take into account the pixel
+     * ratio of the screen. Defaults to *12*.
+     */
     get size() {
-      return this._size || 12
+      return this._size || CGV.pixel(12)
     }
 
     set size(value) {
@@ -60,6 +126,10 @@
       this._generateFont();
     }
 
+    /**
+     * @member {String} - Get or set the font style. The possible values are *plain*, *bold*, *italic* and
+     * *bold-italic*. Defaults to *plain*.
+     */
     get style() {
       return this._style || 'plain'
     }
@@ -69,11 +139,21 @@
       this._generateFont();
     }
 
+    /**
+     * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
+     */
     get height() {
       return this.size
     }
 
-    // FIXME: This is going to be slow if used a lot
+
+    /**
+     * Measure the width of the supplied *text* using the *context* and the *Font* settings.
+     *
+     * @param {Context} context - The canvas context to use to measure the width.
+     * @param {String} text - The text to measure.
+     * @return {Number} - The width of the *text* in pixels.
+     */
     width(ctx, text) {
       ctx.font = this.font;
       return ctx.measureText(text).width
@@ -99,8 +179,19 @@
 
   }
 
-  // 
-  Font.calculateWidths = function(ctx, fonts, texts) {
+  /**
+   * Calculate the width of multiple *strings* using the supplied *fonts* and *context*.
+   * This method minimized the number of times the context font is changed to speed up
+   * the calculations
+   * @function calculateWidths
+   * @memberof Font
+   * @static
+   * @param {Context} ctx - The context to use for measurements.
+   * @param {Font[]} fonts - An array of fonts. Must be the same length as *strings*.
+   * @param {String[]} strings - An array of strings. Must be the same length as *fonts*.
+   * @return {Number[]} - An array of widths.
+   */
+  Font.calculateWidths = function(ctx, fonts, strings) {
     ctx.save();
     var widths = [];
     var map = [];
@@ -109,7 +200,7 @@
       map.push({
         index: i,
         font: fonts[i],
-        text: texts[i]
+        text: strings[i]
       });
     }
 

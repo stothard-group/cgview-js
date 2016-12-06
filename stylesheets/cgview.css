@@ -5,19 +5,40 @@
   display: inline-block;
   border: 1px black solid;
   cursor: pointer;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .cp-color-picker-indicator {
   width: 5px;
   height: 5px;
   position: absolute;
-  border: 2px groove black;
-  border-radius: 3px;
+  /* border: 2px groove black; */
+  /* border-radius: 3px; */
 }
+.cp-picker-indicator-rect-1 {
+  border: 1px solid white;
+  border-radius: 3px;
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+}
+
+.cp-picker-indicator-rect-2 {
+  border: 1px solid rgb(25,25,25);
+  border-radius: 3px;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+}
+
 .cp-color-slider-wrapper {
   width: 20px;
   height: 100px;
   margin-left: 5px;
+  top: -1px;
   position: relative;
   display: inline-block;
   border: 1px black solid;
@@ -27,12 +48,33 @@
   /* width: 100%; */
   left: -2;
   width: 22px; 
-  height: 3px;
+  height: 5px;
   position: absolute;
-  border: 1px solid black;
-  border-radius: 3px;
-  background-color: white;
+  /* border: 1px solid black; */
+  /* border-radius: 3px; */
+  /* background-color: white; */
 }
+
+.cp-color-indicator-rect-1 {
+  border: 3px solid white;
+  border-radius: 2px;
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  width: 20px;
+  height: 3px;
+}
+
+.cp-color-indicator-rect-2 {
+  border: 1px solid rgb(25,25,25);
+  border-radius: 2px;
+  position: absolute;
+  top: -1px;
+  left: 0px;
+  width: 22px;
+  height: 5px;
+}
+
 .cp-alpha-slider-wrapper {
   width: 127px;
   height: 10px;
@@ -44,13 +86,30 @@
 }
 .cp-alpha-slider-indicator {
   width: 3px; 
-  /* height: 100%; */
   height: 12px;
-  top: -2px;
+  top: -1px;
   position: absolute;
-  border: 1px solid black;
-  border-radius: 3px;
-  background-color: white;
+  /* border-radius: 3px; */
+}
+
+.cp-alpha-indicator-rect-1 {
+  border: 3px solid white;
+  border-radius: 2px;
+  position: absolute;
+  top: -4px;
+  left: -3px;
+  width: 3px;
+  height: 13px;
+}
+
+.cp-alpha-indicator-rect-2 {
+  border: 1px solid rgb(25,25,25);
+  border-radius: 2px;
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 5px;
+  height: 14px;
 }
 
 .cp-dialog {
@@ -68,6 +127,7 @@
   /* border-top: 1px solid #CCC; */
   padding-top: 5px;
   text-align: right;
+  display: flex;
 }
 .cp-footer-color-section {
   width: 50%;

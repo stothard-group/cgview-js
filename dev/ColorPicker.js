@@ -100,19 +100,39 @@
       this.container.style.top = pos.y;
     }
 
+    get width() {
+      return this.container.offsetWidth
+    }
+
+    get height() {
+      return this.container.offsetHeight
+    }
+
     _colorpickerHTMLSnippet() {
       return [
         '<div class="cp-color-picker-wrapper">',
               '<div class="cp-color-picker"></div>',
-              '<div class="cp-color-picker-indicator"></div>',
+              // '<div class="cp-color-picker-indicator"></div>',
+              '<div class="cp-color-picker-indicator">',
+                 '<div class="cp-picker-indicator-rect-1"></div>',
+                 '<div class="cp-picker-indicator-rect-2"></div>',
+              '</div>',
         '</div>',
         '<div class="cp-color-slider-wrapper">',
               '<div class="cp-color-slider"></div>',
-              '<div class="cp-color-slider-indicator"></div>',
+              // '<div class="cp-color-slider-indicator"></div>',
+              '<div class="cp-color-slider-indicator">',
+                 '<div class="cp-color-indicator-rect-1"></div>',
+                 '<div class="cp-color-indicator-rect-2"></div>',
+              '</div>',
         '</div>',
         '<div class="cp-alpha-slider-wrapper">',
               '<div class="cp-alpha-slider"></div>',
-              '<div class="cp-alpha-slider-indicator"></div>',
+              // '<div class="cp-alpha-slider-indicator"></div>',
+              '<div class="cp-alpha-slider-indicator">',
+                 '<div class="cp-alpha-indicator-rect-1"></div>',
+                 '<div class="cp-alpha-indicator-rect-2"></div>',
+              '</div>',
         '</div>',
         '<div class="cp-dialog-footer">',
               '<div class="cp-footer-color-section">',
@@ -315,10 +335,17 @@
       }
     };
 
+    get visible() {
+      return d3.select(this.container).style('visibility') == 'visible';
+    }
+
+    set visible(value) {
+      value ? this.open() : this.close();
+    }
 
     open() {
       var box = d3.select(this.container);
-      box.style('display', 'block');
+      box.style('visibility', 'visible');
       box.transition().duration(200)
         .style('opacity', 1);
       return this;
@@ -328,7 +355,7 @@
       d3.select(this.container).transition().duration(200)
         .style('opacity', 0)
         .on('end', function() {
-          d3.select(this).style('display', 'none');
+          d3.select(this).style('visibility', 'hidden');
         });
       this.onClose && this.onClose();
       this.onClose = undefined;

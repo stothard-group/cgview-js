@@ -79,11 +79,16 @@
      * @member {String} - Get or set the font.
      */
     get font() {
-      return this._font.asCss
+      // return this._font.asCss
+      return this._font
     }
 
     set font(value) {
-      this._font = new CGV.Font(value);
+      if (value.toString() == 'Font'){
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
     }
 
     /**
@@ -129,7 +134,7 @@
       this.height += this.padding * 2;
 
       this.width = 0;
-      var itemFonts = this._legendItems.map( (i) => { return i.font});
+      var itemFonts = this._legendItems.map( (i) => { return i.font.css});
       var itemTexts = this._legendItems.map( (i) => { return i.text});
       var itemWidths = CGV.Font.calculateWidths(this.canvas.ctx, itemFonts, itemTexts);
       // Add swatch width
@@ -143,6 +148,22 @@
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
+    }
+
+    // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
+    setColorPickerPosition(cp) {
+      var margin = 5;
+      var pos;
+      var viewerRect = this.viewer._container.node().getBoundingClientRect();
+      var originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
+      var originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
+      var legendWidth = this.width / CGV.pixel(1);
+      if (/-left$/.exec(this.position)) {
+        pos = {x: originX + legendWidth + margin, y: originY}
+      } else {
+        pos = {x: originX - cp.width - margin, y: originY}
+      }
+      cp.setPosition(pos);
     }
 
     _updateOrigin() {
@@ -194,7 +215,7 @@
         var drawSwatch = legendItem.drawSwatch;
         var swatchWidth = legendItem.height;
         var swatchPadding = this.padding / 2;
-        ctx.font = legendItem.font;
+        ctx.font = legendItem.font.css;
         ctx.textAlign = legendItem.textAlignment;
         if (drawSwatch) {
           // Find x positions

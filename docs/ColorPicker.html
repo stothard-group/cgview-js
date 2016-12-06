@@ -407,171 +407,787 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.js.html">Source: Feature.js</h1>
+        <h1 class="page-title" data-filename="ColorPicker.html">Class: ColorPicker</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Feature
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    ColorPicker
+    </h2>
+    
+</header>  
 
-  class Feature {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="ColorPicker">
+            
+            new ColorPicker<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line14">line 14</a>
+        </div>
+        
+    </div>
 
-    /**
-     * A Feature
-     */
-    constructor(featureSlot, data = {}, display = {}, meta = {}) {
-      this.featureSlot = featureSlot;
-      // this.color = data.color;
-      // this._opacity = data.opacity;
-      this._color = new CGV.Color(data.color);
-      this.opacity = parseFloat(data.opacity);
-      this._start = Number(data.start);
-      this._stop = Number(data.stop);
-      this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
-      this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-      // Decoration: arc, clockwise-arrow, counterclockwise-arrow
-      this._decoration = CGV.defaultFor(data.decoration, 'arc');
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The ColorPicker
+Based on Flexi Color Picker: http://www.daviddurman.com/flexi-color-picker/
+Color is stored interanlly as HSV, as well as a Color object.</p>
+    </div>
+    
 
-    /**
-     * @member {FeatureSlot} - Get or set the *FeatureSlot*
-     */
-    get featureSlot() {
-      return this._featureSlot
-    }
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    set featureSlot(slot) {
-      if (this.featureSlot) {
-        // TODO: Remove if already attached to FeatureSlot
-      }
-      this._featureSlot = slot;
-      slot._features.push(this);
-      this._viewer = slot.viewer;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
-    }
+    
+    
 
-    /**
-     * @member {Number} - Get or set the start position of the feature in basepair (bp).
-     *   All start and stop positions are assumed to be going in a clockwise direction.
-     */
-    get start() {
-      return this._start
-    }
+    
 
-    set start(bp) {
-      this._start = bp;
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    /**
-     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
-     *   All start and stop positions are assumed to be going in a clockwise direction.
-     */
-    get stop() {
-      return this._stop
-    }
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_configureView">
+            
+            _configureView<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line154">line 154</a>
+        </div>
+        
+    </div>
 
-    set stop(bp) {
-      this._stop = bp;
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create slide, picker, and alpha markup
+The container ID is used to make unique ids for the SVG defs</p>
+    </div>
+    
 
-    /**
-     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
-     */
-    get color() {
-      // return this._color.rgba
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
-    }
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    set color(color) {
-      this._color.colorString = color;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    /**
-     * @member {String} - Get or set the opacity. 
-     */
-    get opacity() {
-      // return this._color.opacity
-      return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
-    }
+    
+    
 
-    set opacity(value) {
-      this._color.opacity = value;
-    }
+    
 
-    /**
-     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *clockwise-arrow*, *counterclockwise-arrow*
-     */
-    get decoration() {
-      return this._decoration;
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    set decoration(value) {
-      this._decoration = value;
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="alphaListener">
+            
+            alphaListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line294">line 294</a>
+        </div>
+        
+    </div>
 
-    /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-     *   override the color and opacity set for this feature.
-     */
-    get legendItem() {
-      return this._legendItem;
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the alpha.
+Sets alpha background color and calls ctx.callback if provided.</p>
+    </div>
+    
 
-    set legendItem(value) {
-      this._legendItem = value;
-    }
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="dialogListener">
+            
+            dialogListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line307">line 307</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the dialog.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="doneListener">
+            
+            doneListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line330">line 330</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the done button.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="enableDragging">
+            
+            enableDragging<span class="signature">(ctx, element, listener)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line238">line 238</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Enable drag&amp;drop color selection.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>ctx</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
 
 
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>ColorPicker instance.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">DOMElement</span>
 
-    draw(canvas, slotRadius, slotThickness) {
-      canvas.drawArc(this.start, this.stop,
-        this.adjustedRadius(slotRadius, slotThickness),
-        this.color, this.adjustedWidth(slotThickness), this.decoration);
-    }
 
-    // radius by default would be the center of the slot as provided unless:
-    // - _radiusAdjustment is not 0
-    // - _proportionOfThickness is not 1
-    adjustedRadius(radius, slotThickness) {
-      if (this._radiusAdjustment == 0 &amp;&amp; this._proportionOfThickness == 1) {
-        return radius
-      } else if (this._radiusAdjustment == 0) {
-        return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
-      } else {
-        // TODO:
-        return radius
-      }
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>HSV slide element or HSV picker element.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>listener</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
 
-    adjustedWidth(width) {
-      return this._proportionOfThickness * width;
-    }
 
-    get length() {
-      return this.viewer.lengthOfRange(this.start, this.stop)
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Function that will be called whenever mouse is dragged over the element with event object as argument.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-  }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-  CGV.Feature = Feature;
+    
+    
 
-})(CGView);
-</code></pre>
-        </article>
-    </section>
+    
 
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="originalColorListener">
+            
+            originalColorListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line320">line 320</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the original color.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pickerListener">
+            
+            pickerListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line277">line 277</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the picker.
+Calls ctx.callback if provided.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="slideListener">
+            
+            slideListener<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ColorPicker.js.html">ColorPicker.js</a>, <a href="ColorPicker.js.html#line261">line 261</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return click event handler for the slider.
+Sets picker background color and calls ctx.callback if provided.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -580,7 +1196,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
         </footer>
     </div>
 </div>

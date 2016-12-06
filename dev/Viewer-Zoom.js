@@ -11,7 +11,8 @@
       .on('start', zoomstart)
       .on('zoom',  zooming)
       .on('end',   zoomend);
-    d3.select(self.canvas.canvasNode).call(self._zoom);
+    d3.select(self.canvas.canvasNode).call(self._zoom)
+      .on('dblclick.zoom', null);
 
     function zoomstart() {
       // self.trigger('zoom-start');

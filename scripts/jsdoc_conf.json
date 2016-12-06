@@ -28,7 +28,8 @@
 	},
 	"markdown": {
 		"parser": "gfm",
-		"hardwrap": true,
+		"hardwrap": false,
+    "breaks": false,
 		"tags": ["examples"]
 	}
 }

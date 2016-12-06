@@ -7,11 +7,20 @@
 
     /**
      * The Color class is meant to contain colors in a consistant manner as
-     * well as the opacity. All colors are stored as RGBA.
+     * well as the opacity. Colors are stored internally as an RGBA string for
+     * quick access as a CSS/Canvas compatibily string.
      * The colorString can be in these formats: ...
      */
     constructor(color, options = {}) {
       this.rawColor = color;
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Color'
+     */
+    toString() {
+      return 'Color';
     }
 
     /**
@@ -71,6 +80,11 @@
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]) } : undefined
     }
 
+    set rgb(value) {
+      this.colorString = Color.rgbToString(value);
+      this._updateOpacityFromRgba();
+    }
+
     get rgba() {
       var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
@@ -78,11 +92,6 @@
 
     set rgba(value) {
       this.colorString = Color.rgbaToString(value);
-      this._updateOpacityFromRgba();
-    }
-
-    set rgb(value) {
-      this.colorString = Color.rgbToString(value);
       this._updateOpacityFromRgba();
     }
 

@@ -20,7 +20,7 @@
     }
 
     get font() {
-      return this._font.asCss
+      return this._font
     }
 
     set font(value) {
@@ -97,8 +97,8 @@
       var ctx = this.canvas.ctx;
       // Put space between number and units
       var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      ctx.font = this.font
-      ctx.textAlign = 'center'
+      ctx.font = this.font.css;
+      ctx.textAlign = 'center';
       // INNER
       var center = this.canvas.pointFor(bp, radius - this.rulerPadding);
       ctx.fillText(label, center.x, center.y);
