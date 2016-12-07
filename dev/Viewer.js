@@ -312,17 +312,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       }
 
-      // Legends
-      for (var i = 0, len = this._legends.length; i < len; i++) {
-        this._legends[i].draw(this.ctx);
-      }
-
       // Ruler
       this.ruler.draw(reverseRadius, directRadius);
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
       }
+
+      // Legends
+      for (var i = 0, len = this._legends.length; i < len; i++) {
+        this._legends[i].draw(this.ctx);
+      }
+
     }
 
     // addFeatureSlot(featureSlot) {
@@ -379,35 +380,61 @@ if (window.CGV === undefined) window.CGV = CGView;
       width = width || this.width;
       height = height || this.height;
 
+      var windowTitle = 'CGV-Image-' + width + 'x' + height,
+
+      // Adjust size based on pixel Ratio
+      width = width / CGV.pixel_ratio;
+      height = height / CGV.pixel_ratio;
+
       // Save current settings
       var orig_context = this.canvas.ctx;
 
       // Generate new context and scales
       var temp_canvas = d3.select('body').append('canvas')
-        .attr('width', width).attr('height', height).node()
+        .attr('width', width).attr('height', height).node();
 
       CGV.scale_resolution(temp_canvas, CGV.pixel_ratio);
       this.canvas.ctx = temp_canvas.getContext('2d');
 
-      var scaled_height = CGV.pixel(height);
-      this.canvas.scale.x.range([0, CGV.pixel(width)]);
-      this.canvas.scale.y.range([0, scaled_height]);
-
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.canvas.refreshScales();
+      this.width = width
+      this.height = height
+      this.backboneRadius = 0.4 * width;
+      for (var i = 0, len = this._legends.length; i < len; i++) {
+        this._legends[i].refresh();
+      }
 
       // Generate image
       this.draw_full();
       var image = temp_canvas.toDataURL();
 
       // Restore original settings
-      this.scale.x.range([0, this.canvas.width]);
-      this.scale.y.range([0, this.canvas.height]);
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.canvas.refreshScales();
       this.canvas.ctx = orig_context;
 
       // Delete temp canvas
       d3.select(temp_canvas).remove();
 
-      // return image;
-      window.open(image)
+      var win = window.open();
+      var html = [
+        '<html>',
+          '<head>',
+            '<title>',
+              windowTitle,
+            '</title>',
+          '</head>',
+          '<body>',
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on the image and choose "Save Image As..."</p>',
+            '<img style="border: 1px solid grey" src="' + image +  '"/ >',
+          '</body>',
+        '<html>'
+      ].join('');
+      win.document.write(html);
     }
 
 

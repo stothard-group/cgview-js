@@ -181,7 +181,7 @@
 
   /**
    * Calculate the width of multiple *strings* using the supplied *fonts* and *context*.
-   * This method minimized the number of times the context font is changed to speed up
+   * This method minimizes the number of times the context font is changed to speed up
    * the calculations
    * @function calculateWidths
    * @memberof Font

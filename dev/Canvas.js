@@ -38,20 +38,24 @@
 
       // Set viewer context
       this.ctx = this.canvasNode.getContext('2d');
+      this.refreshScales();
 
       // Set up scales
-      this.scale.x = d3.scaleLinear()
-        .domain([-this.width/2, this.width/2])
-        .range([0, this.width]);
-      this.scale.y = d3.scaleLinear()
-        .domain([this.height/2, -this.height/2])
-        .range([0, this.height]);
       // this.scale.bp = d3.scaleLinear()
       //   .domain([0, this.sequence_length])
       //   .range([-1/2*Math.PI, 3/2*Math.PI]);
 
     }
 
+    //TODO: move to setter for width and height
+    refreshScales() {
+      this.scale.x = d3.scaleLinear()
+        .domain([-this.width/2, this.width/2])
+        .range([0, this.width]);
+      this.scale.y = d3.scaleLinear()
+        .domain([this.height/2, -this.height/2])
+        .range([0, this.height]);
+    }
 
     get width() {
       return CGV.pixel(this._width)
