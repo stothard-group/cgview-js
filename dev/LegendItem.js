@@ -154,7 +154,7 @@
     }
 
     set swatchColor(color) {
-      this._swatchColor.colorString = color;
+      this._swatchColor.setColor(color);
     }
 
     /**

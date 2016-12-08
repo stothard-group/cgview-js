@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The *Font* class stores the font internally as a CSS font string but makes it
    * easy to change individual components of the font. For example, the size can be
    * changed using the [size]{@link Font#size} method. A font consists of 3 components:

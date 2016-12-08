@@ -106,11 +106,17 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Color#colorString"><a href="Color.html#colorString">colorString</a></li>
+                <li data-name="Color#hsv"><a href="Color.html#hsv">hsv</a></li>
             
-                <li data-name="Color#colorString"><a href="Color.html#colorString">colorString</a></li>
+                <li data-name="Color#opacity"><a href="Color.html#opacity">opacity</a></li>
             
-                <li data-name="Color#rawColor"><a href="Color.html#rawColor">rawColor</a></li>
+                <li data-name="Color#rgb"><a href="Color.html#rgb">rgb</a></li>
+            
+                <li data-name="Color#rgba"><a href="Color.html#rgba">rgba</a></li>
+            
+                <li data-name="Color#rgbaString"><a href="Color.html#rgbaString">rgbaString</a></li>
+            
+                <li data-name="Color#rgbString"><a href="Color.html#rgbString">rgbString</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -120,15 +126,7 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
-            
-                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
-            
-                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
-            
-                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
-            
-                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
+                <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
             
                 <li data-name="Color#toString"><a href="Color.html#toString">toString</a></li>
             
@@ -419,6 +417,71 @@
     Color
     </h2>
     
+        <div class="class-description"><p><br />
+The Color class is meant to represent a color and opacity in a consistant manner
+Colors are stored internally as an RGBA string (CSS/Canvas compatible) for quick access.
+The color can be provided or generated in the following formats:</p>
+<p><em>String</em>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RGB</td>
+<td>'rgb(100, 100, 240)'</td>
+</tr>
+<tr>
+<td>RGBA</td>
+<td>'rgba(100, 100, 240, 0.5)'</td>
+</tr>
+<tr>
+<td>HEX</td>
+<td>'#FF8833' or '#F83'</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>'black' (Browser supported color names <a target="_blank" href="http://www.w3schools.com/colors/colors_names.asp">List</a>)</td>
+</tr>
+<tr>
+<td>HSL</td>
+<td>not implemented yet</td>
+</tr>
+<tr>
+<td>HSLA</td>
+<td>not implemented yet</td>
+</tr>
+</tbody>
+</table>
+<p><br />
+<em>Object</em>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RGB</td>
+<td>{r: 100, g: 100, b: 100}</td>
+</tr>
+<tr>
+<td>RGBA</td>
+<td>{r: 100, g: 100, b: 100, a: 0.5}</td>
+</tr>
+<tr>
+<td>HSV</td>
+<td>{h:240, s: 50, v: 30}</td>
+</tr>
+</tbody>
+</table>
+<p>To set the color using any of the above formats, use the <a href="Color.html#setColor"><code>setColor</code></a> method.</p></div>
+    
 </header>  
 
 <article>
@@ -431,12 +494,12 @@
     <div class="nameContainer">
         <h4 class="name" id="Color">
             
-            new Color<span class="signature">()</span>
+            new Color<span class="signature">(color)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line14">line 14</a>
+            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line35">line 35</a>
         </div>
         
     </div>
@@ -447,10 +510,7 @@
     
     
     <div class="description">
-        <p>The Color class is meant to contain colors in a consistant manner as
-well as the opacity. Colors are stored internally as an RGBA string for
-quick access as a CSS/Canvas compatibily string.
-The colorString can be in these formats: ...</p>
+        <p>Create a Color using a string or object as described above.</p>
     </div>
     
 
@@ -458,6 +518,54 @@ The colorString can be in these formats: ...</p>
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>A color string or object.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -519,7 +627,7 @@ The colorString can be in these formats: ...</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="colorString">colorString</h4>
+        <h4 class="name" id="hsv">hsv<span class="type-signature type object">Object</span> </h4>
     </div>
     
     
@@ -527,7 +635,7 @@ The colorString can be in these formats: ...</p>
 <dd>
     
     <div class="description">
-        <p>Set the color using, RGB, RGBA, Hex, etc String</p>
+        <p>Get or set the color using a HSV object.</p>
     </div>
     
     
@@ -564,7 +672,142 @@ The colorString can be in these formats: ...</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="colorString">colorString</h4>
+        <h4 class="name" id="opacity">opacity<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the opacity (alpha) of the color.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="rgb">rgb<span class="type-signature type object">Object</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the color using a RGB object.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="rgba">rgba<span class="type-signature type object">Object</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the color using a RGBA object.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="rgbaString">rgbaString<span class="type-signature type string">String</span> </h4>
     </div>
     
     
@@ -609,7 +852,7 @@ The colorString can be in these formats: ...</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="rawColor">rawColor</h4>
+        <h4 class="name" id="rgbString">rgbString<span class="type-signature type string">String</span> </h4>
     </div>
     
     
@@ -617,7 +860,7 @@ The colorString can be in these formats: ...</p>
 <dd>
     
     <div class="description">
-        <p>Set the color using, RGB, RGBA, Hex, etc String, or RGB/A, HSV object</p>
+        <p>Return the color as an RGB string.</p>
     </div>
     
     
@@ -660,14 +903,14 @@ The colorString can be in these formats: ...</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id=".hexToRgba">
+        <h4 class="name" id="setColor">
             
-            <span class="type-signature static">static</span>Color.hexToRgba<span class="signature">(hex, opacity)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+            setColor<span class="signature">(color)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line254">line 254</a>
+            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line58">line 58</a>
         </div>
         
     </div>
@@ -678,7 +921,8 @@ The colorString can be in these formats: ...</p>
     
     
     <div class="description">
-        <p>Convert a Hexidecimal color to RGBA.</p>
+        <p>Set the color using a color string (e.g RGB, RGBA, Hex, HLA) or a color object (e.g. RGB, RGBA, HSV)
+as described above.</p>
     </div>
     
 
@@ -709,13 +953,16 @@ The colorString can be in these formats: ...</p>
 	
         <tr>
             
-                <td class="name"><code>hex</code></td>
+                <td class="name"><code>color</code></td>
             
             
             <td class="type">
             
                 
 <span class="param-type">String</span>
+|
+
+<span class="param-type">Object</span>
 
 
             
@@ -725,30 +972,7 @@ The colorString can be in these formats: ...</p>
             
             <td class="description last">
                 
-                <p><em>hex</em> can be shorthand (e.g. &quot;03F&quot;) or fullform (e.g. &quot;0033FF&quot;), with or without the starting '#'.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a number between 0 and 1.</p></td>
+                <p>A color string or object</p></td>
         </tr>
 	
 	
@@ -790,707 +1014,6 @@ The colorString can be in these formats: ...</p>
     
     
     
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">The color as RGBA.</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id=".hexToRgba">
-            
-            <span class="type-signature static">static</span>Color.hexToRgba<span class="signature">(value, opacity)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line129">line 129</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Convert a legal color value to RGBA. See http://www.w3schools.com/cssref/css_colors_legal.asp</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p><em>value</em> can be a hexidecimal, HSL, RGB, or name.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a number between 0 and 1.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">The color as RGBA.</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id=".hslToRgba">
-            
-            <span class="type-signature static">static</span>Color.hslToRgba<span class="signature">(hsl, opacity)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line187">line 187</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Convert an HSL color to RGBA.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>hsl</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p><em>hsl</em> values should be NOT Implemented yet</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a number between 0 and 1.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">The color as RGBA.</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id=".nameToRgba">
-            
-            <span class="type-signature static">static</span>Color.nameToRgba<span class="signature">(name, opacity)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line153">line 153</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Convert a named color to RGBA.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p><em>name</em> should be one of the blah blah on website</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a number between 0 and 1.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">The color as RGBA.</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id=".rgbToRgba">
-            
-            <span class="type-signature static">static</span>Color.rgbToRgba<span class="signature">(rgb, opacity)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line171">line 171</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Convert an RGB color to RGBA.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>rgb</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p><em>rgb</em> should take the form of 'rgb(red,green,blue)', where red, green and blue are numbers between 0 and 255.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a number between 0 and 1.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        String
-                        
-                    
-            </td>
-            <td class="description last">The color as RGBA.</td>
-        </tr>
-    
-    </tbody>
-</table>
-
     
     
     
@@ -1507,7 +1030,7 @@ The colorString can be in these formats: ...</p>
     
         
         <div class="tag-source">
-            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line22">line 22</a>
+            <a href="Color.js.html">Color.js</a>, <a href="Color.js.html#line49">line 49</a>
         </div>
         
     </div>
@@ -1615,7 +1138,7 @@ The colorString can be in these formats: ...</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 08 2016 09:41:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

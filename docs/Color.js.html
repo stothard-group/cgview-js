@@ -106,11 +106,17 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Color#colorString"><a href="Color.html#colorString">colorString</a></li>
+                <li data-name="Color#hsv"><a href="Color.html#hsv">hsv</a></li>
             
-                <li data-name="Color#colorString"><a href="Color.html#colorString">colorString</a></li>
+                <li data-name="Color#opacity"><a href="Color.html#opacity">opacity</a></li>
             
-                <li data-name="Color#rawColor"><a href="Color.html#rawColor">rawColor</a></li>
+                <li data-name="Color#rgb"><a href="Color.html#rgb">rgb</a></li>
+            
+                <li data-name="Color#rgba"><a href="Color.html#rgba">rgba</a></li>
+            
+                <li data-name="Color#rgbaString"><a href="Color.html#rgbaString">rgbaString</a></li>
+            
+                <li data-name="Color#rgbString"><a href="Color.html#rgbString">rgbString</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -120,15 +126,7 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
-            
-                <li data-name="Color.hexToRgba"><a href="Color.html#.hexToRgba">hexToRgba</a></li>
-            
-                <li data-name="Color.hslToRgba"><a href="Color.html#.hslToRgba">hslToRgba</a></li>
-            
-                <li data-name="Color.nameToRgba"><a href="Color.html#.nameToRgba">nameToRgba</a></li>
-            
-                <li data-name="Color.rgbToRgba"><a href="Color.html#.rgbToRgba">rgbToRgba</a></li>
+                <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
             
                 <li data-name="Color#toString"><a href="Color.html#toString">toString</a></li>
             
@@ -419,16 +417,43 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  /**
+   * &lt;br />
+   * The Color class is meant to represent a color and opacity in a consistant manner
+   * Colors are stored internally as an RGBA string (CSS/Canvas compatible) for quick access.
+   * The color can be provided or generated in the following formats:
+   *
+   * *String*:
+   *
+   * Type    | Example
+   * --------|--------
+   * RGB     | 'rgb(100, 100, 240)'
+   * RGBA    | 'rgba(100, 100, 240, 0.5)'
+   * HEX     | '#FF8833' or '#F83'
+   * Name    | 'black' (Browser supported color names [List](http://www.w3schools.com/colors/colors_names.asp))
+   * HSL     | not implemented yet
+   * HSLA    | not implemented yet
+   *
+   *
+   * &lt;br />
+   * *Object*:
+   *
+   * Type    | Example
+   * --------|--------
+   * RGB     | {r: 100, g: 100, b: 100}
+   * RGBA    | {r: 100, g: 100, b: 100, a: 0.5}
+   * HSV     | {h:240, s: 50, v: 30}
+   *
+   * To set the color using any of the above formats, use the [setColor]{@link Color#setColor} method.
+   */
   class Color {
 
     /**
-     * The Color class is meant to contain colors in a consistant manner as
-     * well as the opacity. Colors are stored internally as an RGBA string for
-     * quick access as a CSS/Canvas compatibily string.
-     * The colorString can be in these formats: ...
+     * Create a Color using a string or object as described above.
+     * @param {(String|Object)} color - A color string or object.
      */
-    constructor(color, options = {}) {
-      this.rawColor = color;
+    constructor(color) {
+      this.setColor(color);
     }
 
     /**
@@ -440,11 +465,13 @@
     }
 
     /**
-     * Set the color using, RGB, RGBA, Hex, etc String, or RGB/A, HSV object
+     * Set the color using a color string (e.g RGB, RGBA, Hex, HLA) or a color object (e.g. RGB, RGBA, HSV)
+     * as described above.
+     * @param {(String|Object)} - A color string or object
      */
-    set rawColor(color) {
+    setColor(color) {
       if (typeof color === 'string' || color instanceof String) {
-        this.colorString = color;
+        this._string = color;
       } else {
         var keys = new CGV.CGArray(Object.keys(color));
         if (keys.contains('h') &amp;&amp; keys.contains('s') &amp;&amp; keys.contains('v')) {
@@ -457,58 +484,74 @@
       }
     }
 
-
-    /**
-     * Return the color as an RGBA string.
-     */
-    get colorString() {
-      return this._rgbaString
-    }
-
     /**
      * Set the color using, RGB, RGBA, Hex, etc String
+     * @private
      */
-    set colorString(value) {
-      this._rgbaString = Color.convertToRgba(value, this.opacity);
+    set _string(value) {
+      var rgba = Color.string2rgba(value, this.opacity);
+      this._rgbaString = Color.rgba2String(rgba);
       this._updateOpacityFromRgba();
     }
 
 
+    /**
+     * @member {Number} - Get or set the opacity (alpha) of the color.
+     */
     get opacity() {
       return (this._opacity == undefined) ? 1 : this._opacity;
     }
 
     set opacity(value) {
-      this._opacity = value;
+      this._opacity = Color._validateOpacity(value);
       this._updateRgbaOpacity();
     }
 
+    /**
+     * @member {String} - Return the color as an RGBA string.
+     */
     get rgbaString() {
       return this._rgbaString;
     }
 
+    /**
+     * @member {String} - Return the color as an RGB string.
+     */
     get rgbString() {
-      return Color.rgbToString(this.rgb);
+      return Color.rgb2String(this.rgb);
     }
 
+    /**
+     * @member {Object} - Get or set the color using a RGB object.
+     */
     get rgb() {
       var result = /^rgba\((\d+),(\d+),(\d+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]) } : undefined
     }
 
     set rgb(value) {
-      this.colorString = Color.rgbToString(value);
+      this._string = Color.rgb2String(value);
       this._updateOpacityFromRgba();
     }
 
+    /**
+     * @member {Object} - Get or set the color using a RGBA object.
+     */
     get rgba() {
       var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
     }
 
     set rgba(value) {
-      this.colorString = Color.rgbaToString(value);
+      this._string = Color.rgba2String(value);
       this._updateOpacityFromRgba();
+    }
+
+    /**
+     * @member {Object} - Get or set the color using a HSV object.
+     */
+    get hsv() {
+      return Color.rgb2hsv(this.rgb)
     }
 
     set hsv(value) {
@@ -517,105 +560,155 @@
       this.rgba = rgba;
     }
 
-    get hsv() {
-      return Color.rgb2hsv(this.rgb)
-    }
-
     get hex() {
     }
 
     get hla() {
     }
 
+    /**
+     * Update the internal RGBA String using the current opacity property.
+     * @private
+     */
     _updateRgbaOpacity() {
       this._rgbaString = this._rgbaString.replace(/^(rgba\(.*,)([\d\.]+?)(\))/, (m, left, opacity, right) => {
         return left + this.opacity + right;
       });
     }
 
+    /**
+     * Update the the opacity property using the value in the internal RGBA string
+     * @private
+     */
     _updateOpacityFromRgba() {
       var result = /^rgba.*,([\d\.]+?)\)$/.exec(this.rgbaString);
       if (result) {
-        this._opacity = Number(result[1]);
+        this._opacity = Color._validateOpacity(result[1]);
       }
     }
 
   }
 
   /**
-   * Convert a legal color value to RGBA. See http://www.w3schools.com/cssref/css_colors_legal.asp
-   * @function hexToRgba
+   * Convert a legal color string to RGBA. See http://www.w3schools.com/cssref/css_colors_legal.asp
+   * @function string2rgba
    * @memberof Color
-   * @param {String} value - *value* can be a hexidecimal, HSL, RGB, or name.
+   * @param {String} value - *value* can be a hexidecimal, HSL, RGB, RGBA, or a color name.
    * @param {Number} opacity - a number between 0 and 1.
-   * @return {String} The color as RGBA.
+   * @return {String} The color as an RGBA object.
    * @static
+   * @private
    */
-  Color.convertToRgba = function(value, opacity = 1) {
+  Color.string2rgba = function(value, opacity = 1) {
     if ( /^#/.test(value) ) {
-      return Color.hexToRgba(value, opacity)
+      return Color.hexString2rgba(value, opacity)
     } else if ( /^rgb\(/.test(value) ) {
-      return Color.rgbToRgba(value, opacity)
+      return Color.rgbString2rgba(value, opacity)
     } else if ( /^rgba\(/.test(value) ) {
-      // Remove spaces
-      return value.replace(/ +/g, '')
+      return Color.rgbaString2rgba(value, opacity)
     } else if ( /^hsl\(/.test(value) ) {
-      return Color.hslToRgba(value, opacity)
+      return Color.hslStringToRgba(value, opacity)
     } else {
-      return Color.nameToRgba(value, opacity)
+      var hex = Color.name2HexString(value);
+      return Color.hexString2rgba(hex, opacity)
     }
   }
 
   /**
-   * Convert a named color to RGBA.
-   * @function nameToRgba
-   * @memberof Color
-   * @param {String} name - *name* should be one of the blah blah on website
-   * @param {Number} opacity - a number between 0 and 1.
-   * @return {String} The color as RGBA.
-   * @static
+   * Validate that the opacity is between 0 and 1.
+   * @private
    */
-  Color.nameToRgba = function(name, opacity = 1) {
-    name = name.toLowerCase();
-    if (name == 'white') {
-      return Color.rgbToRgba('rgb(255,255,255)', opacity);
-    } else if (name == 'black') {
-      return Color.rgbToRgba('rgb(0,0,0)', opacity);
+  Color._validateOpacity = function(value) {
+    value = Number(value)
+    if (value == NaN) {
+      value = 1
+    } else if (value > 1) {
+      value = 1
+    } else if (value &lt; 0) {
+      value = 0
+    }
+    return value
+  }
+
+  /**
+   * Validate that the RGBA color components are between 0 and 255. Also validate the opacity.
+   * @private
+   */
+  Color._validateRgba = function(value) {
+    return {
+      r: Color._validateRgbNumber(value.r),
+      g: Color._validateRgbNumber(value.g),
+      b: Color._validateRgbNumber(value.b),
+      a: Color._validateOpacity(value.a)
     }
   }
 
   /**
-   * Convert an RGB color to RGBA.
-   * @function rgbToRgba
+   * Validate that the number is between 0 and 255.
+   * @private
+   */
+  Color._validateRgbNumber = function(value) {
+    value = Number(value)
+    if (value == NaN) {
+      value = 0
+    } else if (value > 255) {
+      value = 255
+    } else if (value &lt; 0) {
+      value =  0
+    }
+    return value
+  }
+
+  /**
+   * Convert an RGB string to an RGBA object
+   * @function rgbString2rgba
    * @memberof Color
-   * @param {String} rgb - *rgb* should take the form of 'rgb(red,green,blue)', where red, green and blue are numbers between 0 and 255.
+   * @param {String} rgbString - *rgbString* should take the form of 'rgb(red,green,blue)', where red, green and blue are numbers between 0 and 255.
    * @param {Number} opacity - a number between 0 and 1.
+   * @return {String} The color as an RGBA object.
+   * @static
+   * @private
+   */
+  Color.rgbString2rgba = function(rgbString, opacity = 1) {
+    rgbString = rgbString.replace(/ +/g, '');
+    var result = /^rgb\((\d+),(\d+),(\d+)\)/.exec(rgbString);
+    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: opacity } : undefined
+  }
+
+  /**
+   * Convert an RGBA String color to RGBA.
+   * @function rgbString2rgba
+   * @memberof Color
+   * @param {String} rgbaString - *rgbaString* should take the form of 'rgb(red,green,blue, alpha)', where red, green and blue are numbers between 0 and 255.
    * @return {String} The color as RGBA.
    * @static
+   * @private
    */
-  Color.rgbToRgba = function(rgb, opacity = 1) {
-    // Remove spaces
-    rgb = rgb.replace(/ +/g, '');
-    rgb = rgb.replace('rgb', 'rgba');
-    return rgb.replace(')', ',' + opacity + ')')
+  Color.rgbaString2rgba = function(rgbaString) {
+    rgbaString = rgbaString.replace(/ +/g, '');
+    var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)\)/.exec(rgbaString);
+    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
   }
 
   /**
    * Convert an HSL color to RGBA.
    * @function hslToRgba
    * @memberof Color
-   * @param {String} hsl - *hsl* values should be NOT Implemented yet
+   * @param {String} hsl - *hsl*  NOT Implemented yet
    * @param {Number} opacity - a number between 0 and 1.
    * @return {String} The color as RGBA.
    * @static
+   * @private
    */
-  Color.hslToRgba = function(hsl) {
+  Color.hslStringToRgba = function(hsl) {
+    console.log('NOT IMPLEMENTED')
   }
 
   /**
-   * Convert RGB representation to HSV.
+   * Convert a RGB object to an HSV object.
    * r, g, b can be either in &lt;0,1> range or &lt;0,255> range.
    * Credits to http://www.raphaeljs.com
+   * @private
    */
   Color.rgb2hsv = function(rgb) {
 
@@ -642,8 +735,9 @@
   }
 
   /**
-   * Convert HSV representation to RGB HEX string.
+   * Convert an HSV object to RGB HEX string.
    * Credits to http://www.raphaeljs.com
+   * @private
    */
   Color.hsv2rgb = function(hsv) {
     var R, G, B, X, C;
@@ -664,19 +758,18 @@
     return { r: r, g: g, b: b };
   }
 
-  // Adapted from:
-  // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   /**
-   * Convert a Hexidecimal color to RGBA.
-   * @function hexToRgba
+   * Convert a Hexidecimal color string to an RGBA object.
+   * Credite to http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+   * @function hex2rgba
    * @memberof Color
    * @param {String} hex - *hex* can be shorthand (e.g. "03F") or fullform (e.g. "0033FF"), with or without the starting '#'.
    * @param {Number} opacity - a number between 0 and 1.
-   * @return {String} The color as RGBA.
+   * @return {String} The color as an RGBA object.
    * @static
+   * @private
    */
-  Color.hexToRgba = function(hex, opacity) {
+  Color.hexString2rgba = function(hex, opacity = 1) {
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function(m, r, g, b) {
       return r + r + g + g + b + b;
@@ -691,16 +784,209 @@
       green = parseInt(result[2], 16);
       blue = parseInt(result[3], 16);
     }
-    // return "rgba(" + red + "," + green + "," + blue + "," + opacity +  ")"
     return { r: red, g: green, b: blue, a: opacity }
   }
 
-  Color.rgbaToString = function(rgba) {
+  /**
+   * Convert a RGBA object to a RGBA string
+   * @function rgba2String
+   * @memberof Color
+   * @param {Object} rgba - RGBA object
+   * @return {String} - RGBA String
+   * @static
+   * @private
+   */
+  Color.rgba2String = function(rgba) {
+    console.log(rgba)
+    rgba = Color._validateRgba(rgba);
     return 'rgba(' + rgba.r + ','+ rgba.g + ','  + rgba.b + ',' + rgba.a + ')'
   }
 
-  Color.rgbToString = function(rgb) {
+  /**
+   * Convert a RGB object to a RGB string
+   * @function rgb2String
+   * @memberof Color
+   * @param {Object} rgb - RGB object
+   * @return {String} - RGB String
+   * @static
+   * @private
+   */
+  Color.rgb2String = function(rgb) {
     return 'rgb(' + rgb.r + ','+ rgb.g + ','  + rgb.b + ')'
+  }
+
+
+  /**
+   * Convert a named color to RGBA.
+   * @function name2HexString
+   * @memberof Color
+   * @param {String} name - *name* should be one of the ~150 browser supported color names [List](http://www.w3schools.com/colors/colors_names.asp))
+   * @return {String} The color as a Hex string.
+   * @static
+   * @private
+   */
+  Color.name2HexString = function(name) {
+    name = name.toLowerCase();
+    var hex = Color.names()[name];
+    if (hex) {
+      return hex
+    } else {
+      console.log('Name not found! Defaulting to Black')
+      return '#000000'
+    }
+  }
+
+  Color.names = function() {
+    return {
+      aliceblue: '#f0f8ff',
+      antiquewhite: '#faebd7',
+      aqua: '#00ffff',
+      aquamarine: '#7fffd4',
+      azure: '#f0ffff',
+      beige: '#f5f5dc',
+      bisque: '#ffe4c4',
+      black: '#000000',
+      blanchedalmond: '#ffebcd',
+      blue: '#0000ff',
+      blueviolet: '#8a2be2',
+      brown: '#a52a2a',
+      burlywood: '#deb887',
+      cadetblue: '#5f9ea0',
+      chartreuse: '#7fff00',
+      chocolate: '#d2691e',
+      coral: '#ff7f50',
+      cornflowerblue: '#6495ed',
+      cornsilk: '#fff8dc',
+      crimson: '#dc143c',
+      cyan: '#00ffff',
+      darkblue: '#00008b',
+      darkcyan: '#008b8b',
+      darkgoldenrod: '#b8860b',
+      darkgray: '#a9a9a9',
+      darkgrey: '#a9a9a9',
+      darkgreen: '#006400',
+      darkkhaki: '#bdb76b',
+      darkmagenta: '#8b008b',
+      darkolivegreen: '#556b2f',
+      darkorange: '#ff8c00',
+      darkorchid: '#9932cc',
+      darkred: '#8b0000',
+      darksalmon: '#e9967a',
+      darkseagreen: '#8fbc8f',
+      darkslateblue: '#483d8b',
+      darkslategray: '#2f4f4f',
+      darkslategrey: '#2f4f4f',
+      darkturquoise: '#00ced1',
+      darkviolet: '#9400d3',
+      deeppink: '#ff1493',
+      deepskyblue: '#00bfff',
+      dimgray: '#696969',
+      dimgrey: '#696969',
+      dodgerblue: '#1e90ff',
+      firebrick: '#b22222',
+      floralwhite: '#fffaf0',
+      forestgreen: '#228b22',
+      fuchsia: '#ff00ff',
+      gainsboro: '#dcdcdc',
+      ghostwhite: '#f8f8ff',
+      gold: '#ffd700',
+      goldenrod: '#daa520',
+      gray: '#808080',
+      grey: '#808080',
+      green: '#008000',
+      greenyellow: '#adff2f',
+      honeydew: '#f0fff0',
+      hotpink: '#ff69b4',
+      indianred : '#cd5c5c',
+      indigo : '#4b0082',
+      ivory: '#fffff0',
+      khaki: '#f0e68c',
+      lavender: '#e6e6fa',
+      lavenderblush: '#fff0f5',
+      lawngreen: '#7cfc00',
+      lemonchiffon: '#fffacd',
+      lightblue: '#add8e6',
+      lightcoral: '#f08080',
+      lightcyan: '#e0ffff',
+      lightgoldenrodyellow: '#fafad2',
+      lightgray: '#d3d3d3',
+      lightgrey: '#d3d3d3',
+      lightgreen: '#90ee90',
+      lightpink: '#ffb6c1',
+      lightsalmon: '#ffa07a',
+      lightseagreen: '#20b2aa',
+      lightskyblue: '#87cefa',
+      lightslategray: '#778899',
+      lightslategrey: '#778899',
+      lightsteelblue: '#b0c4de',
+      lightyellow: '#ffffe0',
+      lime: '#00ff00',
+      limegreen: '#32cd32',
+      linen: '#faf0e6',
+      magenta: '#ff00ff',
+      maroon: '#800000',
+      mediumaquamarine: '#66cdaa',
+      mediumblue: '#0000cd',
+      mediumorchid: '#ba55d3',
+      mediumpurple: '#9370db',
+      mediumseagreen: '#3cb371',
+      mediumslateblue: '#7b68ee',
+      mediumspringgreen: '#00fa9a',
+      mediumturquoise: '#48d1cc',
+      mediumvioletred: '#c71585',
+      midnightblue: '#191970',
+      mintcream: '#f5fffa',
+      mistyrose: '#ffe4e1',
+      moccasin: '#ffe4b5',
+      navajowhite: '#ffdead',
+      navy: '#000080',
+      oldlace: '#fdf5e6',
+      olive: '#808000',
+      olivedrab: '#6b8e23',
+      orange: '#ffa500',
+      orangered: '#ff4500',
+      orchid: '#da70d6',
+      palegoldenrod: '#eee8aa',
+      palegreen: '#98fb98',
+      paleturquoise: '#afeeee',
+      palevioletred: '#db7093',
+      papayawhip: '#ffefd5',
+      peachpuff: '#ffdab9',
+      peru: '#cd853f',
+      pink: '#ffc0cb',
+      plum: '#dda0dd',
+      powderblue: '#b0e0e6',
+      purple: '#800080',
+      rebeccapurple: '#663399',
+      red: '#ff0000',
+      rosybrown: '#bc8f8f',
+      royalblue: '#4169e1',
+      saddlebrown: '#8b4513',
+      salmon: '#fa8072',
+      sandybrown: '#f4a460',
+      seagreen: '#2e8b57',
+      seashell: '#fff5ee',
+      sienna: '#a0522d',
+      silver: '#c0c0c0',
+      skyblue: '#87ceeb',
+      slateblue: '#6a5acd',
+      slategray: '#708090',
+      slategrey: '#708090',
+      snow: '#fffafa',
+      springgreen: '#00ff7f',
+      steelblue: '#4682b4',
+      tan: '#d2b48c',
+      teal: '#008080',
+      thistle: '#d8bfd8',
+      tomato: '#ff6347',
+      turquoise: '#40e0d0',
+      violet: '#ee82ee',
+      wheat: '#f5deb3',
+      white: '#ffffff',
+      whitesmoke: '#f5f5f5',
+      yellow: '#ffff00',
+      yellowgreen: '#9acd32'
+    }
   }
 
   CGV.Color = Color;
@@ -718,7 +1004,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 06 2016 16:21:46 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 08 2016 09:41:11 GMT-0700 (MST)
         </footer>
     </div>
 </div>

@@ -63,7 +63,7 @@
       this._color.hsv = this.hsv;
       this._color.opacity = this.opacity;
       this.updateIndicators();
-      var pickerRgbString = CGV.Color.rgbToString( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
+      var pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
       this.pickerElement.style.backgroundColor = pickerRgbString;
       d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
       this.currentColorIndicator.style.backgroundColor = this.color.rgbaString;
@@ -71,7 +71,7 @@
     }
 
     setColor(value) {
-      this._color.rawColor = value;
+      this._color.setColor(value);
       this.hsv = this._color.hsv;
       this.opacity = this._color.opacity;
       this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
