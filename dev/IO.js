@@ -54,7 +54,7 @@
         feature = features[i];
         for (var j = 0; j < itemsLength; j++) {
           legendItem = swatchedLegendItems[j];
-          if (feature._color.rgbaString == legendItem.swatchColor) {
+          if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
             feature.legendItem = legendItem;
             break
           }
@@ -67,13 +67,13 @@
         arcPlot = arcPlots[i];
         for (var j = 0; j < itemsLength; j++) {
           legendItem = swatchedLegendItems[j];
-          if (arcPlot._color.rgbaString == legendItem.swatchColor) {
+          if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
             arcPlot.legendItem = legendItem;
           }
-          if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor) {
+          if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
             arcPlot.legendItemPositive = legendItem;
           }
-          if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor) {
+          if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
             arcPlot.legendItemNegative = legendItem;
           }
         }

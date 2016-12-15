@@ -49,7 +49,7 @@
 
     get color() {
       // return this._color || this.featureSlot.color
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
     get colorPositive() {
@@ -59,7 +59,7 @@
       if (this.legendItemPositive) {
         return this.legendItemPositive.swatchColor
       } else if (this._colorPositive) {
-        return this._colorPositive.rgbaString
+        return this._colorPositive
       } else {
         return this.color
       }
@@ -71,7 +71,7 @@
       if (this.legendItemNegative) {
         return this.legendItemNegative.swatchColor
       } else if (this._colorNegative) {
-        return this._colorNegative.rgbaString
+        return this._colorNegative
       } else {
         return this.color
       }
@@ -107,7 +107,7 @@
     }
 
     draw(canvas, slotRadius, slotThickness, fast, start, stop) {
-      if (this.colorNegative == this.colorPositive) {
+      if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
         this._drawPath(canvas, slotRadius, slotThickness, fast, start, stop, this.colorPositive);
       } else {
         this._drawPath(canvas, slotRadius, slotThickness, fast, start, stop, this.colorPositive, 'positive');
@@ -162,7 +162,7 @@
       });
       ctx.arc(centerX, centerY, savedR, scale.bp(saved_bp), scale.bp(stopBp), false);
       ctx.arc(centerX, centerY, slotRadius, scale.bp(stopBp), scale.bp(startBp), true);
-      ctx.fillStyle = color;
+      ctx.fillStyle = color.rgbaString;
       ctx.fill();
     }
     //

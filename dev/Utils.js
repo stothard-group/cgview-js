@@ -273,32 +273,32 @@
     return (a * b) < 0
   }
 
-  // /**
-  //  * Merges top level properties of each supplied object.
-  //  * ```javascript
-  //  * JSV.merge({a:1, b:1}, {b:2, c:2}, {c:3, d:3});
-  //  * //=> {a: 1, b: 2, c: 3, d: 3}
-  //  * ```
-  //  * If a non object is provided, it is ignored. This can be useful if
-  //  * merging function arguments that may be undefined.
-  //  * @param {Object} object_1,object_2,..,object_n Objects to merge
-  //  * @return {Object}
-  //  */
-  // JSV.merge = function() {
-  //   var data = {};
-  //   var object, keys, key;
-  //   for (var arg_i=0, arg_len=arguments.length; arg_i < arg_len; arg_i++) {
-  //     object = arguments[arg_i];
-  //     if (typeof object === 'object') {
-  //       keys = Object.keys(object);
-  //       for (var key_i=0, key_len=keys.length; key_i < key_len; key_i++){
-  //         key = keys[key_i];
-  //         data[key] = object[key];
-  //       }
-  //     }
-  //   }
-  //   return data;
-  // }
+  /**
+   * Merges top level properties of each supplied object.
+   * ```javascript
+   * CGV.merge({a:1, b:1}, {b:2, c:2}, {c:3, d:3});
+   * //=> {a: 1, b: 2, c: 3, d: 3}
+   * ```
+   * If a non object is provided, it is ignored. This can be useful if
+   * merging function arguments that may be undefined.
+   * @param {Object} object_1,object_2,..,object_n Objects to merge
+   * @return {Object}
+   */
+  CGV.merge = function() {
+    var data = {};
+    var object, keys, key;
+    for (var arg_i=0, arg_len=arguments.length; arg_i < arg_len; arg_i++) {
+      object = arguments[arg_i];
+      if (typeof object === 'object') {
+        keys = Object.keys(object);
+        for (var key_i=0, key_len=keys.length; key_i < key_len; key_i++){
+          key = keys[key_i];
+          data[key] = object[key];
+        }
+      }
+    }
+    return data;
+  }
   //
   // /**
   //  * Returns a string id using the _id_base_ and _start_ while

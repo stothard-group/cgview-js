@@ -450,167 +450,665 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="IO.js.html">Source: IO.js</h1>
+        <h1 class="page-title" data-filename="Legend.html">Class: Legend</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>// Static methods for converting XML &lt;-> JSON
-// NOTE: xml2json required for conversions
-// https://github.com/abdmob/x2js
-// Class for reading and writing JSON
-//////////////////////////////////////////////////////////////////////////////
-// IO
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    Legend
+    </h2>
+    
+        <div class="class-description"><p><br />
+The <em>Legend</em> object can be used to describe a map legend or or add additional annotation to
+the map. A <em>Legend</em> contain one or more <a href="LegendItem.html"><code>LegendItem</code></a> elements</p></div>
+    
+</header>  
 
-  class IO {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Legend">
+            
+            new Legend<span class="signature">(viewer, data, <span class="optional">meta</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line11">line 11</a>
+        </div>
+        
+    </div>
 
-    /**
-     * Interface for reading and writing data to and from CGView
-     * @param {Viewer} viewer - Viewer stuff...
-     */
-    constructor(viewer) {
-      this._viewer = viewer;
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a new Legend.</p>
+    </div>
+    
 
-    /**
-     * Load data from new JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
-     */
-    load_json(json) {
-      var viewer = this._viewer;
+    
+    
+    
+    
+    
+        
 
-      // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
-      // ...
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>viewer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Legend.html">Legend</a></span>
 
-      // Load FeatureSlots
-      if (json.featureSlots) {
-        json.featureSlots.forEach((slotData) => {
-          new CGV.FeatureSlot(viewer, slotData);
-        });
-      }
 
-      // Load Legends
-      if (json.legends) {
-        json.legends.forEach((legendData) => {
-          new CGV.Legend(viewer, legendData);
-        });
-      }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>The parent <em>Viewer</em> for the <em>Legend</em>.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
-      // Associate features and arcplots with LegendItems
-      var swatchedLegendItems = viewer.swatchedLegendItems();
-      var itemsLength = swatchedLegendItems.length;
-      var legendItem;
-      // Features
-      var features = viewer.features();
-      var feature;
-      for (var i = 0, len = features.length; i &lt; len; i++) {
-        feature = features[i];
-        for (var j = 0; j &lt; itemsLength; j++) {
-          legendItem = swatchedLegendItems[j];
-          if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
-            feature.legendItem = legendItem;
-            break
-          }
-        }
-      }
-      // ArcPlots
-      var arcPlots = viewer.arcPlots();
-      var arcPlot;
-      for (var i = 0, len = arcPlots.length; i &lt; len; i++) {
-        arcPlot = arcPlots[i];
-        for (var j = 0; j &lt; itemsLength; j++) {
-          legendItem = swatchedLegendItems[j];
-          if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItem = legendItem;
-          }
-          if (arcPlot._colorPositive &amp;&amp; arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItemPositive = legendItem;
-          }
-          if (arcPlot._colorNegative &amp;&amp; arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItemNegative = legendItem;
-          }
-        }
-      }
-    }
 
-    // Load data from conventionaly CGView XML file.
-    load_xml(xml) {
-      var json = IO.xml_to_json(xml);
-      this.load_json(json);
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>Data used to create the legend.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> position</td>
+<td>&quot;upper-right&quot;</td>
+<td>Where to draw the legend. One of &quot;upper-left&quot;, &quot;upper-center&quot;, &quot;upper-right&quot;, &quot;middle-left&quot;, &quot;middle-center&quot;, &quot;middle-right&quot;, &quot;lower-left&quot;, &quot;lower-center&quot;, or &quot;lower-right&quot;.</td>
+</tr>
+<tr>
+<td> font</td>
+<td>&quot;SansSerif,plain,8&quot;</td>
+<td>A string describing the font. See <a href="Font.html"><code>Font</code></a> for details.</td>
+</tr>
+<tr>
+<td> fontColor</td>
+<td>&quot;black&quot;</td>
+<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
+<td> textAlignment</td>
+<td>&quot;left&quot;</td>
+<td><em>left</em>, <em>center</em>, or <em>right</em></td>
+</tr>
+<tr>
+<td> backgroundColor</td>
+<td>Viewer backgroundColor</td>
+<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
+<td> backgroundOpacity</td>
+<td>1</td>
+<td>A value between 0 and 1.</td>
+</tr>
+</tbody>
+</table></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>meta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
-    static xml_to_json(xml) {
-      if (!window.X2JS) {
-        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
-        return
-      }
-      var x2js = new X2JS({ attributePrefix: '' });
-      // var json = x2js.xml_str2json(xml);
-      var json = xmlToJson(xml);
-      // var cgview = json.cgview
-      // cgview.featureSlots = cgview.featureSlot
-      // delete cgview.featureSlot
-      
 
-      return json
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>User-defined key:value pairs to add to the legend.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    static json_to_xml(json) {
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-  }
+    
+    
 
-  // Changes XML to JSON
-  // function xmlToJson(xml) {
-  //   // Create the return object
-  //   var obj = {};
-  //
-  //   if (xml.nodeType == 1) { // element
-  //     // do attributes
-  //     if (xml.attributes.length > 0) {
-  //     obj["@attributes"] = {};
-  //       for (var j = 0; j &lt; xml.attributes.length; j++) {
-  //         var attribute = xml.attributes.item(j);
-  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-  //       }
-  //     }
-  //   } else if (xml.nodeType == 3) { // text
-  //     obj = xml.nodeValue;
-  //   }
-  //
-  //   // do children
-  //   if (xml.hasChildNodes()) {
-  //     for(var i = 0; i &lt; xml.childNodes.length; i++) {
-  //       var item = xml.childNodes.item(i);
-  //       var nodeName = item.nodeName;
-  //       if (typeof(obj[nodeName]) == "undefined") {
-  //         obj[nodeName] = xmlToJson(item);
-  //       } else {
-  //         if (typeof(obj[nodeName].push) == "undefined") {
-  //           var old = obj[nodeName];
-  //           obj[nodeName] = [];
-  //           obj[nodeName].push(old);
-  //         }
-  //         obj[nodeName].push(xmlToJson(item));
-  //       }
-  //     }
-  //   }
-  //   return obj;
-  // };
+    
 
-  CGV.IO = IO;
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-})(CGView);
-</code></pre>
-        </article>
-    </section>
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="backgroundColor">backgroundColor<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the backgroundColor. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="backgroundOpacity">backgroundOpacity<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the opacity.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="font">font<span class="type-signature type font"><a href="Font.html">Font</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the font. When setting the font, a string representing the font or a <a href="Font.html"><code>Font</code></a> object can be used. For details see <a href="Font.html"><code>Font</code></a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="fontColor">fontColor<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the fontColor. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="position">position<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the legend postion. One of &quot;upper-left&quot;, &quot;upper-center&quot;, &quot;upper-right&quot;, &quot;middle-left&quot;, &quot;middle-center&quot;, &quot;middle-right&quot;, &quot;lower-left&quot;, &quot;lower-center&quot;, or &quot;lower-right&quot;.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="textAlignment">textAlignment<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the text alignment. Possible values are <em>left</em>, <em>center</em>, or <em>right</em>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the <em>Viewer</em></p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="refresh">
+            
+            refresh<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line148">line 148</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Recalculates the <em>Legend</em> size and position as well as the width of the child <a href="LegendItem.html"><code>LegendItem</code></a>s.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -619,7 +1117,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 09 2016 10:30:40 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 09 2016 10:30:40 GMT-0700 (MST)
         </footer>
     </div>
 </div>

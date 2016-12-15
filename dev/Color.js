@@ -206,7 +206,7 @@
    */
   Color._validateOpacity = function(value) {
     value = Number(value)
-    if (value == NaN) {
+    if (isNaN(value)) {
       value = 1
     } else if (value > 1) {
       value = 1
@@ -383,7 +383,6 @@
    * @private
    */
   Color.rgba2String = function(rgba) {
-    console.log(rgba)
     rgba = Color._validateRgba(rgba);
     return 'rgba(' + rgba.r + ','+ rgba.g + ','  + rgba.b + ',' + rgba.a + ')'
   }

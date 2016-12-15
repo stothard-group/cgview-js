@@ -73,12 +73,15 @@
      * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
      */
     get color() {
-      // return this._color.rgba
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
     set color(color) {
-      this._color.colorString = color;
+      if (color.toString() == 'Color') {
+        this._color = color;
+      } else {
+        this._color.setColor(color);
+      }
     }
 
     /**
@@ -122,7 +125,7 @@
     draw(canvas, slotRadius, slotThickness) {
       canvas.drawArc(this.start, this.stop,
         this.adjustedRadius(slotRadius, slotThickness),
-        this.color, this.adjustedWidth(slotThickness), this.decoration);
+        this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
     }
 
     // radius by default would be the center of the slot as provided unless:

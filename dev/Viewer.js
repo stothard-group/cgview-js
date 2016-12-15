@@ -25,6 +25,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
       this.backboneRadius = CGV.defaultFor(options.backboneRadius, 200);
+      this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
       this.debug = CGV.defaultFor(options.debug, false);
 
@@ -54,7 +55,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         var pos = d3.mouse(this.canvas.canvasNode);
         var pt = {x: CGV.pixel(pos[0]), y: CGV.pixel(pos[1])};
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
-          if ( swatchedLegendItems[i].swatchContainsPoint(pt) ) {
+          if ( swatchedLegendItems[i]._swatchContainsPoint(pt) ) {
             var legendItem = swatchedLegendItems[i];
             console.log('SWATCH')
             // Clear previous selections
@@ -139,6 +140,23 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get backboneRadius() {
       return this._backboneRadius * this._zoomFactor
+    }
+
+    /**
+     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get backgroundColor() {
+      return this._backgroundColor
+    }
+
+    set backgroundColor(color) {
+      if (color == undefined) {
+        this._backgroundColor = new CGV.Color('white');
+      } else if (color.toString() == 'Color') {
+        this._backgroundColor = color;
+      } else {
+        this._backgroundColor = new CGV.Color(color);
+      }
     }
 
     /**
@@ -247,8 +265,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Clear the viewer canvas
      */
-    clear() {
-      this.canvas.clear();
+    clear(color = this.backgroundColor.rgbString) {
+      this.canvas.clear(color);
     }
 
     /**
@@ -375,10 +393,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       } 
     }
 
+    scaleIt(value) {
+      return (this.scaleFactor) ? value * this.scaleFactor : value
+    }
 
     toImage(width, height) {
       width = width || this.width;
       height = height || this.height;
+
+      var origWidth = this.width;
+      var origHeight = this.height;
+
 
       var windowTitle = 'CGV-Image-' + width + 'x' + height,
 
@@ -396,6 +421,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       CGV.scale_resolution(temp_canvas, CGV.pixel_ratio);
       this.canvas.ctx = temp_canvas.getContext('2d');
 
+      // Calculate scaling factor
+      var minOriginalDimension = d3.min([this.width, this.height]);
+      var minNewDimension = d3.min([width, height]);
+      this.scaleFactor = minNewDimension / minOriginalDimension;
+      console.log(this.scaleFactor);
+
       this.canvas.width = width;
       this.canvas.height = height;
       this.canvas.refreshScales();
@@ -411,10 +442,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       var image = temp_canvas.toDataURL();
 
       // Restore original settings
-      this.canvas.width = width;
-      this.canvas.height = height;
+      this.canvas.width = origWidth;
+      this.canvas.height = origHeight;
+      this.width = origWidth;
+      this.height = origHeight;
       this.canvas.refreshScales();
       this.canvas.ctx = orig_context;
+      this.scaleFactor = undefined;
 
       // Delete temp canvas
       d3.select(temp_canvas).remove();
@@ -429,7 +463,10 @@ if (window.CGV === undefined) window.CGV = CGView;
           '</head>',
           '<body>',
             '<h2>Your CGView Image is Below</h2>',
-            '<p>To save, right click on the image and choose "Save Image As..."</p>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
+            '<img style="border: 1px solid grey" width="' + origWidth + '" height="' + origHeight +  '" src="' + image +  '"/ >',
+            '<h3>Actual Size</h3>',
             '<img style="border: 1px solid grey" src="' + image +  '"/ >',
           '</body>',
         '<html>'

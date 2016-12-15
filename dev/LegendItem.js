@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * A *legendItem* is used to add text to a map *legend*. Individual
    * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
    * or arcPlot color will use the swatchColor of *legendItem*.
@@ -11,16 +12,14 @@
   class LegendItem {
 
     /**
-     * A *legendItem* is used to add text to a map *legend*. Individual
-     * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
-     * or arcPlot color will use the swatchColor of *legendItem*.
+     * Create a new LegendItem. By default a legendItem will use its parent legend font, fontColor and textAlignment.
      *
      * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
      * @param {Object} data - Data used to create the legendItem:
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
-     *  text                  | ''               | Text to display
+     *  text                  | ""               | Text to display
      *  drawSwatch            | false            | Should a swatch be drawn beside the text
      *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
@@ -30,10 +29,11 @@
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
      */
-    constructor(legend, data = {}, display = {}, meta = {}) {
+    constructor(legend, data = {}, meta = {}) {
       this.legend = legend;
+      this.meta = CGV.merge(data.meta, meta);
       this.text = CGV.defaultFor(data.text, '');
-      this._drawSwatch = CGV.defaultFor(data.drawSwatch, false);
+      this.drawSwatch = CGV.defaultFor(data.drawSwatch, false);
       this.font = data.font
       this.fontColor = data.fontColor;
       this.textAlignment = data.textAlignment;
@@ -50,13 +50,17 @@
       return this._legend
     }
 
-    set legend(legend) {
-      if (this.legend) {
-        // TODO: Remove if already attached to FeatureSlot
+    set legend(newLegend) {
+      var oldLegend = this.legend;
+      this._viewer = newLegend.viewer;
+      this._legend = newLegend;
+      newLegend._legendItems.push(this);
+      if (oldLegend) {
+        // Remove from old legend
+        oldLegend._legendItems = oldLegend._legendItems.remove(this);
+        oldLegend.refresh();
+        newLegend.refresh();
       }
-      this._legend = legend;
-      legend._legendItems.push(this);
-      this._viewer = legend.viewer;
     }
 
     /**
@@ -83,7 +87,7 @@
     }
 
     /**
-     * @member {String} - Get or set the text alignment
+     * @member {String} - Get or set the text alignment. Defaults to the parent *Legend* text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
       return this._textAlignment
@@ -98,32 +102,37 @@
     }
 
     /**
-     * @member {Viewer} - Get the *Viewer*
+     * @member {Viewer} - Get the *Viewer*.
      */
     get viewer() {
       return this._viewer
     }
 
+    /**
+     * @member {Number} - Get the width in pixels.
+     */
     get width() {
       return this._width
     }
 
+    /**
+     * @member {Number} - Get the height in pixels. This will be the same as the font size.
+     */
     get height() {
       return this.font.height
     }
 
     /**
-     * @member {String} - Get or set the font. A string or font can be used
+     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      // return this._font.css
       return this._font
     }
 
     set font(value) {
       if (value == undefined) {
         this._font = this.legend.font;
-      } else if (value.toString() == 'Font'){
+      } else if (value.toString() == 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -131,30 +140,35 @@
     }
 
     /**
-     * @member {String} - Get or set the fontColor. TODO: reference COLOR class
+     * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get fontColor() {
-      // TODO set to cgview font color if not defined
-      return this._fontColor.rgbaString
+      return this._fontColor
     }
 
     set fontColor(color) {
       if (color == undefined) {
         this._fontColor = this.legend._fontColor;
+      } else if (color.toString() == 'Color') {
+        this._fontColor = color;
       } else {
         this._fontColor = new CGV.Color(color);
       }
     }
 
     /**
-     * @member {String} - Get or set the swatchColor. TODO: reference COLOR class
+     * @member {Color} - Get or set the swatchColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get swatchColor() {
-      return this._swatchColor.rgbaString
+      return this._swatchColor
     }
 
     set swatchColor(color) {
-      this._swatchColor.setColor(color);
+      if (color.toString() == 'Color') {
+        this._swatchColor = color;
+      } else {
+        this._swatchColor.setColor(color);
+      }
     }
 
     /**
@@ -168,19 +182,7 @@
       this._swatchColor.opacity = value;
     }
 
-
-    /**
-     * @member {String} - Get or set the swatch opacity.
-     */
-    get swatchOpacity() {
-      return this._swatchColor.opacity
-    }
-
-    set swatchOpacity(value) {
-      this._swatchColor.opacity = value;
-    }
-
-    swatchContainsPoint(pt) {
+    _swatchContainsPoint(pt) {
       var x = this.legend.originX + this.legend.padding;
       var y = this.legend.originY + this.legend.padding;
       for (var i = 0, len = this.legend._legendItems.length; i < len; i++) {

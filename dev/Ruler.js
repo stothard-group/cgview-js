@@ -24,7 +24,11 @@
     }
 
     set font(value) {
-      this._font = new CGV.Font(value);
+      if (value.toString() == 'Font') {
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
     }
 
     get tickCount() {
@@ -71,6 +75,8 @@
       var start = ranges ? ranges[0] : 1;
       var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
       var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
+      this.canvas.ctx.fillStyle = 'black'; // Label Color
+
 
       // Tick format for labels
       var tickFormat = scale.bp.tickFormat(this.tickCount * this.viewer.zoomFactor, 's');

@@ -77,8 +77,10 @@
     /**
      * Clear the viewer canvas
      */
-    clear() {
-      this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    clear(color = 'white') {
+      // this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+      this.ctx.fillStyle = color;
+      this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
     }
 
     /**

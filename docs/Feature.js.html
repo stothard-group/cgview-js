@@ -264,6 +264,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -297,6 +299,45 @@
             </ul>
         </li>
     
+        <li class="item" data-name="Legend">
+            <span class="title">
+                <a href="Legend.html">Legend</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Legend#backgroundColor"><a href="Legend.html#backgroundColor">backgroundColor</a></li>
+            
+                <li data-name="Legend#backgroundOpacity"><a href="Legend.html#backgroundOpacity">backgroundOpacity</a></li>
+            
+                <li data-name="Legend#font"><a href="Legend.html#font">font</a></li>
+            
+                <li data-name="Legend#fontColor"><a href="Legend.html#fontColor">fontColor</a></li>
+            
+                <li data-name="Legend#position"><a href="Legend.html#position">position</a></li>
+            
+                <li data-name="Legend#textAlignment"><a href="Legend.html#textAlignment">textAlignment</a></li>
+            
+                <li data-name="Legend#viewer"><a href="Legend.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Legend#refresh"><a href="Legend.html#refresh">refresh</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="LegendItem">
             <span class="title">
                 <a href="LegendItem.html">LegendItem</a>
@@ -312,11 +353,11 @@
             
                 <li data-name="LegendItem#fontColor"><a href="LegendItem.html#fontColor">fontColor</a></li>
             
+                <li data-name="LegendItem#height"><a href="LegendItem.html#height">height</a></li>
+            
                 <li data-name="LegendItem#legend"><a href="LegendItem.html#legend">legend</a></li>
             
                 <li data-name="LegendItem#swatchColor"><a href="LegendItem.html#swatchColor">swatchColor</a></li>
-            
-                <li data-name="LegendItem#swatchOpacity"><a href="LegendItem.html#swatchOpacity">swatchOpacity</a></li>
             
                 <li data-name="LegendItem#swatchOpacity"><a href="LegendItem.html#swatchOpacity">swatchOpacity</a></li>
             
@@ -325,6 +366,8 @@
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
+            
+                <li data-name="LegendItem#width"><a href="LegendItem.html#width">width</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -367,6 +410,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Viewer#backboneRadius"><a href="Viewer.html#backboneRadius">backboneRadius</a></li>
+            
+                <li data-name="Viewer#backgroundColor"><a href="Viewer.html#backgroundColor">backgroundColor</a></li>
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
@@ -487,12 +532,15 @@
      * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
      */
     get color() {
-      // return this._color.rgba
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color.rgbaString;
+      return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
     set color(color) {
-      this._color.colorString = color;
+      if (color.toString() == 'Color') {
+        this._color = color;
+      } else {
+        this._color.setColor(color);
+      }
     }
 
     /**
@@ -536,7 +584,7 @@
     draw(canvas, slotRadius, slotThickness) {
       canvas.drawArc(this.start, this.stop,
         this.adjustedRadius(slotRadius, slotThickness),
-        this.color, this.adjustedWidth(slotThickness), this.decoration);
+        this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
     }
 
     // radius by default would be the center of the slot as provided unless:
@@ -578,7 +626,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Dec 08 2016 09:41:11 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 09 2016 10:30:40 GMT-0700 (MST)
         </footer>
     </div>
 </div>
