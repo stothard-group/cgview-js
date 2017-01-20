@@ -232,7 +232,8 @@
         ctx.font = font;
         currentFont = font;
       }
-      widths[i] = ctx.measureText(text).width;
+      // widths[i] = ctx.measureText(text).width;
+      widths[map[i].index] = ctx.measureText(text).width;
     }
     ctx.restore();
     return widths

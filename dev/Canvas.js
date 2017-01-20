@@ -49,12 +49,39 @@
 
     //TODO: move to setter for width and height
     refreshScales() {
+      var x_domain, y_domain;
+      var x1, x2, y1, y2;
+      // Save scale domains to keep tract of translation
+      if (this.scale.x) {
+        var orig_x_domain = this.scale.x.domain();
+        var orig_width = orig_x_domain[1] - orig_x_domain[0];
+        x1 = orig_x_domain[0] / orig_width;
+        x2 = orig_x_domain[1] / orig_width;
+      } else {
+        x1 = -0.5;
+        x2 = 0.5;
+      }
+      if (this.scale.y) {
+        var orig_y_domain = this.scale.y.domain();
+        var orig_width = orig_y_domain[0] - orig_y_domain[1];
+        y1 = orig_y_domain[0] / orig_width;
+        y2 = orig_y_domain[1] / orig_width;
+      } else {
+        y1 = 0.5;
+        y2 = -0.5;
+      }
       this.scale.x = d3.scaleLinear()
-        .domain([-this.width/2, this.width/2])
+        .domain([this.width * x1, this.width * x2])
         .range([0, this.width]);
       this.scale.y = d3.scaleLinear()
-        .domain([this.height/2, -this.height/2])
+        .domain([this.height * y1, this.height * y2])
         .range([0, this.height]);
+      // this.scale.x = d3.scaleLinear()
+      //   .domain([-this.width/2, this.width/2])
+      //   .range([0, this.width]);
+      // this.scale.y = d3.scaleLinear()
+      //   .domain([this.height/2, -this.height/2])
+      //   .range([0, this.height]);
     }
 
     get width() {

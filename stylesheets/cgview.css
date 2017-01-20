@@ -1,3 +1,16 @@
+/*******************************************/
+/* VIEWER */
+/*******************************************/
+.cgv-wrapper {
+  overflow: hidden;
+  display: inline-block;
+}
+
+
+
+/*******************************************/
+/* COLOR PICKER */
+/*******************************************/
 .cp-color-picker-wrapper {
   width: 100px;
   height: 100px;
@@ -168,10 +181,250 @@
   position: absolute;
 }
 
-/* #my-color-picker { */
-/*  */
-/*  */
-/*   position: absolute; */
-/*   top: 100px; */
-/*   left: 100px; */
-/* } */
+/*******************************************/
+/* DIALOG BOX  */
+/*******************************************/
+.cgv-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 5px 10px 10px 10px;
+  margin: auto auto;
+  border: 1px solid black;
+  border-radius: 4px;
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  background-color: white;
+  display: block;
+  text-align: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.cgv-dialog-dismiss {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  height: 20px;
+  width: 20px; 
+  background-color: white;
+  cursor: pointer;
+  color: #CCC;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: right;
+  line-height: 20px;
+}
+
+.cgv-dialog-dismiss:active {
+  background-color: rgb(200, 200, 200);
+}
+
+.cgv-dialog-dismiss:hover {
+  color: rgb(0, 0, 0);
+}
+
+.cgv-dialog-header {
+  /* height: 25px; */
+  padding-bottom: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid #CCC;
+  color: rgb(50, 50, 50);
+}
+
+.cgv-dialog-contents h3 {
+  font-size: 16px;
+}
+
+.cgv-dialog-contents {
+  margin-top: 5px;
+  overflow: scroll;
+}
+
+/* Area at bottom of dialog buttons */
+.cgv-dialog-footer {
+  height: 30px;
+  border-top: 1px solid #CCC;
+  padding-top: 5px;
+  text-align: right;
+}
+
+/* CSS styles similar to Bootstrap 3 */
+.cgv-button {
+  color: #333;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.cgv-alert {
+  border: 1px solid #bce8f1;
+  border-radius: 4px;
+  background-color: #d9edf7;
+  color: #31708f;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.cgv-label {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 14px;
+  width: 60px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.cgv-input {
+  border-radius: 4px;
+  color: #555;
+  border: 1px solid #CCC;
+  padding: 4px 8px;
+  display: table-cell;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  font-size: 14px;
+}
+
+.cgv-input:focus {
+  border-color: #66afe9;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+.cgv-input-addon {
+  /* border-radius: 0 4px 4px 0; */
+  border-radius: 4px;
+  padding: 4px 8px;
+  background-color: #eee;
+  color: #555;
+  border: 1px solid #CCC;
+  text-align: center;
+  display: table-cell;
+  font-size: 14px;
+}
+
+.cgv-input-group {
+  display: inline-table;
+  margin-bottom: 10px;
+}
+
+.cgv-input-group .cgv-input:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.cgv-input-addon:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0
+}
+
+
+/*******************************************/
+/* SETTINGS */
+/*******************************************/
+.cgv-settings .cgv-label {
+  width: 140px;
+}
+
+/*******************************************/
+/* MENU */
+/*******************************************/
+
+/* Size is actually set in SVMenu */
+.cgv-menu {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  height: 41px;
+  margin: 0 auto;
+  width: 300px;
+  border: 1px solid black;
+  border-radius: 2px;
+  box-shadow: 1px 1px 2px -1px grey;
+  background-color: white;
+  display: block;
+  text-align: left;
+}
+
+.cgv-menu svg {
+  shape-rendering: geometricPrecision;
+}
+
+.cgv-menu-button {
+  fill: rgb(255, 255, 255);
+  stroke: black;
+}
+
+.cgv-menu-button:not(.disabled):active {
+  fill: rgb(200, 200, 200);
+}
+
+.cgv-menu-button:not(.disabled):hover * {
+  stroke: rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.cgv-menu-button .cgv-button-text {
+  fill: rgb(100, 100, 100);
+}
+
+.cgv-menu-button:not(.disabled):hover .cgv-button-text {
+  fill: rgb(0, 0, 0);
+}
+
+.cgv-button-image * {
+  stroke: rgb(100, 100, 100);
+}
+
+.cgv-menu-button.disabled {
+  stroke: rgb(200, 200, 200);
+}
+
+.cgv-menu-button.disabled .cgv-button-image * {
+  stroke: rgb(200, 200, 200);
+}
+
+.cgv-menu-button.disabled .cgv-button-text {
+  fill: rgb(200, 200, 200);
+}
+
+/* Size is actually set in SVMenu */
+.cgv-menu-handle {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  margin: 0 auto;
+  width: 40px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
+.cgv-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.cgv-table th {
+  padding: 5px;
+  border-bottom: 2px solid #ddd;
+}
+
+.cgv-table td {
+  padding: 5px;
+  border-top: 1px solid #ddd;
+}
+

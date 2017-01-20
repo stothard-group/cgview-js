@@ -487,219 +487,585 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="LegendItem.js.html">Source: LegendItem.js</h1>
+        <h1 class="page-title" data-filename="Menu.html">Class: Menu</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// LegendItem
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    Menu
+    </h2>
+    
+        <div class="class-description"><p>Menu</p></div>
+    
+</header>  
 
-  /**
-   * &lt;br />
-   * A *legendItem* is used to add text to a map *legend*. Individual
-   * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
-   * or arcPlot color will use the swatchColor of *legendItem*.
-   */
-  class LegendItem {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Menu">
+            
+            new Menu<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Menu.js.html">Menu.js</a>, <a href="Menu.js.html#line9">line 9</a>
+        </div>
+        
+    </div>
 
-    /**
-     * Create a new LegendItem. By default a legendItem will use its parent legend font, fontColor and textAlignment.
-     *
-     * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
-     * @param {Object} data - Data used to create the legendItem:
-     *
-     *  Option                | Default          | Description
-     *  ----------------------|-------------------------------------------------
-     *  text                  | ""               | Text to display
-     *  drawSwatch            | false            | Should a swatch be drawn beside the text
-     *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
-     *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
-     *  textAlignment         | Legend textAlignment | *left*, *center*, or *right*
-     *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
-     *  swatchOpacity         | 1                | A value between 0 and 1.
-     *
-     * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
-     */
-    constructor(legend, data = {}, meta = {}) {
-      this.legend = legend;
-      this.meta = CGV.merge(data.meta, meta);
-      this.text = CGV.defaultFor(data.text, '');
-      this.drawSwatch = CGV.defaultFor(data.drawSwatch, false);
-      this.font = data.font
-      this.fontColor = data.fontColor;
-      this.textAlignment = data.textAlignment;
-      this.drawSwatch = CGV.defaultFor(data.drawSwatch, false);
-      this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
-      this.swatchOpacity = CGV.defaultFor(data.swatchOpacity, 1);
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a new menu</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="available">available<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the availability of the menu. If false, the menu will not be visible at all.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="height">height<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Returns the height of the menu.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="opened">opened<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Returns true if the menu is open.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="slideTime">slideTime<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the time it take for the menu to appear and disappear in milliseconds [Default: 500].</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="width">width<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Returns the width of the menu.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="close">
+            
+            close<span class="signature">(duration)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Menu.js.html">Menu.js</a>, <a href="Menu.js.html#line130">line 130</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Closes the menu</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
 
 
-    /**
-     * @member {Legend} - Get or set the *Legend*
-     */
-    get legend() {
-      return this._legend
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The duration of the close animation in milliseconds. Defaults to slideTime <a href="Menu.js.html#slideTime">Menu.slideTime</a>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    set legend(newLegend) {
-      var oldLegend = this.legend;
-      this._viewer = newLegend.viewer;
-      this._legend = newLegend;
-      newLegend._legendItems.push(this);
-      if (oldLegend) {
-        // Remove from old legend
-        oldLegend._legendItems = oldLegend._legendItems.remove(this);
-        oldLegend.refresh();
-        newLegend.refresh();
-      }
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    /**
-     * @member {String} - Get or set the text
-     */
-    get text() {
-      return this._text
-    }
+    
+    
 
-    set text(text) {
-      this._text = text;
-    }
+    
 
-    /**
-     * @member {Boolean} - Get or set the drawSwatch property. If true a swatch will be
-     * drawn beside the legendItem text.
-     */
-    get drawSwatch() {
-      return this._drawSwatch
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    set drawSwatch(value) {
-      this._drawSwatch = value;
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="open">
+            
+            open<span class="signature">(duration)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Menu.js.html">Menu.js</a>, <a href="Menu.js.html#line116">line 116</a>
+        </div>
+        
+    </div>
 
-    /**
-     * @member {String} - Get or set the text alignment. Defaults to the parent *Legend* text alignment. Possible values are *left*, *center*, or *right*.
-     */
-    get textAlignment() {
-      return this._textAlignment
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Opens the menu</p>
+    </div>
+    
 
-    set textAlignment(value) {
-      if (value == undefined) {
-        this._textAlignment = this.legend.textAlignment;
-      } else {
-        this._textAlignment = value;
-      }
-    }
+    
+    
+    
+    
+    
+        
 
-    /**
-     * @member {Viewer} - Get the *Viewer*.
-     */
-    get viewer() {
-      return this._viewer
-    }
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
 
-    /**
-     * @member {Number} - Get the width in pixels.
-     */
-    get width() {
-      return this._width
-    }
 
-    /**
-     * @member {Number} - Get the height in pixels. This will be the same as the font size.
-     */
-    get height() {
-      return this.font.height
-    }
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The duration of the open animation in milliseconds. Defaults to slideTime <a href="Menu.html#slideTime">Menu.slideTime</a>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    /**
-     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get font() {
-      return this._font
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    set font(value) {
-      if (value == undefined) {
-        this._font = this.legend.font;
-      } else if (value.toString() == 'Font') {
-        this._font = value;
-      } else {
-        this._font = new CGV.Font(value);
-      }
-    }
+    
+    
 
-    /**
-     * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get fontColor() {
-      return this._fontColor
-    }
+    
 
-    set fontColor(color) {
-      if (color == undefined) {
-        this._fontColor = this.legend._fontColor;
-      } else if (color.toString() == 'Color') {
-        this._fontColor = color;
-      } else {
-        this._fontColor = new CGV.Color(color);
-      }
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    /**
-     * @member {Color} - Get or set the swatchColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get swatchColor() {
-      return this._swatchColor
-    }
+        </dl>
+    
+    
+    
+    
+    
+</article>
 
-    set swatchColor(color) {
-      if (color.toString() == 'Color') {
-        this._swatchColor = color;
-      } else {
-        this._swatchColor.setColor(color);
-      }
-    }
-
-    /**
-     * @member {String} - Get or set the opacity.
-     */
-    get swatchOpacity() {
-      return this._swatchColor.opacity
-    }
-
-    set swatchOpacity(value) {
-      this._swatchColor.opacity = value;
-    }
-
-    _swatchContainsPoint(pt) {
-      var x = this.legend.originX + this.legend.padding;
-      var y = this.legend.originY + this.legend.padding;
-      for (var i = 0, len = this.legend._legendItems.length; i &lt; len; i++) {
-        var item = this.legend._legendItems[i];
-        if (item == this) { break }
-        y += (item.height * 1.5);
-      }
-
-      if (pt.x >= x &amp;&amp; pt.x &lt;= x + this.height &amp;&amp; pt.y >= y &amp;&amp; pt.y &lt;= y + this.height) {
-        return true
-      }
-    }
-  }
-
-  CGV.LegendItem = LegendItem;
-
-})(CGView);
-</code></pre>
-        </article>
-    </section>
-
+</section>  
 
 
 
@@ -708,7 +1074,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Jan 20 2017 09:37:43 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Jan 20 2017 09:37:43 GMT-0700 (MST)
         </footer>
     </div>
 </div>

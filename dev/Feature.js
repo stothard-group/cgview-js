@@ -14,12 +14,14 @@
       // this._opacity = data.opacity;
       this._color = new CGV.Color(data.color);
       this.opacity = parseFloat(data.opacity);
-      this._start = Number(data.start);
-      this._stop = Number(data.stop);
+      this.start = Number(data.start);
+      this.stop = Number(data.stop);
+      this.label = new CGV.Label(this, {name: data.label} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
+      this.viewer.labelSet.addLabel(this.label);
     }
 
     /**
@@ -55,6 +57,17 @@
 
     set start(bp) {
       this._start = bp;
+    }
+
+    /**
+     * @member {String} - Get or set the feature label.
+     */
+    get label() {
+      return this._label
+    }
+
+    set label(value) {
+      this._label = value;
     }
 
     /**

@@ -16,11 +16,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     constructor(containerId, options = {}) {
       this.containerId = containerId.replace('#', '');
       this._container = d3.select(containerId);
-      // this.scale = {};
       // Get options
       this._width = CGV.defaultFor(options.width, 600);
       this._height = CGV.defaultFor(options.height, 600);
-      this.canvas = new CGV.Canvas(this, this._container, {width: this._width, height: this._height});
+      this._wrapper = this._container.append('div')
+        .attr('class', 'cgv-wrapper')
+        .style('position', 'relative');
+      this.canvas = new CGV.Canvas(this, this._wrapper, {width: this._width, height: this._height});
       this.ruler = new CGV.Ruler(this);
       this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
@@ -36,6 +38,15 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
+
+      // Initialize Menu
+      this.menu = new CGV.Menu(this);
+      // Initialize Help
+      this.help = new CGV.Help(this);
+      // Initialize LabelSet
+      this.labelSet = new CGV.LabelSet(this);
+      this.labelFont = CGV.defaultFor(options.labelFont, 'SansSerif, plain, 14');
+      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
 
       d3.select(this.canvas.canvasNode).on('mousemove', () => {
         if (this.debug) {
@@ -136,6 +147,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._backboneRadius = d3.min([this.width, this.height]) * 0.4;
       }
+      console.log(this._backboneRadius)
     }
 
     get backboneRadius() {
@@ -157,6 +169,28 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._backgroundColor = new CGV.Color(color);
       }
+    }
+
+    /**
+     * @member {Font} - Get or set the label font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get labelFont() {
+      return this.labelSet.font
+    }
+
+    set labelFont(value) {
+      this.labelSet.font = value;
+    }
+
+    /**
+     * @member {Number} - Get or set the label line length.
+     */
+    get labelLineLength() {
+      return this.labelSet.labelLineLength
+    }
+
+    set labelLineLength(value) {
+      this.labelSet.labelLineLength = value;
     }
 
     /**
@@ -342,6 +376,9 @@ if (window.CGV === undefined) window.CGV = CGView;
         this._legends[i].draw(this.ctx);
       }
 
+      // Labels
+      this.labelSet.draw(reverseRadius, directRadius);
+
     }
 
     // addFeatureSlot(featureSlot) {
@@ -397,6 +434,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       return (this.scaleFactor) ? value * this.scaleFactor : value
     }
 
+    refreshLegends() {
+      for (var i = 0, len = this._legends.length; i < len; i++) {
+        this._legends[i].refresh();
+      }
+    }
+
     toImage(width, height) {
       width = width || this.width;
       height = height || this.height;
@@ -432,10 +475,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.refreshScales();
       this.width = width
       this.height = height
-      this.backboneRadius = 0.4 * width;
-      for (var i = 0, len = this._legends.length; i < len; i++) {
-        this._legends[i].refresh();
-      }
+      this.backboneRadius = this._backboneRadius * this.scaleFactor;
+      this.refreshLegends();
 
       // Generate image
       this.draw_full();
@@ -448,7 +489,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.height = origHeight;
       this.canvas.refreshScales();
       this.canvas.ctx = orig_context;
+      this.backboneRadius = this._backboneRadius / this.scaleFactor;
       this.scaleFactor = undefined;
+      this.refreshLegends();
 
       // Delete temp canvas
       d3.select(temp_canvas).remove();
