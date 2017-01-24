@@ -170,7 +170,7 @@
      * @return {Number} - The width of the *text* in pixels.
      */
     width(ctx, text) {
-      ctx.font = this.font;
+      ctx.font = this.css;
       return ctx.measureText(text).width
     }
 

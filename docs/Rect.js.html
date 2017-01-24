@@ -567,531 +567,156 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.html">Class: Feature</h1>
+        <h1 class="page-title" data-filename="Rect.js.html">Source: Rect.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// CGview Rect
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    Feature
-    </h2>
-    
-</header>  
+  /**
+   * A Rect consists of an x and y point (the upper-left corner) and
+   * a width and height.
+   */
+  class Rect {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="Feature">
-            
-            new Feature<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line11">line 11</a>
-        </div>
-        
-    </div>
+    /**
+     * A Rect
+     *
+     * @param {Number} x - X coordinate of the Rect origin
+     * @param {Number} y - Y coordinate of the Rect origin
+     * @param {Number} width - Width of the rectangle
+     * @param {Number} height - Height of the rectangle
+     */
+    constructor(x, y, width, height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>A Feature</p>
-    </div>
-    
+    /**
+     * @member {Number} - Get or set the width.
+     */
+    get width() {
+      return this._width
+    }
 
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    set width(value) {
+      this._width = value;
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Number} - Get or set the height.
+     */
+    get height() {
+      return this._height
+    }
 
-    
-    
+    set height(value) {
+      this._height = value;
+    }
 
-    
+    /**
+     * @member {Number} - Get or set the x position of the origin.
+     */
+    get x() {
+      return this._x
+    }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    set x(value) {
+      this._x = value;
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Members</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="color">color<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the color. Defaults to the <em>FeatureSlot</em> color. TODO: reference COLOR class</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    /**
+     * @member {Number} - Get or set the y position of the origin.
+     */
+    get y() {
+      return this._y
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    set y(value) {
+      this._y = value;
+    }
 
-    
-    
-</dd>
+    /**
+     * @member {Number} - Get bottom of the Rect
+     */
+    bottom() {
+      return this.y + this.height;
+    }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="decoration">decoration<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the decoration. Choices are <em>arc</em> [Default], <em>clockwise-arrow</em>, <em>counterclockwise-arrow</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    /**
+     * @member {Number} - Get top of the Rect. Same as Y.
+     */
+    top() {
+      return this.y;
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Number} - Get left of the Rect. Same as X.
+     */
+    left() {
+      return this.x;
+    }
 
-    
-    
-</dd>
+    /**
+     * @member {Number} - Get right of the Rect
+     */
+    right() {
+      return this.x + this.width;
+    }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="featureSlot">featureSlot<span class="type-signature type featureslot"><a href="FeatureSlot.html">FeatureSlot</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>FeatureSlot</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    /**
+     * Check if any of the Rect overlaps with any Rects in the array.
+     *
+     * @param {Array} rectArray - Array of Rects
+     * @return {Boolean}
+     */
+    overlap(rectArray) {
+      // Gap between labels
+      var width_gap = JSV.pixel(4);
+      var r1 = this;
+      var overlap = false;
+      for (var i=0, len=rect_array.length; i &lt; len; i++){
+        var r2 = rect_array[i];
+        if (r1.x &lt;= r2.right() &amp;&amp; r2.x &lt;= (r1.right() + width_gap) &amp;&amp; r1.y &lt;= r2.bottom() &amp;&amp; r2.y &lt;= r1.bottom()) {
+          overlap = true;
+          break;
+        }else{
+          overlap = false;
+        }
+      }
+      return overlap;
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * Check if the Rect conains the point
+     *
+     * @param {Number} x - X coordinate of the point
+     * @param {Number} y - Y coordinate of the point
+     * @return {Boolean}
+     */
+    containsPt(x, y) {
+      return ( x >= this.x &amp;&amp; x &lt;= (this.x + this.width) &amp;&amp; y >= this.y &amp;&amp; y &lt;= (this.y + this.height) )
+    }
 
-    
-    
-</dd>
+  }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="label">label<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the feature label.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+  CGV.Rect = Rect;
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+})(CGView);
 
-    
-    
-</dd>
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the LegendItem. If a LegendItem is associated with this feature,
-  the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-  override the color and opacity set for this feature.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+</code></pre>
+        </article>
+    </section>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="opacity">opacity<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the opacity.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="start">start<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the start position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="stop">stop<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the stop position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the <em>Viewer</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -1100,7 +725,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
         </footer>
     </div>
 </div>

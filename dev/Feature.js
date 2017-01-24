@@ -21,7 +21,6 @@
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
-      this.viewer.labelSet.addLabel(this.label);
     }
 
     /**

@@ -567,7 +567,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.html">Class: Feature</h1>
+        <h1 class="page-title" data-filename="Dialog.html">Class: Dialog</h1>
         
 
 
@@ -576,8 +576,10 @@
     
 <header>
     <h2>
-    Feature
+    Dialog
     </h2>
+    
+        <div class="class-description"><p>This class is for creating dialog boxes with custom content.</p></div>
     
 </header>  
 
@@ -589,14 +591,14 @@
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="Feature">
+        <h4 class="name" id="Dialog">
             
-            new Feature<span class="signature">()</span>
+            new Dialog<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line11">line 11</a>
+            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line9">line 9</a>
         </div>
         
     </div>
@@ -605,10 +607,6 @@
 </dt>
 <dd>
     
-    
-    <div class="description">
-        <p>A Feature</p>
-    </div>
     
 
     
@@ -676,7 +674,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="color">color<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="fadeTime">fadeTime<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -684,7 +682,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the color. Defaults to the <em>FeatureSlot</em> color. TODO: reference COLOR class</p>
+        <p>Get or set the time it take for the dialog to appear and disappear in milliseconds [Default: 500].</p>
     </div>
     
     
@@ -721,7 +719,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="decoration">decoration<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="visible">visible<span class="type-signature type boolean">Boolean</span> </h4>
     </div>
     
     
@@ -729,326 +727,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the decoration. Choices are <em>arc</em> [Default], <em>clockwise-arrow</em>, <em>counterclockwise-arrow</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="featureSlot">featureSlot<span class="type-signature type featureslot"><a href="FeatureSlot.html">FeatureSlot</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>FeatureSlot</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="label">label<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the feature label.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the LegendItem. If a LegendItem is associated with this feature,
-  the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-  override the color and opacity set for this feature.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="opacity">opacity<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the opacity.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="start">start<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the start position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="stop">stop<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the stop position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the <em>Viewer</em></p>
+        <p>Returns true if the dialog is visible.</p>
     </div>
     
     
@@ -1084,6 +763,242 @@
         </dl>
     
     
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="close">
+            
+            close<span class="signature">(duration)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line94">line 94</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Closes the dialog</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The duration of the close animation in milliseconds. Defaults to fadeTime <a href="Dialog.html#fadeTime">Dialog.fadeTime</a>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="open">
+            
+            open<span class="signature">(duration)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line81">line 81</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Opens the dialog</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The duration of the open animation in milliseconds. Defaults to fadeTime <a href="Dialog.html#fadeTime">Dialog.fadeTime</a>.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
     
     
     

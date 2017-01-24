@@ -567,7 +567,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.html">Class: Feature</h1>
+        <h1 class="page-title" data-filename="Rect.html">Class: Rect</h1>
         
 
 
@@ -576,8 +576,11 @@
     
 <header>
     <h2>
-    Feature
+    Rect
     </h2>
+    
+        <div class="class-description"><p>A Rect consists of an x and y point (the upper-left corner) and
+a width and height.</p></div>
     
 </header>  
 
@@ -589,14 +592,14 @@
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="Feature">
+        <h4 class="name" id="Rect">
             
-            new Feature<span class="signature">()</span>
+            new Rect<span class="signature">(x, y, width, height)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line11">line 11</a>
+            <a href="Rect.js.html">Rect.js</a>, <a href="Rect.js.html#line10">line 10</a>
         </div>
         
     </div>
@@ -607,7 +610,7 @@
     
     
     <div class="description">
-        <p>A Feature</p>
+        <p>A Rect</p>
     </div>
     
 
@@ -615,6 +618,120 @@
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>X coordinate of the Rect origin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Y coordinate of the Rect origin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Width of the rectangle</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Height of the rectangle</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -676,7 +793,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="color">color<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="bottom">bottom<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -684,7 +801,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the color. Defaults to the <em>FeatureSlot</em> color. TODO: reference COLOR class</p>
+        <p>Get bottom of the Rect</p>
     </div>
     
     
@@ -721,7 +838,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="decoration">decoration<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="height">height<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -729,7 +846,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the decoration. Choices are <em>arc</em> [Default], <em>clockwise-arrow</em>, <em>counterclockwise-arrow</em></p>
+        <p>Get or set the height.</p>
     </div>
     
     
@@ -766,7 +883,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="featureSlot">featureSlot<span class="type-signature type featureslot"><a href="FeatureSlot.html">FeatureSlot</a></span> </h4>
+        <h4 class="name" id="left">left<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -774,7 +891,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the <em>FeatureSlot</em></p>
+        <p>Get left of the Rect. Same as X.</p>
     </div>
     
     
@@ -811,7 +928,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="label">label<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="right">right<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -819,7 +936,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the feature label.</p>
+        <p>Get right of the Rect</p>
     </div>
     
     
@@ -856,7 +973,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+        <h4 class="name" id="top">top<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -864,9 +981,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the LegendItem. If a LegendItem is associated with this feature,
-  the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-  override the color and opacity set for this feature.</p>
+        <p>Get top of the Rect. Same as Y.</p>
     </div>
     
     
@@ -903,7 +1018,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="opacity">opacity<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="width">width<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -911,7 +1026,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the opacity.</p>
+        <p>Get or set the width.</p>
     </div>
     
     
@@ -948,7 +1063,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="start">start<span class="type-signature type number">Number</span> </h4>
+        <h4 class="name" id="x">x<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -956,8 +1071,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the start position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
+        <p>Get or set the x position of the origin.</p>
     </div>
     
     
@@ -994,7 +1108,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="stop">stop<span class="type-signature type number">Number</span> </h4>
+        <h4 class="name" id="y">y<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -1002,53 +1116,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the stop position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the <em>Viewer</em></p>
+        <p>Get or set the y position of the origin.</p>
     </div>
     
     
@@ -1084,6 +1152,323 @@
         </dl>
     
     
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="containsPt">
+            
+            containsPt<span class="signature">(x, y)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Rect.js.html">Rect.js</a>, <a href="Rect.js.html#line129">line 129</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Check if the Rect conains the point</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>X coordinate of the point</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Y coordinate of the point</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="overlap">
+            
+            overlap<span class="signature">(rectArray)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Rect.js.html">Rect.js</a>, <a href="Rect.js.html#line105">line 105</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Check if any of the Rect overlaps with any Rects in the array.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rectArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Array of Rects</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        </dl>
     
     
     

@@ -240,9 +240,6 @@
     // }
 
     radiantLine(bp, radius, length, lineWidth = 1, color = 'black') {
-      var radians = this.scale.bp(bp);
-      var centerX = this.scale.x(0);
-      var centerY = this.scale.y(0);
       var innerPt = this.pointFor(bp, radius);
       var outerPt = this.pointFor(bp, radius + length);
       var ctx = this.ctx;

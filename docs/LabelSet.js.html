@@ -567,531 +567,123 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.html">Class: Feature</h1>
+        <h1 class="page-title" data-filename="LabelSet.js.html">Source: LabelSet.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// LabelSet
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    Feature
-    </h2>
-    
-</header>  
+  class LabelSet {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="Feature">
-            
-            new Feature<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line11">line 11</a>
-        </div>
-        
-    </div>
+    constructor(viewer, options = {}) {
+      this._viewer = viewer;
+      this._canvas = viewer.canvas;
+      this._labels = new CGV.CGArray();
+      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 14');
+      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>A Feature</p>
-    </div>
-    
+    /**
+     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get font() {
+      return this._font
+    }
 
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    set font(value) {
+      if (value.toString() == 'Font') {
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
+      // Refresh labels widths
+      // var labelFonts = this._labels.map( (i) => { return i.font.cssScaled(this.viewer.scaleFactor)});
+      var labelFonts = this._labels.map( (i) => { return i.font});
+      var labelTexts = this._labels.map( (i) => { return i.name});
+      var labelWidths = CGV.Font.calculateWidths(this._canvas.ctx, labelFonts, labelTexts);
+      for (var i = 0, len = this._labels.length; i &lt; len; i++) {
+        this._labels[i].width = labelWidths[i];
+      }
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
 
-    
-    
+    /**
+     * @member {Number} - The number of labels in the set.
+     */
+    get length() {
+      return this._labels.length
+    }
 
-    
+    /**
+     * Add a new label to the set.
+     *
+     * @param {Label} label - The Label to add to the set.
+     */
+    addLabel(label) {
+      this._labels.push(label);
+    }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    /**
+     * Remove a label from the set.
+     *
+     * @param {Label} label - The Label to remove from the set.
+     */
+    removeLabel(label) {
+      this._labels = this._labels.remove(label);
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Members</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="color">color<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the color. Defaults to the <em>FeatureSlot</em> color. TODO: reference COLOR class</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    // Should be called when
+    //  - Labels are added or removed
+    //  - Font changes (LabelSet or individual label)
+    //  - Label name changes
+    //  - Zoom level changes
+    _calculateFontOrigins() {
+    }
 
-    
-    
-</dd>
+    draw(reverseRadius, directRadius) {
+      var canvas = this._canvas;
+      var ctx = canvas.ctx;
+      var label, feature, bp, origin;
+      ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
+      for (var i = 0, len = this._labels.length; i &lt; len; i++) {
+        label = this._labels[i];
+        feature = label.feature;
+        bp = feature.start + (feature.length / 2);
+        canvas.radiantLine(bp, directRadius + 20, this.labelLineLength, 1, feature.color.rgbaString);
+        origin = canvas.pointFor(bp, directRadius + 5);
+        ctx.fillStyle = feature.color.rgbaString;
+        ctx.fillText(label.name, origin.x, origin.y);
+      }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="decoration">decoration<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the decoration. Choices are <em>arc</em> [Default], <em>clockwise-arrow</em>, <em>counterclockwise-arrow</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
 
-    
-    
-</dd>
+    }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="featureSlot">featureSlot<span class="type-signature type featureslot"><a href="FeatureSlot.html">FeatureSlot</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>FeatureSlot</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+  }
 
-    
-    
-</dd>
+  CGV.LabelSet = LabelSet;
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="label">label<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the feature label.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+})(CGView);
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
 
-    
-    
-</dd>
+</code></pre>
+        </article>
+    </section>
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the LegendItem. If a LegendItem is associated with this feature,
-  the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-  override the color and opacity set for this feature.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="opacity">opacity<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the opacity.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="start">start<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the start position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="stop">stop<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the stop position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the <em>Viewer</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -1100,7 +692,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
         </footer>
     </div>
 </div>

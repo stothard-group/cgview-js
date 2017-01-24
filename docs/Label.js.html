@@ -567,531 +567,130 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Feature.html">Class: Feature</h1>
+        <h1 class="page-title" data-filename="Label.js.html">Source: Label.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Label
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    Feature
-    </h2>
-    
-</header>  
+  class Label {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="Feature">
-            
-            new Feature<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line11">line 11</a>
-        </div>
-        
-    </div>
+    constructor(feature, options = {}) {
+      this._feature = feature;
+      this.name = options.name;
+    }
 
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>A Feature</p>
-    </div>
-    
+    /**
+     * @member {String} - Get or set the label name.
+     */
+    get name() {
+      return this._name
+    }
 
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    set name(value) {
+      if (value == undefined || value == '') {
+        this.width = 0;
+        // Label was in LabelSet, so remove it
+        if (!(this._name == '' || this._name == undefined)) {
+          this.labelSet.removeLabel(this);
+        }
+        this._name = '';
+      } else {
+        // Label was not in LabelSet, so add it
+        if (this._name == '' || this._name == undefined) {
+          this.labelSet.addLabel(this);
+        }
+        this._name = value;
+        this.width = this.font.width(this.viewer.canvas.ctx, this._name);
+      }
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Number} - Get or set the label width.
+     */
+    get width() {
+      return this._width
+    }
 
-    
-    
+    set width(value) {
+      this._width = value;
+    }
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    /**
+     * @member {Number} - Get the label height which is based on the font size.
+     */
+    get height() {
+      return this.font.size
+    }
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Members</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="color">color<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the color. Defaults to the <em>FeatureSlot</em> color. TODO: reference COLOR class</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    /**
+     * @member {Point} - Get or set the label origin. The upper-left corner of the label.
+     */
+    get origin() {
+      return this._origin
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    set origin(value) {
+      this._origin = value;
+    }
 
-    
-    
-</dd>
+    /**
+     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get font() {
+      return this._font || this.labelSet.font;
+    }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="decoration">decoration<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the decoration. Choices are <em>arc</em> [Default], <em>clockwise-arrow</em>, <em>counterclockwise-arrow</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    set font(value) {
+      if (value == undefined) {
+        this._font = this.labelSet.font;
+      } else if (value.toString() == 'Font') {
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._feature.viewer
+    }
 
-    
-    
-</dd>
+    /**
+     * @member {LabelSet} - Get the *LabelSet*
+     */
+    get labelSet() {
+      return this.viewer.labelSet
+    }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="featureSlot">featureSlot<span class="type-signature type featureslot"><a href="FeatureSlot.html">FeatureSlot</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>FeatureSlot</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    /**
+     * @member {Feature} - Get the Feature
+     */
+    get feature() {
+      return this._feature
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
 
-    
-    
-</dd>
+  }
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="label">label<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the feature label.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+  CGV.Label = Label;
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+})(CGView);
 
-    
-    
-</dd>
 
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the LegendItem. If a LegendItem is associated with this feature,
-  the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-  override the color and opacity set for this feature.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+</code></pre>
+        </article>
+    </section>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="opacity">opacity<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the opacity.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="start">start<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the start position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="stop">stop<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the stop position of the feature in basepair (bp).
-  All start and stop positions are assumed to be going in a clockwise direction.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the <em>Viewer</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -1100,7 +699,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jan 24 2017 10:53:25 GMT-0700 (MST)
         </footer>
     </div>
 </div>
