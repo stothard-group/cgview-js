@@ -59,6 +59,7 @@ class CGViewXML
     confirm_features_is_array
     confirm_legends_is_array
     confirm_legend_items_is_array
+    adjust_fonts
     move_ranges_to_features
     adjust_feature_thickness
   end
@@ -103,7 +104,6 @@ class CGViewXML
     else
       plot[:color] = color_positive
     end
-    # hash['featureSlots']['features']['featurePaths'] = plot
     hash['featureSlots']['arcPlot'] = plot
     hash
   end
@@ -145,6 +145,52 @@ class CGViewXML
         legend['legendItems'] = [ legend['legendItems'] ]
       end
     end
+  end
+
+  def adjust_font(font_string)
+    # Change family
+    font_string.downcase!
+    font_string.sub!('sansserif', 'sans-serif')
+    # Change size
+    font_string.sub!(/,\s*(\d+)\s*$/) do |m|
+      size = $1.to_i
+      if (size >= 50)
+        ', 30'
+      elsif (size >= 20)
+        ', 12'
+      else
+        ', 10'
+      end
+    end
+  end
+
+  # Font family names need to be altered to match css styles
+  # Font sizes need to be reduced
+  def adjust_fonts
+    puts "Adjusting fonts..."
+    # Legends
+    @xml_hash['cgview']['legends'].each do |legend|
+      legend_font = legend['font']
+      if legend_font
+        legend['font'] = adjust_font(legend_font)
+      end
+      legend['legendItems'].each do |legendItem|
+        legend_item_font = legendItem['font']
+        if legend_item_font
+          legendItem['font'] = adjust_font(legend_item_font)
+        end
+      end
+    end
+    # Other fonts
+    ruler_font = @xml_hash['cgview']['rulerFont']
+    if ruler_font
+      @xml_hash['cgview']['rulerFont'] = adjust_font(ruler_font)
+    end
+    label_font = @xml_hash['cgview']['labelFont']
+    if label_font
+      @xml_hash['cgview']['labelFont'] = adjust_font(label_font)
+    end
+
   end
 
   def move_ranges_to_features
