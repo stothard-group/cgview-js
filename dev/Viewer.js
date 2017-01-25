@@ -23,10 +23,10 @@ if (window.CGV === undefined) window.CGV = CGView;
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this._width, height: this._height});
-      this.ruler = new CGV.Ruler(this);
       this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
       this.backboneRadius = CGV.defaultFor(options.backboneRadius, 200);
+      this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
       this.debug = CGV.defaultFor(options.debug, false);
@@ -45,8 +45,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.help = new CGV.Help(this);
       // Initialize LabelSet
       this.labelSet = new CGV.LabelSet(this);
-      this.labelFont = CGV.defaultFor(options.labelFont, 'SansSerif, plain, 14');
+      this.labelFont = CGV.defaultFor(options.labelFont, 'sans-serif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
+      // Initialize Ruler
+      this.ruler = new CGV.Ruler(this);
+      this.ruler.font = CGV.defaultFor(options.rulerFont, 'sans-serif, plain, 10');
 
       d3.select(this.canvas.canvasNode).on('mousemove', () => {
         if (this.debug) {
@@ -191,6 +194,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set labelLineLength(value) {
       this.labelSet.labelLineLength = value;
+    }
+
+    /**
+     * @member {Number} - Get or set whether or not feature labels should be drawn on the map.
+     *                    This value overrides the showLabel attributes in all child elements.
+     */
+    get globalLabel() {
+      return this._globalLabel;
+    }
+
+    set globalLabel(value) {
+      this._globalLabel = CGV.booleanify(value);
     }
 
     /**
@@ -377,7 +392,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
 
       // Labels
-      this.labelSet.draw(reverseRadius, directRadius);
+      if (this.globalLabel) {
+        this.labelSet.draw(reverseRadius, directRadius);
+      }
 
     }
 

@@ -26,7 +26,10 @@
       var viewer = this._viewer;
 
       // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength)
+      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength);
+      viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+      viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+      viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
       // ...
 
       // Load FeatureSlots

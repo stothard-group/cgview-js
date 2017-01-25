@@ -15,8 +15,7 @@
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 20);
-
-      this.font = 'Sans-Serif, plain, 10'
+      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
     }
 
     get font() {

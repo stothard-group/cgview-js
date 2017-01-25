@@ -11,7 +11,7 @@
    *
    *   Component   | Description
    *   ------------|---------------
-   *   *family*    | This can be a generic family (e.g. Serif, Sans-serif, Monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
+   *   *family*    | This can be a generic family (e.g. serif, sans-serif, monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
    *   *style*     | One of *plain*, *bold*, *italic*, or *bold-italic*
    *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
    *
@@ -22,8 +22,8 @@
      * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
      *
      * @param {(String|Object)} font - If a string is provided, it must have the following format:
-     *   family,style,size (e.g. 'Serif,plain,12'). If an object is provided, it must have a *family*,
-     *   *style* and *size* property (e.g. { family: 'Serif', style: 'plain', size: 12 })
+     *   family,style,size (e.g. 'serif,plain,12'). If an object is provided, it must have a *family*,
+     *   *style* and *size* property (e.g. { family: 'serif', style: 'plain', size: 12 })
      */
     constructor(font) {
       this._rawFont = font;
@@ -53,7 +53,7 @@
     }
 
     /**
-     * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'Serif,plain,12').
+     * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'serif,plain,12').
      */
     get string() {
       return this.family + ',' + this.style + ',' + this.size
@@ -116,10 +116,10 @@
 
 
     /**
-     * @member {String} - Get or set the font family. Defaults to *Arial*.
+     * @member {String} - Get or set the font family. Defaults to *sans-serif*.
      */
     get family() {
-      return this._family || 'arial'
+      return this._family || 'sans-serif'
     }
 
     set family(value) {

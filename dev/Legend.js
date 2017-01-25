@@ -198,7 +198,7 @@
     }
 
     _updateOrigin() {
-      var margin = CGV.pixel(10);
+      var margin = CGV.pixel(0);
       var canvasWidth = this.canvas.width;
       var canvasHeight = this.canvas.height;
       var legendWidth = this.width;

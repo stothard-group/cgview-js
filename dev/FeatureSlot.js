@@ -85,16 +85,16 @@
       return this.viewer.sequenceLength;
     }
 
-    visibleRanges(canvas, slotRadius, slotThickness) {
-      var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
-      if (ranges.length == 2) {
-        return ranges
-      } else if (ranges.length > 2) {
-        return [ ranges[0], ranges[ranges.length -1] ]
-      } else {
-        return undefined
-      }
-    }
+    // visibleRanges(canvas, slotRadius, slotThickness) {
+    //   var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
+    //   if (ranges.length == 2) {
+    //     return ranges
+    //   } else if (ranges.length > 2) {
+    //     return [ ranges[0], ranges[ranges.length -1] ]
+    //   } else {
+    //     return undefined
+    //   }
+    // }
 
     get largestFeatureLength() {
       return this._largestFeatureLength
@@ -112,7 +112,8 @@
     }
 
     draw(canvas, fast, slotRadius, slotThickness) {
-      var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
+      // var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
+      var ranges = canvas.visibleRangeForRadius(slotRadius, slotThickness);
       var start = ranges ? ranges[0] : 1;
       var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
       var featureCount = this._features.length;

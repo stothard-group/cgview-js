@@ -71,28 +71,28 @@
     /**
      * @member {Number} - Get bottom of the Rect
      */
-    bottom() {
+    get bottom() {
       return this.y + this.height;
     }
 
     /**
      * @member {Number} - Get top of the Rect. Same as Y.
      */
-    top() {
+    get top() {
       return this.y;
     }
 
     /**
      * @member {Number} - Get left of the Rect. Same as X.
      */
-    left() {
+    get left() {
       return this.x;
     }
 
     /**
      * @member {Number} - Get right of the Rect
      */
-    right() {
+    get right() {
       return this.x + this.width;
     }
 
@@ -104,12 +104,12 @@
      */
     overlap(rectArray) {
       // Gap between labels
-      var width_gap = JSV.pixel(4);
+      var widthGap = CGV.pixel(4);
       var r1 = this;
       var overlap = false;
-      for (var i=0, len=rect_array.length; i < len; i++){
-        var r2 = rect_array[i];
-        if (r1.x <= r2.right() && r2.x <= (r1.right() + width_gap) && r1.y <= r2.bottom() && r2.y <= r1.bottom()) {
+      for (var i=0, len=rectArray.length; i < len; i++){
+        var r2 = rectArray[i];
+        if (r1.x <= r2.right && r2.x <= (r1.right + widthGap) && r1.y <= r2.bottom && r2.y <= r1.bottom) {
           overlap = true;
           break;
         }else{

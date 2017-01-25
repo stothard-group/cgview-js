@@ -14,6 +14,21 @@
   }
 
   /**
+   * Converts the value to a boolean. The following values will be false,
+   * all other values will be true: 'false', 'False', false, undefined.
+   *
+   * @param {Object} value - Value to convert to boolean.
+   * @return {Boolean}
+   */
+  CGV.booleanify = function(value) {
+    if (value == 'false' || value == 'False' || value == undefined || value == false) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  /**
    * Return the pixel ratio. The default is 1.
    */
   CGV.pixel_ratio = 1;

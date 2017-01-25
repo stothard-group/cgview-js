@@ -8,6 +8,7 @@
     constructor(feature, options = {}) {
       this._feature = feature;
       this.name = options.name;
+      this.bp = this.feature.start + (this.feature.length / 2);
     }
 
     /**
@@ -32,7 +33,6 @@
         }
         this._name = value;
         this.width = this.font.width(this.viewer.canvas.ctx, this._name);
-        if (value == 'rnl') {console.log(CGV.pixel(1))}
       }
     }
 

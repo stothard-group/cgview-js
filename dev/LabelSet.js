@@ -9,10 +9,11 @@
       this._viewer = viewer;
       this._canvas = viewer.canvas;
       this._labels = new CGV.CGArray();
-      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 14');
+      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
       this._labelLineMargin = CGV.pixel(10);
       this._labelLineWidth = CGV.pixel(1);
+      // this._visibleLabels = new CGV.CGArray();
     }
 
     /**
@@ -70,6 +71,7 @@
      */
     addLabel(label) {
       this._labels.push(label);
+      this.sort();
     }
 
     /**
@@ -79,6 +81,14 @@
      */
     removeLabel(label) {
       this._labels = this._labels.remove(label);
+    }
+
+    /**
+     * Sort the labels by position (middle of the feature in bp). 
+     */
+    sort() {
+      // this._labels = this._labels.remove(label);
+      this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
     }
 
 
@@ -99,14 +109,16 @@
         radians = scale.bp(bp);
         var innerPt = canvas.pointFor(bp, radius);
         var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
-        // Calculation where lael line should attach to Label.
-        // First determine clock position of Label, then find opposite position for attachment.
+        // Calculation where label line should attach to Label.
+        // First determine clock position of Label
         var clockPostion = Math.round( (radians + Math.PI/2) * (6/Math.PI) );
+        // Then find opposite position for attachment.
         if (clockPostion <= 6) {
           label.lineAttachment = clockPostion + 6;
         } else {
           label.lineAttachment = clockPostion - 6;
         }
+        // Set Rect Origin X
         switch (label.lineAttachment) {
           case 10:
           case 9:
@@ -132,6 +144,7 @@
             x = outerPt.x - label.width;
         }
 
+        // Set Rect Origin Y
         switch (label.lineAttachment) {
           case 0:
           case 10:
@@ -153,30 +166,59 @@
             y = outerPt.y - label.height;
         }
 
-
-
         label.rect = new CGV.Rect(x, y, label.width, label.height);
       }
       
     }
 
+    visibleLabels(radius) {
+      var labelArray = new CGV.CGArray();
+      var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
+      if (visibleRange) {
+        for (var i = 0, len = this._labels.length; i < len; i++) {
+          if (CGV.withinRange(this._labels[i].bp, visibleRange[0], visibleRange[1])) {
+            labelArray.push(this._labels[i]);
+          }
+        }
+      } else {
+        labelArray = this._labels;
+      }
+      return labelArray
+    }
+
     draw(reverseRadius, directRadius) {
+
       // TODO: change origin when moving image
       // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
         this._innerRadius = reverseRadius;
         this._outerRadius = directRadius;
         this._calculateLabelRects();
       // }
+      
+      this._labelsToDraw = this.visibleLabels(directRadius);
+
+      // Remove overlapping labels (TEMP)
+      var labelRects = new CGV.CGArray();
+      this._visibleLabels = new CGV.CGArray();
+      for (var i = 0, len = this._labelsToDraw.length; i < len; i++) {
+        label = this._labelsToDraw[i];
+        if (!label.rect.overlap(labelRects)) {
+          this._visibleLabels.push(label);
+          labelRects.push(label.rect);
+        }
+      }
+
       var canvas = this._canvas;
       var ctx = canvas.ctx;
       var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        label = this._labels[i];
+      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
+        label = this._visibleLabels[i];
         feature = label.feature;
-        bp = feature.start + (feature.length / 2);
-        canvas.radiantLine(bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
+        // bp = feature.start + (feature.length / 2);
+        canvas.radiantLine(label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
         // origin = canvas.pointFor(bp, directRadius + 5);
         ctx.fillStyle = feature.color.rgbaString;
         // ctx.fillText(label.name, origin.x, origin.y);
