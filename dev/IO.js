@@ -108,13 +108,94 @@
       // var cgview = json.cgview
       // cgview.featureSlots = cgview.featureSlot
       // delete cgview.featureSlot
-      
 
       return json
     }
 
     static json_to_xml(json) {
     }
+
+    exportImage(width, height) {
+      var viewer = this._viewer;
+      var canvas = viewer.canvas;
+
+      width = width || viewer.width;
+      height = height || viewer.height;
+
+      var origWidth = viewer.width;
+      var origHeight = viewer.height;
+
+
+      var windowTitle = 'CGV-Image-' + width + 'x' + height,
+
+      // Adjust size based on pixel Ratio
+      width = width / CGV.pixel_ratio;
+      height = height / CGV.pixel_ratio;
+
+      // Save current settings
+      var orig_context = canvas.ctx;
+
+      // Generate new context and scales
+      var temp_canvas = d3.select('body').append('canvas')
+        .attr('width', width).attr('height', height).node();
+
+      CGV.scale_resolution(temp_canvas, CGV.pixel_ratio);
+      canvas.ctx = temp_canvas.getContext('2d');
+
+      // Calculate scaling factor
+      var minOriginalDimension = d3.min([viewer.width, viewer.height]);
+      var minNewDimension = d3.min([width, height]);
+      viewer.scaleFactor = minNewDimension / minOriginalDimension;
+      console.log(viewer.scaleFactor);
+
+      canvas.width = width;
+      canvas.height = height;
+      canvas.refreshScales();
+      viewer.width = width
+      viewer.height = height
+      viewer.backbone.radius = viewer.backbone.radius * viewer.scaleFactor;
+      viewer.refreshLegends();
+
+      // Generate image
+      viewer.draw_full();
+      var image = temp_canvas.toDataURL();
+
+      // Restore original settings
+      canvas.width = origWidth;
+      canvas.height = origHeight;
+      viewer.width = origWidth;
+      viewer.height = origHeight;
+      canvas.refreshScales();
+      canvas.ctx = orig_context;
+      viewer.backbone.radius = viewer.backbone.radius / viewer.scaleFactor;
+      viewer.scaleFactor = undefined;
+      viewer.refreshLegends();
+
+      // Delete temp canvas
+      d3.select(temp_canvas).remove();
+
+      var win = window.open();
+      var html = [
+        '<html>',
+          '<head>',
+            '<title>',
+              windowTitle,
+            '</title>',
+          '</head>',
+          '<body>',
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
+            '<img style="border: 1px solid grey" width="' + origWidth + '" height="' + origHeight +  '" src="' + image +  '"/ >',
+            '<h3>Actual Size</h3>',
+            '<img style="border: 1px solid grey" src="' + image +  '"/ >',
+          '</body>',
+        '<html>'
+      ].join('');
+      win.document.write(html);
+    }
+
+
 
   }
 

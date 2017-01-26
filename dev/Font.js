@@ -72,28 +72,6 @@
       this._generateFont();
     }
 
-    // /** * Return the font as canvas usable string.
-    //  */
-    // get font() {
-    //   return this._font
-    // }
-    //
-    // /**
-    //  * Set the font using a string with the format: font-family,style,size
-    //  */
-    // set font(value) {
-    //   value = value.replace(/ +/g, '');
-    //   var parts = value.split(',');
-    //   if (parts.length == 3) {
-    //     this.family = parts[0];
-    //     this.style = parts[1];
-    //     this.size = Number(parts[2]);
-    //   } else {
-    //     console.log('Font must have 3 parts')
-    //   }
-    //   this._generateFont();
-    // }
-
     /**
      * @member {String} - Return the font as CSS usable string. This is also how the font is stored internally for quick access.
      */

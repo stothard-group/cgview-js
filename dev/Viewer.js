@@ -336,7 +336,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ctx.textBaseline = 'top';
 
       // Draw Backbone
-      // this.canvas.drawArc(1, this.sequenceLength, slotRadius, 'black', backboneThickness);
       this.backbone.draw();
 
       var residualSlotThickness = 0;

@@ -553,7 +553,8 @@
     var download_image = function(viewer, dialog) {
       var height = viewer._wrapper.select('#cgv-save-height').property('value');
       var width = viewer._wrapper.select('#cgv-save-width').property('value');
-      var image = viewer.toImage(width, height);
+      var image = viewer._io.exportImage(width, height);
+      // var image = viewer.toImage(width, height);
       dialog.close();
     }
 

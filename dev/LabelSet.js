@@ -159,7 +159,8 @@
       var canvas = this._canvas;
       var ctx = canvas.ctx;
       var label, feature, bp, origin;
-      ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
+      // ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
+      ctx.font = this.font.cssScaled(this.viewer.scaleFactor); // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
