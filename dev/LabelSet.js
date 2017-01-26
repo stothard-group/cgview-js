@@ -40,14 +40,7 @@
       } else {
         this._font = new CGV.Font(value);
       }
-      // Refresh labels widths
-      // var labelFonts = this._labels.map( (i) => { return i.font.cssScaled(this.viewer.scaleFactor)});
-      var labelFonts = this._labels.map( (i) => { return i.font.css});
-      var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this._canvas.ctx, labelFonts, labelTexts);
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        this._labels[i].width = labelWidths[i];
-      }
+      this.refreshLabelWidths();
     }
 
     /**
@@ -91,6 +84,15 @@
       this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
     }
 
+    refreshLabelWidths() {
+      // Refresh labels widths
+      var labelFonts = this._labels.map( (i) => { return i.font.css});
+      var labelTexts = this._labels.map( (i) => { return i.name});
+      var labelWidths = CGV.Font.calculateWidths(this._canvas.ctx, labelFonts, labelTexts);
+      for (var i = 0, len = this._labels.length; i < len; i++) {
+        this._labels[i].width = labelWidths[i];
+      }
+    }
 
     // Should be called when
     //  - Labels are added or removed
@@ -159,8 +161,7 @@
       var canvas = this._canvas;
       var ctx = canvas.ctx;
       var label, feature, bp, origin;
-      // ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
-      ctx.font = this.font.cssScaled(this.viewer.scaleFactor); // TODO: move to loop, but only set if it changes
+      ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];

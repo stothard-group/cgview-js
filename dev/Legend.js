@@ -151,7 +151,7 @@
       this.height = 0;
       var maxHeight = 0;
       for (var i = 0, len = this._legendItems.length; i < len; i++) {
-        var legendItemHeight = this.viewer.scaleIt(this._legendItems[i].height);
+        var legendItemHeight = this._legendItems[i].height;
         this.height += legendItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -165,14 +165,14 @@
       this.height += this.padding * 2;
 
       this.width = 0;
-      var itemFonts = this._legendItems.map( (i) => { return i.font.cssScaled(this.viewer.scaleFactor)});
-      var itemTexts = this._legendItems.map( (i) => { return i.text});
+      var itemFonts = this._legendItems.map( (i) => { return i.font.css });
+      var itemTexts = this._legendItems.map( (i) => { return i.text });
       var itemWidths = CGV.Font.calculateWidths(this.canvas.ctx, itemFonts, itemTexts);
       // Add swatch width
       for (var i = 0, len = itemWidths.length; i < len; i++) {
         var item = this._legendItems[i];
         if (item.drawSwatch) {
-          itemWidths[i] += this.viewer.scaleIt(item.height) + (this.padding / 2);
+          itemWidths[i] += item.height + (this.padding / 2);
         }
         item._width = itemWidths[i];
       }
@@ -242,11 +242,11 @@
       var y = this.originY + this.padding;
       for (var i = 0, len = this._legendItems.length; i < len; i++) {
         var legendItem = this._legendItems[i];
-        var legendItemHeight = this.viewer.scaleIt(legendItem.height);
+        var legendItemHeight = legendItem.height;
         var drawSwatch = legendItem.drawSwatch;
         var swatchWidth = legendItemHeight;
         var swatchPadding = this.padding / 2;
-        ctx.font = legendItem.font.cssScaled(this.viewer.scaleFactor);
+        ctx.font = legendItem.font.css;
         ctx.textAlign = legendItem.textAlignment;
         if (drawSwatch) {
           // Find x positions

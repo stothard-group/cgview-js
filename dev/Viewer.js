@@ -435,93 +435,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       } 
     }
 
-    scaleIt(value) {
-      return (this.scaleFactor) ? value * this.scaleFactor : value
-    }
-
     refreshLegends() {
       for (var i = 0, len = this._legends.length; i < len; i++) {
         this._legends[i].refresh();
       }
     }
-
-    toImage(width, height) {
-      width = width || this.width;
-      height = height || this.height;
-
-      var origWidth = this.width;
-      var origHeight = this.height;
-
-
-      var windowTitle = 'CGV-Image-' + width + 'x' + height,
-
-      // Adjust size based on pixel Ratio
-      width = width / CGV.pixel_ratio;
-      height = height / CGV.pixel_ratio;
-
-      // Save current settings
-      var orig_context = this.canvas.ctx;
-
-      // Generate new context and scales
-      var temp_canvas = d3.select('body').append('canvas')
-        .attr('width', width).attr('height', height).node();
-
-      CGV.scale_resolution(temp_canvas, CGV.pixel_ratio);
-      this.canvas.ctx = temp_canvas.getContext('2d');
-
-      // Calculate scaling factor
-      var minOriginalDimension = d3.min([this.width, this.height]);
-      var minNewDimension = d3.min([width, height]);
-      this.scaleFactor = minNewDimension / minOriginalDimension;
-      console.log(this.scaleFactor);
-
-      this.canvas.width = width;
-      this.canvas.height = height;
-      this.canvas.refreshScales();
-      this.width = width
-      this.height = height
-      this.backbone.radius = this.backbone.radius * this.scaleFactor;
-      this.refreshLegends();
-
-      // Generate image
-      this.draw_full();
-      var image = temp_canvas.toDataURL();
-
-      // Restore original settings
-      this.canvas.width = origWidth;
-      this.canvas.height = origHeight;
-      this.width = origWidth;
-      this.height = origHeight;
-      this.canvas.refreshScales();
-      this.canvas.ctx = orig_context;
-      this.backbone.radius = this.backbone.radius / this.scaleFactor;
-      this.scaleFactor = undefined;
-      this.refreshLegends();
-
-      // Delete temp canvas
-      d3.select(temp_canvas).remove();
-
-      var win = window.open();
-      var html = [
-        '<html>',
-          '<head>',
-            '<title>',
-              windowTitle,
-            '</title>',
-          '</head>',
-          '<body>',
-            '<h2>Your CGView Image is Below</h2>',
-            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            '<h3>Preview</h3>',
-            '<img style="border: 1px solid grey" width="' + origWidth + '" height="' + origHeight +  '" src="' + image +  '"/ >',
-            '<h3>Actual Size</h3>',
-            '<img style="border: 1px solid grey" src="' + image +  '"/ >',
-          '</body>',
-        '<html>'
-      ].join('');
-      win.document.write(html);
-    }
-
 
   }
 

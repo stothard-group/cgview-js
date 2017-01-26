@@ -43,7 +43,8 @@
   <a href='docs/index.html'>Docs</a>
   <a href='http://wishart.biology.ualberta.ca/cgview/xml_overview.html'>XML</a>
   <a href='http://stothard.afns.ualberta.ca/cgview_server/'>Server</a>
-  <a id='save-1000' href='#'>Download-1000</a>
+  <a id='save-600' href='#'>Download-600</a>
+  <a id='save-1200' href='#'>Download-1200</a>
   <a id='save-3000' href='#'>Download-3000</a>
   <div id='svg-out'></div>
 
@@ -96,8 +97,9 @@
     //   cgv.canvas.ctx = origCtx;
     // });
 
-    $('#save-1000').on('click', function() { cgv.toImage(1000,1000); return false });
-    $('#save-3000').on('click', function() { cgv.toImage(3000,3000); return false });
+    $('#save-600').on('click', function() { cgv._io.exportImage(600,600); return false });
+    $('#save-1200').on('click', function() { cgv._io.exportImage(1200,1200); return false });
+    $('#save-3000').on('click', function() { cgv._io.exportImage(3000,3000); return false });
 
   </script>
 </body>
