@@ -118,6 +118,90 @@
     return angle
   }
 
+  /**
+   * Calculate the hour hand clock position for the supplied angle where:
+   *   3/2π -> 12 o'clock
+   *   0    -> 3 o'clock
+   *   1/2π -> 6 o'clock
+   *   π    -> 9 o'clock
+   *
+   * @param {Number} radians - The angle in radians
+   * @return {Number}
+   */
+  CGV.clockPositionForAngle = function(radians) {
+    var clockPostion = Math.round( (radians + Math.PI/2) * (6/Math.PI) );
+    if (clockPostion > 12) {
+      clockPostion -= 12;
+    } else if (clockPostion < 1) {
+      clockPostion += 12;
+    }
+    return clockPostion
+  }
+
+  /**
+   * Calculate the origin for a Rect with *width* and *length* that connects
+   * to a *point* at a specific *clockPosition*.
+   *
+   * @param {Object} point - The point that connects to the Rect. Consists of an x and y attribute
+   * @param {Number} clockPosition - Where on the Rect the point connects to in clock coordinates. An integer between 1 and 12.
+   * @param {Number} width - The width of the Rect
+   * @param {Number} height - The height of the Rect
+   * @return {Object} - The origin for the Rect consisting of an x and y attribute
+   */
+  CGV.rectOriginForAttachementPoint = function(point, clockPosition, width, height) {
+    var x, y;
+    switch (clockPosition) {
+      case 1:
+        x = point.x - (width * 3 / 4);
+        y = point.y;
+        break;
+      case 2:
+        x = point.x - width;
+        y = point.y;
+        break;
+      case 3:
+        x = point.x - width;
+        y = point.y - (height / 2);
+        break;
+      case 4:
+        x = point.x - width;
+        y = point.y - height;
+        break;
+      case 5:
+        x = point.x - (width * 3 / 4);
+        y = point.y - height;
+        break;
+      case 6:
+        x = point.x - (width / 2);
+        y = point.y - height;
+        break;
+      case 7:
+        x = point.x - (width / 4);
+        y = point.y - height;
+        break;
+      case 8:
+        x = point.x;
+        y = point.y - height;
+        break;
+      case 9:
+        x = point.x;
+        y = point.y - (height / 2);
+        break;
+      case 10:
+        x = point.x;
+        y = point.y;
+        break;
+      case 11:
+        x = point.x - (width / 4);
+        y = point.y;
+        break;
+      case 12:
+        x = point.x - (width / 2);
+        y = point.y;
+    }
+    return {x: x, y: y}
+  }
+
   CGV.withinRange = function(bp, start, end) {
     if (end >= start) {
       // Typical Range
@@ -244,6 +328,7 @@
 
     return angles
   }
+
 
   /**
    * Binary search to find the index of data where data[index] equals _search_value_.

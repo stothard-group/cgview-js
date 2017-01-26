@@ -238,7 +238,6 @@
     draw(ctx) {
       ctx.fillStyle = this.backgroundColor.rgbaString;
       ctx.fillRect(this.originX, this.originY, this.width, this.height);
-      ctx.textBaseline = 'top';
       var textX, swatchX;
       var y = this.originY + this.padding;
       for (var i = 0, len = this._legendItems.length; i < len; i++) {

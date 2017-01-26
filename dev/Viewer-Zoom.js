@@ -24,12 +24,12 @@
       var mx = self.scale.x.invert(CGV.pixel(pos[0]))
       var my = self.scale.y.invert(CGV.pixel(pos[1]))
 
-      var radius = self.backboneRadius;
+      var radius = self.backbone.zoomedRadius;
       var angle = CGV.angleFromPosition(mx, my);
 
       self._zoomFactor = d3.event.transform.k
 
-      var radiusDiff = radius - self.backboneRadius;
+      var radiusDiff = radius - self.backbone.zoomedRadius;
 
       var dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
       var dy = CGV.pixel(Math.sin(-angle) * radiusDiff);

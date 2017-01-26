@@ -25,11 +25,19 @@
     load_json(json) {
       var viewer = this._viewer;
 
+      // Determine scale factor between viewer and json map data
+      var jsonMinDimension = Math.min(json.height, json.width);
+      var viewerMinDimension = Math.min(viewer.height, viewer.width);
+      var scaleFacter = jsonMinDimension / viewerMinDimension;
+
       // Override Main Viewer settings
       viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength);
       viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
       viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
       viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
+      viewer.backbone.radius = json.backboneRadius / scaleFacter;
+      viewer.backbone.color = CGV.defaultFor(json.backboneColor, viewer.backbone.color);
+      viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
       // ...
 
       // Load FeatureSlots

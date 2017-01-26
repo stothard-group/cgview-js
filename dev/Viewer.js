@@ -25,7 +25,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this._width, height: this._height});
       this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
-      this.backboneRadius = CGV.defaultFor(options.backboneRadius, 200);
+
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
@@ -39,6 +39,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
 
+      // Initialize Backbone
+      this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Menu
       this.menu = new CGV.Menu(this);
       // Initialize Help
@@ -139,22 +141,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set height(value) {
       // TODO: update canvas
-    }
-
-    /**
-     * @member {Number} - Set or get the backbone radius
-     */
-    set backboneRadius(radius) {
-      if (radius) {
-        this._backboneRadius = radius;
-      } else {
-        this._backboneRadius = d3.min([this.width, this.height]) * 0.4;
-      }
-      console.log(this._backboneRadius)
-    }
-
-    get backboneRadius() {
-      return this._backboneRadius * this._zoomFactor
     }
 
     /**
@@ -336,19 +322,22 @@ if (window.CGV === undefined) window.CGV = CGView;
     draw(fast) {
       var start_time = new Date().getTime();
       this.clear();
-      var backboneThickness = CGV.pixel(3);
-      var slotRadius = CGV.pixel(this.backboneRadius);
+      var backboneThickness = CGV.pixel(this.backbone.thickness);
+      var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
       var spacing = CGV.pixel(this.featureSlotSpacing);
-      // var minDimension = CGV.pixel(Math.min(this.height, this.width));
       var minDimension = Math.min(this.height, this.width);
       var maxRadius = minDimension; // TODO: need to add up all proportions
 
       var visibleRadii = this.canvas.visibleRadii();
 
+      // All Text should have base line top
+      this.ctx.textBaseline = 'top';
+
       // Draw Backbone
-      this.canvas.drawArc(1, this.sequenceLength, slotRadius, 'black', backboneThickness);
+      // this.canvas.drawArc(1, this.sequenceLength, slotRadius, 'black', backboneThickness);
+      this.backbone.draw();
 
       var residualSlotThickness = 0;
 
@@ -362,7 +351,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         var slot = this._featureSlots[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
-        var slotThickness = CGV.pixel( Math.min(this.backboneRadius, maxRadius) * slot._proportionOfRadius);
+        var slotThickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, maxRadius) * slot._proportionOfRadius);
         if (slot.isDirect()) {
           directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
           slotRadius = directRadius;
@@ -492,7 +481,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.refreshScales();
       this.width = width
       this.height = height
-      this.backboneRadius = this._backboneRadius * this.scaleFactor;
+      this.backbone.radius = this.backbone.radius * this.scaleFactor;
       this.refreshLegends();
 
       // Generate image
@@ -506,7 +495,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.height = origHeight;
       this.canvas.refreshScales();
       this.canvas.ctx = orig_context;
-      this.backboneRadius = this._backboneRadius / this.scaleFactor;
+      this.backbone.radius = this.backbone.radius / this.scaleFactor;
       this.scaleFactor = undefined;
       this.refreshLegends();
 

@@ -109,64 +109,11 @@
         radians = scale.bp(bp);
         var innerPt = canvas.pointFor(bp, radius);
         var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
-        // Calculation where label line should attach to Label.
-        // First determine clock position of Label
-        var clockPostion = Math.round( (radians + Math.PI/2) * (6/Math.PI) );
-        // Then find opposite position for attachment.
-        if (clockPostion <= 6) {
-          label.lineAttachment = clockPostion + 6;
-        } else {
-          label.lineAttachment = clockPostion - 6;
-        }
-        // Set Rect Origin X
-        switch (label.lineAttachment) {
-          case 10:
-          case 9:
-          case 8:
-            x = outerPt.x;
-            break;
-          case 11:
-          case 7:
-            x = outerPt.x - (label.width / 4);
-            break;
-          case 0:
-          case 12:
-          case 6:
-            x = outerPt.x - (label.width / 2);
-            break;
-          case 1:
-          case 5:
-            x = outerPt.x - (label.width * 3 / 4);
-            break;
-          case 2:
-          case 3:
-          case 4:
-            x = outerPt.x - label.width;
-        }
-
-        // Set Rect Origin Y
-        switch (label.lineAttachment) {
-          case 0:
-          case 10:
-          case 11:
-          case 12:
-          case 1:
-          case 2:
-            y = outerPt.y;
-            break;
-          case 9:
-          case 3:
-            y = outerPt.y - (label.height / 2);
-            break;
-          case 4:
-          case 5:
-          case 6:
-          case 7:
-          case 8:
-            y = outerPt.y - label.height;
-        }
-
-        label.rect = new CGV.Rect(x, y, label.width, label.height);
+        // Calculate where the label line should attach to Label.
+        // The attachemnt point should be the opposite clock position of the feature.
+        label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
+        var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+        label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
       }
       
     }

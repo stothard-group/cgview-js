@@ -14,8 +14,10 @@
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
-      this.rulerPadding = CGV.defaultFor(options.rulerPadding, 20);
+      this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
+
+      // fontColor
     }
 
     get font() {
@@ -69,14 +71,15 @@
     }
 
     drawForRadius(radius, position = 'inner', drawLabels = true) {
+      var ctx = this.canvas.ctx;
       var scale = this.canvas.scale;
       var ranges = this.canvas.visibleRangeForRadius(radius);
       var start = ranges ? ranges[0] : 1;
       var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
       var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
-      this.canvas.ctx.fillStyle = 'black'; // Label Color
-
-
+      ctx.fillStyle = 'black'; // Label Color
+      ctx.font = this.font.css;
+      ctx.textAlign = 'left';
       // Tick format for labels
       var tickFormat = scale.bp.tickFormat(this.tickCount * this.viewer.zoomFactor, 's');
       // Draw Tick for 1 bp
@@ -102,11 +105,13 @@
       var ctx = this.canvas.ctx;
       // Put space between number and units
       var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      ctx.font = this.font.css;
-      ctx.textAlign = 'center';
       // INNER
-      var center = this.canvas.pointFor(bp, radius - this.rulerPadding);
-      ctx.fillText(label, center.x, center.y);
+      var innerPt = this.canvas.pointFor(bp, radius - this.rulerPadding);
+      var radians = scale.bp(bp);
+      var attachmentPosition = CGV.clockPositionForAngle(radians);
+      var labelWidth = this.font.width(ctx, label);
+      var labelPt = CGV.rectOriginForAttachementPoint(innerPt, attachmentPosition, labelWidth, this.font.height);
+      ctx.fillText(label, labelPt.x, labelPt.y);
     }
 
   }
