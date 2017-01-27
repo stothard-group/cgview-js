@@ -33,8 +33,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this._io = new CGV.IO(this);
 
-      this.initialize_dragging();
-      this.initialize_zooming();
 
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
@@ -52,9 +50,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Ruler
       this.ruler = new CGV.Ruler(this);
       this.ruler.font = CGV.defaultFor(options.rulerFont, 'sans-serif, plain, 10');
+      // Initialize Events
+      this.initialize_dragging();
+      this.initialize_zooming();
 
       d3.select(this.canvas.canvasNode).on('mousemove', () => {
-        if (this.debug) {
+        if (this.debug && this.debug.data.position) {
           var pos = d3.mouse(this.canvas.canvasNode);
           var mx = this.scale.x.invert(CGV.pixel(pos[0]))
           var my = this.scale.y.invert(CGV.pixel(pos[1]))
@@ -114,7 +115,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     // STATIC CLASSS METHODS
     //////////////////////////////////////////////////////////////////////////
     static get debug_sections() {
-      return ['time', 'zoom', 'position'];
+      return ['time', 'zoom', 'position', 'n'];
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -141,6 +142,13 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set height(value) {
       // TODO: update canvas
+    }
+
+    /**
+     * @member {Number} - Get the height or the width of the viewer, which ever is smallest.
+     */
+    get minDimension() {
+      return Math.min(this.height, this.width);
     }
 
     /**
@@ -227,6 +235,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.canvas.scale.bp = d3.scaleLinear()
           .domain([1, this._sequenceLength])
           .range([-1/2*Math.PI, 3/2*Math.PI]);
+        this._updateZoomMax();
       }
     }
 
@@ -311,6 +320,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.flash(msg);
     }
 
+    /**
+     * Return the maximum radius to use for calculating slot thickness when zoomed
+     * @return {Number}
+     */
+    maxZoomedRadius() {
+      return this.minDimension * 1.4; // TODO: need to add up all proportions
+    }
+
     draw_full() {
       this.draw();
     }
@@ -322,13 +339,12 @@ if (window.CGV === undefined) window.CGV = CGView;
     draw(fast) {
       var start_time = new Date().getTime();
       this.clear();
-      var backboneThickness = CGV.pixel(this.backbone.thickness);
+      var backboneThickness = CGV.pixel(this.backbone.zoomedThickness);
       var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
       var spacing = CGV.pixel(this.featureSlotSpacing);
-      var minDimension = Math.min(this.height, this.width);
-      var maxRadius = minDimension; // TODO: need to add up all proportions
+      var maxRadius = this.maxZoomedRadius();
 
       var visibleRadii = this.canvas.visibleRadii();
 
@@ -369,10 +385,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // Ruler
       this.ruler.draw(reverseRadius, directRadius);
-      if (this.debug) {
-        this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
-        this.debug.draw(this.ctx);
-      }
 
       // Legends
       for (var i = 0, len = this._legends.length; i < len; i++) {
@@ -384,6 +396,10 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.labelSet.draw(reverseRadius, directRadius);
       }
 
+      if (this.debug) {
+        this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
+        this.debug.draw(this.ctx);
+      }
     }
 
     // addFeatureSlot(featureSlot) {
@@ -431,7 +447,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (stop >= start) {
         return stop - start
       } else {
-        return this.sequencelength + (stop - start)
+        return this.sequenceLength + (stop - start)
       } 
     }
 

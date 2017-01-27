@@ -3,9 +3,15 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  CGV.Viewer.prototype._updateZoomMax = function() {
+    if (this._zoom) {
+      this._zoom.scaleExtent([1, this.backbone.maxZoomFactor()]);
+    }
+  }
+
   CGV.Viewer.prototype.initialize_zooming = function() {
     var self = this;
-    var zoomMax = 1000;
+    var zoomMax = this.backbone.maxZoomFactor();
     self._zoom = d3.zoom()
       .scaleExtent([1, zoomMax])
       .on('start', zoomstart)
@@ -53,8 +59,12 @@
 
       // DEBUG INFO
       if (self.debug) {
-        self.debug.data.time['zoom'] = CGV.elapsed_time(start_time);
-        self.debug.data.zoom['scale'] = CGV.round(self._zoomFactor, 1);
+        if (self.debug.data.time) {
+          self.debug.data.time['zoom'] = CGV.elapsed_time(start_time);
+        }
+        if (self.debug.data.zoom) {
+          self.debug.data.zoom['scale'] = CGV.round(self._zoomFactor, 1);
+        }
       }
     }
 

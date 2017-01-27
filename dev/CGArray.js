@@ -104,7 +104,7 @@
    */
   CGArray.prototype.each = function(callback) {
     for (var i = 0, len = this.length; i < len; i++) {
-      callback.call(this[i], i, this);
+      callback.call(this[i], i, this[i]);
     }
     return this;
   }

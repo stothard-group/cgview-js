@@ -140,9 +140,8 @@
       canvas.ctx = tempCanvas.getContext('2d');
 
       // Calculate scaling factor
-      var minOriginalDimension = d3.min([viewer.width, viewer.height]);
       var minNewDimension = d3.min([width, height]);
-      var scaleFactor = minNewDimension / minOriginalDimension;
+      var scaleFactor = minNewDimension / viewer.minDimension;
       canvas.ctx.scale(scaleFactor, scaleFactor);
 
       // Generate image

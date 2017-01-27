@@ -139,6 +139,10 @@
             this._features[i].draw(canvas, slotRadius, slotThickness);
           })
         }
+        if (this.viewer.debug && this.viewer.debug.data.n) {
+          var index = this.viewer._featureSlots.indexOf(this);
+          this.viewer.debug.data.n['slot_' + index] = featureCount;
+        }
       } else if (this.hasArcPlot) {
         if (ranges) {
           this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);

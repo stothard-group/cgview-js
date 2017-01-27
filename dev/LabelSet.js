@@ -173,9 +173,9 @@
         // ctx.fillText(label.name, origin.x, origin.y);
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
-
-
-
+      if (this.viewer.debug && this.viewer.debug.data.n) {
+        this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
+      }
     }
 
 
