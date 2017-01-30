@@ -159,27 +159,31 @@
       // and overalp features.
       // This hack doesn't draw the complete separator but only the portion visible on the screen.
       // This should be moved to featureSlots...
-      if ( start == 1 && stop == this.viewer.sequenceLength) {
-        var ranges = this.visibleRangesForRadius(radius, 50);
-        if (ranges.length == 2) {
-        } else if (ranges.length > 2) {
-          ranges = [ ranges[0], ranges[ranges.length -1] ]
-        } else {
-          ranges =  undefined
-        }
-        if (ranges) {
-          start = ranges[0];
-          stop = ranges[1];
-        }
-      }
+      // if ( start == 1 && stop == this.viewer.sequenceLength) {
+      //   var ranges = this.visibleRangesForRadius(radius, 50);
+      //   if (ranges.length == 2) {
+      //   } else if (ranges.length > 2) {
+      //     ranges = [ ranges[0], ranges[ranges.length -1] ]
+      //   } else {
+      //     ranges =  undefined
+      //   }
+      //   if (ranges) {
+      //     start = ranges[0];
+      //     stop = ranges[1];
+      //   }
+      // }
 
 
 
+
+      // If the zoomFactor gets too large, the arc drawing becomes unstable.
+      // (ie the arc wiggle in the map as zooming)
+      // So when the zoomFactor is large, switch to drawing lines.
       if (decoration == 'arc') {
         ctx.beginPath();
         ctx.strokeStyle = color;
         ctx.lineWidth = width;
-        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
+        this.arcPath(radius, start, stop);
         ctx.stroke();
       }
 
@@ -218,16 +222,38 @@
         // Draw arc with arrow head
         ctx.beginPath();
         ctx.fillStyle = color;
-        ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
+        // ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
+        this.arcPath(radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        ctx.arc(scale.x(0), scale.y(0), radius - halfWidth, scale.bp(arcStopBp), scale.bp(arcStartBp), direction == 1);
+        // ctx.arc(scale.x(0), scale.y(0), radius - halfWidth, scale.bp(arcStopBp), scale.bp(arcStartBp), direction == 1);
+        this.arcPath(radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
         ctx.closePath();
         ctx.fill();
       }
 
     }
 
+    /**
+     * The method add an arc to the path. However, if the zoomFactor is very large,
+     * the arc is added as a straight line.
+     */
+    arcPath(radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
+      var ctx = this.ctx;
+      var scale = this.scale;
+      if (this.viewer.zoomFactor < 10000) {
+        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      } else {
+        var p1 = this.pointFor(startBp, radius);
+        var p2 = this.pointFor(stopBp, radius);
+        if (noMoveTo) {
+          ctx.lineTo(p2.x, p2.y);
+        } else {
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        }
+      }
+    }
 
     // drawArc(start, stop, radius, color = '#000000', width = 1) {
     //   var scale = this.scale;

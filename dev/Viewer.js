@@ -209,7 +209,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._zoomFactor;
     }
 
-    set zoomeFactor(value) {
+    set zoomFactor(value) {
       this._zoomFactor = value;
       // TODO: update anything related to zoom
     }
@@ -472,6 +472,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = this._legends.length; i < len; i++) {
         this._legends[i].refresh();
       }
+    }
+
+    /**
+     * Move the viewer to show the map from the *start* to the *stop* position.
+     * If only the *start* position is provided,
+     * the viewer will center the image on that bp with the current zoom level.
+     *
+     * @param {Number} start - The start position in bp
+     * @param {Number} stop - The stop position in bp
+     */
+    moveTo(start, stop) {
+      
     }
 
   }

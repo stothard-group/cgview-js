@@ -216,10 +216,10 @@
       var ctx = this.canvas.ctx;
       var scale = this.canvas.scale;
       var radius = CGV.pixel(this.zoomedRadius);
-      var ranges = this.canvas.visibleRangeForRadius(radius);
-      if (ranges) {
-        var start = ranges[0];
-        var stop = ranges[1];
+      var range = this.canvas.visibleRangeForRadius(radius);
+      if (range) {
+        var start = range[0];
+        var stop = range[1];
         var seq = this._sequenceForRange(start, stop);
         var length = this.viewer.lengthOfRange(start, stop);
         var bp = start;

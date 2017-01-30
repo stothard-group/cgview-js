@@ -134,8 +134,20 @@
 
 
 
-    draw(canvas, slotRadius, slotThickness) {
-      canvas.drawArc(this.start, this.stop,
+    draw(canvas, slotRadius, slotThickness, visibleRange) {
+      var start = this.start;
+      var stop = this.stop;
+      // Adjust start and stop at increased zoom level
+      if (this.viewer.zoomFactor > 1000) {
+        if (!(this.start > visibleRange[0] && this.start < visibleRange[1])) {
+          start = visibleRange[0];
+        }
+        if (!(this.stop > visibleRange[0] && this.stop < visibleRange[1])) {
+          stop = visibleRange[1];
+        }
+      }
+      // canvas.drawArc(this.start, this.stop,
+      canvas.drawArc(start, stop,
         this.adjustedRadius(slotRadius, slotThickness),
         this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
     }

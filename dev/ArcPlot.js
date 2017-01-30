@@ -153,6 +153,7 @@
         if ( this._keepPoint(currentProp, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
             ctx.arc(centerX, centerY, currentR, scale.bp(saved_bp), scale.bp(currentBp), false);
+            // canvas.arcPath(currentR, saved_bp, currentBp, false, true);
             savedR = currentR;
             saved_bp = currentBp
           }
@@ -162,6 +163,8 @@
       });
       ctx.arc(centerX, centerY, savedR, scale.bp(saved_bp), scale.bp(stopBp), false);
       ctx.arc(centerX, centerY, slotRadius, scale.bp(stopBp), scale.bp(startBp), true);
+      // canvas.arcPath(savedR, saved_bp, stopBp, false, true);
+      // canvas.arcPath(slotRadius, stopBp, startBp, true, true);
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
     }

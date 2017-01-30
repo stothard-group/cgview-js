@@ -123,6 +123,7 @@
       var start, stop, majorTicks, majorTickStep, minorTicks, minorTickStep;
       var innerRange = this.canvas.visibleRangeForRadius(innerRadius);
       var outerRange = this.canvas.visibleRangeForRadius(outerRadius);
+      var sequenceLength = this.viewer.sequenceLength;
       var rangeLength = 0;
       if (innerRange && outerRange) {
         var mergedRange = this.viewer.mergeRanges(innerRange, outerRange);
@@ -135,7 +136,7 @@
         start = outerRange[0];
         stop = outerRange[1];
       } else {
-        start = 0;
+        start = 1;
         stop = this.viewer.sequenceLength;
       }
 
@@ -144,7 +145,6 @@
         majorTicks = new CGV.CGArray( d3.ticks(start, stop, this.tickCount) );
         majorTickStep = d3.tickStep(start, stop, this.tickCount);
       } else {
-        var sequenceLength = this.viewer.sequenceLength;
         // Ratio of the sequence length before 0 to sequence length after zero
         // The number of ticks will for each region will depend on this ratio
         var tickCountRatio = (sequenceLength - start) / this.viewer.lengthOfRange(start, stop);
@@ -174,8 +174,13 @@
         minorTickStep = 0;
       }
       if (minorTickStep) {
-        start = majorTicks[0] - majorTickStep;
-        stop = majorTicks[majorTicks.length - 1] + majorTickStep;
+        if (this.viewer.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) <= 3*majorTickStep) {
+          start = 0;
+          stop = sequenceLength;
+        } else {
+          start = majorTicks[0] - majorTickStep;
+          stop = majorTicks[majorTicks.length - 1] + majorTickStep;
+        }
         if (start < stop) {
           for (var tick = start; tick <= stop; tick += minorTickStep) {
             if (tick % majorTickStep) {

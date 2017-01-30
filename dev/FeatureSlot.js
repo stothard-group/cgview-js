@@ -136,7 +136,7 @@
           canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
         } else {
           this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-            this._features[i].draw(canvas, slotRadius, slotThickness);
+            this._features[i].draw(canvas, slotRadius, slotThickness, [start, stop]);
           })
         }
         if (this.viewer.debug && this.viewer.debug.data.n) {
