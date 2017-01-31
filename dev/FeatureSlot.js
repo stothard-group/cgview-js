@@ -13,7 +13,7 @@
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._arcPlot;
-      this._proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
+      this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
 
       this._featureStarts = new CGV.CGArray();
 
@@ -29,8 +29,7 @@
       }
     }
 
-    /**
-     * @member {Viewer} - Get or set the *Viewer*
+    /** * @member {Viewer} - Get or set the *Viewer*
      */
     get viewer() {
       return this._viewer
@@ -43,6 +42,33 @@
       this._viewer = viewer;
       viewer._featureSlots.push(this);
     }
+
+    /**
+     * @member {Viewer} - Get or set the slot size with is measured as a 
+     * proportion of the backbone radius.
+     */
+    get proportionOfRadius() {
+      return this._proportionOfRadius
+    }
+
+    set proportionOfRadius(value) {
+      this._proportionOfRadius = value;
+    }
+
+    /**
+     * @member {Number} - Get the current radius of the featureSlot.
+     */
+    get radius() {
+      return this._radius
+    }
+
+    /**
+     * @member {Number} - Get the current thickness of the featureSlot.
+     */
+    get thickness() {
+      return this._thickness
+    }
+
 
     get strand() {
       return this._strand;
@@ -64,6 +90,13 @@
       return this._arcPlot
     }
 
+    /**
+     * The number of pixels per basepair along the feature slot circumference.
+     * @return {Number}
+     */
+    pixelsPerBp() {
+      return (this.radius * 2 * Math.PI) / this.viewer.sequenceLength;
+    }
 
     // Refresh needs to be called when new features are added, etc
     // Features need to be sorted by start position
@@ -79,10 +112,6 @@
         this._featureStarts.push(this._features[i].start);
       }
       this._largestFeatureLength = this.findLargestFeatureLength();
-    }
-
-    length() {
-      return this.viewer.sequenceLength;
     }
 
     /**
@@ -111,6 +140,8 @@
     draw(canvas, fast, slotRadius, slotThickness) {
       var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
       this._visibleRange = range;
+      this._radius = slotRadius;
+      this._thickness = slotThickness;
       if (range) {
         var start = range.start;
         var stop = range.stop;
@@ -146,45 +177,6 @@
         }
       }
     }
-    // draw(canvas, fast, slotRadius, slotThickness) {
-    //   var ranges = canvas.visibleRangeForRadius(slotRadius, slotThickness);
-    //   var start = ranges ? ranges[0] : 1;
-    //   var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
-    //   var featureCount = this._features.length;
-    //   if (this.hasFeatures) {
-    //     var largestLength = this.largestFeatureLength;
-    //     // Case where the largest feature should not be subtracted
-    //     // _____ Visible
-    //     // ----- Not Visbile
-    //     // Do no subtract the largest feature so that the start loops around to before the stop
-    //     // -----Start_____Stop-----
-    //     // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-    //     // _____Stop-----Start_____
-    //     if (ranges &&
-    //          (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
-    //          (this.viewer.subtractBp(start, stop) > largestLength) ) {
-    //       start = this.viewer.subtractBp(start, largestLength);
-    //       featureCount = this._featureStarts.countFromRange(start, stop);
-    //     }
-    //     if (fast && featureCount > 2000) {
-    //       canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
-    //     } else {
-    //       this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-    //         this._features[i].draw(canvas, slotRadius, slotThickness, [start, stop]);
-    //       })
-    //     }
-    //     if (this.viewer.debug && this.viewer.debug.data.n) {
-    //       var index = this.viewer._featureSlots.indexOf(this);
-    //       this.viewer.debug.data.n['slot_' + index] = featureCount;
-    //     }
-    //   } else if (this.hasArcPlot) {
-    //     if (ranges) {
-    //       this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
-    //     } else {
-    //       this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
-    //     }
-    //   }
-    // }
 
   }
 

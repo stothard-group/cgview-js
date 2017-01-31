@@ -41,11 +41,6 @@
       this.ctx = this.canvasNode.getContext('2d');
       this.refreshScales();
 
-      // Set up scales
-      // this.scale.bp = d3.scaleLinear()
-      //   .domain([0, this.sequence_length])
-      //   .range([-1/2*Math.PI, 3/2*Math.PI]);
-
     }
 
     //TODO: move to setter for width and height
@@ -157,36 +152,13 @@
     //                       |
     //                       innerArcStartPt
     //
+    // If the zoomFactor gets too large, the arc drawing becomes unstable.
+    // (ie the arc wiggle in the map as zooming)
+    // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
       var ctx = this.ctx;
 
-      // FIXME:
-      // TEMP HACK/FIX for the issue of the moving slot separators.
-      // For some reason at center angles, when fully zoomed in, the slot separator move
-      // and overalp features.
-      // This hack doesn't draw the complete separator but only the portion visible on the screen.
-      // This should be moved to featureSlots...
-      // if ( start == 1 && stop == this.viewer.sequenceLength) {
-      //   var ranges = this.visibleRangesForRadius(radius, 50);
-      //   if (ranges.length == 2) {
-      //   } else if (ranges.length > 2) {
-      //     ranges = [ ranges[0], ranges[ranges.length -1] ]
-      //   } else {
-      //     ranges =  undefined
-      //   }
-      //   if (ranges) {
-      //     start = ranges[0];
-      //     stop = ranges[1];
-      //   }
-      // }
-
-
-
-
-      // If the zoomFactor gets too large, the arc drawing becomes unstable.
-      // (ie the arc wiggle in the map as zooming)
-      // So when the zoomFactor is large, switch to drawing lines.
       if (decoration == 'arc') {
         ctx.beginPath();
         ctx.strokeStyle = color;
@@ -198,18 +170,9 @@
       // Looks like we're drawing an arrow
       if (decoration != 'arc') {
         // Determine Arrowhead length
-        // TODO: this should be done when the zoom level changes and be a variable of the viewer or canvas
-        //       There is no need to calculate this for each feature
-        //       Mmmmm....although the length depends on radius, so we might be able to do this at the slot level????
         // Using width which changes according zoom factor upto a point
-        // var arrowHeadLengthPixels = CGV.pixel(width / 4);
         var arrowHeadLengthPixels = width / 2;
-        // Convert arrowHeadLength (pixels) to Radians:
-        //   arrowHeadRadians = ( (Math.PI * 2) / (2 * Math.PI * radius) ) * arrowHeadLength;
-        // Subtract Pi/2 to determine radians at 0 point of circle. Then convert to BP.
-        // var arrowHeadLengthBp = scale.bp.invert( (arrowHeadLengthPixels / radius) - Math.PI/2 );
-        // var arrowHeadLengthBp = arrowHeadLengthPixels / (CGV.pixel( (radius * 2 * Math.PI) / this.viewer.sequenceLength ) );
-        var arrowHeadLengthBp = arrowHeadLengthPixels / ( (radius * 2 * Math.PI) / this.viewer.sequenceLength );
+        var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
         var featureLength = this.viewer.lengthOfRange(start, stop);
@@ -233,11 +196,9 @@
         // Draw arc with arrow head
         ctx.beginPath();
         ctx.fillStyle = color;
-        // ctx.arc(scale.x(0), scale.y(0), radius + halfWidth, scale.bp(arcStartBp), scale.bp(arcStopBp), direction == -1);
         this.arcPath(radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        // ctx.arc(scale.x(0), scale.y(0), radius - halfWidth, scale.bp(arcStopBp), scale.bp(arcStartBp), direction == 1);
         this.arcPath(radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
         ctx.closePath();
         ctx.fill();
@@ -377,6 +338,10 @@
 
     visibleRadii(margin) {
       return {min: this.minimumVisibleRadius(), max: this.maximumVisibleRadius()}
+    }
+
+    pixelsPerBp(radius) {
+      return ( (radius * 2 * Math.PI) / this.viewer.sequenceLength );
     }
 
   }

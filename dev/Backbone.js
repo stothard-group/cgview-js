@@ -245,6 +245,31 @@
 
     }
 
+    // _drawSequenceDots() {
+    //   var ctx = this.canvas.ctx;
+    //   var scale = this.canvas.scale;
+    //   var radius = CGV.pixel(this.zoomedRadius);
+    //   var range = this.visibleRange
+    //   if (range) {
+    //     var bp = range.start;
+    //     ctx.save();
+    //     ctx.fillStyle = this.fontColor.rgbaString;
+    //     var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
+    //     for (var i = 0, len = range.length; i < len; i++) {
+    //       var origin = this.canvas.pointFor(bp, radius + radiusDiff);
+    //       ctx.beginPath();
+    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
+    //       ctx.fill();
+    //       ctx.beginPath();
+    //       var origin = this.canvas.pointFor(bp, radius - radiusDiff);
+    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
+    //       ctx.fill();
+    //       bp++;
+    //     }
+    //     ctx.restore();
+    //   }
+    // }
+
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
       if (this.visibleRange) {
@@ -260,6 +285,8 @@
           }
           if (this.pixelsPerBp() >= (this.bpSpacing - this.bpMargin)) {
             this._drawSequence();
+          // } else if (this.pixelsPerBp() > 4) {
+          //   this._drawSequenceDots();
           }
         } else {
           this._bpThicknessAddtion = 0

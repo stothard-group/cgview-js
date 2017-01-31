@@ -22,7 +22,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._wrapper = this._container.append('div')
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
-      this.canvas = new CGV.Canvas(this, this._wrapper, {width: this._width, height: this._height});
+      this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
       this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
 
@@ -131,6 +131,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set width(value) {
       // TODO: update canvas
+      // USE RESIZE
     }
 
     /**
@@ -142,6 +143,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set height(value) {
       // TODO: update canvas
+      // USE RESIZE
     }
 
     /**
@@ -264,11 +266,49 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io.load_json(json);
     }
 
-  /**
-   * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the FeatureSlots in the viewer.
-   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
-   * @return {CGArray}
-   */
+    /**
+     * Resizes the the Viewer
+     *
+     * @param {Number} width - New width
+     * @param {Number} height - New height
+     * @param {Boolean} keepAspectRatio - If only one of width/height is given the ratio will remain the same.
+     * @param {Boolean} fast -  After resize, should the viewer be draw redrawn fast.
+     */
+    resize(width, height, keepAspectRatio=true, fast) {
+      var canvas = this.canvas;
+      this._width = width || this.width;
+      this._height = height || this.height;
+      // canvas.width = this._width;
+      // canvas.height = this._height;
+      // canvas.refreshScales();
+      d3.select(canvas.canvasNode).style('width', this._width);
+      d3.select(canvas.canvasNode).style('height', this._height);
+      this.draw();
+
+      // this.container
+      //   .style('width', this.width + 'px');
+      // d3.select(this.canvas)
+      //   .attr('width', this.width)
+      //   .attr('height', this.height);
+      // this.font = this.adjust_font();
+      // this.axis_title_font = this.adjust_font(1, undefined, 'bold');
+      // this.scaled_height = JSV.pixel(this.height - this.axis_x_gutter);
+      // this.scaled_width  = JSV.pixel(this.width - this.axis_y_gutter);
+      // this.scale.y.range([this.scaled_height, 0]);
+      // this.boundary.y.range([this.scaled_height, 0]);
+      // this.scale.x.range(this.x_range());
+      // this.boundary.x.range(this.x_range());
+      // this.svg.attr('width', this.width).attr('height', this.height);
+      // JSV.scale_resolution(this.canvas, JSV.pixel_ratio);
+
+      this.draw(fast);
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the FeatureSlots in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
     features(term) {
       var features = new CGV.CGArray();
       for (var i=0, len=this._featureSlots.length; i < len; i++) {
@@ -277,11 +317,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       return features.get(term);
     }
 
-  /**
-   * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the FeatureSlots in the viewer.
-   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
-   * @return {CGArray}
-   */
+    /**
+     * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the FeatureSlots in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
     arcPlots(term) {
       var plots = new CGV.CGArray();
       var arcPlot;
@@ -358,15 +398,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // FetaureSlots
       for (var i = 0, len = this._featureSlots.length; i < len; i++) {
-        // TESTING
-        // if ([0].indexOf(i) == -1) {
-        //   continue
-        // }
-
         var slot = this._featureSlots[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
-        var slotThickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, maxRadius) * slot._proportionOfRadius);
+        var slotThickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, maxRadius) * slot.proportionOfRadius);
         if (slot.isDirect()) {
           directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
           slotRadius = directRadius;
@@ -375,11 +410,8 @@ if (window.CGV === undefined) window.CGV = CGView;
           slotRadius = reverseRadius;
         }
         residualSlotThickness = slotThickness / 2;
-        // Only draw visible slots
-        if ( ( (slotRadius - residualSlotThickness) <= visibleRadii.max ) && ( (slotRadius + residualSlotThickness) >= visibleRadii.min) ) {
-          // Draw Slot
-          slot.draw(this.canvas, fast, slotRadius, slotThickness);
-        }
+        // Draw Slot
+        slot.draw(this.canvas, fast, slotRadius, slotThickness);
 
       }
 
