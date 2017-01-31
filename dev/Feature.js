@@ -14,8 +14,9 @@
       // this._opacity = data.opacity;
       this._color = new CGV.Color(data.color);
       this.opacity = parseFloat(data.opacity);
-      this.start = Number(data.start);
-      this.stop = Number(data.stop);
+      this.range = new CGV.CGRange(this.viewer, Number(data.start), Number(data.stop));
+      // this.start = Number(data.start);
+      // this.stop = Number(data.stop);
       this.label = new CGV.Label(this, {name: data.label} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -47,15 +48,47 @@
     }
 
     /**
+     * @member {Range} - Get or set the range of the feature. All ranges
+     *   are assumed to be going in a clockwise direction.
+     */
+    get range() {
+      return this._range
+    }
+
+    set range(value) {
+      this._range = value;
+    }
+    /**
      * @member {Number} - Get or set the start position of the feature in basepair (bp).
      *   All start and stop positions are assumed to be going in a clockwise direction.
      */
     get start() {
-      return this._start
+      // return this._start
+      return this.range.start
     }
 
-    set start(bp) {
-      this._start = bp;
+    set start(value) {
+      // this._start = value;
+      this.range.start = value;
+    }
+
+    /**
+     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
+     *   All start and stop positions are assumed to be going in a clockwise direction.
+     */
+    get stop() {
+      // return this._stop
+      return this.range.stop
+    }
+
+    set stop(value) {
+      // this._stop = value
+      this.range.stop = value;
+    }
+
+    get length() {
+      // return this.viewer.lengthOfRange(this.start, this.stop)
+      return this.range.length
     }
 
     /**
@@ -67,18 +100,6 @@
 
     set label(value) {
       this._label = value;
-    }
-
-    /**
-     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
-     *   All start and stop positions are assumed to be going in a clockwise direction.
-     */
-    get stop() {
-      return this._stop
-    }
-
-    set stop(bp) {
-      this._stop = bp;
     }
 
     /**
@@ -168,10 +189,6 @@
 
     adjustedWidth(width) {
       return this._proportionOfThickness * width;
-    }
-
-    get length() {
-      return this.viewer.lengthOfRange(this.start, this.stop)
     }
 
   }

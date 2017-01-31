@@ -304,12 +304,22 @@
     visibleRangeForRadius(radius, margin = 0) {
       var ranges = this.visibleRangesForRadius(radius, margin);
       if (ranges.length == 2) {
-        return ranges
+        // return ranges
+        return new CGV.CGRange(this.viewer, ranges[0], ranges[1])
       } else if (ranges.length > 2) {
-        return [ ranges[0], ranges[ranges.length -1] ]
-      } else {
+        // return [ ranges[0], ranges[ranges.length -1] ]
+        return new CGV.CGRange(this.viewer, ranges[0], ranges[ranges.length -1])
+      } else if ( (radius - margin) > this.maximumVisibleRadius() ) {
         return undefined
+      } else if ( (radius + margin) < this.minimumVisibleRadius() ) {
+        return undefined
+      } else {
+        // return [1, this.viewer.sequenceLength]
+        return new CGV.CGRange(this.viewer, 1, this.viewer.sequenceLength)
       }
+      // } else {
+      //   return undefined
+      // }
     }
 
     centerVisible() {

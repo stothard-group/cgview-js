@@ -34,8 +34,6 @@
    * @return {CGArray}
    */
   CGArray.prototype.merge = function(cgarray) {
-    // this.push.apply(this, cgarray);
-    // return this;
     for (var i = 0, len = cgarray.length; i < len; i++) {
       this.push(cgarray[i]);
     }

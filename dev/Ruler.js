@@ -16,8 +16,6 @@
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
-
-      // fontColor
     }
 
     get font() {
@@ -118,40 +116,52 @@
       return tickFormat
     }
 
+    // Below the zoomFactorCutoff, all ticks are calculated for the entire map
+    // Above the zoomFactorCutoff, ticks are created for the visible range
     _updateTicks(innerRadius, outerRadius) {
-      // Find start and stop to create ticks
-      var start, stop, majorTicks, majorTickStep, minorTicks, minorTickStep;
-      var innerRange = this.canvas.visibleRangeForRadius(innerRadius);
-      var outerRange = this.canvas.visibleRangeForRadius(outerRadius);
+      var zoomFactorCutoff = 5;
       var sequenceLength = this.viewer.sequenceLength;
-      var rangeLength = 0;
-      if (innerRange && outerRange) {
-        var mergedRange = this.viewer.mergeRanges(innerRange, outerRange);
-        start = mergedRange[0];
-        stop = mergedRange[1];
-      } else if (innerRange && outerRadius > this.canvas.maximumVisibleRadius()) {
-        start = innerRange[0];
-        stop = innerRange[1];
-      } else if (outerRange && innerRadius < this.canvas.minimumVisibleRadius()) {
-        start = outerRange[0];
-        stop = outerRange[1];
-      } else {
+      var start = 0;
+      var stop = 0;
+      var majorTicks = new CGV.CGArray();
+      var majorTickStep = 0;
+      var minorTicks = new CGV.CGArray();
+      var minorTickStep = 0;
+      var tickCount = this.tickCount;
+
+      // Find start and stop to create ticks
+      if (this.viewer.zoomFactor < zoomFactorCutoff) {
         start = 1;
-        stop = this.viewer.sequenceLength;
+        stop = sequenceLength;
+      } else {
+        tickCount = Math.ceil(tickCount / 2);
+        var innerRange = this.canvas.visibleRangeForRadius(innerRadius);
+        var outerRange = this.canvas.visibleRangeForRadius(outerRadius);
+        if (innerRange && outerRange) {
+          var mergedRange = innerRange.mergeWithRange(outerRange);
+          start = mergedRange.start;
+          stop = mergedRange.stop;
+        } else if (innerRange) {
+          start = innerRange.start;
+          stop = innerRange.stop;
+        } else if (outerRange) {
+          start = outerRange.start;
+          stop = outerRange.stop;
+        }
       }
 
       // Create Major ticks and tickStep
       if (stop > start) {
-        majorTicks = new CGV.CGArray( d3.ticks(start, stop, this.tickCount) );
-        majorTickStep = d3.tickStep(start, stop, this.tickCount);
-      } else {
+        majorTicks.merge( d3.ticks(start, stop, tickCount) );
+        majorTickStep = d3.tickStep(start, stop, tickCount);
+      } else if (stop < start) {
         // Ratio of the sequence length before 0 to sequence length after zero
         // The number of ticks will for each region will depend on this ratio
         var tickCountRatio = (sequenceLength - start) / this.viewer.lengthOfRange(start, stop);
-        var ticksBeforeZero = Math.round(this.tickCount * tickCountRatio);
-        var ticksAfterZero = Math.round(this.tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
+        var ticksBeforeZero = Math.round(tickCount * tickCountRatio);
+        var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
         if (ticksBeforeZero > 0) {
-          majorTicks = new CGV.CGArray( d3.ticks(start, sequenceLength, ticksBeforeZero) );
+          majorTicks.merge( d3.ticks(start, sequenceLength, ticksBeforeZero) );
           majorTickStep = Math.round(d3.tickStep(start, sequenceLength, ticksBeforeZero));
           for (var i = 1; i <= ticksAfterZero; i ++) {
             if (majorTickStep * i < start) {
@@ -159,8 +169,8 @@
             }
           }
         } else {
-          majorTicks = new CGV.CGArray( d3.ticks(1, stop, this.tickCount) );
-          majorTickStep = Math.round(d3.tickStep(1, stop, this.tickCount));
+          majorTicks.merge( d3.ticks(1, stop, tickCount) );
+          majorTickStep = Math.round(d3.tickStep(1, stop, tickCount));
         }
       }
 

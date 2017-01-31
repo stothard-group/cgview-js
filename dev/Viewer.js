@@ -451,23 +451,23 @@ if (window.CGV === undefined) window.CGV = CGView;
       } 
     }
 
-    mergeRanges(range1, range2) {
-      var start, stop, testStart, testStop, rangeLength;
-      var greatestLength = 0;
-      var bounds = [ [range1[0], range1[1]], [range1[0], range2[1]], [range2[0], range1[1]], [range2[0], range2[1]] ];
-      for (var i = 0, len = bounds.length; i < len; i++) {
-        testStart = bounds[i][0];
-        testStop = bounds[i][1];
-        rangeLength = this.lengthOfRange(testStart, testStop)
-        if (rangeLength > greatestLength) {
-          greatestLength = rangeLength;
-          start = testStart;
-          stop = testStop;
-        }
-      }
-      return [start, stop]
-    }
-
+    // mergeRanges(range1, range2) {
+    //   var start, stop, testStart, testStop, rangeLength;
+    //   var greatestLength = 0;
+    //   var bounds = [ [range1[0], range1[1]], [range1[0], range2[1]], [range2[0], range1[1]], [range2[0], range2[1]] ];
+    //   for (var i = 0, len = bounds.length; i < len; i++) {
+    //     testStart = bounds[i][0];
+    //     testStop = bounds[i][1];
+    //     rangeLength = this.lengthOfRange(testStart, testStop)
+    //     if (rangeLength > greatestLength) {
+    //       greatestLength = rangeLength;
+    //       start = testStart;
+    //       stop = testStop;
+    //     }
+    //   }
+    //   return [start, stop]
+    // }
+    //
     refreshLegends() {
       for (var i = 0, len = this._legends.length; i < len; i++) {
         this._legends[i].refresh();

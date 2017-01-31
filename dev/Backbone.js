@@ -171,6 +171,14 @@
     }
 
     /**
+     * The visible range
+     * @member {Range}
+     */
+    get visibleRange() {
+      return this._visibleRange
+    }
+
+    /**
      * The maximum zoom factor to get the correct spacing between basepairs.
      * @return {Number}
      */
@@ -189,11 +197,11 @@
 
     //TODO: Move to new Sequence Class and ACTUALLY get sequence
     // FAKE methods to get sequence
-    _sequenceForRange(start, stop) {
-      var length = this.viewer.lengthOfRange(start, stop);
+    _sequenceForRange(range) {
+      // var length = this.viewer.lengthOfRange(start, stop);
       var seq = [];
-      var bp = start;
-      for (var i = 0, len = length; i < len; i++) {
+      var bp = range.start;
+      for (var i = 0, len = range.length; i < len; i++) {
         switch (bp % 4) {
           case 0:
             seq[i] = 'A';
@@ -216,20 +224,17 @@
       var ctx = this.canvas.ctx;
       var scale = this.canvas.scale;
       var radius = CGV.pixel(this.zoomedRadius);
-      var range = this.canvas.visibleRangeForRadius(radius);
+      var range = this.visibleRange
       if (range) {
-        var start = range[0];
-        var stop = range[1];
-        var seq = this._sequenceForRange(start, stop);
-        var length = this.viewer.lengthOfRange(start, stop);
-        var bp = start;
+        var seq = this._sequenceForRange(range);
+        var bp = range.start;
         ctx.save();
         ctx.fillStyle = this.fontColor.rgbaString;
         ctx.font = this.font.css;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-        for (var i = 0, len = length; i < len; i++) {
+        for (var i = 0, len = range.length; i < len; i++) {
           var origin = this.canvas.pointFor(bp, radius + radiusDiff);
           ctx.fillText(seq[i], origin.x, origin.y);
           var origin = this.canvas.pointFor(bp, radius - radiusDiff);
@@ -242,21 +247,24 @@
     }
 
     draw() {
-      this.viewer.canvas.drawArc(1, this.viewer.sequenceLength, CGV.pixel(this.zoomedRadius), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
-      if (this.pixelsPerBp() > 1) {
-        var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
-        var zoomedThickness = this.zoomedThickness;
-        var addition = this.pixelsPerBp() * 2;
-        if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
-          this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
+      this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
+      if (this.visibleRange) {
+        this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.zoomedRadius), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
+        if (this.pixelsPerBp() > 1) {
+          var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
+          var zoomedThickness = this.zoomedThickness;
+          var addition = this.pixelsPerBp() * 2;
+          if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
+            this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
+          } else {
+            this._bpThicknessAddition = addition;
+          }
+          if (this.pixelsPerBp() >= (this.bpSpacing - this.bpMargin)) {
+            this._drawSequence();
+          }
         } else {
-          this._bpThicknessAddition = addition;
+          this._bpThicknessAddtion = 0
         }
-        if (this.pixelsPerBp() >= (this.bpSpacing - this.bpMargin)) {
-          this._drawSequence();
-        }
-      } else {
-        this._bpThicknessAddtion = 0
       }
     }
 
