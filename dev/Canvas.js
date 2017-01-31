@@ -16,6 +16,7 @@
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
       this.scale = {};
+      this._drawArcsCutoff = 10000;
 
       // Create the viewer canvas
       // NOTE: anything drawn to the canvas must take the pixel ratio into account
@@ -100,6 +101,13 @@
       this._height = height;
     }
 
+    /**
+     * When the zoomFactor is below the cutoff, draw arcs.
+     * When the zoomFactor is above the cutoff, draw lines.
+     */
+    get drawArcsCutoff() {
+      return this._drawArcsCutoff
+    }
 
     /**
      * Clear the viewer canvas
@@ -194,11 +202,14 @@
         //       There is no need to calculate this for each feature
         //       Mmmmm....although the length depends on radius, so we might be able to do this at the slot level????
         // Using width which changes according zoom factor upto a point
-        var arrowHeadLengthPixels = CGV.pixel(width / 4);
+        // var arrowHeadLengthPixels = CGV.pixel(width / 4);
+        var arrowHeadLengthPixels = width / 2;
         // Convert arrowHeadLength (pixels) to Radians:
         //   arrowHeadRadians = ( (Math.PI * 2) / (2 * Math.PI * radius) ) * arrowHeadLength;
         // Subtract Pi/2 to determine radians at 0 point of circle. Then convert to BP.
-        var arrowHeadLengthBp = scale.bp.invert( (arrowHeadLengthPixels / radius) - Math.PI/2 );
+        // var arrowHeadLengthBp = scale.bp.invert( (arrowHeadLengthPixels / radius) - Math.PI/2 );
+        // var arrowHeadLengthBp = arrowHeadLengthPixels / (CGV.pixel( (radius * 2 * Math.PI) / this.viewer.sequenceLength ) );
+        var arrowHeadLengthBp = arrowHeadLengthPixels / ( (radius * 2 * Math.PI) / this.viewer.sequenceLength );
 
         // If arrow head length is longer than feature length, adjust start and stop
         var featureLength = this.viewer.lengthOfRange(start, stop);
@@ -241,7 +252,7 @@
     arcPath(radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
       var ctx = this.ctx;
       var scale = this.scale;
-      if (this.viewer.zoomFactor < 10000) {
+      if (this.viewer.zoomFactor < this.drawArcsCutoff) {
         ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
       } else {
         var p1 = this.pointFor(startBp, radius);

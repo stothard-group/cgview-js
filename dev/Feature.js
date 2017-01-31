@@ -156,21 +156,35 @@
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
-      var start = this.start;
-      var stop = this.stop;
-      // Adjust start and stop at increased zoom level
-      if (this.viewer.zoomFactor > 1000) {
-        if (!(this.start > visibleRange[0] && this.start < visibleRange[1])) {
-          start = visibleRange[0];
+      if (this.range.overlapsRange(visibleRange)) {
+        var start = this.start;
+        var stop = this.stop;
+        var containsStart = visibleRange.contains(start);
+        var containsStop = visibleRange.contains(stop);
+        if (!containsStart) {
+          start = visibleRange.start - 100;
         }
-        if (!(this.stop > visibleRange[0] && this.stop < visibleRange[1])) {
-          stop = visibleRange[1];
+        if (!containsStop) {
+          stop = visibleRange.stop + 100;
+        }
+        // When zoomed in, if the feature starts in the visible range and wraps around to end
+        // in the visible range, the feature should be draw as 2 arcs.
+        if ( (this.viewer.zoomFactor > canvas.drawArcsCutoff) &&
+             (containsStart && containsStop) &&
+             (this.range.overHalfCircle()) ) {
+
+          canvas.drawArc(visibleRange.start - 100, stop,
+            this.adjustedRadius(slotRadius, slotThickness),
+            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+          canvas.drawArc(start, visibleRange.stop + 100,
+            this.adjustedRadius(slotRadius, slotThickness),
+            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+        } else {
+          canvas.drawArc(start, stop,
+            this.adjustedRadius(slotRadius, slotThickness),
+            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         }
       }
-      // canvas.drawArc(this.start, this.stop,
-      canvas.drawArc(start, stop,
-        this.adjustedRadius(slotRadius, slotThickness),
-        this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
     }
 
     // radius by default would be the center of the slot as provided unless:

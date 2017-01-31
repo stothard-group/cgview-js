@@ -192,11 +192,10 @@
      */
     pixelsPerBp() {
       return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.viewer.sequenceLength );
-      // return (this.zoomedRadius * 2 * Math.PI) / this.viewer.sequenceLength;
     }
 
-    //TODO: Move to new Sequence Class and ACTUALLY get sequence
-    // FAKE methods to get sequence
+    // TODO: Move to new Sequence Class and ACTUALLY get sequence
+    // FAKE method to get sequence
     _sequenceForRange(range) {
       // var length = this.viewer.lengthOfRange(start, stop);
       var seq = [];

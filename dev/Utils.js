@@ -202,15 +202,15 @@
     return {x: x, y: y}
   }
 
-  CGV.withinRange = function(bp, start, end) {
-    if (end >= start) {
-      // Typical Range
-      return (bp >= start && bp <= end)
-    } else {
-      // Range spans 0
-      return (bp >= start || bp <= end)
-    }
-  }
+  // CGV.withinRange = function(bp, start, end) {
+  //   if (end >= start) {
+  //     // Typical Range
+  //     return (bp >= start && bp <= end)
+  //   } else {
+  //     // Range spans 0
+  //     return (bp >= start || bp <= end)
+  //   }
+  // }
 
   /**
    * Rounds the number use d3.format.

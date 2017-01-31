@@ -117,7 +117,6 @@
         var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
       }
-      
     }
 
     visibleLabels(radius) {
@@ -126,7 +125,7 @@
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
         for (var i = 0, len = this._labels.length; i < len; i++) {
-          if (CGV.withinRange(this._labels[i].bp, visibleRange[0], visibleRange[1])) {
+          if (visibleRange.contains(this._labels[i].bp)) {
             labelArray.push(this._labels[i]);
           }
         }

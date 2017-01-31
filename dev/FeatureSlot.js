@@ -85,16 +85,13 @@
       return this.viewer.sequenceLength;
     }
 
-    // visibleRanges(canvas, slotRadius, slotThickness) {
-    //   var ranges = canvas.visibleRangesForRadius(slotRadius, slotThickness);
-    //   if (ranges.length == 2) {
-    //     return ranges
-    //   } else if (ranges.length > 2) {
-    //     return [ ranges[0], ranges[ranges.length -1] ]
-    //   } else {
-    //     return undefined
-    //   }
-    // }
+    /**
+     * Get the visible range
+     * @member {Range}
+     */
+    get visibleRange() {
+      return this._visibleRange
+    }
 
     get largestFeatureLength() {
       return this._largestFeatureLength
@@ -112,45 +109,82 @@
     }
 
     draw(canvas, fast, slotRadius, slotThickness) {
-      // var ranges = this.visibleRanges(canvas, slotRadius, slotThickness)
-      var ranges = canvas.visibleRangeForRadius(slotRadius, slotThickness);
-      var start = ranges ? ranges[0] : 1;
-      var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
-      var featureCount = this._features.length;
-      if (this.hasFeatures) {
-        var largestLength = this.largestFeatureLength;
-        // Case where the largest feature should not be subtracted
-        // _____ Visible
-        // ----- Not Visbile
-        // Do no subtract the largest feature so that the start loops around to before the stop
-        // -----Start_____Stop-----
-        // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-        // _____Stop-----Start_____
-        if (ranges &&
-             (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
-             (this.viewer.subtractBp(start, stop) > largestLength) ) {
-          start = this.viewer.subtractBp(start, largestLength);
-          featureCount = this._featureStarts.countFromRange(start, stop);
-        }
-        if (fast && featureCount > 2000) {
-          canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
-        } else {
-          this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-            this._features[i].draw(canvas, slotRadius, slotThickness, [start, stop]);
-          })
-        }
-        if (this.viewer.debug && this.viewer.debug.data.n) {
-          var index = this.viewer._featureSlots.indexOf(this);
-          this.viewer.debug.data.n['slot_' + index] = featureCount;
-        }
-      } else if (this.hasArcPlot) {
-        if (ranges) {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
-        } else {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
+      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+      this._visibleRange = range;
+      if (range) {
+        var start = range.start;
+        var stop = range.stop;
+        if (this.hasFeatures) {
+          var featureCount = this._features.length;
+          var largestLength = this.largestFeatureLength;
+          // Case where the largest feature should not be subtracted
+          // _____ Visible
+          // ----- Not Visbile
+          // Do no subtract the largest feature so that the start loops around to before the stop
+          // -----Start_____Stop-----
+          // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
+          // _____Stop-----Start_____
+          if ( (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
+               (this.viewer.subtractBp(start, stop) > largestLength) ) {
+            // start = this.viewer.subtractBp(start, largestLength);
+            start = range.getStartPlus(-largestLength);
+            featureCount = this._featureStarts.countFromRange(start, stop);
+          }
+          if (fast && featureCount > 2000) {
+            canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+          } else {
+            this._featureStarts.eachFromRange(start, stop, 1, (i) => {
+              this._features[i].draw(canvas, slotRadius, slotThickness, range);
+            })
+          }
+          if (this.viewer.debug && this.viewer.debug.data.n) {
+            var index = this.viewer._featureSlots.indexOf(this);
+            this.viewer.debug.data.n['slot_' + index] = featureCount;
+          }
+        } else if (this.hasArcPlot) {
+          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, range);
         }
       }
     }
+    // draw(canvas, fast, slotRadius, slotThickness) {
+    //   var ranges = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+    //   var start = ranges ? ranges[0] : 1;
+    //   var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
+    //   var featureCount = this._features.length;
+    //   if (this.hasFeatures) {
+    //     var largestLength = this.largestFeatureLength;
+    //     // Case where the largest feature should not be subtracted
+    //     // _____ Visible
+    //     // ----- Not Visbile
+    //     // Do no subtract the largest feature so that the start loops around to before the stop
+    //     // -----Start_____Stop-----
+    //     // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
+    //     // _____Stop-----Start_____
+    //     if (ranges &&
+    //          (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
+    //          (this.viewer.subtractBp(start, stop) > largestLength) ) {
+    //       start = this.viewer.subtractBp(start, largestLength);
+    //       featureCount = this._featureStarts.countFromRange(start, stop);
+    //     }
+    //     if (fast && featureCount > 2000) {
+    //       canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+    //     } else {
+    //       this._featureStarts.eachFromRange(start, stop, 1, (i) => {
+    //         this._features[i].draw(canvas, slotRadius, slotThickness, [start, stop]);
+    //       })
+    //     }
+    //     if (this.viewer.debug && this.viewer.debug.data.n) {
+    //       var index = this.viewer._featureSlots.indexOf(this);
+    //       this.viewer.debug.data.n['slot_' + index] = featureCount;
+    //     }
+    //   } else if (this.hasArcPlot) {
+    //     if (ranges) {
+    //       this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, ranges[0], ranges[1]);
+    //     } else {
+    //       this._arcPlot.draw(canvas, slotRadius, slotThickness, fast);
+    //     }
+    //   }
+    // }
 
   }
 
