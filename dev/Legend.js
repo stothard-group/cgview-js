@@ -260,12 +260,17 @@
             swatchX = this.originX + this.width - this.padding - swatchWidth;
             textX = swatchX - swatchPadding;
           }
-          // Swatch is selected
+          // Swatch border color
           if (legendItem.swatchSelected) {
-            var border = CGV.pixel(2)
             ctx.strokeStyle = 'black';
-            ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
+          } else if (legendItem.swatchHighlighted) {
+            ctx.strokeStyle = 'grey';
+          } else {
+            ctx.strokeStyle = this.backgroundColor.rgbaString;
           }
+          // Draw box around Swatch depending on state
+          var border = CGV.pixel(2)
+          ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
           // Draw Swatch
           ctx.fillStyle = legendItem.swatchColor.rgbaString;
           ctx.fillRect(swatchX, y, swatchWidth, swatchWidth);

@@ -53,6 +53,8 @@
       this.enableDragging(this, this.pickerElement, this.pickerListener());
       this.enableDragging(this, this.alphaElement, this.alphaListener());
       this.enableDragging(this, this.container, this.dialogListener());
+
+      d3.select(this.container).style('visibility', 'hidden');
     }
 
     get color() {

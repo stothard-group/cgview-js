@@ -32,8 +32,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.debug = CGV.defaultFor(options.debug, false);
 
       this._io = new CGV.IO(this);
-
-
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
 
@@ -53,61 +51,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Events
       this.initialize_dragging();
       this.initialize_zooming();
+      this.eventMonitor = new CGV.EventMonitor(this);
 
-      d3.select(this.canvas.canvasNode).on('mousemove', () => {
-        if (this.debug && this.debug.data.position) {
-          var pos = d3.mouse(this.canvas.canvasNode);
-          var mx = this.scale.x.invert(CGV.pixel(pos[0]))
-          var my = this.scale.y.invert(CGV.pixel(pos[1]))
-          // console.log([mx, my]);
-          // console.log(this.canvas.bpForPoint({x: mx, y: my}));
-          this.debug.data.position['xy'] = Math.round(mx) + ', ' + Math.round(my);
-          this.debug.data.position['bp'] = this.canvas.bpForPoint({x: mx, y: my})
-        }
-      });
-
-      d3.select(this.canvas.canvasNode).on('click', () => {
-        console.log('CLICK')
-        var swatchedLegendItems = this.swatchedLegendItems();
-        var pos = d3.mouse(this.canvas.canvasNode);
-        var pt = {x: CGV.pixel(pos[0]), y: CGV.pixel(pos[1])};
-        for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
-          if ( swatchedLegendItems[i]._swatchContainsPoint(pt) ) {
-            var legendItem = swatchedLegendItems[i];
-            console.log('SWATCH')
-            // Clear previous selections
-            for (var j = 0, len = swatchedLegendItems.length; j < len; j++) {
-              swatchedLegendItems[j].swatchSelected = false;
-            }
-            if (this.colorPicker == undefined) {
-              // Add element to contain picker
-              var colorPickerId = this.containerId + '-color-picker';
-              this._container.append('div')
-                .classed('cp-color-picker', true)
-                .attr('id', this.containerId + '-color-picker');
-              // Create Color Picker
-              this.colorPicker = new CGV.ColorPicker(colorPickerId);
-              legendItem.legend.setColorPickerPosition(this.colorPicker);
-            }
-            var cp = this.colorPicker;
-            legendItem.swatchSelected = true;
-            if (!cp.visible) {
-              legendItem.legend.setColorPickerPosition(cp);
-            }
-            cp.onChange = function(color) {
-              legendItem.swatchColor = color.rgbaString;
-              cgv.draw_fast();
-            };
-            cp.onClose = function() {
-              legendItem.swatchSelected = false;
-              cgv.draw_fast();
-            };
-            cp.setColor(legendItem._swatchColor.rgba);
-            cp.open();
-          }
-        }
-
-      });
       // this.full_draw();
     }
 
@@ -241,6 +186,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    get colorPicker() {
+      if (this._colorPicker == undefined) {
+        // Create Color Picker
+        var colorPickerId = this.containerId + '-color-picker';
+        this._container.append('div')
+          .classed('cp-color-picker', true)
+          .attr('id', this.containerId + '-color-picker');
+        this._colorPicker = new CGV.ColorPicker(colorPickerId);
+      }
+      return this._colorPicker
+    }
+
     get debug() {
       return this._debug;
     }
@@ -275,14 +232,25 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Boolean} fast -  After resize, should the viewer be draw redrawn fast.
      */
     resize(width, height, keepAspectRatio=true, fast) {
+      // return
       var canvas = this.canvas;
       this._width = width || this.width;
       this._height = height || this.height;
       // canvas.width = this._width;
       // canvas.height = this._height;
       // canvas.refreshScales();
-      d3.select(canvas.canvasNode).style('width', this._width);
-      d3.select(canvas.canvasNode).style('height', this._height);
+      // d3.select(canvas.canvasNode).style('width', this._width);
+      // d3.select(canvas.canvasNode).style('height', this._height);
+
+      canvas.canvasNode.width = this._width * CGV.pixel_ratio;
+      canvas.canvasNode.height = this._height * CGV.pixel_ratio;
+      canvas.canvasNode.style.width = this._width;
+      canvas.canvasNode.style.height = this._height;
+      canvas.width = this._width;
+      canvas.height = this._height;
+      this.refreshLegends();
+
+
       this.draw();
 
       // this.container

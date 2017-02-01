@@ -84,16 +84,24 @@
       return CGV.pixel(this._width)
     }
 
-    get height() {
-      return CGV.pixel(this._height)
-    }
-
     set width(width) {
       this._width = width;
     }
 
+    get height() {
+      return CGV.pixel(this._height)
+    }
+
     set height(height) {
       this._height = height;
+    }
+
+    get cursor() {
+      return d3.select(this.canvasNode).style('cursor')
+    }
+
+    set cursor(value) {
+      d3.select(this.canvasNode).style('cursor', value);
     }
 
     /**

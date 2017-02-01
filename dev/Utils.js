@@ -63,9 +63,6 @@
   }
 
   CGV.scale_resolution = function(canvas, ratio){
-    // get the canvas and context
-    var context = canvas.getContext('2d');
-
     // upscale the canvas if the two ratios don't match
     if (ratio != 1) {
 
