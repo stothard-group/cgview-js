@@ -125,9 +125,7 @@
     /**
      * @member {Number} - Get the zoomed backbone thickness.
      */
-
     get zoomedThickness() {
-      // return Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius) + this.bpThicknessAddition;
       return Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius) + (this.bpThicknessAddition / CGV.pixel(1));
     }
 

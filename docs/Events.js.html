@@ -808,7 +808,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Font.js.html">Source: Font.js</h1>
+        <h1 class="page-title" data-filename="Events.js.html">Source: Events.js</h1>
         
 
 
@@ -816,227 +816,162 @@
     <section>
         <article>
             <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Font
+// Events
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
   /**
-   * &lt;br />
-   * The *Font* class stores the font internally as a CSS font string but makes it
-   * easy to change individual components of the font. For example, the size can be
-   * changed using the [size]{@link Font#size} method. A font consists of 3 components:
+   * Events is a system to plug in callbacks to specific events in CGV.
+   * Use [on](#on) to add a callback and [off](#off) to remove it.
+   * Here are a list of events supported in CGV:
    *
-   *   Component   | Description
-   *   ------------|---------------
-   *   *family*    | This can be a generic family (e.g. serif, sans-serif, monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
-   *   *style*     | One of *plain*, *bold*, *italic*, or *bold-italic*
-   *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
-   *
+   *  Event               | Description
+   *  --------------------|-------------
+   *  mousemove           | Called when the mouse moves on the map
+   *  drag-start          | Called once before viewer starts drag animation
+   *  drag                | Called every frame of the drag animation
+   *  drag-end            | Called after dragging is complete
+   *  zoom-start          | Called once before viewer starts zoom animation
+   *  zoom                | Called every frame of the zoom animation
+   *  zoom-end            | Called after zooming is complete
+   *  domain-change       | Called after the viewer domains have changed
+   *  selection-add       | Called when an element is added to the selection
+   *  selection-remove    | Called after an element is removed from the selection
+   *  selection-clear     | Called before the selection is cleared
+   *  selection-empty     | Called after the selection becomes empty
+   *  highlight-start     | Called when an element is highlighted
+   *  highlight-end       | Called when an element is unhighlighted
+   *  label-click         | Called when a annotation label is clicked
    */
-  class Font {
+  class Events {
+
+    constructor() {
+      this._handlers = {};
+    }
+
 
     /**
-     * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
+     * Attach a callback function to a specific JSV event.
+     * ```js
+     * sv = new JSV.SpectraViewer('#my-spectra');
+     * sv.on('drag-start', function() { console.log('Dragging has begun!') };
      *
-     * @param {(String|Object)} font - If a string is provided, it must have the following format:
-     *   family,style,size (e.g. 'serif,plain,12'). If an object is provided, it must have a *family*,
-     *   *style* and *size* property (e.g. { family: 'serif', style: 'plain', size: 12 })
+     * // The event can be namespaced for easier removal later
+     * sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
+     * ```
+     * @param {String} event Name of event. Events can be namespaced.
+     * @param {Function} callback Function to call when event is triggered
      */
-    constructor(font) {
-      this._rawFont = font;
+    on(event, callback) {
+      var handlers = this._handlers;
+      checkType(event);
+      var type = parseEvent(event)
+      console.log(type)
+      console.log(handlers)
+      if ( !handlers[type] ) handlers[type] = [];
+      handlers[type].push( new Handler(event, callback) );
     }
 
     /**
-     * Return the class name as a string.
-     * @return {String} - 'Font'
+     * Remove a callback function from a specific JSV event. If no __callback__ is provided,
+     * then all callbacks for the event will be removed. Namespaced events can and should be used 
+     * to avoid unintentionally removing callbacks attached by other plugins.
+     * ```js
+     * // Remove all callbacks attached to the 'drag-start' event.
+     * // This includes any namespaced events.
+     * sv.off('drag-start');
+     *
+     * // Remove all callbacks attached to the 'drag-start' event namespaced to 'my_plugin'
+     * sv.off('drag-start.my_plugin');
+     *
+     * // Remove all callbacks attached to any events namespaced to 'my_plugin'
+     * sv.off('.my_plugin');
+     * ```
+     * @param {String} event Name of event. Events can be namespaced.
+     * @param {Function} callback Specfic function to remove
      */
-    toString() {
-      return 'Font';
-    }
-
-    set _rawFont(font) {
-      if (typeof font === 'string' || font instanceof String) {
-        this.string = font;
-      } else {
-        var keys = new CGV.CGArray(Object.keys(font));
-        if (keys.contains('family') &amp;&amp; keys.contains('style') &amp;&amp; keys.contains('size')) {
-          this.family = font.family;
-          this.style = font.style;
-          this.size = font.size;
+    off(event, callback) {
+      var handlers = this._handlers;
+      checkType(event);
+      var type = parseEvent(event);
+      var namespace = parseNamespace(event);
+      // If no callback is supplied remove all of them
+      if (arguments.length == 1) {
+        if (namespace) {
+          if (type) {
+            handlers[type] = handlers[type].filter(function(h) { return h.namespace != namespace; });
+          } else {
+            Object.keys(handlers).forEach(function(key) {
+              handlers[key] = handlers[key].filter(function(h) { return h.namespace != namespace; });
+            });
+          }
         } else {
-          console.log('Font objects require the following keys: family, style, and size');
+          handlers[type] = undefined;
         }
-      }
-    }
-
-    /**
-     * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'serif,plain,12').
-     */
-    get string() {
-      return this.family + ',' + this.style + ',' + this.size
-    }
-
-    set string(value) {
-      value = value.replace(/ +/g, '');
-      var parts = value.split(',');
-      if (parts.length == 3) {
-        this.family = parts[0];
-        this.style = parts[1];
-        this.size = parts[2];
       } else {
-        console.log('Font must have 3 parts')
-      }
-      this._generateFont();
-    }
-
-    /**
-     * @member {String} - Return the font as CSS usable string. This is also how the font is stored internally for quick access.
-     */
-    get css() {
-      return this._font
-    }
-
-    /**
-     * Return the font as a CSS string with the size first scaled by multiplying by the *scale* factor.
-     * @param {Number} scale - Scale factor.
-     * @return {String} - Return the font as CSS usable string.
-     */
-    cssScaled(scale) {
-      if (scale &amp;&amp; scale != 1) {
-        return this._styleAsCss() + ' ' + (this.size * scale) + 'px ' + this.family;
-      } else {
-        return this.css
+        // Remove specific callback
+        handlers[type] = handlers[type].filter(function(h) { return h.callback != callback; });
       }
     }
 
-
     /**
-     * @member {String} - Get or set the font family. Defaults to *sans-serif*.
-     */
-    get family() {
-      return this._family || 'sans-serif'
-    }
-
-    set family(value) {
-      this._family = value;
-      this._generateFont();
-    }
-
-    /**
-     * @member {Number} - Get or set the font size. The size is stored as a number and is in pixels.
-     * The actual value may be altered when setting it to take into account the pixel
-     * ratio of the screen. Defaults to *12*.
-     */
-    get size() {
-      return this._size || CGV.pixel(12)
-    }
-
-    set size(value) {
-      this._size = CGV.pixel(Number(value));
-      this._generateFont();
-    }
-
-    /**
-     * @member {String} - Get or set the font style. The possible values are *plain*, *bold*, *italic* and
-     * *bold-italic*. Defaults to *plain*.
-     */
-    get style() {
-      return this._style || 'plain'
-    }
-
-    set style(value) {
-      this._style = value;
-      this._generateFont();
-    }
-
-    /**
-     * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
-     */
-    get height() {
-      return this.size
-    }
-
-
-    /**
-     * Measure the width of the supplied *text* using the *context* and the *Font* settings.
+     * Trigger a callback function for a specific event.
+     * ```js
+     * // Triggers all callback functions associated with drag-start
+     * sv.trigger('drag-start');
      *
-     * @param {Context} context - The canvas context to use to measure the width.
-     * @param {String} text - The text to measure.
-     * @return {Number} - The width of the *text* in pixels.
+     * // Triggers can also be namespaced
+     * sv.trigger('drag-start.my_plugin');
+     * ```
+     * @param {String} event Name of event. Events can be namespaced.
+     * @param {Object} object Object to be passed back to 'on'.
      */
-    width(ctx, text) {
-      ctx.font = this.css;
-      return ctx.measureText(text).width
-    }
-
-    _styleAsCss() {
-      if (this.style == 'plain') {
-        return 'normal'
-      } else if (this.style == 'bold') {
-        return 'bold'
-      } else if (this.style == 'italic') {
-        return 'italic'
-      } else if (this.style == 'bold-italic') {
-        return 'italic bold'
-      } else {
-        return ''
+    trigger(event, object) {
+      var handlers = this._handlers;
+      checkType(event);
+      var type = parseEvent(event);
+      var namespace = parseNamespace(event);
+      if (Array.isArray(handlers[type])) {
+        handlers[type].forEach(function(handler) {
+          if (namespace) {
+            if (handler.namespace == namespace) handler.callback.call(null, object);
+          } else {
+            handler.callback.call(null, object);
+          }
+        });
       }
-    }
-
-    _generateFont() {
-      this._font = this._styleAsCss() + ' ' + this.size + 'px ' + this.family;
     }
 
   }
 
-  /**
-   * Calculate the width of multiple *strings* using the supplied *fonts* and *context*.
-   * This method minimizes the number of times the context font is changed to speed up
-   * the calculations
-   * @function calculateWidths
-   * @memberof Font
-   * @static
-   * @param {Context} ctx - The context to use for measurements.
-   * @param {Font[]} fonts - An array of fonts. Must be the same length as *strings*.
-   * @param {String[]} strings - An array of strings. Must be the same length as *fonts*.
-   * @return {Number[]} - An array of widths.
-   */
-  Font.calculateWidths = function(ctx, fonts, strings) {
-    ctx.save();
-    var widths = [];
-    var map = [];
+    /** @ignore */
 
-    for (var i = 0, len = fonts.length; i &lt; len; i++) {
-      map.push({
-        index: i,
-        font: fonts[i],
-        text: strings[i]
-      });
-    }
-
-    map.sort( (a,b) => {
-      return a.font > b.font ? 1 : -1;
-    });
-
-    var currentFont = ''
-    var font;
-    for (var i = 0, len = map.length; i &lt; len; i++) {
-      font = map[i].font;
-      text = map[i].text;
-      if (font != currentFont) {
-        ctx.font = font;
-        currentFont = font;
+    var checkType = function(type) {
+      if (typeof type != 'string') {
+        throw new Error('Type must be a string');
       }
-      // widths[i] = ctx.measureText(text).width;
-      widths[map[i].index] = ctx.measureText(text).width;
     }
-    ctx.restore();
-    return widths
-  }
 
-  CGV.Font = Font;
+    var Handler = function(event, callback) {
+      this.callback = callback;
+      this.event_type = parseEvent(event);
+      this.namespace = parseNamespace(event);
+    }
+
+    var parseEvent = function(event) {
+      return event.replace(/\..*/, '');
+    }
+
+    var parseNamespace = function(event) {
+      result = event.match(/\.(.*)/);
+      return result ? result[1] : undefined
+    }
+
+  CGV.Events = Events;
 
 })(CGView);
+
+
 </code></pre>
         </article>
     </section>

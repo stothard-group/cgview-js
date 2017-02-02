@@ -4,13 +4,13 @@
 (function(CGV) {
 
   /**
-   * Return the _default_value_ if _value_ is undefined
+   * Return the _defaultValue_ if _value_ is undefined
    * @param {Object} value         Returned if it is defined
-   * @param {Object} default_value Returned if _value_ is undefined
+   * @param {Object} defaultValue Returned if _value_ is undefined
    * @return {Object}
    */
-  CGV.defaultFor = function(value, default_value) {
-    return (value === undefined) ? default_value : value;
+  CGV.defaultFor = function(value, defaultValue) {
+    return (value === undefined) ? defaultValue : value;
   }
 
   /**

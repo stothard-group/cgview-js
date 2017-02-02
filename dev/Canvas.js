@@ -72,12 +72,6 @@
       this.scale.y = d3.scaleLinear()
         .domain([this.height * y1, this.height * y2])
         .range([0, this.height]);
-      // this.scale.x = d3.scaleLinear()
-      //   .domain([-this.width/2, this.width/2])
-      //   .range([0, this.width]);
-      // this.scale.y = d3.scaleLinear()
-      //   .domain([this.height/2, -this.height/2])
-      //   .range([0, this.height]);
     }
 
     get width() {

@@ -808,7 +808,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Font.js.html">Source: Font.js</h1>
+        <h1 class="page-title" data-filename="CGRange.js.html">Source: CGRange.js</h1>
         
 
 
@@ -816,227 +816,213 @@
     <section>
         <article>
             <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Font
+// CGRange
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
   /**
-   * &lt;br />
-   * The *Font* class stores the font internally as a CSS font string but makes it
-   * easy to change individual components of the font. For example, the size can be
-   * changed using the [size]{@link Font#size} method. A font consists of 3 components:
-   *
-   *   Component   | Description
-   *   ------------|---------------
-   *   *family*    | This can be a generic family (e.g. serif, sans-serif, monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
-   *   *style*     | One of *plain*, *bold*, *italic*, or *bold-italic*
-   *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
-   *
+   * A CGRange contains a start, stop and sequence length. Because the genomes
+   * are circular the range start can be bigger than the start. This means the start
+   * is before 0 and the stop is after 0.
+   * Ranges are always in a clockise direction.
    */
-  class Font {
+  class CGRange {
 
     /**
-     * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
+     * Create a CGRange
      *
-     * @param {(String|Object)} font - If a string is provided, it must have the following format:
-     *   family,style,size (e.g. 'serif,plain,12'). If an object is provided, it must have a *family*,
-     *   *style* and *size* property (e.g. { family: 'serif', style: 'plain', size: 12 })
+     * @param {Viewer} viewer - The viewer that contains the range. The viewer provided the sequence length
+     * @param {Number} start - The start position.
+     * @param {Number} stop - The stop position.
      */
-    constructor(font) {
-      this._rawFont = font;
+    constructor(viewer, start, stop) {
+      this._viewer = viewer;
+      this.start = start;
+      this.stop = stop;
     }
 
     /**
-     * Return the class name as a string.
-     * @return {String} - 'Font'
+     * @member {Viewer} - Get the viewer.
      */
-    toString() {
-      return 'Font';
+    get viewer() {
+      return this._viewer
     }
 
-    set _rawFont(font) {
-      if (typeof font === 'string' || font instanceof String) {
-        this.string = font;
+    /**
+     * @member {Number} - Get the sequence length
+     */
+    get sequenceLength() {
+      return this.viewer.sequenceLength
+    }
+
+    /**
+     * @member {Number} - Get or set the range start.
+     */
+    get start() {
+      return this._start
+    }
+
+    set start(value) {
+      this._start = value;
+    }
+
+    /**
+     * @member {Number} - Get or set the range stop.
+     */
+    get stop() {
+      return this._stop
+    }
+
+    set stop(value) {
+      this._stop = value;
+    }
+
+    /**
+     * @member {Number} - Get the length of the range.
+     */
+    get length() {
+      if (this.stop >= this.start) {
+        return this.stop - this.start
       } else {
-        var keys = new CGV.CGArray(Object.keys(font));
-        if (keys.contains('family') &amp;&amp; keys.contains('style') &amp;&amp; keys.contains('size')) {
-          this.family = font.family;
-          this.style = font.style;
-          this.size = font.size;
-        } else {
-          console.log('Font objects require the following keys: family, style, and size');
+        return this.sequenceLength + (this.stop - this.start)
+      } 
+    }
+
+    /**
+     * @member {Number} - Get the middle of the range.
+     */
+    get middle() {
+      var _middle = this.start + (this.length / 2);
+      if (_middle > this.sequenceLength) {
+        return (_middle - this.sequenceLength)
+      } else {
+        return _middle
+      }
+    }
+
+    /**
+     * Return true if the range length is over half the length of the
+     * sequence length
+     * @return {Boolean}
+     */
+    overHalfCircle() {
+      return this.length > (this.sequenceLength / 2)
+    }
+
+    /**
+     * Convert the *value* to be between the 1 and the sequence length.
+     * @param {Number} value - The number to normalize.
+     * @return {Number}
+     */
+    normalize(value) {
+      var rotations;
+      if (value > this.sequenceLength) {
+        rotations = Math.floor(value / this.sequenceLength);
+        return (value - (this.sequenceLength * rotations) )
+      } else if (value &lt; 1) {
+        rotations = Math.ceil(Math.abs(value / this.sequenceLength));
+        return (this.sequenceLength * rotations) + value
+      } else {
+        return value
+      }
+    }
+
+    /**
+     * Return the *start* of the range plus the *value*.
+     * @param {Number} - Number to add.
+     * @return {Number}
+     */
+     getStartPlus(value) {
+       return this.normalize(this.start + value)
+    }
+
+    /**
+     * Return the *stop* of the range plus the *value*.
+     * @param {Number} - Number to add.
+     * @return {Number}
+     */
+     getStopPlus(value) {
+       return this.normalize(this.stop + value)
+    }
+
+    /**
+     * Return true if the range length is the same as the sequence length
+     * @return {Boolean}
+     */
+    isFullCircle() {
+      return (this.length == this.sequenceLength)
+    }
+
+    /**
+     * Return true if the range spans the origin (ie. the stop is less than the start position)
+     * @return {Boolean}
+     */
+    spansOrigin() {
+      return (this.stop &lt; this.start)
+    }
+
+    /**
+     * Return true if the *position* in inside the range.
+     * @param {Number} position - The position to check if it's in the range.
+     * @return {Boolean}
+     */
+    contains(position) {
+      if (this.stop >= this.start) {
+        // Typical Range
+        return (position >= this.start &amp;&amp; position &lt;= this.stop)
+      } else {
+        // Range spans origin
+        return (position >= this.start || position &lt;= this.stop)
+      }
+    }
+
+    /**
+     * Returns a copy of the Range.
+     * @return {Range}
+     */
+    copy() {
+      return new CGV.CGRange(this.viewer, this.start, this.stop)
+    }
+
+    /**
+     * Returns true if the range overlaps with *range2*.
+     * @param {Range} range2 - The range with which to test overlap.
+     * @return {Boolwan}
+     */
+    overlapsRange(range2) {
+      return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start))
+    }
+
+    /**
+     * Merge the with the supplied range to give the biggest possible range.
+     * This may produce unexpected results of the ranges do not overlap.
+     * @param {Range} range2 - The range to merge with.
+     * @return {Range}
+     */
+    mergeWithRange(range2) {
+      var range1 = this;
+      var range3 = new CGV.CGRange(this.viewer, range1.start, range2.stop);
+      var range4 = new CGV.CGRange(this.viewer, range2.start, range1.stop);
+      var ranges = [range1, range2, range3, range4];
+      var greatestLength = 0;
+      var rangeLength, longestRange;
+      for (var i = 0, len = ranges.length; i &lt; len; i++) {
+        rangeLength = ranges[i].length;
+        if (rangeLength > greatestLength) {
+          greatestLength = rangeLength;
+          longestRange = ranges[i];
         }
       }
-    }
-
-    /**
-     * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'serif,plain,12').
-     */
-    get string() {
-      return this.family + ',' + this.style + ',' + this.size
-    }
-
-    set string(value) {
-      value = value.replace(/ +/g, '');
-      var parts = value.split(',');
-      if (parts.length == 3) {
-        this.family = parts[0];
-        this.style = parts[1];
-        this.size = parts[2];
-      } else {
-        console.log('Font must have 3 parts')
-      }
-      this._generateFont();
-    }
-
-    /**
-     * @member {String} - Return the font as CSS usable string. This is also how the font is stored internally for quick access.
-     */
-    get css() {
-      return this._font
-    }
-
-    /**
-     * Return the font as a CSS string with the size first scaled by multiplying by the *scale* factor.
-     * @param {Number} scale - Scale factor.
-     * @return {String} - Return the font as CSS usable string.
-     */
-    cssScaled(scale) {
-      if (scale &amp;&amp; scale != 1) {
-        return this._styleAsCss() + ' ' + (this.size * scale) + 'px ' + this.family;
-      } else {
-        return this.css
-      }
-    }
-
-
-    /**
-     * @member {String} - Get or set the font family. Defaults to *sans-serif*.
-     */
-    get family() {
-      return this._family || 'sans-serif'
-    }
-
-    set family(value) {
-      this._family = value;
-      this._generateFont();
-    }
-
-    /**
-     * @member {Number} - Get or set the font size. The size is stored as a number and is in pixels.
-     * The actual value may be altered when setting it to take into account the pixel
-     * ratio of the screen. Defaults to *12*.
-     */
-    get size() {
-      return this._size || CGV.pixel(12)
-    }
-
-    set size(value) {
-      this._size = CGV.pixel(Number(value));
-      this._generateFont();
-    }
-
-    /**
-     * @member {String} - Get or set the font style. The possible values are *plain*, *bold*, *italic* and
-     * *bold-italic*. Defaults to *plain*.
-     */
-    get style() {
-      return this._style || 'plain'
-    }
-
-    set style(value) {
-      this._style = value;
-      this._generateFont();
-    }
-
-    /**
-     * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
-     */
-    get height() {
-      return this.size
-    }
-
-
-    /**
-     * Measure the width of the supplied *text* using the *context* and the *Font* settings.
-     *
-     * @param {Context} context - The canvas context to use to measure the width.
-     * @param {String} text - The text to measure.
-     * @return {Number} - The width of the *text* in pixels.
-     */
-    width(ctx, text) {
-      ctx.font = this.css;
-      return ctx.measureText(text).width
-    }
-
-    _styleAsCss() {
-      if (this.style == 'plain') {
-        return 'normal'
-      } else if (this.style == 'bold') {
-        return 'bold'
-      } else if (this.style == 'italic') {
-        return 'italic'
-      } else if (this.style == 'bold-italic') {
-        return 'italic bold'
-      } else {
-        return ''
-      }
-    }
-
-    _generateFont() {
-      this._font = this._styleAsCss() + ' ' + this.size + 'px ' + this.family;
+      return longestRange
     }
 
   }
 
-  /**
-   * Calculate the width of multiple *strings* using the supplied *fonts* and *context*.
-   * This method minimizes the number of times the context font is changed to speed up
-   * the calculations
-   * @function calculateWidths
-   * @memberof Font
-   * @static
-   * @param {Context} ctx - The context to use for measurements.
-   * @param {Font[]} fonts - An array of fonts. Must be the same length as *strings*.
-   * @param {String[]} strings - An array of strings. Must be the same length as *fonts*.
-   * @return {Number[]} - An array of widths.
-   */
-  Font.calculateWidths = function(ctx, fonts, strings) {
-    ctx.save();
-    var widths = [];
-    var map = [];
-
-    for (var i = 0, len = fonts.length; i &lt; len; i++) {
-      map.push({
-        index: i,
-        font: fonts[i],
-        text: strings[i]
-      });
-    }
-
-    map.sort( (a,b) => {
-      return a.font > b.font ? 1 : -1;
-    });
-
-    var currentFont = ''
-    var font;
-    for (var i = 0, len = map.length; i &lt; len; i++) {
-      font = map[i].font;
-      text = map[i].text;
-      if (font != currentFont) {
-        ctx.font = font;
-        currentFont = font;
-      }
-      // widths[i] = ctx.measureText(text).width;
-      widths[map[i].index] = ctx.measureText(text).width;
-    }
-    ctx.restore();
-    return widths
-  }
-
-  CGV.Font = Font;
+  CGV.CGRange = CGRange;
 
 })(CGView);
+
+
 </code></pre>
         </article>
     </section>

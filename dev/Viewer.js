@@ -75,8 +75,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set width(value) {
-      // TODO: update canvas
-      // USE RESIZE
+      this.resize(value);
     }
 
     /**
@@ -87,8 +86,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set height(value) {
-      // TODO: update canvas
-      // USE RESIZE
+      this.resize(null, value);
     }
 
     /**
@@ -186,6 +184,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * Get or set the max slot thickness.
+     */
+    get maxSlotThickness() {
+      return this._maxSlotThickness;
+    }
+
+    set maxSlotThickness(value) {
+      this._maxSlotThickness = value;
+    }
+
     get colorPicker() {
       if (this._colorPicker == undefined) {
         // Create Color Picker
@@ -215,6 +224,27 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * This test method reduces the canvas width and height so
+     * you can see how the features are reduced (not drawn) as
+     * you move the map out of the visible range.
+     */
+    get _testDrawRange() {
+      return this.__testDrawRange;
+    }
+
+    set _testDrawRange(value) {
+      this.__testDrawRange = value;
+      if (value) {
+        this.canvas.width = this.canvas.width * 0.4;
+        this.canvas.height = this.canvas.height * 0.4;
+      } else {
+        this.canvas.width = this.canvas.width / 0.4;
+        this.canvas.height = this.canvas.height / 0.4;
+      }
+      this.draw_full();
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // METHODS
     //////////////////////////////////////////////////////////////////////////
@@ -228,19 +258,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      *
      * @param {Number} width - New width
      * @param {Number} height - New height
-     * @param {Boolean} keepAspectRatio - If only one of width/height is given the ratio will remain the same.
+     * @param {Boolean} keepAspectRatio - If only one of width/height is given the ratio will remain the same. (NOT IMPLEMENTED YET)
      * @param {Boolean} fast -  After resize, should the viewer be draw redrawn fast.
      */
     resize(width, height, keepAspectRatio=true, fast) {
-      // return
       var canvas = this.canvas;
       this._width = width || this.width;
       this._height = height || this.height;
-      // canvas.width = this._width;
-      // canvas.height = this._height;
-      // canvas.refreshScales();
-      // d3.select(canvas.canvasNode).style('width', this._width);
-      // d3.select(canvas.canvasNode).style('height', this._height);
 
       canvas.canvasNode.width = this._width * CGV.pixel_ratio;
       canvas.canvasNode.height = this._height * CGV.pixel_ratio;
@@ -249,28 +273,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       canvas.width = this._width;
       canvas.height = this._height;
       this.refreshLegends();
-
-
-      this.draw();
-
-      // this.container
-      //   .style('width', this.width + 'px');
-      // d3.select(this.canvas)
-      //   .attr('width', this.width)
-      //   .attr('height', this.height);
-      // this.font = this.adjust_font();
-      // this.axis_title_font = this.adjust_font(1, undefined, 'bold');
-      // this.scaled_height = JSV.pixel(this.height - this.axis_x_gutter);
-      // this.scaled_width  = JSV.pixel(this.width - this.axis_y_gutter);
-      // this.scale.y.range([this.scaled_height, 0]);
-      // this.boundary.y.range([this.scaled_height, 0]);
-      // this.scale.x.range(this.x_range());
-      // this.boundary.x.range(this.x_range());
-      // this.svg.attr('width', this.width).attr('height', this.height);
-      // JSV.scale_resolution(this.canvas, JSV.pixel_ratio);
+      this.canvas.refreshScales();
 
       this.draw(fast);
     }
+
 
     /**
      * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the FeatureSlots in the viewer.
@@ -333,7 +340,21 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Number}
      */
     maxZoomedRadius() {
-      return this.minDimension * 1.4; // TODO: need to add up all proportions
+      // return this.minDimension * 1.4; // TODO: need to add up all proportions
+      return this.minDimension * 1; // TODO: need to add up all proportions
+    }
+
+
+    /**
+     * Slot thickness is based on a proportion of the backbone radius.
+     * As the viewer is zoomed the slot radius increases until
+     *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
+     *    Therefore the we should always be able to see all the slots in the viewer
+     *  - The slot thickness is greater than the maximum allowed slot thickness (if it's defined)
+     */
+    _calculateSlotThickness(proportionOfRadius) {
+      var thickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, this.maxZoomedRadius()) * proportionOfRadius);
+      return (this.maxSlotThickness ? Math.min(thickness, CGV.pixel(this.maxSlotThickness)) : thickness)
     }
 
     draw_full() {
@@ -352,8 +373,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
       var spacing = CGV.pixel(this.featureSlotSpacing);
-      var maxRadius = this.maxZoomedRadius();
-
       var visibleRadii = this.canvas.visibleRadii();
 
       // All Text should have base line top
@@ -369,7 +388,8 @@ if (window.CGV === undefined) window.CGV = CGView;
         var slot = this._featureSlots[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
-        var slotThickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, maxRadius) * slot.proportionOfRadius);
+        var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+
         if (slot.isDirect()) {
           directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
           slotRadius = directRadius;
@@ -399,6 +419,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (this.debug) {
         this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
         this.debug.draw(this.ctx);
+      }
+
+      if (this._testDrawRange) {
+        this.ctx.strokeStyle = 'grey';
+        this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.stroke();
       }
     }
 
