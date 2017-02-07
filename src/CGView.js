@@ -23,7 +23,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-      this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
 
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
@@ -35,6 +34,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
 
+      // Initialize Sequence
+      this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Menu
@@ -162,23 +163,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get ctx() {
       return this.canvas.ctx
-    }
-
-    /**
-     * Get or set the sequence length
-     */
-    get sequenceLength() {
-      return this._sequenceLength;
-    }
-
-    set sequenceLength(bp) {
-      if (bp) {
-        this._sequenceLength = Number(bp);
-        this.canvas.scale.bp = d3.scaleLinear()
-          .domain([1, this._sequenceLength])
-          .range([-1/2*Math.PI, 3/2*Math.PI]);
-        this._updateZoomMax();
-      }
     }
 
     /**
@@ -431,31 +415,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   featureSlot._viewer = this;
     // }
 
-    /**
-     * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
-     * @param {Number} position - position (in bp) to subtract from
-     * @param {Number} bpToSubtract - number of bp to subtract
-     */
-    subtractBp(position, bpToSubtract) {
-      if (bpToSubtract <= position) {
-        return position - bpToSubtract
-      } else {
-        return this.sequenceLength + position - bpToSubtract
-      }
-    }
-
-    /**
-     * Add *bpToAdd* to *position*, taking into account the sequenceLength
-     * @param {Number} position - position (in bp) to add to
-     * @param {Number} bpToAdd - number of bp to add
-     */
-    addBp(position, bpToAdd) {
-      if (this.sequenceLength >= (bpToAdd + position)) {
-        return bpToAdd + position
-      } else {
-        return position - this.sequenceLength + bpToAdd
-      }
-    }
 
 
     // Get mouse position in the 'container' taking into account the pixel ratio
@@ -466,31 +425,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
     // }
 
-    lengthOfRange(start, stop) {
-      if (stop >= start) {
-        return stop - start
-      } else {
-        return this.sequenceLength + (stop - start)
-      } 
-    }
 
-    // mergeRanges(range1, range2) {
-    //   var start, stop, testStart, testStop, rangeLength;
-    //   var greatestLength = 0;
-    //   var bounds = [ [range1[0], range1[1]], [range1[0], range2[1]], [range2[0], range1[1]], [range2[0], range2[1]] ];
-    //   for (var i = 0, len = bounds.length; i < len; i++) {
-    //     testStart = bounds[i][0];
-    //     testStop = bounds[i][1];
-    //     rangeLength = this.lengthOfRange(testStart, testStop)
-    //     if (rangeLength > greatestLength) {
-    //       greatestLength = rangeLength;
-    //       start = testStart;
-    //       stop = testStop;
-    //     }
-    //   }
-    //   return [start, stop]
-    // }
-    //
     refreshLegends() {
       for (var i = 0, len = this._legends.length; i < len; i++) {
         this._legends[i].refresh();
@@ -1196,15 +1131,57 @@ if (window.CGV === undefined) window.CGV = CGView;
      * Create a Sequence
      *
      * @param {Viewer} viewer - The viewer that contains the backbone
-     * @param {Object} options - Options and stuff
+     * @param {Object} options - Options and stuff [MUST PROVIDE SEQUENCE OR LENGTH]
      */
     constructor(viewer, options = {}) {
       this._viewer = viewer;
+      this.color = CGV.defaultFor(options.color, 'black');
+      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
+      this.seq = options.seq;
+      if (!this.seq) {
+        this.length = options.length;
+      }
+      if (!this.length) {
+        this.length = 1000;
+        // throw('Sequence invalid. The seq or length must be provided.')
+      }
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    // STATIC CLASSS METHODS
+    //////////////////////////////////////////////////////////////////////////
+    // TODO: Take into account lower case letters
+    static complement(seq) {
+      var compSeq = ''
+      var char, compChar;
+      for (var i = 0, len = seq.length; i < len; i++) {
+        char = seq.charAt(i);
+        switch (char) {
+          case 'A':
+            compChar = 'T';
+            break;
+          case 'T':
+            compChar = 'A';
+            break;
+          case 'G':
+            compChar = 'C';
+            break;
+          case 'C':
+            compChar = 'G';
+        }
+        compSeq = compSeq + compChar;
+      }
+      return compSeq
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // MEMBERS
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * @member {Viewer} - Get the viewer.
      */
+
     get viewer() {
       return this._viewer
     }
@@ -1214,6 +1191,46 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get canvas() {
       return this.viewer.canvas
+    }
+
+    /**
+     * @member {String} - Get or set the seqeunce.
+     */
+    get seq() {
+      return this._seq
+    }
+
+    set seq(value) {
+      this._seq = value;
+      if (this._seq) {
+        this._seq = this._seq.toUpperCase();
+        this._length = value.length;
+        this._updateScale();
+      }
+    }
+
+    /**
+     * @member {Number} - Get or set the seqeunce length. If the *seq* property is set, the length can not be adjusted.
+     */
+    get length() {
+      return this._length
+    }
+
+    _updateScale() {
+      this.canvas.scale.bp = d3.scaleLinear()
+        .domain([1, this.length])
+        .range([-1/2*Math.PI, 3/2*Math.PI]);
+      this.viewer._updateZoomMax();
+    }
+    set length(value) {
+      if (value) {
+        if (!this.seq) {
+          this._length = Number(value);
+          this._updateScale();
+        } else {
+          console.error('Can not change the sequence length of *seq* is set.');
+        }
+      }
     }
 
     /**
@@ -1247,34 +1264,64 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.bpSpacing = this.font.size;
     }
 
-    // /**
-    //  * @member {Number} - Get or set the basepair spacing.
-    //  */
-    // get bpSpacing() {
-    //   return this._bpSpacing
-    // }
-    //
-    // set bpSpacing(value) {
-    //   this._bpSpacing = value;
-    //   this.viewer._updateZoomMax();
-    // }
-    //
-    // /**
-    //  * @member {Number} - Get or set the margin around sequence letters.
-    //  */
-    // get bpMargin() {
-    //   return this._bpMargin
-    // }
-    //
-    // set bpMargin(value) {
-    //   // this._bpMargin = CGV.pixel(value);
-    //   this._bpMargin = value;
-    // }
+    lengthOfRange(start, stop) {
+      if (stop >= start) {
+        return stop - start
+      } else {
+        return this.length + (stop - start)
+      }
+    }
 
-    // TODO: Move to new Sequence Class and ACTUALLY get sequence
+    /**
+     * Subtract *bpToSubtract* from *position*, taking into account the sequence length
+     * @param {Number} position - position (in bp) to subtract from
+     * @param {Number} bpToSubtract - number of bp to subtract
+     */
+    subtractBp(position, bpToSubtract) {
+      if (bpToSubtract <= position) {
+        return position - bpToSubtract
+      } else {
+        return this.length + position - bpToSubtract
+      }
+    }
+
+    /**
+     * Add *bpToAdd* to *position*, taking into account the sequence length
+     * @param {Number} position - position (in bp) to add to
+     * @param {Number} bpToAdd - number of bp to add
+     */
+    addBp(position, bpToAdd) {
+      if (this.length >= (bpToAdd + position)) {
+        return bpToAdd + position
+      } else {
+        return position - this.length + bpToAdd
+      }
+    }
+
+    /**
+     * Return the sequence for the *range*
+     * 
+     * @param {Range} range - the range for which to return the sequence
+     * @param {Boolean} complement - If true return the complement sequence
+     * @return {String}
+     */
+    forRange(range) {
+      var seq;
+      if (this.seq) {
+        if (range.spansOrigin()) {
+          seq = this.seq.substr(range.start) + this.seq.substr(0, range.stop);
+        } else {
+          seq = this.seq.substr(range.start - 1, range.length);
+        }
+      } else {
+        // FIXME: For now return fake sequence
+        seq = this._fakeSequenceForRange(range);
+      }
+      return seq
+    }
+
     // FAKE method to get sequence
-    _sequenceForRange(range) {
-      // var length = this.viewer.lengthOfRange(start, stop);
+    _fakeSequenceForRange(range) {
       var seq = [];
       var bp = range.start;
       for (var i = 0, len = range.length; i < len; i++) {
@@ -1365,8 +1412,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * The *Ruler* controls and draws the sequence ruler in bp.
      */
     constructor(viewer, options = {}) {
-      this.viewer = viewer;
-      this.canvas = viewer.canvas;
+      this._viewer = viewer;
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
@@ -1374,6 +1420,26 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
     }
 
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Canvas} - Get the canvas.
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
     get font() {
       return this._font
     }
@@ -1476,7 +1542,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     // Above the zoomFactorCutoff, ticks are created for the visible range
     _updateTicks(innerRadius, outerRadius) {
       var zoomFactorCutoff = 5;
-      var sequenceLength = this.viewer.sequenceLength;
+      var sequenceLength = this.sequence.length;
       var start = 0;
       var stop = 0;
       var majorTicks = new CGV.CGArray();
@@ -1513,7 +1579,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else if (stop < start) {
         // Ratio of the sequence length before 0 to sequence length after zero
         // The number of ticks will for each region will depend on this ratio
-        var tickCountRatio = (sequenceLength - start) / this.viewer.lengthOfRange(start, stop);
+        var tickCountRatio = (sequenceLength - start) / this.sequence.lengthOfRange(start, stop);
         var ticksBeforeZero = Math.round(tickCount * tickCountRatio);
         var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
         if (ticksBeforeZero > 0) {
@@ -1540,7 +1606,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         minorTickStep = 0;
       }
       if (minorTickStep) {
-        if (this.viewer.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) <= 3*majorTickStep) {
+        if (this.sequence.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) <= 3*majorTickStep) {
           start = 0;
           stop = sequenceLength;
         } else {
@@ -3748,7 +3814,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       var scaleFacter = jsonMinDimension / viewerMinDimension;
 
       // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength);
+      if (json.sequence) {
+        viewer.sequence.seq = json.sequence.seq;
+      } else {
+        viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
+      }
       viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
       viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
       viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
@@ -4249,6 +4319,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
+
+    /**
      * @member {Viewer} - Get or set the slot size with is measured as a 
      * proportion of the backbone radius.
      */
@@ -4300,7 +4377,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Number}
      */
     pixelsPerBp() {
-      return (this.radius * 2 * Math.PI) / this.viewer.sequenceLength;
+      return (this.radius * 2 * Math.PI) / this.sequence.length;
     }
 
     // Refresh needs to be called when new features are added, etc
@@ -4360,14 +4437,13 @@ if (window.CGV === undefined) window.CGV = CGView;
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
-               (this.viewer.subtractBp(start, stop) > largestLength) ) {
-            // start = this.viewer.subtractBp(start, largestLength);
+          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
+               (this.sequence.subtractBp(start, stop) > largestLength) ) {
             start = range.getStartPlus(-largestLength);
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
           if (fast && featureCount > 2000) {
-            canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+            canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
           } else {
             this._featureStarts.eachFromRange(start, stop, 1, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);
@@ -4404,7 +4480,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // this._opacity = data.opacity;
       this._color = new CGV.Color(data.color);
       this.opacity = parseFloat(data.opacity);
-      this.range = new CGV.CGRange(this.viewer, Number(data.start), Number(data.stop));
+      this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       // this.start = Number(data.start);
       // this.stop = Number(data.stop);
       this.label = new CGV.Label(this, {name: data.label} );
@@ -4477,7 +4553,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     get length() {
-      // return this.viewer.lengthOfRange(this.start, this.stop)
       return this.range.length
     }
 
@@ -4651,8 +4726,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       var handlers = this._handlers;
       checkType(event);
       var type = parseEvent(event)
-      console.log(type)
-      console.log(handlers)
       if ( !handlers[type] ) handlers[type] = [];
       handlers[type].push( new Handler(event, callback) );
     }
@@ -6125,7 +6198,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
     constructor(viewer, container, options = {}) {
-      this.viewer = viewer;
+      this._viewer = viewer;
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
       this.scale = {};
@@ -6154,6 +6227,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ctx = this.canvasNode.getContext('2d');
       this.refreshScales();
 
+    }
+
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
     }
 
     //TODO: move to setter for width and height
@@ -6290,7 +6377,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
-        var featureLength = this.viewer.lengthOfRange(start, stop);
+        var featureLength = this.sequence.lengthOfRange(start, stop);
         if ( featureLength < arrowHeadLengthBp ) {
           var middleBP = start + ( featureLength / 2 );
           start = middleBP - arrowHeadLengthBp / 2;
@@ -6392,17 +6479,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       var ranges = this.visibleRangesForRadius(radius, margin);
       if (ranges.length == 2) {
         // return ranges
-        return new CGV.CGRange(this.viewer, ranges[0], ranges[1])
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[1])
       } else if (ranges.length > 2) {
         // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.viewer, ranges[0], ranges[ranges.length -1])
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length -1])
       } else if ( (radius - margin) > this.maximumVisibleRadius() ) {
         return undefined
       } else if ( (radius + margin) < this.minimumVisibleRadius() ) {
         return undefined
       } else {
-        // return [1, this.viewer.sequenceLength]
-        return new CGV.CGRange(this.viewer, 1, this.viewer.sequenceLength)
+        return new CGV.CGRange(this.sequence, 1, this.sequence.length)
       }
       // } else {
       //   return undefined
@@ -6456,7 +6542,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     pixelsPerBp(radius) {
-      return ( (radius * 2 * Math.PI) / this.viewer.sequenceLength );
+      return ( (radius * 2 * Math.PI) / this.sequence.length );
     }
 
   }
@@ -6480,28 +6566,28 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Create a CGRange
      *
-     * @param {Viewer} viewer - The viewer that contains the range. The viewer provided the sequence length
+     * @param {Sequence} sequence - The sequence that contains the range. The sequence provides the sequence length
      * @param {Number} start - The start position.
      * @param {Number} stop - The stop position.
      */
-    constructor(viewer, start, stop) {
-      this._viewer = viewer;
+    constructor(sequence, start, stop) {
+      this._sequence = sequence;
       this.start = start;
       this.stop = stop;
     }
 
     /**
-     * @member {Viewer} - Get the viewer.
+     * @member {Sequence} - Get the sequence.
      */
-    get viewer() {
-      return this._viewer
+    get sequence() {
+      return this._sequence
     }
 
     /**
      * @member {Number} - Get the sequence length
      */
     get sequenceLength() {
-      return this.viewer.sequenceLength
+      return this.sequence.length
     }
 
     /**
@@ -6630,7 +6716,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Range}
      */
     copy() {
-      return new CGV.CGRange(this.viewer, this.start, this.stop)
+      return new CGV.CGRange(this.sequence, this.start, this.stop)
     }
 
     /**
@@ -6650,8 +6736,8 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     mergeWithRange(range2) {
       var range1 = this;
-      var range3 = new CGV.CGRange(this.viewer, range1.start, range2.stop);
-      var range4 = new CGV.CGRange(this.viewer, range2.start, range1.stop);
+      var range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
+      var range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
       var ranges = [range1, range2, range3, range4];
       var greatestLength = 0;
       var rangeLength, longestRange;
@@ -7036,6 +7122,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
+
+    /**
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
@@ -7174,7 +7267,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Number}
      */
     maxZoomFactor() {
-      return (this.viewer.sequenceLength * this.bpSpacing) / (2 * Math.PI * this.radius);
+      return (this.sequence.length * this.bpSpacing) / (2 * Math.PI * this.radius);
     }
 
     /**
@@ -7182,32 +7275,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Number}
      */
     pixelsPerBp() {
-      return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.viewer.sequenceLength );
-    }
-
-    // TODO: Move to new Sequence Class and ACTUALLY get sequence
-    // FAKE method to get sequence
-    _sequenceForRange(range) {
-      // var length = this.viewer.lengthOfRange(start, stop);
-      var seq = [];
-      var bp = range.start;
-      for (var i = 0, len = range.length; i < len; i++) {
-        switch (bp % 4) {
-          case 0:
-            seq[i] = 'A';
-            break;
-          case 1:
-            seq[i] = 'T';
-            break;
-          case 2:
-            seq[i] = 'G';
-            break;
-          case 3:
-            seq[i] = 'C';
-        }
-        bp++;
-      }
-      return seq
+      return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
     }
 
     _drawSequence() {
@@ -7216,7 +7284,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       var radius = CGV.pixel(this.zoomedRadius);
       var range = this.visibleRange
       if (range) {
-        var seq = this._sequenceForRange(range);
+        var seq = this.sequence.forRange(range);
+        var complement = CGV.Sequence.complement(seq);
         var bp = range.start;
         ctx.save();
         ctx.fillStyle = this.fontColor.rgbaString;
@@ -7228,7 +7297,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           var origin = this.canvas.pointFor(bp, radius + radiusDiff);
           ctx.fillText(seq[i], origin.x, origin.y);
           var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
+          ctx.fillText(complement[i], origin.x, origin.y);
           bp++;
         }
         ctx.restore();

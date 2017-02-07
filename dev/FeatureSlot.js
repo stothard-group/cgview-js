@@ -44,6 +44,13 @@
     }
 
     /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
+
+    /**
      * @member {Viewer} - Get or set the slot size with is measured as a 
      * proportion of the backbone radius.
      */
@@ -95,7 +102,7 @@
      * @return {Number}
      */
     pixelsPerBp() {
-      return (this.radius * 2 * Math.PI) / this.viewer.sequenceLength;
+      return (this.radius * 2 * Math.PI) / this.sequence.length;
     }
 
     // Refresh needs to be called when new features are added, etc
@@ -155,14 +162,13 @@
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.viewer.sequenceLength - Math.abs(start - stop))) &&
-               (this.viewer.subtractBp(start, stop) > largestLength) ) {
-            // start = this.viewer.subtractBp(start, largestLength);
+          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
+               (this.sequence.subtractBp(start, stop) > largestLength) ) {
             start = range.getStartPlus(-largestLength);
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
           if (fast && featureCount > 2000) {
-            canvas.drawArc(1, this.viewer.sequenceLength, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+            canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
           } else {
             this._featureStarts.eachFromRange(start, stop, 1, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);

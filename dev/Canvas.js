@@ -12,7 +12,7 @@
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
     constructor(viewer, container, options = {}) {
-      this.viewer = viewer;
+      this._viewer = viewer;
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
       this.scale = {};
@@ -41,6 +41,20 @@
       this.ctx = this.canvasNode.getContext('2d');
       this.refreshScales();
 
+    }
+
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
     }
 
     //TODO: move to setter for width and height
@@ -177,7 +191,7 @@
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
-        var featureLength = this.viewer.lengthOfRange(start, stop);
+        var featureLength = this.sequence.lengthOfRange(start, stop);
         if ( featureLength < arrowHeadLengthBp ) {
           var middleBP = start + ( featureLength / 2 );
           start = middleBP - arrowHeadLengthBp / 2;
@@ -279,17 +293,16 @@
       var ranges = this.visibleRangesForRadius(radius, margin);
       if (ranges.length == 2) {
         // return ranges
-        return new CGV.CGRange(this.viewer, ranges[0], ranges[1])
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[1])
       } else if (ranges.length > 2) {
         // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.viewer, ranges[0], ranges[ranges.length -1])
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length -1])
       } else if ( (radius - margin) > this.maximumVisibleRadius() ) {
         return undefined
       } else if ( (radius + margin) < this.minimumVisibleRadius() ) {
         return undefined
       } else {
-        // return [1, this.viewer.sequenceLength]
-        return new CGV.CGRange(this.viewer, 1, this.viewer.sequenceLength)
+        return new CGV.CGRange(this.sequence, 1, this.sequence.length)
       }
       // } else {
       //   return undefined
@@ -343,7 +356,7 @@
     }
 
     pixelsPerBp(radius) {
-      return ( (radius * 2 * Math.PI) / this.viewer.sequenceLength );
+      return ( (radius * 2 * Math.PI) / this.sequence.length );
     }
 
   }

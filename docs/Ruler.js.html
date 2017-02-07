@@ -97,6 +97,8 @@
             
                 <li data-name="Backbone#radius"><a href="Backbone.html#radius">radius</a></li>
             
+                <li data-name="Backbone#sequence"><a href="Backbone.html#sequence">sequence</a></li>
+            
                 <li data-name="Backbone#thickness"><a href="Backbone.html#thickness">thickness</a></li>
             
                 <li data-name="Backbone#viewer"><a href="Backbone.html#viewer">viewer</a></li>
@@ -136,6 +138,10 @@
             
                 <li data-name="Canvas#drawArcsCutoff"><a href="Canvas.html#drawArcsCutoff">drawArcsCutoff</a></li>
             
+                <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
+            
+                <li data-name="Canvas#viewer"><a href="Canvas.html#viewer">viewer</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -171,13 +177,13 @@
             
                 <li data-name="CGRange#middle"><a href="CGRange.html#middle">middle</a></li>
             
+                <li data-name="CGRange#sequence"><a href="CGRange.html#sequence">sequence</a></li>
+            
                 <li data-name="CGRange#sequenceLength"><a href="CGRange.html#sequenceLength">sequenceLength</a></li>
             
                 <li data-name="CGRange#start"><a href="CGRange.html#start">start</a></li>
             
                 <li data-name="CGRange#stop"><a href="CGRange.html#stop">stop</a></li>
-            
-                <li data-name="CGRange#viewer"><a href="CGRange.html#viewer">viewer</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -425,6 +431,8 @@
                 <li data-name="FeatureSlot#proportionOfRadius"><a href="FeatureSlot.html#proportionOfRadius">proportionOfRadius</a></li>
             
                 <li data-name="FeatureSlot#radius"><a href="FeatureSlot.html#radius">radius</a></li>
+            
+                <li data-name="FeatureSlot#sequence"><a href="FeatureSlot.html#sequence">sequence</a></li>
             
                 <li data-name="FeatureSlot#thickness"><a href="FeatureSlot.html#thickness">thickness</a></li>
             
@@ -685,6 +693,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Ruler#canvas"><a href="Ruler.html#canvas">canvas</a></li>
+            
                 <li data-name="Ruler#majorTicks"><a href="Ruler.html#majorTicks">majorTicks</a></li>
             
                 <li data-name="Ruler#majorTickStep"><a href="Ruler.html#majorTickStep">majorTickStep</a></li>
@@ -693,7 +703,11 @@
             
                 <li data-name="Ruler#minorTickStep"><a href="Ruler.html#minorTickStep">minorTickStep</a></li>
             
+                <li data-name="Ruler#sequence"><a href="Ruler.html#sequence">sequence</a></li>
+            
                 <li data-name="Ruler#tickFormater"><a href="Ruler.html#tickFormater">tickFormater</a></li>
+            
+                <li data-name="Ruler#viewer"><a href="Ruler.html#viewer">viewer</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -726,6 +740,10 @@
             
                 <li data-name="Sequence#font"><a href="Sequence.html#font">font</a></li>
             
+                <li data-name="Sequence#length"><a href="Sequence.html#length">length</a></li>
+            
+                <li data-name="Sequence#seq"><a href="Sequence.html#seq">seq</a></li>
+            
                 <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
             
             </ul>
@@ -733,6 +751,14 @@
             
             </ul>
             <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
+            
+                <li data-name="Sequence#forRange"><a href="Sequence.html#forRange">forRange</a></li>
+            
+                <li data-name="Sequence#subtractBp"><a href="Sequence.html#subtractBp">subtractBp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -765,8 +791,6 @@
             
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
             
-                <li data-name="Viewer#sequenceLength"><a href="Viewer.html#sequenceLength">sequenceLength</a></li>
-            
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
                 <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
@@ -781,8 +805,6 @@
             
                 <li data-name="Viewer#_calculateSlotThickness"><a href="Viewer.html#_calculateSlotThickness">_calculateSlotThickness</a></li>
             
-                <li data-name="Viewer#addBp"><a href="Viewer.html#addBp">addBp</a></li>
-            
                 <li data-name="Viewer#arcPlots"><a href="Viewer.html#arcPlots">arcPlots</a></li>
             
                 <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
@@ -796,8 +818,6 @@
                 <li data-name="Viewer#moveTo"><a href="Viewer.html#moveTo">moveTo</a></li>
             
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
-            
-                <li data-name="Viewer#subtractBp"><a href="Viewer.html#subtractBp">subtractBp</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -826,8 +846,7 @@
      * The *Ruler* controls and draws the sequence ruler in bp.
      */
     constructor(viewer, options = {}) {
-      this.viewer = viewer;
-      this.canvas = viewer.canvas;
+      this._viewer = viewer;
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
@@ -835,6 +854,26 @@
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
     }
 
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Canvas} - Get the canvas.
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
     get font() {
       return this._font
     }
@@ -937,7 +976,7 @@
     // Above the zoomFactorCutoff, ticks are created for the visible range
     _updateTicks(innerRadius, outerRadius) {
       var zoomFactorCutoff = 5;
-      var sequenceLength = this.viewer.sequenceLength;
+      var sequenceLength = this.sequence.length;
       var start = 0;
       var stop = 0;
       var majorTicks = new CGV.CGArray();
@@ -974,7 +1013,7 @@
       } else if (stop &lt; start) {
         // Ratio of the sequence length before 0 to sequence length after zero
         // The number of ticks will for each region will depend on this ratio
-        var tickCountRatio = (sequenceLength - start) / this.viewer.lengthOfRange(start, stop);
+        var tickCountRatio = (sequenceLength - start) / this.sequence.lengthOfRange(start, stop);
         var ticksBeforeZero = Math.round(tickCount * tickCountRatio);
         var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
         if (ticksBeforeZero > 0) {
@@ -1001,7 +1040,7 @@
         minorTickStep = 0;
       }
       if (minorTickStep) {
-        if (this.viewer.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) &lt;= 3*majorTickStep) {
+        if (this.sequence.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) &lt;= 3*majorTickStep) {
           start = 0;
           stop = sequenceLength;
         } else {
@@ -1126,7 +1165,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 09:13:16 GMT-0700 (MST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Feb 07 2017 13:37:09 GMT-0700 (MST)
         </footer>
     </div>
 </div>

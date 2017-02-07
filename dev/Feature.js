@@ -14,7 +14,7 @@
       // this._opacity = data.opacity;
       this._color = new CGV.Color(data.color);
       this.opacity = parseFloat(data.opacity);
-      this.range = new CGV.CGRange(this.viewer, Number(data.start), Number(data.stop));
+      this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       // this.start = Number(data.start);
       // this.stop = Number(data.stop);
       this.label = new CGV.Label(this, {name: data.label} );
@@ -87,7 +87,6 @@
     }
 
     get length() {
-      // return this.viewer.lengthOfRange(this.start, this.stop)
       return this.range.length
     }
 

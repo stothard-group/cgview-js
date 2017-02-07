@@ -35,7 +35,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._legends = new CGV.CGArray();
 
       // Initialize Sequence
-      // this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
@@ -164,23 +163,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get ctx() {
       return this.canvas.ctx
-    }
-
-    /**
-     * Get or set the sequence length
-     */
-    get sequenceLength() {
-      return this._sequenceLength;
-    }
-
-    set sequenceLength(bp) {
-      if (bp) {
-        this._sequenceLength = Number(bp);
-        this.canvas.scale.bp = d3.scaleLinear()
-          .domain([1, this._sequenceLength])
-          .range([-1/2*Math.PI, 3/2*Math.PI]);
-        this._updateZoomMax();
-      }
     }
 
     /**
@@ -433,31 +415,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   featureSlot._viewer = this;
     // }
 
-    /**
-     * Subtract *bpToSubtract* from *position*, taking into account the sequenceLength
-     * @param {Number} position - position (in bp) to subtract from
-     * @param {Number} bpToSubtract - number of bp to subtract
-     */
-    subtractBp(position, bpToSubtract) {
-      if (bpToSubtract <= position) {
-        return position - bpToSubtract
-      } else {
-        return this.sequenceLength + position - bpToSubtract
-      }
-    }
-
-    /**
-     * Add *bpToAdd* to *position*, taking into account the sequenceLength
-     * @param {Number} position - position (in bp) to add to
-     * @param {Number} bpToAdd - number of bp to add
-     */
-    addBp(position, bpToAdd) {
-      if (this.sequenceLength >= (bpToAdd + position)) {
-        return bpToAdd + position
-      } else {
-        return position - this.sequenceLength + bpToAdd
-      }
-    }
 
 
     // Get mouse position in the 'container' taking into account the pixel ratio
@@ -468,31 +425,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
     // }
 
-    lengthOfRange(start, stop) {
-      if (stop >= start) {
-        return stop - start
-      } else {
-        return this.sequenceLength + (stop - start)
-      } 
-    }
 
-    // mergeRanges(range1, range2) {
-    //   var start, stop, testStart, testStop, rangeLength;
-    //   var greatestLength = 0;
-    //   var bounds = [ [range1[0], range1[1]], [range1[0], range2[1]], [range2[0], range1[1]], [range2[0], range2[1]] ];
-    //   for (var i = 0, len = bounds.length; i < len; i++) {
-    //     testStart = bounds[i][0];
-    //     testStop = bounds[i][1];
-    //     rangeLength = this.lengthOfRange(testStart, testStop)
-    //     if (rangeLength > greatestLength) {
-    //       greatestLength = rangeLength;
-    //       start = testStart;
-    //       stop = testStop;
-    //     }
-    //   }
-    //   return [start, stop]
-    // }
-    //
     refreshLegends() {
       for (var i = 0, len = this._legends.length; i < len; i++) {
         this._legends[i].refresh();

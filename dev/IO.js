@@ -31,7 +31,11 @@
       var scaleFacter = jsonMinDimension / viewerMinDimension;
 
       // Override Main Viewer settings
-      viewer.sequenceLength = CGV.defaultFor(json.sequenceLength, viewer.sequenceLength);
+      if (json.sequence) {
+        viewer.sequence.seq = json.sequence.seq;
+      } else {
+        viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
+      }
       viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
       viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
       viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);

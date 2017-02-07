@@ -9,8 +9,7 @@
      * The *Ruler* controls and draws the sequence ruler in bp.
      */
     constructor(viewer, options = {}) {
-      this.viewer = viewer;
-      this.canvas = viewer.canvas;
+      this._viewer = viewer;
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
@@ -18,6 +17,26 @@
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
     }
 
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Canvas} - Get the canvas.
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
     get font() {
       return this._font
     }
@@ -120,7 +139,7 @@
     // Above the zoomFactorCutoff, ticks are created for the visible range
     _updateTicks(innerRadius, outerRadius) {
       var zoomFactorCutoff = 5;
-      var sequenceLength = this.viewer.sequenceLength;
+      var sequenceLength = this.sequence.length;
       var start = 0;
       var stop = 0;
       var majorTicks = new CGV.CGArray();
@@ -157,7 +176,7 @@
       } else if (stop < start) {
         // Ratio of the sequence length before 0 to sequence length after zero
         // The number of ticks will for each region will depend on this ratio
-        var tickCountRatio = (sequenceLength - start) / this.viewer.lengthOfRange(start, stop);
+        var tickCountRatio = (sequenceLength - start) / this.sequence.lengthOfRange(start, stop);
         var ticksBeforeZero = Math.round(tickCount * tickCountRatio);
         var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
         if (ticksBeforeZero > 0) {
@@ -184,7 +203,7 @@
         minorTickStep = 0;
       }
       if (minorTickStep) {
-        if (this.viewer.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) <= 3*majorTickStep) {
+        if (this.sequence.lengthOfRange(majorTicks[majorTicks.length - 1], majorTicks[0]) <= 3*majorTickStep) {
           start = 0;
           stop = sequenceLength;
         } else {

@@ -14,28 +14,28 @@
     /**
      * Create a CGRange
      *
-     * @param {Viewer} viewer - The viewer that contains the range. The viewer provided the sequence length
+     * @param {Sequence} sequence - The sequence that contains the range. The sequence provides the sequence length
      * @param {Number} start - The start position.
      * @param {Number} stop - The stop position.
      */
-    constructor(viewer, start, stop) {
-      this._viewer = viewer;
+    constructor(sequence, start, stop) {
+      this._sequence = sequence;
       this.start = start;
       this.stop = stop;
     }
 
     /**
-     * @member {Viewer} - Get the viewer.
+     * @member {Sequence} - Get the sequence.
      */
-    get viewer() {
-      return this._viewer
+    get sequence() {
+      return this._sequence
     }
 
     /**
      * @member {Number} - Get the sequence length
      */
     get sequenceLength() {
-      return this.viewer.sequenceLength
+      return this.sequence.length
     }
 
     /**
@@ -164,7 +164,7 @@
      * @return {Range}
      */
     copy() {
-      return new CGV.CGRange(this.viewer, this.start, this.stop)
+      return new CGV.CGRange(this.sequence, this.start, this.stop)
     }
 
     /**
@@ -184,8 +184,8 @@
      */
     mergeWithRange(range2) {
       var range1 = this;
-      var range3 = new CGV.CGRange(this.viewer, range1.start, range2.stop);
-      var range4 = new CGV.CGRange(this.viewer, range2.start, range1.stop);
+      var range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
+      var range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
       var ranges = [range1, range2, range3, range4];
       var greatestLength = 0;
       var rangeLength, longestRange;

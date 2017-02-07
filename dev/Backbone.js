@@ -45,7 +45,7 @@
     /**
      * @member {Sequence} - Get the sequence.
      */
-    get canvas() {
+    get sequence() {
       return this.viewer.sequence
     }
 
@@ -188,7 +188,7 @@
      * @return {Number}
      */
     maxZoomFactor() {
-      return (this.viewer.sequenceLength * this.bpSpacing) / (2 * Math.PI * this.radius);
+      return (this.sequence.length * this.bpSpacing) / (2 * Math.PI * this.radius);
     }
 
     /**
@@ -196,32 +196,7 @@
      * @return {Number}
      */
     pixelsPerBp() {
-      return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.viewer.sequenceLength );
-    }
-
-    // TODO: Move to new Sequence Class and ACTUALLY get sequence
-    // FAKE method to get sequence
-    _sequenceForRange(range) {
-      // var length = this.viewer.lengthOfRange(start, stop);
-      var seq = [];
-      var bp = range.start;
-      for (var i = 0, len = range.length; i < len; i++) {
-        switch (bp % 4) {
-          case 0:
-            seq[i] = 'A';
-            break;
-          case 1:
-            seq[i] = 'T';
-            break;
-          case 2:
-            seq[i] = 'G';
-            break;
-          case 3:
-            seq[i] = 'C';
-        }
-        bp++;
-      }
-      return seq
+      return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
     }
 
     _drawSequence() {
@@ -230,7 +205,8 @@
       var radius = CGV.pixel(this.zoomedRadius);
       var range = this.visibleRange
       if (range) {
-        var seq = this._sequenceForRange(range);
+        var seq = this.sequence.forRange(range);
+        var complement = CGV.Sequence.complement(seq);
         var bp = range.start;
         ctx.save();
         ctx.fillStyle = this.fontColor.rgbaString;
@@ -242,7 +218,7 @@
           var origin = this.canvas.pointFor(bp, radius + radiusDiff);
           ctx.fillText(seq[i], origin.x, origin.y);
           var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
+          ctx.fillText(complement[i], origin.x, origin.y);
           bp++;
         }
         ctx.restore();

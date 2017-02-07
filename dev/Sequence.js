@@ -29,9 +29,41 @@
       }
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    // STATIC CLASSS METHODS
+    //////////////////////////////////////////////////////////////////////////
+    // TODO: Take into account lower case letters
+    static complement(seq) {
+      var compSeq = ''
+      var char, compChar;
+      for (var i = 0, len = seq.length; i < len; i++) {
+        char = seq.charAt(i);
+        switch (char) {
+          case 'A':
+            compChar = 'T';
+            break;
+          case 'T':
+            compChar = 'A';
+            break;
+          case 'G':
+            compChar = 'C';
+            break;
+          case 'C':
+            compChar = 'G';
+        }
+        compSeq = compSeq + compChar;
+      }
+      return compSeq
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // MEMBERS
+    //////////////////////////////////////////////////////////////////////////
+
     /**
      * @member {Viewer} - Get the viewer.
      */
+
     get viewer() {
       return this._viewer
     }
@@ -53,7 +85,9 @@
     set seq(value) {
       this._seq = value;
       if (this._seq) {
+        this._seq = this._seq.toUpperCase();
         this._length = value.length;
+        this._updateScale();
       }
     }
 
@@ -64,10 +98,17 @@
       return this._length
     }
 
+    _updateScale() {
+      this.canvas.scale.bp = d3.scaleLinear()
+        .domain([1, this.length])
+        .range([-1/2*Math.PI, 3/2*Math.PI]);
+      this.viewer._updateZoomMax();
+    }
     set length(value) {
       if (value) {
         if (!this.seq) {
-          this._length = value;
+          this._length = Number(value);
+          this._updateScale();
         } else {
           console.error('Can not change the sequence length of *seq* is set.');
         }
@@ -105,34 +146,64 @@
       this.bpSpacing = this.font.size;
     }
 
-    // /**
-    //  * @member {Number} - Get or set the basepair spacing.
-    //  */
-    // get bpSpacing() {
-    //   return this._bpSpacing
-    // }
-    //
-    // set bpSpacing(value) {
-    //   this._bpSpacing = value;
-    //   this.viewer._updateZoomMax();
-    // }
-    //
-    // /**
-    //  * @member {Number} - Get or set the margin around sequence letters.
-    //  */
-    // get bpMargin() {
-    //   return this._bpMargin
-    // }
-    //
-    // set bpMargin(value) {
-    //   // this._bpMargin = CGV.pixel(value);
-    //   this._bpMargin = value;
-    // }
+    lengthOfRange(start, stop) {
+      if (stop >= start) {
+        return stop - start
+      } else {
+        return this.length + (stop - start)
+      }
+    }
 
-    // TODO: Move to new Sequence Class and ACTUALLY get sequence
+    /**
+     * Subtract *bpToSubtract* from *position*, taking into account the sequence length
+     * @param {Number} position - position (in bp) to subtract from
+     * @param {Number} bpToSubtract - number of bp to subtract
+     */
+    subtractBp(position, bpToSubtract) {
+      if (bpToSubtract <= position) {
+        return position - bpToSubtract
+      } else {
+        return this.length + position - bpToSubtract
+      }
+    }
+
+    /**
+     * Add *bpToAdd* to *position*, taking into account the sequence length
+     * @param {Number} position - position (in bp) to add to
+     * @param {Number} bpToAdd - number of bp to add
+     */
+    addBp(position, bpToAdd) {
+      if (this.length >= (bpToAdd + position)) {
+        return bpToAdd + position
+      } else {
+        return position - this.length + bpToAdd
+      }
+    }
+
+    /**
+     * Return the sequence for the *range*
+     * 
+     * @param {Range} range - the range for which to return the sequence
+     * @param {Boolean} complement - If true return the complement sequence
+     * @return {String}
+     */
+    forRange(range) {
+      var seq;
+      if (this.seq) {
+        if (range.spansOrigin()) {
+          seq = this.seq.substr(range.start) + this.seq.substr(0, range.stop);
+        } else {
+          seq = this.seq.substr(range.start - 1, range.length);
+        }
+      } else {
+        // FIXME: For now return fake sequence
+        seq = this._fakeSequenceForRange(range);
+      }
+      return seq
+    }
+
     // FAKE method to get sequence
-    _sequenceForRange(range) {
-      // var length = this.viewer.lengthOfRange(start, stop);
+    _fakeSequenceForRange(range) {
       var seq = [];
       var bp = range.start;
       for (var i = 0, len = range.length; i < len; i++) {
