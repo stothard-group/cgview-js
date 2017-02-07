@@ -49,8 +49,6 @@
       var handlers = this._handlers;
       checkType(event);
       var type = parseEvent(event)
-      console.log(type)
-      console.log(handlers)
       if ( !handlers[type] ) handlers[type] = [];
       handlers[type].push( new Handler(event, callback) );
     }

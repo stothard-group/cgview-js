@@ -13,10 +13,20 @@
      * Create a Sequence
      *
      * @param {Viewer} viewer - The viewer that contains the backbone
-     * @param {Object} options - Options and stuff
+     * @param {Object} options - Options and stuff [MUST PROVIDE SEQUENCE OR LENGTH]
      */
     constructor(viewer, options = {}) {
       this._viewer = viewer;
+      this.color = CGV.defaultFor(options.color, 'black');
+      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
+      this.seq = options.seq;
+      if (!this.seq) {
+        this.length = options.length;
+      }
+      if (!this.length) {
+        this.length = 1000;
+        // throw('Sequence invalid. The seq or length must be provided.')
+      }
     }
 
     /**
@@ -31,6 +41,37 @@
      */
     get canvas() {
       return this.viewer.canvas
+    }
+
+    /**
+     * @member {String} - Get or set the seqeunce.
+     */
+    get seq() {
+      return this._seq
+    }
+
+    set seq(value) {
+      this._seq = value;
+      if (this._seq) {
+        this._length = value.length;
+      }
+    }
+
+    /**
+     * @member {Number} - Get or set the seqeunce length. If the *seq* property is set, the length can not be adjusted.
+     */
+    get length() {
+      return this._length
+    }
+
+    set length(value) {
+      if (value) {
+        if (!this.seq) {
+          this._length = value;
+        } else {
+          console.error('Can not change the sequence length of *seq* is set.');
+        }
+      }
     }
 
     /**

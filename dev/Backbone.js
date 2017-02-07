@@ -43,6 +43,13 @@
     }
 
     /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get canvas() {
+      return this.viewer.sequence
+    }
+
+    /**
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {

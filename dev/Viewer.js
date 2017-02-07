@@ -23,7 +23,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-      this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
       this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
 
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
@@ -35,6 +34,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._featureSlots = new CGV.CGArray();
       this._legends = new CGV.CGArray();
 
+      // Initialize Sequence
+      // this.sequenceLength = CGV.defaultFor(options.sequenceLength, 1000);
+      this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Menu
