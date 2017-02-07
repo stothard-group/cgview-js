@@ -42,12 +42,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Help
       this.help = new CGV.Help(this);
       // Initialize LabelSet
-      this.labelSet = new CGV.LabelSet(this);
-      this.labelFont = CGV.defaultFor(options.labelFont, 'sans-serif, plain, 12');
-      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
+      this.labelSet = new CGV.LabelSet(this, options.labelSet);
       // Initialize Ruler
-      this.ruler = new CGV.Ruler(this);
-      this.ruler.font = CGV.defaultFor(options.rulerFont, 'sans-serif, plain, 10');
+      this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Events
       this.initialize_dragging();
       this.initialize_zooming();
@@ -200,7 +197,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         // Create Color Picker
         var colorPickerId = this.containerId + '-color-picker';
         this._container.append('div')
-          .classed('cp-color-picker', true)
+          .classed('cp-color-picker-dialog', true)
           .attr('id', this.containerId + '-color-picker');
         this._colorPicker = new CGV.ColorPicker(colorPickerId);
       }
@@ -268,8 +265,8 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       canvas.canvasNode.width = this._width * CGV.pixel_ratio;
       canvas.canvasNode.height = this._height * CGV.pixel_ratio;
-      canvas.canvasNode.style.width = this._width;
-      canvas.canvasNode.style.height = this._height;
+      canvas.canvasNode.style.width = this._width + 'px';
+      canvas.canvasNode.style.height = this._height + 'px';
       canvas.width = this._width;
       canvas.height = this._height;
       this.refreshLegends();

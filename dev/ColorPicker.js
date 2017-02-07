@@ -98,8 +98,8 @@
     }
 
     setPosition(pos) {
-      this.container.style.left = pos.x;
-      this.container.style.top = pos.y;
+      this.container.style.left = pos.x + 'px';
+      this.container.style.top = pos.y + 'px';
     }
 
     get width() {
@@ -156,7 +156,7 @@
     _configureView() {
       var slide, picker, alpha;
       var containerId = this.containerId;
-      slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100%', height: '100%' },
+      slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '20px', height: '100px' },
                 [
                   $el('defs', {},
                     $el('linearGradient', { id: containerId + '-gradient-hsv', x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
@@ -173,11 +173,11 @@
                       ]
                      )
                    ),
-                  $el('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#' + containerId + '-gradient-hsv)'})
+                  $el('rect', { x: '0', y: '0', width: '20px', height: '100px', fill: 'url(#' + containerId + '-gradient-hsv)'})
                 ]
                );
 
-      picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100%', height: '100%' },
+      picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '100px' },
                  [
                    $el('defs', {},
                      [
@@ -195,12 +195,12 @@
                         )
                      ]
                     ),
-                   $el('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#' + containerId + '-gradient-white)'}),
-                   $el('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#' + containerId + '-gradient-black)'})
+                   $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: 'url(#' + containerId + '-gradient-white)'}),
+                   $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: 'url(#' + containerId + '-gradient-black)'})
                  ]
                 );
 
-      alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100%', height: '100%' },
+      alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '127px', height: '10px', style: 'position: absolute;' },
                 [
                   $el('defs', {}, 
                     [
@@ -210,17 +210,17 @@
                           $el('stop', { offset: '100%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' })
                         ]
                        ),
-                      $el('pattern', { id: containerId + '-alpha-squares', x: '0', y: '0', width: '10', height: '10', patternUnits: 'userSpaceOnUse' },
+                      $el('pattern', { id: containerId + '-alpha-squares', x: '0', y: '0', width: '10px', height: '10px', patternUnits: 'userSpaceOnUse' },
                         [
-                          $el('rect', { x: '0', y: '0', width: '10', height: '10', fill: 'white'}),
-                          $el('rect', { x: '0', y: '0', width: '5', height: '5', fill: 'lightgray'}),
-                          $el('rect', { x: '5', y: '5', width: '5', height: '5', fill: 'lightgray'})
+                          $el('rect', { x: '0', y: '0', width: '10px', height: '10px', fill: 'white'}),
+                          $el('rect', { x: '0', y: '0', width: '5px', height: '5px', fill: 'lightgray'}),
+                          $el('rect', { x: '5px', y: '5px', width: '5px', height: '5px', fill: 'lightgray'})
                         ]
                       )
                     ]
                   ),
-                  $el('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#' + containerId + '-alpha-squares)'}),
-                  $el('rect', { x: '0', y: '0', width: '100%', height: '100%', fill: 'url(#' + containerId + '-alpha-gradient)'})
+                  $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: 'url(#' + containerId + '-alpha-squares)'}),
+                  $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: 'url(#' + containerId + '-alpha-gradient)'})
                 ]
                );
 
@@ -310,8 +310,8 @@
       var cp = this;
       var container = cp.container;
       return function(mouseStart) {
-        container.style.left = d3.event.pageX - mouseStart.x;
-        container.style.top = d3.event.pageY - mouseStart.y;
+        container.style.left = (d3.event.pageX - mouseStart.x) + 'px';
+        container.style.top = (d3.event.pageY - mouseStart.y) + 'px';
       }
     };
 

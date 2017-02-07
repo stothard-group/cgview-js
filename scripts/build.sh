@@ -1,11 +1,7 @@
+#!/bin/bash
 # Join src files into one file
 echo "Building CGView.js"
-# cat \
-#   dev/Viewer.js \
-#   dev/Debug.js \
-#   dev/Utils.js \
-#   # dev/JSVinit.js \
-#   > src/CGView.js
+ls dev/* | sort -r | xargs cat > src/CGView.js
 
 # Create documentation
 # jsdoc must be installed

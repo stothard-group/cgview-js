@@ -3,6 +3,26 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  CGV.testSearch = function(length) {
+    var pattern = /ATG/igm;
+    var indices = []
+    var seq = "";
+    var possible = "ATCG";
+
+    console.log('Making Sequence...');
+    for (var i=0; i < length; i++ ) {
+      seq += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    window.seq = seq
+    console.log('Finding Pattern...');
+    var start_time = new Date().getTime();
+    while (match = pattern.exec(seq)) {
+      indices.push(match.index);
+    }
+    console.log('ATGs found: ' + indices.length);
+    console.log('Time: ' + CGV.elapsed_time(start_time));
+  }
+
   /**
    * Return the _defaultValue_ if _value_ is undefined
    * @param {Object} value         Returned if it is defined

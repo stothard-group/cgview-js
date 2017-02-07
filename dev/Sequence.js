@@ -166,7 +166,7 @@
 
   }
 
-  CGV.Backbone = Backbone;
+  CGV.Sequence = Sequence;
 
 })(CGView);
 

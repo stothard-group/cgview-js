@@ -11,6 +11,21 @@
 /*******************************************/
 /* COLOR PICKER */
 /*******************************************/
+/* NOTE: dimensions have to be changed in ColorPicker.js as well. */
+.cp-color-picker-dialog {
+  box-sizing: content-box;
+}
+
+.cp-done-button {
+  cursor: pointer;
+  color: black;
+  font-size: 10px;
+  padding: 1px 6px;
+  height: 17px;
+  background-color: white;
+  border: 1px solid black;
+}
+
 .cp-color-picker-wrapper {
   width: 100px;
   height: 100px;
@@ -57,9 +72,15 @@
   border: 1px black solid;
   cursor: pointer;
 }
+
+.cp-color-slider {
+  height: 100px;
+  /* margin-left: 1px; */
+}
+
 .cp-color-slider-indicator {
   /* width: 100%; */
-  left: -2;
+  left: -2px;
   width: 22px; 
   height: 5px;
   position: absolute;
@@ -179,6 +200,8 @@
 
 .cp-color-picker {
   position: absolute;
+  /* box-sizing: border-box; */
+  height: 100px;
 }
 
 /*******************************************/
@@ -190,7 +213,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   padding: 5px 10px 10px 10px;
   margin: auto auto;
   border: 1px solid black;

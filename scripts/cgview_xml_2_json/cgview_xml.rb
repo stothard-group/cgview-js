@@ -131,18 +131,26 @@ class CGViewXML
     end
   end
 
+  def legendsPresent?
+    @xml_hash['cgview']['legends']
+  end
+
   # Legends should be an array but if only one is present is will be a hash
   def confirm_legends_is_array
-    if @xml_hash['cgview']['legends'].class == Hash
-      @xml_hash['cgview']['legends'] = [ @xml_hash['cgview']['legends'] ]
+    if legendsPresent?
+      if @xml_hash['cgview']['legends'].class == Hash
+        @xml_hash['cgview']['legends'] = [ @xml_hash['cgview']['legends'] ]
+      end
     end
   end
 
   # LegendItems should be an array but if only one is present is will be a hash
   def confirm_legend_items_is_array
-    @xml_hash['cgview']['legends'].each do |legend|
-      if legend['legendItems'].class == Hash
-        legend['legendItems'] = [ legend['legendItems'] ]
+    if legendsPresent?
+      @xml_hash['cgview']['legends'].each do |legend|
+        if legend['legendItems'].class == Hash
+          legend['legendItems'] = [ legend['legendItems'] ]
+        end
       end
     end
   end
@@ -169,15 +177,17 @@ class CGViewXML
   def adjust_fonts
     puts "Adjusting fonts..."
     # Legends
-    @xml_hash['cgview']['legends'].each do |legend|
-      legend_font = legend['font']
-      if legend_font
-        legend['font'] = adjust_font(legend_font)
-      end
-      legend['legendItems'].each do |legendItem|
-        legend_item_font = legendItem['font']
-        if legend_item_font
-          legendItem['font'] = adjust_font(legend_item_font)
+    if legendsPresent?
+      @xml_hash['cgview']['legends'].each do |legend|
+        legend_font = legend['font']
+        if legend_font
+          legend['font'] = adjust_font(legend_font)
+        end
+        legend['legendItems'].each do |legendItem|
+          legend_item_font = legendItem['font']
+          if legend_item_font
+            legendItem['font'] = adjust_font(legend_item_font)
+          end
         end
       end
     end
@@ -200,7 +210,8 @@ class CGViewXML
         range = feature['featureRanges']
         if range.class == Array
           puts "Oh Noes! There is a feature with more than one range."
-          exit
+          puts range
+          # exit
         elsif range
           range.each do |key, value|
             feature[key] = value
