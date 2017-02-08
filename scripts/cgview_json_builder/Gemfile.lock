@@ -1,0 +1,12 @@
+GEM
+  specs:
+    bio (1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bio
+
+BUNDLED WITH
+   1.14.3
