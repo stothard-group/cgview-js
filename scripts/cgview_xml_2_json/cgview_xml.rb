@@ -62,6 +62,24 @@ class CGViewXML
     adjust_fonts
     move_ranges_to_features
     adjust_feature_thickness
+    # Typically this should be commented out
+    # override_stuff_temp
+  end
+
+  # Where I put stuff to temporarily change the output
+  def override_stuff_temp
+    puts "*** RUNNING OVERRIDES ***"
+    # Removing other features that are duplicates for c495b6 and e5e400
+    @xml_hash['cgview']['featureSlots'].each do |slot|
+      next unless slot['features']
+      features = []
+      slot['features'].each do |feature|
+        if feature['color'] != 'rgb(51,51,51)'
+          features << feature
+        end
+      end
+      slot['features'] = features
+    end
   end
 
   def add_cg_content
@@ -163,11 +181,11 @@ class CGViewXML
     font_string.sub!(/,\s*(\d+)\s*$/) do |m|
       size = $1.to_i
       if (size >= 50)
-        ', 30'
+        ', 20'
       elsif (size >= 20)
         ', 12'
       else
-        ', 10'
+        ', 8'
       end
     end
   end

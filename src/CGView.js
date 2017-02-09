@@ -1674,7 +1674,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var ctx = this.canvas.ctx;
       // Put space between number and units
       // var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      var label = label.replace(/([km])?$/, ' $1bp');
+      var label = label.replace(/([kM])?$/, ' $1bp');
       // INNER
       var innerPt = this.canvas.pointFor(bp, radius - this.rulerPadding);
       var radians = scale.bp(bp);
@@ -2683,7 +2683,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           'Cancel': function() { this.close(); },
           'Generate': function() { download_image(viewer, this); }
         }, width: 400,
-        height: 250
+        height: 200
       });
 
       this.download_button.on('click', function() {
@@ -2935,17 +2935,21 @@ if (window.CGV === undefined) window.CGV = CGView;
     var download_html = function(viewer) {
       return   '' +
       '<div class="cgv-alert">Display the viewer image in a new window to download or print. Note that you must allow pop-ups!</div>' +
-      '<div><label class="cgv-label">Width</label><div class="cgv-input-group">' + 
-      '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>' +
-      '<div><label class="cgv-label">Height</label><div class="cgv-input-group">' + 
-      '<input class="cgv-input" id="cgv-save-height" type="text" value="' + viewer.height + '" /><div class="cgv-input-addon">px</div></div></div>';
+      // Width AND Height
+      // '<div><label class="cgv-label">Width</label><div class="cgv-input-group">' + 
+      // '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>' +
+      // '<div><label class="cgv-label">Height</label><div class="cgv-input-group">' + 
+      // '<input class="cgv-input" id="cgv-save-height" type="text" value="' + viewer.height + '" /><div class="cgv-input-addon">px</div></div></div>';
+      // Size
+      '<div><label class="cgv-label">Size</label><div class="cgv-input-group">' + 
+      '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>';
     }
 
     var download_image = function(viewer, dialog) {
-      var height = viewer._wrapper.select('#cgv-save-height').property('value');
+      // var height = viewer._wrapper.select('#cgv-save-height').property('value');
+      var height = viewer._wrapper.select('#cgv-save-width').property('value');
       var width = viewer._wrapper.select('#cgv-save-width').property('value');
       var image = viewer._io.exportImage(width, height);
-      // var image = viewer.toImage(width, height);
       dialog.close();
     }
 
@@ -3952,9 +3956,9 @@ if (window.CGV === undefined) window.CGV = CGView;
           '</head>',
           '<body>',
         // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            // '<h2>Your CGView Image is Below</h2>',
-            // '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            // '<h3>Preview</h3>',
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
             '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
             '<h3>Actual Size</h3>',
             '<img style="border: 1px solid grey" src="' + image +  '"/ >',
@@ -4932,11 +4936,13 @@ if (window.CGV === undefined) window.CGV = CGView;
             }
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
-              cgv.draw_fast();
+              // cgv.draw_fast();
+              cgv.draw();
             };
             cp.onClose = function() {
               legendItem.swatchSelected = false;
-              cgv.draw_fast();
+              // cgv.draw_fast();
+              cgv.draw();
             };
             cp.setColor(legendItem._swatchColor.rgba);
             cp.open();
@@ -7479,7 +7485,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    // To add a fast mode use a step when creating the iadices
+    // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast,  range, color, orientation) {
       fast = false
       var ctx = canvas.ctx;
@@ -7497,26 +7503,33 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.lineWidth = 0.0001;
 
       var savedR = slotRadius;
-      var saved_bp = startBp;
+      var savedBp = startBp;
       var currentR;
-      var index, currentProp, currentBp;
+      var index, currentProp, currentBp, lastProp;
       // var step = fast ? 2 : 1
       bp.eachFromRange(startBp, stopBp, 1, (i) => {
+        lastProp = currentProp;
         currentProp = prop[i];
         currentBp = bp[i];
         currentR = slotRadius + prop[i] * slotThickness;
-        // TODO: if going from positive to negative need to save currentR as 0 (slotRadius)
+        // If going from positive to negative need to save currentR as 0 (slotRadius)
+        if (orientation && (lastProp * currentProp < 0)) {
+          currentR = slotRadius;
+          savedR = currentR;
+          canvas.arcPath(currentR, savedBp, currentBp, false, true);
+          savedBp = currentBp;
+        }
         if ( this._keepPoint(currentProp, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
-            canvas.arcPath(currentR, saved_bp, currentBp, false, true);
+            canvas.arcPath(currentR, savedBp, currentBp, false, true);
             savedR = currentR;
-            saved_bp = currentBp
+            savedBp = currentBp
           }
         } else {
           savedR = slotRadius;
         }
       });
-      canvas.arcPath(savedR, saved_bp, stopBp, false, true);
+      canvas.arcPath(savedR, savedBp, stopBp, false, true);
       var endPoint = canvas.pointFor(stopBp, slotRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       canvas.arcPath(slotRadius, stopBp, startBp, true, true);

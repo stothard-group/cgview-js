@@ -271,7 +271,7 @@
       var ctx = this.canvas.ctx;
       // Put space between number and units
       // var label = label.replace(/([^\d\.]+)/, ' $1bp');
-      var label = label.replace(/([km])?$/, ' $1bp');
+      var label = label.replace(/([kM])?$/, ' $1bp');
       // INNER
       var innerPt = this.canvas.pointFor(bp, radius - this.rulerPadding);
       var radians = scale.bp(bp);

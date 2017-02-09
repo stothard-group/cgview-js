@@ -49,11 +49,23 @@ class CGViewJSON
     # TODO: look into complex features from xml-builder
     @seq_object.features.each do |feature|
       next if features_to_skip.include?(feature.feature)
+      next if feature.position.nil?
       locations = Bio::Locations.new(feature.position)
+      if locations.length > 1
+        # FIXME Complex Feature...What Now
+        next
+      end
+      location = locations.first
       @features.push({
-        start: locations.range.first,
-        stop: locations.range.last
+        start: location.from,
+        stop: location.to,
+        strand: location.strand
       })
+      # NOTE: This converts the array of qualifiers to a easily accessible hash.
+      # However, there is a risk some information is lost when two or more qualifiers are the same.
+      qualifiers = feature.assoc
+      # WHY locus_tag and not gene
+      gene_name = qualifiers['locus_tag']
     end
   end
 

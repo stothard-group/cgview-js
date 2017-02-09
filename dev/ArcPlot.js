@@ -115,7 +115,7 @@
       }
     }
 
-    // To add a fast mode use a step when creating the iadices
+    // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast,  range, color, orientation) {
       fast = false
       var ctx = canvas.ctx;
@@ -133,26 +133,33 @@
       ctx.lineWidth = 0.0001;
 
       var savedR = slotRadius;
-      var saved_bp = startBp;
+      var savedBp = startBp;
       var currentR;
-      var index, currentProp, currentBp;
+      var index, currentProp, currentBp, lastProp;
       // var step = fast ? 2 : 1
       bp.eachFromRange(startBp, stopBp, 1, (i) => {
+        lastProp = currentProp;
         currentProp = prop[i];
         currentBp = bp[i];
         currentR = slotRadius + prop[i] * slotThickness;
-        // TODO: if going from positive to negative need to save currentR as 0 (slotRadius)
+        // If going from positive to negative need to save currentR as 0 (slotRadius)
+        if (orientation && (lastProp * currentProp < 0)) {
+          currentR = slotRadius;
+          savedR = currentR;
+          canvas.arcPath(currentR, savedBp, currentBp, false, true);
+          savedBp = currentBp;
+        }
         if ( this._keepPoint(currentProp, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
-            canvas.arcPath(currentR, saved_bp, currentBp, false, true);
+            canvas.arcPath(currentR, savedBp, currentBp, false, true);
             savedR = currentR;
-            saved_bp = currentBp
+            savedBp = currentBp
           }
         } else {
           savedR = slotRadius;
         }
       });
-      canvas.arcPath(savedR, saved_bp, stopBp, false, true);
+      canvas.arcPath(savedR, savedBp, stopBp, false, true);
       var endPoint = canvas.pointFor(stopBp, slotRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       canvas.arcPath(slotRadius, stopBp, startBp, true, true);

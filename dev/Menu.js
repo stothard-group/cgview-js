@@ -292,7 +292,7 @@
           'Cancel': function() { this.close(); },
           'Generate': function() { download_image(viewer, this); }
         }, width: 400,
-        height: 250
+        height: 200
       });
 
       this.download_button.on('click', function() {
@@ -544,17 +544,21 @@
     var download_html = function(viewer) {
       return   '' +
       '<div class="cgv-alert">Display the viewer image in a new window to download or print. Note that you must allow pop-ups!</div>' +
-      '<div><label class="cgv-label">Width</label><div class="cgv-input-group">' + 
-      '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>' +
-      '<div><label class="cgv-label">Height</label><div class="cgv-input-group">' + 
-      '<input class="cgv-input" id="cgv-save-height" type="text" value="' + viewer.height + '" /><div class="cgv-input-addon">px</div></div></div>';
+      // Width AND Height
+      // '<div><label class="cgv-label">Width</label><div class="cgv-input-group">' + 
+      // '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>' +
+      // '<div><label class="cgv-label">Height</label><div class="cgv-input-group">' + 
+      // '<input class="cgv-input" id="cgv-save-height" type="text" value="' + viewer.height + '" /><div class="cgv-input-addon">px</div></div></div>';
+      // Size
+      '<div><label class="cgv-label">Size</label><div class="cgv-input-group">' + 
+      '<input class="cgv-input" id="cgv-save-width" type="text" value="' + viewer.width + '" /><div class="cgv-input-addon">px</div></div></div>';
     }
 
     var download_image = function(viewer, dialog) {
-      var height = viewer._wrapper.select('#cgv-save-height').property('value');
+      // var height = viewer._wrapper.select('#cgv-save-height').property('value');
+      var height = viewer._wrapper.select('#cgv-save-width').property('value');
       var width = viewer._wrapper.select('#cgv-save-width').property('value');
       var image = viewer._io.exportImage(width, height);
-      // var image = viewer.toImage(width, height);
       dialog.close();
     }
 
