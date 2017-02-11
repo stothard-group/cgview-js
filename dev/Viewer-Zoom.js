@@ -5,7 +5,7 @@
 
   CGV.Viewer.prototype._updateZoomMax = function() {
     if (this._zoom) {
-      this._zoom.scaleExtent([1, this.backbone.maxZoomFactor()]);
+      this._zoom.scaleExtent([0.8, this.backbone.maxZoomFactor()]);
     }
   }
 
