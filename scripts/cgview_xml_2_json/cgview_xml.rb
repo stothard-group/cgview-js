@@ -1,12 +1,17 @@
 require 'crack'
 require 'json'
+require 'bio'
 
 class CGViewXML
 
-  attr_accessor :xml_string, :xml_hash, :cg_content_string, :gc_skew_string, :json
+  attr_accessor :xml_string, :xml_hash, :cg_content_string, :gc_skew_string, :json, :sequence
 
-  def initialize(xml_file = nil)
+  def initialize(xml_file = nil, seq_file = nil)
     @xml_hash = {}
+    if seq_file
+      file = File.read(seq_file)
+      @sequence = Bio::GenBank.new(file).seq.upcase
+    end
     if xml_file
       read_xml_file(xml_file)
     end
@@ -63,6 +68,7 @@ class CGViewXML
     move_ranges_to_features
     adjust_feature_thickness
     # Typically this should be commented out
+    add_sequence
     # override_stuff_temp
   end
 
@@ -246,6 +252,14 @@ class CGViewXML
     @xml_hash['cgview']['featureSlots'].each do |slot|
       thickness = slot['featureThickness'] || defaultThickness
       slot['proportionOfRadius'] = thickness.to_f / backboneRadius
+    end
+  end
+
+  def add_sequence
+    if @sequence
+      puts "Adding Sequence..."
+      @xml_hash['cgview']['sequence'] = {}
+      @xml_hash['cgview']['sequence']['seq'] = @sequence
     end
   end
 

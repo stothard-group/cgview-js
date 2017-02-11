@@ -17,6 +17,10 @@ optparse = OptionParser.new do |opts|
     options.infile = infile
   end
 
+  opts.on("-s", "--sequence FILE", "Sequence File [GenBank for now]") do |seqfile|
+    options.seqfile = seqfile
+  end
+
   opts.on("-o", "--outfile FILE", "Write JSON to this file") do |outfile|
     options.outfile = outfile
   end
@@ -46,7 +50,7 @@ if !(options.infile && options.outfile) then
   exit
 end
 
-cgvxml = CGViewXML.new(options.infile)
+cgvxml = CGViewXML.new(options.infile, options.seqfile)
 cgvxml.write_json(options.outfile)
 
 
