@@ -1,32 +1,29 @@
 //////////////////////////////////////////////////////////////////////////////
-// FeatureSlot
+// Layout
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class FeatureSlot {
+  /**
+   * The Layout is in control of creating tracks/rows from slots.
+   */
+  class Layout {
 
     /**
-     * TEST
+     * Create a Layout
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      this._strand = CGV.defaultFor(data.strand, 'direct');
-      this._features = new CGV.CGArray();
-      this._arcPlot;
-      this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
+      this._slots = new CGV.CGArray();
 
-      this._featureStarts = new CGV.CGArray();
-
-      if (data.features) {
-        data.features.forEach((featureData) => {
-          new CGV.Feature(this, featureData);
+      // Create slots
+      // Create tracks
+      if (data.slots) {
+        data.slots.forEach((slotData) => {
+          new CGV.Slot(this, slotData);
         });
-        this.refresh();
+        // this.refresh();
       }
 
-      if (data.arcPlot) {
-        new CGV.ArcPlot(this, data.arcPlot);
-      }
     }
 
     /** * @member {Viewer} - Get or set the *Viewer*
@@ -40,7 +37,7 @@
         // TODO: Remove if already attached to Viewer
       }
       this._viewer = viewer;
-      viewer._featureSlots.push(this);
+      viewer._slots.push(this);
     }
 
     /**
@@ -50,31 +47,6 @@
       return this.viewer.sequence
     }
 
-    /**
-     * @member {Viewer} - Get or set the slot size with is measured as a 
-     * proportion of the backbone radius.
-     */
-    get proportionOfRadius() {
-      return this._proportionOfRadius
-    }
-
-    set proportionOfRadius(value) {
-      this._proportionOfRadius = value;
-    }
-
-    /**
-     * @member {Number} - Get the current radius of the featureSlot.
-     */
-    get radius() {
-      return this._radius
-    }
-
-    /**
-     * @member {Number} - Get the current thickness of the featureSlot.
-     */
-    get thickness() {
-      return this._thickness
-    }
 
 
     get strand() {
@@ -95,53 +67,6 @@
 
     get hasArcPlot() {
       return this._arcPlot
-    }
-
-    /**
-     * The number of pixels per basepair along the feature slot circumference.
-     * @return {Number}
-     */
-    pixelsPerBp() {
-      return (this.radius * 2 * Math.PI) / this.sequence.length;
-    }
-
-    // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
-    refresh() {
-      // Sort the features by start
-      this._features.sort( (a, b) => {
-        return a.start - b.start
-      });
-      // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
-    }
-
-    /**
-     * Get the visible range
-     * @member {Range}
-     */
-    get visibleRange() {
-      return this._visibleRange
-    }
-
-    get largestFeatureLength() {
-      return this._largestFeatureLength
-    }
-
-    findLargestFeatureLength() {
-      var length = 0;
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        var nextLength = this._features[i].length;
-        if (nextLength > length) {
-          length = nextLength
-        }
-      }
-      return length
     }
 
     draw(canvas, fast, slotRadius, slotThickness) {
@@ -175,7 +100,7 @@
             })
           }
           if (this.viewer.debug && this.viewer.debug.data.n) {
-            var index = this.viewer._featureSlots.indexOf(this);
+            var index = this.viewer._tracks.indexOf(this);
             this.viewer.debug.data.n['slot_' + index] = featureCount;
           }
         } else if (this.hasArcPlot) {
@@ -186,6 +111,6 @@
 
   }
 
-  CGV.FeatureSlot = FeatureSlot;
+  CGV.Layout = Layout;
 
 })(CGView);

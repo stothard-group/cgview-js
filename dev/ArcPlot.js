@@ -8,8 +8,8 @@
     /**
      * Draw a plot consisting of arcs
      */
-    constructor(featureSlot, data = {}, display = {}, meta = {}) {
-      this.featureSlot = featureSlot;
+    constructor(track, data = {}, display = {}, meta = {}) {
+      this.track = track;
       this._bp = new CGV.CGArray();
       this._proportionOfThickness =  new CGV.CGArray();
       this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
@@ -25,17 +25,17 @@
     }
 
     /**
-     * @member {FeatureSlot} - Get or set the *FeatureSlot*
+     * @member {Track} - Get or set the *Track*
      */
-    get featureSlot() {
-      return this._featureSlot
+    get track() {
+      return this._track
     }
 
-    set featureSlot(slot) {
-      if (this.featureSlot) {
-        // TODO: Remove if already attached to FeatureSlot
+    set track(slot) {
+      if (this.track) {
+        // TODO: Remove if already attached to Track
       }
-      this._featureSlot = slot;
+      this._track = slot;
       slot._arcPlot = this;
       this._viewer = slot.viewer;
     }
@@ -48,7 +48,7 @@
     }
 
     get color() {
-      // return this._color || this.featureSlot.color
+      // return this._color || this.track.color
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 

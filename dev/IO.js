@@ -18,7 +18,98 @@
     }
 
     /**
-     * Load data from new JSON format (modeled after XML from original CGView).
+     * Load data from NEW JSON format.
+     * Removes any previous viewer data and overrides options that are already set.
+     * @param {Object} data - TODO
+     */
+    loadJSON(json) {
+      var viewer = this._viewer;
+
+      // Determine scale factor between viewer and json map data
+      var jsonMinDimension = Math.min(json.height, json.width);
+      var viewerMinDimension = Math.min(viewer.height, viewer.width);
+      var scaleFacter = jsonMinDimension / viewerMinDimension;
+
+      // Load Sequence
+      viewer.sequence = new CGV.Sequence(viewer, json.sequence);
+      // Load Settings
+      var settings = json.settings;
+      // Ruler
+      viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
+      // Backbone
+      viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
+
+      // Create legends
+      // Create featuerTypes
+      // Create features
+      if (json.features) {
+        json.features.forEach((featureData) => {
+          new CGV.Feature(viewer, featureData);
+        });
+      }
+
+      // Load Layout
+      viewer.layout = new CGV.Layout(viewer, json.layout);
+
+
+
+      // viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+      // viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+      // ...
+
+      // // Load Tracks
+      // if (json.tracks) {
+      //   json.tracks.forEach((slotData) => {
+      //     new CGV.Track(viewer, slotData);
+      //   });
+      // }
+      //
+      // // Load Legends
+      // if (json.legends) {
+      //   json.legends.forEach((legendData) => {
+      //     new CGV.Legend(viewer, legendData);
+      //   });
+      // }
+      //
+      // // Associate features and arcplots with LegendItems
+      // var swatchedLegendItems = viewer.swatchedLegendItems();
+      // var itemsLength = swatchedLegendItems.length;
+      // var legendItem;
+      // // Features
+      // var features = viewer.features();
+      // var feature;
+      // for (var i = 0, len = features.length; i < len; i++) {
+      //   feature = features[i];
+      //   for (var j = 0; j < itemsLength; j++) {
+      //     legendItem = swatchedLegendItems[j];
+      //     if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
+      //       feature.legendItem = legendItem;
+      //       break
+      //     }
+      //   }
+      // }
+      // // ArcPlots
+      // var arcPlots = viewer.arcPlots();
+      // var arcPlot;
+      // for (var i = 0, len = arcPlots.length; i < len; i++) {
+      //   arcPlot = arcPlots[i];
+      //   for (var j = 0; j < itemsLength; j++) {
+      //     legendItem = swatchedLegendItems[j];
+      //     if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
+      //       arcPlot.legendItem = legendItem;
+      //     }
+      //     if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
+      //       arcPlot.legendItemPositive = legendItem;
+      //     }
+      //     if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
+      //       arcPlot.legendItemNegative = legendItem;
+      //     }
+      //   }
+      // }
+    }
+
+    /**
+     * Load data from OLD JSON format (modeled after XML from original CGView).
      * Removes any previous viewer data and overrides options that are already set.
      * @param {Object} data - TODO
      */
@@ -44,10 +135,10 @@
       viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
       // ...
 
-      // Load FeatureSlots
-      if (json.featureSlots) {
-        json.featureSlots.forEach((slotData) => {
-          new CGV.FeatureSlot(viewer, slotData);
+      // Load Tracks
+      if (json.tracks) {
+        json.tracks.forEach((slotData) => {
+          new CGV.Track(viewer, slotData);
         });
       }
 
@@ -93,30 +184,6 @@
           }
         }
       }
-    }
-
-    // Load data from conventionaly CGView XML file.
-    load_xml(xml) {
-      var json = IO.xml_to_json(xml);
-      this.load_json(json);
-    }
-
-    static xml_to_json(xml) {
-      if (!window.X2JS) {
-        console.log("X2JS needs to be installed to read CGView XML: https://github.com/abdmob/x2js");
-        return
-      }
-      var x2js = new X2JS({ attributePrefix: '' });
-      // var json = x2js.xml_str2json(xml);
-      var json = xmlToJson(xml);
-      // var cgview = json.cgview
-      // cgview.featureSlots = cgview.featureSlot
-      // delete cgview.featureSlot
-
-      return json
-    }
-
-    static json_to_xml(json) {
     }
 
     exportImage(width, height) {
@@ -181,47 +248,7 @@
       win.document.write(html);
     }
 
-
-
   }
-
-  // Changes XML to JSON
-  // function xmlToJson(xml) {
-  //   // Create the return object
-  //   var obj = {};
-  //
-  //   if (xml.nodeType == 1) { // element
-  //     // do attributes
-  //     if (xml.attributes.length > 0) {
-  //     obj["@attributes"] = {};
-  //       for (var j = 0; j < xml.attributes.length; j++) {
-  //         var attribute = xml.attributes.item(j);
-  //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-  //       }
-  //     }
-  //   } else if (xml.nodeType == 3) { // text
-  //     obj = xml.nodeValue;
-  //   }
-  //
-  //   // do children
-  //   if (xml.hasChildNodes()) {
-  //     for(var i = 0; i < xml.childNodes.length; i++) {
-  //       var item = xml.childNodes.item(i);
-  //       var nodeName = item.nodeName;
-  //       if (typeof(obj[nodeName]) == "undefined") {
-  //         obj[nodeName] = xmlToJson(item);
-  //       } else {
-  //         if (typeof(obj[nodeName].push) == "undefined") {
-  //           var old = obj[nodeName];
-  //           obj[nodeName] = [];
-  //           obj[nodeName].push(old);
-  //         }
-  //         obj[nodeName].push(xmlToJson(item));
-  //       }
-  //     }
-  //   }
-  //   return obj;
-  // };
 
   CGV.IO = IO;
 

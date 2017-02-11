@@ -34,6 +34,17 @@
   }
 
   /**
+   * Return true if the value is one of the validOptions.
+   *
+   * @param {Object} value - Value to validate
+   * @param {Array} validOptions - Array of valid options
+   * @return {Boolean}
+   */
+  CGV.validate = function(value, validOptions) {
+    return (validOptions.indexOf(value) != -1)
+  }
+
+  /**
    * Converts the value to a boolean. The following values will be false,
    * all other values will be true: 'false', 'False', false, undefined.
    *

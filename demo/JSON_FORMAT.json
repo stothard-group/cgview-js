@@ -1,0 +1,185 @@
+{
+  "cgview": {
+    "version": "1.0",
+    "meta": {
+      "id": "safsadf9a8s7d8f66969FASf8",
+      "source": "cgview_server",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "settings": {
+      "ruler": {
+        "font": "san-serif, plain, 10",
+        "fontColor": "black"
+      },
+      "backbone": {
+        "radius": 100,
+        "color": "grey",
+        "thickness": 5
+      },
+      "dividers": {
+        "slot": {
+          "show": true,
+          "thickness": 1,
+          "color": "black"
+        },
+        "track": {
+          "show": true,
+          "thickness": 1,
+          "color": "black"
+        }
+      }
+    },
+    "sequence": {
+      "seq": "PUT SEQUENCE HERE",
+      "font": "sans-serif, plain, 12",
+      "color": "black",
+      "contigs": {
+        "myContig1": {
+          "start": 1,
+          "stop": 200
+        },
+        "myContig2": {
+          "start": 201,
+          "stop": 1000
+        }
+      }
+    },
+    "featureTypes": [
+      {
+        "name": "CDS",
+        "decoration": "arrow",
+        "legend": "CDS"
+      },
+      {
+        "name": "tRNA",
+        "decoration": "arrow",
+        "legend": "tRNA"
+      },
+      {
+        "name": "rRNA",
+        "decoration": "arrow",
+        "legend": "rRNA"
+      },
+      {
+        "name": "A",
+        "decoration": "arrow",
+        "legend": "Other"
+      },
+      {
+        "name": "B",
+        "decoration": "arrow",
+        "legend": "Other"
+      }
+    ],
+    "legend": {
+      "legendItems": [
+        {
+          "text": "CDS",
+          "swatchColor": "rgba(0,0,153,0.5)"
+        },
+        {
+          "text": "tRNA",
+          "swatchColor": "rgb(153,0,0,0.5)"
+        },
+        {
+          "text": "rRNA",
+          "swatchColor": "rgb(153,0,153,0.5)"
+        },
+        {
+          "text": "Other",
+          "swatchColor": "rgb(51,51,51,0.5)"
+        },
+        {
+          "text": "Custom Legend",
+          "swatchColor": "rgb(151,151,51,0.5)"
+        }
+      ],
+      "position": "upper-right",
+      "alignment": "left",
+      "fontColor": "black",
+      "backgroundColor": "white",
+      "font": "sans-serif, plain, 14"
+    },
+    "captions": [ {
+      "captionItems": {
+        "text": "Reclinomonas americana mitochondrion"
+      },
+      "position": "lower-center",
+      "alignment": "center",
+      "fontColor": "black",
+      "backgroundColor": "red",
+      "font": "sans-serif, plain, 14"
+    }],
+    "features": [
+      {
+        "type": "CDS",
+        "start": 100,
+        "stop": 1000,
+        "strand": -1,
+        "label": "rnl"
+      },
+      {
+        "type": "CDS",
+        "start": 1000,
+        "stop": 2000,
+        "strand": 1,
+        "label": "rnl2",
+        "display": {
+          "legend": "Custom Legend",
+          "decoration": "block",
+          "fontColor": "red"
+        }
+      }
+    ],
+    "plots": [],
+    "layout": {
+      "slots": [
+        {
+          "type": "feature",
+          "name": "Features",
+          "featureTypes": ["CDS", "tRNA", "rRNA"],
+          "readingFrames": "combined",
+          "strand": "separated",
+          "position": "both"
+        },
+        {
+          "type": "feature",
+          "name": "Blast 1",
+          "featureTypes": ["blast_1"],
+          "readingFrames": "separated",
+          "strand": "separated",
+          "position": "inside"
+        },
+        {
+          "type": "plot",
+          "name": "Some Plot",
+          "plot": "some_plot",
+          "position": "inside"
+        },
+        {
+          "type": "feature",
+          "name": "ORFs",
+          "analysis": "orfs",
+          "readingFrames": "combined",
+          "strand": "combined",
+          "position": "outside"
+        },
+        {
+          "type": "feature",
+          "name": "Contigs",
+          "analysis": "contigs",
+          "position": "outside"
+        },
+        {
+          "type": "plot",
+          "name": "GC Content",
+          "analysis": "gc_content",
+          "position": "inside",
+          "window": 100
+        }
+      ]
+    }
+  }
+}
+

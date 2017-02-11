@@ -8,15 +8,14 @@
     /**
      * A Feature
      */
-    constructor(featureSlot, data = {}, display = {}, meta = {}) {
-      this.featureSlot = featureSlot;
+    constructor(viewer, data = {}, display = {}, meta = {}) {
+      // this.slot = slot;
       // this.color = data.color;
       // this._opacity = data.opacity;
-      this._color = new CGV.Color(data.color);
-      this.opacity = parseFloat(data.opacity);
+      this.viewer = viewer;
+      // this._color = new CGV.Color(data.color);
+      // this.opacity = parseFloat(data.opacity);
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
-      // this.start = Number(data.start);
-      // this.stop = Number(data.stop);
       this.label = new CGV.Label(this, {name: data.label} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -25,19 +24,33 @@
     }
 
     /**
-     * @member {FeatureSlot} - Get or set the *FeatureSlot*
+     * @member {Slot} - Get or set the *Slot*
      */
-    get featureSlot() {
-      return this._featureSlot
+    get slot() {
+      return this._slot
     }
 
-    set featureSlot(slot) {
-      if (this.featureSlot) {
-        // TODO: Remove if already attached to FeatureSlot
+    set slot(slot) {
+      if (this.slot) {
+        // TODO: Remove if already attached to Slot
       }
-      this._featureSlot = slot;
+      this._slot = slot;
       slot._features.push(this);
-      this._viewer = slot.viewer;
+    }
+
+    /**
+     * @member {Track} - Get or set the *Track*
+     */
+    get track() {
+      return this._track
+    }
+
+    set track(track) {
+      if (this.track) {
+        // TODO: Remove if already attached to Track
+      }
+      this._track = track;
+      track._features.push(this);
     }
 
     /**
@@ -46,6 +59,15 @@
     get viewer() {
       return this._viewer
     }
+
+    set viewer(viewer) {
+      if (this.viewer) {
+        // TODO: Remove if already attached to Viewer
+      }
+      this._viewer = viewer;
+      viewer._features.push(this);
+    }
+
 
     /**
      * @member {Range} - Get or set the range of the feature. All ranges
@@ -102,7 +124,7 @@
     }
 
     /**
-     * @member {String} - Get or set the color. Defaults to the *FeatureSlot* color. TODO: reference COLOR class
+     * @member {String} - Get or set the color. Defaults to the *Track* color. TODO: reference COLOR class
      */
     get color() {
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
@@ -155,6 +177,7 @@
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
+      if (!this.track) return
       if (this.range.overlapsRange(visibleRange)) {
         var start = this.start;
         var stop = this.stop;

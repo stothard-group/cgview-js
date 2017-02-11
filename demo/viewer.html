@@ -17,9 +17,11 @@
   <script src='dev/Backbone.js'></script>
   <script src='dev/Ruler.js'></script>
   <script src='dev/IO.js'></script>
+  <script src='dev/Layout.js'></script>
   <script src='dev/CGArray.js'></script>
   <script src='dev/CGRange.js'></script>
-  <script src='dev/FeatureSlot.js'></script>
+  <script src='dev/Slot.js'></script>
+  <script src='dev/Track.js'></script>
   <script src='dev/Feature.js'></script>
   <script src='dev/Label.js'></script>
   <script src='dev/LabelSet.js'></script>
@@ -65,23 +67,18 @@
     cgv.flash('Loading...');
 
     $.ajax({
-      // url: 'data/cgview_1_no_cg.json',
-      // url: 'data/TEST_cgview_1.json',
       // url: 'data/cgview_1.json',
-      url: 'data/cgview_1_seq.json',
-      // url: 'data/cgview_1_10Mbp.json',
-      // url: 'data/cgview_legends.json',
-      // url: 'data/cgview_3.json',
-      // url: 'data/cgview-94889.json',
-      // url: 'data/cgview-144900.json',
-      // url: 'data/cgview-c3e54d.json',
-      // url: 'data/dna_vs_dna_large.json',
+      // url: 'data/cgview_1_track.json',
+      // url: 'data/cgview_1_track.json',
+      // url: 'data/cgview_1_seq.json',
       // url: 'data/cgview-d957a5.json',
+      url: 'JSON_FORMAT.json',
       dataType: 'json',
       success: function(json) {
         console.log('loading...')
         window.data = json;
-        cgv.load_json(json.cgview);
+        // cgv.load_json(json.cgview);
+        cgv._io.loadJSON(json.cgview);
         console.log('done!');
         $(window).trigger('resize');
         cgv.draw();

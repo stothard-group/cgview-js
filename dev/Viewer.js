@@ -23,7 +23,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-      this.featureSlotSpacing = CGV.defaultFor(options.featureSlotSpacing, 1);
+      this.trackSpacing = CGV.defaultFor(options.trackSpacing, 1);
 
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
@@ -31,7 +31,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.debug = CGV.defaultFor(options.debug, false);
 
       this._io = new CGV.IO(this);
-      this._featureSlots = new CGV.CGArray();
+      this._features = new CGV.CGArray();
+      this._plots = new CGV.CGArray();
+      this._tracks = new CGV.CGArray();
+      this._slots = new CGV.CGArray();
+      this._captions = new CGV.CGArray();
       this._legends = new CGV.CGArray();
 
       // Initialize Sequence
@@ -261,28 +265,28 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the FeatureSlots in the viewer.
+     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
     features(term) {
-      var features = new CGV.CGArray();
-      for (var i=0, len=this._featureSlots.length; i < len; i++) {
-        features.merge(this._featureSlots[i]._features);
-      }
-      return features.get(term);
+      // var features = new CGV.CGArray();
+      // for (var i=0, len=this._tracks.length; i < len; i++) {
+      //   features.merge(this._tracks[i]._features);
+      // }
+      return this._features.get(term);
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the FeatureSlots in the viewer.
+     * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
     arcPlots(term) {
       var plots = new CGV.CGArray();
       var arcPlot;
-      for (var i=0, len=this._featureSlots.length; i < len; i++) {
-        arcPlot = this._featureSlots[i]._arcPlot;
+      for (var i=0, len=this._tracks.length; i < len; i++) {
+        arcPlot = this._tracks[i]._arcPlot;
         if (arcPlot) {
           plots.push(arcPlot);
         }
@@ -353,7 +357,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(this.featureSlotSpacing);
+      var spacing = CGV.pixel(this.trackSpacing);
       var visibleRadii = this.canvas.visibleRadii();
 
       // All Text should have base line top
@@ -365,8 +369,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       var residualSlotThickness = 0;
 
       // FetaureSlots
-      for (var i = 0, len = this._featureSlots.length; i < len; i++) {
-        var slot = this._featureSlots[i];
+      for (var i = 0, len = this._tracks.length; i < len; i++) {
+        var slot = this._tracks[i];
         // Calculate Slot dimensions
         // The slotRadius is the radius at the center of the slot
         var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
@@ -409,10 +413,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    // addFeatureSlot(featureSlot) {
-    //   // TODO: error check that this is a featureSlot
-    //   this._featureSlots.push(featureSlot);
-    //   featureSlot._viewer = this;
+    // addTrack(track) {
+    //   // TODO: error check that this is a track
+    //   this._tracks.push(track);
+    //   track._viewer = this;
     // }
 
 
