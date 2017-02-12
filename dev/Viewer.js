@@ -33,7 +33,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io = new CGV.IO(this);
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
-      this._tracks = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
       this._legends = new CGV.CGArray();
@@ -265,16 +264,30 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the Tracks in the viewer.
+     * Returns an [CGArray](CGArray.js.html) of Slots or a single Slot from all the Slots in the Layout.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    slots(term) {
+      return this.layout.slots(term);
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the features in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
     features(term) {
-      // var features = new CGV.CGArray();
-      // for (var i=0, len=this._tracks.length; i < len; i++) {
-      //   features.merge(this._tracks[i]._features);
-      // }
       return this._features.get(term);
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Tracks or a single Track from all the Tracks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    tracks(term) {
+      return this.layout.tracks(term);
     }
 
     /**
@@ -282,16 +295,17 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
-    arcPlots(term) {
-      var plots = new CGV.CGArray();
-      var arcPlot;
-      for (var i=0, len=this._tracks.length; i < len; i++) {
-        arcPlot = this._tracks[i]._arcPlot;
-        if (arcPlot) {
-          plots.push(arcPlot);
-        }
-      }
-      return plots.get(term);
+    plots(term) {
+      return this._plots.get(term);
+      // var plots = new CGV.CGArray();
+      // var arcPlot;
+      // for (var i=0, len=this._tracks.length; i < len; i++) {
+      //   arcPlot = this._tracks[i]._arcPlot;
+      //   if (arcPlot) {
+      //     plots.push(arcPlot);
+      //   }
+      // }
+      // return plots.get(term);
     }
 
     swatchedLegendItems(term) {
@@ -330,17 +344,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
 
-    /**
-     * Slot thickness is based on a proportion of the backbone radius.
-     * As the viewer is zoomed the slot radius increases until
-     *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
-     *    Therefore the we should always be able to see all the slots in the viewer
-     *  - The slot thickness is greater than the maximum allowed slot thickness (if it's defined)
-     */
-    _calculateSlotThickness(proportionOfRadius) {
-      var thickness = CGV.pixel( Math.min(this.backbone.zoomedRadius, this.maxZoomedRadius()) * proportionOfRadius);
-      return (this.maxSlotThickness ? Math.min(thickness, CGV.pixel(this.maxSlotThickness)) : thickness)
-    }
 
     draw_full() {
       this.draw();
@@ -351,67 +354,71 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     draw(fast) {
-      var start_time = new Date().getTime();
-      this.clear();
-      var backboneThickness = CGV.pixel(this.backbone.zoomedThickness);
-      var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
-      var directRadius = slotRadius + (backboneThickness / 2);
-      var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(this.trackSpacing);
-      var visibleRadii = this.canvas.visibleRadii();
-
-      // All Text should have base line top
-      this.ctx.textBaseline = 'top';
-
-      // Draw Backbone
-      this.backbone.draw();
-
-      var residualSlotThickness = 0;
-
-      // FetaureSlots
-      for (var i = 0, len = this._tracks.length; i < len; i++) {
-        var slot = this._tracks[i];
-        // Calculate Slot dimensions
-        // The slotRadius is the radius at the center of the slot
-        var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
-
-        if (slot.isDirect()) {
-          directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
-          slotRadius = directRadius;
-        } else {
-          reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
-          slotRadius = reverseRadius;
-        }
-        residualSlotThickness = slotThickness / 2;
-        // Draw Slot
-        slot.draw(this.canvas, fast, slotRadius, slotThickness);
-
-      }
-
-      // Ruler
-      this.ruler.draw(reverseRadius, directRadius);
-
-      // Legends
-      for (var i = 0, len = this._legends.length; i < len; i++) {
-        this._legends[i].draw(this.ctx);
-      }
-
-      // Labels
-      if (this.globalLabel) {
-        this.labelSet.draw(reverseRadius, directRadius);
-      }
-
-      if (this.debug) {
-        this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
-        this.debug.draw(this.ctx);
-      }
-
-      if (this._testDrawRange) {
-        this.ctx.strokeStyle = 'grey';
-        this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.stroke();
-      }
+      this.layout.draw(fast);
     }
+
+    // draw(fast) {
+    //   var start_time = new Date().getTime();
+    //   this.clear();
+    //   var backboneThickness = CGV.pixel(this.backbone.zoomedThickness);
+    //   var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
+    //   var directRadius = slotRadius + (backboneThickness / 2);
+    //   var reverseRadius = slotRadius - (backboneThickness / 2);
+    //   var spacing = CGV.pixel(this.trackSpacing);
+    //   var visibleRadii = this.canvas.visibleRadii();
+    //
+    //   // All Text should have base line top
+    //   this.ctx.textBaseline = 'top';
+    //
+    //   // Draw Backbone
+    //   this.backbone.draw();
+    //
+    //   var residualSlotThickness = 0;
+    //
+    //   // FetaureSlots
+    //   for (var i = 0, len = this._tracks.length; i < len; i++) {
+    //     var slot = this._tracks[i];
+    //     // Calculate Slot dimensions
+    //     // The slotRadius is the radius at the center of the slot
+    //     var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+    //
+    //     if (slot.isDirect()) {
+    //       directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
+    //       slotRadius = directRadius;
+    //     } else {
+    //       reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
+    //       slotRadius = reverseRadius;
+    //     }
+    //     residualSlotThickness = slotThickness / 2;
+    //     // Draw Slot
+    //     slot.draw(this.canvas, fast, slotRadius, slotThickness);
+    //
+    //   }
+    //
+    //   // Ruler
+    //   this.ruler.draw(reverseRadius, directRadius);
+    //
+    //   // Legends
+    //   for (var i = 0, len = this._legends.length; i < len; i++) {
+    //     this._legends[i].draw(this.ctx);
+    //   }
+    //
+    //   // Labels
+    //   if (this.globalLabel) {
+    //     this.labelSet.draw(reverseRadius, directRadius);
+    //   }
+    //
+    //   if (this.debug) {
+    //     this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
+    //     this.debug.draw(this.ctx);
+    //   }
+    //
+    //   if (this._testDrawRange) {
+    //     this.ctx.strokeStyle = 'grey';
+    //     this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+    //     this.ctx.stroke();
+    //   }
+    // }
 
     // addTrack(track) {
     //   // TODO: error check that this is a track

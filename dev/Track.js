@@ -6,10 +6,10 @@
   class Track {
 
     /**
-     * TEST
+     * Track
      */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
-      this.viewer = viewer;
+    constructor(slot, data = {}, display = {}, meta = {}) {
+      this.slot = slot;
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._arcPlot;
@@ -17,30 +17,36 @@
 
       this._featureStarts = new CGV.CGArray();
 
-      if (data.features) {
-        data.features.forEach((featureData) => {
-          new CGV.Feature(this, featureData);
-        });
-        this.refresh();
-      }
+      // if (data.features) {
+      //   data.features.forEach((featureData) => {
+      //     new CGV.Feature(this, featureData);
+      //   });
+      //   this.refresh();
+      // }
 
-      if (data.arcPlot) {
-        new CGV.ArcPlot(this, data.arcPlot);
-      }
+      // if (data.arcPlot) {
+      //   new CGV.ArcPlot(this, data.arcPlot);
+      // }
     }
 
-    /** * @member {Viewer} - Get or set the *Viewer*
+    /** * @member {Slot} - Get the *Slot*
+     */
+    get slot() {
+      return this._slot
+    }
+
+    set slot(slot) {
+      if (this.slot) {
+        // TODO: Remove if already attached to Slot
+      }
+      this._slot = slot;
+      slot._tracks.push(this);
+    }
+
+    /** * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this._viewer
-    }
-
-    set viewer(viewer) {
-      if (this.viewer) {
-        // TODO: Remove if already attached to Viewer
-      }
-      this._viewer = viewer;
-      viewer._tracks.push(this);
+      return this.slot.viewer
     }
 
     /**
@@ -95,6 +101,11 @@
 
     get hasArcPlot() {
       return this._arcPlot
+    }
+
+    replaceFeatures(features) {
+      this._features = features;
+      this.refresh();
     }
 
     /**

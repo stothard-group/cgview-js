@@ -41,7 +41,12 @@
    * @return {Boolean}
    */
   CGV.validate = function(value, validOptions) {
-    return (validOptions.indexOf(value) != -1)
+    if (validOptions.indexOf(value) != -1) {
+      return true
+    } else {
+      console.error("The value '" + value + "' is not one of the following: " +  validOptions.join(', '))
+      return false
+    }
   }
 
   /**

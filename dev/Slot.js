@@ -11,38 +11,60 @@
     /**
      * Create a new slot.
      */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
-      this.viewer = viewer;
-      this._features = new CGV.CGArray();
+    constructor(layout, data = {}, display = {}, meta = {}) {
+      this.layout = layout;
       this._arcPlot;
+      this._features = new CGV.CGArray();
+      this._tracks = new CGV.CGArray();
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
       this.strand = CGV.defaultFor(data.strand, 'separated')
-      this.position = CGV.defaultFor(data.strand, 'both')
-
-      if (data.features) {
-        data.features.forEach((featureData) => {
-          new CGV.Feature(this, featureData);
-        });
-        this.refresh();
-      }
-
-      if (data.arcPlot) {
-        new CGV.ArcPlot(this, data.arcPlot);
-      }
+      this.position = CGV.defaultFor(data.position, 'both')
+      this.contents = data.contents
+      this.refresh();
     }
 
     /** * @member {Viewer} - Get or set the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this.layout.viewer
     }
 
-    set viewer(viewer) {
-      if (this.viewer) {
-        // TODO: Remove if already attached to Viewer
+    /** * @member {Viewer} - Get or set the *Layout*
+     */
+    get layout() {
+      return this._layout
+    }
+
+    set layout(layout) {
+      if (this.layout) {
+        // TODO: Remove if already attached to layout
       }
-      this._viewer = viewer;
-      viewer._slots.push(this);
+      this._layout = layout;
+      layout._slots.push(this);
+    }
+
+    /** * @member {Object} - Get or set the *Contents*.
+     */
+    get contents() {
+      return this._contents
+    }
+
+    set contents(value) {
+      this._contents = value;
+      // FIXME: Have validation and removal of extra things.
+      if (value.features) {
+        this._contentType = 'features';
+      } else if (value.plot) {
+        this._contentType = 'plot';
+      } else {
+        this._contentType = undefined;
+      }
+    }
+
+    /** * @member {String} - Get the *Content Type*.
+     */
+    get contentType() {
+      return this._contentType
     }
 
     /**
@@ -51,8 +73,6 @@
     get sequence() {
       return this.viewer.sequence
     }
-
-
 
     /**
      * @member {String} - Get or set the strand. Possible values are 'separated' or 'combined'.
@@ -94,56 +114,70 @@
     }
 
 
-    get hasFeatures() {
-      return this._features.length > 0
-    }
-
-    get hasArcPlot() {
-      return this._arcPlot
-    }
+    // get hasFeatures() {
+    //   return this._features.length > 0
+    // }
+    //
+    // get hasArcPlot() {
+    //   return this._arcPlot
+    // }
 
     features(term) {
       return this._features.get(term)
     }
 
-    draw(canvas, fast, slotRadius, slotThickness) {
-      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
-      this._visibleRange = range;
-      this._radius = slotRadius;
-      this._thickness = slotThickness;
-      if (range) {
-        var start = range.start;
-        var stop = range.stop;
-        if (this.hasFeatures) {
-          var featureCount = this._features.length;
-          var largestLength = this.largestFeatureLength;
-          // Case where the largest feature should not be subtracted
-          // _____ Visible
-          // ----- Not Visbile
-          // Do no subtract the largest feature so that the start loops around to before the stop
-          // -----Start_____Stop-----
-          // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-          // _____Stop-----Start_____
-          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
-               (this.sequence.subtractBp(start, stop) > largestLength) ) {
-            start = range.getStartPlus(-largestLength);
-            featureCount = this._featureStarts.countFromRange(start, stop);
-          }
-          if (fast && featureCount > 2000) {
-            canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
-          } else {
-            this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-              this._features[i].draw(canvas, slotRadius, slotThickness, range);
-            })
-          }
-          if (this.viewer.debug && this.viewer.debug.data.n) {
-            var index = this.viewer._tracks.indexOf(this);
-            this.viewer.debug.data.n['slot_' + index] = featureCount;
-          }
-        } else if (this.hasArcPlot) {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, range);
-        }
+    refresh() {
+      if (this.contentType == 'features') {
+        this.updateFeatures();
+      } else if (this.contentType == 'plot') {
+        // this.updatePlot();
       }
+      this.updateTracks();
+    }
+
+    updateFeatures() {
+      this._features = new CGV.CGArray();
+      if (this.contents.features.types) {
+        var featureTypes = new CGV.CGArray(this.contents.features.types);
+        this.viewer.features().each( (i, feature) => {
+          if (featureTypes.contains(feature.type)) {
+            this._features.push(feature);
+          }
+        });
+      }
+    }
+
+
+    // TODO: Create proper descision tree
+    // e.g. reading frame forces strand to be separate
+    updateTracks() {
+      this._tracks = new CGV.CGArray();
+      if (this.strand == 'separated') {
+        var features = this.featuresByStrand();
+        var track = new CGV.Track(this, {strand: 'direct'});
+        track.replaceFeatures(features.direct)
+
+        var track = new CGV.Track(this, {strand: 'reverse'});
+        track.replaceFeatures(features.reverse)
+      } else if (this.strand == 'combined') {
+        var track = new CGV.Track(this, {strand: 'direct'});
+        track.replaceFeatures(this.features());
+
+      }
+    }
+
+    featuresByStrand() {
+      var features = {};
+      features.direct = new CGV.CGArray();
+      features.reverse = new CGV.CGArray();
+      this.features().each( (i, feature) => {
+        if (feature.strand == 1) {
+          features.direct.push(feature);
+        } else if (feature.strand == -1) {
+          features.reverse.push(feature);
+        }
+      });
+      return features
     }
 
   }

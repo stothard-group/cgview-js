@@ -48,6 +48,12 @@
         });
       }
 
+      if (json.plots) {
+        json.plots.forEach((plotData) => {
+          // new CGV.Feature(viewer, featureData);
+        });
+      }
+
       // Load Layout
       viewer.layout = new CGV.Layout(viewer, json.layout);
 

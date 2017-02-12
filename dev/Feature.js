@@ -9,49 +9,75 @@
      * A Feature
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
-      // this.slot = slot;
-      // this.color = data.color;
-      // this._opacity = data.opacity;
       this.viewer = viewer;
       // this._color = new CGV.Color(data.color);
       // this.opacity = parseFloat(data.opacity);
+      this.type = CGV.defaultFor(data.type, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
+      this._strand = CGV.defaultFor(data.strand, 1);
       this.label = new CGV.Label(this, {name: data.label} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
+
+      this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
+      // TEMP
+      this.color = 'blue'
     }
 
     /**
-     * @member {Slot} - Get or set the *Slot*
+     * @member {type} - Get or set the *type*
      */
-    get slot() {
-      return this._slot
+    get type() {
+      return this._type
     }
 
-    set slot(slot) {
-      if (this.slot) {
-        // TODO: Remove if already attached to Slot
-      }
-      this._slot = slot;
-      slot._features.push(this);
+    set type(value) {
+      this._type = value;
     }
 
     /**
-     * @member {Track} - Get or set the *Track*
+     * @member {Boolean} - Get or set the *extractedFromSequence*. These features are
+     * generated directly from the sequence and do not have to be saved when exported JSON.
      */
-    get track() {
-      return this._track
+    get extractedFromSequence() {
+      return this._extractedFromSequence
     }
 
-    set track(track) {
-      if (this.track) {
-        // TODO: Remove if already attached to Track
-      }
-      this._track = track;
-      track._features.push(this);
+    set extractedFromSequence(value) {
+      this._extractedFromSequence = value;
     }
+
+    // /**
+    //  * @member {Slot} - Get or set the *Slot*
+    //  */
+    // get slot() {
+    //   return this._slot
+    // }
+    //
+    // set slot(slot) {
+    //   if (this.slot) {
+    //     // TODO: Remove if already attached to Slot
+    //   }
+    //   this._slot = slot;
+    //   slot._features.push(this);
+    // }
+
+    // /**
+    //  * @member {Track} - Get or set the *Track*
+    //  */
+    // get track() {
+    //   return this._track
+    // }
+    //
+    // set track(track) {
+    //   if (this.track) {
+    //     // TODO: Remove if already attached to Track
+    //   }
+    //   this._track = track;
+    //   track._features.push(this);
+    // }
 
     /**
      * @member {Viewer} - Get the *Viewer*
@@ -68,6 +94,19 @@
       viewer._features.push(this);
     }
 
+    get strand() {
+      return this._strand;
+    }
+
+    isDirect() {
+      // return this.strand == 'direct'
+      return this.strand == 1
+    }
+
+    isReverse() {
+      // return this.strand == 'reverse'
+      return this.strand == -1
+    }
 
     /**
      * @member {Range} - Get or set the range of the feature. All ranges
@@ -134,21 +173,25 @@
       if (color.toString() == 'Color') {
         this._color = color;
       } else {
-        this._color.setColor(color);
+        if (this._color && this._color.toString() == 'Color') {
+          this._color.setColor(color);
+        } else {
+          this._color = new CGV.Color(color);
+        }
       }
     }
 
-    /**
-     * @member {String} - Get or set the opacity. 
-     */
-    get opacity() {
-      // return this._color.opacity
-      return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
-    }
-
-    set opacity(value) {
-      this._color.opacity = value;
-    }
+    // /**
+    //  * @member {String} - Get or set the opacity. 
+    //  */
+    // get opacity() {
+    //   // return this._color.opacity
+    //   return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
+    // }
+    //
+    // set opacity(value) {
+    //   this._color.opacity = value;
+    // }
 
     /**
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *clockwise-arrow*, *counterclockwise-arrow*
@@ -177,7 +220,7 @@
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
-      if (!this.track) return
+      // if (!this.track) return
       if (this.range.overlapsRange(visibleRange)) {
         var start = this.start;
         var stop = this.stop;
