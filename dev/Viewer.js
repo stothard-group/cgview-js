@@ -41,6 +41,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
+      // Initialize Track Divider
+      this.trackDivider = new CGV.Divider(this, ( options.dividers && options.dividers.track ) );
       // Initialize Menu
       this.menu = new CGV.Menu(this);
       // Initialize Help
@@ -258,6 +260,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       canvas.height = this._height;
       this.refreshLegends();
       this.canvas.refreshScales();
+
+      this.layout._adjustProportions();
 
       this.draw(fast);
     }

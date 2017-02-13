@@ -21,6 +21,7 @@
           new CGV.Slot(this, slotData);
         });
       }
+      this._adjustProportions();
     }
 
     /** * @member {Viewer} - Get the *Viewer*
@@ -35,6 +36,61 @@
     // get sequence() {
     //   return this.viewer.sequence
     // }
+
+    /**
+     * Calculate the backbone radius and track proportions based on the Viewer size and
+     * the number of tracks.
+     */
+    _adjustProportions() {
+      var viewer = this.viewer;
+      // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
+      var maxOuterProportion = 0.4;
+      var maxOuterRadius = maxOuterProportion * viewer.minDimension;
+      // Minimum space required at center of map as a proportion of Viewer size
+      var minInnerProportion = 0.15;
+      var minInnerRadius = minInnerProportion * viewer.minDimension;
+      // The maximum amount of space for drawing tracks
+      var dividerSpace = this.tracks().length * (viewer.trackDivider.thickness + viewer.trackSpacing);
+      var trackSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
+      // Max tracknesses in pixels
+      var maxFeatureTrackThickness = 50;
+      var maxPlotTrackThickness = 100;
+      // The maximum thickness ratio between plot and feature tracks. If there is
+      // space try to keep the plot thickness this many times thicker than the feature track thickness.
+      var maxPlotToFeatureRatio = 6;
+      var nPlotTracks = this.tracks().filter( (t) => { return t.type == 'plot' }).length;
+      var nFeatureTracks = this.tracks().filter( (t) => { return t.type == 'feature' }).length;
+      // trackSpace = nPlotTracks * plotThickness + nFeatureTracks * featureThickness
+      // plotThickness = maxPlotToFeatureRatio * featureThickness
+      // Solve:
+      var featureThickness = trackSpace / ( (maxPlotToFeatureRatio * nPlotTracks) + nFeatureTracks );
+      var plotThickness = maxPlotToFeatureRatio * featureThickness;
+      featureThickness = Math.min(featureThickness, maxFeatureTrackThickness);
+      plotThickness = Math.min(plotThickness, maxPlotTrackThickness);
+      // Determine thickness of outside tracks
+      var nOutsideTracks = this.tracks().filter( (t) => { return t.outside });
+      var outsideThickness = 0;
+      nOutsideTracks.forEach( (track) => {
+        if (track.type == 'feature') {
+          outsideThickness += featureThickness;
+        } else if (track.type == 'plot') {
+          outsideThickness += plotThickness;
+        }
+      });
+      // Set backbone radius
+      var backboneRadius = maxOuterRadius - outsideThickness;
+      viewer.backbone.radius = backboneRadius;
+      // Update track thick proportions
+      var featureProportionOfRadius = featureThickness / backboneRadius;
+      var plotProportionOfRadius = plotThickness / backboneRadius;
+      this.tracks().each( (i, track) => {
+        if (track.type == 'feature') {
+          track.proportionOfRadius = featureProportionOfRadius;
+        } else if (track.type == 'plot') {
+          track.proportionOfRadius = plotProportionOfRadius;
+        }
+      });
+    }
 
     slots(term) {
       return this._slots.get(term)
@@ -74,9 +130,9 @@
       var slot, track;
       for (var i = 0, len = this._slots.length; i < len; i++) {
         slot = this._slots[i];
-        // Tracks
-        for (var i = 0, len = slot._tracks.length; i < len; i++) {
-          var track = slot._tracks[i];
+        // Tracks and Dividers
+        for (var j = 0, len = slot._tracks.length; j < len; j++) {
+          var track = slot._tracks[j];
           // Calculate Track dimensions
           // The trackRadius is the radius at the center of the track
           var trackThickness = this._calculateTrackThickness(track.proportionOfRadius);
@@ -90,6 +146,21 @@
           residualTrackThickness = trackThickness / 2;
           // Draw Track
           track.draw(canvas, fast, trackRadius, trackThickness);
+
+          // Calculate Divider dimensions
+          if (viewer.trackDivider.visible) {
+            var dividerThickness = viewer.trackDivider.thickness;
+            if (slot.position == 'outside' || (slot.position == 'both' && track.isDirect()) ) {
+              directRadius += spacing + residualTrackThickness + dividerThickness;
+              trackRadius = directRadius;
+            } else {
+              reverseRadius -= spacing + residualTrackThickness + dividerThickness;
+              trackRadius = reverseRadius;
+            }
+            residualTrackThickness = dividerThickness / 2;
+            // Draw Track Divider
+            viewer.trackDivider.draw(trackRadius);
+          }
         }
       }
 

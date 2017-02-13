@@ -48,6 +48,9 @@
         });
       }
 
+      if (json.dividers) {
+      }
+
       if (json.plots) {
         json.plots.forEach((plotData) => {
           // new CGV.Feature(viewer, featureData);

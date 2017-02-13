@@ -13,7 +13,6 @@
         "fontColor": "black"
       },
       "backbone": {
-        "radius": 100,
         "color": "grey",
         "thickness": 5
       },
@@ -48,35 +47,46 @@
     "featureTypes": [
       {
         "name": "CDS",
-        "decoration": "arrow",
-        "legend": "CDS"
+        "decoration": "arrow"
       },
       {
         "name": "tRNA",
-        "decoration": "arrow",
-        "legend": "tRNA"
+        "decoration": "arrow"
       },
       {
         "name": "rRNA",
-        "decoration": "arrow",
-        "legend": "rRNA"
+        "decoration": "arrow"
       },
       {
         "name": "A",
-        "decoration": "arrow",
-        "legend": "Other"
+        "decoration": "arrow"
       },
       {
         "name": "B",
-        "decoration": "arrow",
-        "legend": "Other"
+        "decoration": "arrow"
+      },
+      {
+        "name": "blast",
+        "decoration": "score",
+        "offset": 0
       }
     ],
     "legend": {
       "legendItems": [
         {
           "text": "CDS",
-          "swatchColor": "rgba(0,0,153,0.5)"
+          "swatchColor": "rgba(0,0,153,0.5)",
+          "describes": {
+            "type": "CDS"
+          }
+        },
+        {
+          "text": "Blast 1",
+          "swatchColor": "rgba(0,0,153,0.5)",
+          "describes": {
+            "type": "blast",
+            "source": "blast-1"
+          }
         },
         {
           "text": "tRNA",
@@ -130,6 +140,24 @@
           "decoration": "block",
           "fontColor": "red"
         }
+      },
+      {
+        "type": "blast_1",
+        "start": 3000,
+        "stop": 4000,
+        "strand": -1
+      },
+      {
+        "type": "blast_1",
+        "start": 500,
+        "stop": 700,
+        "strand": 1
+      },
+      {
+        "type": "blast_1",
+        "start": 2000,
+        "stop": 3500,
+        "strand": 1
       }
     ],
     "plots": [],
@@ -137,15 +165,14 @@
       "slots": [
         {
           "name": "Features",
-          "featureTypes": ["CDS", "tRNA", "rRNA"],
+          "readingFrame": "combined",
+          "strand": "separated",
+          "position": "both",
           "contents": {
             "features": {
               "types": ["CDS", "tRNA", "rRNA"]
             }
-          },
-          "readingFrame": "combined",
-          "strand": "separated",
-          "position": "both"
+          }
         },
         {
           "name": "Blast 1",
@@ -154,7 +181,7 @@
           "position": "inside",
           "contents": {
             "features": {
-              "name": "blast_1"
+              "types": ["blast_1"]
             }
           }
         },
@@ -180,7 +207,6 @@
         },
         {
           "name": "Contigs",
-          "analysis": "contigs",
           "position": "outside",
           "contents": {
             "features": {

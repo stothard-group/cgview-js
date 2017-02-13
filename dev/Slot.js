@@ -113,15 +113,6 @@
       }
     }
 
-
-    // get hasFeatures() {
-    //   return this._features.length > 0
-    // }
-    //
-    // get hasArcPlot() {
-    //   return this._arcPlot
-    // }
-
     features(term) {
       return this._features.get(term)
     }
@@ -148,21 +139,35 @@
     }
 
 
-    // TODO: Create proper descision tree
-    // e.g. reading frame forces strand to be separate
     updateTracks() {
       this._tracks = new CGV.CGArray();
-      if (this.strand == 'separated') {
-        var features = this.featuresByStrand();
-        var track = new CGV.Track(this, {strand: 'direct'});
-        track.replaceFeatures(features.direct)
+      if (this.readingFrame == 'separated') {
+        var features = this.featuresByReadingFrame();
+        // Direct Reading Frames
+        for (var rf of [1, 2, 3]) {
+          var track = new CGV.Track(this, {strand: 'direct'});
+          track.replaceFeatures(features['rf_plus_' + rf]);
+        }
+        // Revers Reading Frames
+        for (var rf of [1, 2, 3]) {
+          var track = new CGV.Track(this, {strand: 'reverse'});
+          track.replaceFeatures(features['rf_minus_' + rf]);
+        }
+      } else {
+        if (this.strand == 'separated') {
+          var features = this.featuresByStrand();
+          // Direct Track
+          var track = new CGV.Track(this, {strand: 'direct'});
+          track.replaceFeatures(features.direct)
+          // Reverse Track
+          var track = new CGV.Track(this, {strand: 'reverse'});
+          track.replaceFeatures(features.reverse)
+        } else if (this.strand == 'combined') {
+          // Combined Track
+          var track = new CGV.Track(this, {strand: 'direct'});
+          track.replaceFeatures(this.features());
 
-        var track = new CGV.Track(this, {strand: 'reverse'});
-        track.replaceFeatures(features.reverse)
-      } else if (this.strand == 'combined') {
-        var track = new CGV.Track(this, {strand: 'direct'});
-        track.replaceFeatures(this.features());
-
+        }
       }
     }
 
@@ -171,10 +176,34 @@
       features.direct = new CGV.CGArray();
       features.reverse = new CGV.CGArray();
       this.features().each( (i, feature) => {
-        if (feature.strand == 1) {
-          features.direct.push(feature);
-        } else if (feature.strand == -1) {
+        if (feature.strand == -1) {
           features.reverse.push(feature);
+        } else {
+          features.direct.push(feature);
+        }
+      });
+      return features
+    }
+
+    featuresByReadingFrame() {
+      var features = {
+        rf_plus_1: new CGV.CGArray(),
+        rf_plus_2: new CGV.CGArray(),
+        rf_plus_3: new CGV.CGArray(),
+        rf_minus_1: new CGV.CGArray(),
+        rf_minus_2: new CGV.CGArray(),
+        rf_minus_3: new CGV.CGArray()
+      };
+      var rf;
+      this.features().each( (i, feature) => {
+        if (feature.strand == -1) {
+          rf = (this.sequence.length - feature.stop + 1) % 3;
+          if (rf == 0) { rf = 3; }
+          features['rf_minus_' + rf].push(feature);
+        } else {
+          rf = feature.start % 3;
+          if (rf == 0) { rf = 3; }
+          features['rf_plus_' + rf].push(feature);
         }
       });
       return features

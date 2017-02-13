@@ -14,6 +14,8 @@
       this._features = new CGV.CGArray();
       this._arcPlot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
+      //TEMP
+      this.type = 'feature'
 
       this._featureStarts = new CGV.CGArray();
 
@@ -54,6 +56,31 @@
      */
     get sequence() {
       return this.viewer.sequence
+    }
+
+    /**
+     * @member {String} - Get the position of the track in relation to the backbone
+     */
+    get position() {
+      if (this.slot.position == 'both') {
+        return (this.isDirect() ? 'outside' : 'inside')
+      } else {
+        return this.slot.position
+      }
+    }
+
+    /**
+     * @member {Boolean} - Is the track position inside the backbone
+     */
+    get inside() {
+      return this.position == 'inside'
+    }
+
+    /**
+     * @member {Boolean} - Is the track position outside the backbone
+     */
+    get outside() {
+      return this.position == 'outside'
     }
 
     /**
