@@ -1,0 +1,71 @@
+cgview:
+  settings:
+    ruler:
+      font: 'sans-serif, plain, 10'
+      fontColor: 'black'
+    backbone:
+      color: 'grey'
+      thickness: 5
+    dividers:
+      track:
+        show: true
+        thickness: 1
+        color: 'black'
+  sequence:
+    font: 'san-serif, plain, 10'
+    color: 'black'
+  featureTypes:
+    - name: 'CDS'
+      decoration: 'arrow'
+    - name: 'tRNA'
+      decoration: 'arrow'
+    - name: 'rRNA'
+      decoration: 'arrow'
+    - name: 'blast'
+      decoration: 'arc'
+    - name: 'codon'
+      decoration: 'arc'
+    - name: 'DEFAULT'
+      decoration: 'arrow'
+  captions:
+    - id: "title"
+      position: "lower-center"
+      fontColor: "orange"
+      backgroundColor: "rgba(255,255,255,0.4)"
+      font: "san-serif, plain, 24"
+    - position: "middle-center"
+      fontColor: "red"
+      backgroundColor: "rgba(255,255,255,0.4)"
+      font: "san-serif, plain, 14"
+      captionItems:
+        - text: 'Middle Earth'
+    - position: "middle-left"
+      fontColor: "red"
+      backgroundColor: "rgba(255,255,255,0.4)"
+      font: "san-serif, plain, 14"
+      captionItems:
+        - text: 'Left Earth'
+    - position: "middle-right"
+      fontColor: "red"
+      backgroundColor: "rgba(255,255,255,0.4)"
+      font: "san-serif, plain, 14"
+      captionItems:
+        - text: 'Right Earth'
+  legend:
+    position: 'upper-right'
+    alignment: 'left'
+    fontColor: 'black'
+    backgroundColor: 'white'
+    font: 'sans-serif, plain, 14'
+    default: 'Other'
+    legendItems:
+      - text: 'CDS'
+        swatchColor: 'rgba(0,0,153,0.5)'
+      - text: 'tRNA'
+        swatchColor: 'rgba(153,0,153,0.5)'
+      - text: 'rRNA'
+        swatchColor: 'rgba(0,153,53,0.5)'
+      - text: 'Other'
+        swatchColor: 'rgba(153,153,153,0.5)'
+
+

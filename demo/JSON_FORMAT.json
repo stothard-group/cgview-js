@@ -127,7 +127,8 @@
         "start": 100,
         "stop": 1000,
         "strand": -1,
-        "label": "rnl"
+        "label": "rnl",
+        "source": "seqeuence-features"
       },
       {
         "type": "CDS",
@@ -135,6 +136,7 @@
         "stop": 2000,
         "strand": 1,
         "label": "rnl2",
+        "source": "seqeuence-features",
         "display": {
           "legend": "Custom Legend",
           "decoration": "block",

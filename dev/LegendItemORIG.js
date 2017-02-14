@@ -9,7 +9,7 @@
    * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
    * or arcPlot color will use the swatchColor of *legendItem*.
    */
-  class LegendItem extends CGV.CaptionItem {
+  class LegendItem {
 
     /**
      * Create a new LegendItem. By default a legendItem will use its parent legend font, fontColor and textAlignment.
@@ -30,16 +30,15 @@
      * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
      */
     constructor(legend, data = {}, meta = {}) {
-      super(legend)
       this.legend = legend;
       this.meta = CGV.merge(data.meta, meta);
       this.text = CGV.defaultFor(data.text, '');
       this.font = data.font
       this.fontColor = data.fontColor;
       this.textAlignment = data.textAlignment;
-
       this.drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
+      this.swatchOpacity = CGV.defaultFor(data.swatchOpacity, 1);
     }
 
 
@@ -64,6 +63,17 @@
     }
 
     /**
+     * @member {String} - Get or set the text
+     */
+    get text() {
+      return this._text
+    }
+
+    set text(text) {
+      this._text = text;
+    }
+
+    /**
      * @member {Boolean} - Get or set the drawSwatch property. If true a swatch will be
      * drawn beside the legendItem text.
      */
@@ -73,6 +83,21 @@
 
     set drawSwatch(value) {
       this._drawSwatch = value;
+    }
+
+    /**
+     * @member {String} - Get or set the text alignment. Defaults to the parent *Legend* text alignment. Possible values are *left*, *center*, or *right*.
+     */
+    get textAlignment() {
+      return this._textAlignment
+    }
+
+    set textAlignment(value) {
+      if (value == undefined) {
+        this._textAlignment = this.legend.textAlignment;
+      } else {
+        this._textAlignment = value;
+      }
     }
 
     /**
@@ -89,8 +114,45 @@
       return this._width
     }
 
-    get swatchWidth() {
-      return this.height
+    /**
+     * @member {Number} - Get the height in pixels. This will be the same as the font size.
+     */
+    get height() {
+      return this.font.height
+    }
+
+    /**
+     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get font() {
+      return this._font
+    }
+
+    set font(value) {
+      if (value == undefined) {
+        this._font = this.legend.font;
+      } else if (value.toString() == 'Font') {
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
+    }
+
+    /**
+     * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get fontColor() {
+      return this._fontColor
+    }
+
+    set fontColor(color) {
+      if (color == undefined) {
+        this._fontColor = this.legend._fontColor;
+      } else if (color.toString() == 'Color') {
+        this._fontColor = color;
+      } else {
+        this._fontColor = new CGV.Color(color);
+      }
     }
 
     /**
@@ -108,32 +170,16 @@
       }
     }
 
-    textX() {
-      if (this.drawSwatch) {
-        var legend = this.legend;
-        if (this.textAlignment == 'left') {
-          return this.swatchX() + this.swatchWidth + legend.swatchPadding;
-        } else if (this.textAlignment == 'center') {
-          return legend.originX + (legend.width / 2);
-        } else if (this.textAlignment == 'right') {
-          return this.swatchX() - legend.swatchPadding;
-        }
-      } else {
-        super.textX();
-      }
+    /**
+     * @member {String} - Get or set the opacity.
+     */
+    get swatchOpacity() {
+      return this._swatchColor.opacity
     }
 
-    swatchX() {
-      var legend = this.legend;
-      if (this.textAlignment == 'left') {
-        return legend.originX + legend.padding;
-      } else if (this.textAlignment == 'center') {
-        return legend.originX + legend.padding;
-      } else if (this.textAlignment == 'right') {
-        return legend.originX + legend.width - legend.padding - this.swatchWidth;
-      }
+    set swatchOpacity(value) {
+      this._swatchColor.opacity = value;
     }
-
 
     _swatchContainsPoint(pt) {
       var x = this.legend.originX + this.legend.padding;

@@ -11,8 +11,8 @@
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
       // this._color = new CGV.Color(data.color);
-      // this.opacity = parseFloat(data.opacity);
       this.type = CGV.defaultFor(data.type, '');
+      this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this._strand = CGV.defaultFor(data.strand, 1);
       this.label = new CGV.Label(this, {name: data.label} );
@@ -22,8 +22,13 @@
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
-      // TEMP
-      this.color = 'blue'
+
+      if (data.legend) {
+        this.legendItem  = viewer.legend._legendItems.find( (i) => { return i.text == data.legend });
+      }
+      if (!this.legendItem) {
+        this._color = new CGV.Color('black');
+      }
     }
 
     /**
@@ -169,28 +174,17 @@
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
-    set color(color) {
-      if (color.toString() == 'Color') {
-        this._color = color;
-      } else {
-        if (this._color && this._color.toString() == 'Color') {
-          this._color.setColor(color);
-        } else {
-          this._color = new CGV.Color(color);
-        }
-      }
-    }
-
-    // /**
-    //  * @member {String} - Get or set the opacity. 
-    //  */
-    // get opacity() {
-    //   // return this._color.opacity
-    //   return (this.legendItem) ? this.legendItem.swatchOpacity : this._color.opacity;
-    // }
-    //
-    // set opacity(value) {
-    //   this._color.opacity = value;
+    // FIXME: should you be able to change feature color directly??
+    // set color(color) {
+    //   if (color.toString() == 'Color') {
+    //     this._color = color;
+    //   } else {
+    //     if (this._color && this._color.toString() == 'Color') {
+    //       this._color.setColor(color);
+    //     } else {
+    //       this._color = new CGV.Color(color);
+    //     }
+    //   }
     // }
 
     /**

@@ -1,23 +1,60 @@
 require 'json'
+require 'yaml'
 require 'bio'
 
 
 class CGViewJSON
 
-  attr_accessor :config, :options, :seq_object, :sequence, :cgview, :seq_type, :features
+  VERSION = '1.0'
+
+  attr_accessor :config, :options, :seq_object, :sequence, :cgview, :seq_type, :features,
+                :slots, :debug, :captions
 
   def initialize(sequence_path, options={})
-    @cgview = {}
+    @cgview = initialize_cgview
     @options = options
     @features = []
+    @debug = options[:debug]
     read_config(options[:config]) if options[:config]
     read_sequence(sequence_path)
     extract_features
+    build_feature_types
+    build_legend
+    build_captions
+    build_slots
     build_cgview
   end
 
+  def initialize_cgview
+    {
+      version: VERSION,
+      settings: {},
+      sequence: {},
+      featureTypes: [],
+      captions: [],
+      legend: {},
+      features: [],
+      layout: { slots: [] }
+    }
+
+  end
+
   def read_config(path)
-    @config = {}
+    @config = symbolize(YAML.load_file(path)['cgview'])
+    @cgview[:settings] = @config[:settings]
+    @cgview[:sequence] = @config[:sequence]
+    @cgview[:legend] = @config[:legend]
+  end
+
+  def symbolize(obj)
+    if obj.is_a? Hash
+      return obj.inject({}) do |memo, (k, v)|
+        memo.tap { |m| m[k.to_sym] = symbolize(v) }
+      end
+    elsif obj.is_a? Array
+      return obj.map { |memo| symbolize(memo) }
+    end
+    obj
   end
 
   def read_sequence(path)
@@ -51,27 +88,119 @@ class CGViewJSON
       next if features_to_skip.include?(feature.feature)
       next if feature.position.nil?
       locations = Bio::Locations.new(feature.position)
-      if locations.length > 1
+      unless locations.first == locations.last
         # FIXME Complex Feature...What Now
         next
       end
-      location = locations.first
-      @features.push({
-        start: location.from,
-        stop: location.to,
-        strand: location.strand
-      })
+      # Feature Name
       # NOTE: This converts the array of qualifiers to a easily accessible hash.
       # However, there is a risk some information is lost when two or more qualifiers are the same.
       qualifiers = feature.assoc
-      # WHY locus_tag and not gene
-      gene_name = qualifiers['locus_tag']
+      name = qualifiers['gene'] || qualifiers['locus_tag'] || qualifiers['note'] || feature.feature
+      # Feature Location
+      location = locations.first
+      # Create Feature
+      @features.push({
+        type: feature.feature,
+        label: name,
+        start: location.from,
+        stop: location.to,
+        strand: location.strand,
+        source: "sequence-features"
+      })
     end
   end
 
+  def build_feature_types
+    types = []
+    config_types = {}
+    default_decoration = 'arrow' # This can be overridden in config file
+    # Read config file types
+    if @config[:featureTypes].is_a?(Array)
+      @config[:featureTypes].each { |t| config_types[t[:name]] = t }
+      if config_types['DEFAULT']
+        default_decoration = config_types['DEFAULT'][:decoration]
+      end
+    end
+    feature_type_names = @features.map { |f| f[:type] }.uniq
+    # Add config feature types that are present in features
+    config_names_to_add = config_types.keys - feature_type_names
+    config_names_to_add.each do |name|
+      next if name == 'DEFAULT'
+      types << config_types[name]
+    end
+    # Create new feature types and use default decoration
+    missing_type_names = feature_type_names - config_types.keys
+    missing_type_names.each do |name|
+      types << { name: name, decoration: default_decoration }
+    end
+    @cgview[:featureTypes] += types
+  end
+
+  def build_legend
+    config_items = {}
+    default_legend_name = nil
+    # Read config file legend items
+    if @config[:legend] && @config[:legend][:legendItems].is_a?(Array)
+      @config[:legend][:legendItems].each { |i| config_items[i[:text]] = i }
+      default_legend_name =  @config[:legend][:default]
+    end
+    # FIXME: add default legend if one does not exist
+    @features.each do |feature|
+      if config_items[feature[:type]]
+        feature[:legend] = config_items[feature[:type]][:text]
+      else
+        feature[:legend] = config_items[default_legend_name][:text]
+      end
+    end
+    # Intersection of legend names (They will be in the same order as the config
+    feature_legend_names = config_items.keys & @features.map { |f| f[:legend] }.uniq
+    items = []
+    feature_legend_names.each { |n| items.push config_items[n] }
+    @cgview[:legend][:legendItems] = items
+  end
+
+  def build_captions
+    @captions = []
+    config_captions = @config[:captions].is_a?(Array) ? @config[:captions] : []
+    config_captions.each do |caption|
+      if caption[:captionItems]
+        @captions << caption
+      elsif caption[:id] == 'title' && map_title != ""
+        caption[:captionItems] = [ { text:  map_title}]
+        @captions << caption
+      end
+    end
+  end
+
+  def build_slots
+    @slots = [
+      {
+        name: 'Features',
+        readingFrame: 'combined',
+        strand: 'separated',
+        position: 'both',
+        contents: {
+          features: {
+            source: 'sequence-features'
+          }
+        }
+      }
+    ]
+  end
+
   def build_cgview
-    @cgview[:mapTitle] = map_title
-    @cgview[:sequence] = {seq: @sequence}
+    # @cgview[:mapTitle] = map_title
+    if @debug
+      @cgview[:sequence][:seq] = "SEQUENCE WOULD GO HERE"
+      @cgview[:features] += @features[1..5]
+      @cgview[:layout][:slots] += @slots
+    else
+      @cgview[:sequence][:seq] = @sequence
+      @cgview[:features] += @features
+      @cgview[:layout][:slots] += @slots
+      @cgview[:captions] += @captions
+    end
   end
 
   def map_title
@@ -85,7 +214,7 @@ class CGViewJSON
   end
 
   def to_json
-    JSON.generate(@xml_hash)
+    JSON.generate({ cgview: @cgview })
   end
 
   def write_json(path)
@@ -94,6 +223,9 @@ class CGViewJSON
 
 end
 
-cgview = CGViewJSON.new("data/sequences/NC_001823.gbk")
+debug = false
+# debug = true
+cgview = CGViewJSON.new("data/sequences/NC_001823.gbk", config: "scripts/cgview_json_builder/config.yaml", debug: debug)
 
-
+cgview.write_json("/Users/jason/workspace/stothard_group/cgview-js/data/tests/builder.json")
+puts cgview.debug

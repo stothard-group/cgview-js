@@ -39,7 +39,16 @@
       // Backbone
       viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
 
-      // Create legends
+      // Load Captions
+      if (json.captions) {
+        json.captions.forEach((captionData) => {
+          new CGV.Caption(viewer, captionData);
+        });
+      }
+
+      // Load Legend
+      viewer.legend = new CGV.Legend(viewer, json.legend);
+
       // Create featuerTypes
       // Create features
       if (json.features) {

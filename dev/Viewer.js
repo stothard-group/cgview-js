@@ -35,8 +35,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._plots = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
-      this._legends = new CGV.CGArray();
 
+      // Initial Legend
+      this.legend = new CGV.Legend(this, options.legend);
       // Initialize Sequence
       this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
@@ -258,7 +259,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       canvas.canvasNode.style.height = this._height + 'px';
       canvas.width = this._width;
       canvas.height = this._height;
-      this.refreshLegends();
+      this.refreshCaptions();
+      this.legend.refresh();
       this.canvas.refreshScales();
 
       this.layout._adjustProportions();
@@ -312,11 +314,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       // return plots.get(term);
     }
 
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Captions or a single Caption.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    captions(term) {
+      return this._captions.get(term);
+    }
+
+
     swatchedLegendItems(term) {
       var items = new CGV.CGArray();
-      for (var i=0, len=this._legends.length; i < len; i++) {
-        items.merge( this._legends[i]._legendItems.filter( (item) => {return item.drawSwatch}) );
-      }
+      items.merge( this.legend._legendItems.filter( (item) => {return item.drawSwatch}) );
       return items.get(term);
     }
 
@@ -441,9 +451,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     // }
 
 
-    refreshLegends() {
-      for (var i = 0, len = this._legends.length; i < len; i++) {
-        this._legends[i].refresh();
+    refreshCaptions() {
+      for (var i = 0, len = this._captions.length; i < len; i++) {
+        this._captions[i].refresh();
       }
     }
 

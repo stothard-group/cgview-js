@@ -21,6 +21,9 @@
           new CGV.Slot(this, slotData);
         });
       }
+      //TODO:
+      //console.log the number of features and plots not associated with a slot
+      //
       this._adjustProportions();
     }
 
@@ -44,7 +47,7 @@
     _adjustProportions() {
       var viewer = this.viewer;
       // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
-      var maxOuterProportion = 0.4;
+      var maxOuterProportion = 0.35;
       var maxOuterRadius = maxOuterProportion * viewer.minDimension;
       // Minimum space required at center of map as a proportion of Viewer size
       var minInnerProportion = 0.15;
@@ -53,7 +56,7 @@
       var dividerSpace = this.tracks().length * (viewer.trackDivider.thickness + viewer.trackSpacing);
       var trackSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
       // Max tracknesses in pixels
-      var maxFeatureTrackThickness = 50;
+      var maxFeatureTrackThickness = 30;
       var maxPlotTrackThickness = 100;
       // The maximum thickness ratio between plot and feature tracks. If there is
       // space try to keep the plot thickness this many times thicker than the feature track thickness.
@@ -104,6 +107,26 @@
       return tracks.get(term);
     }
 
+    /*
+     * Draw plan:
+     * - return if drawTime && drawTime is < 20
+     * - set drawTime = 0
+     * - trackIndex = 0
+     * - clearTimeout
+     * - draw backbone
+     * - calculate radii for tracks and dividers (make additional divider type for map perimeter/inner/outer/
+     * - draw dividers and ruler
+     * - draw tracks
+     *     drawInterupt = true
+     *     drawTrack
+   *         draw track trackIndex
+   *         if last index
+   *           drawTime = undefined
+   *         else
+   *           increase index
+   *           set timeOut to drawTrack in 1ms
+     *
+     */
     draw(fast) {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
@@ -128,10 +151,10 @@
       var residualTrackThickness = 0;
 
       var slot, track;
-      for (var i = 0, len = this._slots.length; i < len; i++) {
+      for (var i = 0, slotLen = this._slots.length; i < slotLen; i++) {
         slot = this._slots[i];
         // Tracks and Dividers
-        for (var j = 0, len = slot._tracks.length; j < len; j++) {
+        for (var j = 0, trackLen = slot._tracks.length; j < trackLen; j++) {
           var track = slot._tracks[j];
           // Calculate Track dimensions
           // The trackRadius is the radius at the center of the track
@@ -166,15 +189,16 @@
 
       // Ruler
       viewer.ruler.draw(reverseRadius, directRadius);
-
-      // Legends
-      for (var i = 0, len = viewer._legends.length; i < len; i++) {
-        viewer._legends[i].draw(ctx);
+      // Legend
+      viewer.legend.draw(ctx);
+      // Captions
+      for (var i = 0, len = viewer._captions.length; i < len; i++) {
+        viewer._captions[i].draw(ctx);
       }
 
       // Labels
       if (viewer.globalLabel) {
-        // viewer.labelSet.draw(reverseRadius, directRadius);
+        viewer.labelSet.draw(reverseRadius, directRadius);
       }
 
       if (viewer.debug) {

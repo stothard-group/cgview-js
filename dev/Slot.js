@@ -82,7 +82,7 @@
     }
 
     set strand(value) {
-      if (CGV.validate(value, ['separated', 'combined'])) {
+      if ( CGV.validate(value, ['separated', 'combined']) ) {
         this._strand = value;
       }
     }
@@ -128,7 +128,14 @@
 
     updateFeatures() {
       this._features = new CGV.CGArray();
-      if (this.contents.features.types) {
+      if (this.contents.features.source) {
+        this.viewer.features().each( (i, feature) => {
+          if (feature.source == this.contents.features.source) {
+          console.log('asdf')
+            this._features.push(feature);
+          }
+        });
+      } else if (this.contents.features.types) {
         var featureTypes = new CGV.CGArray(this.contents.features.types);
         this.viewer.features().each( (i, feature) => {
           if (featureTypes.contains(feature.type)) {
