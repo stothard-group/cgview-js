@@ -50,6 +50,12 @@
       viewer.legend = new CGV.Legend(viewer, json.legend);
 
       // Create featuerTypes
+      if (json.featureTypes) {
+        json.featureTypes.forEach((featureTypeData) => {
+          new CGV.FeatureType(viewer, featureTypeData);
+        });
+      }
+
       // Create features
       if (json.features) {
         json.features.forEach((featureData) => {

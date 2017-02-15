@@ -88,7 +88,17 @@
         this._seq = this._seq.toUpperCase();
         this._length = value.length;
         this._updateScale();
+        this._sequenceExtractor = new CGV.SequenceExtractor(this);
+      } else {
+        this._sequenceExtractor = undefined;
       }
+    }
+
+    /**
+     * @member {Number} - Get the SeqeunceExtractor. Only available if the *seq* property is set.
+     */
+    get sequenceExtractor() {
+      return this._sequenceExtractor
     }
 
     /**
@@ -98,12 +108,6 @@
       return this._length
     }
 
-    _updateScale() {
-      this.canvas.scale.bp = d3.scaleLinear()
-        .domain([1, this.length])
-        .range([-1/2*Math.PI, 3/2*Math.PI]);
-      this.viewer._updateZoomMax();
-    }
     set length(value) {
       if (value) {
         if (!this.seq) {
@@ -113,6 +117,13 @@
           console.error('Can not change the sequence length of *seq* is set.');
         }
       }
+    }
+
+    _updateScale() {
+      this.canvas.scale.bp = d3.scaleLinear()
+        .domain([1, this.length])
+        .range([-1/2*Math.PI, 3/2*Math.PI]);
+      this.viewer._updateZoomMax();
     }
 
     /**
@@ -249,6 +260,21 @@
         ctx.restore();
       }
 
+    }
+
+    /**
+     * Returns an array of Ranges where the pattern was located. The pattern should be a string.
+     * @param {String} pattern - RegEx or String Pattern to search for.
+     * @return {Array)
+     */
+    findPattern(pattern) {
+      var re = new RegExp(pattern, 'g');
+      var ranges = [];
+      var match;
+      while ( (match = re.exec(this.seq)) != null) {
+        ranges.push( new CGV.CGRange(this, match.index, (match.index + match[0].length - 1) ) );
+      }
+      return ranges
     }
 
     // _drawSequenceDots() {

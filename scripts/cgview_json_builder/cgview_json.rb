@@ -44,6 +44,7 @@ class CGViewJSON
     @cgview[:settings] = @config[:settings]
     @cgview[:sequence] = @config[:sequence]
     @cgview[:legend] = @config[:legend]
+    @cgview[:layout][:slots] = @config[:layout] && @config[:layout][:slots] || []
   end
 
   def symbolize(obj)
@@ -123,10 +124,9 @@ class CGViewJSON
       end
     end
     feature_type_names = @features.map { |f| f[:type] }.uniq
-    # Add config feature types that are present in features
-    config_names_to_add = config_types.keys - feature_type_names
+    # Add config feature types that are present in features (Intersection)
+    config_names_to_add = config_types.keys & feature_type_names
     config_names_to_add.each do |name|
-      next if name == 'DEFAULT'
       types << config_types[name]
     end
     # Create new feature types and use default decoration
@@ -190,18 +190,17 @@ class CGViewJSON
   end
 
   def build_cgview
-    # @cgview[:mapTitle] = map_title
     if @debug
       @cgview[:sequence][:seq] = "SEQUENCE WOULD GO HERE"
       @cgview[:features] += @features[1..5]
-      @cgview[:layout][:slots] += @slots
     else
       @cgview[:sequence][:seq] = @sequence
       @cgview[:features] += @features
-      @cgview[:layout][:slots] += @slots
-      @cgview[:captions] += @captions
     end
+    @cgview[:layout][:slots] += @slots
+    @cgview[:captions] += @captions
   end
+
 
   def map_title
     if @options[:mapTitle]
@@ -225,7 +224,10 @@ end
 
 debug = false
 # debug = true
-cgview = CGViewJSON.new("data/sequences/NC_001823.gbk", config: "scripts/cgview_json_builder/config.yaml", debug: debug)
+file = "data/sequences/NC_001823.gbk"
+# file = "data/sequences/NC_000907.gbk"
+# file = "data/sequences/NC_000913.gbk"
+cgview = CGViewJSON.new(file, config: "scripts/cgview_json_builder/config.yaml", debug: debug)
 
 cgview.write_json("/Users/jason/workspace/stothard_group/cgview-js/data/tests/builder.json")
-puts cgview.debug
+

@@ -84,6 +84,7 @@
     set strand(value) {
       if ( CGV.validate(value, ['separated', 'combined']) ) {
         this._strand = value;
+        this.updateTracks();
       }
     }
 
@@ -97,6 +98,7 @@
     set readingFrame(value) {
       if (CGV.validate(value, ['separated', 'combined'])) {
         this._readingFrame = value;
+        this.updateTracks();
       }
     }
 
@@ -128,14 +130,24 @@
 
     updateFeatures() {
       this._features = new CGV.CGArray();
-      if (this.contents.features.source) {
+      if (this.contents.features.sequence) {
+        // Features extracted from the  Sequence
+        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+        if (sequenceExtractor) {
+          this._features.merge(sequenceExtractor.extractFeatures(this.contents.features));
+        } else {
+          console.error('No sequence is available to extract features from');
+        }
+
+      } else if (this.contents.features.source) {
+        // Features with particular Source
         this.viewer.features().each( (i, feature) => {
           if (feature.source == this.contents.features.source) {
-          console.log('asdf')
             this._features.push(feature);
           }
         });
       } else if (this.contents.features.types) {
+        // Features with paricular Type
         var featureTypes = new CGV.CGArray(this.contents.features.types);
         this.viewer.features().each( (i, feature) => {
           if (featureTypes.contains(feature.type)) {

@@ -35,6 +35,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._plots = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
+      this._featureTypes = new CGV.CGArray();
 
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
@@ -321,6 +322,15 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     captions(term) {
       return this._captions.get(term);
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.js.html) of featureTypes or a single featureTypes.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    featureTypes(term) {
+      return this._featureTypes.get(term);
     }
 
 

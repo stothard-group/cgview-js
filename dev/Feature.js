@@ -19,7 +19,7 @@
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
       // Decoration: arc, clockwise-arrow, counterclockwise-arrow
-      this._decoration = CGV.defaultFor(data.decoration, 'arc');
+      // this._decoration = CGV.defaultFor(data.decoration, 'arc');
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
@@ -40,6 +40,18 @@
 
     set type(value) {
       this._type = value;
+      this.featureType  = this.viewer.featureTypes().find( (i) => { return i.name == value });
+    }
+
+    /**
+     * @member {featureType} - Get or set the *featureType*
+     */
+    get featureType() {
+      return this._featureType
+    }
+
+    set featureType(value) {
+      this._featureType = value;
     }
 
     /**
@@ -188,15 +200,24 @@
     // }
 
     /**
-     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *clockwise-arrow*, *counterclockwise-arrow*
+     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
      */
     get decoration() {
-      return this._decoration;
+      // return (this.featureType) ? this.featureType.decoration : 'arc';
+      if (this.featureType) {
+        if (this.featureType.decoration == 'arrow') {
+          return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
+        } else {
+          return this.featureType.decoration
+        }
+      } else {
+        return 'arc'
+      }
     }
 
-    set decoration(value) {
-      this._decoration = value;
-    }
+    // set decoration(value) {
+    //   this._decoration = value;
+    // }
 
     /**
      * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
