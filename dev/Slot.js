@@ -123,9 +123,19 @@
       if (this.contentType == 'features') {
         this.updateFeatures();
       } else if (this.contentType == 'plot') {
-        // this.updatePlot();
+        this.updatePlot();
       }
       this.updateTracks();
+    }
+
+    updatePlot() {
+      if (this.contents.plot.sequence) {
+        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+        if (sequenceExtractor) {
+          this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
+        }
+      }
+
     }
 
     updateFeatures() {
@@ -157,11 +167,19 @@
       }
     }
 
-
     updateTracks() {
+      if (this.contentType == 'features') {
+        this.updateFeatureTracks();
+      } else if (this.contentType == 'plot') {
+        this.updatePlotTrack();
+      }
+    }
+
+    updateFeatureTracks() {
       this._tracks = new CGV.CGArray();
       if (this.readingFrame == 'separated') {
-        var features = this.featuresByReadingFrame();
+        // var features = this.featuresByReadingFrame();
+        var features = this.sequence.featuresByReadingFrame(this.features());
         // Direct Reading Frames
         for (var rf of [1, 2, 3]) {
           var track = new CGV.Track(this, {strand: 'direct'});
@@ -204,29 +222,12 @@
       return features
     }
 
-    featuresByReadingFrame() {
-      var features = {
-        rf_plus_1: new CGV.CGArray(),
-        rf_plus_2: new CGV.CGArray(),
-        rf_plus_3: new CGV.CGArray(),
-        rf_minus_1: new CGV.CGArray(),
-        rf_minus_2: new CGV.CGArray(),
-        rf_minus_3: new CGV.CGArray()
-      };
-      var rf;
-      this.features().each( (i, feature) => {
-        if (feature.strand == -1) {
-          rf = (this.sequence.length - feature.stop + 1) % 3;
-          if (rf == 0) { rf = 3; }
-          features['rf_minus_' + rf].push(feature);
-        } else {
-          rf = feature.start % 3;
-          if (rf == 0) { rf = 3; }
-          features['rf_plus_' + rf].push(feature);
-        }
-      });
-      return features
+    updatePlotTrack() {
+      this._tracks = new CGV.CGArray();
+      var track = new CGV.Track(this, {type: 'plot'});
+      track._arcPlot = this._arcPlot;
     }
+
 
   }
 

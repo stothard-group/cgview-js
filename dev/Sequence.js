@@ -56,6 +56,39 @@
       return compSeq
     }
 
+    static calcGCContent(seq) {
+      if (seq.length == 0) { return  0.5 }
+      var g = CGV.Sequence.count(seq, 'g');
+      var c = CGV.Sequence.count(seq, 'c');
+      return ( (g + c) / seq.length )
+    }
+
+    static calcGCSkew(seq) {
+      var g = CGV.Sequence.count(seq, 'g');
+      var c = CGV.Sequence.count(seq, 'c');
+      if ( (g + c) == 0 ) { return 0.5 }
+      // Gives value between -1 and 1
+      var value = (g - c) / (g + c);
+      // Scale to a value between 0 and 1
+      return  0.5 + (value / 2);
+    }
+
+    static reverseComplement(seq) {
+      return Sequence.complement( seq.split('').reverse().join('') );
+    }
+
+    static count(seq, pattern) {
+      return (seq.match(new RegExp(pattern, 'gi')) || []).length
+    }
+
+    reverseComplement() {
+      return Sequence.reverseComplement(this.seq)
+    }
+
+    count(pattern) {
+      return Sequence.count(this.seq, pattern)
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // MEMBERS
     //////////////////////////////////////////////////////////////////////////
@@ -157,6 +190,14 @@
       this.bpSpacing = this.font.size;
     }
 
+    get isLinear() {
+      return false
+    }
+
+    get isCircular() {
+      return true
+    }
+
     lengthOfRange(start, stop) {
       if (stop >= start) {
         return stop - start
@@ -202,7 +243,7 @@
       var seq;
       if (this.seq) {
         if (range.spansOrigin()) {
-          seq = this.seq.substr(range.start) + this.seq.substr(0, range.stop);
+          seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
         } else {
           seq = this.seq.substr(range.start - 1, range.length);
         }
@@ -263,18 +304,46 @@
     }
 
     /**
-     * Returns an array of Ranges where the pattern was located. The pattern should be a string.
+     * Returns an array of Ranges where the pattern was located. The pattern can be a RegEx or a String.
+     * This method will return overlapping matches.
      * @param {String} pattern - RegEx or String Pattern to search for.
      * @return {Array)
      */
-    findPattern(pattern) {
+    findPattern(pattern, strand = 1) {
       var re = new RegExp(pattern, 'g');
       var ranges = [];
-      var match;
-      while ( (match = re.exec(this.seq)) != null) {
-        ranges.push( new CGV.CGRange(this, match.index, (match.index + match[0].length - 1) ) );
+      var match, start;
+      var seq = (strand == 1) ? this.seq : this.reverseComplement();
+      while ( (match = re.exec(seq)) != null) {
+        start = (strand == 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
+        ranges.push( new CGV.CGRange(this, start, start + match[0].length - 1 ) );
+        re.lastIndex = match.index + 1;
       }
       return ranges
+    }
+
+    featuresByReadingFrame(features) {
+      var featuresByRF = {
+        rf_plus_1: new CGV.CGArray(),
+        rf_plus_2: new CGV.CGArray(),
+        rf_plus_3: new CGV.CGArray(),
+        rf_minus_1: new CGV.CGArray(),
+        rf_minus_2: new CGV.CGArray(),
+        rf_minus_3: new CGV.CGArray()
+      };
+      var rf;
+      features.each( (i, feature) => {
+        if (feature.strand == -1) {
+          rf = (this.length - feature.stop + 1) % 3;
+          if (rf == 0) { rf = 3; }
+          featuresByRF['rf_minus_' + rf].push(feature);
+        } else {
+          rf = feature.start % 3;
+          if (rf == 0) { rf = 3; }
+          featuresByRF['rf_plus_' + rf].push(feature);
+        }
+      });
+      return featuresByRF
     }
 
     // _drawSequenceDots() {

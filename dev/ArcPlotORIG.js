@@ -149,7 +149,7 @@
         lastProp = currentProp;
         currentProp = prop[i];
         currentBp = bp[i];
-        currentR = slotRadius + (prop[i] - 0.5) * slotThickness;
+        currentR = slotRadius + prop[i] * slotThickness;
         // If going from positive to negative need to save currentR as 0 (slotRadius)
         if (orientation && (lastProp * currentProp < 0)) {
           currentR = slotRadius;

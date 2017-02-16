@@ -15,7 +15,11 @@
       this._arcPlot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       //TEMP
-      this.type = 'feature'
+      if (data.type == 'plot') {
+        this.type = 'plot'
+      } else {
+        this.type = 'feature'
+      }
 
       this._featureStarts = new CGV.CGArray();
 

@@ -33,24 +33,24 @@ cgview:
       fontColor: "orange"
       backgroundColor: "rgba(255,255,255,0.4)"
       font: "san-serif, plain, 24"
-    - position: "middle-center"
-      fontColor: "red"
-      backgroundColor: "rgba(255,255,255,0.4)"
-      font: "san-serif, plain, 14"
-      captionItems:
-        - text: 'Middle Earth'
-    - position: "middle-left"
-      fontColor: "red"
-      backgroundColor: "rgba(255,255,255,0.4)"
-      font: "san-serif, plain, 14"
-      captionItems:
-        - text: 'Left Earth'
-    - position: "middle-right"
-      fontColor: "red"
-      backgroundColor: "rgba(255,255,255,0.4)"
-      font: "san-serif, plain, 14"
-      captionItems:
-        - text: 'Right Earth'
+    # - position: "middle-center"
+    #   fontColor: "red"
+    #   backgroundColor: "rgba(255,255,255,0.4)"
+    #   font: "san-serif, plain, 14"
+    #   captionItems:
+    #     - text: 'Middle Earth'
+    # - position: "middle-left"
+    #   fontColor: "red"
+    #   backgroundColor: "rgba(255,255,255,0.4)"
+    #   font: "san-serif, plain, 14"
+    #   captionItems:
+    #     - text: 'Left Earth'
+    # - position: "middle-right"
+    #   fontColor: "red"
+    #   backgroundColor: "rgba(255,255,255,0.4)"
+    #   font: "san-serif, plain, 14"
+    #   captionItems:
+    #     - text: 'Right Earth'
   legend:
     position: 'upper-right'
     alignment: 'left'
@@ -78,6 +78,23 @@ cgview:
             # The Following are the default values:
             start: 'ATG'
             stop: 'TAA,TAG,TGA'
+      - name: 'ORFs'
+        readingFrame: 'separated'
+        position: 'both'
+        contents:
+          features:
+            sequence: 'orfs'
+            # The Following are the default values:
+            start: 'ATG'
+            stop: 'TAA,TAG,TGA'
+      - name: 'CG Content'
+        position: 'inside'
+        contents:
+          plot:
+            sequence: 'gc_content'
+            # The Following are the default values:
+            window: 100
+            step: 50
 
 
 
