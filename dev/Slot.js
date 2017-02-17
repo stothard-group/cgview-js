@@ -173,6 +173,7 @@
       } else if (this.contentType == 'plot') {
         this.updatePlotTrack();
       }
+      this.layout._adjustProportions();
     }
 
     updateFeatureTracks() {

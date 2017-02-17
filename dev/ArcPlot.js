@@ -10,18 +10,12 @@
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      this._bp = new CGV.CGArray();
-      this._proportionOfThickness =  new CGV.CGArray();
+      this.positions = data.positions;
+      this.scores = data.scores;
       this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
       this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
       this._colorNegative = data.colorNegative ? new CGV.Color(data.colorNegative) : undefined;
-
-      if (data.bp) {
-        this._bp = new CGV.CGArray(data.bp);
-      }
-      if (data.proportionOfThickness) {
-        this._proportionOfThickness = new CGV.CGArray(data.proportionOfThickness);
-      }
+      this._baseline = CGV.defaultFor(data.baseline, 0.5);
     }
 
     /**
@@ -37,6 +31,32 @@
       }
       this._viewer = viewer;
       viewer._plots.push(this);
+    }
+
+    /**
+     * @member {CGArray} - Get or set the positions (bp) of the plot.
+     */
+    get positions() {
+      return this._positions || new CGV.CGArray()
+    }
+
+    set positions(value) {
+      if (value) {
+        this._positions = new CGV.CGArray(value);
+      }
+    }
+
+    /**
+     * @member {CGArray} - Get or set the scores of the plot. Value should be between 0 and 1.
+     */
+    get score() {
+      return this._score || new CGV.CGArray()
+    }
+
+    set score(value) {
+      if (value) {
+        this._score = new CGV.CGArray(value);
+      }
     }
 
     // /**
@@ -114,6 +134,24 @@
       this._legendItemNegative = value;
     }
 
+    /**
+     * @member {Number} - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
+     *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the track).
+     */
+    get baseline() {
+      return this._baseline;
+    }
+
+    set baseline(value) {
+      if (value > 1) {
+        this._baseline = 1;
+      } else if (value < 0) {
+        this._baseline = 0;
+      } else {
+        this._baseline = value;
+      }
+    }
+
     draw(canvas, slotRadius, slotThickness, fast, range) {
       if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
@@ -128,59 +166,62 @@
       fast = false
       var ctx = canvas.ctx;
       var scale = canvas.scale;
-      var bp = this._bp;
-      var prop = this._proportionOfThickness;
+      var positions = this.positions;
+      var scores = this.scores;
       // This is the difference in radial pixels required before a new arc is draw
       // var radialDiff = fast ? 1 : 0.5;
       var radialDiff = 0.5;
 
-      var startBp = range.start;
-      var stopBp = range.stop;
+      var startPosition = range.start;
+      var stopPosition = range.stop;
 
       ctx.beginPath();
       ctx.lineWidth = 0.0001;
 
-      var savedR = slotRadius;
-      var savedBp = startBp;
+      // Calculate baseline Radius
+      var baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+
+      var savedR = baselineRadius;
+      var savedPosition = startPosition;
       var currentR;
-      var index, currentProp, currentBp, lastProp;
+      var index, score, currentPosition, lastScore;
       // var step = fast ? 2 : 1
-      bp.eachFromRange(startBp, stopBp, 1, (i) => {
-        lastProp = currentProp;
-        currentProp = prop[i];
-        currentBp = bp[i];
-        currentR = slotRadius + (prop[i] - 0.5) * slotThickness;
-        // If going from positive to negative need to save currentR as 0 (slotRadius)
-        if (orientation && (lastProp * currentProp < 0)) {
-          currentR = slotRadius;
+      positions.eachFromRange(startPosition, stopPosition, 1, (i) => {
+        lastScore = score;
+        score = scores[i];
+        currentPosition = positions[i];
+        currentR = baselineRadius + (score - this.baseline) * slotThickness;
+        // If going from positive to negative need to save currentR as 0 (baselineRadius)
+        if (orientation && (lastScore * score < 0)) {
+          currentR = baselineRadius;
           savedR = currentR;
-          canvas.arcPath(currentR, savedBp, currentBp, false, true);
-          savedBp = currentBp;
+          canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
+          savedPosition = currentPosition;
         }
-        if ( this._keepPoint(currentProp, orientation) ){
+        if ( this._keepPoint(score, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
-            canvas.arcPath(currentR, savedBp, currentBp, false, true);
+            canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
             savedR = currentR;
-            savedBp = currentBp
+            savedPosition = currentPosition
           }
         } else {
-          savedR = slotRadius;
+          savedR = baselineRadius;
         }
       });
-      canvas.arcPath(savedR, savedBp, stopBp, false, true);
-      var endPoint = canvas.pointFor(stopBp, slotRadius);
+      canvas.arcPath(savedR, savedPosition, stopPosition, false, true);
+      var endPoint = canvas.pointFor(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
-      canvas.arcPath(slotRadius, stopBp, startBp, true, true);
+      canvas.arcPath(baselineRadius, stopPosition, startPosition, true, true);
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
     }
 
-    _keepPoint(proportionOfRadius, orientation) {
+    _keepPoint(score, orientation) {
       if (orientation == undefined) {
         return true
-      } else if (orientation == 'positive' && proportionOfRadius > 0) {
+      } else if (orientation == 'positive' && score > 0) {
         return true
-      } else if (orientation == 'negative' && proportionOfRadius < 0 ) {
+      } else if (orientation == 'negative' && score < 0 ) {
         return true
       }
       return false

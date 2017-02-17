@@ -93,8 +93,8 @@ cgview:
           plot:
             sequence: 'gc_content'
             # The Following are the default values:
-            window: 100
-            step: 50
+            window: 500
+            step: 1 
 
 
 

@@ -56,6 +56,12 @@
       return compSeq
     }
 
+    static baseCalculation(type, seq) {
+      if (type == 'gc_content') {
+        return Sequence.calcGCContent(seq);
+      }
+    }
+
     static calcGCContent(seq) {
       if (seq.length == 0) { return  0.5 }
       var g = CGV.Sequence.count(seq, 'g');
@@ -212,7 +218,7 @@
      * @param {Number} bpToSubtract - number of bp to subtract
      */
     subtractBp(position, bpToSubtract) {
-      if (bpToSubtract <= position) {
+      if (bpToSubtract < position) {
         return position - bpToSubtract
       } else {
         return this.length + position - bpToSubtract

@@ -432,6 +432,25 @@
     }
     return data;
   }
+
+
+  /**
+   * This function scales a value from the *from* range to the *to* range.
+   * To scale from [min,max] to [a,b]:
+   *
+   *                 (b-a)(x - min)
+   *          f(x) = --------------  + a
+   *                   max - min
+   */
+  CGV.scaleValue = function(value, from={min: 0, max: 1}, to={min: 0, max: 1}) {
+    return (to.max - to.min) * (value - from.min) / (from.max - from.min) + to.min;
+  }
+
+
+
+
+
+
   //
   // /**
   //  * Returns a string id using the _id_base_ and _start_ while

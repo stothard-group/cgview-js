@@ -169,7 +169,7 @@
 
     extractPlot(options = {}) {
       if (options.sequence == 'gc_content') {
-        return this.extractBaseContentPlot(options);
+        return this.extractBaseContentPlot('gc_content', options);
       // } else if (options.sequence == 'g') {
         // features = this.extractORFs(options);
       }
@@ -178,30 +178,89 @@
 
     // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
     // score must be between 0 and 1
-    extractBaseContentPlot(options) {
+    extractBaseContentPlot(type, options) {
+      if (!CGV.validate(type, ['gc_content'])) { return }
       // FIXME: create method to adjust window and step based on seq length (as default)
       var windowSize = CGV.defaultFor(options.window, 100);
       var step = CGV.defaultFor(options.step, 100);
+      var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+      // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
 
-      var bp = [];
-      var scores = [];
-      for (var i = windowSize/2, len = this.length; i < len; i += step) {
+      var baseContent = this.calculateBaseContent(type, options);
+      var positions = [];
+      var position;
 
-        // Extract DNA for window
-        // Calculate score for window
-        var range = new CGV.CGRange(this.sequence, i - windowSize/2, i + windowSize/2);
-
-        var seq = this.sequence.forRange(range);
-        var score = CGV.Sequence.calcGCContent(seq);
-        bp.push(i);
-        scores.push(score);
+      // The current position marks the middle of the calculated window.
+      // Adjust the bp position to mark where the plot changes,
+      // NOT the center point of the window.
+      // i.e. half way between the current position and the last
+      for (var i = 0, len = baseContent.positions.length; i < len; i++) {
+        position = baseContent.positions[i];
+        if (i == 0) {
+          positions.push(1);
+        } else {
+          positions.push(position - step/2);
+        }
       }
-      var data = { bp: bp, proportionOfThickness: scores };
-      console.log(data)
+      var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
       var plot = new CGV.ArcPlot(this.viewer, data);
       return plot
     }
 
+    calculateBaseContent(type, options) {
+      var windowSize = CGV.defaultFor(options.window, 100);
+      var step = CGV.defaultFor(options.step, 10);
+      var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+      // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
+
+      var positions = [];
+      var scores = [];
+      var average =  CGV.Sequence.baseCalculation(type, this.seqString);
+      // Starting points for min and max
+      var min = 1;
+      var max = 0;
+      var halfWindowSize = windowSize / 2;
+      var start, stop;
+
+      // FIXME: not set up for linear sequences
+      // position marks the middle of the calculated window
+      for (var position = 1, len = this.length; position < len; position += step) {
+        // Extract DNA for window and calculate score
+        start = this.sequence.subtractBp(position, halfWindowSize);
+        stop = this.sequence.addBp(position, halfWindowSize);
+        var range = new CGV.CGRange(this.sequence, start, stop);
+        var seq = this.sequence.forRange(range);
+        var score = CGV.Sequence.baseCalculation(type, seq);
+
+        if (score > max) {
+          max = score;
+        }
+        if (score < min) {
+          min = score;
+        }
+
+        positions.push(position);
+        scores.push(score);
+      }
+
+      // Adjust scores if scaled
+      // Min value becomes 0
+      // Max value becomes 1
+      // Average becomes 0.5
+      if (deviation == 'scale') {
+        scores = scores.map( (score) => {
+          if (score >= average) {
+            return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
+          } else {
+            return CGV.scaleValue(score, {min: min, max: average}, {min: 0, max: 0.5});
+          }
+        });
+        min = 0;
+        max = 1;
+        average = 0.5;
+      }
+      return { positions: positions, scores: scores, min: min, max: max, average: average }
+    }
 
 
 
