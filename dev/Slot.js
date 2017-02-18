@@ -3,68 +3,56 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  /**
-   * The Slot is used for layout information
-   */
   class Slot {
 
     /**
-     * Create a new slot.
+     * Slot
      */
-    constructor(layout, data = {}, display = {}, meta = {}) {
-      this.layout = layout;
-      this._arcPlot;
+    constructor(track, data = {}, display = {}, meta = {}) {
+      this.track = track;
+      this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
-      this._tracks = new CGV.CGArray();
-      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
-      this.strand = CGV.defaultFor(data.strand, 'separated')
-      this.position = CGV.defaultFor(data.position, 'both')
-      this.contents = data.contents
-      this.refresh();
+      this._arcPlot;
+      this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
+      //TEMP
+      if (data.type == 'plot') {
+        this.type = 'plot'
+      } else {
+        this.type = 'feature'
+      }
+
+      this._featureStarts = new CGV.CGArray();
+
+      // if (data.features) {
+      //   data.features.forEach((featureData) => {
+      //     new CGV.Feature(this, featureData);
+      //   });
+      //   this.refresh();
+      // }
+
+      // if (data.arcPlot) {
+      //   new CGV.ArcPlot(this, data.arcPlot);
+      // }
     }
 
-    /** * @member {Viewer} - Get or set the *Viewer*
+    /** * @member {Track} - Get the *Track*
+     */
+    get track() {
+      return this._track
+    }
+
+    set track(track) {
+      if (this.track) {
+        // TODO: Remove if already attached to Track
+      }
+      this._track = track;
+      track._slots.push(this);
+    }
+
+    /** * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this.layout.viewer
-    }
-
-    /** * @member {Viewer} - Get or set the *Layout*
-     */
-    get layout() {
-      return this._layout
-    }
-
-    set layout(layout) {
-      if (this.layout) {
-        // TODO: Remove if already attached to layout
-      }
-      this._layout = layout;
-      layout._slots.push(this);
-    }
-
-    /** * @member {Object} - Get or set the *Contents*.
-     */
-    get contents() {
-      return this._contents
-    }
-
-    set contents(value) {
-      this._contents = value;
-      // FIXME: Have validation and removal of extra things.
-      if (value.features) {
-        this._contentType = 'features';
-      } else if (value.plot) {
-        this._contentType = 'plot';
-      } else {
-        this._contentType = undefined;
-      }
-    }
-
-    /** * @member {String} - Get the *Content Type*.
-     */
-    get contentType() {
-      return this._contentType
+      return this.track.viewer
     }
 
     /**
@@ -75,160 +63,168 @@
     }
 
     /**
-     * @member {String} - Get or set the strand. Possible values are 'separated' or 'combined'.
+     * @member {String} - Get the position of the slot in relation to the backbone
      */
+    get position() {
+      if (this.track.position == 'both') {
+        return (this.isDirect() ? 'outside' : 'inside')
+      } else {
+        return this.track.position
+      }
+    }
+
+    /**
+     * @member {Boolean} - Is the slot position inside the backbone
+     */
+    get inside() {
+      return this.position == 'inside'
+    }
+
+    /**
+     * @member {Boolean} - Is the slot position outside the backbone
+     */
+    get outside() {
+      return this.position == 'outside'
+    }
+
+    /**
+     * @member {Viewer} - Get or set the track size with is measured as a 
+     * proportion of the backbone radius.
+     */
+    get proportionOfRadius() {
+      return this._proportionOfRadius
+    }
+
+    set proportionOfRadius(value) {
+      this._proportionOfRadius = value;
+    }
+
+    /**
+     * @member {Number} - Get the current radius of the slot.
+     */
+    get radius() {
+      return this._radius
+    }
+
+    /**
+     * @member {Number} - Get the current thickness of the slot.
+     */
+    get thickness() {
+      return this._thickness
+    }
+
+
     get strand() {
       return this._strand;
     }
 
-    set strand(value) {
-      if ( CGV.validate(value, ['separated', 'combined']) ) {
-        this._strand = value;
-        this.updateTracks();
-      }
+    isDirect() {
+      return this.strand == 'direct'
+    }
+
+    isReverse() {
+      return this.strand == 'reverse'
+    }
+
+    get hasFeatures() {
+      return this._features.length > 0
+    }
+
+    get hasArcPlot() {
+      return this._arcPlot
+    }
+
+    replaceFeatures(features) {
+      this._features = features;
+      this.refresh();
     }
 
     /**
-     * @member {String} - Get or set the readingFrame. Possible values are 'combinded' or 'separated'.
+     * The number of pixels per basepair along the feature track circumference.
+     * @return {Number}
      */
-    get readingFrame() {
-      return this._readingFrame;
+    pixelsPerBp() {
+      return (this.radius * 2 * Math.PI) / this.sequence.length;
     }
 
-    set readingFrame(value) {
-      if (CGV.validate(value, ['separated', 'combined'])) {
-        this._readingFrame = value;
-        this.updateTracks();
-      }
-    }
-
-    /**
-     * @member {String} - Get or set the position. Possible values are 'inside', 'outside', or 'both'.
-     */
-    get position() {
-      return this._position;
-    }
-
-    set position(value) {
-      if (CGV.validate(value, ['inside', 'outside', 'both'])) {
-        this._position = value;
-      }
-    }
-
-    features(term) {
-      return this._features.get(term)
-    }
-
+    // Refresh needs to be called when new features are added, etc
+    // Features need to be sorted by start position
+    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
     refresh() {
-      if (this.contentType == 'features') {
-        this.updateFeatures();
-      } else if (this.contentType == 'plot') {
-        this.updatePlot();
-      }
-      this.updateTracks();
-    }
-
-    updatePlot() {
-      if (this.contents.plot.sequence) {
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
-        }
-      }
-
-    }
-
-    updateFeatures() {
-      this._features = new CGV.CGArray();
-      if (this.contents.features.sequence) {
-        // Features extracted from the  Sequence
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          this._features.merge(sequenceExtractor.extractFeatures(this.contents.features));
-        } else {
-          console.error('No sequence is available to extract features from');
-        }
-
-      } else if (this.contents.features.source) {
-        // Features with particular Source
-        this.viewer.features().each( (i, feature) => {
-          if (feature.source == this.contents.features.source) {
-            this._features.push(feature);
-          }
-        });
-      } else if (this.contents.features.types) {
-        // Features with paricular Type
-        var featureTypes = new CGV.CGArray(this.contents.features.types);
-        this.viewer.features().each( (i, feature) => {
-          if (featureTypes.contains(feature.type)) {
-            this._features.push(feature);
-          }
-        });
-      }
-    }
-
-    updateTracks() {
-      if (this.contentType == 'features') {
-        this.updateFeatureTracks();
-      } else if (this.contentType == 'plot') {
-        this.updatePlotTrack();
-      }
-      this.layout._adjustProportions();
-    }
-
-    updateFeatureTracks() {
-      this._tracks = new CGV.CGArray();
-      if (this.readingFrame == 'separated') {
-        // var features = this.featuresByReadingFrame();
-        var features = this.sequence.featuresByReadingFrame(this.features());
-        // Direct Reading Frames
-        for (var rf of [1, 2, 3]) {
-          var track = new CGV.Track(this, {strand: 'direct'});
-          track.replaceFeatures(features['rf_plus_' + rf]);
-        }
-        // Revers Reading Frames
-        for (var rf of [1, 2, 3]) {
-          var track = new CGV.Track(this, {strand: 'reverse'});
-          track.replaceFeatures(features['rf_minus_' + rf]);
-        }
-      } else {
-        if (this.strand == 'separated') {
-          var features = this.featuresByStrand();
-          // Direct Track
-          var track = new CGV.Track(this, {strand: 'direct'});
-          track.replaceFeatures(features.direct)
-          // Reverse Track
-          var track = new CGV.Track(this, {strand: 'reverse'});
-          track.replaceFeatures(features.reverse)
-        } else if (this.strand == 'combined') {
-          // Combined Track
-          var track = new CGV.Track(this, {strand: 'direct'});
-          track.replaceFeatures(this.features());
-
-        }
-      }
-    }
-
-    featuresByStrand() {
-      var features = {};
-      features.direct = new CGV.CGArray();
-      features.reverse = new CGV.CGArray();
-      this.features().each( (i, feature) => {
-        if (feature.strand == -1) {
-          features.reverse.push(feature);
-        } else {
-          features.direct.push(feature);
-        }
+      // Sort the features by start
+      this._features.sort( (a, b) => {
+        return a.start - b.start
       });
-      return features
+      // Clear feature starts
+      this._featureStarts = new CGV.CGArray();
+      for (var i = 0, len = this._features.length; i < len; i++) {
+        this._featureStarts.push(this._features[i].start);
+      }
+      this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
-    updatePlotTrack() {
-      this._tracks = new CGV.CGArray();
-      var track = new CGV.Track(this, {type: 'plot'});
-      track._arcPlot = this._arcPlot;
+    /**
+     * Get the visible range
+     * @member {Range}
+     */
+    get visibleRange() {
+      return this._visibleRange
     }
 
+    get largestFeatureLength() {
+      return this._largestFeatureLength
+    }
+
+    findLargestFeatureLength() {
+      var length = 0;
+      for (var i = 0, len = this._features.length; i < len; i++) {
+        var nextLength = this._features[i].length;
+        if (nextLength > length) {
+          length = nextLength
+        }
+      }
+      return length
+    }
+
+    draw(canvas, fast, slotRadius, slotThickness) {
+      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+      this._visibleRange = range;
+      this._radius = slotRadius;
+      this._thickness = slotThickness;
+      if (range) {
+        var start = range.start;
+        var stop = range.stop;
+        if (this.hasFeatures) {
+          var featureCount = this._features.length;
+          var largestLength = this.largestFeatureLength;
+          // Case where the largest feature should not be subtracted
+          // _____ Visible
+          // ----- Not Visbile
+          // Do no subtract the largest feature so that the start loops around to before the stop
+          // -----Start_____Stop-----
+          // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
+          // _____Stop-----Start_____
+          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
+               (this.sequence.subtractBp(start, stop) > largestLength) ) {
+            start = range.getStartPlus(-largestLength);
+            featureCount = this._featureStarts.countFromRange(start, stop);
+          }
+          if (fast && featureCount > 2000) {
+            canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+          } else {
+            this._featureStarts.eachFromRange(start, stop, 1, (i) => {
+              this._features[i].draw(canvas, slotRadius, slotThickness, range);
+            })
+          }
+          if (this.viewer.debug && this.viewer.debug.data.n) {
+            var index = this.viewer._slots.indexOf(this);
+            this.viewer.debug.data.n['slot_' + index] = featureCount;
+          }
+        } else if (this.hasArcPlot) {
+          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, range);
+        }
+      }
+    }
 
   }
 

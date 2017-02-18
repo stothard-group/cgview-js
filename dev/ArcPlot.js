@@ -76,7 +76,6 @@
     // }
 
     get color() {
-      // return this._color || this.track.color
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
@@ -136,7 +135,7 @@
 
     /**
      * @member {Number} - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
-     *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the track).
+     *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).
      */
     get baseline() {
       return this._baseline;

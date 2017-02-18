@@ -7,7 +7,7 @@ cgview:
       color: 'grey'
       thickness: 5
     dividers:
-      track:
+      slot:
         show: true
         thickness: 1
         color: 'black'
@@ -68,7 +68,7 @@ cgview:
       - text: 'Other'
         swatchColor: 'rgba(153,153,153,0.5)'
   layout:
-    slots:
+    tracks:
       - name: 'Start/Stop Codons'
         readingFrame: 'separated'
         position: 'both'

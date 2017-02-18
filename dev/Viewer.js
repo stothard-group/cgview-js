@@ -23,7 +23,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-      this.trackSpacing = CGV.defaultFor(options.trackSpacing, 1);
+      this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
 
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
@@ -33,7 +33,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._io = new CGV.IO(this);
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
-      this._slots = new CGV.CGArray();
+      // this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
       this._featureTypes = new CGV.CGArray();
 
@@ -43,8 +43,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
-      // Initialize Track Divider
-      this.trackDivider = new CGV.Divider(this, ( options.dividers && options.dividers.track ) );
+      // Initialize Slot Divider
+      this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       // Initialize Menu
       this.menu = new CGV.Menu(this);
       // Initialize Help
@@ -380,77 +380,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     draw(fast) {
       this.layout.draw(fast);
     }
-
-    // draw(fast) {
-    //   var start_time = new Date().getTime();
-    //   this.clear();
-    //   var backboneThickness = CGV.pixel(this.backbone.zoomedThickness);
-    //   var slotRadius = CGV.pixel(this.backbone.zoomedRadius);
-    //   var directRadius = slotRadius + (backboneThickness / 2);
-    //   var reverseRadius = slotRadius - (backboneThickness / 2);
-    //   var spacing = CGV.pixel(this.trackSpacing);
-    //   var visibleRadii = this.canvas.visibleRadii();
-    //
-    //   // All Text should have base line top
-    //   this.ctx.textBaseline = 'top';
-    //
-    //   // Draw Backbone
-    //   this.backbone.draw();
-    //
-    //   var residualSlotThickness = 0;
-    //
-    //   // FetaureSlots
-    //   for (var i = 0, len = this._tracks.length; i < len; i++) {
-    //     var slot = this._tracks[i];
-    //     // Calculate Slot dimensions
-    //     // The slotRadius is the radius at the center of the slot
-    //     var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
-    //
-    //     if (slot.isDirect()) {
-    //       directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
-    //       slotRadius = directRadius;
-    //     } else {
-    //       reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
-    //       slotRadius = reverseRadius;
-    //     }
-    //     residualSlotThickness = slotThickness / 2;
-    //     // Draw Slot
-    //     slot.draw(this.canvas, fast, slotRadius, slotThickness);
-    //
-    //   }
-    //
-    //   // Ruler
-    //   this.ruler.draw(reverseRadius, directRadius);
-    //
-    //   // Legends
-    //   for (var i = 0, len = this._legends.length; i < len; i++) {
-    //     this._legends[i].draw(this.ctx);
-    //   }
-    //
-    //   // Labels
-    //   if (this.globalLabel) {
-    //     this.labelSet.draw(reverseRadius, directRadius);
-    //   }
-    //
-    //   if (this.debug) {
-    //     this.debug.data.time['draw'] = CGV.elapsed_time(start_time);
-    //     this.debug.draw(this.ctx);
-    //   }
-    //
-    //   if (this._testDrawRange) {
-    //     this.ctx.strokeStyle = 'grey';
-    //     this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-    //     this.ctx.stroke();
-    //   }
-    // }
-
-    // addTrack(track) {
-    //   // TODO: error check that this is a track
-    //   this._tracks.push(track);
-    //   track._viewer = this;
-    // }
-
-
 
     // Get mouse position in the 'container' taking into account the pixel ratio
     // mouse(container) {

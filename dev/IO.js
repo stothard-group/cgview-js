@@ -137,78 +137,78 @@
      * Removes any previous viewer data and overrides options that are already set.
      * @param {Object} data - TODO
      */
-    load_json(json) {
-      var viewer = this._viewer;
-
-      // Determine scale factor between viewer and json map data
-      var jsonMinDimension = Math.min(json.height, json.width);
-      var viewerMinDimension = Math.min(viewer.height, viewer.width);
-      var scaleFacter = jsonMinDimension / viewerMinDimension;
-
-      // Override Main Viewer settings
-      if (json.sequence) {
-        viewer.sequence.seq = json.sequence.seq;
-      } else {
-        viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
-      }
-      viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
-      viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
-      viewer.backbone.radius = json.backboneRadius / scaleFacter;
-      viewer.backbone.color = CGV.defaultFor(json.backboneColor, viewer.backbone.color);
-      viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
-      // ...
-
-      // Load Tracks
-      if (json.tracks) {
-        json.tracks.forEach((slotData) => {
-          new CGV.Track(viewer, slotData);
-        });
-      }
-
-      // Load Legends
-      if (json.legends) {
-        json.legends.forEach((legendData) => {
-          new CGV.Legend(viewer, legendData);
-        });
-      }
-
-      // Associate features and arcplots with LegendItems
-      var swatchedLegendItems = viewer.swatchedLegendItems();
-      var itemsLength = swatchedLegendItems.length;
-      var legendItem;
-      // Features
-      var features = viewer.features();
-      var feature;
-      for (var i = 0, len = features.length; i < len; i++) {
-        feature = features[i];
-        for (var j = 0; j < itemsLength; j++) {
-          legendItem = swatchedLegendItems[j];
-          if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
-            feature.legendItem = legendItem;
-            break
-          }
-        }
-      }
-      // ArcPlots
-      var arcPlots = viewer.arcPlots();
-      var arcPlot;
-      for (var i = 0, len = arcPlots.length; i < len; i++) {
-        arcPlot = arcPlots[i];
-        for (var j = 0; j < itemsLength; j++) {
-          legendItem = swatchedLegendItems[j];
-          if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItem = legendItem;
-          }
-          if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItemPositive = legendItem;
-          }
-          if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-            arcPlot.legendItemNegative = legendItem;
-          }
-        }
-      }
-    }
+    // load_json(json) {
+    //   var viewer = this._viewer;
+    //
+    //   // Determine scale factor between viewer and json map data
+    //   var jsonMinDimension = Math.min(json.height, json.width);
+    //   var viewerMinDimension = Math.min(viewer.height, viewer.width);
+    //   var scaleFacter = jsonMinDimension / viewerMinDimension;
+    //
+    //   // Override Main Viewer settings
+    //   if (json.sequence) {
+    //     viewer.sequence.seq = json.sequence.seq;
+    //   } else {
+    //     viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
+    //   }
+    //   viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+    //   viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+    //   viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
+    //   viewer.backbone.radius = json.backboneRadius / scaleFacter;
+    //   viewer.backbone.color = CGV.defaultFor(json.backboneColor, viewer.backbone.color);
+    //   viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
+    //   // ...
+    //
+    //   // Load Tracks
+    //   if (json.tracks) {
+    //     json.tracks.forEach((slotData) => {
+    //       new CGV.Track(viewer, slotData);
+    //     });
+    //   }
+    //
+    //   // Load Legends
+    //   if (json.legends) {
+    //     json.legends.forEach((legendData) => {
+    //       new CGV.Legend(viewer, legendData);
+    //     });
+    //   }
+    //
+    //   // Associate features and arcplots with LegendItems
+    //   var swatchedLegendItems = viewer.swatchedLegendItems();
+    //   var itemsLength = swatchedLegendItems.length;
+    //   var legendItem;
+    //   // Features
+    //   var features = viewer.features();
+    //   var feature;
+    //   for (var i = 0, len = features.length; i < len; i++) {
+    //     feature = features[i];
+    //     for (var j = 0; j < itemsLength; j++) {
+    //       legendItem = swatchedLegendItems[j];
+    //       if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         feature.legendItem = legendItem;
+    //         break
+    //       }
+    //     }
+    //   }
+    //   // ArcPlots
+    //   var arcPlots = viewer.arcPlots();
+    //   var arcPlot;
+    //   for (var i = 0, len = arcPlots.length; i < len; i++) {
+    //     arcPlot = arcPlots[i];
+    //     for (var j = 0; j < itemsLength; j++) {
+    //       legendItem = swatchedLegendItems[j];
+    //       if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         arcPlot.legendItem = legendItem;
+    //       }
+    //       if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         arcPlot.legendItemPositive = legendItem;
+    //       }
+    //       if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         arcPlot.legendItemNegative = legendItem;
+    //       }
+    //     }
+    //   }
+    // }
 
     exportImage(width, height) {
       var viewer = this._viewer;

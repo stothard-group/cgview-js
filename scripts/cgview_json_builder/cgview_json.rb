@@ -8,7 +8,7 @@ class CGViewJSON
   VERSION = '1.0'
 
   attr_accessor :config, :options, :seq_object, :sequence, :cgview, :seq_type, :features,
-                :slots, :debug, :captions
+                :tracks, :debug, :captions
 
   def initialize(sequence_path, options={})
     @cgview = initialize_cgview
@@ -21,7 +21,7 @@ class CGViewJSON
     build_feature_types
     build_legend
     build_captions
-    build_slots
+    build_tracks
     build_cgview
   end
 
@@ -34,7 +34,7 @@ class CGViewJSON
       captions: [],
       legend: {},
       features: [],
-      layout: { slots: [] }
+      layout: { tracks: [] }
     }
 
   end
@@ -44,7 +44,7 @@ class CGViewJSON
     @cgview[:settings] = @config[:settings]
     @cgview[:sequence] = @config[:sequence]
     @cgview[:legend] = @config[:legend]
-    @cgview[:layout][:slots] = @config[:layout] && @config[:layout][:slots] || []
+    @cgview[:layout][:tracks] = @config[:layout] && @config[:layout][:tracks] || []
   end
 
   def symbolize(obj)
@@ -173,8 +173,8 @@ class CGViewJSON
     end
   end
 
-  def build_slots
-    @slots = [
+  def build_tracks
+    @tracks = [
       {
         name: 'Features',
         readingFrame: 'combined',
@@ -197,7 +197,7 @@ class CGViewJSON
       @cgview[:sequence][:seq] = @sequence
       @cgview[:features] += @features
     end
-    @cgview[:layout][:slots] += @slots
+    @cgview[:layout][:tracks] += @tracks
     @cgview[:captions] += @captions
   end
 

@@ -180,7 +180,7 @@
     }
 
     /**
-     * @member {String} - Get or set the color. Defaults to the *Track* color. TODO: reference COLOR class
+     * @member {String} - Get or set the color. TODO: reference COLOR class
      */
     get color() {
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
@@ -235,7 +235,6 @@
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
-      // if (!this.track) return
       if (this.range.overlapsRange(visibleRange)) {
         var start = this.start;
         var stop = this.stop;
