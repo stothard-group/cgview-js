@@ -95,6 +95,8 @@ cgview:
             # The Following are the default values:
             window: 500
             step: 1 
+            # window: 10000
+            # step: 100
 
 
 

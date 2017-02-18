@@ -75,10 +75,11 @@
     }
 
     extractORFs(options = {}) {
+      var startTime = new Date().getTime();
       var features = new CGV.CGArray();
       var type = 'ORF'
       var source = 'orfs'
-      var minORFLength = CGV.defaultFor(options.minORFLength, 30)
+      var minORFLength = CGV.defaultFor(options.minORFLength, 100)
       // Get start features by reading frame
       var startPattern = CGV.defaultFor(options.start, 'ATG')
       var startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
@@ -128,10 +129,12 @@
           }
         }
       }
+      console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
       return features
     }
 
     extractStartStops(options = {}) {
+      var startTime = new Date().getTime();
       var features = new CGV.CGArray();
       // Forward and Reverse Starts
       var startPattern = CGV.defaultFor(options.start, 'ATG')
@@ -139,6 +142,7 @@
       // Forward and Reverse Stops
       var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
       features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
+      console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
       return features
     }
 
@@ -179,6 +183,7 @@
     // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
     // score must be between 0 and 1
     extractBaseContentPlot(type, options) {
+      var startTime = new Date().getTime();
       if (!CGV.validate(type, ['gc_content'])) { return }
       // FIXME: create method to adjust window and step based on seq length (as default)
       var windowSize = CGV.defaultFor(options.window, 100);
@@ -204,6 +209,7 @@
       }
       var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
       var plot = new CGV.ArcPlot(this.viewer, data);
+      console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
       return plot
     }
 

@@ -23,7 +23,7 @@
       }
       //TODO:
       //console.log the number of features and plots not associated with a track
-      //
+
       this._adjustProportions();
     }
 
@@ -32,13 +32,6 @@
     get viewer() {
       return this._viewer
     }
-
-    // /**
-    //  * @member {Sequence} - Get the sequence.
-    //  */
-    // get sequence() {
-    //   return this.viewer.sequence
-    // }
 
     /**
      * Calculate the backbone radius and slot proportions based on the Viewer size and

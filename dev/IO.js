@@ -1,7 +1,3 @@
-// Static methods for converting XML <-> JSON
-// NOTE: xml2json required for conversions
-// https://github.com/abdmob/x2js
-// Class for reading and writing JSON
 //////////////////////////////////////////////////////////////////////////////
 // IO
 //////////////////////////////////////////////////////////////////////////////
@@ -24,21 +20,17 @@
      */
     loadJSON(json) {
       var viewer = this._viewer;
-
-      // Determine scale factor between viewer and json map data
-      var jsonMinDimension = Math.min(json.height, json.width);
-      var viewerMinDimension = Math.min(viewer.height, viewer.width);
-      var scaleFacter = jsonMinDimension / viewerMinDimension;
-
       // Load Sequence
       viewer.sequence = new CGV.Sequence(viewer, json.sequence);
-      // Load Settings
+      // Load Settings TODO:
       var settings = json.settings;
+      // viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+      // viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
       // Backbone
       viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
-
       // Load Captions
       if (json.captions) {
         json.captions.forEach((captionData) => {
@@ -49,7 +41,7 @@
       // Load Legend
       viewer.legend = new CGV.Legend(viewer, json.legend);
 
-      // Create featuerTypes
+      // Create featureTypes
       if (json.featureTypes) {
         json.featureTypes.forEach((featureTypeData) => {
           new CGV.FeatureType(viewer, featureTypeData);
@@ -75,62 +67,78 @@
       // Load Layout
       viewer.layout = new CGV.Layout(viewer, json.layout);
 
-
-
-      // viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      // viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
       // ...
 
-      // // Load Tracks
-      // if (json.tracks) {
-      //   json.tracks.forEach((slotData) => {
-      //     new CGV.Track(viewer, slotData);
-      //   });
-      // }
-      //
-      // // Load Legends
-      // if (json.legends) {
-      //   json.legends.forEach((legendData) => {
-      //     new CGV.Legend(viewer, legendData);
-      //   });
-      // }
-      //
-      // // Associate features and arcplots with LegendItems
-      // var swatchedLegendItems = viewer.swatchedLegendItems();
-      // var itemsLength = swatchedLegendItems.length;
-      // var legendItem;
-      // // Features
-      // var features = viewer.features();
-      // var feature;
-      // for (var i = 0, len = features.length; i < len; i++) {
-      //   feature = features[i];
-      //   for (var j = 0; j < itemsLength; j++) {
-      //     legendItem = swatchedLegendItems[j];
-      //     if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
-      //       feature.legendItem = legendItem;
-      //       break
-      //     }
-      //   }
-      // }
-      // // ArcPlots
-      // var arcPlots = viewer.arcPlots();
-      // var arcPlot;
-      // for (var i = 0, len = arcPlots.length; i < len; i++) {
-      //   arcPlot = arcPlots[i];
-      //   for (var j = 0; j < itemsLength; j++) {
-      //     legendItem = swatchedLegendItems[j];
-      //     if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-      //       arcPlot.legendItem = legendItem;
-      //     }
-      //     if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-      //       arcPlot.legendItemPositive = legendItem;
-      //     }
-      //     if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-      //       arcPlot.legendItemNegative = legendItem;
-      //     }
-      //   }
-      // }
     }
+
+    exportImage(width, height) {
+      var viewer = this._viewer;
+      var canvas = viewer.canvas;
+      width = width || viewer.width;
+      height = height || viewer.height;
+
+      var windowTitle = 'CGV-Image-' + width + 'x' + height;
+
+      // Adjust size based on pixel Ratio
+      width = width / CGV.pixel_ratio;
+      height = height / CGV.pixel_ratio;
+
+      // Save current settings
+      var origContext = canvas.ctx;
+      var debug = viewer.debug;
+      viewer.debug = false;
+
+      // Generate new context and scales
+      var tempCanvas = d3.select('body').append('canvas')
+        .attr('width', width).attr('height', height).node();
+
+      CGV.scale_resolution(tempCanvas, CGV.pixel_ratio);
+      canvas.ctx = tempCanvas.getContext('2d');
+
+      // Calculate scaling factor
+      var minNewDimension = d3.min([width, height]);
+      var scaleFactor = minNewDimension / viewer.minDimension;
+      canvas.ctx.scale(scaleFactor, scaleFactor);
+
+      // Generate image
+      viewer.draw_full();
+      var image = tempCanvas.toDataURL();
+
+      // Restore original context and settings
+      canvas.ctx = origContext;
+      viewer.debug = debug;
+
+      // Delete temp canvas
+      d3.select(tempCanvas).remove();
+
+      var win = window.open();
+      var html = [
+        '<html>',
+          '<head>',
+            '<title>',
+              windowTitle,
+            '</title>',
+          '</head>',
+          '<body>',
+        // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
+            '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
+            '<h3>Actual Size</h3>',
+            '<img style="border: 1px solid grey" src="' + image +  '"/ >',
+          '</body>',
+        '<html>'
+      ].join('');
+      win.document.write(html);
+    }
+
+  }
+
+  CGV.IO = IO;
+
+})(CGView);
+
 
     /**
      * Load data from OLD JSON format (modeled after XML from original CGView).
@@ -209,71 +217,3 @@
     //     }
     //   }
     // }
-
-    exportImage(width, height) {
-      var viewer = this._viewer;
-      var canvas = viewer.canvas;
-      width = width || viewer.width;
-      height = height || viewer.height;
-
-      var windowTitle = 'CGV-Image-' + width + 'x' + height;
-
-      // Adjust size based on pixel Ratio
-      width = width / CGV.pixel_ratio;
-      height = height / CGV.pixel_ratio;
-
-      // Save current settings
-      var origContext = canvas.ctx;
-      var debug = viewer.debug;
-      viewer.debug = false;
-
-      // Generate new context and scales
-      var tempCanvas = d3.select('body').append('canvas')
-        .attr('width', width).attr('height', height).node();
-
-      CGV.scale_resolution(tempCanvas, CGV.pixel_ratio);
-      canvas.ctx = tempCanvas.getContext('2d');
-
-      // Calculate scaling factor
-      var minNewDimension = d3.min([width, height]);
-      var scaleFactor = minNewDimension / viewer.minDimension;
-      canvas.ctx.scale(scaleFactor, scaleFactor);
-
-      // Generate image
-      viewer.draw_full();
-      var image = tempCanvas.toDataURL();
-
-      // Restore original context and settings
-      canvas.ctx = origContext;
-      viewer.debug = debug;
-
-      // Delete temp canvas
-      d3.select(tempCanvas).remove();
-
-      var win = window.open();
-      var html = [
-        '<html>',
-          '<head>',
-            '<title>',
-              windowTitle,
-            '</title>',
-          '</head>',
-          '<body>',
-        // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            '<h2>Your CGView Image is Below</h2>',
-            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            '<h3>Preview</h3>',
-            '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
-            '<h3>Actual Size</h3>',
-            '<img style="border: 1px solid grey" src="' + image +  '"/ >',
-          '</body>',
-        '<html>'
-      ].join('');
-      win.document.write(html);
-    }
-
-  }
-
-  CGV.IO = IO;
-
-})(CGView);
