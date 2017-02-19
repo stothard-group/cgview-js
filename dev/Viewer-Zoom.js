@@ -22,6 +22,11 @@
 
     function zoomstart() {
       // self.trigger('zoom-start');
+      // console.log('START')
+      // if (self.layout._slotTimeoutID) {
+      //   clearTimeout(self.layout._slotTimeoutID);
+      //   self.layout._slotTimeoutID = undefined;
+      // }
     }
 
     function zooming() {

@@ -138,10 +138,14 @@
       var features = new CGV.CGArray();
       // Forward and Reverse Starts
       var startPattern = CGV.defaultFor(options.start, 'ATG')
+      var startTime2 = new Date().getTime();
       features.merge( this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons'))
+      console.log('Merge Start Time: ' + CGV.elapsed_time(startTime2) );
       // Forward and Reverse Stops
       var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+      var startTime2 = new Date().getTime();
       features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
+      console.log('Merge Stop Time: ' + CGV.elapsed_time(startTime2) );
       console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
       return features
     }
@@ -150,10 +154,14 @@
       var features = new CGV.CGArray();
       pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
       for (var strand of [1, -1]) {
+        var startTime = new Date().getTime();
         var ranges = this.sequence.findPattern(pattern, strand)
+        console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+        var startTime = new Date().getTime();
         for (var i = 0, len = ranges.length; i < len; i++) {
           features.push( this.createFeature(ranges[i], type, strand, source ) );
         }
+        console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
       }
       return features.order_by('start')
     }
@@ -185,9 +193,10 @@
     extractBaseContentPlot(type, options) {
       var startTime = new Date().getTime();
       if (!CGV.validate(type, ['gc_content'])) { return }
-      // FIXME: create method to adjust window and step based on seq length (as default)
-      var windowSize = CGV.defaultFor(options.window, 100);
-      var step = CGV.defaultFor(options.step, 100);
+      
+      options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
+      options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
+      var step = options.step
       var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
       // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
 
@@ -214,8 +223,8 @@
     }
 
     calculateBaseContent(type, options) {
-      var windowSize = CGV.defaultFor(options.window, 100);
-      var step = CGV.defaultFor(options.step, 10);
+      var windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
+      var step = CGV.defaultFor(options.step, this.getWindowStep().step);
       var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
       // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
 
@@ -268,6 +277,28 @@
       return { positions: positions, scores: scores, min: min, max: max, average: average }
     }
 
+
+    getWindowStep() {
+      var windowSize, step;
+      var length = this.length;
+      if (length < 10e3 ) {
+        windowSize = 10;
+        step = 1;
+      } else if (length < 10e4) {
+        windowSize = 50;
+        step = 1;
+      } else if (length < 10e5) {
+        windowSize = 500;
+        step = 1;
+      } else if (length < 10e6) {
+        windowSize = 1000;
+        step = 10;
+      } else if (length < 10e7) {
+        windowSize = 10000;
+        step = 100;
+      }
+      return { step: step, window: windowSize }
+    }
 
 
   }

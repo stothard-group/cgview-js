@@ -33,6 +33,20 @@
       return this._viewer
     }
 
+    /** * @member {Number} - Get the inside radius
+     */
+    get insideRadius() {
+      return this._insideRadius
+    }
+
+    /** * @member {Number} - Get the outside radius
+     */
+    get outsideRadius() {
+      return this._outsideRadius
+    }
+
+
+
     /**
      * Calculate the backbone radius and slot proportions based on the Viewer size and
      * the number of slots.
@@ -125,15 +139,9 @@
       var backbone = viewer.backbone;
       var canvas = viewer.canvas;
       var ctx = viewer.ctx;
-
       var startTime = new Date().getTime();
+
       viewer.clear();
-      var backboneThickness = CGV.pixel(backbone.zoomedThickness);
-      var slotRadius = CGV.pixel(backbone.zoomedRadius);
-      var directRadius = slotRadius + (backboneThickness / 2);
-      var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(viewer.slotSpacing);
-      var visibleRadii = canvas.visibleRadii();
 
       // All Text should have base line top
       ctx.textBaseline = 'top';
@@ -141,47 +149,32 @@
       // Draw Backbone
       backbone.draw();
 
-      var residualSlotThickness = 0;
+      this.updateLayout();
 
-      var track, slot;
-      for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-        track = this._tracks[i];
-        // Slots and Dividers
-        for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
-          var slot = track._slots[j];
-          // Calculate Slot dimensions
-          // The slotRadius is the radius at the center of the slot
-          var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
-          if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
-            directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
-            slotRadius = directRadius;
-          } else {
-            reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
-            slotRadius = reverseRadius;
-          }
-          residualSlotThickness = slotThickness / 2;
-          // Draw Slot
-          slot.draw(canvas, fast, slotRadius, slotThickness);
-
-          // Calculate Divider dimensions
-          if (viewer.slotDivider.visible) {
-            var dividerThickness = viewer.slotDivider.thickness;
-            if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
-              directRadius += spacing + residualSlotThickness + dividerThickness;
-              slotRadius = directRadius;
-            } else {
-              reverseRadius -= spacing + residualSlotThickness + dividerThickness;
-              slotRadius = reverseRadius;
-            }
-            residualSlotThickness = dividerThickness / 2;
-            // Draw Slot Divider
-            viewer.slotDivider.draw(slotRadius);
-          }
-        }
+      // Slots
+      this._slotIndex = 0;
+      if (this._slotTimeoutID) {
+        clearTimeout(this._slotTimeoutID);
+        this._slotTimeoutID = undefined;
       }
 
+      if (fast) {
+        var track, slot;
+        for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+          track = this._tracks[i];
+          for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+            var slot = track._slots[j];
+            slot.draw(canvas, fast)
+          }
+        }
+      } else {
+        this.drawSlotWithTimeOut(this);
+      }
+
+      // Draw Divider rings
+      viewer.slotDivider.draw();
       // Ruler
-      viewer.ruler.draw(reverseRadius, directRadius);
+      viewer.ruler.draw(this.insideRadius, this.outsideRadius);
       // Legend
       viewer.legend.draw(ctx);
       // Captions
@@ -191,7 +184,7 @@
 
       // Labels
       if (viewer.globalLabel) {
-        viewer.labelSet.draw(reverseRadius, directRadius);
+        viewer.labelSet.draw(this.insideRadius, this.outsideRadius);
       }
 
       if (viewer.debug) {
@@ -204,6 +197,74 @@
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.stroke();
       }
+    }
+
+    drawSlotWithTimeOut(layout) {
+      var slot = layout.slots(layout._slotIndex + 1);
+      slot.draw(layout.viewer.canvas);
+      layout._slotIndex++;
+      if (layout._slotIndex < layout.slots().length) {
+        layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
+      }
+    }
+
+    /**
+     * Updates the radius and thickness of every slot, divider and ruler, only if the zoom level has changed
+     */
+    updateLayout() {
+      var viewer = this.viewer;
+      if (this._savedZoomFactor == viewer._zoomFactor) {
+        return
+      } else {
+        this._savedZoomFactor = viewer._zoomFactor;
+      }
+      var backbone = viewer.backbone;
+      var backboneThickness = CGV.pixel(backbone.zoomedThickness);
+      var slotRadius = CGV.pixel(backbone.zoomedRadius);
+      var directRadius = slotRadius + (backboneThickness / 2);
+      var reverseRadius = slotRadius - (backboneThickness / 2);
+      var spacing = CGV.pixel(viewer.slotSpacing);
+      var residualSlotThickness = 0;
+      var track, slot;
+      viewer.slotDivider.clearRadii();
+      for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+        track = this._tracks[i];
+        // Slots and Dividers
+        for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          var slot = track._slots[j];
+          // Calculate Slot dimensions
+          // The slotRadius is the radius at the center of the slot
+          var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+          slot._thickness = slotThickness;
+          if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
+            directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
+            slotRadius = directRadius;
+          } else {
+            reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
+            slotRadius = reverseRadius;
+          }
+
+          slot._radius = slotRadius;
+
+          residualSlotThickness = slotThickness / 2;
+
+          // Calculate Divider dimensions
+          if (viewer.slotDivider.visible) {
+            var dividerThickness = viewer.slotDivider.thickness;
+            if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
+              directRadius += spacing + residualSlotThickness + dividerThickness;
+              slotRadius = directRadius;
+            } else {
+              reverseRadius -= spacing + residualSlotThickness + dividerThickness;
+              slotRadius = reverseRadius;
+            }
+            viewer.slotDivider.addRadius(slotRadius);
+            residualSlotThickness = dividerThickness / 2;
+          }
+        }
+      }
+      this._insideRadius = reverseRadius;
+      this._outsideRadius = directRadius;
     }
 
     /**

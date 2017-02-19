@@ -19,6 +19,7 @@
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 1);
       this.visible = CGV.defaultFor(options.visible, true);
+      this.radii = new CGV.CGArray();
     }
 
     /**
@@ -71,6 +72,19 @@
     }
 
     /**
+     * @member {Number} - Set or get the array of divider radii.
+     */
+    set radii(value) {
+      if (value && value.toString() == 'CGArray') {
+        this._radii = value;
+      }
+    }
+
+    get radii() {
+      return this._radii
+    }
+
+    /**
      * The visible range
      * @member {Range}
      */
@@ -78,10 +92,28 @@
       return this._visibleRange
     }
 
-    draw(radius) {
-      this._visibleRange = this.canvas.visibleRangeForRadius( radius, 100);
-      if (this.visibleRange) {
-        this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
+    clearRadii() {
+      this.radii = new CGV.CGArray();
+    }
+
+    addRadius(radius) {
+      this._radii.push(radius)
+    }
+
+    // draw(radius) {
+    //   this._visibleRange = this.canvas.visibleRangeForRadius( radius, 100);
+    //   if (this.visibleRange) {
+    //     this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
+    //   }
+    // }
+
+    draw() {
+      for (var i = 0, len = this._radii.length; i < len; i++) {
+        var radius = this._radii[i]
+        this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);
+        if (this.visibleRange) {
+          this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
+        }
       }
     }
 

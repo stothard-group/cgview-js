@@ -112,14 +112,14 @@
     var startIndex = CGV.indexOfValue(this, startValue, true);
     var stopIndex = CGV.indexOfValue(this, stopValue, false);
     if (stopValue >= startValue) {
-      for (var i = startIndex; i <= stopIndex; i++) {
+      for (var i = startIndex; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);
       }
     } else {
-      for (var i = startIndex, len = this.length; i < len; i++) {
+      for (var i = startIndex, len = this.length; i < len; i += step) {
         callback.call(this[i], i, this[i]);
       }
-      for (var i = 0; i <= stopIndex; i++) {
+      for (var i = 0; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);
       }
     }

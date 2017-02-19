@@ -78,25 +78,23 @@ cgview:
             # The Following are the default values:
             start: 'ATG'
             stop: 'TAA,TAG,TGA'
-      - name: 'ORFs'
-        readingFrame: 'separated'
-        position: 'both'
-        contents:
-          features:
-            sequence: 'orfs'
-            # The Following are the default values:
-            start: 'ATG'
-            stop: 'TAA,TAG,TGA'
-      - name: 'CG Content'
-        position: 'inside'
-        contents:
-          plot:
-            sequence: 'gc_content'
-            # The Following are the default values:
-            window: 500
-            step: 1 
-            # window: 10000
-            # step: 100
+      # - name: 'ORFs'
+      #   readingFrame: 'separated'
+      #   position: 'both'
+      #   contents:
+      #     features:
+      #       sequence: 'orfs'
+      #       # The Following are the default values:
+      #       start: 'ATG'
+      #       stop: 'TAA,TAG,TGA'
+      # - name: 'CG Content'
+      #   position: 'inside'
+      #   contents:
+      #     plot:
+      #       sequence: 'gc_content'
+      #       # The Following are the default values:
+      #       # window: 500
+      #       # step: 1 
 
 
 

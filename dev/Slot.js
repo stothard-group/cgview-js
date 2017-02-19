@@ -186,11 +186,14 @@
       return length
     }
 
-    draw(canvas, fast, slotRadius, slotThickness) {
+    // draw(canvas, fast, slotRadius, slotThickness) {
+    draw(canvas, fast) {
       var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
       this._visibleRange = range;
-      this._radius = slotRadius;
-      this._thickness = slotThickness;
+      // this._radius = slotRadius;
+      // this._thickness = slotThickness;
+      var slotRadius = this.radius;
+      var slotThickness = this.thickness;
       if (range) {
         var start = range.start;
         var stop = range.stop;
@@ -210,7 +213,11 @@
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
           if (fast && featureCount > 2000) {
-            canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+            // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
+            var step = Math.ceil(featureCount / 100);
+            this._featureStarts.eachFromRange(start, stop, step, (i) => {
+              this._features[i].draw(canvas, slotRadius, slotThickness, range);
+            })
           } else {
             this._featureStarts.eachFromRange(start, stop, 1, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);
