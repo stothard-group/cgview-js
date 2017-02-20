@@ -49,6 +49,13 @@
       track._slots.push(this);
     }
 
+    /** * @member {Layout} - Get the *Layout*
+     */
+    get layout() {
+      return this.track.layout
+    }
+
+
     /** * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
@@ -188,12 +195,12 @@
 
     // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
-      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
-      this._visibleRange = range;
       // this._radius = slotRadius;
       // this._thickness = slotThickness;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
+      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+      this._visibleRange = range;
       if (range) {
         var start = range.start;
         var stop = range.stop;
@@ -212,9 +219,9 @@
             start = range.getStartPlus(-largestLength);
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
-          if (fast && featureCount > 2000) {
+          if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
             // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
-            var step = Math.ceil(featureCount / 100);
+            var step = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
             this._featureStarts.eachFromRange(start, stop, step, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);
             })

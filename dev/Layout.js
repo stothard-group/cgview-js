@@ -4,7 +4,7 @@
 (function(CGV) {
 
   /**
-   * The Layout is in control of creating slots from tracks.
+   * The Layout is in control of creating slots from tracks and drawing the map.
    */
   class Layout {
 
@@ -14,6 +14,7 @@
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this._viewer = viewer;
       this._tracks = new CGV.CGArray();
+      this._fastMaxFeatures = 1000;
 
       // Create tracks
       if (data.tracks) {
@@ -44,8 +45,6 @@
     get outsideRadius() {
       return this._outsideRadius
     }
-
-
 
     /**
      * Calculate the backbone radius and slot proportions based on the Viewer size and
@@ -114,27 +113,19 @@
       return slots.get(term);
     }
 
-    /*
-     * Draw plan:
-     * - return if drawTime && drawTime is < 20
-     * - set drawTime = 0
-     * - slotIndex = 0
-     * - clearTimeout
-     * - draw backbone
-     * - calculate radii for slots and dividers (make additional divider type for map perimeter/inner/outer/
-     * - draw dividers and ruler
-     * - draw slots
-     *     drawInterupt = true
-     *     drawSlot
-   *         draw slot slotIndex
-   *         if last index
-   *           drawTime = undefined
-   *         else
-   *           increase index
-   *           set timeOut to drawSlot in 1ms
-     *
-     */
-    draw(fast) {
+    get slotLength() {
+      return this._slotLength || 0
+    }
+
+    get fastMaxFeatures() {
+      return this._fastMaxFeatures
+    }
+
+    get fastFeaturesPerSlot() {
+      return this._fastFeaturesPerSlot
+    }
+
+    draw(fast, toExport) {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var canvas = viewer.canvas;
@@ -149,6 +140,7 @@
       // Draw Backbone
       backbone.draw();
 
+      // Recalculate the slot radius and thickness if the zoom level has changed
       this.updateLayout();
 
       // Slots
@@ -158,7 +150,7 @@
         this._slotTimeoutID = undefined;
       }
 
-      if (fast) {
+      if (fast || toExport) {
         var track, slot;
         for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
           track = this._tracks[i];
@@ -181,17 +173,15 @@
       for (var i = 0, len = viewer._captions.length; i < len; i++) {
         viewer._captions[i].draw(ctx);
       }
-
       // Labels
       if (viewer.globalLabel) {
         viewer.labelSet.draw(this.insideRadius, this.outsideRadius);
       }
-
+      // Debug
       if (viewer.debug) {
         viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
         viewer.debug.draw(ctx);
       }
-
       if (viewer._testDrawRange) {
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
@@ -200,10 +190,11 @@
     }
 
     drawSlotWithTimeOut(layout) {
-      var slot = layout.slots(layout._slotIndex + 1);
+      var slots = layout.slots();
+      var slot = slots[layout._slotIndex];
       slot.draw(layout.viewer.canvas);
       layout._slotIndex++;
-      if (layout._slotIndex < layout.slots().length) {
+      if (layout._slotIndex < slots.length) {
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
       }
     }
@@ -227,11 +218,13 @@
       var residualSlotThickness = 0;
       var track, slot;
       viewer.slotDivider.clearRadii();
+      this._slotLength = 0;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
         // Slots and Dividers
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           var slot = track._slots[j];
+          this._slotLength++;
           // Calculate Slot dimensions
           // The slotRadius is the radius at the center of the slot
           var slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
@@ -263,6 +256,7 @@
           }
         }
       }
+      this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;
       this._insideRadius = reverseRadius;
       this._outsideRadius = directRadius;
     }

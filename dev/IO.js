@@ -101,7 +101,8 @@
       canvas.ctx.scale(scaleFactor, scaleFactor);
 
       // Generate image
-      viewer.draw_full();
+      // viewer.draw_full();
+      viewer.layout.draw(false, true);
       var image = tempCanvas.toDataURL();
 
       // Restore original context and settings

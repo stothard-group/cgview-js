@@ -107,10 +107,15 @@
     return this;
   }
 
-  // TODO: add step
   CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
     var startIndex = CGV.indexOfValue(this, startValue, true);
     var stopIndex = CGV.indexOfValue(this, stopValue, false);
+    // This help reduce the jumpiness of feature drawing with a step
+    // The idea is to alter the start index based on the step so the same
+    // indices should be returned
+    if (startIndex > 0 && step > 1) {
+      startIndex = startIndex - (startIndex % step);
+    }
     if (stopValue >= startValue) {
       for (var i = startIndex; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);

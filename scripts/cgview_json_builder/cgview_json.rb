@@ -226,7 +226,7 @@ debug = false
 # debug = true
 file = "data/sequences/NC_001823.gbk"
 # file = "data/sequences/NC_000907.gbk"
-file = "data/sequences/NC_000913.gbk"
+# file = "data/sequences/NC_000913.gbk"
 cgview = CGViewJSON.new(file, config: "scripts/cgview_json_builder/config.yaml", debug: debug)
 
 cgview.write_json("/Users/jason/workspace/stothard_group/cgview-js/data/tests/builder.json")
