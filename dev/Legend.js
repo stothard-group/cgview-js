@@ -75,6 +75,10 @@
       return this.padding / 2
     }
 
+    findLegendItemByName(name) {
+      return this._legendItems.find( (i) => { return name.toLowerCase() == i.text.toLowerCase() });
+    }
+
     draw(ctx) {
       this.clear();
       ctx.fillStyle = this.backgroundColor.rgbaString;

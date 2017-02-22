@@ -133,6 +133,9 @@
       var startTime = new Date().getTime();
 
       viewer.clear();
+      if (viewer.messenger.visible) {
+        viewer.messenger.close();
+      }
 
       // All Text should have base line top
       ctx.textBaseline = 'top';

@@ -24,7 +24,7 @@
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
       if (data.legend) {
-        this.legendItem  = viewer.legend._legendItems.find( (i) => { return i.text == data.legend });
+        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
       }
       if (!this.legendItem) {
         this._color = new CGV.Color('black');

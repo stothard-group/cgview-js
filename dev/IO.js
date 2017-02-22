@@ -102,7 +102,7 @@
 
       // Generate image
       // viewer.draw_full();
-      viewer.layout.draw(false, true);
+      viewer.drawExport();
       var image = tempCanvas.toDataURL();
 
       // Restore original context and settings

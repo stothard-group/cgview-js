@@ -37,6 +37,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._captions = new CGV.CGArray();
       this._featureTypes = new CGV.CGArray();
 
+      // Initial Messenger
+      this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Sequence
@@ -355,7 +357,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     * Flash a message on the center of the viewer.
     */
     flash(msg) {
-      this.canvas.flash(msg);
+      // this.canvas.flash(msg);
+      this.messenger.flash(msg);
     }
 
     /**
@@ -375,6 +378,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     draw_fast() {
       this.draw(true);
+    }
+
+    drawExport() {
+      this.layout.draw(false, true);
     }
 
     draw(fast) {

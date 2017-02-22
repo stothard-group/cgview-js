@@ -75,6 +75,7 @@
     }
 
     extractORFs(options = {}) {
+      this.viewer.flash('Finding ORFs...');
       var startTime = new Date().getTime();
       var features = new CGV.CGArray();
       var type = 'ORF'
@@ -91,18 +92,23 @@
       // Get forward ORFs
       var position, strand, orfLength, range, readingFrames;
       readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
+      var start, stop, stop_index;
       for (var rf of readingFrames) {
         position = 1;
-        for (var start of startsByRF[rf]) {
+        stop_index = 0;
+        for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+          start = startsByRF[rf][i];
           if (start.start < position) {
             continue;
           }
-          for (var stop of stopsByRF[rf]) {
+          for (var j = stop_index, len_j = stopsByRF[rf].length; j < len_j; j++) {
+            stop = stopsByRF[rf][j];
             orfLength = stop.stop - start.start;
             if (orfLength >= minORFLength) {
               position = stop.stop;
               range = new CGV.CGRange(this.sequence, start.start, stop.stop);
               features.push( this.createFeature(range, type, 1, source ) );
+              stop_index = j;
               break;
             }
           }
@@ -111,19 +117,23 @@
       // Get reverse ORFs
       readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
       for (var rf of readingFrames) {
+        stop_index = 0;
         position = this.sequence.length;
         var startsByRFSorted = startsByRF[rf].order_by('start', true);
         var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
-        for (var start of startsByRFSorted) {
+        for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+          start = startsByRF[rf][i];
           if (start.start > position) {
             continue;
           }
-          for (var stop of stopsByRFSorted) {
+          for (var j = stop_index, len_j = stopsByRF[rf].length; j < len_j; j++) {
+            stop = stopsByRF[rf][j];
             orfLength = start.stop - stop.start;
             if (orfLength >= minORFLength) {
               position = stop.start;
               range = new CGV.CGRange(this.sequence, stop.start, start.stop);
               features.push( this.createFeature(range, type, -1, source ) );
+              stop_index = j;
               break;
             }
           }
@@ -134,18 +144,14 @@
     }
 
     extractStartStops(options = {}) {
+      this.viewer.flash('Finding Start/Stop Codons...');
       var startTime = new Date().getTime();
-      var features = new CGV.CGArray();
       // Forward and Reverse Starts
       var startPattern = CGV.defaultFor(options.start, 'ATG')
-      var startTime2 = new Date().getTime();
-      features.merge( this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons'))
-      console.log('Merge Start Time: ' + CGV.elapsed_time(startTime2) );
+      var features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
       // Forward and Reverse Stops
       var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      var startTime2 = new Date().getTime();
       features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
-      console.log('Merge Stop Time: ' + CGV.elapsed_time(startTime2) );
       console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
       return features
     }
@@ -154,14 +160,14 @@
       var features = new CGV.CGArray();
       pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
       for (var strand of [1, -1]) {
-        var startTime = new Date().getTime();
+        // var startTime = new Date().getTime();
         var ranges = this.sequence.findPattern(pattern, strand)
-        console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
-        var startTime = new Date().getTime();
+        // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+        // var startTime = new Date().getTime();
         for (var i = 0, len = ranges.length; i < len; i++) {
           features.push( this.createFeature(ranges[i], type, strand, source ) );
         }
-        console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+        // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
       }
       return features.order_by('start')
     }
@@ -174,26 +180,67 @@
         strand: strand,
         source: source,
         extractedFromSequence: true
-        // legend: ...
       }
+      featureData.legend = this.getLegendItem(type).text;
       return new CGV.Feature(this.viewer, featureData)
+    }
+
+    getLegendItem(type) {
+      var legend = this.viewer.legend;
+      var item;
+      switch (type) {
+        case 'start-codon':
+          item = legend.findLegendItemByName('start');
+          if (!item) {
+            item = new CGV.LegendItem(legend, {
+              text: 'Start',
+              swatchColor: 'blue'
+            })
+          }
+          break;
+        case 'stop-codon':
+          item = legend.findLegendItemByName('stop');
+          if (!item) {
+            item = new CGV.LegendItem(legend, {
+              text: 'Stop',
+              swatchColor: 'red'
+            })
+          }
+          break;
+        case 'ORF':
+          item = legend.findLegendItemByName('orf');
+          if (!item) {
+            item = new CGV.LegendItem(legend, {
+              text: 'ORF',
+              swatchColor: 'green'
+            })
+          }
+          break;
+        default:
+          item = new CGV.LegendItem(legend, {
+            text: 'Unknown',
+            swatchColor: 'grey'
+          })
+      }
+      return item 
     }
 
     extractPlot(options = {}) {
       if (options.sequence == 'gc_content') {
         return this.extractBaseContentPlot('gc_content', options);
-      // } else if (options.sequence == 'g') {
-        // features = this.extractORFs(options);
+      } else if (options.sequence == 'gc_skew') {
+        return this.extractBaseContentPlot('gc_skew', options);
       }
-      // return features
     }
 
     // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
     // score must be between 0 and 1
     extractBaseContentPlot(type, options) {
       var startTime = new Date().getTime();
-      if (!CGV.validate(type, ['gc_content'])) { return }
-      
+      if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
+      this.viewer.flash("Creating '" + type + "' Plot...");
+
+
       options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
       options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
       var step = options.step
@@ -281,19 +328,19 @@
     getWindowStep() {
       var windowSize, step;
       var length = this.length;
-      if (length < 10e3 ) {
+      if (length < 1e3 ) {
         windowSize = 10;
         step = 1;
-      } else if (length < 10e4) {
+      } else if (length < 1e4) {
         windowSize = 50;
         step = 1;
-      } else if (length < 10e5) {
+      } else if (length < 1e5) {
         windowSize = 500;
         step = 1;
-      } else if (length < 10e6) {
+      } else if (length < 1e6) {
         windowSize = 1000;
         step = 10;
-      } else if (length < 10e7) {
+      } else if (length < 1e7) {
         windowSize = 10000;
         step = 100;
       }

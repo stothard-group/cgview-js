@@ -100,6 +100,8 @@ class CGViewJSON
       name = qualifiers['gene'] || qualifiers['locus_tag'] || qualifiers['note'] || feature.feature
       # Feature Location
       location = locations.first
+      # Skip features with the same length as the sequence
+      next if location.from == 1 && location.to == @seq_object.length
       # Create Feature
       @features.push({
         type: feature.feature,
@@ -225,7 +227,7 @@ end
 debug = false
 # debug = true
 file = "data/sequences/NC_001823.gbk"
-# file = "data/sequences/NC_000907.gbk"
+file = "data/sequences/NC_000907.gbk"
 # file = "data/sequences/NC_000913.gbk"
 cgview = CGViewJSON.new(file, config: "scripts/cgview_json_builder/config.yaml", debug: debug)
 

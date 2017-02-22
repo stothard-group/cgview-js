@@ -12,10 +12,12 @@
       this.viewer = viewer;
       this.positions = data.positions;
       this.scores = data.scores;
+      this._baseline = CGV.defaultFor(data.baseline, 0.5);
       this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
       this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
       this._colorNegative = data.colorNegative ? new CGV.Color(data.colorNegative) : undefined;
-      this._baseline = CGV.defaultFor(data.baseline, 0.5);
+
+
     }
 
     /**
@@ -162,14 +164,14 @@
 
     // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast,  range, color, orientation) {
-      fast = false
+      // fast = false
       var ctx = canvas.ctx;
       var scale = canvas.scale;
       var positions = this.positions;
       var scores = this.scores;
       // This is the difference in radial pixels required before a new arc is draw
-      // var radialDiff = fast ? 1 : 0.5;
-      var radialDiff = 0.5;
+      var radialDiff = fast ? 1 : 0.5;
+      // var radialDiff = 0.5;
 
       var startPosition = range.start;
       var stopPosition = range.stop;
@@ -184,8 +186,14 @@
       var savedPosition = startPosition;
       var currentR;
       var index, score, currentPosition, lastScore;
-      // var step = fast ? 2 : 1
-      positions.eachFromRange(startPosition, stopPosition, 1, (i) => {
+      var step = 1;
+      // When drawing fast, use a step value scaled between 1 and maxStep.
+      if (fast) {
+        var maxStep = 10
+        var positionsLength = positions.countFromRange(startPosition, stopPosition);
+        step = Math.ceil(maxStep * positionsLength / positions.length);
+      }
+      positions.eachFromRange(startPosition, stopPosition, step, (i) => {
         lastScore = score;
         score = scores[i];
         currentPosition = positions[i];
