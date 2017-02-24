@@ -221,7 +221,14 @@
           }
           if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
             // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
-            var step = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
+            // Use a step that is rounded up to the nearest power of 2
+            // This combined with eachFromRange altering the start index based on the step
+            // means that as we zoom, the visible features remain consistent.
+            // e.g. When zooming all the features visible at a step of 16
+            // will be visible when the step is 8 and so on.
+            var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
+            var step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
+            console.log(initialStep, step)
             this._featureStarts.eachFromRange(start, stop, step, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);
             })

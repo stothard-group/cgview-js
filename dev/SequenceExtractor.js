@@ -185,44 +185,43 @@
       return new CGV.Feature(this.viewer, featureData)
     }
 
-    getLegendItem(type) {
+    getLegendItem(type, sign) {
       var legend = this.viewer.legend;
       var item;
       switch (type) {
         case 'start-codon':
-          item = legend.findLegendItemByName('start');
-          if (!item) {
-            item = new CGV.LegendItem(legend, {
-              text: 'Start',
-              swatchColor: 'blue'
-            })
-          }
+          item = this.findLegendItemOrCreate('Start', 'blue');
           break;
         case 'stop-codon':
-          item = legend.findLegendItemByName('stop');
-          if (!item) {
-            item = new CGV.LegendItem(legend, {
-              text: 'Stop',
-              swatchColor: 'red'
-            })
-          }
+          item = this.findLegendItemOrCreate('Stop', 'red');
           break;
         case 'ORF':
-          item = legend.findLegendItemByName('orf');
-          if (!item) {
-            item = new CGV.LegendItem(legend, {
-              text: 'ORF',
-              swatchColor: 'green'
-            })
-          }
+          item = this.findLegendItemOrCreate('ORF', 'green');
+          break;
+        case 'gc_content':
+          item = this.findLegendItemOrCreate('GC Content', 'black');
+          break;
+        case 'gc_skew':
+          var color = (sign == '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
+          var name = (sign == '+') ? 'GC Skew+' : 'GC Skew-';
+          item = this.findLegendItemOrCreate(name, color);
           break;
         default:
-          item = new CGV.LegendItem(legend, {
-            text: 'Unknown',
-            swatchColor: 'grey'
-          })
+          item = this.findLegendItemOrCreate('Unknown', 'grey');
       }
       return item 
+    }
+
+    findLegendItemOrCreate(name, color) {
+      var legend = this.viewer.legend;
+      var item = legend.findLegendItemByName(name);
+      if (!item) {
+        item = new CGV.LegendItem(legend, {
+          text: name,
+          swatchColor: color
+        })
+      }
+      return item
     }
 
     extractPlot(options = {}) {
@@ -264,6 +263,8 @@
         }
       }
       var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
+      data.legendPositive = this.getLegendItem(type, '+').text;
+      data.legendNegative = this.getLegendItem(type, '-').text;
       var plot = new CGV.ArcPlot(this.viewer, data);
       console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
       return plot

@@ -69,24 +69,24 @@ cgview:
         swatchColor: 'rgba(153,153,153,0.5)'
   layout:
     tracks:
-      - name: 'Start/Stop Codons'
-        readingFrame: 'separated'
-        position: 'both'
-        contents:
-          features:
-            sequence: 'start_stop_codons'
-            # The Following are the default values:
-            start: 'ATG'
-            stop: 'TAA,TAG,TGA'
-      - name: 'ORFs'
-        readingFrame: 'separated'
-        position: 'both'
-        contents:
-          features:
-            sequence: 'orfs'
-            # The Following are the default values:
-            start: 'ATG'
-            stop: 'TAA,TAG,TGA'
+      # - name: 'Start/Stop Codons'
+      #   readingFrame: 'separated'
+      #   position: 'both'
+      #   contents:
+      #     features:
+      #       sequence: 'start_stop_codons'
+      #       # The Following are the default values:
+      #       start: 'ATG'
+      #       stop: 'TAA,TAG,TGA'
+      # - name: 'ORFs'
+      #   readingFrame: 'separated'
+      #   position: 'both'
+      #   contents:
+      #     features:
+      #       sequence: 'orfs'
+      #       # The Following are the default values:
+      #       start: 'ATG'
+      #       stop: 'TAA,TAG,TGA'
       - name: 'CG Content'
         position: 'inside'
         contents:

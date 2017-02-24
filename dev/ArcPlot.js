@@ -17,6 +17,15 @@
       this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
       this._colorNegative = data.colorNegative ? new CGV.Color(data.colorNegative) : undefined;
 
+      if (data.legend) {
+        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
+      }
+      if (data.legendPositive) {
+        this.legendItemPositive  = viewer.legend.findLegendItemByName(data.legendPositive);
+      }
+      if (data.legendNegative) {
+        this.legendItemNegative  = viewer.legend.findLegendItemByName(data.legendNegative);
+      }
 
     }
 
@@ -117,6 +126,8 @@
 
     set legendItem(value) {
       this._legendItem = value;
+      this.legendItemPositive = value;
+      this.legendItemNegative = value;
     }
 
     get legendItemPositive() {
@@ -199,13 +210,13 @@
         currentPosition = positions[i];
         currentR = baselineRadius + (score - this.baseline) * slotThickness;
         // If going from positive to negative need to save currentR as 0 (baselineRadius)
-        if (orientation && (lastScore * score < 0)) {
+        // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
+        if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
           currentR = baselineRadius;
-          savedR = currentR;
           canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
+          savedR = currentR;
           savedPosition = currentPosition;
-        }
-        if ( this._keepPoint(score, orientation) ){
+        } else if ( this._keepPoint(score, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
             canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
             savedR = currentR;
@@ -226,9 +237,9 @@
     _keepPoint(score, orientation) {
       if (orientation == undefined) {
         return true
-      } else if (orientation == 'positive' && score > 0) {
+      } else if (orientation == 'positive' && score > this.baseline) {
         return true
-      } else if (orientation == 'negative' && score < 0 ) {
+      } else if (orientation == 'negative' && score < this.baseline ) {
         return true
       }
       return false

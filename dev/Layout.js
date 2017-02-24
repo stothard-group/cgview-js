@@ -132,7 +132,10 @@
       var ctx = viewer.ctx;
       var startTime = new Date().getTime();
 
-      viewer.clear();
+      if (fast) {
+        viewer.clear();
+      }
+      // viewer.clear();
       if (viewer.messenger.visible) {
         viewer.messenger.close();
       }

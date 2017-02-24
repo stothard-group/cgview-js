@@ -110,9 +110,9 @@
   CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
     var startIndex = CGV.indexOfValue(this, startValue, true);
     var stopIndex = CGV.indexOfValue(this, stopValue, false);
-    // This helps reduce the jumpiness of feature drawing with a step
+    // This helps reduce the jumpiness of feature drawing with a step 
     // The idea is to alter the start index based on the step so the same
-    // indices should be returned
+    // indices should be returned. i.e. the indices should be divisible by the step.
     if (startIndex > 0 && step > 1) {
       // startIndex = startIndex - (startIndex % step);
       startIndex += step - (startIndex % step);
