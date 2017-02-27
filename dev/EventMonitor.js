@@ -100,13 +100,11 @@
             }
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
-              cgv.draw_fast();
-              // cgv.draw();
+              cgv.drawFast();
             };
             cp.onClose = function() {
               legendItem.swatchSelected = false;
-              cgv.draw_fast();
-              // cgv.draw();
+              cgv.drawFull();
             };
             cp.setColor(legendItem._swatchColor.rgba);
             cp.open();

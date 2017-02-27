@@ -35,7 +35,8 @@
 
       self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])
       self.scale.y.domain([domain_y[0] + dy, domain_y[1] + dy])
-      self.draw(true);
+      self.drawFast();
+      // self.draw(true);
       // self.trigger('drag');
       // self.fast_draw();
       //
@@ -52,7 +53,8 @@
     function dragend() {
       // self.trigger('drag-end');
       // self.full_draw();
-      self.draw()
+      // self.draw()
+      self.drawFull()
     }
   }
 

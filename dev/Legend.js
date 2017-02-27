@@ -81,10 +81,11 @@
 
     draw(ctx) {
       this.clear();
-      ctx.fillStyle = this.backgroundColor.rgbaString;
-      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      // ctx.fillStyle = this.backgroundColor.rgbaString;
+      // ctx.fillRect(this.originX, this.originY, this.width, this.height);
       var textX, swatchX;
       var y = this.originY + this.padding;
+      ctx.lineWidth = 1;
       for (var i = 0, len = this._legendItems.length; i < len; i++) {
         var legendItem = this._legendItems[i];
         var legendItemHeight = legendItem.height;

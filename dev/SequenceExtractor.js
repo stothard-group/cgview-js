@@ -74,6 +74,14 @@
       return features
     }
 
+    // addFeaturesToTrack(featureOptions = {}, track) {
+    //   if (featureOptions.sequence == 'start_stop_codons') {
+    //     track._features = this.extractStartStops(featureOptions);
+    //   } else if (options.sequence == 'orfs') {
+    //     track._features = this.extractORFs(featureOptions);
+    //   }
+    // }
+
     extractORFs(options = {}) {
       this.viewer.flash('Finding ORFs...');
       var startTime = new Date().getTime();

@@ -232,7 +232,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.canvas.width = this.canvas.width / 0.4;
         this.canvas.height = this.canvas.height / 0.4;
       }
-      this.draw_full();
+      this.drawFull();
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -372,20 +372,22 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 
 
-    draw_full() {
-      this.draw();
+    drawFull() {
+      // this.draw();
+      this.layout.drawFull();
     }
 
-    draw_fast() {
-      this.draw(true);
+    drawFast() {
+      this.layout.drawFast();
     }
 
     drawExport() {
-      this.layout.draw(false, true);
+      // this.layout.draw(false, true);
+      this.layout.drawExport();
     }
 
     draw(fast) {
-      this.layout.draw(fast);
+      // this.layout.draw(fast);
     }
 
     // Get mouse position in the 'container' taking into account the pixel ratio

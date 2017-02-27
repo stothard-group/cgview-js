@@ -59,8 +59,8 @@
         // Remove from old legend
         oldLegend._legendItems = oldLegend._legendItems.remove(this);
         oldLegend.refresh();
-        newLegend.refresh();
       }
+      newLegend.refresh();
     }
 
     /**

@@ -125,17 +125,17 @@
       return this._fastFeaturesPerSlot
     }
 
-    draw(fast, toExport) {
+    drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var canvas = viewer.canvas;
       var ctx = viewer.ctx;
       var startTime = new Date().getTime();
 
-      if (fast) {
-        viewer.clear();
-      }
-      // viewer.clear();
+      // if (fast) {
+      //   viewer.clear();
+      // }
+      viewer.clear();
       if (viewer.messenger.visible) {
         viewer.messenger.close();
       }
@@ -149,27 +149,7 @@
       // Recalculate the slot radius and thickness if the zoom level has changed
       this.updateLayout();
 
-      // Slots
-      this._slotIndex = 0;
-      if (this._slotTimeoutID) {
-        clearTimeout(this._slotTimeoutID);
-        this._slotTimeoutID = undefined;
-      }
-
-      if (fast || toExport) {
-        var track, slot;
-        for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-          track = this._tracks[i];
-          for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
-            var slot = track._slots[j];
-            slot.draw(canvas, fast)
-          }
-        }
-      } else {
-        this.drawSlotWithTimeOut(this);
-      }
-
-      // Draw Divider rings
+      // Divider rings
       viewer.slotDivider.draw();
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
@@ -193,11 +173,49 @@
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.stroke();
       }
+      // Slots timout
+      this._slotIndex = 0;
+      if (this._slotTimeoutID) {
+        clearTimeout(this._slotTimeoutID);
+        this._slotTimeoutID = undefined;
+      }
+    }
+
+    drawFast() {
+      this.drawMapWithoutSlots();
+      this.drawAllSlots(true);
+    }
+
+    drawFull() {
+      this.drawMapWithoutSlots();
+      this.drawAllSlots(true);
+      this.drawSlotWithTimeOut(this);
+    }
+
+    drawExport() {
+      this.drawMapWithoutSlots();
+      this.drawAllSlots(false);
+    }
+
+    draw(fast) {
+      fast ? this.drawFast() : this.drawFull();
+    }
+
+    drawAllSlots(fast) {
+      var track, slot;
+      for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+        track = this._tracks[i];
+        for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          slot = track._slots[j];
+          slot.draw(this.viewer.canvas, fast)
+        }
+      }
     }
 
     drawSlotWithTimeOut(layout) {
       var slots = layout.slots();
       var slot = slots[layout._slotIndex];
+      slot.clear();
       slot.draw(layout.viewer.canvas);
       layout._slotIndex++;
       if (layout._slotIndex < slots.length) {

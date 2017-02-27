@@ -144,7 +144,8 @@
         // Features extracted from the  Sequence
         var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
         if (sequenceExtractor) {
-          this._features.merge(sequenceExtractor.extractFeatures(this.contents.features));
+          // this._features = sequenceExtractor.extractFeatures(this.contents.features);
+          this.extractFeaturesFromSequence()
         } else {
           console.error('No sequence is available to extract features from');
         }
@@ -166,6 +167,29 @@
         });
       }
     }
+
+    extractFeaturesFromSequence() {
+      var featureOptions = this.contents.features;
+      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      if (featureOptions.sequence == 'start_stop_codons') {
+        this.viewer.flash('Finding Start/Stop Codons...');
+        console.log('HERE')
+      } else if (options.sequence == 'orfs') {
+        this.viewer.flash('Finding ORFs...');
+      }
+      setTimeout(() => {
+        this._features = sequenceExtractor.extractFeatures(this.contents.features);
+        this.updateFeatureSlots();
+        this.viewer.drawFull();
+      }, 8000);
+    }
+
+    // extractFeaturesTimeout() {
+    //   var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+    //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
+    //   this.updateFeatureSlots();
+    //   this.veiwer.draw_full();
+    // }
 
     updateSlots() {
       if (this.contentType == 'features') {

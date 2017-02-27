@@ -60,7 +60,7 @@
       // self.trigger('zoom');
       // self.fast_draw();
 
-      self.draw(true);
+      self.drawFast();
 
       // DEBUG INFO
       if (self.debug) {
@@ -77,7 +77,7 @@
       // self.svg.style('cursor', 'all-scroll');
       // self.trigger('zoom-end');
       // self.full_draw();
-      self.draw();
+      self.drawFull();
     }
   }
 
