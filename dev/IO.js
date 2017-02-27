@@ -80,8 +80,8 @@
       var windowTitle = 'CGV-Image-' + width + 'x' + height;
 
       // Adjust size based on pixel Ratio
-      width = width / CGV.pixel_ratio;
-      height = height / CGV.pixel_ratio;
+      width = width / CGV.pixelRatio;
+      height = height / CGV.pixelRatio;
 
       // Save current settings
       var origContext = canvas.ctx;
@@ -92,7 +92,7 @@
       var tempCanvas = d3.select('body').append('canvas')
         .attr('width', width).attr('height', height).node();
 
-      CGV.scale_resolution(tempCanvas, CGV.pixel_ratio);
+      CGV.scaleResolution(tempCanvas, CGV.pixelRatio);
       canvas.ctx = tempCanvas.getContext('2d');
 
       // Calculate scaling factor

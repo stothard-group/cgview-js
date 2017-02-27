@@ -244,7 +244,7 @@
 
 
     drawForRadius(radius, position = 'inner', drawLabels = true) {
-      var ctx = this.canvas.ctx;
+      var ctx = this.canvas.context('map');
       var scale = this.canvas.scale;
       var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
       ctx.fillStyle = 'black'; // Label Color
@@ -268,7 +268,7 @@
 
     drawLabel(bp, label, radius, position = 'inner') {
       var scale = this.canvas.scale;
-      var ctx = this.canvas.ctx;
+      var ctx = this.canvas.context('map');
       // Put space between number and units
       // var label = label.replace(/([^\d\.]+)/, ' $1bp');
       var label = label.replace(/([kM])?$/, ' $1bp');

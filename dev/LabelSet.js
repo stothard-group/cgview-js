@@ -88,7 +88,7 @@
       // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this._canvas.ctx, labelFonts, labelTexts);
+      var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
       for (var i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];
       }
@@ -158,7 +158,7 @@
       }
 
       var canvas = this._canvas;
-      var ctx = canvas.ctx;
+      var ctx = canvas.context('map');
       var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';

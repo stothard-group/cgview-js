@@ -67,7 +67,7 @@
   /**
    * Return the pixel ratio. The default is 1.
    */
-  CGV.pixel_ratio = 1;
+  CGV.pixelRatio = 1;
 
   /**
    * Converts provided number of pixels based on pixel ratio which depends on
@@ -81,10 +81,10 @@
    * @return {Intger}
    */
   CGV.pixel = function(px) {
-    return px * CGV.pixel_ratio;
+    return px * CGV.pixelRatio;
   }
 
-  CGV.get_pixel_ratio = function(canvas) {
+  CGV.getPixelRatio = function(canvas) {
     var context = canvas.getContext('2d');
     //  query the various pixel ratios
     var devicePixelRatio = window.devicePixelRatio || 1;
@@ -98,7 +98,7 @@
     return devicePixelRatio / backingStoreRatio;
   }
 
-  CGV.scale_resolution = function(canvas, ratio){
+  CGV.scaleResolution = function(canvas, ratio){
     // upscale the canvas if the two ratios don't match
     if (ratio != 1) {
 

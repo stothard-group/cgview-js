@@ -286,7 +286,7 @@
     }
 
     _drawSequence() {
-      var ctx = this.canvas.ctx;
+      var ctx = this.canvas.context('map');
       var scale = this.canvas.scale;
       var radius = CGV.pixel(this.zoomedRadius);
       var range = this.visibleRange

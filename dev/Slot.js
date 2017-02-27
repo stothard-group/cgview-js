@@ -236,7 +236,6 @@
             // will be visible when the step is 8 and so on.
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
             var step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
-            console.log(initialStep, step)
             this._featureStarts.eachFromRange(start, stop, step, (i) => {
               this._features[i].draw(canvas, slotRadius, slotThickness, range);
             })

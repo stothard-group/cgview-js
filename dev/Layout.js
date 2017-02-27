@@ -129,19 +129,17 @@
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var canvas = viewer.canvas;
-      var ctx = viewer.ctx;
       var startTime = new Date().getTime();
 
-      // if (fast) {
-      //   viewer.clear();
-      // }
       viewer.clear();
+
       if (viewer.messenger.visible) {
         viewer.messenger.close();
       }
 
       // All Text should have base line top
-      ctx.textBaseline = 'top';
+      // FIXME: contexts 
+      // ctx.textBaseline = 'top';
 
       // Draw Backbone
       backbone.draw();
@@ -154,10 +152,10 @@
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
       // Legend
-      viewer.legend.draw(ctx);
+      viewer.legend.draw(canvas.context('captions'));
       // Captions
       for (var i = 0, len = viewer._captions.length; i < len; i++) {
-        viewer._captions[i].draw(ctx);
+        viewer._captions[i].draw(canvas.context('captions'));
       }
       // Labels
       if (viewer.globalLabel) {
@@ -166,9 +164,11 @@
       // Debug
       if (viewer.debug) {
         viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
-        viewer.debug.draw(ctx);
+        viewer.clear('ui');
+        viewer.debug.draw(canvas.context('ui'));
       }
       if (viewer._testDrawRange) {
+        var ctx = canvas.context('captions')
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.stroke();

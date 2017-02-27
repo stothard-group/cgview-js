@@ -32,7 +32,7 @@
           this.labelSet.addLabel(this);
         }
         this._name = value;
-        this.width = this.font.width(this.viewer.canvas.ctx, this._name);
+        this.width = this.font.width(this.viewer.canvas.context('map'), this._name);
       }
     }
 

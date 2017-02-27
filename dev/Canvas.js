@@ -6,48 +6,127 @@
   class Canvas {
 
     /**
-     * - Sets up the canvas for drawing
+     * - Adds several layers (canvases) for drawing
      * - Contains the x, y, bp scales
      * - has methods for for determining visible regions of the circle at a particular radius
+     * NOTE: anything drawn to the canvas must take the pixel ratio into account
+     *       and should use the CGV.pixel() method.
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
     constructor(viewer, container, options = {}) {
       this._viewer = viewer;
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
-      this.scale = {};
       this._drawArcsCutoff = 10000;
 
-      // Create the viewer canvas
-      // NOTE: anything drawn to the canvas must take the pixel ratio into account
-      //       and should use the CGV.pixel() method.
-      this.canvasNode = container.append("canvas")
-        .classed('cgv-viewer', true)
-        .style('border', '1px solid #DDD')
-        .attr("width", this._width)
-        .attr("height", this._height).node();
 
-      // Check for canvas support
-      if (!this.canvasNode.getContext) {
-        container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
-      }
+      // this.canvasNode = container.append("canvas")
+      //   .classed('cgv-viewer', true)
+      //   .style('border', '1px solid #DDD')
+      //   .style('z-index',  100)
+      //   .style('position',  'absolute')
+      //   .style('top',  0)
+      //   .style('left',  0)
+      //   .attr("width", this._width)
+      //   .attr("height", this._height).node();
 
-      // Get pixel ratio and upscale canvas depending on screen resolution
-      // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      CGV.pixel_ratio = CGV.get_pixel_ratio(this.canvasNode);
-      CGV.scale_resolution(this.canvasNode, CGV.pixel_ratio);
 
-      // Set viewer context
-      this.ctx = this.canvasNode.getContext('2d');
+      // Create layers
+      this.determinePixelRatio(container);
+      this._layerNames = ['background', 'map', 'captions', 'ui'];
+      this._layers = this.createLayers(container, this._layerNames);
+
+      // TEMP
+      this.ctx = this.context('map');
+
+      // Setup scales
+      this.scale = {};
       this.refreshScales();
 
+
+
+      //TEMP
+      var c = this.context('background')
+      c.fillStyle = 'blue';
+      c.fillRect(100, 100, 100, 100);
+
     }
+
+    determinePixelRatio(container) {
+      var testNode = container.append("canvas")
+        .style('position',  'absolute')
+        .style('top',  0)
+        .style('left',  0)
+        .attr("width", this._width)
+        .attr("height", this._height).node();
+      // Check for canvas support
+      if (testNode.getContext) {
+        // Get pixel ratio and upscale canvas depending on screen resolution
+        // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+        CGV.pixelRatio = CGV.getPixelRatio(testNode);
+      } else {
+        container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
+      }
+      d3.select(testNode).remove();
+    }
+
+    createLayers(container, layerNames) {
+      var layers = {};
+
+      for (var i = 0, len = layerNames.length; i < len; i++) {
+        var layerName = layerNames[i]
+        var zIndex = (i + 1) * 10;
+        var node = container.append("canvas")
+          .classed('cgv-layer', true)
+          .classed('cgv-layer-' + layerName, true)
+          .style('z-index',  zIndex)
+          .attr("width", this._width)
+          .attr("height", this._height).node();
+
+        CGV.scaleResolution(node, CGV.pixelRatio);
+
+        // Set viewer context
+        var ctx = node.getContext('2d');
+        layers[layerName] = { ctx: ctx, node: node };
+      }
+      return layers
+    }
+
+    resize(width, height) {
+      this.width = width;
+      this.height = height;
+      for (var layerName of this.layerNames) {
+        var layerNode = this.layers(layerName).node;
+        // Note, here the width/height will take into account the pixelRatio
+        layerNode.width = this.width;
+        layerNode.height = this.height;
+        // Note, here the width/height will be the same as viewer (no pixel ratio)
+        layerNode.style.width = width + 'px';
+        layerNode.style.height = height + 'px';
+      }
+      this.refreshScales();
+    }
+
+
+
+
+
+
+
+
 
     /**
      * @member {Viewer} - Get the viewer.
      */
     get viewer() {
       return this._viewer
+    }
+
+    /**
+     * @member {Array} - Get the names of the layers.
+     */
+    get layerNames() {
+      return this._layerNames
     }
 
     /**
@@ -105,11 +184,11 @@
     }
 
     get cursor() {
-      return d3.select(this.canvasNode).style('cursor')
+      return d3.select(this.node('ui')).style('cursor')
     }
 
     set cursor(value) {
-      d3.select(this.canvasNode).style('cursor', value);
+      d3.select(this.node('ui')).style('cursor', value);
     }
 
     /**
@@ -123,24 +202,33 @@
     /**
      * Clear the viewer canvas
      */
-    clear(color = 'white') {
-      // this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-      this.ctx.fillStyle = color;
-      this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    clear(layerName = 'map') {
+      if (layerName == 'all') {
+        for (var i = 0, len = this.layerNames.length; i < len; i++) {
+          this.clear(this.layerNames[i]);
+        }
+      } else {
+        this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+      }
     }
+    // clear(color = 'white') {
+    //   this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    //   // this.ctx.fillStyle = color;
+    //   // this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    // }
 
     /**
     * Flash a message on the center of the viewer.
     */
-    flash(msg) {
-      var ctx = this.ctx;
-      // this.ctx.font = this.adjust_font(1.5);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'center';
-      var x = this.width / 2
-      var y = this.height / 2
-      ctx.fillText(msg, x, y);
-    }
+    // flash(msg) {
+    //   var ctx = this.ctx;
+    //   // this.ctx.font = this.adjust_font(1.5);
+    //   ctx.textAlign = 'center';
+    //   ctx.textBaseline = 'center';
+    //   var x = this.width / 2
+    //   var y = this.height / 2
+    //   ctx.fillText(msg, x, y);
+    // }
 
     // Decoration: arc, clockwise-arrow, counterclockwise-arrow
     //
@@ -358,6 +446,44 @@
     pixelsPerBp(radius) {
       return ( (radius * 2 * Math.PI) / this.sequence.length );
     }
+
+    /**
+     * Return the layer with the specified name (defaults to map layer)
+     */
+    layers(layer) {
+      if (CGV.validate(layer, this._layerNames)) {
+        return this._layers[layer]
+      } else {
+        console.error('Returning map layer by default')
+        return this._layers['map']
+      }
+    }
+
+    /**
+     * Return the context for the specified layer (defaults to map layer)
+     */
+    context(layer) {
+      if (CGV.validate(layer, this._layerNames)) {
+        return this.layers(layer).ctx
+      } else {
+        console.error('Returning map layer by default')
+        return this.layers('map').ctx
+      }
+    }
+
+    /**
+     * Return the node for the specified layer (defaults to map layer)
+     */
+    node(layer) {
+      if (CGV.validate(layer, this._layerNames)) {
+        return this.layers(layer).node
+      } else {
+        console.error('Returning map layer by default')
+        return this.layers('map').node
+      }
+    }
+
+
 
   }
 

@@ -86,6 +86,7 @@
       var textX, swatchX;
       var y = this.originY + this.padding;
       ctx.lineWidth = 1;
+      ctx.textBaseline = 'top';
       for (var i = 0, len = this._legendItems.length; i < len; i++) {
         var legendItem = this._legendItems[i];
         var legendItemHeight = legendItem.height;

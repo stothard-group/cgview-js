@@ -21,12 +21,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._height = CGV.defaultFor(options.height, 600);
       this._wrapper = this._container.append('div')
         .attr('class', 'cgv-wrapper')
-        .style('position', 'relative');
+        .style('position', 'relative')
+        .style('width', this.width + 'px')
+        .style('height', this.height + 'px');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-      this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
 
+      // TODO: move to settings
+      this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
+
       this._zoomFactor = 1;
       this.debug = CGV.defaultFor(options.debug, false);
 
@@ -170,9 +174,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.canvas.scale
     }
 
-    get ctx() {
-      return this.canvas.ctx
-    }
+    // get ctx() {
+    //   return this.canvas.ctx
+    // }
 
     /**
      * Get or set the max slot thickness.
@@ -256,17 +260,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._width = width || this.width;
       this._height = height || this.height;
 
-      canvas.canvasNode.width = this._width * CGV.pixel_ratio;
-      canvas.canvasNode.height = this._height * CGV.pixel_ratio;
-      canvas.canvasNode.style.width = this._width + 'px';
-      canvas.canvasNode.style.height = this._height + 'px';
-      canvas.width = this._width;
-      canvas.height = this._height;
+      this._wrapper
+        .style('width', this.width + 'px')
+        .style('height', this.height + 'px');
+
+      this.canvas.resize(this.width, this.height)
+
       this.refreshCaptions();
       this.legend.refresh();
-      this.canvas.refreshScales();
 
       this.layout._adjustProportions();
+      // Required so updateLayout() does not return right away.
+      this.layout._savedZoomFactor = undefined;
 
       this.draw(fast);
     }
@@ -349,8 +354,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Clear the viewer canvas
      */
-    clear(color = this.backgroundColor.rgbString) {
-      this.canvas.clear(color);
+    clear(layerName = 'map') {
+      this.canvas.clear(layerName);
     }
 
     /**
@@ -387,7 +392,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     draw(fast) {
-      // this.layout.draw(fast);
+      this.layout.draw(fast);
     }
 
     // Get mouse position in the 'container' taking into account the pixel ratio

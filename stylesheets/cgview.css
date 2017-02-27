@@ -4,8 +4,14 @@
 .cgv-wrapper {
   overflow: hidden;
   display: inline-block;
+  border: 1px solid #DDD;
 }
 
+.cgv-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 
 
 /*******************************************/
@@ -14,6 +20,7 @@
 /* NOTE: dimensions have to be changed in ColorPicker.js as well. */
 .cp-color-picker-dialog {
   box-sizing: content-box;
+  z-index: 100;
 }
 
 .cp-done-button {

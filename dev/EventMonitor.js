@@ -27,9 +27,11 @@
       this.events.on('mousemove', (e) => {
         // console.log(e.bp);
         // console.log([e.mapX, e.mapY]);
-        if (this.debug && this.debug.data.position) {
-          this.debug.data.position['xy'] = e.mapX + ', ' + e.mapY;
-          this.debug.data.position['bp'] = e.bp;
+        if (this.viewer.debug && this.viewer.debug.data.position) {
+          this.viewer.debug.data.position['xy'] = Math.round(e.mapX) + ', ' + Math.round(e.mapY);
+          this.viewer.debug.data.position['bp'] = e.bp;
+          this.canvas.clear('ui');
+          this.viewer.debug.draw(this.canvas.context('ui'));
         }
       });
 
@@ -53,12 +55,12 @@
     }
 
     _initializeMousemove() {
-      d3.select(this.canvas.canvasNode).on('mousemove.cgv', () => {
+      d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
         this.events.trigger('mousemove', this._createEvent(d3.event));
       });
     }
     _initializeClick() {
-      d3.select(this.canvas.canvasNode).on('click.cgv', () => {
+      d3.select(this.canvas.node('ui')).on('click.cgv', () => {
         event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
         this.events.trigger('click', this._createEvent(d3.event));
       });
@@ -129,7 +131,7 @@
             _swatchHighlighted = true;
             legendItem.swatchHighlighted = true;
             this.canvas.cursor = 'pointer';
-            legendItem.legend.draw(this.canvas.ctx);
+            legendItem.legend.draw(this.canvas.context('captions'));
             break;
           }
         }
@@ -140,7 +142,7 @@
             if (legendItem.swatchHighlighted) {
               legendItem.swatchHighlighted = false;
               this.canvas.cursor = 'auto';
-              legendItem.legend.draw(this.canvas.ctx);
+              legendItem.legend.draw(this.canvas.context('captions'));
               break;
             }
           }

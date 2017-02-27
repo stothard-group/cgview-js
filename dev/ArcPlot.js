@@ -176,7 +176,7 @@
     // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast,  range, color, orientation) {
       // fast = false
-      var ctx = canvas.ctx;
+      var ctx = canvas.context('map');
       var scale = canvas.scale;
       var positions = this.positions;
       var scores = this.scores;

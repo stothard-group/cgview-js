@@ -166,7 +166,7 @@
       this.width = 0;
       var itemFonts = this._captionItems.map( (i) => { return i.font.css });
       var itemTexts = this._captionItems.map( (i) => { return i.text });
-      var itemWidths = CGV.Font.calculateWidths(this.canvas.ctx, itemFonts, itemTexts);
+      var itemWidths = CGV.Font.calculateWidths(this.canvas.context('captions'), itemFonts, itemTexts);
       for (var i = 0, len = itemWidths.length; i < len; i++) {
         var item = this._captionItems[i];
         // This should only be used for legends
@@ -235,14 +235,16 @@
     }
 
     clear() {
-      this.viewer.ctx.fillStyle = this.backgroundColor.rgbaString;
-      this.viewer.ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      var ctx = this.canvas.context('captions');
+      ctx.fillStyle = this.backgroundColor.rgbaString;
+      ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 
     draw(ctx) {
       this.clear();
       // var textX, swatchX;
       var y = this.originY + this.padding;
+      ctx.textBaseline = 'top';
       for (var i = 0, len = this._captionItems.length; i < len; i++) {
         var captionItem = this._captionItems[i];
         var captionItemHeight = captionItem.height;

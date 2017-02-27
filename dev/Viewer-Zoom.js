@@ -17,7 +17,7 @@
       .on('start', zoomstart)
       .on('zoom',  zooming)
       .on('end',   zoomend);
-    d3.select(self.canvas.canvasNode).call(self._zoom)
+    d3.select(self.canvas.node('ui')).call(self._zoom)
       .on('dblclick.zoom', null);
 
     function zoomstart() {
@@ -31,7 +31,7 @@
 
     function zooming() {
       var start_time = new Date().getTime();
-      var pos = d3.mouse(self.canvas.canvasNode);
+      var pos = d3.mouse(self.canvas.node('ui'));
       var mx = self.scale.x.invert(CGV.pixel(pos[0]))
       var my = self.scale.y.invert(CGV.pixel(pos[1]))
 
