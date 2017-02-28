@@ -197,7 +197,7 @@
       var range = this._visibleRange;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
-      this.viewer.canvas.drawArc(range.start, range.stop, slotRadius, this.viewer.backgroundColor.rgbaString, slotThickness);
+      this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, this.viewer.backgroundColor.rgbaString, slotThickness);
       // this.viewer.canvas.drawArc(range.start, range.stop, slotRadius, 'rgba(0,200,0,1)', slotThickness);
     }
 

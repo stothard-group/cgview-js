@@ -84,33 +84,45 @@
       height = height / CGV.pixelRatio;
 
       // Save current settings
-      var origContext = canvas.ctx;
+      // var origContext = canvas.ctx;
+      var origLayers = canvas._layers;
       var debug = viewer.debug;
       viewer.debug = false;
 
-      // Generate new context and scales
-      var tempCanvas = d3.select('body').append('canvas')
-        .attr('width', width).attr('height', height).node();
-
-      CGV.scaleResolution(tempCanvas, CGV.pixelRatio);
-      canvas.ctx = tempCanvas.getContext('2d');
+      // Create new layers and add export layer
+      var layerNames = canvas.layerNames.concat(['export']);
+      var tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height);
 
       // Calculate scaling factor
       var minNewDimension = d3.min([width, height]);
       var scaleFactor = minNewDimension / viewer.minDimension;
-      canvas.ctx.scale(scaleFactor, scaleFactor);
 
-      // Generate image
-      // viewer.draw_full();
+      // Scale context of layers, excluding the 'export' layer
+      for (var name of canvas.layerNames) {
+        tempLayers[name].ctx.scale(scaleFactor, scaleFactor);
+      }
+      canvas._layers = tempLayers;
+
+      // Draw map on to new layers
       viewer.drawExport();
-      var image = tempCanvas.toDataURL();
 
-      // Restore original context and settings
-      canvas.ctx = origContext;
+      // Copy drawing layers to export layer
+      var exportContext = tempLayers['export'].ctx;
+      exportContext.drawImage(tempLayers['background'].node, 0, 0);
+      exportContext.drawImage(tempLayers['map'].node, 0, 0);
+      exportContext.drawImage(tempLayers['captions'].node, 0, 0);
+
+      // Generate image from export layer
+      var image = tempLayers['export'].node.toDataURL();
+
+      // Restore original layers and settings
+      canvas._layers = origLayers
       viewer.debug = debug;
 
-      // Delete temp canvas
-      d3.select(tempCanvas).remove();
+      // Delete temp canvas layers
+      for (var name of layerNames) {
+        d3.select(tempLayers[name].node).remove();
+      }
 
       var win = window.open();
       var html = [
@@ -122,9 +134,9 @@
           '</head>',
           '<body>',
         // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            '<h2>Your CGView Image is Below</h2>',
-            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            '<h3>Preview</h3>',
+            // '<h2>Your CGView Image is Below</h2>',
+            // '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            // '<h3>Preview</h3>',
             '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
             '<h3>Actual Size</h3>',
             '<img style="border: 1px solid grey" src="' + image +  '"/ >',

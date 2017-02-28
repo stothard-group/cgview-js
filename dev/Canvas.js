@@ -19,37 +19,14 @@
       this.height = CGV.defaultFor(options.height, 600);
       this._drawArcsCutoff = 10000;
 
-
-      // this.canvasNode = container.append("canvas")
-      //   .classed('cgv-viewer', true)
-      //   .style('border', '1px solid #DDD')
-      //   .style('z-index',  100)
-      //   .style('position',  'absolute')
-      //   .style('top',  0)
-      //   .style('left',  0)
-      //   .attr("width", this._width)
-      //   .attr("height", this._height).node();
-
-
       // Create layers
       this.determinePixelRatio(container);
       this._layerNames = ['background', 'map', 'captions', 'ui'];
-      this._layers = this.createLayers(container, this._layerNames);
-
-      // TEMP
-      this.ctx = this.context('map');
+      this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
       // Setup scales
       this.scale = {};
       this.refreshScales();
-
-
-
-      //TEMP
-      var c = this.context('background')
-      c.fillStyle = 'blue';
-      c.fillRect(100, 100, 100, 100);
-
     }
 
     determinePixelRatio(container) {
@@ -70,7 +47,7 @@
       d3.select(testNode).remove();
     }
 
-    createLayers(container, layerNames) {
+    createLayers(container, layerNames, width, height) {
       var layers = {};
 
       for (var i = 0, len = layerNames.length; i < len; i++) {
@@ -80,8 +57,8 @@
           .classed('cgv-layer', true)
           .classed('cgv-layer-' + layerName, true)
           .style('z-index',  zIndex)
-          .attr("width", this._width)
-          .attr("height", this._height).node();
+          .attr("width", width)
+          .attr("height", height).node();
 
         CGV.scaleResolution(node, CGV.pixelRatio);
 
@@ -259,15 +236,16 @@
     // If the zoomFactor gets too large, the arc drawing becomes unstable.
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
-    drawArc(start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
+    drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
-      var ctx = this.ctx;
+      // var ctx = this.ctx;
+      var ctx = this.context(layer);
 
       if (decoration == 'arc') {
         ctx.beginPath();
         ctx.strokeStyle = color;
         ctx.lineWidth = width;
-        this.arcPath(radius, start, stop);
+        this.arcPath(layer, radius, start, stop);
         ctx.stroke();
       }
 
@@ -300,10 +278,10 @@
         // Draw arc with arrow head
         ctx.beginPath();
         ctx.fillStyle = color;
-        this.arcPath(radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+        this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
+        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
         ctx.closePath();
         ctx.fill();
       }
@@ -314,8 +292,9 @@
      * The method add an arc to the path. However, if the zoomFactor is very large,
      * the arc is added as a straight line.
      */
-    arcPath(radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
-      var ctx = this.ctx;
+    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
+      // var ctx = this.ctx;
+      var ctx = this.context(layer);
       var scale = this.scale;
       if (this.viewer.zoomFactor < this.drawArcsCutoff) {
         ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
@@ -341,10 +320,11 @@
     //   ctx.stroke();
     // }
 
-    radiantLine(bp, radius, length, lineWidth = 1, color = 'black') {
+    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black') {
       var innerPt = this.pointFor(bp, radius);
       var outerPt = this.pointFor(bp, radius + length);
-      var ctx = this.ctx;
+      // var ctx = this.ctx;
+      var ctx = this.context(layer);
 
       ctx.beginPath();
       ctx.moveTo(innerPt.x, innerPt.y);

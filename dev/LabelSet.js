@@ -162,11 +162,12 @@
       var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
         feature = label.feature;
         // bp = feature.start + (feature.length / 2);
-        canvas.radiantLine(label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
         // origin = canvas.pointFor(bp, directRadius + 5);
         ctx.fillStyle = feature.color.rgbaString;
         // ctx.fillText(label.name, origin.x, origin.y);

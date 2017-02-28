@@ -213,12 +213,12 @@
         // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
         if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
           currentR = baselineRadius;
-          canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
+          canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
           savedR = currentR;
           savedPosition = currentPosition;
         } else if ( this._keepPoint(score, orientation) ){
           if ( Math.abs(currentR - savedR) >= radialDiff ){
-            canvas.arcPath(currentR, savedPosition, currentPosition, false, true);
+            canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
             savedR = currentR;
             savedPosition = currentPosition
           }
@@ -226,10 +226,10 @@
           savedR = baselineRadius;
         }
       });
-      canvas.arcPath(savedR, savedPosition, stopPosition, false, true);
+      canvas.arcPath('map', savedR, savedPosition, stopPosition, false, true);
       var endPoint = canvas.pointFor(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
-      canvas.arcPath(baselineRadius, stopPosition, startPosition, true, true);
+      canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, true);
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
     }

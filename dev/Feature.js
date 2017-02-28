@@ -252,14 +252,14 @@
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
 
-          canvas.drawArc(visibleRange.start - 100, stop,
+          canvas.drawArc('map', visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
             this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
-          canvas.drawArc(start, visibleRange.stop + 100,
+          canvas.drawArc('map', start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
             this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         } else {
-          canvas.drawArc(start, stop,
+          canvas.drawArc('map', start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
             this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         }
