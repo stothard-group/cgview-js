@@ -67,8 +67,6 @@
       // Load Layout
       viewer.layout = new CGV.Layout(viewer, json.layout);
 
-      // ...
-
     }
 
     exportImage(width, height) {

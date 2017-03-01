@@ -152,7 +152,7 @@
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
       // Legend
-      viewer.legend.draw(canvas.context('captions'));
+      // viewer.legend.draw(canvas.context('captions'));
       // Captions
       for (var i = 0, len = viewer._captions.length; i < len; i++) {
         viewer._captions[i].draw(canvas.context('captions'));

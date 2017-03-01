@@ -41,6 +41,7 @@
           new CGV.CaptionItem(this, captionItemData);
         });
       }
+      // FIXME: should be done whenever an item is added
       this.refresh();
     }
 
@@ -143,6 +144,7 @@
     /**
      * Recalculates the *Caption* size and position as well as the width of the child {@link CaptionItem}s.
      */
+    // FIXME: should be called when ever a text or font changes
     refresh() {
       // Calculate height of Caption
       // - height of each item; plus space between items (equal to half item height); plus padding (highest item)
@@ -178,23 +180,8 @@
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
+      // this.draw(this.canvas.context('captions'))
     }
-
-    // Caption is in Canvas space (need to consider pixel ratio) but colorPicker is not.
-    // setColorPickerPosition(cp) {
-    //   var margin = 5;
-    //   var pos;
-    //   var viewerRect = this.viewer._container.node().getBoundingClientRect();
-    //   var originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
-    //   var originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
-    //   var captionWidth = this.width / CGV.pixel(1);
-    //   if (/-left$/.exec(this.position)) {
-    //     pos = {x: originX + captionWidth + margin, y: originY}
-    //   } else {
-    //     pos = {x: originX - cp.width - margin, y: originY}
-    //   }
-    //   cp.setPosition(pos);
-    // }
 
     _updateOrigin() {
       var margin = CGV.pixel(0);
