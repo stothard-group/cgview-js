@@ -197,8 +197,10 @@
       var range = this._visibleRange;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
-      this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, this.viewer.backgroundColor.rgbaString, slotThickness);
-      // this.viewer.canvas.drawArc(range.start, range.stop, slotRadius, 'rgba(0,200,0,1)', slotThickness);
+      var ctx = this.viewer.canvas.context('map');
+      ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
+      this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
+      ctx.globalCompositeOperation = "source-over"; // Default
     }
 
     // draw(canvas, fast, slotRadius, slotThickness) {

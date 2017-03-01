@@ -283,7 +283,7 @@
      * Slot thickness is based on a proportion of the backbone radius.
      * As the viewer is zoomed the slot radius increases until
      *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
-     *    Therefore the we should always be able to see all the slots in the viewer
+     *    Therefore we should always be able to see all the slots in the viewer
      *  - The slot thickness is greater than the maximum allowed slot thickness (if it's defined)
      */
     _calculateSlotThickness(proportionOfRadius) {

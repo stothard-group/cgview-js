@@ -26,7 +26,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         .style('height', this.height + 'px');
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      // TODO: move to settings
+      // TODO: move to settings or elsewhere
       this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
       this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
@@ -64,7 +64,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.initialize_zooming();
       this.eventMonitor = new CGV.EventMonitor(this);
 
-      // this.full_draw();
+      // this.drawFull();
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -122,6 +122,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._backgroundColor = new CGV.Color(color);
       }
+      this.fillBackground();
     }
 
     /**
@@ -135,17 +136,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.labelSet.font = value;
     }
 
-    /**
-     * @member {Number} - Get or set the label line length.
-     */
-    get labelLineLength() {
-      return this.labelSet.labelLineLength
-    }
 
-    set labelLineLength(value) {
-      this.labelSet.labelLineLength = value;
-    }
-
+    // TODO: move to labelset
     /**
      * @member {Number} - Get or set whether or not feature labels should be drawn on the map.
      *                    This value overrides the showLabel attributes in all child elements.
@@ -174,10 +166,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.canvas.scale
     }
 
-    // get ctx() {
-    //   return this.canvas.ctx
-    // }
-
+    // TODO: move to layout or settings?
     /**
      * Get or set the max slot thickness.
      */
@@ -243,9 +232,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     // METHODS
     //////////////////////////////////////////////////////////////////////////
 
-    load_json(json) {
-      this._io.load_json(json);
-    }
+    // load_json(json) {
+    //   this._io.load_json(json);
+    // }
 
     /**
      * Resizes the the Viewer
@@ -311,15 +300,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     plots(term) {
       return this._plots.get(term);
-      // var plots = new CGV.CGArray();
-      // var arcPlot;
-      // for (var i=0, len=this._tracks.length; i < len; i++) {
-      //   arcPlot = this._tracks[i]._arcPlot;
-      //   if (arcPlot) {
-      //     plots.push(arcPlot);
-      //   }
-      // }
-      // return plots.get(term);
     }
 
     /**
@@ -340,17 +320,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._featureTypes.get(term);
     }
 
-
-    swatchedLegendItems(term) {
-      var items = new CGV.CGArray();
-      items.merge( this.legend._items.filter( (item) => {return item.drawSwatch}) );
-      return items.get(term);
-    }
-
-    // load_xml(xml) {
-    //   this._io.load_xml(xml);
-    // }
-
     /**
      * Clear the viewer canvas
      */
@@ -362,7 +331,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     * Flash a message on the center of the viewer.
     */
     flash(msg) {
-      // this.canvas.flash(msg);
       this.messenger.flash(msg);
     }
 
@@ -375,10 +343,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.minDimension * 1; // TODO: need to add up all proportions
     }
 
-
+    fillBackground() {
+      this.clear('background');
+      var ctx = this.canvas.context('background');
+      ctx.fillStyle = this.backgroundColor.rgbaString;
+      ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+    }
 
     drawFull() {
-      // this.draw();
       this.layout.drawFull();
     }
 
@@ -387,7 +359,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     drawExport() {
-      // this.layout.draw(false, true);
       this.layout.drawExport();
     }
 
@@ -419,7 +390,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} stop - The stop position in bp
      */
     moveTo(start, stop) {
-      
+
     }
 
   }

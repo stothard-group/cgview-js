@@ -103,6 +103,7 @@
 
       // Draw map on to new layers
       viewer.drawExport();
+      viewer.fillBackground();
       // Legend
       viewer.legend.draw();
       // Captions
