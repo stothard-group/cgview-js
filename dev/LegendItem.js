@@ -75,6 +75,41 @@
       this.refresh();
     }
 
+    /**
+     * @member {Boolean} - Get or set whether this item is selected
+     */
+    get swatchSelected() {
+      return this.legend.selectedSwatchedItem == this
+    }
+
+    set swatchSelected(value) {
+      if (value) {
+        this.legend.selectedSwatchedItem = this;
+      } else {
+        if (this.legend.selectedSwatchedItem == this) {
+          this.legend.selectedSwatchedItem = undefined;
+        }
+      }
+    }
+
+    /**
+     * @member {Boolean} - Get or set whether this item is highlighted
+     */
+    get swatchHighlighted() {
+      return this.legend.highlightedSwatchedItem == this
+    }
+
+    set swatchHighlighted(value) {
+      if (value) {
+        this.legend.highlightedSwatchedItem = this;
+      } else {
+        if (this.legend.highlightedSwatchedItem == this) {
+          this.legend.highlightedSwatchedItem = undefined;
+        }
+      }
+    }
+
+
     textX() {
       if (this.drawSwatch) {
         var parent = this.parent;
@@ -102,6 +137,7 @@
     }
 
 
+    // FIXME: does not work for swatches aligned right; need swatchY method
     _swatchContainsPoint(pt) {
       var x = this.parent.originX + this.parent.padding;
       var y = this.parent.originY + this.parent.padding;

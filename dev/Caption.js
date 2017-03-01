@@ -29,7 +29,6 @@
     constructor(viewer, data = {}, meta = {}) {
       this.viewer = viewer;
       this.meta = CGV.merge(data.meta, meta);
-      this.ctx =  this.canvas.context('captions');
       this._items = new CGV.CGArray();
       this._position = CGV.defaultFor(data.position, 'upper-right');
       this.backgroundColor = data.backgroundColor;
@@ -74,6 +73,13 @@
      */
     get canvas() {
       return this.viewer.canvas
+    }
+
+    /**
+     * @member {Context} - Get the *Context*
+     */
+    get ctx() {
+      return this.canvas.context('captions')
     }
 
 

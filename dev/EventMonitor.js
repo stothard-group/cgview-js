@@ -87,18 +87,15 @@
     _legendSwatchClick() {
       var viewer = this.viewer;
       this.events.on('click.swatch', (e) => {
-        var swatchedLegendItems = viewer.swatchedLegendItems();
+        var legend = viewer.legend;
+        var swatchedLegendItems = legend.items();
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
             var legendItem = swatchedLegendItems[i];
-            // Clear previous selections
-            for (var j = 0, len = swatchedLegendItems.length; j < len; j++) {
-              swatchedLegendItems[j].swatchSelected = false;
-            }
-            legendItem.swatchSelected = true;
+            legendItem.swatchSelected = true
             var cp = viewer.colorPicker;
             if (!cp.visible) {
-              legendItem.legend.setColorPickerPosition(cp);
+              legend.setColorPickerPosition(cp);
             }
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
@@ -107,6 +104,7 @@
             cp.onClose = function() {
               legendItem.swatchSelected = false;
               cgv.drawFull();
+              legend.draw();
             };
             cp.setColor(legendItem._swatchColor.rgba);
             cp.open();
@@ -119,33 +117,23 @@
     _legendSwatchMouseOver() {
       var viewer = this.viewer;
       this.events.on('mousemove.swatch', (e) => {
-        var swatchedLegendItems = viewer.swatchedLegendItems();
-        var _swatchHighlighted = false;
+        var legend = viewer.legend;
+        var swatchedLegendItems = legend.items();
+        var oldHighlightedItem = legend.highlightedSwatchedItem;
+        legend.highlightedSwatchedItem = undefined;
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
             var legendItem = swatchedLegendItems[i];
-            // Clear previous selections
-            for (var j = 0, len = swatchedLegendItems.length; j < len; j++) {
-              swatchedLegendItems[j].swatchHighlighted = false;
-            }
-            _swatchHighlighted = true;
-            legendItem.swatchHighlighted = true;
+            legendItem.swatchHighlighted = true
             this.canvas.cursor = 'pointer';
-            legendItem.legend.draw(this.canvas.context('captions'));
+            legend.draw();
             break;
           }
         }
         // No swatch selected
-        if (!_swatchHighlighted) {
-          for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
-            var legendItem = swatchedLegendItems[i];
-            if (legendItem.swatchHighlighted) {
-              legendItem.swatchHighlighted = false;
-              this.canvas.cursor = 'auto';
-              legendItem.legend.draw(this.canvas.context('captions'));
-              break;
-            }
-          }
+        if (oldHighlightedItem && !legend.highlightedSwatchedItem) {
+          this.canvas.cursor = 'auto';
+          legend.draw();
         }
       });
     }

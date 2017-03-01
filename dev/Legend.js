@@ -48,6 +48,28 @@
       this._viewer = viewer;
     }
 
+    /**
+     * @member {LegendItem} - Get or set the selected swatch legendItem
+     */
+    get selectedSwatchedItem() {
+      return this._selectedSwatchedItem
+    }
+
+    set selectedSwatchedItem(value) {
+      this._selectedSwatchedItem = value;
+    }
+
+    /**
+     * @member {LegendItem} - Get or set the highlighted swatch legendItem
+     */
+    get highlightedSwatchedItem() {
+      return this._highlightedSwatchedItem
+    }
+
+    set highlightedSwatchedItem(value) {
+      this._highlightedSwatchedItem = value;
+    }
+
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
       var margin = 5;
