@@ -151,12 +151,6 @@
       viewer.slotDivider.draw();
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
-      // Legend
-      // viewer.legend.draw(canvas.context('captions'));
-      // Captions
-      for (var i = 0, len = viewer._captions.length; i < len; i++) {
-        viewer._captions[i].draw(canvas.context('captions'));
-      }
       // Labels
       if (viewer.globalLabel) {
         viewer.labelSet.draw(this.insideRadius, this.outsideRadius);

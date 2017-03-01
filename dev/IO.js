@@ -103,6 +103,12 @@
 
       // Draw map on to new layers
       viewer.drawExport();
+      // Legend
+      viewer.legend.draw(canvas.context('captions'));
+      // Captions
+      for (var i = 0, len = viewer._captions.length; i < len; i++) {
+        viewer._captions[i].draw(canvas.context('captions'));
+      }
 
       // Copy drawing layers to export layer
       var exportContext = tempLayers['export'].ctx;

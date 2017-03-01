@@ -5,7 +5,7 @@
 
   /**
    * <br />
-   * The *Legend* is a subclass of Legend with the ability to draw swatches beside items.
+   * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
    */
   class Legend extends CGV.Caption {
 
@@ -26,21 +26,15 @@
      * @param {Object=} meta - User-defined key:value pairs to add to the legend.
      */
     constructor(viewer, data = {}, meta = {}) {
-      super(viewer);
-      this.meta = CGV.merge(data.meta, meta);
-      this._legendItems = new CGV.CGArray();
-      this._position = CGV.defaultFor(data.position, 'upper-right');
-      this.backgroundColor = data.backgroundColor;
-      this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
-      this.fontColor = CGV.defaultFor(data.fontColor, 'black');
-      this.textAlignment = CGV.defaultFor(data.textAlignment, 'left');
+      super(viewer, data, meta);
+    }
 
-      if (data.legendItems) {
-        data.legendItems.forEach((legendItemData) => {
-          new CGV.LegendItem(this, legendItemData);
-        });
-      }
-      this.refresh();
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Legend'
+     */
+    toString() {
+      return 'Legend';
     }
 
     /**
@@ -53,7 +47,6 @@
     set viewer(viewer) {
       this._viewer = viewer;
     }
-
 
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
@@ -76,19 +69,18 @@
     }
 
     findLegendItemByName(name) {
-      return this._legendItems.find( (i) => { return name.toLowerCase() == i.text.toLowerCase() });
+      return this._items.find( (i) => { return name.toLowerCase() == i.text.toLowerCase() });
     }
 
-    draw(ctx) {
-      this.clear();
-      // ctx.fillStyle = this.backgroundColor.rgbaString;
-      // ctx.fillRect(this.originX, this.originY, this.width, this.height);
+    draw() {
+      var ctx = this.ctx;
+      this.fillBackground();
       var textX, swatchX;
       var y = this.originY + this.padding;
       ctx.lineWidth = 1;
       ctx.textBaseline = 'top';
-      for (var i = 0, len = this._legendItems.length; i < len; i++) {
-        var legendItem = this._legendItems[i];
+      for (var i = 0, len = this._items.length; i < len; i++) {
+        var legendItem = this._items[i];
         var legendItemHeight = legendItem.height;
         var drawSwatch = legendItem.drawSwatch;
         var swatchWidth = legendItem.swatchWidth;

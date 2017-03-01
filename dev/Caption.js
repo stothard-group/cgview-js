@@ -29,20 +29,29 @@
     constructor(viewer, data = {}, meta = {}) {
       this.viewer = viewer;
       this.meta = CGV.merge(data.meta, meta);
-      this._captionItems = new CGV.CGArray();
+      this.ctx =  this.canvas.context('captions');
+      this._items = new CGV.CGArray();
       this._position = CGV.defaultFor(data.position, 'upper-right');
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
       this.fontColor = CGV.defaultFor(data.fontColor, 'black');
       this.textAlignment = CGV.defaultFor(data.textAlignment, 'left');
 
-      if (data.captionItems) {
-        data.captionItems.forEach((captionItemData) => {
-          new CGV.CaptionItem(this, captionItemData);
+      if (data.items) {
+        data.items.forEach((itemData) => {
+          new CGV[this.toString() + 'Item'](this, itemData);
         });
       }
       // FIXME: should be done whenever an item is added
       this.refresh();
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Caption'
+     */
+    toString() {
+      return 'Caption';
     }
 
     /**
@@ -67,6 +76,7 @@
       return this.viewer.canvas
     }
 
+
     /**
      * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
      */
@@ -76,7 +86,7 @@
 
     set position(value) {
       this._position = value;
-      this._updateOrigin();
+      this.refresh();
     }
 
     /**
@@ -96,6 +106,7 @@
       } else {
         this._backgroundColor = new CGV.Color(color);
       }
+      this.refresh();
     }
 
     /**
@@ -111,6 +122,7 @@
       } else {
         this._font = new CGV.Font(value);
       }
+      this.refresh();
     }
 
     /**
@@ -126,6 +138,7 @@
       } else {
         this._fontColor = new CGV.Color(value);
       }
+      this.refresh();
     }
 
     /**
@@ -139,6 +152,14 @@
       if ( CGV.validate(value, ['left', 'center', 'right']) ) {
         this._textAlignment = value;
       }
+      this.refresh();
+    }
+
+    /**
+     * @member {CGArray} - Get the *CaptionItems*
+     */
+    items(term) {
+      return this._items.get(term)
     }
 
     /**
@@ -148,10 +169,11 @@
     refresh() {
       // Calculate height of Caption
       // - height of each item; plus space between items (equal to half item height); plus padding (highest item)
+      this.clear();
       this.height = 0;
       var maxHeight = 0;
-      for (var i = 0, len = this._captionItems.length; i < len; i++) {
-        var captionItemHeight = this._captionItems[i].height;
+      for (var i = 0, len = this._items.length; i < len; i++) {
+        var captionItemHeight = this._items[i].height;
         this.height += captionItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -166,11 +188,11 @@
 
       // Calculate Caption Width
       this.width = 0;
-      var itemFonts = this._captionItems.map( (i) => { return i.font.css });
-      var itemTexts = this._captionItems.map( (i) => { return i.text });
-      var itemWidths = CGV.Font.calculateWidths(this.canvas.context('captions'), itemFonts, itemTexts);
+      var itemFonts = this._items.map( (i) => { return i.font.css });
+      var itemTexts = this._items.map( (i) => { return i.text });
+      var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemTexts);
       for (var i = 0, len = itemWidths.length; i < len; i++) {
-        var item = this._captionItems[i];
+        var item = this._items[i];
         // This should only be used for legends
         if (item.drawSwatch) {
           itemWidths[i] += item.height + (this.padding / 2);
@@ -180,7 +202,7 @@
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
-      // this.draw(this.canvas.context('captions'))
+      this.draw();
     }
 
     _updateOrigin() {
@@ -222,66 +244,28 @@
     }
 
     clear() {
-      var ctx = this.canvas.context('captions');
-      ctx.fillStyle = this.backgroundColor.rgbaString;
-      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      this.ctx.clearRect(this.originX, this.originY, this.width, this.height);
     }
 
-    draw(ctx) {
-      this.clear();
-      // var textX, swatchX;
+    fillBackground() {
+      this.ctx.fillStyle = this.backgroundColor.rgbaString;
+      this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
+    }
+
+    draw() {
+      var ctx = this.ctx;
+      this.fillBackground();
       var y = this.originY + this.padding;
       ctx.textBaseline = 'top';
-      for (var i = 0, len = this._captionItems.length; i < len; i++) {
-        var captionItem = this._captionItems[i];
+      for (var i = 0, len = this._items.length; i < len; i++) {
+        var captionItem = this._items[i];
         var captionItemHeight = captionItem.height;
         var drawSwatch = captionItem.drawSwatch;
-        // var swatchWidth = captionItemHeight;
-        // var swatchPadding = this.padding / 2;
         ctx.font = captionItem.font.css;
         ctx.textAlign = captionItem.textAlignment;
-        if (drawSwatch) {
-        //   // Find x positions
-        //   if (captionItem.textAlignment == 'left') {
-        //     swatchX = this.originX + this.padding;
-        //     textX = swatchX + swatchWidth + swatchPadding;
-        //   } else if (captionItem.textAlignment == 'center') {
-        //     swatchX = this.originX + this.padding;
-        //     textX = this.originX + (this.width / 2);
-        //   } else if (captionItem.textAlignment == 'right') {
-        //     swatchX = this.originX + this.width - this.padding - swatchWidth;
-        //     textX = swatchX - swatchPadding;
-        //   }
-        //   // Swatch border color
-        //   if (captionItem.swatchSelected) {
-        //     ctx.strokeStyle = 'black';
-        //   } else if (captionItem.swatchHighlighted) {
-        //     ctx.strokeStyle = 'grey';
-        //   } else {
-        //     ctx.strokeStyle = this.backgroundColor.rgbaString;
-        //   }
-        //   // Draw box around Swatch depending on state
-        //   var border = CGV.pixel(2)
-        //   ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
-        //   // Draw Swatch
-        //   ctx.fillStyle = captionItem.swatchColor.rgbaString;
-        //   ctx.fillRect(swatchX, y, swatchWidth, swatchWidth);
-        //   // Draw Text Label
-        //   ctx.fillStyle = captionItem.fontColor.rgbaString;
-        //   ctx.fillText(captionItem.text, textX, y);
-        } else {
-          // Find x position
-          // if (captionItem.textAlignment == 'left') {
-          //   textX = this.originX + this.padding;
-          // } else if (captionItem.textAlignment == 'center') {
-          //   textX = this.originX + (this.width / 2);
-          // } else if (captionItem.textAlignment == 'right') {
-          //   textX = this.originX + this.width - this.padding;
-          // }
-          // Draw Text Label
-          ctx.fillStyle = captionItem.fontColor.rgbaString;
-          ctx.fillText(captionItem.text, captionItem.textX(), y);
-        }
+        // Draw Text Label
+        ctx.fillStyle = captionItem.fontColor.rgbaString;
+        ctx.fillText(captionItem.text, captionItem.textX(), y);
         y += (captionItemHeight * 1.5);
       }
     }

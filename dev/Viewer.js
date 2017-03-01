@@ -343,7 +343,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     swatchedLegendItems(term) {
       var items = new CGV.CGArray();
-      items.merge( this.legend._legendItems.filter( (item) => {return item.drawSwatch}) );
+      items.merge( this.legend._items.filter( (item) => {return item.drawSwatch}) );
       return items.get(term);
     }
 

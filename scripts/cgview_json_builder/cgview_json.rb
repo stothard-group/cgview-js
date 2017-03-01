@@ -143,8 +143,8 @@ class CGViewJSON
     config_items = {}
     default_legend_name = nil
     # Read config file legend items
-    if @config[:legend] && @config[:legend][:legendItems].is_a?(Array)
-      @config[:legend][:legendItems].each { |i| config_items[i[:text]] = i }
+    if @config[:legend] && @config[:legend][:items].is_a?(Array)
+      @config[:legend][:items].each { |i| config_items[i[:text]] = i }
       default_legend_name =  @config[:legend][:default]
     end
     # FIXME: add default legend if one does not exist
@@ -159,17 +159,17 @@ class CGViewJSON
     feature_legend_names = config_items.keys & @features.map { |f| f[:legend] }.uniq
     items = []
     feature_legend_names.each { |n| items.push config_items[n] }
-    @cgview[:legend][:legendItems] = items
+    @cgview[:legend][:items] = items
   end
 
   def build_captions
     @captions = []
     config_captions = @config[:captions].is_a?(Array) ? @config[:captions] : []
     config_captions.each do |caption|
-      if caption[:captionItems]
+      if caption[:items]
         @captions << caption
       elsif caption[:id] == 'title' && map_title != ""
-        caption[:captionItems] = [ { text:  map_title}]
+        caption[:items] = [ { text:  map_title}]
         @captions << caption
       end
     end

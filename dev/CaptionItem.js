@@ -29,35 +29,47 @@
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the captionItem.
      */
-    constructor(caption, data = {}, meta = {}) {
-      this.caption = caption;
+    constructor(parent, data = {}, meta = {}) {
+      this.parent = parent;
       this.meta = CGV.merge(data.meta, meta);
-      this.text = CGV.defaultFor(data.text, '');
+      this._text = CGV.defaultFor(data.text, '');
       this.font = data.font
       this.fontColor = data.fontColor;
       this.textAlignment = data.textAlignment;
-      // this.drawSwatch = CGV.defaultFor(data.drawSwatch, true);
-      // this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
+      this._initializationComplete = true;
     }
-
 
     /**
-     * @member {Caption} - Get or set the *Caption*
+     * @member {Caption} - Get the *Caption*
      */
     get caption() {
-      return this._caption
+      return this._parent
     }
 
-    set caption(newCaption) {
-      var oldCaption = this.caption;
-      this._viewer = newCaption.viewer;
-      this._caption = newCaption;
-      newCaption._captionItems.push(this);
-      if (oldCaption) {
+    /**
+     * @member {Caption|Legend} - Get or set the *Parent*
+     */
+    get parent() {
+      return this._parent
+    }
+
+    /**
+     * @member {Caption|Legend} - Get or set the *Parent*
+     */
+    get parent() {
+      return this._parent
+    }
+
+    set parent(newParent) {
+      var oldParent = this.parent;
+      this._viewer = newParent.viewer;
+      this._parent = newParent;
+      newParent._items.push(this);
+      if (oldParent) {
         // Remove from old caption
-        oldCaption._captionItems = oldCaption._legendItems.remove(this);
-        oldCaption.refresh();
-        newCaption.refresh();
+        oldParent._items = oldParent._items.remove(this);
+        oldParent.refresh();
+        newParent.refresh();
       }
     }
 
@@ -70,20 +82,9 @@
 
     set text(text) {
       this._text = text;
+      this.refresh();
     }
 
-    /**
-     * @member {Boolean} - Get or set the drawSwatch property. If true a swatch will be
-     * drawn beside the captionItem text.
-     */
-    // get drawSwatch() {
-    //   return this._drawSwatch
-    // }
-    //
-    // set drawSwatch(value) {
-    //   this._drawSwatch = value;
-    // }
-    //
     /**
      * @member {String} - Get or set the text alignment. Defaults to the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
      */
@@ -93,10 +94,11 @@
 
     set textAlignment(value) {
       if (value == undefined) {
-        this._textAlignment = this.caption.textAlignment;
+        this._textAlignment = this.parent.textAlignment;
       } else {
         this._textAlignment = value;
       }
+      this.refresh();
     }
 
     /**
@@ -133,12 +135,13 @@
 
     set font(value) {
       if (value == undefined) {
-        this._font = this.caption.font;
+        this._font = this.parent.font;
       } else if (value.toString() == 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
       }
+      this.refresh();
     }
 
     /**
@@ -150,54 +153,32 @@
 
     set fontColor(color) {
       if (color == undefined) {
-        this._fontColor = this.caption._fontColor;
+        this._fontColor = this.parent._fontColor;
       } else if (color.toString() == 'Color') {
         this._fontColor = color;
       } else {
         this._fontColor = new CGV.Color(color);
       }
+      this.refresh();
     }
 
-    textX() {
-      var caption = this.caption;
-      if (this.textAlignment == 'left') {
-        return caption.originX + caption.padding;
-      } else if (this.textAlignment == 'center') {
-        return caption.originX + (caption.width / 2);
-      } else if (this.textAlignment == 'right') {
-        return caption.originX + caption.width - caption.padding;
+    refresh() {
+      if (this._initializationComplete) {
+        this.parent.refresh();
       }
     }
 
-    /**
-     * @member {Color} - Get or set the swatchColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    // get swatchColor() {
-    //   return this._swatchColor
-    // }
-    //
-    // set swatchColor(color) {
-    //   if (color.toString() == 'Color') {
-    //     this._swatchColor = color;
-    //   } else {
-    //     this._swatchColor.setColor(color);
-    //   }
-    // }
-    //
+    textX() {
+      var parent = this.parent;
+      if (this.textAlignment == 'left') {
+        return parent.originX + parent.padding;
+      } else if (this.textAlignment == 'center') {
+        return parent.originX + (parent.width / 2);
+      } else if (this.textAlignment == 'right') {
+        return parent.originX + parent.width - parent.padding;
+      }
+    }
 
-    // _swatchContainsPoint(pt) {
-    //   var x = this.caption.originX + this.legend.padding;
-    //   var y = this.caption.originY + this.legend.padding;
-    //   for (var i = 0, len = this.caption._legendItems.length; i < len; i++) {
-    //     var item = this.caption._legendItems[i];
-    //     if (item == this) { break }
-    //     y += (item.height * 1.5);
-    //   }
-    //
-    //   if (pt.x >= x && pt.x <= x + this.height && pt.y >= y && pt.y <= y + this.height) {
-    //     return true
-    //   }
-    // }
   }
 
   CGV.CaptionItem = CaptionItem;

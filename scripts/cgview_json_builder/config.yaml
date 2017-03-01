@@ -37,19 +37,19 @@ cgview:
     #   fontColor: "red"
     #   backgroundColor: "rgba(255,255,255,0.4)"
     #   font: "san-serif, plain, 14"
-    #   captionItems:
+    #   items:
     #     - text: 'Middle Earth'
     # - position: "middle-left"
     #   fontColor: "red"
     #   backgroundColor: "rgba(255,255,255,0.4)"
     #   font: "san-serif, plain, 14"
-    #   captionItems:
+    #   items:
     #     - text: 'Left Earth'
     # - position: "middle-right"
     #   fontColor: "red"
     #   backgroundColor: "rgba(255,255,255,0.4)"
     #   font: "san-serif, plain, 14"
-    #   captionItems:
+    #   items:
     #     - text: 'Right Earth'
   legend:
     position: 'upper-right'
@@ -58,7 +58,7 @@ cgview:
     backgroundColor: 'white'
     font: 'sans-serif, plain, 14'
     default: 'Other'
-    legendItems:
+    items:
       - text: 'CDS'
         swatchColor: 'rgba(0,0,153,0.5)'
       - text: 'tRNA'

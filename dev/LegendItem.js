@@ -29,38 +29,17 @@
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
      */
-    constructor(legend, data = {}, meta = {}) {
-      super(legend)
-      this.legend = legend;
-      this.meta = CGV.merge(data.meta, meta);
-      this.text = CGV.defaultFor(data.text, '');
-      this.font = data.font
-      this.fontColor = data.fontColor;
-      this.textAlignment = data.textAlignment;
-
-      this.drawSwatch = CGV.defaultFor(data.drawSwatch, true);
+    constructor(parent, data = {}, meta = {}) {
+      super(parent, data, meta)
+      this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
     }
 
-
     /**
-     * @member {Legend} - Get or set the *Legend*
+     * @member {Legend} - Get the *Legend*
      */
     get legend() {
-      return this._legend
-    }
-
-    set legend(newLegend) {
-      var oldLegend = this.legend;
-      this._viewer = newLegend.viewer;
-      this._legend = newLegend;
-      newLegend._legendItems.push(this);
-      if (oldLegend) {
-        // Remove from old legend
-        oldLegend._legendItems = oldLegend._legendItems.remove(this);
-        oldLegend.refresh();
-      }
-      newLegend.refresh();
+      return this._parent
     }
 
     /**
@@ -73,20 +52,7 @@
 
     set drawSwatch(value) {
       this._drawSwatch = value;
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*.
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Number} - Get the width in pixels.
-     */
-    get width() {
-      return this._width
+      this.refresh();
     }
 
     get swatchWidth() {
@@ -106,40 +72,41 @@
       } else {
         this._swatchColor.setColor(color);
       }
+      this.refresh();
     }
 
     textX() {
       if (this.drawSwatch) {
-        var legend = this.legend;
+        var parent = this.parent;
         if (this.textAlignment == 'left') {
-          return this.swatchX() + this.swatchWidth + legend.swatchPadding;
+          return this.swatchX() + this.swatchWidth + parent.swatchPadding;
         } else if (this.textAlignment == 'center') {
-          return legend.originX + (legend.width / 2);
+          return parent.originX + (parent.width / 2);
         } else if (this.textAlignment == 'right') {
-          return this.swatchX() - legend.swatchPadding;
+          return this.swatchX() - parent.swatchPadding;
         }
       } else {
-        super.textX();
+        return super.textX();
       }
     }
 
     swatchX() {
-      var legend = this.legend;
+      var parent = this.parent;
       if (this.textAlignment == 'left') {
-        return legend.originX + legend.padding;
+        return parent.originX + parent.padding;
       } else if (this.textAlignment == 'center') {
-        return legend.originX + legend.padding;
+        return parent.originX + parent.padding;
       } else if (this.textAlignment == 'right') {
-        return legend.originX + legend.width - legend.padding - this.swatchWidth;
+        return parent.originX + parent.width - parent.padding - this.swatchWidth;
       }
     }
 
 
     _swatchContainsPoint(pt) {
-      var x = this.legend.originX + this.legend.padding;
-      var y = this.legend.originY + this.legend.padding;
-      for (var i = 0, len = this.legend._legendItems.length; i < len; i++) {
-        var item = this.legend._legendItems[i];
+      var x = this.parent.originX + this.parent.padding;
+      var y = this.parent.originY + this.parent.padding;
+      for (var i = 0, len = this.parent._items.length; i < len; i++) {
+        var item = this.parent._items[i];
         if (item == this) { break }
         y += (item.height * 1.5);
       }
