@@ -22,7 +22,7 @@
       this._initializeMousemove();
       this._initializeClick();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
-      this.events.on('click', (e) => {console.log(e)})
+      // this.events.on('click', (e) => {console.log(e)})
 
       this.events.on('mousemove', (e) => {
         // console.log(e.bp);

@@ -20,7 +20,7 @@
 /* NOTE: dimensions have to be changed in ColorPicker.js as well. */
 .cp-color-picker-dialog {
   box-sizing: content-box;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .cp-done-button {
@@ -231,6 +231,7 @@
   display: block;
   text-align: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  z-index: 1000;
 }
 
 .cgv-dialog-dismiss {
@@ -384,6 +385,7 @@
   background-color: white;
   display: block;
   text-align: left;
+  z-index: 1000;
 }
 
 .cgv-menu svg {
@@ -440,6 +442,7 @@
   cursor: pointer;
   display: block;
   text-align: center;
+  z-index: 1001;
 }
 
 .cgv-table {
