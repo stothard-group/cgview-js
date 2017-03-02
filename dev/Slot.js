@@ -256,6 +256,24 @@
       }
     }
 
+    drawProgress(progress) {
+      var canvas = this.viewer.canvas;
+      var slotRadius = this.radius;
+      var slotThickness = this.thickness;
+      var range = this._visibleRange;
+      // Draw progress like a clock
+      // if (progress > 0 && progress < 100) {
+      //   var stop = this.sequence.length * progress / 100;
+      //   canvas.drawArc('background', 1, stop, slotRadius, '#EAEAEE', slotThickness);
+      // }
+      // Draw progress like thickening circle
+      if (progress > 0 && progress < 100) {
+        var thickness = slotThickness * progress / 100;
+        canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness);
+      }
+    }
+
+
   }
 
   CGV.Slot = Slot;

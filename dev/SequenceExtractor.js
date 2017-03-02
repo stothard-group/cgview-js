@@ -232,123 +232,172 @@
       return item
     }
 
-    extractPlot(options = {}) {
-      if (options.sequence == 'gc_content') {
-        return this.extractBaseContentPlot('gc_content', options);
-      } else if (options.sequence == 'gc_skew') {
-        return this.extractBaseContentPlot('gc_skew', options);
-      }
-    }
-
-    // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
-    // score must be between 0 and 1
-    extractBaseContentPlot(type, options) {
-      var startTime = new Date().getTime();
-      if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
-      this.viewer.flash("Creating '" + type + "' Plot...");
-
-
-      options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
-      options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
-      var step = options.step
-      var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-      // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
-
-      var baseContent = this.calculateBaseContent(type, options);
-      var positions = [];
-      var position;
-
-      // The current position marks the middle of the calculated window.
-      // Adjust the bp position to mark where the plot changes,
-      // NOT the center point of the window.
-      // i.e. half way between the current position and the last
-      for (var i = 0, len = baseContent.positions.length; i < len; i++) {
-        position = baseContent.positions[i];
-        if (i == 0) {
-          positions.push(1);
-        } else {
-          positions.push(position - step/2);
-        }
-      }
-      var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
-      data.legendPositive = this.getLegendItem(type, '+').text;
-      data.legendNegative = this.getLegendItem(type, '-').text;
-
-      var plot = new CGV.ArcPlot(this.viewer, data);
-      console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
-      return plot
-    }
-
-
     fn2workerURL(fn) {
       var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
       return URL.createObjectURL(blob)
     }
 
-    calculateBaseContent(type, options) {
-      // var url = this.fn2workerURL(this.myWorker);
-      // var worker = new Worker(url);
-      var worker = new Worker('dev/worker.js');
-      worker.postMessage('PLOT TYPE: ' + type)
-      worker.onmessage = (e) => {
-        this.viewer.flash(e.data);
-      }
-    }
 
-    calculateBaseContent_ORIG(type, options) {
-      var windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
+    generatePlot(track, options = {}) {
+      var startTime = new Date().getTime();
+      var viewer = this.viewer;
+      // Start worker
+      var url = this.fn2workerURL(CGV.WorkerBaseContent);
+      var worker = new Worker(url);
+      // Prepare message
+      var message = {};
+      var type = options.sequence;
+      if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
+      message.type = type;
+      message.window = CGV.defaultFor(options.window, this.getWindowStep().window);
       var step = CGV.defaultFor(options.step, this.getWindowStep().step);
-      var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-      // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
-
-      var positions = [];
-      var scores = [];
-      var average =  CGV.Sequence.baseCalculation(type, this.seqString);
-      // Starting points for min and max
-      var min = 1;
-      var max = 0;
-      var halfWindowSize = windowSize / 2;
-      var start, stop;
-
-      // FIXME: not set up for linear sequences
-      // position marks the middle of the calculated window
-      for (var position = 1, len = this.length; position < len; position += step) {
-        // Extract DNA for window and calculate score
-        start = this.sequence.subtractBp(position, halfWindowSize);
-        stop = this.sequence.addBp(position, halfWindowSize);
-        var range = new CGV.CGRange(this.sequence, start, stop);
-        var seq = this.sequence.forRange(range);
-        var score = CGV.Sequence.baseCalculation(type, seq);
-
-        if (score > max) {
-          max = score;
+      message.step = step
+      message.deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+      message.seqString = this.seqString;
+      worker.postMessage(message);
+      worker.onmessage = (e) => {
+        var messageType = e.data.messageType;
+        if (messageType == 'progress') {
+          track.loadProgress = e.data.progress;
+          viewer.layout.drawProgress();
         }
-        if (score < min) {
-          min = score;
-        }
+        if (messageType == 'complete') {
 
-        positions.push(position);
-        scores.push(score);
-      }
-
-      // Adjust scores if scaled
-      // Min value becomes 0
-      // Max value becomes 1
-      // Average becomes 0.5
-      if (deviation == 'scale') {
-        scores = scores.map( (score) => {
-          if (score >= average) {
-            return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
-          } else {
-            return CGV.scaleValue(score, {min: min, max: average}, {min: 0, max: 0.5});
+          var baseContent = e.data.baseContent;
+          var positions = [];
+          var position;
+          // The current position marks the middle of the calculated window.
+          // Adjust the bp position to mark where the plot changes,
+          // NOT the center point of the window.
+          // i.e. half way between the current position and the last
+          for (var i = 0, len = baseContent.positions.length; i < len; i++) {
+            position = baseContent.positions[i];
+            if (i == 0) {
+              positions.push(1);
+            } else {
+              positions.push(position - step/2);
+            }
           }
-        });
-        min = 0;
-        max = 1;
-        average = 0.5;
+          var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
+          data.legendPositive = this.getLegendItem(type, '+').text;
+          data.legendNegative = this.getLegendItem(type, '-').text;
+
+          var plot = new CGV.ArcPlot(viewer, data);
+          track._arcPlot = plot;
+          track.updateSlots();
+          console.log("Plot '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          viewer.drawFull();
+        }
       }
-      return { positions: positions, scores: scores, min: min, max: max, average: average }
+
+      worker.onerror = (e) => {
+        // do stuff
+      }
+
     }
+
+    // extractPlot(options = {}) {
+    //   if (options.sequence == 'gc_content') {
+    //     return this.extractBaseContentPlot('gc_content', options);
+    //   } else if (options.sequence == 'gc_skew') {
+    //     return this.extractBaseContentPlot('gc_skew', options);
+    //   }
+    // }
+    //
+    // // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
+    // // score must be between 0 and 1
+    // extractBaseContentPlot(type, options) {
+    //   var startTime = new Date().getTime();
+    //   if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
+    //   this.viewer.flash("Creating '" + type + "' Plot...");
+    //
+    //
+    //   options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
+    //   options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
+    //   var step = options.step
+    //   var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+    //   // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
+    //
+    //   var baseContent = this.calculateBaseContent(type, options);
+    //   var positions = [];
+    //   var position;
+    //
+    //   // The current position marks the middle of the calculated window.
+    //   // Adjust the bp position to mark where the plot changes,
+    //   // NOT the center point of the window.
+    //   // i.e. half way between the current position and the last
+    //   for (var i = 0, len = baseContent.positions.length; i < len; i++) {
+    //     position = baseContent.positions[i];
+    //     if (i == 0) {
+    //       positions.push(1);
+    //     } else {
+    //       positions.push(position - step/2);
+    //     }
+    //   }
+    //   var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
+    //   data.legendPositive = this.getLegendItem(type, '+').text;
+    //   data.legendNegative = this.getLegendItem(type, '-').text;
+    //
+    //   var plot = new CGV.ArcPlot(this.viewer, data);
+    //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
+    //   return plot
+    // }
+
+
+    // calculateBaseContent(type, options) {
+    //   var windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
+    //   var step = CGV.defaultFor(options.step, this.getWindowStep().step);
+    //   var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+    //   // var deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
+    //
+    //   var positions = [];
+    //   var scores = [];
+    //   var average =  CGV.Sequence.baseCalculation(type, this.seqString);
+    //   // Starting points for min and max
+    //   var min = 1;
+    //   var max = 0;
+    //   var halfWindowSize = windowSize / 2;
+    //   var start, stop;
+    //
+    //   // FIXME: not set up for linear sequences
+    //   // position marks the middle of the calculated window
+    //   for (var position = 1, len = this.length; position < len; position += step) {
+    //     // Extract DNA for window and calculate score
+    //     start = this.sequence.subtractBp(position, halfWindowSize);
+    //     stop = this.sequence.addBp(position, halfWindowSize);
+    //     var range = new CGV.CGRange(this.sequence, start, stop);
+    //     var seq = this.sequence.forRange(range);
+    //     var score = CGV.Sequence.baseCalculation(type, seq);
+    //
+    //     if (score > max) {
+    //       max = score;
+    //     }
+    //     if (score < min) {
+    //       min = score;
+    //     }
+    //
+    //     positions.push(position);
+    //     scores.push(score);
+    //   }
+    //
+    //   // Adjust scores if scaled
+    //   // Min value becomes 0
+    //   // Max value becomes 1
+    //   // Average becomes 0.5
+    //   if (deviation == 'scale') {
+    //     scores = scores.map( (score) => {
+    //       if (score >= average) {
+    //         return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
+    //       } else {
+    //         return CGV.scaleValue(score, {min: min, max: average}, {min: 0, max: 0.5});
+    //       }
+    //     });
+    //     min = 0;
+    //     max = 1;
+    //     average = 0.5;
+    //   }
+    //   return { positions: positions, scores: scores, min: min, max: max, average: average }
+    // }
 
 
     getWindowStep() {

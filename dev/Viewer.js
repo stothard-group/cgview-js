@@ -261,8 +261,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.refresh();
 
       this.layout._adjustProportions();
-      // Required so updateLayout() does not return right away.
-      this.layout._savedZoomFactor = undefined;
 
       this.draw(fast);
     }

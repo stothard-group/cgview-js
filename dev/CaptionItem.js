@@ -37,6 +37,7 @@
       this.fontColor = data.fontColor;
       this.textAlignment = data.textAlignment;
       this._initializationComplete = true;
+      this.refresh();
     }
 
     /**

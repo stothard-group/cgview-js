@@ -20,6 +20,7 @@
       this.strand = CGV.defaultFor(data.strand, 'separated')
       this.position = CGV.defaultFor(data.position, 'both')
       this.contents = data.contents
+      this.loadProgress = 0;
       this.refresh();
     }
 
@@ -115,6 +116,17 @@
       }
     }
 
+    /**
+     * @member {Number} - Get or set the load progress position (integer between 0 and 100)
+     */
+    get loadProgress() {
+      return this._loadProgress;
+    }
+
+    set loadProgress(value) {
+      this._loadProgress = value;
+    }
+
     features(term) {
       return this._features.get(term)
     }
@@ -132,7 +144,9 @@
       if (this.contents.plot.sequence) {
         var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
         if (sequenceExtractor) {
-          this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
+          // This could be the fallback if not able to use workers
+          // this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
+          sequenceExtractor.generatePlot(this, this.contents.plot);
         }
       }
 
@@ -252,7 +266,6 @@
       var slot = new CGV.Slot(this, {type: 'plot'});
       slot._arcPlot = this._arcPlot;
     }
-
 
   }
 

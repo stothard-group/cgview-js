@@ -33,6 +33,7 @@
       super(parent, data, meta)
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
+      this.refresh();
     }
 
     /**

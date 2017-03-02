@@ -99,6 +99,7 @@
           slot.proportionOfRadius = plotProportionOfRadius;
         }
       });
+      this.updateLayout(true);
     }
 
     tracks(term) {
@@ -155,6 +156,8 @@
       if (viewer.globalLabel) {
         viewer.labelSet.draw(this.insideRadius, this.outsideRadius);
       }
+      // Progess
+      this.drawProgress();
       // Debug
       if (viewer.debug) {
         viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
@@ -220,9 +223,9 @@
     /**
      * Updates the radius and thickness of every slot, divider and ruler, only if the zoom level has changed
      */
-    updateLayout() {
+    updateLayout(force) {
       var viewer = this.viewer;
-      if (this._savedZoomFactor == viewer._zoomFactor) {
+      if (!force && this._savedZoomFactor == viewer._zoomFactor) {
         return
       } else {
         this._savedZoomFactor = viewer._zoomFactor;
@@ -290,6 +293,19 @@
       var viewer = this.viewer;
       var thickness = CGV.pixel( Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius()) * proportionOfRadius);
       return (viewer.maxSlotThickness ? Math.min(thickness, CGV.pixel(viewer.maxSlotThickness)) : thickness)
+    }
+
+    drawProgress() {
+      this.viewer.canvas.clear('background');
+      var track, slot, progress;
+      for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+        track = this._tracks[i];
+        progress = track.loadProgress;
+        for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          slot = track._slots[j];
+          slot.drawProgress(progress);
+        }
+      }
     }
 
   }
