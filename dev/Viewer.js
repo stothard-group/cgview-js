@@ -51,6 +51,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Slot Divider
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
+      // Initialize Layout
+      this.layout = new CGV.Layout(this, options.layout);
       // Initialize Menu
       this.menu = new CGV.Menu(this);
       // Initialize Help

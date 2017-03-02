@@ -61,7 +61,7 @@
     }
     _initializeClick() {
       d3.select(this.canvas.node('ui')).on('click.cgv', () => {
-        event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
+        // event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
         this.events.trigger('click', this._createEvent(d3.event));
       });
     }

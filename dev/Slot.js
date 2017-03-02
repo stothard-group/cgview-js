@@ -229,6 +229,8 @@
             start = range.getStartPlus(-largestLength);
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
+          var step = 1;
+          // Change step if drawing fast and there are too many features
           if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
             // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
             // Use a step that is rounded up to the nearest power of 2
@@ -237,15 +239,13 @@
             // e.g. When zooming all the features visible at a step of 16
             // will be visible when the step is 8 and so on.
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
-            var step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
-            this._featureStarts.eachFromRange(start, stop, step, (i) => {
-              this._features[i].draw(canvas, slotRadius, slotThickness, range);
-            })
-          } else {
-            this._featureStarts.eachFromRange(start, stop, 1, (i) => {
-              this._features[i].draw(canvas, slotRadius, slotThickness, range);
-            })
+            step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
           }
+          // Draw Features
+          this._featureStarts.eachFromRange(start, stop, step, (i) => {
+            this._features[i].draw(canvas, slotRadius, slotThickness, range);
+          })
+          // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
             var index = this.viewer._slots.indexOf(this);
             this.viewer.debug.data.n['slot_' + index] = featureCount;

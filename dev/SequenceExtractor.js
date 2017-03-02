@@ -273,12 +273,29 @@
       var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
       data.legendPositive = this.getLegendItem(type, '+').text;
       data.legendNegative = this.getLegendItem(type, '-').text;
+
       var plot = new CGV.ArcPlot(this.viewer, data);
       console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
       return plot
     }
 
+
+    fn2workerURL(fn) {
+      var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
+      return URL.createObjectURL(blob)
+    }
+
     calculateBaseContent(type, options) {
+      // var url = this.fn2workerURL(this.myWorker);
+      // var worker = new Worker(url);
+      var worker = new Worker('dev/worker.js');
+      worker.postMessage('PLOT TYPE: ' + type)
+      worker.onmessage = (e) => {
+        this.viewer.flash(e.data);
+      }
+    }
+
+    calculateBaseContent_ORIG(type, options) {
       var windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
       var step = CGV.defaultFor(options.step, this.getWindowStep().step);
       var deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
