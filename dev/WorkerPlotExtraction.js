@@ -5,6 +5,7 @@
       console.log('Starting ' + e.data.type);
       calculateBaseContent(e.data);
       console.log('Done ' + e.data.type);
+
     }
     onerror = function(e) {
       console.error('Oops. Problem with ' + e.data.type);
@@ -43,7 +44,17 @@
           min = score;
         }
 
-        positions.push(position);
+        // The current position marks the middle of the calculated window.
+        // Adjust the bp position to mark where the plot changes,
+        // NOT the center point of the window.
+        // i.e. half way between the current position and the last
+        if (position == 1) {
+          positions.push(1);
+        } else {
+          positions.push(position - step/2);
+        }
+        // positions.push(position);
+
         scores.push(score);
         progress = Math.round(position / len * 100);
         if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {

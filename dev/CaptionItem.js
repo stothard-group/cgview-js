@@ -41,6 +41,14 @@
     }
 
     /**
+     * Return the class name as a string.
+     * @return {String} - 'CaptionItem'
+     */
+    toString() {
+      return 'CaptionItem';
+    }
+
+    /**
      * @member {Caption} - Get the *Caption*
      */
     get caption() {

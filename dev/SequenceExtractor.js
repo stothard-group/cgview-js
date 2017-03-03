@@ -74,13 +74,68 @@
       return features
     }
 
-    // addFeaturesToTrack(featureOptions = {}, track) {
-    //   if (featureOptions.sequence == 'start_stop_codons') {
-    //     track._features = this.extractStartStops(featureOptions);
+    // generateFeatures(track, options) {
+    //   if (options.sequence == 'start_stop_codons') {
+    //     features = this.generateStartStops(options);
     //   } else if (options.sequence == 'orfs') {
-    //     track._features = this.extractORFs(featureOptions);
+    //     features = this.extractORFs(options);
     //   }
     // }
+    //
+
+    generateFeatures(track, options) {
+      if (!CGV.validate(options.sequence, ['start_stop_codons', 'orfs'])) { return }
+      var startTime = new Date().getTime();
+      var type = options.sequence;
+      var viewer = this.viewer;
+      // Start worker
+      var url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
+      var worker = new Worker(url);
+      // Prepare message
+      var message = {};
+      message.type = type;
+      message.startPattern = CGV.defaultFor(options.start, 'ATG');
+      message.stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+      message.seqString = this.seqString;
+      message.minORFLength = CGV.defaultFor(options.minORFLength, 100);
+      worker.postMessage(message);
+      worker.onmessage = (e) => {
+        var messageType = e.data.messageType;
+        if (messageType == 'progress') {
+          track.loadProgress = e.data.progress;
+          viewer.layout.drawProgress();
+        }
+        if (messageType == 'complete') {
+          var featureDataArray = e.data.featureDataArray;
+          console.log("Features '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          var features = new CGV.CGArray();
+          startTime = new Date().getTime();
+          var featureData;
+          var legends = {
+            'start-codon': this.getLegendItem('start-codon'),
+            'stop-codon': this.getLegendItem('stop-codon'),
+            'orf': this.getLegendItem('orf')
+          }
+          for (var i = 0, len = featureDataArray.length; i < len; i++) {
+            featureData = featureDataArray[i];
+            featureData.legend = legends[featureData.type];
+
+            features.push( new CGV.Feature(viewer, featureData) );
+          }
+          console.log("Features '" + type + "' Creation Time: " + CGV.elapsed_time(startTime) );
+          startTime = new Date().getTime();
+          track._features = features;
+          track.updateSlots();
+          console.log("Features '" + type + "' Update Time: " + CGV.elapsed_time(startTime) );
+          viewer.drawFull();
+        }
+      }
+
+      worker.onerror = (e) => {
+        // do stuff
+      }
+
+    }
 
     extractORFs(options = {}) {
       this.viewer.flash('Finding ORFs...');
@@ -98,25 +153,25 @@
       var stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
       var stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
       // Get forward ORFs
-      var position, strand, orfLength, range, readingFrames;
+      var position,  orfLength, range, readingFrames;
       readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
-      var start, stop, stop_index;
+      var start, stop, stopIndex;
       for (var rf of readingFrames) {
         position = 1;
-        stop_index = 0;
+        stopIndex = 0;
         for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
           start = startsByRF[rf][i];
           if (start.start < position) {
             continue;
           }
-          for (var j = stop_index, len_j = stopsByRF[rf].length; j < len_j; j++) {
+          for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
             stop = stopsByRF[rf][j];
             orfLength = stop.stop - start.start;
             if (orfLength >= minORFLength) {
               position = stop.stop;
               range = new CGV.CGRange(this.sequence, start.start, stop.stop);
               features.push( this.createFeature(range, type, 1, source ) );
-              stop_index = j;
+              stopIndex = j;
               break;
             }
           }
@@ -125,7 +180,7 @@
       // Get reverse ORFs
       readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
       for (var rf of readingFrames) {
-        stop_index = 0;
+        stopIndex = 0;
         position = this.sequence.length;
         var startsByRFSorted = startsByRF[rf].order_by('start', true);
         var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
@@ -134,14 +189,14 @@
           if (start.start > position) {
             continue;
           }
-          for (var j = stop_index, len_j = stopsByRF[rf].length; j < len_j; j++) {
+          for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
             stop = stopsByRF[rf][j];
             orfLength = start.stop - stop.start;
             if (orfLength >= minORFLength) {
               position = stop.start;
               range = new CGV.CGRange(this.sequence, stop.start, start.stop);
               features.push( this.createFeature(range, type, -1, source ) );
-              stop_index = j;
+              stopIndex = j;
               break;
             }
           }
@@ -239,15 +294,15 @@
 
 
     generatePlot(track, options = {}) {
+      if (!CGV.validate(options.sequence, ['gc_content', 'gc_skew'])) { return }
       var startTime = new Date().getTime();
+      var type = options.sequence;
       var viewer = this.viewer;
       // Start worker
       var url = this.fn2workerURL(CGV.WorkerBaseContent);
       var worker = new Worker(url);
       // Prepare message
       var message = {};
-      var type = options.sequence;
-      if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
       message.type = type;
       message.window = CGV.defaultFor(options.window, this.getWindowStep().window);
       var step = CGV.defaultFor(options.step, this.getWindowStep().step);
@@ -262,23 +317,8 @@
           viewer.layout.drawProgress();
         }
         if (messageType == 'complete') {
-
           var baseContent = e.data.baseContent;
-          var positions = [];
-          var position;
-          // The current position marks the middle of the calculated window.
-          // Adjust the bp position to mark where the plot changes,
-          // NOT the center point of the window.
-          // i.e. half way between the current position and the last
-          for (var i = 0, len = baseContent.positions.length; i < len; i++) {
-            position = baseContent.positions[i];
-            if (i == 0) {
-              positions.push(1);
-            } else {
-              positions.push(position - step/2);
-            }
-          }
-          var data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
+          var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
           data.legendPositive = this.getLegendItem(type, '+').text;
           data.legendNegative = this.getLegendItem(type, '-').text;
 

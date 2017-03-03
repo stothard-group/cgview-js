@@ -185,17 +185,17 @@
     extractFeaturesFromSequence() {
       var featureOptions = this.contents.features;
       var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-      if (featureOptions.sequence == 'start_stop_codons') {
-        this.viewer.flash('Finding Start/Stop Codons...');
-        console.log('HERE')
-      } else if (options.sequence == 'orfs') {
-        this.viewer.flash('Finding ORFs...');
+      if (sequenceExtractor) {
+        sequenceExtractor.generateFeatures(this, this.contents.features);
       }
-      setTimeout(() => {
-        this._features = sequenceExtractor.extractFeatures(this.contents.features);
-        this.updateFeatureSlots();
-        this.viewer.drawFull();
-      }, 8000);
+      // if (featureOptions.sequence == 'start_stop_codons') {
+      // } else if (options.sequence == 'orfs') {
+      // }
+      // setTimeout(() => {
+      //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
+      //   this.updateFeatureSlots();
+      //   this.viewer.drawFull();
+      // }, 0);
     }
 
     // extractFeaturesTimeout() {
@@ -217,7 +217,6 @@
     updateFeatureSlots() {
       this._slots = new CGV.CGArray();
       if (this.readingFrame == 'separated') {
-        // var features = this.featuresByReadingFrame();
         var features = this.sequence.featuresByReadingFrame(this.features());
         // Direct Reading Frames
         for (var rf of [1, 2, 3]) {

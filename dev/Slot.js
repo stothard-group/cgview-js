@@ -184,8 +184,9 @@
 
     findLargestFeatureLength() {
       var length = 0;
+      var nextLength;
       for (var i = 0, len = this._features.length; i < len; i++) {
-        var nextLength = this._features[i].length;
+        nextLength = this._features[i].length;
         if (nextLength > length) {
           length = nextLength
         }

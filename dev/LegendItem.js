@@ -37,6 +37,14 @@
     }
 
     /**
+     * Return the class name as a string.
+     * @return {String} - 'LegendItem'
+     */
+    toString() {
+      return 'LegendItem';
+    }
+
+    /**
      * @member {Legend} - Get the *Legend*
      */
     get legend() {
