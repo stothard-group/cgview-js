@@ -184,14 +184,21 @@
       var radialDiff = fast ? 1 : 0.5;
       // var radialDiff = 0.5;
 
-      var startPosition = range.start;
-      var stopPosition = range.stop;
+      var startIndex = CGV.indexOfValue(positions, range.start, false);
+      var stopIndex = CGV.indexOfValue(positions, range.stop, true);
+
+      var startPosition = positions[startIndex];
+      var stopPosition = positions[stopIndex];
 
       ctx.beginPath();
       ctx.lineWidth = 0.0001;
 
       // Calculate baseline Radius
       var baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+
+      // Move to the first point
+      var startPoint = canvas.pointFor(startPosition, baselineRadius);
+      ctx.moveTo(startPoint.x, startPoint.y);
 
       var savedR = baselineRadius;
       var savedPosition = startPosition;
@@ -227,6 +234,7 @@
         }
       });
       canvas.arcPath('map', savedR, savedPosition, stopPosition, false, true);
+
       var endPoint = canvas.pointFor(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, true);

@@ -330,6 +330,36 @@
       return ranges
     }
 
+    // testRF(features) {
+    //   var startTime, rf;
+    //   startTime = new Date().getTime();
+    //   var rf1 = this.featuresByReadingFrame(features);
+    //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsed_time(startTime) );
+    //   // SETUP
+    //   features.each( (i, feature) => {
+    //     if (feature.strand == -1) {
+    //       rf = (this.length - feature.stop + 1) % 3;
+    //       if (rf == 0) { rf = 3; }
+    //       feature.rf = rf;
+    //     } else {
+    //       rf = feature.start % 3;
+    //       if (rf == 0) { rf = 3; }
+    //       feature.rf = rf;
+    //     }
+    //   });
+    //   startTime = new Date().getTime();
+    //   var rf2 = {
+    //     rf_plus_1: new CGV.CGArray( features.filter( (f) => { return f.rf == 1  && f.strand == 1})),
+    //     rf_plus_2: new CGV.CGArray( features.filter( (f) => { return f.rf == 2  && f.strand == 1})),
+    //     rf_plus_3: new CGV.CGArray( features.filter( (f) => { return f.rf == 3  && f.strand == 1})),
+    //     rf_minus_1: new CGV.CGArray( features.filter( (f) => { return f.rf == 1  && f.strand == -1})),
+    //     rf_minus_2: new CGV.CGArray( features.filter( (f) => { return f.rf == 2  && f.strand == -1})),
+    //     rf_minus_3: new CGV.CGArray( features.filter( (f) => { return f.rf == 3  && f.strand == -1}))
+    //   };
+    //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsed_time(startTime) );
+    //   return rf2;
+    // }
+
     featuresByReadingFrame(features) {
       var featuresByRF = {
         rf_plus_1: new CGV.CGArray(),

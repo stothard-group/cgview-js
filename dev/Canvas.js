@@ -17,7 +17,7 @@
       this._viewer = viewer;
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
-      this._drawArcsCutoff = 10000;
+      this._drawArcsCutoff = 5000;
 
       // Create layers
       this.determinePixelRatio(container);
@@ -296,17 +296,20 @@
       // var ctx = this.ctx;
       var ctx = this.context(layer);
       var scale = this.scale;
-      if (this.viewer.zoomFactor < this.drawArcsCutoff) {
-        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      } else {
-        var p1 = this.pointFor(startBp, radius);
+
+      // Features less than 1000th the length of the sequence are drawn as straight lines
+      // Don't do this for anticlockise drawing as the length calculation will be wrong
+      if ( this.sequence.lengthOfRange(startBp, stopBp) < (this.sequence.length / 1000) && !anticlockwise) {
         var p2 = this.pointFor(stopBp, radius);
         if (noMoveTo) {
           ctx.lineTo(p2.x, p2.y);
         } else {
+          var p1 = this.pointFor(startBp, radius);
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         }
+      } else {
+        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
       }
     }
 

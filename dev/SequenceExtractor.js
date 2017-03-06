@@ -346,7 +346,7 @@
     //
     // // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
     // // score must be between 0 and 1
-    // extractBaseContentPlot(type, options) {
+    // extractBaseContentPlot(type, options = {}) {
     //   var startTime = new Date().getTime();
     //   if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
     //   this.viewer.flash("Creating '" + type + "' Plot...");
