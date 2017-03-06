@@ -252,7 +252,7 @@
         }
         // When zoomed in, if the feature starts in the visible range and wraps around to end
         // in the visible range, the feature should be draw as 2 arcs.
-        if ( (this.viewer.zoomFactor > canvas.drawArcsCutoff) &&
+        if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
 

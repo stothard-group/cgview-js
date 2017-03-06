@@ -17,7 +17,6 @@
       this._viewer = viewer;
       this.width = CGV.defaultFor(options.width, 600);
       this.height = CGV.defaultFor(options.height, 600);
-      this._drawArcsCutoff = 5000;
 
       // Create layers
       this.determinePixelRatio(container);
@@ -166,14 +165,6 @@
 
     set cursor(value) {
       d3.select(this.node('ui')).style('cursor', value);
-    }
-
-    /**
-     * When the zoomFactor is below the cutoff, draw arcs.
-     * When the zoomFactor is above the cutoff, draw lines.
-     */
-    get drawArcsCutoff() {
-      return this._drawArcsCutoff
     }
 
     /**
