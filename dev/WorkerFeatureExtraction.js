@@ -2,16 +2,24 @@
 
   CGV.WorkerFeatureExtraction = function() {
     onmessage = function(e) {
+      var progressState;
       var type = e.data.type;
       console.log('Starting ' + type);
+      var featureDataArray = [];
       if (type == 'start_stop_codons') {
-        var featureDataArray = extractStartStopCodons(1, e.data);
-        featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data) );
-        postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
+        progressState = { startProgress: 0, finalProgress: 50 };
+        featureDataArray = extractStartStopCodons(1, e.data, progressState);
+        progressState = { startProgress: 50, finalProgress: 100 };
+        featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
       } else if (type == 'orfs') {
         var featureDataArray = extractORFs(e.data);
-        postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
       }
+      // Sort the features by start
+      featureDataArray.sort( (a, b) => {
+        return a.start - b.start
+      });
+      // Return results
+      postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
       console.log('Done ' + type);
     }
     onerror = function(e) {
@@ -19,7 +27,7 @@
     }
 
 
-    extractStartStopCodons = function(strand, options) {
+    extractStartStopCodons = function(strand, options, progressState = {}) {
       var progress = 0;
       var savedProgress = 0;
       var progressIncrement = 1;
@@ -53,105 +61,111 @@
           extractedFromSequence: true
         }
         featureDataArray.push(featureData);
-        progress = Math.round(start / seqLength * 100);
+
+        // Progress
+        progress = Math.round( (strand == 1) ? (start / seqLength * 100) : ( (seqLength - start) / seqLength * 100) );
         if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {
           savedProgress = progress;
-          postMessage({ messageType: 'progress', progress: progress });
+          postProgress(progress, progressState);
         }
+
         re.lastIndex = match.index + 1;
       }
       return featureDataArray
     }
 
+    postProgress = function(currentProgress, progressState = {}) {
+      var startProgress = progressState.startProgress || 0;
+      var finalProgress = progressState.finalProgress || 100;
+      var progressRange = finalProgress - startProgress;
+      var messageProgress = startProgress + (progressRange * currentProgress / 100);
+      postMessage({ messageType: 'progress', progress: messageProgress });
+      // console.log(messageProgress)
+      // console.log(startProgress)
+    }
+
     extractORFs = function(options) {
-      var progress = 0;
-      var savedProgress = 0;
-      var progressIncrement = 1;
-      var type = 'ORF';
-      var source = 'orfs';
       var minORFLength = options.minORFLength;
       var seq = options.seqString;
       var seqLength = seq.length;
       var featureDataArray = [];
+      var progressState = {startProgress: 0, finalProgress: 25};
 
-      var codonDataArray = extractStartStopCodons(1, options);
-      codonDataArray = codonDataArray.concat( extractStartStopCodons(-1, options) );
+
+      var codonDataArray = extractStartStopCodons(1, options, progressState);
+      var progressState = {startProgress: 25, finalProgress: 50};
+      codonDataArray = codonDataArray.concat( extractStartStopCodons(-1, options, progressState) );
       var startFeatures = codonDataArray.filter( (f) => { return f.type == 'start-codon' });
       var stopFeatures = codonDataArray.filter( (f) => { return f.type == 'stop-codon' });
 
-      var startsByRF = featuresByReadingFrame(startFeatures, seqLength);
-      var stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
+      var progressState = {startProgress: 50, finalProgress: 75};
+      var startsByRF = featuresByReadingFrame(startFeatures, seqLength, progressState);
+      var progressState = {startProgress: 75, finalProgress: 100};
+      var stopsByRF = featuresByReadingFrame(stopFeatures, seqLength, progressState);
 
-      // Get forward ORFs
-      var position, orfLength, range, readingFrames;
-      readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
+      featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, minORFLength, seqLength);
+      featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, minORFLength, seqLength) );
+      return featureDataArray
+    }
+
+    orfsByStrand = function(strand, startsByRF, stopsByRF, minORFLength, seqLength, progressState = {}) {
+      var progress = progressState.progress || 0;
+      var savedProgress = progressState.progress || 0;
+      var progressIncrement = progressState.increment || 1;
+
+      var position, orfLength, range, starts, stops;
       var start, stop, stopIndex;
+      var type = 'ORF';
+      var source = 'orfs';
+      var featureDataArray = [];
+      var readingFrames = (strand == 1) ? ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'] : ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
       for (var rf of readingFrames) {
-        position = 1;
+        position = (strand == 1) ? 1 : seqLength;
         stopIndex = 0;
-        for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-          start = startsByRF[rf][i];
-          if (start.start < position) {
+        starts = startsByRF[rf]; 
+        stops = stopsByRF[rf];
+        if (strand == -1) {
+          // Sort descending by start
+          starts.sort( (a,b) => { return b.start - a.start }); 
+          stops.sort( (a,b) => { return b.start - a.start });
+        }
+        for (var i = 0, len_i = starts.length; i < len_i; i++) {
+          start = starts[i];
+          if ( (strand == 1) && (start.start < position) || (strand == -1) && (start.start > position) ) {
             continue;
           }
           for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-            stop = stopsByRF[rf][j];
-            orfLength = stop.stop - start.start;
+            stop = stops[j];
+            orfLength = (strand == 1) ? stop.stop - start.start : start.stop - stop.start;
             if (orfLength >= minORFLength) {
-              position = stop.stop;
+              position = (strand == 1) ? stop.stop : stop.start;
 
               featureData = {
                 type: type,
-                start: start.start,
-                stop: stop.stop,
-                strand: 1,
+                start: (strand == 1) ? start.start : stop.start,
+                stop: (strand == 1) ? stop.stop : start.stop,
+                strand: strand,
                 source: source,
                 extractedFromSequence: true
               }
               featureDataArray.push(featureData);
 
-              progress = Math.round(start / seqLength * 100);
-              if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {
-                savedProgress = progress;
-                postMessage({ messageType: 'progress', progress: progress });
-              }
+              // progress = Math.round(start / seqLength * 100);
+              // if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {
+              //   savedProgress = progress;
+              //   postMessage({ messageType: 'progress', progress: progress });
+              // }
 
               stopIndex = j;
               break;
             } else if (orfLength > 0) {
-              position = stop.stop;
+              position = (strand == 1) ? stop.stop : stop.start;
               stopIndex = j;
               break;
             }
           }
         }
       }
-      // Get reverse ORFs
-      // readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-      // for (var rf of readingFrames) {
-      //   stopIndex = 0;
-      //   position = seqLength;
-      //   var startsByRFSorted = startsByRF[rf].order_by('start', true);
-      //   var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
-      //   for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-      //     start = startsByRF[rf][i];
-      //     if (start.start > position) {
-      //       continue;
-      //     }
-      //     for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-      //       stop = stopsByRF[rf][j];
-      //       orfLength = start.stop - stop.start;
-      //       if (orfLength >= minORFLength) {
-      //         position = stop.start;
-      //         range = new CGV.CGRange(this.sequence, stop.start, start.stop);
-      //         features.push( this.createFeature(range, type, -1, source ) );
-      //         stopIndex = j;
-      //         break;
-      //       }
-      //     }
-      //   }
-      // }
-
       return featureDataArray
     }
 

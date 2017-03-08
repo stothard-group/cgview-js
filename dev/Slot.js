@@ -158,10 +158,11 @@
     // Features need to be sorted by start position
     // NOTE: consider using d3 bisect for inserting new features in the proper sort order
     refresh() {
+      // NOTE: all features should be sorted from json builder or in workers to save time here
       // Sort the features by start
-      this._features.sort( (a, b) => {
-        return a.start - b.start
-      });
+      // this._features.sort( (a, b) => {
+      //   return a.start - b.start
+      // });
       // Clear feature starts
       this._featureStarts = new CGV.CGArray();
       for (var i = 0, len = this._features.length; i < len; i++) {
