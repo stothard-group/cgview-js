@@ -34,13 +34,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._zoomFactor = 1;
       this.debug = CGV.defaultFor(options.debug, false);
 
-      this._io = new CGV.IO(this);
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
-      // this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
       this._featureTypes = new CGV.CGArray();
 
+      // Initial IO
+      this.io = new CGV.IO(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
@@ -380,15 +380,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
       return type
     }
-
-    // Get mouse position in the 'container' taking into account the pixel ratio
-    // mouse(container) {
-    //   if (container == undefined) {
-    //     container = self.canvas
-    //   }
-    //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
-    // }
-
 
     refreshCaptions() {
       for (var i = 0, len = this._captions.length; i < len; i++) {
@@ -1245,13 +1236,12 @@ if (window.CGV === undefined) window.CGV = CGView;
      * the arc is added as a straight line.
      */
     arcPath(layer, radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
       var scale = this.scale;
 
       // Features less than 1000th the length of the sequence are drawn as straight lines
-      // Don't do this for anticlockise drawing as the length calculation will be wrong
-      if ( this.sequence.lengthOfRange(startBp, stopBp) < (this.sequence.length / 1000) && !anticlockwise) {
+      var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
+      if ( rangeLength < (this.sequence.length / 1000)) {
         var p2 = this.pointFor(stopBp, radius);
         if (noMoveTo) {
           ctx.lineTo(p2.x, p2.y);
@@ -1759,6 +1749,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {String} - Alias for getting the text. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.text
+    }
+
+    /**
      * @member {Caption} - Get the *Caption*
      */
     get caption() {
@@ -2155,7 +2152,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else if ( term.match(/^label-id-/) ) {
         return this.filter(function(element) { return element.label_id() == term; })[0];
       } else {
-        return this.filter(function(element) { return element.id == term; })[0];
+        return this.filter(function(element) { return element.id.toLowerCase() == term.toLowerCase(); })[0];
       }
     } else if (Array.isArray(term)) {
       var filtered = this.filter(function(element) { return term.some(function(id) { return element.id == id; }); });
@@ -6446,7 +6443,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // var height = viewer._wrapper.select('#cgv-save-height').property('value');
       var height = viewer._wrapper.select('#cgv-save-width').property('value');
       var width = viewer._wrapper.select('#cgv-save-width').property('value');
-      var image = viewer._io.exportImage(width, height);
+      var image = viewer.io.exportImage(width, height);
       dialog.close();
     }
 
@@ -8274,6 +8271,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._arcPlot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
+      this.name = CGV.defaultFor(data.name, 'Unknown')
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
       this.strand = CGV.defaultFor(data.strand, 'separated')
       this.position = CGV.defaultFor(data.position, 'both')
@@ -8286,6 +8284,24 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get viewer() {
       return this.layout.viewer
+    }
+
+    /**
+     * @member {String} - Alias for getting the name. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.name
+    }
+
+    /**
+     * @member {String} - Get or set the *name*.
+     */
+    get name() {
+      return this._name
+    }
+
+    set name(value) {
+      this._name = value;
     }
 
     /** * @member {Viewer} - Get or set the *Layout*
@@ -8348,7 +8364,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {String} - Get or set the readingFrame. Possible values are 'combinded' or 'separated'.
+     * @member {String} - Get or set the readingFrame. Possible values are 'combined' or 'separated'.
      */
     get readingFrame() {
       return this._readingFrame;

@@ -109,7 +109,7 @@
     }
 
     /**
-     * @member {String} - Get or set the readingFrame. Possible values are 'combinded' or 'separated'.
+     * @member {String} - Get or set the readingFrame. Possible values are 'combined' or 'separated'.
      */
     get readingFrame() {
       return this._readingFrame;

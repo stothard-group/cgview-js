@@ -236,6 +236,8 @@
             
                 <li data-name="CaptionItem#height"><a href="CaptionItem.html#height">height</a></li>
             
+                <li data-name="CaptionItem#id"><a href="CaptionItem.html#id">id</a></li>
+            
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
@@ -1040,9 +1042,13 @@
             
                 <li data-name="Track#contentType"><a href="Track.html#contentType">contentType</a></li>
             
+                <li data-name="Track#id"><a href="Track.html#id">id</a></li>
+            
                 <li data-name="Track#layout"><a href="Track.html#layout">layout</a></li>
             
                 <li data-name="Track#loadProgress"><a href="Track.html#loadProgress">loadProgress</a></li>
+            
+                <li data-name="Track#name"><a href="Track.html#name">name</a></li>
             
                 <li data-name="Track#position"><a href="Track.html#position">position</a></li>
             
@@ -1154,7 +1160,103 @@
 
 
     <section>
-        <article class="readme"><p>This is a JavaScript port of the Java program CGView.</p></article>
+        <article class="readme"><h2>CGView.js</h2><p>This is a JavaScript port of the Java program <a target="_blank" href="http://wishart.biology.ualberta.ca/cgview/index.html">CGView</a>.
+While the CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
+interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
+with resolutions upto 6000x6000 pixels.</p>
+<h3>Dependencies</h3><ul>
+<li>D3 - http://d3js.org (Version 4)</li>
+<li>d3-selection-multi - https://github.com/d3/d3-selection-multi</li>
+</ul>
+<h3>Setup</h3><ul>
+<li>For the D3 dependencies add the following to your html:</li>
+</ul>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://d3js.org/d3.v4.min.js&quot;>&lt;/script>
+&lt;script src=&quot;https://d3js.org/d3-selection-multi.v0.4.min.js&quot;>&lt;/script></code></pre><ul>
+<li>Copy <em>cgview.js</em> to your javascript folder and add a script tag to your html:</li>
+</ul>
+<pre class="prettyprint source lang-html"><code>&lt;script src='javascript/cgview.js'>&lt;/script></code></pre><ul>
+<li>Copy <em>cgview.css</em> to your stylesheets folder and add a link to the file in your html:</li>
+</ul>
+<pre class="prettyprint source lang-html"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;stylesheets/cgview.css&quot; /></code></pre><h3>Creating a New Viewer</h3><p>Create a container for the viewer in HTML:</p>
+<pre class="prettyprint source lang-html"><code>&lt;div id='my-viewer'>&lt;/div></code></pre><p>Create <a href="Viewer.html">Viewer</a></p>
+<pre class="prettyprint source lang-js"><code>cgv = new CGV.Viewer('#my-viewer', {
+  height: 600,
+  width: 600,
+  TODO: ADD MORE OPTIONS: sequence
+});
+sv.flash('Loading...')</code></pre><p>Maps are made up of <a href="Track.html">Tracks</a> that contain <a href="Feature.html">Features</a> or <a href="ArcPlot.html">Plots</a>.</p>
+<p>Before creating a feature, a <a href="LegendItem.html">LegendItem</a> and <a href="FeatureType.html">FeatureType</a> should be created first
+to describe the shape and color of the feature.</p>
+<p>Create <a href="FeatureType.html">FeatureType</a></p>
+<pre class="prettyprint source lang-js"><code>new CGV.FeatureType(cgv, {
+  // Name of feature type.
+  name: 'CDS',
+  // How to draw features of this type. Options: 'arrow' or 'arc'
+  decoration: 'arrow'
+});</code></pre><p>Create <a href="LegendItem.html">LegendItem</a></p>
+<pre class="prettyprint source lang-js"><code>new CGV.LegendItem(cgv.legend, {
+  // Text of LegendItem label.
+  text: 'CDS',
+  // Color of swatch beside legend item. Features associated with
+  // this legend item will be drawn using this color. Colors can be rgb, rgba format
+  // or as a string (e.g. 'blue').
+  swatchColor: 'rgba(200, 150, 150, 0.8)'
+});</code></pre><p>Create <a href="Feature.html">Feature</a></p>
+<pre class="prettyprint source lang-js"><code>new CGV.Feature(cgv, {
+  // Feature type. Used to determine how the feature is drawn (e.g. arrow or arc).
+  // If a FeatureType with this name does not exist, a new FeatureType will be
+  // created with this name and the default settings (e.g. the decoration will be an 'arc').
+  type: 'CDS',
+  // Name of the feature.
+  label: 'My Feature Name',
+  // Beginning of the feature in bp. Must be &lt;= stop.
+  start: 100,
+  // End of the feature in bp. Must be >= start.
+  stop: 250,
+  // Which strand is the feature on. 1: forward strand; -1: reverse strand.
+  strand: 1,
+  // Used to group features into a track.
+  source: 'genome-features',
+  // Name of LegendItem to associate with the feature.
+  // If a LegendItem with this text does not exist, a new LegendItem will be created
+  // with this text and the default settings (e.g. the color will be 'black').
+  legend: 'CDS'
+});</code></pre><p>Create <a href="Track.html">Track</a>, which is a part of the the Viewer <a href="Layout.html">Layout</a></p>
+<pre class="prettyprint source lang-js"><code>new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'My track',
+  // Draw the track using separated or combined slots for each reading frame. Options: 'separated', 'combined'.
+  readingFrame: 'combined',
+  // Draw the track using separated or combined slots for the forward and reverse strand. Options: 'separated', 'combined'.
+  strand: 'combined',
+  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
+  position: 'both',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    features: {
+      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
+      source: 'genome-features' // All features with the source 'genome-features' will be added to this track.
+    }
+  }
+});</code></pre><p><a href="Track.html">Tracks</a> are drawn as one or more <a href="Slot.html">Slots</a> on the map.</p>
+<p>Examples of contents</p>
+<pre class="prettyprint source lang-js"><code>contents: {
+  features: {
+    // Features can be extracted from the sequence (if it's been added to the viewer).
+    // What should be extracted. Options: 'orfs', 'start_stop_codons'
+    sequence: orfs,
+    // Additional options can also be provided.
+    // In this case, what start and stop codons to use.
+    start: 'ATG',
+    stop: 'TAA,TAG,TGA'
+  }
+}</code></pre><p>LOAD JSON</p>
+<pre class="prettyprint source lang-js"><code>cgv.loadJSON(jsonData);</code></pre><p>The format of the JSON...</p>
+<h2>TODO</h2><ul>
+<li>Have image of map and parts (e.g. track, slot, caption, ruler, etc)</li>
+</ul></article>
     </section>
 
 
@@ -1165,7 +1267,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 09:08:23 GMT-0700 (MST)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 10 2017 14:31:37 GMT-0700 (MST)
         </footer>
     </div>
 </div>

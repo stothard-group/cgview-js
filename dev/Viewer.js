@@ -381,15 +381,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return type
     }
 
-    // Get mouse position in the 'container' taking into account the pixel ratio
-    // mouse(container) {
-    //   if (container == undefined) {
-    //     container = self.canvas
-    //   }
-    //   return d3.mouse(container).map(function(p) { return CGV.pixel(p); });
-    // }
-
-
     refreshCaptions() {
       for (var i = 0, len = this._captions.length; i < len; i++) {
         this._captions[i].refresh();
