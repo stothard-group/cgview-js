@@ -16,6 +16,7 @@
       this._arcPlot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
+      this.name = CGV.defaultFor(data.name, 'Unknown')
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
       this.strand = CGV.defaultFor(data.strand, 'separated')
       this.position = CGV.defaultFor(data.position, 'both')
@@ -28,6 +29,24 @@
      */
     get viewer() {
       return this.layout.viewer
+    }
+
+    /**
+     * @member {String} - Alias for getting the name. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.name
+    }
+
+    /**
+     * @member {String} - Get or set the *name*.
+     */
+    get name() {
+      return this._name
+    }
+
+    set name(value) {
+      this._name = value;
     }
 
     /** * @member {Viewer} - Get or set the *Layout*

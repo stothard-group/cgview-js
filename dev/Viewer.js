@@ -34,13 +34,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._zoomFactor = 1;
       this.debug = CGV.defaultFor(options.debug, false);
 
-      this._io = new CGV.IO(this);
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
-      // this._slots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
       this._featureTypes = new CGV.CGArray();
 
+      // Initial IO
+      this.io = new CGV.IO(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend

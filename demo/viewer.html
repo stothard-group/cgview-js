@@ -8,48 +8,46 @@
   <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
   <script src="javascript/d3.v4.min.js"></script>
   <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
-  <script src='src/CGView.js'></script>
-  <!-- <script src='dev/Viewer.js'></script> -->
-  <!-- <script src='dev/Viewer&#45;Drag.js'></script> -->
-  <!-- <script src='dev/Viewer&#45;Zoom.js'></script> -->
-  <!-- <script src='dev/Sequence.js'></script> -->
-  <!-- <script src='dev/SequenceExtractor.js'></script> -->
-  <!-- <script src='dev/Events.js'></script> -->
-  <!-- <script src='dev/EventMonitor.js'></script> -->
-  <!-- <script src='dev/Canvas.js'></script> -->
-  <!-- <script src='dev/Backbone.js'></script> -->
-  <!-- <script src='dev/Ruler.js'></script> -->
-  <!-- <script src='dev/IO.js'></script> -->
-  <!-- <script src='dev/Layout.js'></script> -->
-  <!-- <script src='dev/CGArray.js'></script> -->
-  <!-- <script src='dev/CGRange.js'></script> -->
-  <!-- <script src='dev/Slot.js'></script> -->
-  <!-- <script src='dev/Track.js'></script> -->
-  <!-- <script src='dev/Divider.js'></script> -->
-  <!-- <script src='dev/Feature.js'></script> -->
-  <!-- <script src='dev/FeatureType.js'></script> -->
-  <!-- <script src='dev/Messenger.js'></script> -->
-  <!-- <script src='dev/Label.js'></script> -->
-  <!-- <script src='dev/LabelSet.js'></script> -->
-  <!-- <script src='dev/ArcPlot.js'></script> -->
-  <!-- <script src='dev/Caption.js'></script> -->
-  <!-- <script src='dev/CaptionItem.js'></script> -->
-  <!-- <script src='dev/Legend.js'></script> -->
-  <!-- <script src='dev/LegendItem.js'></script> -->
-  <!-- <script src='dev/Debug.js'></script> -->
-  <!-- <script src='dev/Color.js'></script> -->
-  <!-- <script src='dev/ColorPicker.js'></script> -->
-  <!-- <script src='dev/Font.js'></script> -->
-  <!-- <script src='dev/Rect.js'></script> -->
-  <!-- <script src='dev/Dialog.js'></script> -->
-  <!-- <script src='dev/Menu.js'></script> -->
-  <!-- <script src='dev/Help.js'></script> -->
-  <!-- <script src='dev/Utils.js'></script> -->
-  <!-- <script src='dev/WorkerFeatureExtraction.js'></script> -->
-  <!-- <script src='dev/WorkerPlotExtraction.js'></script> -->
+  <!-- <script src='src/CGView.js'></script> -->
+  <script src='dev/Viewer.js'></script>
+  <script src='dev/Viewer-Drag.js'></script>
+  <script src='dev/Viewer-Zoom.js'></script>
+  <script src='dev/Sequence.js'></script>
+  <script src='dev/SequenceExtractor.js'></script>
+  <script src='dev/Events.js'></script>
+  <script src='dev/EventMonitor.js'></script>
+  <script src='dev/Canvas.js'></script>
+  <script src='dev/Backbone.js'></script>
+  <script src='dev/Ruler.js'></script>
+  <script src='dev/IO.js'></script>
+  <script src='dev/Layout.js'></script>
+  <script src='dev/CGArray.js'></script>
+  <script src='dev/CGRange.js'></script>
+  <script src='dev/Slot.js'></script>
+  <script src='dev/Track.js'></script>
+  <script src='dev/Divider.js'></script>
+  <script src='dev/Feature.js'></script>
+  <script src='dev/FeatureType.js'></script>
+  <script src='dev/Messenger.js'></script>
+  <script src='dev/Label.js'></script>
+  <script src='dev/LabelSet.js'></script>
+  <script src='dev/ArcPlot.js'></script>
+  <script src='dev/Caption.js'></script>
+  <script src='dev/CaptionItem.js'></script>
+  <script src='dev/Legend.js'></script>
+  <script src='dev/LegendItem.js'></script>
+  <script src='dev/Debug.js'></script>
+  <script src='dev/Color.js'></script>
+  <script src='dev/ColorPicker.js'></script>
+  <script src='dev/Font.js'></script>
+  <script src='dev/Rect.js'></script>
+  <script src='dev/Dialog.js'></script>
+  <script src='dev/Menu.js'></script>
+  <script src='dev/Help.js'></script>
+  <script src='dev/Utils.js'></script>
+  <script src='dev/WorkerFeatureExtraction.js'></script>
+  <script src='dev/WorkerPlotExtraction.js'></script>
 
-  <!-- <script src="javascript/xml2json.min.js"></script> -->
-  <!-- <script src="javascript/canvas2svg.js"></script> -->
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0&#45;alpha.6/css/bootstrap.min.css" integrity="sha384&#45;rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
   <link rel="stylesheet" href="stylesheets/cgview.css" />
 </head>
@@ -78,10 +76,6 @@
 
     $.ajax({
       // url: 'data/cgview_1.json',
-      // url: 'data/cgview_1_track.json',
-      // url: 'data/cgview_1_track.json',
-      // url: 'data/cgview_1_seq.json',
-      // url: 'data/cgview-d957a5.json',
       // url: 'JSON_FORMAT.json',
       url: 'data/tests/builder.json',
       dataType: 'json',
@@ -89,7 +83,7 @@
         console.log('loading...')
         window.data = json;
         // cgv.load_json(json.cgview);
-        cgv._io.loadJSON(json.cgview);
+        cgv.io.loadJSON(json.cgview);
         console.log('done!');
         $(window).trigger('resize');
         cgv.draw();

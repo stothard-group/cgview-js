@@ -250,7 +250,7 @@
       } else if ( term.match(/^label-id-/) ) {
         return this.filter(function(element) { return element.label_id() == term; })[0];
       } else {
-        return this.filter(function(element) { return element.id == term; })[0];
+        return this.filter(function(element) { return element.id.toLowerCase() == term.toLowerCase(); })[0];
       }
     } else if (Array.isArray(term)) {
       var filtered = this.filter(function(element) { return term.some(function(id) { return element.id == id; }); });

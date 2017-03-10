@@ -558,7 +558,7 @@
       // var height = viewer._wrapper.select('#cgv-save-height').property('value');
       var height = viewer._wrapper.select('#cgv-save-width').property('value');
       var width = viewer._wrapper.select('#cgv-save-width').property('value');
-      var image = viewer._io.exportImage(width, height);
+      var image = viewer.io.exportImage(width, height);
       dialog.close();
     }
 

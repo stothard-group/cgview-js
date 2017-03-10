@@ -99,7 +99,7 @@ end
 
 
 # ruby scripts/build_cgview_html/build_cgview_html.rb -i data/tests/builder.json -o ~/Desktop/haemophilus_influenzae_genome
-# ruby scripts/build_cgview_html/build_cgview_html.rb -i data/tests/builder.json -o ~/Desktop/haemophilus_influenzae_genome
+# ruby scripts/build_cgview_html/build_cgview_html.rb -i data/tests/builder.json -o ~/Desktop/reclinomonas_americana_mitochondrion
 
 
 

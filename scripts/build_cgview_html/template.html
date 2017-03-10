@@ -36,7 +36,7 @@
     });
     window.cgv = cgv;
     cgv.flash('Loading...');
-    cgv._io.loadJSON(cgviewJson.cgview);
+    cgv.io.loadJSON(cgviewJson.cgview);
     // Resizing
     $(window).resize(function() {
       var width = window.innerWidth - 20;

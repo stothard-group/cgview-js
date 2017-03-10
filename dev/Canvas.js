@@ -284,13 +284,12 @@
      * the arc is added as a straight line.
      */
     arcPath(layer, radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
       var scale = this.scale;
 
       // Features less than 1000th the length of the sequence are drawn as straight lines
-      // Don't do this for anticlockise drawing as the length calculation will be wrong
-      if ( this.sequence.lengthOfRange(startBp, stopBp) < (this.sequence.length / 1000) && !anticlockwise) {
+      var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
+      if ( rangeLength < (this.sequence.length / 1000)) {
         var p2 = this.pointFor(stopBp, radius);
         if (noMoveTo) {
           ctx.lineTo(p2.x, p2.y);

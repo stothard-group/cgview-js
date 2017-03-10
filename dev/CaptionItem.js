@@ -49,6 +49,13 @@
     }
 
     /**
+     * @member {String} - Alias for getting the text. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.text
+    }
+
+    /**
      * @member {Caption} - Get the *Caption*
      */
     get caption() {
