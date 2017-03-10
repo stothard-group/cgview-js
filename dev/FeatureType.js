@@ -55,6 +55,12 @@
       }
     }
 
+    features(term) {
+      var viewer = this.viewer;
+      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.featureType == this } ));
+      return _features.get(term);
+    }
+
   }
 
   CGV.FeatureType = FeatureType;

@@ -23,15 +23,10 @@
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
-      if (data.legend) {
-        if (data.legend.toString() == 'LegendItem') {
-          this.legendItem  = data.legend;
-        } else {
-          this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
-        }
-      }
-      if (!this.legendItem) {
-        this._color = new CGV.Color('black');
+      if (data.legend && data.legend.toString() == 'LegendItem') {
+        this.legendItem  = data.legend;
+      } else {
+        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
       }
     }
 
@@ -44,7 +39,7 @@
 
     set type(value) {
       this._type = value;
-      this.featureType  = this.viewer.featureTypes().find( (i) => { return i.name == value });
+      this.featureType  = this.viewer.findFeatureTypeOrCreate(value, 'arc');
     }
 
     /**
@@ -207,7 +202,6 @@
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
      */
     get decoration() {
-      // return (this.featureType) ? this.featureType.decoration : 'arc';
       if (this.featureType) {
         if (this.featureType.decoration == 'arrow') {
           return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'

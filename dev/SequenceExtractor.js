@@ -106,20 +106,18 @@
           viewer.layout.drawProgress();
         }
         if (messageType == 'complete') {
+          track.loadProgress = 100;
           var featureDataArray = e.data.featureDataArray;
           console.log("Features '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
           var features = new CGV.CGArray();
           startTime = new Date().getTime();
           var featureData;
-          var legends = {
-            'start-codon': this.getLegendItem('start-codon'),
-            'stop-codon': this.getLegendItem('stop-codon'),
-            'orf': this.getLegendItem('orf')
-          }
+          var legends = this.createLegendItems(type);
+          var featureType = this.getFeatureType(type); // this will create the feature type
+          console.log(type)
           for (var i = 0, len = featureDataArray.length; i < len; i++) {
             featureData = featureDataArray[i];
             featureData.legend = legends[featureData.type];
-
             features.push( new CGV.Feature(viewer, featureData) );
           }
           console.log("Features '" + type + "' Creation Time: " + CGV.elapsed_time(startTime) );
@@ -135,6 +133,21 @@
         // do stuff
       }
 
+    }
+
+    createLegendItems(type) {
+      var legends = {};
+      if (type == 'orfs') {
+        legends = {
+          'ORF': this.getLegendItem('ORF')
+        }
+      } else if (type == 'start_stop_codons') {
+        legends = {
+          'start-codon': this.getLegendItem('start-codon'),
+          'stop-codon': this.getLegendItem('stop-codon')
+        }
+      }
+      return legends
     }
 
     extractORFs(options = {}) {
@@ -248,44 +261,49 @@
       return new CGV.Feature(this.viewer, featureData)
     }
 
+    getFeatureType(type) {
+      var viewer = this.viewer;
+      var featureType;
+      switch (type) {
+        case 'start_stop_codons':
+          featureType = viewer.findFeatureTypeOrCreate('Codon', 'arc');
+          break;
+        case 'orfs':
+          featureType = viewer.findFeatureTypeOrCreate('ORF', 'arrow');
+          break;
+        default:
+          featureType = viewer.findFeatureTypeOrCreate('Unknown', 'arc');
+      }
+      return featureType 
+    }
+
     getLegendItem(type, sign) {
       var legend = this.viewer.legend;
       var item;
       switch (type) {
         case 'start-codon':
-          item = this.findLegendItemOrCreate('Start', 'blue');
+          item = legend.findLegendItemOrCreate('Start', 'blue');
           break;
         case 'stop-codon':
-          item = this.findLegendItemOrCreate('Stop', 'red');
+          item = legend.findLegendItemOrCreate('Stop', 'red');
           break;
         case 'ORF':
-          item = this.findLegendItemOrCreate('ORF', 'green');
+          item = legend.findLegendItemOrCreate('ORF', 'green');
           break;
         case 'gc_content':
-          item = this.findLegendItemOrCreate('GC Content', 'black');
+          item = legend.findLegendItemOrCreate('GC Content', 'black');
           break;
         case 'gc_skew':
           var color = (sign == '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
           var name = (sign == '+') ? 'GC Skew+' : 'GC Skew-';
-          item = this.findLegendItemOrCreate(name, color);
+          item = legend.findLegendItemOrCreate(name, color);
           break;
         default:
-          item = this.findLegendItemOrCreate('Unknown', 'grey');
+          item = legend.findLegendItemOrCreate('Unknown', 'grey');
       }
       return item 
     }
 
-    findLegendItemOrCreate(name, color) {
-      var legend = this.viewer.legend;
-      var item = legend.findLegendItemByName(name);
-      if (!item) {
-        item = new CGV.LegendItem(legend, {
-          text: name,
-          swatchColor: color
-        })
-      }
-      return item
-    }
 
     fn2workerURL(fn) {
       var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})

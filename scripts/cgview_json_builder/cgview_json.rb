@@ -199,7 +199,8 @@ class CGViewJSON
       @cgview[:sequence][:seq] = @sequence
       @cgview[:features] += @features
     end
-    @cgview[:layout][:tracks] += @tracks
+    # @cgview[:layout][:tracks] += @tracks
+    @cgview[:layout][:tracks] = @tracks + @cgview[:layout][:tracks]
     @cgview[:captions] += @captions
   end
 
@@ -227,7 +228,7 @@ end
 debug = false
 # debug = true
 file = "data/sequences/NC_001823.gbk" # 70 KB
-file = "data/sequences/NC_000907.gbk" # 1.8 MB
+# file = "data/sequences/NC_000907.gbk" # 1.8 MB
 # file = "data/sequences/NC_000913.gbk" # 4.6 MB
 cgview = CGViewJSON.new(file, config: "scripts/cgview_json_builder/config.yaml", debug: debug)
 

@@ -160,6 +160,12 @@
         return true
       }
     }
+
+    features(term) {
+      var viewer = this.viewer;
+      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem == this } ));
+      return _features.get(term);
+    }
   }
 
   CGV.LegendItem = LegendItem;

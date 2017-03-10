@@ -197,12 +197,14 @@
 
     clear() {
       var range = this._visibleRange;
-      var slotRadius = this.radius;
-      var slotThickness = this.thickness;
-      var ctx = this.viewer.canvas.context('map');
-      ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
-      this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
-      ctx.globalCompositeOperation = "source-over"; // Default
+      if (range) {
+        var slotRadius = this.radius;
+        var slotThickness = this.thickness;
+        var ctx = this.viewer.canvas.context('map');
+        ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
+        this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
+        ctx.globalCompositeOperation = "source-over"; // Default
+      }
     }
 
     // draw(canvas, fast, slotRadius, slotThickness) {
@@ -269,7 +271,7 @@
       //   canvas.drawArc('background', 1, stop, slotRadius, '#EAEAEE', slotThickness);
       // }
       // Draw progress like thickening circle
-      if (progress > 0 && progress < 100) {
+      if (progress > 0 && progress < 100 && range) {
         var thickness = slotThickness * progress / 100;
         canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness);
       }

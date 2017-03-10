@@ -178,7 +178,7 @@
         // The number of ticks will for each region will depend on this ratio
         var tickCountRatio = (sequenceLength - start) / this.sequence.lengthOfRange(start, stop);
         var ticksBeforeZero = Math.round(tickCount * tickCountRatio);
-        var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by to for a margin of safety
+        var ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by 2 for a margin of safety
         if (ticksBeforeZero > 0) {
           majorTicks.merge( d3.ticks(start, sequenceLength, ticksBeforeZero) );
           majorTickStep = Math.round(d3.tickStep(start, sequenceLength, ticksBeforeZero));

@@ -124,13 +124,15 @@
       var visibleRange = this._canvas.visibleRangeForRadius(radius);
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
-        for (var i = 0, len = this._labels.length; i < len; i++) {
-          if (visibleRange.contains(this._labels[i].bp)) {
-            labelArray.push(this._labels[i]);
+        if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
+          labelArray = this._labels;
+        } else {
+          for (var i = 0, len = this._labels.length; i < len; i++) {
+            if (visibleRange.contains(this._labels[i].bp)) {
+              labelArray.push(this._labels[i]);
+            }
           }
         }
-      } else {
-        labelArray = this._labels;
       }
       return labelArray
     }

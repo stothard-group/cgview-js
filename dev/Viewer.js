@@ -366,6 +366,21 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.layout.draw(fast);
     }
 
+    findFeatureTypeByName(name) {
+      return this._featureTypes.find( (i) => { return i.name.toLowerCase() == name.toLowerCase() });
+    }
+
+    findFeatureTypeOrCreate(name, decoration = 'arc') {
+      var type = this.findFeatureTypeByName(name);
+      if (!type) {
+        type = new CGV.FeatureType(this, {
+          name: name,
+          decoration: decoration
+        });
+      }
+      return type
+    }
+
     // Get mouse position in the 'container' taking into account the pixel ratio
     // mouse(container) {
     //   if (container == undefined) {

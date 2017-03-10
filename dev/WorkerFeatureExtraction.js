@@ -7,9 +7,9 @@
       console.log('Starting ' + type);
       var featureDataArray = [];
       if (type == 'start_stop_codons') {
-        progressState = { startProgress: 0, finalProgress: 50 };
+        progressState = { start: 0, stop: 50 };
         featureDataArray = extractStartStopCodons(1, e.data, progressState);
-        progressState = { startProgress: 50, finalProgress: 100 };
+        progressState = { start: 50, stop: 100 };
         featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
       } else if (type == 'orfs') {
         var featureDataArray = extractORFs(e.data);
@@ -30,7 +30,6 @@
     extractStartStopCodons = function(strand, options, progressState = {}) {
       var progress = 0;
       var savedProgress = 0;
-      var progressIncrement = 1;
       var source = 'start-stop-codons';
       var seq = (strand == 1) ? options.seqString : reverseComplement(options.seqString);
       var startPattern = options.startPattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
@@ -64,24 +63,27 @@
 
         // Progress
         progress = Math.round( (strand == 1) ? (start / seqLength * 100) : ( (seqLength - start) / seqLength * 100) );
-        if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {
-          savedProgress = progress;
-          postProgress(progress, progressState);
-        }
+        savedProgress = postProgress(progress, savedProgress, progressState);
 
         re.lastIndex = match.index + 1;
       }
       return featureDataArray
     }
 
-    postProgress = function(currentProgress, progressState = {}) {
-      var startProgress = progressState.startProgress || 0;
-      var finalProgress = progressState.finalProgress || 100;
-      var progressRange = finalProgress - startProgress;
-      var messageProgress = startProgress + (progressRange * currentProgress / 100);
-      postMessage({ messageType: 'progress', progress: messageProgress });
-      // console.log(messageProgress)
-      // console.log(startProgress)
+    postProgress = function(currentProgress, savedProgress, progressState = {}) {
+      var progressStart = progressState.start || 0;
+      var progressStop = progressState.stop || 100;
+      var progressIncrement = progressState.increment || 1;
+      var progressRange = progressStop - progressStart;
+      if ( (currentProgress > savedProgress) && (currentProgress % progressIncrement == 0) ) {
+        savedProgress = currentProgress;
+        var messageProgress = progressStart + (progressRange * currentProgress / 100);
+        if (messageProgress % progressIncrement == 0) {
+          // console.log(messageProgress)
+          postMessage({ messageType: 'progress', progress: messageProgress });
+        }
+      }
+      return savedProgress
     }
 
     extractORFs = function(options) {
@@ -89,41 +91,42 @@
       var seq = options.seqString;
       var seqLength = seq.length;
       var featureDataArray = [];
-      var progressState = {startProgress: 0, finalProgress: 25};
+      var progressState = {start: 0, stop: 25};
 
 
       var codonDataArray = extractStartStopCodons(1, options, progressState);
-      var progressState = {startProgress: 25, finalProgress: 50};
+      var progressState = {start: 25, stop: 50};
       codonDataArray = codonDataArray.concat( extractStartStopCodons(-1, options, progressState) );
       var startFeatures = codonDataArray.filter( (f) => { return f.type == 'start-codon' });
       var stopFeatures = codonDataArray.filter( (f) => { return f.type == 'stop-codon' });
 
-      var progressState = {startProgress: 50, finalProgress: 75};
-      var startsByRF = featuresByReadingFrame(startFeatures, seqLength, progressState);
-      var progressState = {startProgress: 75, finalProgress: 100};
-      var stopsByRF = featuresByReadingFrame(stopFeatures, seqLength, progressState);
+      var startsByRF = featuresByReadingFrame(startFeatures, seqLength);
+      var stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
 
-      featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, minORFLength, seqLength);
-      featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, minORFLength, seqLength) );
+      var progressState = {start: 50, stop: 75};
+      featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, minORFLength, seqLength, progressState);
+      var progressState = {start: 75, stop: 100};
+      featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, minORFLength, seqLength, progressState) );
       return featureDataArray
     }
 
     orfsByStrand = function(strand, startsByRF, stopsByRF, minORFLength, seqLength, progressState = {}) {
-      var progress = progressState.progress || 0;
-      var savedProgress = progressState.progress || 0;
-      var progressIncrement = progressState.increment || 1;
-
       var position, orfLength, range, starts, stops;
       var start, stop, stopIndex;
+      var progress, savedProgress;
       var type = 'ORF';
       var source = 'orfs';
       var featureDataArray = [];
       var readingFrames = (strand == 1) ? ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'] : ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-      for (var rf of readingFrames) {
+      // for (var rf of readingFrames) {
+      readingFrames.forEach( function(rf) {
         position = (strand == 1) ? 1 : seqLength;
         stopIndex = 0;
         starts = startsByRF[rf]; 
         stops = stopsByRF[rf];
+        progressInitial = 33 * readingFrames.indexOf(rf);
+        progress = 0;
+        savedProgress = 0;
         if (strand == -1) {
           // Sort descending by start
           starts.sort( (a,b) => { return b.start - a.start }); 
@@ -131,6 +134,8 @@
         }
         for (var i = 0, len_i = starts.length; i < len_i; i++) {
           start = starts[i];
+          progress = progressInitial + Math.round( i / len_i * 33);
+          savedProgress = postProgress(progress, savedProgress, progressState);
           if ( (strand == 1) && (start.start < position) || (strand == -1) && (start.start > position) ) {
             continue;
           }
@@ -165,7 +170,7 @@
             }
           }
         }
-      }
+      });
       return featureDataArray
     }
 
