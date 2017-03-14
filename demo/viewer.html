@@ -48,20 +48,51 @@
   <script src='dev/WorkerFeatureExtraction.js'></script>
   <script src='dev/WorkerPlotExtraction.js'></script>
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0&#45;alpha.6/css/bootstrap.min.css" integrity="sha384&#45;rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
   <link rel="stylesheet" href="stylesheets/cgview.css" />
+  <style>
+    div#main {
+      margin-top: 55px;
+      margin-left: 5px;
+    }
+  </style>
 </head>
 <body>
-  <div id='cgview'></div>
-  <!-- <a id='download&#45;svg' href='#'>SVG</a> -->
-  <a href='docs/index.html'>Docs</a>
-  <a href='http://wishart.biology.ualberta.ca/cgview/xml_overview.html'>XML</a>
-  <a href='http://stothard.afns.ualberta.ca/cgview_server/'>P-Server</a>
-  <a href='http://localhost:3010'>J-Server</a>
-  <a id='save-600' href='#'>Download-600</a>
-  <a id='save-1200' href='#'>Download-1200</a>
-  <a id='save-3000' href='#'>Download-3000</a>
-  <div id='svg-out'></div>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">CGView.js</a>
+			</div>
+			<div class="collapse navbar-collapse" id="main-nav">
+				<ul class="nav navbar-nav">
+					<li class='active'><a href="#">Demo</a></li>
+					<li><a href="docs/index.html">Docs</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id='main'>
+		<div id='cgview'></div>
+		<!-- <a id='download&#45;svg' href='#'>SVG</a> -->
+    <div style='margin-top: 5px;'>
+      <a class='btn btn-default btn-xs' href='http://wishart.biology.ualberta.ca/cgview/xml_overview.html'>XML</a>
+      <a class='btn btn-default btn-xs' href='http://stothard.afns.ualberta.ca/cgview_server/'>P-Server</a>
+      <a class='btn btn-default btn-xs' href='http://localhost:3010'>J-Server</a>
+      <a class='btn btn-default btn-xs' id='save-600' href='#'>Download-600</a>
+      <a class='btn btn-default btn-xs' id='save-1200' href='#'>Download-1200</a>
+      <a class='btn btn-default btn-xs' id='save-3000' href='#'>Download-3000</a>
+    </div>
+		<div id='svg-out'></div>
+  </div>
 
   <script>
     var cgv = new CGV.Viewer('#cgview', {
@@ -87,11 +118,6 @@
         console.log('done!');
         $(window).trigger('resize');
         cgv.draw();
-        // var color = cgv.swatchedLegendItems(1)._swatchColor;
-        // cp.setRgb({r: color.rgb.r, g: color.rgb.g, b: color.rgb.b});
-        // cp.hsv = color.hsv;
-        // cp.opacity = color.opacity;
-        // cp.updateIndicators();
       },
       error: function(xhr, status, error) {
         console.log(status)
@@ -109,14 +135,14 @@
     //   cgv.canvas.ctx = origCtx;
     // });
 
-    $('#save-600').on('click', function() { cgv._io.exportImage(600,600); return false });
-    $('#save-1200').on('click', function() { cgv._io.exportImage(1200,1200); return false });
-    $('#save-3000').on('click', function() { cgv._io.exportImage(3000,3000); return false });
+    $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
+    $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });
+    $('#save-3000').on('click', function() { cgv.io.exportImage(3000,3000); return false });
 
     // Resizing
     $(window).resize(function() {
       var width = window.innerWidth - 20;
-      var height = window.innerHeight - 50;
+      var height = window.innerHeight - 100;
       var dimension = Math.min(width, height);
       cgv.resize(dimension, dimension);
     });

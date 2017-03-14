@@ -13,6 +13,7 @@ li {
 }
 #wrap {
   position: relative;
+  margin-top: 50px;
 }
 ::-webkit-scrollbar {
   width: 8px;

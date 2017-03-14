@@ -9,16 +9,16 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * The *Viewer* is the main container class for CGView. It controls the
-   * overal appearance of the map (e.g. width, height, background color, etc).
-   * It also contains all the major components of the map (e.g. Layout,
-   * Sequence, Ruler, etc). Many of component options can be set during
-   * construction of the Viewer.
+   * overal appearance of the map (e.g. width, height, backgroundColor, etc).
+   * It also contains all the major components of the map (e.g. [Layout](Layout.html),
+   * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
+   * of component options can be set during construction of the Viewer.
    */
   class Viewer {
 
     /**
      * Create a viewer
-     * @param {String} container_id - The ID of the element to contain the viewer
+     * @param {String} containerId - The ID (with or without '#') of the element to contain the viewer.
      * @param {Object} options - Options for setting up the viewer. Component
      * options will be passed to the contructor of that component.
      *
@@ -26,19 +26,20 @@ if (window.CGV === undefined) window.CGV = CGView;
      *
      * Name         | Type   | Description
      * -------------|--------|------------
-     * width        | Number | Width of viewer in pixels (Default: 600)
-     * height       | Number | Height of viewer in pixels (Default: 600)
-     * sequence     | Object | [Sequence](Sequence.html) options
-     * legend       | Object | [Legend](Legend.html) options
-     * backbone     | Object | [Backbone](Backbone.html) options
-     * layout       | Object | [Layout](Layout.html) options
-     * ruler        | Object | [Ruler](Ruler.html) options
-     * annotation   | Object | [Annotation](Annotation.html) options
+     * width           | Number | Width of viewer in pixels (Default: 600)
+     * height          | Number | Height of viewer in pixels (Default: 600)
+     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
+     * sequence        | Object | [Sequence](Sequence.html) options
+     * legend          | Object | [Legend](Legend.html) options
+     * backbone        | Object | [Backbone](Backbone.html) options
+     * layout          | Object | [Layout](Layout.html) options
+     * ruler           | Object | [Ruler](Ruler.html) options
+     * annotation      | Object | [Annotation](Annotation.html) options
      *
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId.replace('#', '');
-      this._container = d3.select(containerId);
+      this._container = d3.select('#' + this.containerId);
       // Get options
       this._width = CGV.defaultFor(options.width, 600);
       this._height = CGV.defaultFor(options.height, 600);
@@ -47,14 +48,12 @@ if (window.CGV === undefined) window.CGV = CGView;
         .style('position', 'relative')
         .style('width', this.width + 'px')
         .style('height', this.height + 'px');
+
+      // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      // TODO: move to settings or elsewhere
-      this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
       this.backgroundColor = options.backgroundColor;
-
       this._zoomFactor = 1;
-      this.debug = CGV.defaultFor(options.debug, false);
 
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
@@ -63,10 +62,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // Initial IO
       this.io = new CGV.IO(this);
-      // Initial Messenger
-      this.messenger = new CGV.Messenger(this, options.messenger);
       // Initialize Sequence
       this.sequence = new CGV.Sequence(this, options.sequence);
+      // Initial Messenger
+      this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Backbone
@@ -84,9 +83,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Ruler
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Events
-      this.initialize_dragging();
-      this.initialize_zooming();
+      this.initializeDragging();
+      this.initializeZooming();
       this.eventMonitor = new CGV.EventMonitor(this);
+      // Initialize Debug
+      this.debug = CGV.defaultFor(options.debug, false);
 
       // this.drawFull();
     }
@@ -161,20 +162,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       // TODO: update anything related to zoom
     }
 
+    /**
+     * @member {Object} - Return the canvas [scales](Canvas.html#scale)
+     */
     get scale() {
       return this.canvas.scale
-    }
-
-    // TODO: move to layout or settings?
-    /**
-     * Get or set the max slot thickness.
-     */
-    get maxSlotThickness() {
-      return this._maxSlotThickness;
-    }
-
-    set maxSlotThickness(value) {
-      this._maxSlotThickness = value;
     }
 
     get colorPicker() {
@@ -206,26 +198,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    /**
-     * This test method reduces the canvas width and height so
-     * you can see how the features are reduced (not drawn) as
-     * you move the map out of the visible range.
-     */
-    get _testDrawRange() {
-      return this.__testDrawRange;
-    }
-
-    set _testDrawRange(value) {
-      this.__testDrawRange = value;
-      if (value) {
-        this.canvas.width = this.canvas.width * 0.4;
-        this.canvas.height = this.canvas.height * 0.4;
-      } else {
-        this.canvas.width = this.canvas.width / 0.4;
-        this.canvas.height = this.canvas.height / 0.4;
-      }
-      this.drawFull();
-    }
 
     //////////////////////////////////////////////////////////////////////////
     // METHODS

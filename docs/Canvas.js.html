@@ -33,6 +33,27 @@
     
 </head>
 <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">CGView.js</a>
+    </div>
+		<div class="collapse navbar-collapse" id="main-nav">
+			<ul class="nav navbar-nav">
+				<li><a href="../viewer.html">Demo</a></li>
+				<li class="active"><a href="#">Docs</a></li>
+			</ul>
+    </div>
+	</div>
+</div>
+
+
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
@@ -140,7 +161,11 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+            
                 <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
+            
+                <li data-name="Canvas#scale"><a href="Canvas.html#scale">scale</a></li>
             
                 <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
             
@@ -443,7 +468,7 @@
             
                 <li data-name="Divider#radii"><a href="Divider.html#radii">radii</a></li>
             
-                <li data-name="Divider#sequence"><a href="Divider.html#sequence">sequence</a></li>
+                <li data-name="Divider#spacing"><a href="Divider.html#spacing">spacing</a></li>
             
                 <li data-name="Divider#thickness"><a href="Divider.html#thickness">thickness</a></li>
             
@@ -661,6 +686,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Layout#insideRadius"><a href="Layout.html#insideRadius">insideRadius</a></li>
+            
+                <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
             
                 <li data-name="Layout#outsideRadius"><a href="Layout.html#outsideRadius">outsideRadius</a></li>
             
@@ -1081,19 +1108,13 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Viewer#_testDrawRange"><a href="Viewer.html#_testDrawRange">_testDrawRange</a></li>
-            
                 <li data-name="Viewer#backgroundColor"><a href="Viewer.html#backgroundColor">backgroundColor</a></li>
-            
-                <li data-name="Viewer#globalLabel"><a href="Viewer.html#globalLabel">globalLabel</a></li>
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
-                <li data-name="Viewer#labelFont"><a href="Viewer.html#labelFont">labelFont</a></li>
-            
-                <li data-name="Viewer#maxSlotThickness"><a href="Viewer.html#maxSlotThickness">maxSlotThickness</a></li>
-            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
@@ -1171,7 +1192,7 @@
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
       // Setup scales
-      this.scale = {};
+      this._scale = {};
       this.refreshScales();
     }
 
@@ -1243,6 +1264,37 @@
      */
     get viewer() {
       return this._viewer
+    }
+
+    /**
+     * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
+     *
+     * Scale | Description
+     * ------|------------
+     *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
+     *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
+     *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
+     *
+     * ```js
+     * // Examples:
+     * // For a map with canvas width and height of 600. Before moving or zooming the map.
+     * canvas.scale.x(0)          // 300
+     * canvas.scale.y(0)          // 300
+     * canvas.scale.x.invert(300) // 0
+     * canvas.scale.y.invert(300) // 0
+     * // For a map with a length of 1000
+     * canvas.scale.bp(1)        // -π/2
+     * canvas.scale.bp(250)      // 0
+     * canvas.scale.bp(500)      // π/2
+     * canvas.scale.bp(750)      // π
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp.invert(π) // 750
+     * ```
+     *
+     */
+    get scale() {
+      return this._scale
     }
 
     /**
@@ -1603,6 +1655,26 @@
       }
     }
 
+    /**
+     * This test method reduces the canvas width and height so
+     * you can see how the features are reduced (not drawn) as
+     * you move the map out of the visible range.
+     */
+    get _testDrawRange() {
+      return this.__testDrawRange;
+    }
+
+    set _testDrawRange(value) {
+      this.__testDrawRange = value;
+      if (value) {
+        this.width = this.width * 0.4;
+        this.height = this.height * 0.4;
+      } else {
+        this.width = this.width / 0.4;
+        this.height = this.height / 0.4;
+      }
+      this.viewer.drawFull();
+    }
 
 
   }
@@ -1622,7 +1694,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 09:55:04 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 16:05:47 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

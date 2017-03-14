@@ -24,7 +24,7 @@
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
       // Setup scales
-      this.scale = {};
+      this._scale = {};
       this.refreshScales();
     }
 
@@ -96,6 +96,37 @@
      */
     get viewer() {
       return this._viewer
+    }
+
+    /**
+     * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
+     *
+     * Scale | Description
+     * ------|------------
+     *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
+     *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
+     *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
+     *
+     * ```js
+     * // Examples:
+     * // For a map with canvas width and height of 600. Before moving or zooming the map.
+     * canvas.scale.x(0)          // 300
+     * canvas.scale.y(0)          // 300
+     * canvas.scale.x.invert(300) // 0
+     * canvas.scale.y.invert(300) // 0
+     * // For a map with a length of 1000
+     * canvas.scale.bp(1)        // -π/2
+     * canvas.scale.bp(250)      // 0
+     * canvas.scale.bp(500)      // π/2
+     * canvas.scale.bp(750)      // π
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp.invert(π) // 750
+     * ```
+     *
+     */
+    get scale() {
+      return this._scale
     }
 
     /**
@@ -456,6 +487,26 @@
       }
     }
 
+    /**
+     * This test method reduces the canvas width and height so
+     * you can see how the features are reduced (not drawn) as
+     * you move the map out of the visible range.
+     */
+    get _testDrawRange() {
+      return this.__testDrawRange;
+    }
+
+    set _testDrawRange(value) {
+      this.__testDrawRange = value;
+      if (value) {
+        this.width = this.width * 0.4;
+        this.height = this.height * 0.4;
+      } else {
+        this.width = this.width / 0.4;
+        this.height = this.height / 0.4;
+      }
+      this.viewer.drawFull();
+    }
 
 
   }

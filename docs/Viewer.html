@@ -33,6 +33,27 @@
     
 </head>
 <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">CGView.js</a>
+    </div>
+		<div class="collapse navbar-collapse" id="main-nav">
+			<ul class="nav navbar-nav">
+				<li><a href="../viewer.html">Demo</a></li>
+				<li class="active"><a href="#">Docs</a></li>
+			</ul>
+    </div>
+	</div>
+</div>
+
+
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
@@ -140,7 +161,11 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+            
                 <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
+            
+                <li data-name="Canvas#scale"><a href="Canvas.html#scale">scale</a></li>
             
                 <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
             
@@ -443,7 +468,7 @@
             
                 <li data-name="Divider#radii"><a href="Divider.html#radii">radii</a></li>
             
-                <li data-name="Divider#sequence"><a href="Divider.html#sequence">sequence</a></li>
+                <li data-name="Divider#spacing"><a href="Divider.html#spacing">spacing</a></li>
             
                 <li data-name="Divider#thickness"><a href="Divider.html#thickness">thickness</a></li>
             
@@ -661,6 +686,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Layout#insideRadius"><a href="Layout.html#insideRadius">insideRadius</a></li>
+            
+                <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
             
                 <li data-name="Layout#outsideRadius"><a href="Layout.html#outsideRadius">outsideRadius</a></li>
             
@@ -1081,19 +1108,13 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Viewer#_testDrawRange"><a href="Viewer.html#_testDrawRange">_testDrawRange</a></li>
-            
                 <li data-name="Viewer#backgroundColor"><a href="Viewer.html#backgroundColor">backgroundColor</a></li>
-            
-                <li data-name="Viewer#globalLabel"><a href="Viewer.html#globalLabel">globalLabel</a></li>
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
-                <li data-name="Viewer#labelFont"><a href="Viewer.html#labelFont">labelFont</a></li>
-            
-                <li data-name="Viewer#maxSlotThickness"><a href="Viewer.html#maxSlotThickness">maxSlotThickness</a></li>
-            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
@@ -1152,10 +1173,10 @@
     
         <div class="class-description"><p><br />
 The <em>Viewer</em> is the main container class for CGView. It controls the
-overal appearance of the map (e.g. width, height, background color, etc).
-It also contains all the major components of the map (e.g. Layout,
-Sequence, Ruler, etc). Many of component options can be set during
-construction of the Viewer.</p></div>
+overal appearance of the map (e.g. width, height, backgroundColor, etc).
+It also contains all the major components of the map (e.g. <a href="Layout.html">Layout</a>,
+<a href="Sequence.html">Sequence</a>, <a href="Ruler.html">Ruler</a>, etc). Many
+of component options can be set during construction of the Viewer.</p></div>
     
 </header>  
 
@@ -1169,7 +1190,7 @@ construction of the Viewer.</p></div>
     <div class="nameContainer">
         <h4 class="name" id="Viewer">
             
-            new Viewer<span class="signature">(container_id, options)</span>
+            new Viewer<span class="signature">(containerId, options)</span>
         </h4>
     
         
@@ -1216,7 +1237,7 @@ construction of the Viewer.</p></div>
 	
         <tr>
             
-                <td class="name"><code>container_id</code></td>
+                <td class="name"><code>containerId</code></td>
             
             
             <td class="type">
@@ -1232,7 +1253,7 @@ construction of the Viewer.</p></div>
             
             <td class="description last">
                 
-                <p>The ID of the element to contain the viewer</p></td>
+                <p>The ID (with or without '#') of the element to contain the viewer.</p></td>
         </tr>
 	
 	
@@ -1276,6 +1297,11 @@ options will be passed to the contructor of that component.</p>
 <td>height</td>
 <td>Number</td>
 <td>Height of viewer in pixels (Default: 600)</td>
+</tr>
+<tr>
+<td>backgroundColor</td>
+<td>Color</td>
+<td>Background <a href="Color.html">Color</a> of viewer (Default: 'white')</td>
 </tr>
 <tr>
 <td>sequence</td>
@@ -1375,53 +1401,6 @@ options will be passed to the contructor of that component.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="_testDrawRange">_testDrawRange</h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>This test method reduces the canvas width and height so
-you can see how the features are reduced (not drawn) as
-you move the map out of the visible range.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="backgroundColor">backgroundColor<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
     </div>
     
@@ -1431,52 +1410,6 @@ you move the map out of the visible range.</p>
     
     <div class="description">
         <p>Get or set the backgroundColor. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="globalLabel">globalLabel<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set whether or not feature labels should be drawn on the map.
-                   This value overrides the showLabel attributes in all child elements.</p>
     </div>
     
     
@@ -1558,96 +1491,6 @@ you move the map out of the visible range.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="labelFont">labelFont<span class="type-signature type font"><a href="Font.html">Font</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the label font. When setting the font, a string representing the font or a <a href="Font.html"><code>Font</code></a> object can be used. For details see <a href="Font.html"><code>Font</code></a>.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="maxSlotThickness">maxSlotThickness</h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the max slot thickness.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="minDimension">minDimension<span class="type-signature type number">Number</span> </h4>
     </div>
     
@@ -1657,6 +1500,51 @@ you move the map out of the visible range.</p>
     
     <div class="description">
         <p>Get the height or the width of the viewer, which ever is smallest.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="scale">scale<span class="type-signature type object">Object</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the canvas <a href="Canvas.html#scale">scales</a></p>
     </div>
     
     
@@ -1796,7 +1684,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line333">line 333</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line279">line 279</a>
         </div>
         
     </div>
@@ -1947,7 +1835,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line349">line 349</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line295">line 295</a>
         </div>
         
     </div>
@@ -2018,7 +1906,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line306">line 306</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line252">line 252</a>
         </div>
         
     </div>
@@ -2169,7 +2057,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line342">line 342</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line288">line 288</a>
         </div>
         
     </div>
@@ -2320,7 +2208,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line356">line 356</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line302">line 302</a>
         </div>
         
     </div>
@@ -2391,7 +2279,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line364">line 364</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line310">line 310</a>
         </div>
         
     </div>
@@ -2491,7 +2379,7 @@ you move the map out of the visible range.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line421">line 421</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line367">line 367</a>
         </div>
         
     </div>
@@ -2632,7 +2520,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line324">line 324</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line270">line 270</a>
         </div>
         
     </div>
@@ -2783,7 +2671,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line272">line 272</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line218">line 218</a>
         </div>
         
     </div>
@@ -2988,7 +2876,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line297">line 297</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line243">line 243</a>
         </div>
         
     </div>
@@ -3139,7 +3027,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line315">line 315</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line261">line 261</a>
         </div>
         
     </div>
@@ -3296,7 +3184,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 09:55:04 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 16:05:48 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

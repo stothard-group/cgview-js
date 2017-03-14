@@ -139,9 +139,9 @@
           '</head>',
           '<body>',
         // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            // '<h2>Your CGView Image is Below</h2>',
-            // '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            // '<h3>Preview</h3>',
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
             '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
             '<h3>Actual Size</h3>',
             '<img style="border: 1px solid grey" src="' + image +  '"/ >',

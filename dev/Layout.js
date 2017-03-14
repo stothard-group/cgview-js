@@ -59,7 +59,7 @@
       var minInnerProportion = 0.15;
       var minInnerRadius = minInnerProportion * viewer.minDimension;
       // The maximum amount of space for drawing slots
-      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotSpacing);
+      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
       var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
       // Max slotnesses in pixels
       var maxFeatureSlotThickness = 30;
@@ -126,6 +126,17 @@
       return this._fastFeaturesPerSlot
     }
 
+    /**
+     * Get or set the max slot thickness.
+     */
+    get maxSlotThickness() {
+      return this._maxSlotThickness;
+    }
+
+    set maxSlotThickness(value) {
+      this._maxSlotThickness = value;
+    }
+
     drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
@@ -164,7 +175,7 @@
         viewer.clear('ui');
         viewer.debug.draw(canvas.context('ui'));
       }
-      if (viewer._testDrawRange) {
+      if (canvas._testDrawRange) {
         var ctx = canvas.context('captions')
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
@@ -235,7 +246,7 @@
       var slotRadius = CGV.pixel(backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(viewer.slotSpacing);
+      var spacing = CGV.pixel(viewer.slotDivider.spacing);
       var residualSlotThickness = 0;
       var track, slot;
       viewer.slotDivider.clearRadii();
@@ -292,7 +303,7 @@
     _calculateSlotThickness(proportionOfRadius) {
       var viewer = this.viewer;
       var thickness = CGV.pixel( Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius()) * proportionOfRadius);
-      return (viewer.maxSlotThickness ? Math.min(thickness, CGV.pixel(viewer.maxSlotThickness)) : thickness)
+      return (this.maxSlotThickness ? Math.min(thickness, CGV.pixel(this.maxSlotThickness)) : thickness)
     }
 
     drawProgress() {

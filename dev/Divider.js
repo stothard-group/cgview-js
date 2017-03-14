@@ -19,6 +19,7 @@
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 1);
       this.visible = CGV.defaultFor(options.visible, true);
+      this.spacing = CGV.defaultFor(options.spacing, 1);
       this.radii = new CGV.CGArray();
     }
 
@@ -62,6 +63,19 @@
 
     get thickness() {
       return this._thickness
+    }
+
+    /**
+     * @member {Number} - Set or get the divider spacing.
+     */
+    set spacing(value) {
+      if (value) {
+        this._spacing = value;
+      }
+    }
+
+    get spacing() {
+      return this._spacing
     }
 
     /**

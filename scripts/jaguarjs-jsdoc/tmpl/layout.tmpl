@@ -48,6 +48,27 @@
     <?js } ?>
 </head>
 <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">CGView.js</a>
+    </div>
+		<div class="collapse navbar-collapse" id="main-nav">
+			<ul class="nav navbar-nav">
+				<li><a href="../viewer.html">Demo</a></li>
+				<li class="active"><a href="#">Docs</a></li>
+			</ul>
+    </div>
+	</div>
+</div>
+
+
 <div id="wrap" class="clearfix">
     <?js= this.partial('navigation.tmpl', this) ?>
     <div class="main">

@@ -9,7 +9,7 @@
     }
   }
 
-  CGV.Viewer.prototype.initialize_zooming = function() {
+  CGV.Viewer.prototype.initializeZooming = function() {
     var self = this;
     var zoomMax = this.backbone.maxZoomFactor();
     self._zoom = d3.zoom()

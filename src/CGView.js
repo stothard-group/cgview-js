@@ -9,16 +9,16 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * The *Viewer* is the main container class for CGView. It controls the
-   * overal appearance of the map (e.g. width, height, background color, etc).
-   * It also contains all the major components of the map (e.g. Layout,
-   * Sequence, Ruler, etc). Many of component options can be set during
-   * construction of the Viewer.
+   * overal appearance of the map (e.g. width, height, backgroundColor, etc).
+   * It also contains all the major components of the map (e.g. [Layout](Layout.html),
+   * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
+   * of component options can be set during construction of the Viewer.
    */
   class Viewer {
 
     /**
      * Create a viewer
-     * @param {String} container_id - The ID of the element to contain the viewer
+     * @param {String} containerId - The ID (with or without '#') of the element to contain the viewer.
      * @param {Object} options - Options for setting up the viewer. Component
      * options will be passed to the contructor of that component.
      *
@@ -26,19 +26,20 @@ if (window.CGV === undefined) window.CGV = CGView;
      *
      * Name         | Type   | Description
      * -------------|--------|------------
-     * width        | Number | Width of viewer in pixels (Default: 600)
-     * height       | Number | Height of viewer in pixels (Default: 600)
-     * sequence     | Object | [Sequence](Sequence.html) options
-     * legend       | Object | [Legend](Legend.html) options
-     * backbone     | Object | [Backbone](Backbone.html) options
-     * layout       | Object | [Layout](Layout.html) options
-     * ruler        | Object | [Ruler](Ruler.html) options
-     * annotation   | Object | [Annotation](Annotation.html) options
+     * width           | Number | Width of viewer in pixels (Default: 600)
+     * height          | Number | Height of viewer in pixels (Default: 600)
+     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
+     * sequence        | Object | [Sequence](Sequence.html) options
+     * legend          | Object | [Legend](Legend.html) options
+     * backbone        | Object | [Backbone](Backbone.html) options
+     * layout          | Object | [Layout](Layout.html) options
+     * ruler           | Object | [Ruler](Ruler.html) options
+     * annotation      | Object | [Annotation](Annotation.html) options
      *
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId.replace('#', '');
-      this._container = d3.select(containerId);
+      this._container = d3.select('#' + this.containerId);
       // Get options
       this._width = CGV.defaultFor(options.width, 600);
       this._height = CGV.defaultFor(options.height, 600);
@@ -47,15 +48,12 @@ if (window.CGV === undefined) window.CGV = CGView;
         .style('position', 'relative')
         .style('width', this.width + 'px')
         .style('height', this.height + 'px');
+
+      // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      // TODO: move to settings or elsewhere
-      this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
-      this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
-
       this._zoomFactor = 1;
-      this.debug = CGV.defaultFor(options.debug, false);
 
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
@@ -64,10 +62,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // Initial IO
       this.io = new CGV.IO(this);
-      // Initial Messenger
-      this.messenger = new CGV.Messenger(this, options.messenger);
       // Initialize Sequence
       this.sequence = new CGV.Sequence(this, options.sequence);
+      // Initial Messenger
+      this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Backbone
@@ -80,14 +78,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.menu = new CGV.Menu(this);
       // Initialize Help
       this.help = new CGV.Help(this);
-      // Initialize LabelSet
-      this.labelSet = new CGV.LabelSet(this, options.labelSet);
+      // Initialize Annotation
+      this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Events
-      this.initialize_dragging();
-      this.initialize_zooming();
+      this.initializeDragging();
+      this.initializeZooming();
       this.eventMonitor = new CGV.EventMonitor(this);
+      // Initialize Debug
+      this.debug = CGV.defaultFor(options.debug, false);
 
       // this.drawFull();
     }
@@ -151,31 +151,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Font} - Get or set the label font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get labelFont() {
-      return this.labelSet.font
-    }
-
-    set labelFont(value) {
-      this.labelSet.font = value;
-    }
-
-
-    // TODO: move to labelset
-    /**
-     * @member {Number} - Get or set whether or not feature labels should be drawn on the map.
-     *                    This value overrides the showLabel attributes in all child elements.
-     */
-    get globalLabel() {
-      return this._globalLabel;
-    }
-
-    set globalLabel(value) {
-      this._globalLabel = CGV.booleanify(value);
-    }
-
-    /**
      * @member {Number} - Get or set the zoom level of the image
      */
     get zoomFactor() {
@@ -187,20 +162,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       // TODO: update anything related to zoom
     }
 
+    /**
+     * @member {Object} - Return the canvas [scales](Canvas.html#scale)
+     */
     get scale() {
       return this.canvas.scale
-    }
-
-    // TODO: move to layout or settings?
-    /**
-     * Get or set the max slot thickness.
-     */
-    get maxSlotThickness() {
-      return this._maxSlotThickness;
-    }
-
-    set maxSlotThickness(value) {
-      this._maxSlotThickness = value;
     }
 
     get colorPicker() {
@@ -232,26 +198,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    /**
-     * This test method reduces the canvas width and height so
-     * you can see how the features are reduced (not drawn) as
-     * you move the map out of the visible range.
-     */
-    get _testDrawRange() {
-      return this.__testDrawRange;
-    }
-
-    set _testDrawRange(value) {
-      this.__testDrawRange = value;
-      if (value) {
-        this.canvas.width = this.canvas.width * 0.4;
-        this.canvas.height = this.canvas.height * 0.4;
-      } else {
-        this.canvas.width = this.canvas.width / 0.4;
-        this.canvas.height = this.canvas.height / 0.4;
-      }
-      this.drawFull();
-    }
 
     //////////////////////////////////////////////////////////////////////////
     // METHODS
@@ -427,6 +373,208 @@ if (window.CGV === undefined) window.CGV = CGView;
   CGV.Viewer = Viewer;
 
 })(CGView);
+//////////////////////////////////////////////////////////////////////////////
+// Annotation
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  class Annotation {
+
+    constructor(viewer, options = {}) {
+      this._viewer = viewer;
+      this._canvas = viewer.canvas;
+      this._labels = new CGV.CGArray();
+      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
+      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
+      this._labelLineMargin = CGV.pixel(10);
+      this._labelLineWidth = CGV.pixel(1);
+      this._visible = CGV.defaultFor(options.visible, true);
+      // this._visibleLabels = new CGV.CGArray();
+    }
+
+    /**
+     * @member {Boolean} - Get or set whether the labels are visible.
+     */
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
+    }
+
+    /**
+     * @member {Number} - Get or set the label line length.
+     */
+    get labelLineLength() {
+      return this._labelLineLength
+    }
+
+    set labelLineLength(value) {
+      this._labelLineLength = CGV.pixel(value);
+    }
+
+    /**
+     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get font() {
+      return this._font
+    }
+
+    set font(value) {
+      if (value.toString() == 'Font') {
+        this._font = value;
+      } else {
+        this._font = new CGV.Font(value);
+      }
+      this.refreshLabelWidths();
+    }
+
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Number} - The number of labels in the set.
+     */
+    get length() {
+      return this._labels.length
+    }
+
+    /**
+     * Add a new label to the set.
+     *
+     * @param {Label} label - The Label to add to the set.
+     */
+    addLabel(label) {
+      this._labels.push(label);
+      this.sort();
+    }
+
+    /**
+     * Remove a label from the set.
+     *
+     * @param {Label} label - The Label to remove from the set.
+     */
+    removeLabel(label) {
+      this._labels = this._labels.remove(label);
+    }
+
+    /**
+     * Sort the labels by position (middle of the feature in bp). 
+     */
+    sort() {
+      // this._labels = this._labels.remove(label);
+      this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
+    }
+
+    refreshLabelWidths() {
+      // Refresh labels widths
+      var labelFonts = this._labels.map( (i) => { return i.font.css});
+      var labelTexts = this._labels.map( (i) => { return i.name});
+      var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
+      for (var i = 0, len = this._labels.length; i < len; i++) {
+        this._labels[i].width = labelWidths[i];
+      }
+    }
+
+    // Should be called when
+    //  - Labels are added or removed
+    //  - Font changes (Annotation or individual label)
+    //  - Label name changes
+    //  - Zoom level changes
+    _calculateLabelRects() {
+      var canvas = this._canvas;
+      var scale = canvas.scale;
+      var label, feature, radians, bp, x, y;
+      var radius = this._outerRadius + this._labelLineMargin;
+      for (var i = 0, len = this._labels.length; i < len; i++) {
+        label = this._labels[i];
+        feature = label.feature;
+        bp = feature.start + (feature.length / 2);
+        radians = scale.bp(bp);
+        var innerPt = canvas.pointFor(bp, radius);
+        var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
+        // Calculate where the label line should attach to Label.
+        // The attachemnt point should be the opposite clock position of the feature.
+        label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
+        var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+        label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+      }
+    }
+
+    visibleLabels(radius) {
+      var labelArray = new CGV.CGArray();
+      var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
+      if (visibleRange) {
+        if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
+          labelArray = this._labels;
+        } else {
+          for (var i = 0, len = this._labels.length; i < len; i++) {
+            if (visibleRange.contains(this._labels[i].bp)) {
+              labelArray.push(this._labels[i]);
+            }
+          }
+        }
+      }
+      return labelArray
+    }
+
+    draw(reverseRadius, directRadius) {
+
+      // TODO: change origin when moving image
+      // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
+        this._innerRadius = reverseRadius;
+        this._outerRadius = directRadius;
+        this._calculateLabelRects();
+      // }
+      
+      this._labelsToDraw = this.visibleLabels(directRadius);
+
+      // Remove overlapping labels (TEMP)
+      var labelRects = new CGV.CGArray();
+      this._visibleLabels = new CGV.CGArray();
+      for (var i = 0, len = this._labelsToDraw.length; i < len; i++) {
+        label = this._labelsToDraw[i];
+        if (!label.rect.overlap(labelRects)) {
+          this._visibleLabels.push(label);
+          labelRects.push(label.rect);
+        }
+      }
+
+      var canvas = this._canvas;
+      var ctx = canvas.context('map');
+      var label, feature, bp, origin;
+      ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
+        label = this._visibleLabels[i];
+        feature = label.feature;
+        // bp = feature.start + (feature.length / 2);
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
+        // origin = canvas.pointFor(bp, directRadius + 5);
+        ctx.fillStyle = feature.color.rgbaString;
+        // ctx.fillText(label.name, origin.x, origin.y);
+        ctx.fillText(label.name, label.rect.x, label.rect.y);
+      }
+      if (this.viewer.debug && this.viewer.debug.data.n) {
+        this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
+      }
+    }
+
+
+  }
+
+  CGV.Annotation = Annotation;
+
+})(CGView);
+
+
 //////////////////////////////////////////////////////////////////////////////
 // ArcPlot
 //////////////////////////////////////////////////////////////////////////////
@@ -999,7 +1147,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
       // Setup scales
-      this.scale = {};
+      this._scale = {};
       this.refreshScales();
     }
 
@@ -1071,6 +1219,37 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get viewer() {
       return this._viewer
+    }
+
+    /**
+     * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
+     *
+     * Scale | Description
+     * ------|------------
+     *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
+     *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
+     *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
+     *
+     * ```js
+     * // Examples:
+     * // For a map with canvas width and height of 600. Before moving or zooming the map.
+     * canvas.scale.x(0)          // 300
+     * canvas.scale.y(0)          // 300
+     * canvas.scale.x.invert(300) // 0
+     * canvas.scale.y.invert(300) // 0
+     * // For a map with a length of 1000
+     * canvas.scale.bp(1)        // -π/2
+     * canvas.scale.bp(250)      // 0
+     * canvas.scale.bp(500)      // π/2
+     * canvas.scale.bp(750)      // π
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp(1000)     // 3π/2
+     * canvas.scale.bp.invert(π) // 750
+     * ```
+     *
+     */
+    get scale() {
+      return this._scale
     }
 
     /**
@@ -1431,6 +1610,26 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * This test method reduces the canvas width and height so
+     * you can see how the features are reduced (not drawn) as
+     * you move the map out of the visible range.
+     */
+    get _testDrawRange() {
+      return this.__testDrawRange;
+    }
+
+    set _testDrawRange(value) {
+      this.__testDrawRange = value;
+      if (value) {
+        this.width = this.width * 0.4;
+        this.height = this.height * 0.4;
+      } else {
+        this.width = this.width / 0.4;
+        this.height = this.height / 0.4;
+      }
+      this.viewer.drawFull();
+    }
 
 
   }
@@ -3674,6 +3873,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 1);
       this.visible = CGV.defaultFor(options.visible, true);
+      this.spacing = CGV.defaultFor(options.spacing, 1);
       this.radii = new CGV.CGArray();
     }
 
@@ -3689,13 +3889,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get canvas() {
       return this.viewer.canvas
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
     }
 
     /**
@@ -3727,6 +3920,19 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Number} - Set or get the divider spacing.
+     */
+    set spacing(value) {
+      if (value) {
+        this._spacing = value;
+      }
+    }
+
+    get spacing() {
+      return this._spacing
+    }
+
+    /**
      * @member {Number} - Set or get the array of divider radii.
      */
     set radii(value) {
@@ -3755,13 +3961,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._radii.push(radius)
     }
 
-    // draw(radius) {
-    //   this._visibleRange = this.canvas.visibleRangeForRadius( radius, 100);
-    //   if (this.visibleRange) {
-    //     this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
-    //   }
-    // }
-
     draw() {
       for (var i = 0, len = this._radii.length; i < len; i++) {
         var radius = this._radii[i]
@@ -3771,7 +3970,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
       }
     }
-
 
   }
 
@@ -4729,8 +4927,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       viewer.sequence = new CGV.Sequence(viewer, json.sequence);
       // Load Settings TODO:
       var settings = json.settings;
-      // viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      // viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+      // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+      // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
@@ -4963,15 +5161,15 @@ if (window.CGV === undefined) window.CGV = CGView;
     set name(value) {
       if (value == undefined || value == '') {
         this.width = 0;
-        // Label was in LabelSet, so remove it
+        // Label was in Annotation, so remove it
         if (!(this._name == '' || this._name == undefined)) {
-          this.labelSet.removeLabel(this);
+          this.annotation.removeLabel(this);
         }
         this._name = '';
       } else {
-        // Label was not in LabelSet, so add it
+        // Label was not in Annotation, so add it
         if (this._name == '' || this._name == undefined) {
-          this.labelSet.addLabel(this);
+          this.annotation.addLabel(this);
         }
         this._name = value;
         this.width = this.font.width(this.viewer.canvas.context('map'), this._name);
@@ -5035,12 +5233,12 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font || this.labelSet.font;
+      return this._font || this.annotation.font;
     }
 
     set font(value) {
       if (value == undefined) {
-        this._font = this.labelSet.font;
+        this._font = this.annotation.font;
       } else if (value.toString() == 'Font') {
         this._font = value;
       } else {
@@ -5056,10 +5254,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {LabelSet} - Get the *LabelSet*
+     * @member {Annotation} - Get the *Annotation*
      */
-    get labelSet() {
-      return this.viewer.labelSet
+    get annotation() {
+      return this.viewer.annotation
     }
 
     /**
@@ -5073,196 +5271,6 @@ if (window.CGV === undefined) window.CGV = CGView;
   }
 
   CGV.Label = Label;
-
-})(CGView);
-
-
-//////////////////////////////////////////////////////////////////////////////
-// LabelSet
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
-
-  class LabelSet {
-
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
-      this._canvas = viewer.canvas;
-      this._labels = new CGV.CGArray();
-      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
-      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
-      this._labelLineMargin = CGV.pixel(10);
-      this._labelLineWidth = CGV.pixel(1);
-      // this._visibleLabels = new CGV.CGArray();
-    }
-
-    /**
-     * @member {Number} - Get or set the label line length.
-     */
-    get labelLineLength() {
-      return this._labelLineLength
-    }
-
-    set labelLineLength(value) {
-      this._labelLineLength = CGV.pixel(value);
-    }
-
-    /**
-     * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get font() {
-      return this._font
-    }
-
-    set font(value) {
-      if (value.toString() == 'Font') {
-        this._font = value;
-      } else {
-        this._font = new CGV.Font(value);
-      }
-      this.refreshLabelWidths();
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Number} - The number of labels in the set.
-     */
-    get length() {
-      return this._labels.length
-    }
-
-    /**
-     * Add a new label to the set.
-     *
-     * @param {Label} label - The Label to add to the set.
-     */
-    addLabel(label) {
-      this._labels.push(label);
-      this.sort();
-    }
-
-    /**
-     * Remove a label from the set.
-     *
-     * @param {Label} label - The Label to remove from the set.
-     */
-    removeLabel(label) {
-      this._labels = this._labels.remove(label);
-    }
-
-    /**
-     * Sort the labels by position (middle of the feature in bp). 
-     */
-    sort() {
-      // this._labels = this._labels.remove(label);
-      this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
-    }
-
-    refreshLabelWidths() {
-      // Refresh labels widths
-      var labelFonts = this._labels.map( (i) => { return i.font.css});
-      var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        this._labels[i].width = labelWidths[i];
-      }
-    }
-
-    // Should be called when
-    //  - Labels are added or removed
-    //  - Font changes (LabelSet or individual label)
-    //  - Label name changes
-    //  - Zoom level changes
-    _calculateLabelRects() {
-      var canvas = this._canvas;
-      var scale = canvas.scale;
-      var label, feature, radians, bp, x, y;
-      var radius = this._outerRadius + this._labelLineMargin;
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        label = this._labels[i];
-        feature = label.feature;
-        bp = feature.start + (feature.length / 2);
-        radians = scale.bp(bp);
-        var innerPt = canvas.pointFor(bp, radius);
-        var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
-        // Calculate where the label line should attach to Label.
-        // The attachemnt point should be the opposite clock position of the feature.
-        label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
-        var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-        label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-      }
-    }
-
-    visibleLabels(radius) {
-      var labelArray = new CGV.CGArray();
-      var visibleRange = this._canvas.visibleRangeForRadius(radius);
-      // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
-      if (visibleRange) {
-        if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
-          labelArray = this._labels;
-        } else {
-          for (var i = 0, len = this._labels.length; i < len; i++) {
-            if (visibleRange.contains(this._labels[i].bp)) {
-              labelArray.push(this._labels[i]);
-            }
-          }
-        }
-      }
-      return labelArray
-    }
-
-    draw(reverseRadius, directRadius) {
-
-      // TODO: change origin when moving image
-      // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
-        this._innerRadius = reverseRadius;
-        this._outerRadius = directRadius;
-        this._calculateLabelRects();
-      // }
-      
-      this._labelsToDraw = this.visibleLabels(directRadius);
-
-      // Remove overlapping labels (TEMP)
-      var labelRects = new CGV.CGArray();
-      this._visibleLabels = new CGV.CGArray();
-      for (var i = 0, len = this._labelsToDraw.length; i < len; i++) {
-        label = this._labelsToDraw[i];
-        if (!label.rect.overlap(labelRects)) {
-          this._visibleLabels.push(label);
-          labelRects.push(label.rect);
-        }
-      }
-
-      var canvas = this._canvas;
-      var ctx = canvas.context('map');
-      var label, feature, bp, origin;
-      ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
-        label = this._visibleLabels[i];
-        feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
-        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
-        // origin = canvas.pointFor(bp, directRadius + 5);
-        ctx.fillStyle = feature.color.rgbaString;
-        // ctx.fillText(label.name, origin.x, origin.y);
-        ctx.fillText(label.name, label.rect.x, label.rect.y);
-      }
-      if (this.viewer.debug && this.viewer.debug.data.n) {
-        this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
-      }
-    }
-
-
-  }
-
-  CGV.LabelSet = LabelSet;
 
 })(CGView);
 
@@ -5328,7 +5336,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var minInnerProportion = 0.15;
       var minInnerRadius = minInnerProportion * viewer.minDimension;
       // The maximum amount of space for drawing slots
-      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotSpacing);
+      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
       var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
       // Max slotnesses in pixels
       var maxFeatureSlotThickness = 30;
@@ -5395,6 +5403,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._fastFeaturesPerSlot
     }
 
+    /**
+     * Get or set the max slot thickness.
+     */
+    get maxSlotThickness() {
+      return this._maxSlotThickness;
+    }
+
+    set maxSlotThickness(value) {
+      this._maxSlotThickness = value;
+    }
+
     drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
@@ -5422,8 +5441,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
       // Labels
-      if (viewer.globalLabel) {
-        viewer.labelSet.draw(this.insideRadius, this.outsideRadius);
+      if (viewer.annotation.visible) {
+        viewer.annotation.draw(this.insideRadius, this.outsideRadius);
       }
       // Progess
       this.drawProgress();
@@ -5433,7 +5452,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         viewer.clear('ui');
         viewer.debug.draw(canvas.context('ui'));
       }
-      if (viewer._testDrawRange) {
+      if (canvas._testDrawRange) {
         var ctx = canvas.context('captions')
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
@@ -5504,7 +5523,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var slotRadius = CGV.pixel(backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(viewer.slotSpacing);
+      var spacing = CGV.pixel(viewer.slotDivider.spacing);
       var residualSlotThickness = 0;
       var track, slot;
       viewer.slotDivider.clearRadii();
@@ -5561,7 +5580,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     _calculateSlotThickness(proportionOfRadius) {
       var viewer = this.viewer;
       var thickness = CGV.pixel( Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius()) * proportionOfRadius);
-      return (viewer.maxSlotThickness ? Math.min(thickness, CGV.pixel(viewer.maxSlotThickness)) : thickness)
+      return (this.maxSlotThickness ? Math.min(thickness, CGV.pixel(this.maxSlotThickness)) : thickness)
     }
 
     drawProgress() {
@@ -9136,7 +9155,7 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * Initialize Spectra Viewer Dragging.
    */
-  CGV.Viewer.prototype.initialize_dragging = function() {
+  CGV.Viewer.prototype.initializeDragging = function() {
     var self = this;
     self._drag = d3.drag()
       .on('start', dragstart)
@@ -9202,7 +9221,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
   }
 
-  CGV.Viewer.prototype.initialize_zooming = function() {
+  CGV.Viewer.prototype.initializeZooming = function() {
     var self = this;
     var zoomMax = this.backbone.maxZoomFactor();
     self._zoom = d3.zoom()

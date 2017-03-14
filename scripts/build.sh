@@ -21,8 +21,10 @@ find ${CGVIEW_DIR}/dev ! -name Viewer.js | xargs cat >> ${CGVIEW_DIR}/src/CGView
 # NOTE:
 # Issue with tutorials:
 # - http://stackoverflow.com/questions/26531651/jaguarjs-jsdoc-fails-with-referenceerror-when-using-tutorials
+# - I added the filename line (line 500)
 echo "Building Documentation..."
-jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/* 
+# jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
+jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
 echo "Done!"
 
 

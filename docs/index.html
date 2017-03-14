@@ -33,6 +33,27 @@
     
 </head>
 <body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">CGView.js</a>
+    </div>
+		<div class="collapse navbar-collapse" id="main-nav">
+			<ul class="nav navbar-nav">
+				<li><a href="../viewer.html">Demo</a></li>
+				<li class="active"><a href="#">Docs</a></li>
+			</ul>
+    </div>
+	</div>
+</div>
+
+
 <div id="wrap" class="clearfix">
     
 <div class="navigation">
@@ -140,7 +161,11 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+            
                 <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
+            
+                <li data-name="Canvas#scale"><a href="Canvas.html#scale">scale</a></li>
             
                 <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
             
@@ -443,7 +468,7 @@
             
                 <li data-name="Divider#radii"><a href="Divider.html#radii">radii</a></li>
             
-                <li data-name="Divider#sequence"><a href="Divider.html#sequence">sequence</a></li>
+                <li data-name="Divider#spacing"><a href="Divider.html#spacing">spacing</a></li>
             
                 <li data-name="Divider#thickness"><a href="Divider.html#thickness">thickness</a></li>
             
@@ -661,6 +686,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Layout#insideRadius"><a href="Layout.html#insideRadius">insideRadius</a></li>
+            
+                <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
             
                 <li data-name="Layout#outsideRadius"><a href="Layout.html#outsideRadius">outsideRadius</a></li>
             
@@ -1081,19 +1108,13 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Viewer#_testDrawRange"><a href="Viewer.html#_testDrawRange">_testDrawRange</a></li>
-            
                 <li data-name="Viewer#backgroundColor"><a href="Viewer.html#backgroundColor">backgroundColor</a></li>
-            
-                <li data-name="Viewer#globalLabel"><a href="Viewer.html#globalLabel">globalLabel</a></li>
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
-                <li data-name="Viewer#labelFont"><a href="Viewer.html#labelFont">labelFont</a></li>
-            
-                <li data-name="Viewer#maxSlotThickness"><a href="Viewer.html#maxSlotThickness">maxSlotThickness</a></li>
-            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
@@ -1161,12 +1182,12 @@
 
     <section>
         <article class="readme"><h2>CGView.js</h2><p>This is a JavaScript port of the Java program <a target="_blank" href="http://wishart.biology.ualberta.ca/cgview/index.html">CGView</a>.
-While the CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
+While CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
 interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
 with resolutions upto 6000x6000 pixels.</p>
 <h3>Dependencies</h3><ul>
-<li>D3 - http://d3js.org (Version 4)</li>
-<li>d3-selection-multi - https://github.com/d3/d3-selection-multi</li>
+<li><a target="_blank" href="http://d3js.org">D3</a> (Version 4)</li>
+<li><a target="_blank" href="https://github.com/d3/d3-selection-multi">d3-selection-multi</a></li>
 </ul>
 <h3>Setup</h3><ul>
 <li>For the D3 dependencies add the following to your html:</li>
@@ -1179,11 +1200,23 @@ with resolutions upto 6000x6000 pixels.</p>
 <li>Copy <em>cgview.css</em> to your stylesheets folder and add a link to the file in your html:</li>
 </ul>
 <pre class="prettyprint source lang-html"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;stylesheets/cgview.css&quot; /></code></pre><h3>Creating a New Viewer</h3><p>Create a container for the viewer in HTML:</p>
-<pre class="prettyprint source lang-html"><code>&lt;div id='my-viewer'>&lt;/div></code></pre><p>Create <a href="Viewer.html">Viewer</a></p>
+<pre class="prettyprint source lang-html"><code>&lt;div id='my-viewer'>&lt;/div></code></pre><p>Create a new <a href="Viewer.html">Viewer</a></p>
+<p>The <em>Viewer</em> is the main object in CGView.js. While many options can be
+provided when creating the viewer, the most important is the sequence options.
+For the sequence, you can provide the length or the sequence itself. If the
+sequence is provided, you will be able to see the sequence when zoomed in far
+enough. Also with the sequence, you can easily create new tracks with plots
+(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
+from the sequence.</p>
 <pre class="prettyprint source lang-js"><code>cgv = new CGV.Viewer('#my-viewer', {
   height: 600,
   width: 600,
-  TODO: ADD MORE OPTIONS: sequence
+  sequence: {
+    // Proved the sequence length
+    length: 100000
+    // Or the sequence itself
+    // seq: 'ATGCGATGCA...'
+  }
 });
 sv.flash('Loading...')</code></pre><p>Maps are made up of <a href="Track.html">Tracks</a> that contain <a href="Feature.html">Features</a> or <a href="ArcPlot.html">Plots</a>.</p>
 <p>Before creating a feature, a <a href="LegendItem.html">LegendItem</a> and <a href="FeatureType.html">FeatureType</a> should be created first
@@ -1267,7 +1300,7 @@ to describe the shape and color of the feature.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 09:55:04 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 16:05:47 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

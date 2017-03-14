@@ -6,7 +6,7 @@
   /**
    * Initialize Spectra Viewer Dragging.
    */
-  CGV.Viewer.prototype.initialize_dragging = function() {
+  CGV.Viewer.prototype.initializeDragging = function() {
     var self = this;
     self._drag = d3.drag()
       .on('start', dragstart)

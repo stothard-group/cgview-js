@@ -1,13 +1,13 @@
 ## CGView.js
 
 This is a JavaScript port of the Java program [CGView](http://wishart.biology.ualberta.ca/cgview/index.html).
-While the CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
+While CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
 interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
 with resolutions upto 6000x6000 pixels.
 
 ### Dependencies
-* D3 - http://d3js.org (Version 4)
-* d3-selection-multi - https://github.com/d3/d3-selection-multi
+* [D3](http://d3js.org) (Version 4)
+* [d3-selection-multi](https://github.com/d3/d3-selection-multi)
 
 ### Setup ###
 
@@ -38,12 +38,25 @@ Create a container for the viewer in HTML:
 <div id='my-viewer'></div>
 ```
 
-Create [Viewer](Viewer.html)
+Create a new [Viewer](Viewer.html)
+
+The *Viewer* is the main object in CGView.js. While many options can be
+provided when creating the viewer, the most important is the sequence options.
+For the sequence, you can provide the length or the sequence itself. If the
+sequence is provided, you will be able to see the sequence when zoomed in far
+enough. Also with the sequence, you can easily create new tracks with plots
+(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
+from the sequence.
 ```js
 cgv = new CGV.Viewer('#my-viewer', {
   height: 600,
   width: 600,
-  TODO: ADD MORE OPTIONS: sequence
+  sequence: {
+    // Proved the sequence length
+    length: 100000
+    // Or the sequence itself
+    // seq: 'ATGCGATGCA...'
+  }
 });
 sv.flash('Loading...')
 ```
