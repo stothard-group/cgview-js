@@ -24,8 +24,8 @@
       viewer.sequence = new CGV.Sequence(viewer, json.sequence);
       // Load Settings TODO:
       var settings = json.settings;
-      // viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      // viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
+      // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
+      // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);

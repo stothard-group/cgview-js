@@ -51,7 +51,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // TODO: move to settings or elsewhere
       this.slotSpacing = CGV.defaultFor(options.slotSpacing, 1);
-      this.globalLabel = CGV.defaultFor(options.globalLabel, true);
       this.backgroundColor = options.backgroundColor;
 
       this._zoomFactor = 1;
@@ -80,8 +79,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.menu = new CGV.Menu(this);
       // Initialize Help
       this.help = new CGV.Help(this);
-      // Initialize LabelSet
-      this.labelSet = new CGV.LabelSet(this, options.labelSet);
+      // Initialize Annotation
+      this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Events
@@ -148,31 +147,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         this._backgroundColor = new CGV.Color(color);
       }
       this.fillBackground();
-    }
-
-    /**
-     * @member {Font} - Get or set the label font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get labelFont() {
-      return this.labelSet.font
-    }
-
-    set labelFont(value) {
-      this.labelSet.font = value;
-    }
-
-
-    // TODO: move to labelset
-    /**
-     * @member {Number} - Get or set whether or not feature labels should be drawn on the map.
-     *                    This value overrides the showLabel attributes in all child elements.
-     */
-    get globalLabel() {
-      return this._globalLabel;
-    }
-
-    set globalLabel(value) {
-      this._globalLabel = CGV.booleanify(value);
     }
 
     /**

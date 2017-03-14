@@ -21,15 +21,15 @@
     set name(value) {
       if (value == undefined || value == '') {
         this.width = 0;
-        // Label was in LabelSet, so remove it
+        // Label was in Annotation, so remove it
         if (!(this._name == '' || this._name == undefined)) {
-          this.labelSet.removeLabel(this);
+          this.annotation.removeLabel(this);
         }
         this._name = '';
       } else {
-        // Label was not in LabelSet, so add it
+        // Label was not in Annotation, so add it
         if (this._name == '' || this._name == undefined) {
-          this.labelSet.addLabel(this);
+          this.annotation.addLabel(this);
         }
         this._name = value;
         this.width = this.font.width(this.viewer.canvas.context('map'), this._name);
@@ -93,12 +93,12 @@
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font || this.labelSet.font;
+      return this._font || this.annotation.font;
     }
 
     set font(value) {
       if (value == undefined) {
-        this._font = this.labelSet.font;
+        this._font = this.annotation.font;
       } else if (value.toString() == 'Font') {
         this._font = value;
       } else {
@@ -114,10 +114,10 @@
     }
 
     /**
-     * @member {LabelSet} - Get the *LabelSet*
+     * @member {Annotation} - Get the *Annotation*
      */
-    get labelSet() {
-      return this.viewer.labelSet
+    get annotation() {
+      return this.viewer.annotation
     }
 
     /**

@@ -153,8 +153,8 @@
       // Ruler
       viewer.ruler.draw(this.insideRadius, this.outsideRadius);
       // Labels
-      if (viewer.globalLabel) {
-        viewer.labelSet.draw(this.insideRadius, this.outsideRadius);
+      if (viewer.annotation.visible) {
+        viewer.annotation.draw(this.insideRadius, this.outsideRadius);
       }
       // Progess
       this.drawProgress();

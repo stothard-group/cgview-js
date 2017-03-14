@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
-// LabelSet
+// Annotation
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class LabelSet {
+  class Annotation {
 
     constructor(viewer, options = {}) {
       this._viewer = viewer;
@@ -13,7 +13,19 @@
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
       this._labelLineMargin = CGV.pixel(10);
       this._labelLineWidth = CGV.pixel(1);
+      this._visible = CGV.defaultFor(options.visible, true);
       // this._visibleLabels = new CGV.CGArray();
+    }
+
+    /**
+     * @member {Boolean} - Get or set whether the labels are visible.
+     */
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
     }
 
     /**
@@ -96,7 +108,7 @@
 
     // Should be called when
     //  - Labels are added or removed
-    //  - Font changes (LabelSet or individual label)
+    //  - Font changes (Annotation or individual label)
     //  - Label name changes
     //  - Zoom level changes
     _calculateLabelRects() {
@@ -183,7 +195,7 @@
 
   }
 
-  CGV.LabelSet = LabelSet;
+  CGV.Annotation = Annotation;
 
 })(CGView);
 
