@@ -37,13 +37,6 @@
     }
 
     /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
-
-    /**
      * @member {Color} - Get or set the divider color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
@@ -100,13 +93,6 @@
       this._radii.push(radius)
     }
 
-    // draw(radius) {
-    //   this._visibleRange = this.canvas.visibleRangeForRadius( radius, 100);
-    //   if (this.visibleRange) {
-    //     this.viewer.canvas.drawArc(this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
-    //   }
-    // }
-
     draw() {
       for (var i = 0, len = this._radii.length; i < len; i++) {
         var radius = this._radii[i]
@@ -116,7 +102,6 @@
         }
       }
     }
-
 
   }
 

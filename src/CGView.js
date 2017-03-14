@@ -6,12 +6,35 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 (function(CGV) {
 
-  /** My main class */
+  /**
+   * <br />
+   * The *Viewer* is the main container class for CGView. It controls the
+   * overal appearance of the map (e.g. width, height, background color, etc).
+   * It also contains all the major components of the map (e.g. Layout,
+   * Sequence, Ruler, etc). Many of component options can be set during
+   * construction of the Viewer.
+   */
   class Viewer {
 
     /**
      * Create a viewer
-     * @param {string} container_id - The ID of the element to contain the viewer
+     * @param {String} container_id - The ID of the element to contain the viewer
+     * @param {Object} options - Options for setting up the viewer. Component
+     * options will be passed to the contructor of that component.
+     *
+     * <br />
+     *
+     * Name         | Type   | Description
+     * -------------|--------|------------
+     * width        | Number | Width of viewer in pixels (Default: 600)
+     * height       | Number | Height of viewer in pixels (Default: 600)
+     * sequence     | Object | [Sequence](Sequence.html) options
+     * legend       | Object | [Legend](Legend.html) options
+     * backbone     | Object | [Backbone](Backbone.html) options
+     * layout       | Object | [Layout](Layout.html) options
+     * ruler        | Object | [Ruler](Ruler.html) options
+     * annotation   | Object | [Annotation](Annotation.html) options
+     *
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId.replace('#', '');
@@ -43,10 +66,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.io = new CGV.IO(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
-      // Initial Legend
-      this.legend = new CGV.Legend(this, options.legend);
       // Initialize Sequence
       this.sequence = new CGV.Sequence(this, options.sequence);
+      // Initial Legend
+      this.legend = new CGV.Legend(this, options.legend);
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Slot Divider
