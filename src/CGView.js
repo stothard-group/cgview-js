@@ -63,7 +63,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initial IO
       this.io = new CGV.IO(this);
       // Initialize Sequence
-      this.sequence = new CGV.Sequence(this, options.sequence);
+      this._sequence = new CGV.Sequence(this, options.sequence);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
@@ -196,6 +196,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._debug = undefined;
       }
+    }
+
+    /**
+     * @member {Sequence} - Get the [Sequence](Sequence.html)
+     */
+    get sequence() {
+      return this._sequence;
     }
 
 
@@ -1719,6 +1726,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get ctx() {
       return this.canvas.context('captions')
+    }
+
+    /**
+     * @member {String} - Alias for getting the position. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.position
     }
 
 
@@ -4924,7 +4938,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     loadJSON(json) {
       var viewer = this._viewer;
       // Load Sequence
-      viewer.sequence = new CGV.Sequence(viewer, json.sequence);
+      viewer._sequence = new CGV.Sequence(viewer, json.sequence);
       // Load Settings TODO:
       var settings = json.settings;
       // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
@@ -5042,9 +5056,9 @@ if (window.CGV === undefined) window.CGV = CGView;
           '</head>',
           '<body>',
         // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            // '<h2>Your CGView Image is Below</h2>',
-            // '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            // '<h3>Preview</h3>',
+            '<h2>Your CGView Image is Below</h2>',
+            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+            '<h3>Preview</h3>',
             '<img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
             '<h3>Actual Size</h3>',
             '<img style="border: 1px solid grey" src="' + image +  '"/ >',

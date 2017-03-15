@@ -17,6 +17,7 @@
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -48,6 +49,14 @@
 			<ul class="nav navbar-nav">
 				<li><a href="../viewer.html">Demo</a></li>
 				<li class="active"><a href="#">Docs</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="basic_map.html">Basic Map</a></li>
+            <li><a href="#">Sequence Map </a></li>
+            <li><a href="#">JSON Map</a></li>
+          </ul>
+        </li>
 			</ul>
     </div>
 	</div>
@@ -217,6 +226,8 @@
                 <li data-name="Caption#font"><a href="Caption.html#font">font</a></li>
             
                 <li data-name="Caption#fontColor"><a href="Caption.html#fontColor">fontColor</a></li>
+            
+                <li data-name="Caption#id"><a href="Caption.html#id">id</a></li>
             
                 <li data-name="Caption#items"><a href="Caption.html#items">items</a></li>
             
@@ -1116,6 +1127,8 @@
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
+                <li data-name="Viewer#sequence"><a href="Viewer.html#sequence">sequence</a></li>
+            
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
                 <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
@@ -1199,7 +1212,149 @@ with resolutions upto 6000x6000 pixels.</p>
 <pre class="prettyprint source lang-html"><code>&lt;script src='javascript/cgview.js'>&lt;/script></code></pre><ul>
 <li>Copy <em>cgview.css</em> to your stylesheets folder and add a link to the file in your html:</li>
 </ul>
-<pre class="prettyprint source lang-html"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;stylesheets/cgview.css&quot; /></code></pre><h3>Creating a New Viewer</h3><p>Create a container for the viewer in HTML:</p>
+<pre class="prettyprint source lang-html"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;stylesheets/cgview.css&quot; /></code></pre><h3>Overview</h3><p>CGView.js draws maps as a series of <a href="Track.html">Tracks</a> around the <a href="Backbone.html">Backbone</a>.
+The <em>Backbone</em> represents the sequence and if the seqeunce is provided to
+CGView.js, then you can actually zoom in far enough to see the sequence in the
+backbone. <em>Tracks</em> contain either a <a href="Plot.html">Plot</a> or a set of
+<a href="Feature.html">Features</a>. <em>Tracks</em> are drawn as as one or more
+<a href="Slot.html">Slots</a> where each <em>Slot</em> is a single ring on the map. Slots outside
+of the backbone show features on the forward strand, while inside slots show
+features on the reverse strand.  <em>Tracks</em> containing a <em>Plot</em> are always drawn
+as a single slot, however, Feature Tracks can be drawn in 3 different
+configurations:</p>
+<table>
+<thead>
+<tr>
+<th>Slots</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 1</td>
+<td>All the Features are drawn on a single Slot</td>
+</tr>
+<tr>
+<td> 2</td>
+<td>Features are drawn separated by strand</td>
+</tr>
+<tr>
+<td> 6</td>
+<td>Features are drawn separated by reading frame</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="Viewer.html">Viewer</a> is the main class in CGView.js and contains several components
+which control the look and feel of the Map. These components can be accessed through <em>Accessor</em>
+members or methods. Members (or properties) provide access in cases where there
+is only a single component (e.g Sequence). Methods allow selection of one or
+more objects in cases where there can be more than one component (e.g. Features).
+See <a href="CGArray.html#get">CGArray.get</a> for details.</p>
+<pre class="prettyprint source lang-js"><code>// Access the sequence object
+viewer.sequence
+// Access all the features
+viewer.features()
+// Access the first feature
+viewer.features(1)
+// Access the first feature with the name 'my_feature'
+viewer.features('my_feature')</code></pre><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Accessor</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="Sequence.html">Sequence</a></td>
+<td><a href="Viewer.html#sequence">sequence</a></td>
+<td>The Sequence object contains the sequence itself or at the very least the length of the sequence.</td>
+</tr>
+<tr>
+<td><a href="Canvas.html">Canvas</a></td>
+<td><a href="Viewer.html#canvas">canvas</a></td>
+<td>The Canvas object contains the canvas layers, scale and various drawing methods.</td>
+</tr>
+<tr>
+<td><a href="IO.html">IO</a></td>
+<td><a href="Viewer.html#io">io</a></td>
+<td>The IO object has methods for reading and writing data to and from the Viewer.</td>
+</tr>
+<tr>
+<td><a href="Legend.html">Legend</a></td>
+<td><a href="Viewer.html#legend">legend</a></td>
+<td>The Legend object contains the <a href="LegendItem.html">LegendItems</a> which are used to color the features and plots.</td>
+</tr>
+<tr>
+<td><a href="Backbone.html">Backbone</a></td>
+<td><a href="Viewer.html#backbone">backbone</a></td>
+<td>The Backbone represents the sequence. Slots outside of the backbone show features on the forward strand, while inside slots show features on the reverse strand.</td>
+</tr>
+<tr>
+<td><a href="Layout.html">Layout</a></td>
+<td><a href="Viewer.html#layout">layout</a></td>
+<td>The Layout describes what's in each Track and how to lay them out.</td>
+</tr>
+<tr>
+<td><a href="Ruler.html">Ruler</a></td>
+<td><a href="Viewer.html#ruler">ruler</a></td>
+<td>The Ruler controls how the sequence ruler is drawn.</td>
+</tr>
+<tr>
+<td><a href="Annotation.html">Annotation</a></td>
+<td><a href="Viewer.html#annotation">annotation</a></td>
+<td>Annotation controls how feature labels are drawn.</td>
+</tr>
+<tr>
+<td><a href="Messenger.html">Messenger</a></td>
+<td><a href="Viewer.html#messenger">messenger</a></td>
+<td>Messenger provides the interface for showing messages.</td>
+</tr>
+<tr>
+<td><a href="Divider.html">Divider</a></td>
+<td><a href="Viewer.html#slotDivider">slotDivider</a></td>
+<td>The slotDivider controls the space and lines between each slot.</td>
+</tr>
+<tr>
+<td><a href="Help.html">Help</a></td>
+<td><a href="Viewer.html#help">help</a></td>
+<td>Help control what is draw in the help menu.</td>
+</tr>
+<tr>
+<td><a href="Menu.html">Menu</a></td>
+<td><a href="Viewer.html#menu">menu</a></td>
+<td>Provides control for the Menu.</td>
+</tr>
+<tr>
+<td><a href="Feature.html">Feature</a></td>
+<td><a href="Viewer.html#features">features()</a></td>
+<td>Returns one or more Features.</td>
+</tr>
+<tr>
+<td><a href="Plot.html">Plot</a></td>
+<td><a href="Viewer.html#plots">plots()</a></td>
+<td>Returns one or more Plots.</td>
+</tr>
+<tr>
+<td><a href="Caption.html">Caption</a></td>
+<td><a href="Viewer.html#captions">captions()</a></td>
+<td>Returns one or more Captions.</td>
+</tr>
+<tr>
+<td><a href="FeatureType.html">FeatureType</a></td>
+<td><a href="Viewer.html#featureTypes">featureType()</a></td>
+<td>Returns one or more FeatureTypes.</td>
+</tr>
+</tbody>
+</table>
+<h3>Tutorials</h3><ul>
+<li>Basic Map: Learn how to create a simple map features and a plot</li>
+<li>Sequence Map: Learn how to create a map with features and plots extracted from the sequence.</li>
+<li>JSON Map: Learn how to create a map by importing from JSON.</li>
+<li>Helpful tips: Learch about some useful CGView.js tips.</li>
+</ul>
+<h3>Creating a New Viewer</h3><p>Create a container for the viewer in HTML:</p>
 <pre class="prettyprint source lang-html"><code>&lt;div id='my-viewer'>&lt;/div></code></pre><p>Create a new <a href="Viewer.html">Viewer</a></p>
 <p>The <em>Viewer</em> is the main object in CGView.js. While many options can be
 provided when creating the viewer, the most important is the sequence options.
@@ -1300,7 +1455,7 @@ to describe the shape and color of the feature.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 14 2017 16:05:47 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 15 2017 14:33:56 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

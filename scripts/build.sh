@@ -25,6 +25,11 @@ find ${CGVIEW_DIR}/dev ! -name Viewer.js | xargs cat >> ${CGVIEW_DIR}/src/CGView
 echo "Building Documentation..."
 # jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
 jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
+
+echo "Copying Tutorials"
+ln -s ../tutorials/basic_map.html docs/basic_map.html
+
+
 echo "Done!"
 
 

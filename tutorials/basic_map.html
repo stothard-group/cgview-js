@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CGView: Basic Map</title>
+  <meta charset="UTF-8">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- <script src="javascript/jquery&#45;1.11.1.min.js"></script> -->
+  <!-- Bootstrap 3 -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="../javascript/marked.min.js"></script>
+
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+	<link rel="stylesheet" href="docs/styles/prettify-jsdoc.css">
+	<link rel="stylesheet" href="docs/styles/prettify-tomorrow.css">
+	<!-- <link rel="stylesheet" href="docs/styles/jaguar.css"> -->
+
+  <!-- Prerequisites -->
+  <!-- Local -->
+  <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+  <script src="../javascript/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
+  <!-- CGView -->
+  <script src='../src/CGView.js'></script>
+  <link rel="stylesheet" href="../stylesheets/cgview.css" />
+  <style>
+    div#main {
+      margin-top: 55px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">CGView.js</a>
+			</div>
+			<div class="collapse navbar-collapse" id="main-nav">
+				<ul class="nav navbar-nav">
+					<li><a href="../viewer.html">Demo</a></li>
+					<li><a href="index.html">Docs</a></li>
+          <li class="dropdown active">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li class='active'><a href="basic_map.html">Basic Map</a></li>
+              <li><a href="#">Sequence Map </a></li>
+              <li><a href="#">JSON Map</a></li>
+            </ul>
+          </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+  <div id='main'>
+		<div id='markdown-out'></div>
+		<div>
+		  <p>The Viewer (id='my-viewer')</p>
+			<div id='my-viewer'></div>
+		</div>
+    <div id='final-code'>
+		  <p>Comlete Code without Comments:</p>
+			<pre class='prettyprint'><code class='lang-js final'></code></pre></div>
+  </div>
+
+<div id='markdown-in' style='display:none;'>
+
+## Basic Map ##
+
+### Creating a New Viewer ###
+
+Create a container for the viewer in HTML:
+
+```html
+<div id='my-viewer'></div>
+```
+
+Create a new [Viewer](Viewer.html)
+
+The *Viewer* is the main object in CGView.js. While many options can be
+provided when creating the viewer, the most important is the sequence options.
+For the sequence, you can provide the length or the sequence itself. If the
+sequence is provided, you will be able to see the sequence when zoomed in far
+enough. Also with the sequence, you can easily create new tracks with plots
+(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
+from the sequence.
+```js
+cgv = new CGV.Viewer('#my-viewer', {
+  height: 600,
+  width: 600,
+  sequence: {
+    // Proved the sequence length
+    length: 1000
+  }
+});
+```
+
+Maps are made up of [Tracks](Track.html) that contain [Features](Feature.html) or [Plots](ArcPlot.html).
+
+Before creating a feature, a [LegendItem](LegendItem.html) and [FeatureType](FeatureType.html) should be created first
+to describe the shape and color of the feature.
+
+Create [FeatureType](FeatureType.html)
+```js
+new CGV.FeatureType(cgv, {
+  // Name of feature type.
+  name: 'CDS',
+  // How to draw features of this type. Options: 'arrow' or 'arc'
+  decoration: 'arrow'
+});
+
+```
+
+Create [LegendItem](LegendItem.html)
+```js
+new CGV.LegendItem(cgv.legend, {
+  // Text of LegendItem label.
+  text: 'CDS',
+  // Color of swatch beside legend item. Features associated with
+  // this legend item will be drawn using this color. Colors can be rgb, rgba format
+  // or as a string (e.g. 'blue').
+  swatchColor: 'rgba(200, 150, 150, 0.8)'
+});
+```
+
+Create [Feature](Feature.html)
+
+```js
+new CGV.Feature(cgv, {
+  // Feature type. Used to determine how the feature is drawn (e.g. arrow or arc).
+  // If a FeatureType with this name does not exist, a new FeatureType will be
+  // created with this name and the default settings (e.g. the decoration will be an 'arc').
+  type: 'CDS',
+  // Name of the feature.
+  label: 'My Feature Name',
+  // Beginning of the feature in bp. Must be <= stop.
+  start: 100,
+  // End of the feature in bp. Must be >= start.
+  stop: 250,
+  // Which strand is the feature on. 1: forward strand; -1: reverse strand.
+  strand: 1,
+  // Used to group features into a track.
+  source: 'genome-features',
+  // Name of LegendItem to associate with the feature.
+  // If a LegendItem with this text does not exist, a new LegendItem will be created
+  // with this text and the default settings (e.g. the color will be 'black').
+  legend: 'CDS'
+});
+```
+
+```js
+new CGV.Feature(cgv, {
+  type: 'CDS',
+  label: 'Another Feature',
+  start: 400,
+  stop: 750,
+  strand: -1,
+  source: 'genome-features',
+  legend: 'CDS'
+});
+```
+
+Create [Track](Track.html), which is a part of the the Viewer [Layout](Layout.html)
+```js
+new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'My track',
+  // Draw the track using separated or combined slots for each reading frame. Options: 'separated', 'combined'.
+  readingFrame: 'combined',
+  // Draw the track using separated or combined slots for the forward and reverse strand. Options: 'separated', 'combined'.
+  strand: 'separated',
+  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
+  position: 'both',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    features: {
+      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
+      source: 'genome-features' // All features with the source 'genome-features' will be added to this track.
+    }
+  }
+});
+```
+[Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
+
+Draw the Map
+```js
+cgv.drawFull();
+```
+
+The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
+You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
+If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
+</div>
+
+<script>
+	// Convert Markdown to HTML
+	var marked_ = marked;
+	var marked = function(text) {
+			var tok = marked_.lexer(text);
+			text = marked_.parser(tok);
+			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
+			return text;
+		};
+	$('#markdown-out').html( marked($('#markdown-in').html()) );
+
+  // var code = '';
+  $('code.lang-js:not(.final)').each( function(c) {
+	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
+    eval( code );
+		$('#final-code code').append( code + "\n" );
+  });
+
+ 
+
+
+</script>
+
+</html>

@@ -82,6 +82,13 @@
       return this.canvas.context('captions')
     }
 
+    /**
+     * @member {String} - Alias for getting the position. Useful for querying CGArrays.
+     */
+    get id() {
+      return this.position
+    }
+
 
     /**
      * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".

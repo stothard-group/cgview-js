@@ -21,7 +21,7 @@
     loadJSON(json) {
       var viewer = this._viewer;
       // Load Sequence
-      viewer.sequence = new CGV.Sequence(viewer, json.sequence);
+      viewer._sequence = new CGV.Sequence(viewer, json.sequence);
       // Load Settings TODO:
       var settings = json.settings;
       // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);

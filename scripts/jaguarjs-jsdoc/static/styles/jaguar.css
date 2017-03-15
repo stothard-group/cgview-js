@@ -352,3 +352,8 @@ footer {
   font-size: 0.8em;
   color: gray;
 }
+
+/* JRG */
+.main table {
+  font-size: 12px;
+}

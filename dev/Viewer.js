@@ -63,7 +63,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initial IO
       this.io = new CGV.IO(this);
       // Initialize Sequence
-      this.sequence = new CGV.Sequence(this, options.sequence);
+      this._sequence = new CGV.Sequence(this, options.sequence);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
@@ -196,6 +196,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         this._debug = undefined;
       }
+    }
+
+    /**
+     * @member {Sequence} - Get the [Sequence](Sequence.html)
+     */
+    get sequence() {
+      return this._sequence;
     }
 
 
