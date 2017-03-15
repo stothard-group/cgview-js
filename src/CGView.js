@@ -596,6 +596,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.viewer = viewer;
       this.positions = data.positions;
       this.scores = data.scores;
+      this.source = CGV.defaultFor(data.source, '');
       this._baseline = CGV.defaultFor(data.baseline, 0.5);
       this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
       this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
@@ -865,7 +866,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._viewer = viewer;
       var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
-      this.color = CGV.defaultFor(options.color, 'black');
+      this.color = CGV.defaultFor(options.color, 'grey');
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
       this.fontColor = CGV.defaultFor(options.fontColor, 'black');
       this.thickness = CGV.defaultFor(options.thickness, 5);
@@ -1049,9 +1050,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       var scale = this.canvas.scale;
       var radius = CGV.pixel(this.zoomedRadius);
       var range = this.visibleRange
+      var seq, complement;
       if (range) {
-        var seq = this.sequence.forRange(range);
-        var complement = CGV.Sequence.complement(seq);
+        if (this.sequence.seq) {
+          seq = this.sequence.forRange(range);
+          complement = CGV.Sequence.complement(seq);
+        } else {
+          seq = this._emptySequence(range.length);
+          complement = this._emptySequence(range.length);
+        }
         var bp = range.start;
         ctx.save();
         ctx.fillStyle = this.fontColor.rgbaString;
@@ -1068,8 +1075,14 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
         ctx.restore();
       }
-
     }
+
+    _emptySequence(length) {
+      // ES6
+      // return '•'.repeat(length);
+      return Array(length + 1).join('•')
+    }
+
 
     // _drawSequenceDots() {
     //   var ctx = this.canvas.ctx;
@@ -4323,6 +4336,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.legendItem  = data.legend;
       } else {
         this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
+        this.legendItem  = viewer.legend.findLegendItemOrCreate(data.legend);
       }
     }
 
@@ -7382,21 +7396,21 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     // FAKE method to get sequence
     _fakeSequenceForRange(range) {
-      var seq = [];
+      var seq = '';
       var bp = range.start;
       for (var i = 0, len = range.length; i < len; i++) {
         switch (bp % 4) {
           case 0:
-            seq[i] = 'A';
+            seq += 'A';
             break;
           case 1:
-            seq[i] = 'T';
+            seq += 'T';
             break;
           case 2:
-            seq[i] = 'G';
+            seq += 'G';
             break;
           case 3:
-            seq[i] = 'C';
+            seq += 'C';
         }
         bp++;
       }
@@ -8478,6 +8492,13 @@ if (window.CGV === undefined) window.CGV = CGView;
           // this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
           sequenceExtractor.generatePlot(this, this.contents.plot);
         }
+      } else if (this.contents.plot.source) {
+        // Plot with particular Source
+        this.viewer.plots().find( (plot) => {
+          if (plot.source == this.contents.plot.source) {
+            this._arcPlot = plot;
+          }
+        });
       }
 
     }

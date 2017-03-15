@@ -1,0 +1,35 @@
+
+If the sequence is provided, you will be able to see the sequence when zoomed in far
+enough. Also with the sequence, you can easily create new tracks with plots
+(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
+from the sequence.
+
+
+
+
+
+Before creating a feature, a [LegendItem](LegendItem.html) and [FeatureType](FeatureType.html) should be created first
+to describe the shape and color of the feature.
+
+Create [FeatureType](FeatureType.html)
+```js
+new CGV.FeatureType(cgv, {
+  // Name of feature type.
+  name: 'CDS',
+  // How to draw features of this type. Options: 'arrow' or 'arc'
+  decoration: 'arrow'
+});
+
+```
+
+Create [LegendItem](LegendItem.html)
+```js
+new CGV.LegendItem(cgv.legend, {
+  // Text of LegendItem label.
+  text: 'CDS',
+  // Color of swatch beside legend item. Features associated with
+  // this legend item will be drawn using this color. Colors can be rgb, rgba format
+  // or as a string (e.g. 'blue').
+  swatchColor: 'rgba(200, 150, 150, 0.8)'
+});
+```

@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-	<link rel="stylesheet" href="docs/styles/prettify-jsdoc.css">
-	<link rel="stylesheet" href="docs/styles/prettify-tomorrow.css">
+	<link rel="stylesheet" href="styles/prettify-jsdoc.css">
+	<link rel="stylesheet" href="styles/prettify-tomorrow.css">
 	<!-- <link rel="stylesheet" href="docs/styles/jaguar.css"> -->
 
   <!-- Prerequisites -->
@@ -76,7 +76,7 @@
 
 ## Basic Map ##
 
-### Creating a New Viewer ###
+### Creating a New CGView Viewer ###
 
 Create a container for the viewer in HTML:
 
@@ -87,18 +87,17 @@ Create a container for the viewer in HTML:
 Create a new [Viewer](Viewer.html)
 
 The *Viewer* is the main object in CGView.js. While many options can be
-provided when creating the viewer, the most important is the sequence options.
-For the sequence, you can provide the length or the sequence itself. If the
-sequence is provided, you will be able to see the sequence when zoomed in far
-enough. Also with the sequence, you can easily create new tracks with plots
-(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
-from the sequence.
+provided when creating the viewer, the most important is the sequence option.
+For the sequence, you can provide the length or the sequence itself. In this
+example, we will simply use the length. See the [Sequence Map](sequence_map.html)
+tutorial to see the benefits of using the sequence.
+
 ```js
 cgv = new CGV.Viewer('#my-viewer', {
   height: 600,
   width: 600,
   sequence: {
-    // Proved the sequence length
+    // The length of the sequence
     length: 1000
   }
 });
@@ -106,33 +105,7 @@ cgv = new CGV.Viewer('#my-viewer', {
 
 Maps are made up of [Tracks](Track.html) that contain [Features](Feature.html) or [Plots](ArcPlot.html).
 
-Before creating a feature, a [LegendItem](LegendItem.html) and [FeatureType](FeatureType.html) should be created first
-to describe the shape and color of the feature.
-
-Create [FeatureType](FeatureType.html)
-```js
-new CGV.FeatureType(cgv, {
-  // Name of feature type.
-  name: 'CDS',
-  // How to draw features of this type. Options: 'arrow' or 'arc'
-  decoration: 'arrow'
-});
-
-```
-
-Create [LegendItem](LegendItem.html)
-```js
-new CGV.LegendItem(cgv.legend, {
-  // Text of LegendItem label.
-  text: 'CDS',
-  // Color of swatch beside legend item. Features associated with
-  // this legend item will be drawn using this color. Colors can be rgb, rgba format
-  // or as a string (e.g. 'blue').
-  swatchColor: 'rgba(200, 150, 150, 0.8)'
-});
-```
-
-Create [Feature](Feature.html)
+Let's create a [Feature](Feature.html) on the forward strand.
 
 ```js
 new CGV.Feature(cgv, {
@@ -157,6 +130,8 @@ new CGV.Feature(cgv, {
 });
 ```
 
+Now we'll create a [Feature](Features.html) on the reverse strand.
+
 ```js
 new CGV.Feature(cgv, {
   type: 'CDS',
@@ -168,6 +143,29 @@ new CGV.Feature(cgv, {
   legend: 'CDS'
 });
 ```
+
+#TODO - CHANGE DECORATION AND COLOR
+
+Now we'll create a plot. Plots consist of an array of positions (in bp) and a
+matching array of scores with values between 0 and 1.
+
+```js
+var positions = [];
+var scores = [];
+var currentScore = 0.5;
+for (var i = 1, len = 1000; i < len; i++) {
+  positions.push(i);
+  currentScore += (currentScore > Math.random()) ? -0.01 : 0.01;
+  scores.push( currentScore );
+}
+
+new CGV.ArcPlot(cgv, {
+  positions: positions,
+  scores: scores,
+  source: 'genome-plot'
+});
+```
+
 
 Create [Track](Track.html), which is a part of the the Viewer [Layout](Layout.html)
 ```js
@@ -190,6 +188,24 @@ new CGV.Track(cgv.layout, {
   }
 });
 ```
+
+```js
+new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'My Plot Track',
+  // Note, that the readingFrame and strand options are ignores for plots.
+  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
+  position: 'inside',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    plot: {
+      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
+      source: 'genome-plot' // The first plot with this source will be drawn.
+    }
+  }
+});
+```
 [Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
 
 Draw the Map
@@ -204,6 +220,9 @@ If you want play around with the viewer object, open your browser web inspector.
 
 <script>
 	// Convert Markdown to HTML
+  //marked.setOptions({
+  //  sanitize: true
+  //});
 	var marked_ = marked;
 	var marked = function(text) {
 			var tok = marked_.lexer(text);
@@ -216,6 +235,9 @@ If you want play around with the viewer object, open your browser web inspector.
   // var code = '';
   $('code.lang-js:not(.final)').each( function(c) {
 	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
+    code = code.replace('&amp;lt;', '<');
+    code = code.replace('&amp;gt;', '>');
+    console.log(code);
     eval( code );
 		$('#final-code code').append( code + "\n" );
   });

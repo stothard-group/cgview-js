@@ -12,6 +12,7 @@
       this.viewer = viewer;
       this.positions = data.positions;
       this.scores = data.scores;
+      this.source = CGV.defaultFor(data.source, '');
       this._baseline = CGV.defaultFor(data.baseline, 0.5);
       this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
       this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;

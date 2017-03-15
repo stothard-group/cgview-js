@@ -264,21 +264,21 @@
 
     // FAKE method to get sequence
     _fakeSequenceForRange(range) {
-      var seq = [];
+      var seq = '';
       var bp = range.start;
       for (var i = 0, len = range.length; i < len; i++) {
         switch (bp % 4) {
           case 0:
-            seq[i] = 'A';
+            seq += 'A';
             break;
           case 1:
-            seq[i] = 'T';
+            seq += 'T';
             break;
           case 2:
-            seq[i] = 'G';
+            seq += 'G';
             break;
           case 3:
-            seq[i] = 'C';
+            seq += 'C';
         }
         bp++;
       }

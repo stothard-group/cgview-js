@@ -167,6 +167,13 @@
           // this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
           sequenceExtractor.generatePlot(this, this.contents.plot);
         }
+      } else if (this.contents.plot.source) {
+        // Plot with particular Source
+        this.viewer.plots().find( (plot) => {
+          if (plot.source == this.contents.plot.source) {
+            this._arcPlot = plot;
+          }
+        });
       }
 
     }

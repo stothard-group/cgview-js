@@ -27,6 +27,7 @@
         this.legendItem  = data.legend;
       } else {
         this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
+        this.legendItem  = viewer.legend.findLegendItemOrCreate(data.legend);
       }
     }
 
