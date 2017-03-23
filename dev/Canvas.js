@@ -303,7 +303,7 @@
         this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
+        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
         ctx.closePath();
         ctx.fill();
       }
@@ -314,7 +314,7 @@
      * The method add an arc to the path. However, if the zoomFactor is very large,
      * the arc is added as a straight line.
      */
-    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
+    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, startType='moveTo') {
       var ctx = this.context(layer);
       var scale = this.scale;
 
@@ -322,11 +322,15 @@
       var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (this.sequence.length / 1000)) {
         var p2 = this.pointFor(stopBp, radius);
-        if (noMoveTo) {
+        if (startType == 'lineTo') {
+          var p1 = this.pointFor(startBp, radius);
+          ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-        } else {
+        } else if (startType == 'moveTo') {
           var p1 = this.pointFor(startBp, radius);
           ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType == 'noMoveTo'){
           ctx.lineTo(p2.x, p2.y);
         }
       } else {

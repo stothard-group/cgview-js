@@ -1188,201 +1188,621 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="LegendItem.js.html">Source: LegendItem.js</h1>
+        <h1 class="page-title" data-filename="Plot.html">Class: Plot</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// LegendItem
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
+<header>
+    <h2>
+    Plot
+    </h2>
+    
+</header>  
 
-  /**
-   * &lt;br />
-   * A *legendItem* is used to add text to a map *legend*. Individual
-   * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
-   * or plot color will use the swatchColor of *legendItem*.
-   */
-  class LegendItem extends CGV.CaptionItem {
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Plot">
+            
+            new Plot<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Plot.js.html">Plot.js</a>, <a href="Plot.js.html#line11">line 11</a>
+        </div>
+        
+    </div>
 
-    /**
-     * Create a new LegendItem. By default a legendItem will use its parent legend font, fontColor and textAlignment.
-     *
-     * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
-     * @param {Object} data - Data used to create the legendItem:
-     *
-     *  Option                | Default          | Description
-     *  ----------------------|-------------------------------------------------
-     *  text                  | ""               | Text to display
-     *  drawSwatch            | false            | Should a swatch be drawn beside the text
-     *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
-     *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
-     *  textAlignment         | Legend textAlignment | *left*, *center*, or *right*
-     *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
-     *  swatchOpacity         | 1                | A value between 0 and 1.
-     *
-     * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
-     */
-    constructor(parent, data = {}, meta = {}) {
-      super(parent, data, meta)
-      this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
-      this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
-      this.refresh();
-    }
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Draw a plot consisting of arcs</p>
+    </div>
+    
 
-    /**
-     * Return the class name as a string.
-     * @return {String} - 'LegendItem'
-     */
-    toString() {
-      return 'LegendItem';
-    }
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    /**
-     * @member {Legend} - Get the *Legend*
-     */
-    get legend() {
-      return this._parent
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    /**
-     * @member {Boolean} - Get or set the drawSwatch property. If true a swatch will be
-     * drawn beside the legendItem text.
-     */
-    get drawSwatch() {
-      return this._drawSwatch
-    }
+    
+    
 
-    set drawSwatch(value) {
-      this._drawSwatch = value;
-      this.refresh();
-    }
+    
 
-    get swatchWidth() {
-      return this.height
-    }
+    
+    
+    
+    
+    
+    
+    
+</dd>
 
-    /**
-     * @member {Color} - Get or set the swatchColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get swatchColor() {
-      return this._swatchColor
-    }
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="baseline">baseline<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the plot baseline. This is a value between 0 and 1 and indicates where
+ where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    set swatchColor(color) {
-      if (color.toString() == 'Color') {
-        this._swatchColor = color;
-      } else {
-        this._swatchColor.setColor(color);
-      }
-      this.refresh();
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    /**
-     * @member {Color} - Alias for  [swatchColor](LegendItem.html#swatchColor).
-     */
-    get color() {
-      return this.swatchColor
-    }
+    
+    
+</dd>
 
-    set color(color) {
-      this.swatchColor = color
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="color">color<span class="type-signature type array">Array</span> <span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return an array of the positive and negativ colors [PositiveColor, NegativeColor].</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    /**
-     * @member {Boolean} - Get or set whether this item is selected
-     */
-    get swatchSelected() {
-      return this.legend.selectedSwatchedItem == this
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    set swatchSelected(value) {
-      if (value) {
-        this.legend.selectedSwatchedItem = this;
-      } else {
-        if (this.legend.selectedSwatchedItem == this) {
-          this.legend.selectedSwatchedItem = undefined;
-        }
-      }
-    }
+    
+    
+</dd>
 
-    /**
-     * @member {Boolean} - Get or set whether this item is highlighted
-     */
-    get swatchHighlighted() {
-      return this.legend.highlightedSwatchedItem == this
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legend">legend<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Alias for <a href="plot.html#legendItem">legendItem</a></p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    set swatchHighlighted(value) {
-      if (value) {
-        this.legend.highlightedSwatchedItem = this;
-      } else {
-        if (this.legend.highlightedSwatchedItem == this) {
-          this.legend.highlightedSwatchedItem = undefined;
-        }
-      }
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+    
+    
+</dd>
 
-    textX() {
-      if (this.drawSwatch) {
-        var parent = this.parent;
-        if (this.textAlignment == 'left') {
-          return this.swatchX() + this.swatchWidth + parent.swatchPadding;
-        } else if (this.textAlignment == 'center') {
-          return parent.originX + (parent.width / 2);
-        } else if (this.textAlignment == 'right') {
-          return this.swatchX() - parent.swatchPadding;
-        }
-      } else {
-        return super.textX();
-      }
-    }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legendItem">legendItem<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Set both the legendItemPositive and
+legendItemNegative to this legendItem. Get an array of the legendItems: [legendItemPositive, legendItemNegative].</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-    swatchX() {
-      var parent = this.parent;
-      if (this.textAlignment == 'left') {
-        return parent.originX + parent.padding;
-      } else if (this.textAlignment == 'center') {
-        return parent.originX + parent.padding;
-      } else if (this.textAlignment == 'right') {
-        return parent.originX + parent.width - parent.padding - this.swatchWidth;
-      }
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+    
+    
+</dd>
 
-    // FIXME: does not work for swatches aligned right; need swatchY method
-    _swatchContainsPoint(pt) {
-      var x = this.parent.originX + this.parent.padding;
-      var y = this.parent.originY + this.parent.padding;
-      for (var i = 0, len = this.parent._items.length; i &lt; len; i++) {
-        var item = this.parent._items[i];
-        if (item == this) { break }
-        y += (item.height * 1.5);
-      }
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legendItemNegative">legendItemNegative<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or Set both the LegendItem for the negative portion of the plot (i.e. below
+  <a href="Plot.html#baseline">baseline</a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-      if (pt.x >= x &amp;&amp; pt.x &lt;= x + this.height &amp;&amp; pt.y >= y &amp;&amp; pt.y &lt;= y + this.height) {
-        return true
-      }
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
-    features(term) {
-      var viewer = this.viewer;
-      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem == this } ));
-      return _features.get(term);
-    }
-  }
+    
+    
+</dd>
 
-  CGV.LegendItem = LegendItem;
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legendItemPositive">legendItemPositive<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or Set both the LegendItem for the positive portion of the plot (i.e. above
+  <a href="Plot.html#baseline">baseline</a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
-})(CGView);
-</code></pre>
-        </article>
-    </section>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
 
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legendNegative">legendNegative<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Alias for <a href="plot.html#legendItemNegative">legendItemNegative</a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="legendPositive">legendPositive<span class="type-signature type legenditem"><a href="LegendItem.html">LegendItem</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Alias for <a href="plot.html#legendItemPositive">legendItemPositive</a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="positions">positions<span class="type-signature type cgarray">CGArray</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the positions (bp) of the plot.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="score">score<span class="type-signature type cgarray">CGArray</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the scores of the plot. Value should be between 0 and 1.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get the <em>Viewer</em></p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -1391,7 +1811,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 23 2017 14:16:22 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 23 2017 14:16:22 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

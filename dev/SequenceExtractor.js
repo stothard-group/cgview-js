@@ -340,8 +340,8 @@
           data.legendPositive = this.getLegendItem(type, '+').text;
           data.legendNegative = this.getLegendItem(type, '-').text;
 
-          var plot = new CGV.ArcPlot(viewer, data);
-          track._arcPlot = plot;
+          var plot = new CGV.Plot(viewer, data);
+          track._plot = plot;
           track.updateSlots();
           console.log("Plot '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
           viewer.drawFull();
@@ -396,7 +396,7 @@
     //   data.legendPositive = this.getLegendItem(type, '+').text;
     //   data.legendNegative = this.getLegendItem(type, '-').text;
     //
-    //   var plot = new CGV.ArcPlot(this.viewer, data);
+    //   var plot = new CGV.Plot(this.viewer, data);
     //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
     //   return plot
     // }

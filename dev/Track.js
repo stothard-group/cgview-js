@@ -13,7 +13,7 @@
      */
     constructor(layout, data = {}, display = {}, meta = {}) {
       this.layout = layout;
-      this._arcPlot;
+      this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this.name = CGV.defaultFor(data.name, 'Unknown')
@@ -164,14 +164,14 @@
         var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
         if (sequenceExtractor) {
           // This could be the fallback if not able to use workers
-          // this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
+          // this._plot = sequenceExtractor.extractPlot(this.contents.plot);
           sequenceExtractor.generatePlot(this, this.contents.plot);
         }
       } else if (this.contents.plot.source) {
         // Plot with particular Source
         this.viewer.plots().find( (plot) => {
           if (plot.source == this.contents.plot.source) {
-            this._arcPlot = plot;
+            this._plot = plot;
           }
         });
       }
@@ -289,7 +289,7 @@
     updatePlotSlot() {
       this._slots = new CGV.CGArray();
       var slot = new CGV.Slot(this, {type: 'plot'});
-      slot._arcPlot = this._arcPlot;
+      slot._plot = this._plot;
     }
 
   }

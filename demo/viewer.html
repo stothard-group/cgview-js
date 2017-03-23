@@ -31,7 +31,7 @@
   <script src='dev/Messenger.js'></script>
   <script src='dev/Label.js'></script>
   <script src='dev/Annotation.js'></script>
-  <script src='dev/ArcPlot.js'></script>
+  <script src='dev/Plot.js'></script>
   <script src='dev/Caption.js'></script>
   <script src='dev/CaptionItem.js'></script>
   <script src='dev/Legend.js'></script>
@@ -64,7 +64,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -103,6 +103,94 @@
   </div>
 
   <script>
+
+    var demo = false;
+    // var demo = true;
+
+    if (demo) {
+
+      cgv = new CGV.Viewer('#cgview', {
+        height: 500,
+        width: 500,
+        debug: {sections: ['time', 'position']},
+        sequence: {
+          length: 1000
+        }
+      });
+
+
+
+      new CGV.Feature(cgv, {
+        type: 'CDS',
+        label: 'My Feature Name',
+        start: 100,
+        stop: 250,
+        strand: 1,
+        source: 'genome-features',
+        legend: 'CDS'
+      });
+
+      new CGV.Feature(cgv, {
+        type: 'CDS',
+        label: 'Another Feature',
+        start: 400,
+        stop: 750,
+        strand: -1,
+        source: 'genome-features',
+        legend: 'CDS'
+      });
+
+      var positions = [];
+      var scores = [];
+      var currentScore = 0.5;
+      for (var i = 1, len = 1000; i < len; i++) {
+        positions.push(i);
+        currentScore += (currentScore > Math.random()) ? -0.01 : 0.01;
+        scores.push( currentScore );
+      }
+
+      positions = [50, 200, 400, 500, 600, 800]
+      scores = [0.4, 0.75, 0.25, 0.5, 0.6, 0.1]
+      // positions = [1, 50, 200, 400, 500, 600, 800]
+      // scores = [0.6, 0.4, 0.75, 0.25, 0.5, 0.6, 0.1]
+
+      var p = new CGV.Plot(cgv, {
+        positions: positions,
+        scores: scores,
+        baseline: 0.5,
+        source: 'genome-plot'
+      });
+
+      // p.legendItem = new CGV.LegendItem(cgv.legend, {swatchColor: 'blue', text: 'Plot'});
+      p.legendItemPositive = new CGV.LegendItem(cgv.legend, {swatchColor: 'blue', text: '+ Plot'});
+      p.legendItemNegative = new CGV.LegendItem(cgv.legend, {swatchColor: 'red', text: '- Plot'});
+
+      new CGV.Track(cgv.layout, {
+        name: 'My track',
+        readingFrame: 'combined',
+        strand: 'separated',
+        position: 'both',
+        contents: {
+          features: {
+            source: 'genome-features'
+          }
+        }
+      });
+
+      new CGV.Track(cgv.layout, {
+        name: 'My Plot Track',
+        position: 'inside',
+        contents: {
+          plot: {
+            source: 'genome-plot'
+          }
+        }
+      });
+
+      cgv.drawFull();
+      cgv.canvas._testDrawRange = true;
+    } else {
+
     var cgv = new CGV.Viewer('#cgview', {
       // width: 1000,
       // width: 1300,
@@ -133,15 +221,7 @@
       }
     });
 
-    // $('#download-svg').on('click', function() {
-    //   var origCtx = cgv.canvas.ctx;
-    //   var ctx = new C2S(1200, 1200);
-    //   cgv.canvas.ctx = ctx;
-    //   cgv.draw_full();
-    //   var svg = ctx.getSerializedSvg();
-    //   $('#svg-out').html(svg);
-    //   cgv.canvas.ctx = origCtx;
-    // });
+}
 
     $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
     $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });

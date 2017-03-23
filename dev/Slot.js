@@ -12,7 +12,7 @@
       this.track = track;
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
-      this._arcPlot;
+      this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       //TEMP
       if (data.type == 'plot') {
@@ -30,8 +30,8 @@
       //   this.refresh();
       // }
 
-      // if (data.arcPlot) {
-      //   new CGV.ArcPlot(this, data.arcPlot);
+      // if (data.plot) {
+      //   new CGV.Plot(this, data.plot);
       // }
     }
 
@@ -137,8 +137,8 @@
       return this._features.length > 0
     }
 
-    get hasArcPlot() {
-      return this._arcPlot
+    get hasPlot() {
+      return this._plot
     }
 
     replaceFeatures(features) {
@@ -228,9 +228,12 @@
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
-               (this.sequence.subtractBp(start, stop) > largestLength) ) {
-            start = range.getStartPlus(-largestLength);
+          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
+            if (this.sequence.subtractBp(start, stop) <= largestLength) {
+              start = range.getStopPlus(1);
+            } else {
+              start = range.getStartPlus(-largestLength);
+            }
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
           var step = 1;
@@ -243,7 +246,7 @@
             // e.g. When zooming all the features visible at a step of 16
             // will be visible when the step is 8 and so on.
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
-            step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
+            step = CGV.base2(initialStep);
           }
           // Draw Features
           this._featureStarts.eachFromRange(start, stop, step, (i) => {
@@ -254,8 +257,8 @@
             var index = this.viewer._slots.indexOf(this);
             this.viewer.debug.data.n['slot_' + index] = featureCount;
           }
-        } else if (this.hasArcPlot) {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, range);
+        } else if (this.hasPlot) {
+          this._plot.draw(canvas, slotRadius, slotThickness, fast, range);
         }
       }
     }

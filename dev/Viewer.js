@@ -270,7 +270,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the Tracks in the viewer.
+     * Returns an [CGArray](CGArray.js.html) of Plots or a single Plot from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */

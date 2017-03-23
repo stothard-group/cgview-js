@@ -6,8 +6,8 @@
   /**
    * <br />
    * A *captionItem* is used to add text to a map *legend*. Individual
-   * *Features* and *ArcPlots* can be linked to a *captionItem*, so that the feature
-   * or arcPlot color will use the swatchColor of *captionItem*.
+   * *Features* and *Plots* can be linked to a *captionItem*, so that the feature
+   * or plot color will use the swatchColor of *captionItem*.
    */
   class CaptionItem {
 

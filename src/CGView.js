@@ -270,7 +270,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of ArcPlots or a single ArcPlot from all the Tracks in the viewer.
+     * Returns an [CGArray](CGArray.js.html) of Plots or a single Plot from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
@@ -582,268 +582,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 })(CGView);
 
 
-//////////////////////////////////////////////////////////////////////////////
-// ArcPlot
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
-
-  class ArcPlot {
-
-    /**
-     * Draw a plot consisting of arcs
-     */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
-      this.viewer = viewer;
-      this.positions = data.positions;
-      this.scores = data.scores;
-      this.source = CGV.defaultFor(data.source, '');
-      this._baseline = CGV.defaultFor(data.baseline, 0.5);
-      this._color = new CGV.Color( CGV.defaultFor(data.color, 'black') );
-      this._colorPositive = data.colorPositive ? new CGV.Color(data.colorPositive) : undefined;
-      this._colorNegative = data.colorNegative ? new CGV.Color(data.colorNegative) : undefined;
-
-      if (data.legend) {
-        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
-      }
-      if (data.legendPositive) {
-        this.legendItemPositive  = viewer.legend.findLegendItemByName(data.legendPositive);
-      }
-      if (data.legendNegative) {
-        this.legendItemNegative  = viewer.legend.findLegendItemByName(data.legendNegative);
-      }
-
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    set viewer(viewer) {
-      if (this.viewer) {
-        // TODO: Remove if already attached to Viewer
-      }
-      this._viewer = viewer;
-      viewer._plots.push(this);
-    }
-
-    /**
-     * @member {CGArray} - Get or set the positions (bp) of the plot.
-     */
-    get positions() {
-      return this._positions || new CGV.CGArray()
-    }
-
-    set positions(value) {
-      if (value) {
-        this._positions = new CGV.CGArray(value);
-      }
-    }
-
-    /**
-     * @member {CGArray} - Get or set the scores of the plot. Value should be between 0 and 1.
-     */
-    get score() {
-      return this._score || new CGV.CGArray()
-    }
-
-    set score(value) {
-      if (value) {
-        this._score = new CGV.CGArray(value);
-      }
-    }
-
-    // /**
-    //  * @member {Track} - Get or set the *Track*
-    //  */
-    // get track() {
-    //   return this._track
-    // }
-    //
-    // set track(slot) {
-    //   if (this.track) {
-    //     // TODO: Remove if already attached to Track
-    //   }
-    //   this._track = slot;
-    //   slot._arcPlot = this;
-    //   this._viewer = slot.viewer;
-    // }
-
-    get color() {
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color;
-    }
-
-    get colorPositive() {
-      // return this._colorPositive || this._color
-      // return (this.legendPositiveItem) ? this.legendItemPositive.swatchColor : this._colorPositive.rgbaString;
-
-      if (this.legendItemPositive) {
-        return this.legendItemPositive.swatchColor
-      } else if (this._colorPositive) {
-        return this._colorPositive
-      } else {
-        return this.color
-      }
-    }
-
-    get colorNegative() {
-      // return this._colorNegative || this._color
-      // return (this.legendNegativeItem) ? this.legendItemNegative.swatchColor : this._colorNegative.rgbaString;
-      if (this.legendItemNegative) {
-        return this.legendItemNegative.swatchColor
-      } else if (this._colorNegative) {
-        return this._colorNegative
-      } else {
-        return this.color
-      }
-    }
-
-    /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this plot,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this plot. The swatch settings will
-     *   override the color and opacity set for this plot.
-     */
-    get legendItem() {
-      return this._legendItem;
-    }
-
-    set legendItem(value) {
-      this._legendItem = value;
-      this.legendItemPositive = value;
-      this.legendItemNegative = value;
-    }
-
-    get legendItemPositive() {
-      return this._legendItemPositive;
-    }
-
-    set legendItemPositive(value) {
-      this._legendItemPositive = value;
-    }
-
-    get legendItemNegative() {
-      return this._legendItemNegative;
-    }
-
-    set legendItemNegative(value) {
-      this._legendItemNegative = value;
-    }
-
-    /**
-     * @member {Number} - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
-     *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).
-     */
-    get baseline() {
-      return this._baseline;
-    }
-
-    set baseline(value) {
-      if (value > 1) {
-        this._baseline = 1;
-      } else if (value < 0) {
-        this._baseline = 0;
-      } else {
-        this._baseline = value;
-      }
-    }
-
-    draw(canvas, slotRadius, slotThickness, fast, range) {
-      if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
-        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
-      } else {
-        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive, 'positive');
-        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorNegative, 'negative');
-      }
-    }
-
-    // To add a fast mode use a step when creating the indices
-    _drawPath(canvas, slotRadius, slotThickness, fast,  range, color, orientation) {
-      // fast = false
-      var ctx = canvas.context('map');
-      var scale = canvas.scale;
-      var positions = this.positions;
-      var scores = this.scores;
-      // This is the difference in radial pixels required before a new arc is draw
-      var radialDiff = fast ? 1 : 0.5;
-      // var radialDiff = 0.5;
-
-      var startIndex = CGV.indexOfValue(positions, range.start, false);
-      var stopIndex = CGV.indexOfValue(positions, range.stop, true);
-
-      var startPosition = positions[startIndex];
-      var stopPosition = positions[stopIndex];
-
-      ctx.beginPath();
-      ctx.lineWidth = 0.0001;
-
-      // Calculate baseline Radius
-      var baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
-
-      // Move to the first point
-      var startPoint = canvas.pointFor(startPosition, baselineRadius);
-      ctx.moveTo(startPoint.x, startPoint.y);
-
-      var savedR = baselineRadius;
-      var savedPosition = startPosition;
-      var currentR;
-      var index, score, currentPosition, lastScore;
-      var step = 1;
-      // When drawing fast, use a step value scaled between 1 and maxStep.
-      if (fast) {
-        var maxStep = 10
-        var positionsLength = positions.countFromRange(startPosition, stopPosition);
-        step = Math.ceil(maxStep * positionsLength / positions.length);
-      }
-      positions.eachFromRange(startPosition, stopPosition, step, (i) => {
-        lastScore = score;
-        score = scores[i];
-        currentPosition = positions[i];
-        currentR = baselineRadius + (score - this.baseline) * slotThickness;
-        // If going from positive to negative need to save currentR as 0 (baselineRadius)
-        // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
-        if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
-          currentR = baselineRadius;
-          canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
-          savedR = currentR;
-          savedPosition = currentPosition;
-        } else if ( this._keepPoint(score, orientation) ){
-          if ( Math.abs(currentR - savedR) >= radialDiff ){
-            canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
-            savedR = currentR;
-            savedPosition = currentPosition
-          }
-        } else {
-          savedR = baselineRadius;
-        }
-      });
-      canvas.arcPath('map', savedR, savedPosition, stopPosition, false, true);
-
-      var endPoint = canvas.pointFor(stopPosition, baselineRadius);
-      ctx.lineTo(endPoint.x, endPoint.y);
-      canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, true);
-      ctx.fillStyle = color.rgbaString;
-      ctx.fill();
-    }
-
-    _keepPoint(score, orientation) {
-      if (orientation == undefined) {
-        return true
-      } else if (orientation == 'positive' && score > this.baseline) {
-        return true
-      } else if (orientation == 'negative' && score < this.baseline ) {
-        return true
-      }
-      return false
-    }
-
-  }
-
-
-  CGV.ArcPlot = ArcPlot;
-
-})(CGView);
 //////////////////////////////////////////////////////////////////////////////
 // Backbone
 //////////////////////////////////////////////////////////////////////////////
@@ -1446,7 +1184,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
         ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
         ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, true);
+        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
         ctx.closePath();
         ctx.fill();
       }
@@ -1457,7 +1195,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * The method add an arc to the path. However, if the zoomFactor is very large,
      * the arc is added as a straight line.
      */
-    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, noMoveTo=false) {
+    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, startType='moveTo') {
       var ctx = this.context(layer);
       var scale = this.scale;
 
@@ -1465,11 +1203,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (this.sequence.length / 1000)) {
         var p2 = this.pointFor(stopBp, radius);
-        if (noMoveTo) {
+        if (startType == 'lineTo') {
+          var p1 = this.pointFor(startBp, radius);
+          ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-        } else {
+        } else if (startType == 'moveTo') {
           var p1 = this.pointFor(startBp, radius);
           ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType == 'noMoveTo'){
           ctx.lineTo(p2.x, p2.y);
         }
       } else {
@@ -1955,8 +1697,8 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * A *captionItem* is used to add text to a map *legend*. Individual
-   * *Features* and *ArcPlots* can be linked to a *captionItem*, so that the feature
-   * or arcPlot color will use the swatchColor of *captionItem*.
+   * *Features* and *Plots* can be linked to a *captionItem*, so that the feature
+   * or plot color will use the swatchColor of *captionItem*.
    */
   class CaptionItem {
 
@@ -2265,19 +2007,26 @@ if (window.CGV === undefined) window.CGV = CGView;
     // The idea is to alter the start index based on the step so the same
     // indices should be returned. i.e. the indices should be divisible by the step.
     if (startIndex > 0 && step > 1) {
-      // startIndex = startIndex - (startIndex % step);
       startIndex += step - (startIndex % step);
     }
     if (stopValue >= startValue) {
+      // Return if both start and stop are between values in array
+      if (this[startIndex] > stopValue || this[stopIndex] < startValue) { return }
       for (var i = startIndex; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);
       }
     } else {
-      for (var i = startIndex, len = this.length; i < len; i += step) {
-        callback.call(this[i], i, this[i]);
+      // Skip cases where the the start value is greater than the last value in array
+      if (this[startIndex] >= startValue) {
+        for (var i = startIndex, len = this.length; i < len; i += step) {
+          callback.call(this[i], i, this[i]);
+        }
       }
-      for (var i = 0; i <= stopIndex; i += step) {
-        callback.call(this[i], i, this[i]);
+      // Skip cases where the the stop value is less than the first value in array
+      if (this[stopIndex] <= stopValue) {
+        for (var i = 0; i <= stopIndex; i += step) {
+          callback.call(this[i], i, this[i]);
+        }
       }
     }
     return this;
@@ -4319,7 +4068,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      // this._color = new CGV.Color(data.color);
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
@@ -4332,12 +4080,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
-      if (data.legend && data.legend.toString() == 'LegendItem') {
-        this.legendItem  = data.legend;
-      } else {
-        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
-        this.legendItem  = viewer.legend.findLegendItemOrCreate(data.legend);
-      }
+      this.legendItem  = data.legend;
     }
 
     /**
@@ -4374,36 +4117,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     set extractedFromSequence(value) {
       this._extractedFromSequence = value;
     }
-
-    // /**
-    //  * @member {Slot} - Get or set the *Slot*
-    //  */
-    // get slot() {
-    //   return this._slot
-    // }
-    //
-    // set slot(slot) {
-    //   if (this.slot) {
-    //     // TODO: Remove if already attached to Slot
-    //   }
-    //   this._slot = slot;
-    //   slot._features.push(this);
-    // }
-
-    // /**
-    //  * @member {Track} - Get or set the *Track*
-    //  */
-    // get track() {
-    //   return this._track
-    // }
-    //
-    // set track(track) {
-    //   if (this.track) {
-    //     // TODO: Remove if already attached to Track
-    //   }
-    //   this._track = track;
-    //   track._features.push(this);
-    // }
 
     /**
      * @member {Viewer} - Get the *Viewer*
@@ -4495,19 +4208,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
-    // FIXME: should you be able to change feature color directly??
-    // set color(color) {
-    //   if (color.toString() == 'Color') {
-    //     this._color = color;
-    //   } else {
-    //     if (this._color && this._color.toString() == 'Color') {
-    //       this._color.setColor(color);
-    //     } else {
-    //       this._color = new CGV.Color(color);
-    //     }
-    //   }
-    // }
-
     /**
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
      */
@@ -4523,23 +4223,33 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    // set decoration(value) {
-    //   this._decoration = value;
-    // }
-
     /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-     *   override the color and opacity set for this feature.
+     * @member {LegendItem} - Get or set the LegendItem. The LegendItem can be set with a LegendItem object
+     *   or with the name of a legenedItem.
      */
     get legendItem() {
       return this._legendItem;
     }
 
     set legendItem(value) {
-      this._legendItem = value;
+      if (this.legendItem && value == undefined) { return }
+      if (value && value.toString() == 'LegendItem') {
+        this._legendItem  = value
+      } else {
+        this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
+      }
     }
 
+    /**
+     * @member {LegendItem} - Alias for [legendItem](Feature.html#legendItem).
+     */
+    get legend() {
+      return this.legendItem;
+    }
+
+    set legend(value) {
+      this.legendItem = value;
+    }
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
@@ -5147,21 +4857,21 @@ if (window.CGV === undefined) window.CGV = CGView;
     //       }
     //     }
     //   }
-    //   // ArcPlots
-    //   var arcPlots = viewer.arcPlots();
-    //   var arcPlot;
-    //   for (var i = 0, len = arcPlots.length; i < len; i++) {
-    //     arcPlot = arcPlots[i];
+    //   // Plots
+    //   var plots = viewer.plots();
+    //   var plot;
+    //   for (var i = 0, len = plots.length; i < len; i++) {
+    //     plot = plots[i];
     //     for (var j = 0; j < itemsLength; j++) {
     //       legendItem = swatchedLegendItems[j];
-    //       if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItem = legendItem;
+    //       if (plot._color.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItem = legendItem;
     //       }
-    //       if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItemPositive = legendItem;
+    //       if (plot._colorPositive && plot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItemPositive = legendItem;
     //       }
-    //       if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItemNegative = legendItem;
+    //       if (plot._colorNegative && plot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItemNegative = legendItem;
     //       }
     //     }
     //   }
@@ -5788,8 +5498,8 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * A *legendItem* is used to add text to a map *legend*. Individual
-   * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
-   * or arcPlot color will use the swatchColor of *legendItem*.
+   * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
+   * or plot color will use the swatchColor of *legendItem*.
    */
   class LegendItem extends CGV.CaptionItem {
 
@@ -5864,6 +5574,17 @@ if (window.CGV === undefined) window.CGV = CGView;
         this._swatchColor.setColor(color);
       }
       this.refresh();
+    }
+
+    /**
+     * @member {Color} - Alias for  [swatchColor](LegendItem.html#swatchColor).
+     */
+    get color() {
+      return this.swatchColor
+    }
+
+    set color(color) {
+      this.swatchColor = color
     }
 
     /**
@@ -6672,6 +6393,397 @@ if (window.CGV === undefined) window.CGV = CGView;
   CGV.Messenger = Messenger;
 
 })(CGView);
+//////////////////////////////////////////////////////////////////////////////
+// Plot
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  class Plot {
+
+    /**
+     * Draw a plot consisting of arcs
+     */
+    constructor(viewer, data = {}, display = {}, meta = {}) {
+      this.viewer = viewer;
+      this.positions = data.positions;
+      this.scores = data.scores;
+      this.source = CGV.defaultFor(data.source, '');
+      this._baseline = CGV.defaultFor(data.baseline, 0.5);
+
+      if (data.legend) {
+        this.legendItem  = data.legend;
+      }
+      if (data.legendPositive) {
+        this.legendItemPositive  = data.legendPositive;
+      }
+      if (data.legendNegative) {
+        this.legendItemNegative  = data.legendNegative;
+      }
+      var plotID = viewer.plots().indexOf(this) + 1;
+      if (!this.legendItemPositive && !this.legendItemNegative) {
+        this.legendItem  = 'Plot-' + plotID;
+      } else if (!this.legendItemPositive) {
+        this.legendItemPositive  = this.legendItemNegative;
+      } else if (!this.legendItemNegative) {
+        this.legendItemNegative  = this.legendItemPositive;
+      }
+
+    }
+
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    set viewer(viewer) {
+      if (this.viewer) {
+        // TODO: Remove if already attached to Viewer
+      }
+      this._viewer = viewer;
+      viewer._plots.push(this);
+    }
+
+    /**
+     * @member {CGArray} - Get or set the positions (bp) of the plot.
+     */
+    get positions() {
+      return this._positions || new CGV.CGArray()
+    }
+
+    set positions(value) {
+      if (value) {
+        this._positions = new CGV.CGArray(value);
+      }
+    }
+
+    /**
+     * @member {CGArray} - Get or set the scores of the plot. Value should be between 0 and 1.
+     */
+    get score() {
+      return this._score || new CGV.CGArray()
+    }
+
+    set score(value) {
+      if (value) {
+        this._score = new CGV.CGArray(value);
+      }
+    }
+
+    /**
+     * @member {Array|Color} - Return an array of the positive and negativ colors [PositiveColor, NegativeColor].
+     */
+    get color() {
+      return [this.colorPositive, this.colorNegative]
+    }
+
+    get colorPositive() {
+      return this.legendItemPositive.color
+    }
+
+    get colorNegative() {
+      return this.legendItemNegative.color
+    }
+
+    /**
+     * @member {LegendItem} - Set both the legendItemPositive and
+     * legendItemNegative to this legendItem. Get an array of the legendItems: [legendItemPositive, legendItemNegative].
+     */
+    get legendItem() {
+      return [this.legendItemPositive, this.legendItemNegative]
+    }
+
+    set legendItem(value) {
+      this.legendItemPositive = value;
+      this.legendItemNegative = value;
+    }
+
+    /**
+     * @member {LegendItem} - Alias for [legendItem](plot.html#legendItem)
+     */
+    get legend() {
+      return this.legendItem
+    }
+
+    set legend(value) {
+      this.legendItem = value;
+    }
+
+    /**
+     * @member {LegendItem} - Get or Set both the LegendItem for the positive portion of the plot (i.e. above
+     *   [baseline](Plot.html#baseline).
+     */
+    get legendItemPositive() {
+      return this._legendItemPositive;
+    }
+
+    set legendItemPositive(value) {
+      // this._legendItemPositive = value;
+
+      if (this.legendItemPositive && value == undefined) { return }
+      if (value && value.toString() == 'LegendItem') {
+        this._legendItemPositive  = value
+      } else {
+        this._legendItemPositive  = this.viewer.legend.findLegendItemOrCreate(value);
+      }
+    }
+
+    /**
+     * @member {LegendItem} - Get or Set both the LegendItem for the negative portion of the plot (i.e. below
+     *   [baseline](Plot.html#baseline).
+     */
+    get legendItemNegative() {
+      return this._legendItemNegative;
+    }
+
+    set legendItemNegative(value) {
+      // this._legendItemNegative = value;
+
+      if (this.legendItemNegative && value == undefined) { return }
+      if (value && value.toString() == 'LegendItem') {
+        this._legendItemNegative  = value
+      } else {
+        this._legendItemNegative  = this.viewer.legend.findLegendItemOrCreate(value);
+      }
+    }
+
+    /**
+     * @member {LegendItem} - Alias for [legendItemPositive](plot.html#legendItemPositive).
+     */
+    get legendPositive() {
+      return this._legendItemPositive;
+    }
+
+    set legendPositive(value) {
+      this._legendItemPositive = value;
+    }
+
+    /**
+     * @member {LegendItem} - Alias for [legendItemNegative](plot.html#legendItemNegative).
+     */
+    get legendNegative() {
+      return this._legendItemNegative;
+    }
+
+    set legendNegative(value) {
+      this._legendItemNegative = value;
+    }
+
+    /**
+     * @member {Number} - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
+     *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).
+     */
+    get baseline() {
+      return this._baseline;
+    }
+
+    set baseline(value) {
+      if (value > 1) {
+        this._baseline = 1;
+      } else if (value < 0) {
+        this._baseline = 0;
+      } else {
+        this._baseline = value;
+      }
+    }
+
+    draw(canvas, slotRadius, slotThickness, fast, range) {
+      // var startTime = new Date().getTime();
+      if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
+        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
+      } else {
+        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive, 'positive');
+        this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorNegative, 'negative');
+      }
+      // console.log("Plot Time: '" + CGV.elapsed_time(startTime) );
+    }
+
+    // To add a fast mode use a step when creating the indices
+    _drawPath(canvas, slotRadius, slotThickness, fast, range, color, orientation) {
+      var ctx = canvas.context('map');
+      var scale = canvas.scale;
+      var positions = this.positions;
+      var scores = this.scores;
+      // This is the difference in radial pixels required before a new arc is draw
+      var radialDiff = fast ? 1 : 0.5;
+      // var radialDiff = 0.5;
+
+      var sequenceLength = this.viewer.sequence.length;
+
+      var startIndex = CGV.indexOfValue(positions, range.start, false);
+      var stopIndex = CGV.indexOfValue(positions, range.stop, false);
+      // Change stopIndex to last position if stop is between 1 and first position
+      if (stopIndex == 0 && range.stop < positions[stopIndex]) {
+        stopIndex = positions.length - 1;
+      }
+      var startPosition = startIndex == 0 ? positions[startIndex] : range.start;
+      var stopPosition = range.stop;
+      // console.log(startPosition + '..' + stopPosition)
+
+      // var startScore = startIndex == 0 ? this.baseline : scores[startIndex];
+      var startScore = scores[startIndex];
+
+      startScore = this._keepPoint(startScore, orientation) ? startScore : this.baseline;
+
+      ctx.beginPath();
+
+      // Calculate baseline Radius
+      var baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+
+      // Move to the first point
+      var startPoint = canvas.pointFor(startPosition, baselineRadius);
+      ctx.moveTo(startPoint.x, startPoint.y);
+
+      var savedR = baselineRadius + (startScore - this.baseline) * slotThickness;
+      var savedPosition = startPosition;
+      var lastScore = startScore;
+
+      var currentR, score, currentPosition;
+      var crossingBaseline = false;
+      var drawNow = false;
+      var step = 1;
+      if (fast) {
+        // When drawing fast, use a step value scaled to base-2
+        var positionsLength = positions.countFromRange(startPosition, stopPosition);
+        var maxPositions = 4000;
+        var initialStep = positionsLength / maxPositions;
+        if (initialStep > 1) {
+          step = CGV.base2(initialStep);
+        }
+      }
+      positions.eachFromRange(startPosition, stopPosition, step, (i) => {
+        // Handle Origin in middle of range
+        if (i == 0 && startIndex != 0) {
+          canvas.arcPath('map', savedR, savedPosition, sequenceLength, false, 'lineTo');
+          savedPosition = 1;
+          savedR = baselineRadius;
+        }
+
+        // NOTE: In the future the radialDiff code (see bottom) could be used to improve speed of NON-fast
+        // drawing. However, there are a few bugs that need to be worked out
+        score = scores[i];
+        currentPosition = positions[i];
+        canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+        if ( this._keepPoint(score, orientation) ){
+          savedR = baselineRadius + (score - this.baseline) * slotThickness;
+        } else {
+          savedR = baselineRadius;
+        }
+        savedPosition = currentPosition;
+      });
+
+      // Change stopPosition if between 1 and first position
+      if (stopIndex == positions.length - 1 && stopPosition < positions[0]) {
+        stopPosition = sequenceLength;
+      }
+      // Finish drawing plot to stop position
+      canvas.arcPath('map', savedR, savedPosition, stopPosition, false, 'lineTo');
+      var endPoint = canvas.pointFor(stopPosition, baselineRadius);
+      ctx.lineTo(endPoint.x, endPoint.y);
+      // Draw plot anticlockwise back to start along baseline
+      canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');
+      ctx.fillStyle = color.rgbaString;
+      ctx.fill();
+
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+
+    }
+
+
+    _keepPoint(score, orientation) {
+      if (orientation == undefined) {
+        return true
+      } else if (orientation == 'positive' && score > this.baseline) {
+        return true
+      } else if (orientation == 'negative' && score < this.baseline ) {
+        return true
+      }
+      return false
+    }
+
+  }
+
+
+  CGV.Plot = Plot;
+
+})(CGView);
+
+// NOTE: radialDiff
+        // score = scores[i];
+        // currentPosition = positions[i];
+        // currentR = baselineRadius + (score - this.baseline) * slotThickness;
+        //
+        // if (drawNow || crossingBaseline) {
+        //   canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+        //   savedPosition = currentPosition;
+        //   drawNow = false;
+        //   crossingBaseline = false;
+        //   if ( this._keepPoint(score, orientation) ) {
+        //     savedR = currentR;
+        //   } else {
+        //     savedR = baselineRadius;
+        //   }
+        // if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
+        //   crossingBaseline = true;
+        // }
+        //
+        // if ( Math.abs(currentR - savedR) >= radialDiff ){
+        //   drawNow = true;
+        // }
+        // lastScore = score;
+// END RadialDiff
+
+
+        // score = scores[i];
+        // currentPosition = positions[i];
+        // canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+        // if ( this._keepPoint(score, orientation) ){
+        //   savedR = baselineRadius + (score - this.baseline) * slotThickness;
+        // } else {
+        //   savedR = baselineRadius;
+        // }
+        // savedPosition = currentPosition;
+
+
+    //
+        // score = scores[i];
+        // currentPosition = positions[i];
+        // canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+        // currentR = baselineRadius + (score - this.baseline) * slotThickness;
+        // savedR = currentR;
+        // savedPosition = currentPosition;
+    //
+    //
+      // positions.eachFromRange(startPosition, stopPosition, step, (i) => {
+        // if (i == 0) {
+        //   lastScore = this.baseline;
+        //   savedPosition = 1;
+        //   savedR = baselineRadius;
+        // }
+      //   lastScore = score;
+      //   score = scores[i];
+      //   currentPosition = positions[i];
+      //   currentR = baselineRadius + (score - this.baseline) * slotThickness;
+      //   // If going from positive to negative need to save currentR as 0 (baselineRadius)
+      //   // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
+      //   if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
+      //     currentR = baselineRadius;
+      //     canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
+      //     savedR = currentR;
+      //     savedPosition = currentPosition;
+      //   } else if ( this._keepPoint(score, orientation) ){
+      //     if ( Math.abs(currentR - savedR) >= radialDiff ){
+      //       canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
+      //       savedR = currentR;
+      //       savedPosition = currentPosition
+      //     }
+      //   } else {
+      //     savedR = baselineRadius;
+      //   }
+      // });
 //////////////////////////////////////////////////////////////////////////////
 // CGview Rect
 //////////////////////////////////////////////////////////////////////////////
@@ -7890,8 +8002,8 @@ if (window.CGV === undefined) window.CGV = CGView;
           data.legendPositive = this.getLegendItem(type, '+').text;
           data.legendNegative = this.getLegendItem(type, '-').text;
 
-          var plot = new CGV.ArcPlot(viewer, data);
-          track._arcPlot = plot;
+          var plot = new CGV.Plot(viewer, data);
+          track._plot = plot;
           track.updateSlots();
           console.log("Plot '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
           viewer.drawFull();
@@ -7946,7 +8058,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   data.legendPositive = this.getLegendItem(type, '+').text;
     //   data.legendNegative = this.getLegendItem(type, '-').text;
     //
-    //   var plot = new CGV.ArcPlot(this.viewer, data);
+    //   var plot = new CGV.Plot(this.viewer, data);
     //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
     //   return plot
     // }
@@ -8052,7 +8164,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.track = track;
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
-      this._arcPlot;
+      this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       //TEMP
       if (data.type == 'plot') {
@@ -8070,8 +8182,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       //   this.refresh();
       // }
 
-      // if (data.arcPlot) {
-      //   new CGV.ArcPlot(this, data.arcPlot);
+      // if (data.plot) {
+      //   new CGV.Plot(this, data.plot);
       // }
     }
 
@@ -8177,8 +8289,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._features.length > 0
     }
 
-    get hasArcPlot() {
-      return this._arcPlot
+    get hasPlot() {
+      return this._plot
     }
 
     replaceFeatures(features) {
@@ -8268,9 +8380,12 @@ if (window.CGV === undefined) window.CGV = CGView;
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) &&
-               (this.sequence.subtractBp(start, stop) > largestLength) ) {
-            start = range.getStartPlus(-largestLength);
+          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
+            if (this.sequence.subtractBp(start, stop) <= largestLength) {
+              start = range.getStopPlus(1);
+            } else {
+              start = range.getStartPlus(-largestLength);
+            }
             featureCount = this._featureStarts.countFromRange(start, stop);
           }
           var step = 1;
@@ -8283,7 +8398,7 @@ if (window.CGV === undefined) window.CGV = CGView;
             // e.g. When zooming all the features visible at a step of 16
             // will be visible when the step is 8 and so on.
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
-            step = Math.pow(2, Math.ceil(Math.log(initialStep) / Math.log(2)));
+            step = CGV.base2(initialStep);
           }
           // Draw Features
           this._featureStarts.eachFromRange(start, stop, step, (i) => {
@@ -8294,8 +8409,8 @@ if (window.CGV === undefined) window.CGV = CGView;
             var index = this.viewer._slots.indexOf(this);
             this.viewer.debug.data.n['slot_' + index] = featureCount;
           }
-        } else if (this.hasArcPlot) {
-          this._arcPlot.draw(canvas, slotRadius, slotThickness, fast, range);
+        } else if (this.hasPlot) {
+          this._plot.draw(canvas, slotRadius, slotThickness, fast, range);
         }
       }
     }
@@ -8338,7 +8453,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     constructor(layout, data = {}, display = {}, meta = {}) {
       this.layout = layout;
-      this._arcPlot;
+      this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this.name = CGV.defaultFor(data.name, 'Unknown')
@@ -8489,14 +8604,14 @@ if (window.CGV === undefined) window.CGV = CGView;
         var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
         if (sequenceExtractor) {
           // This could be the fallback if not able to use workers
-          // this._arcPlot = sequenceExtractor.extractPlot(this.contents.plot);
+          // this._plot = sequenceExtractor.extractPlot(this.contents.plot);
           sequenceExtractor.generatePlot(this, this.contents.plot);
         }
       } else if (this.contents.plot.source) {
         // Plot with particular Source
         this.viewer.plots().find( (plot) => {
           if (plot.source == this.contents.plot.source) {
-            this._arcPlot = plot;
+            this._plot = plot;
           }
         });
       }
@@ -8614,7 +8729,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updatePlotSlot() {
       this._slots = new CGV.CGArray();
       var slot = new CGV.Slot(this, {type: 'plot'});
-      slot._arcPlot = this._arcPlot;
+      slot._plot = this._plot;
     }
 
   }
@@ -9028,6 +9143,13 @@ if (window.CGV === undefined) window.CGV = CGView;
    */
   CGV.oppositeSigns = function(a, b) {
     return (a * b) < 0
+  }
+
+  /**
+   * Return the next largest base 2 value for the given number
+   */
+  CGV.base2 = function(value) {
+    return Math.pow(2, Math.ceil(Math.log(value) / Math.log(2)));
   }
 
   /**

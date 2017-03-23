@@ -6,8 +6,8 @@
   /**
    * <br />
    * A *legendItem* is used to add text to a map *legend*. Individual
-   * *Features* and *ArcPlots* can be linked to a *legendItem*, so that the feature
-   * or arcPlot color will use the swatchColor of *legendItem*.
+   * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
+   * or plot color will use the swatchColor of *legendItem*.
    */
   class LegendItem extends CGV.CaptionItem {
 
@@ -82,6 +82,17 @@
         this._swatchColor.setColor(color);
       }
       this.refresh();
+    }
+
+    /**
+     * @member {Color} - Alias for  [swatchColor](LegendItem.html#swatchColor).
+     */
+    get color() {
+      return this.swatchColor
+    }
+
+    set color(color) {
+      this.swatchColor = color
     }
 
     /**

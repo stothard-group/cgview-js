@@ -10,7 +10,6 @@
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      // this._color = new CGV.Color(data.color);
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
@@ -23,12 +22,7 @@
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
-      if (data.legend && data.legend.toString() == 'LegendItem') {
-        this.legendItem  = data.legend;
-      } else {
-        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
-        this.legendItem  = viewer.legend.findLegendItemOrCreate(data.legend);
-      }
+      this.legendItem  = data.legend;
     }
 
     /**
@@ -65,36 +59,6 @@
     set extractedFromSequence(value) {
       this._extractedFromSequence = value;
     }
-
-    // /**
-    //  * @member {Slot} - Get or set the *Slot*
-    //  */
-    // get slot() {
-    //   return this._slot
-    // }
-    //
-    // set slot(slot) {
-    //   if (this.slot) {
-    //     // TODO: Remove if already attached to Slot
-    //   }
-    //   this._slot = slot;
-    //   slot._features.push(this);
-    // }
-
-    // /**
-    //  * @member {Track} - Get or set the *Track*
-    //  */
-    // get track() {
-    //   return this._track
-    // }
-    //
-    // set track(track) {
-    //   if (this.track) {
-    //     // TODO: Remove if already attached to Track
-    //   }
-    //   this._track = track;
-    //   track._features.push(this);
-    // }
 
     /**
      * @member {Viewer} - Get the *Viewer*
@@ -186,19 +150,6 @@
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
-    // FIXME: should you be able to change feature color directly??
-    // set color(color) {
-    //   if (color.toString() == 'Color') {
-    //     this._color = color;
-    //   } else {
-    //     if (this._color && this._color.toString() == 'Color') {
-    //       this._color.setColor(color);
-    //     } else {
-    //       this._color = new CGV.Color(color);
-    //     }
-    //   }
-    // }
-
     /**
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
      */
@@ -214,23 +165,33 @@
       }
     }
 
-    // set decoration(value) {
-    //   this._decoration = value;
-    // }
-
     /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-     *   override the color and opacity set for this feature.
+     * @member {LegendItem} - Get or set the LegendItem. The LegendItem can be set with a LegendItem object
+     *   or with the name of a legenedItem.
      */
     get legendItem() {
       return this._legendItem;
     }
 
     set legendItem(value) {
-      this._legendItem = value;
+      if (this.legendItem && value == undefined) { return }
+      if (value && value.toString() == 'LegendItem') {
+        this._legendItem  = value
+      } else {
+        this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
+      }
     }
 
+    /**
+     * @member {LegendItem} - Alias for [legendItem](Feature.html#legendItem).
+     */
+    get legend() {
+      return this.legendItem;
+    }
+
+    set legend(value) {
+      this.legendItem = value;
+    }
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {

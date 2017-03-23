@@ -15,6 +15,7 @@
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 	<link rel="stylesheet" href="styles/prettify-jsdoc.css">
 	<link rel="stylesheet" href="styles/prettify-tomorrow.css">
+	<link rel="stylesheet" href="../stylesheets/tutorial.css">
 	<!-- <link rel="stylesheet" href="docs/styles/jaguar.css"> -->
 
   <!-- Prerequisites -->
@@ -25,19 +26,13 @@
   <!-- CGView -->
   <script src='../src/CGView.js'></script>
   <link rel="stylesheet" href="../stylesheets/cgview.css" />
-  <style>
-    div#main {
-      margin-top: 55px;
-      margin-left: 5px;
-    }
-  </style>
 </head>
 <body>
 
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -64,27 +59,29 @@
   <div id='main'>
 		<div id='markdown-out'></div>
 		<div>
-		  <p>The Viewer (id='my-viewer')</p>
 			<div id='my-viewer'></div>
 		</div>
     <div id='final-code'>
-		  <p>Comlete Code without Comments:</p>
+		  <h2>Complete Code without Comments:</h2>
 			<pre class='prettyprint'><code class='lang-js final'></code></pre></div>
   </div>
 
 <div id='markdown-in' style='display:none;'>
 
-## Basic Map ##
+# Basic Map #
 
-### Creating a New CGView Viewer ###
+In this tutorial, a simple map will be created. Maps consist of
+[features](Feature.html) and/or [plots](Plot.html). How the features
+and plots are organized on the map is through the viewer [Layout](Layout.html).
+The [Layout](Layout.html) consists of one or more [Tracks](Track.html) where each
+[Track](Track.html) describes which features/plots it consists of and how they should be displayed.
+For example the [Track](Track.html) can show [Features](Feature.html) as separated by strand as two
+[Slots](Slot.html) or combined as a single [Slot](Slot.html). Each [Slot](Slot.html) represents a single
+ring on the map.
 
-Create a container for the viewer in HTML:
+[Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
 
-```html
-<div id='my-viewer'></div>
-```
-
-Create a new [Viewer](Viewer.html)
+## Create a new [Viewer](Viewer.html) ##
 
 The *Viewer* is the main object in CGView.js. While many options can be
 provided when creating the viewer, the most important is the sequence option.
@@ -93,9 +90,10 @@ example, we will simply use the length. See the [Sequence Map](sequence_map.html
 tutorial to see the benefits of using the sequence.
 
 ```js
+// The first argument is the id of the container that will hold the viewer.
 cgv = new CGV.Viewer('#my-viewer', {
-  height: 600,
-  width: 600,
+  height: 400,
+  width: 400,
   sequence: {
     // The length of the sequence
     length: 1000
@@ -103,15 +101,14 @@ cgv = new CGV.Viewer('#my-viewer', {
 });
 ```
 
-Maps are made up of [Tracks](Track.html) that contain [Features](Feature.html) or [Plots](ArcPlot.html).
-
-Let's create a [Feature](Feature.html) on the forward strand.
+## Create a [Feature](Feature.html) on the forward strand. ##
 
 ```js
 new CGV.Feature(cgv, {
   // Feature type. Used to determine how the feature is drawn (e.g. arrow or arc).
   // If a FeatureType with this name does not exist, a new FeatureType will be
-  // created with this name and the default settings (e.g. the decoration will be an 'arc').
+  // created with this name and the default settings
+  // (e.g. the decoration will be an 'arc').
   type: 'CDS',
   // Name of the feature.
   label: 'My Feature Name',
@@ -130,7 +127,7 @@ new CGV.Feature(cgv, {
 });
 ```
 
-Now we'll create a [Feature](Features.html) on the reverse strand.
+## Create a [Feature](Feature.html) on the reverse strand. ##
 
 ```js
 new CGV.Feature(cgv, {
@@ -146,69 +143,84 @@ new CGV.Feature(cgv, {
 
 #TODO - CHANGE DECORATION AND COLOR
 
-Now we'll create a plot. Plots consist of an array of positions (in bp) and a
-matching array of scores with values between 0 and 1.
+## Create a [Plot](Plot.html). ##
+
+Now we'll create a [plot](Plot.html). Plots consist of an array of positions (in bp) and a
+matching array of scores with values between 0 and 1. An optional baseline can be provided (default 0.5).
+Values above the baseline are positive and values below the baseline are negative.
 
 ```js
-var positions = [];
-var scores = [];
-var currentScore = 0.5;
-for (var i = 1, len = 1000; i < len; i++) {
-  positions.push(i);
-  currentScore += (currentScore > Math.random()) ? -0.01 : 0.01;
-  scores.push( currentScore );
-}
 
-new CGV.ArcPlot(cgv, {
-  positions: positions,
-  scores: scores,
-  source: 'genome-plot'
+var plot = new CGV.Plot(cgv, {
+  positions: [50, 200, 400, 500, 600, 800],
+  scores: [0.4, 0.75, 0.25, 0.5, 0.6, 0.1],
+  baseline: 0.5,
+  source: 'genome-plot',
+  // Values above the baseline wil be blue
+  legendPositive: new CGV.LegendItem(cgv.legend, {swatchColor: 'blue', text: 'Plot +'}),
+  // Values below will be red
+  legendNegative: new CGV.LegendItem(cgv.legend, {swatchColor: 'red', text: 'Plot -'})
 });
 ```
 
 
-Create [Track](Track.html), which is a part of the the Viewer [Layout](Layout.html)
+## Create a [Track](Track.html) for the features. ##
+
+Each Track can contain one or more Features or a single Plot.
+
 ```js
+// The first argument for a track is the viewer layout
 new CGV.Track(cgv.layout, {
   // Name for the track.
   name: 'My track',
-  // Draw the track using separated or combined slots for each reading frame. Options: 'separated', 'combined'.
+  // Draw the track using separated or combined slots for each reading frame.
+  // Options: 'separated', 'combined'.
   readingFrame: 'combined',
-  // Draw the track using separated or combined slots for the forward and reverse strand. Options: 'separated', 'combined'.
+  // Draw the track using separated or combined slots for the forward and reverse strand.
+  // Options: 'separated', 'combined'.
   strand: 'separated',
-  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
   position: 'both',
   // Here we describe what features or plot will be in the track.
   contents: {
     // What type of track is this. Options: 'features' or 'plot'.
     features: {
-      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
-      source: 'genome-features' // All features with the source 'genome-features' will be added to this track.
+      // Which Features to use.
+      // Options: 'source', 'types' or 'sequence' (see examples below).
+      // All features with the source 'genome-features' will be added to this track.
+      source: 'genome-features'
     }
   }
 });
 ```
+
+## Create a [Track](Track.html) for the plot. ##
 
 ```js
 new CGV.Track(cgv.layout, {
   // Name for the track.
   name: 'My Plot Track',
   // Note, that the readingFrame and strand options are ignores for plots.
-  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
   position: 'inside',
   // Here we describe what features or plot will be in the track.
   contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
+    // What type of track is this
+    // Options: 'features' or 'plot'.
     plot: {
-      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
-      source: 'genome-plot' // The first plot with this source will be drawn.
+      // Which Features to use.
+      // Options: 'source', 'types' or 'sequence' (see examples below).
+      // The first plot with this source will be drawn.
+      source: 'genome-plot'
     }
   }
 });
 ```
-[Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
 
-Draw the Map
+## Draw the Map ##
+
 ```js
 cgv.drawFull();
 ```
@@ -220,6 +232,7 @@ If you want play around with the viewer object, open your browser web inspector.
 
 <script>
 	// Convert Markdown to HTML
+  // https://github.com/chjj/marked
   //marked.setOptions({
   //  sanitize: true
   //});
@@ -228,6 +241,8 @@ If you want play around with the viewer object, open your browser web inspector.
 			var tok = marked_.lexer(text);
 			text = marked_.parser(tok);
 			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
+      text = text.replace(/&amp;gt;/g, '>');
+      text = text.replace(/&amp;lt;/g, '<');
 			return text;
 		};
 	$('#markdown-out').html( marked($('#markdown-in').html()) );
@@ -235,8 +250,8 @@ If you want play around with the viewer object, open your browser web inspector.
   // var code = '';
   $('code.lang-js:not(.final)').each( function(c) {
 	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
-    code = code.replace('&amp;lt;', '<');
-    code = code.replace('&amp;gt;', '>');
+    code = code.replace('&lt;', '<');
+    code = code.replace('&gt;', '>');
     console.log(code);
     eval( code );
 		$('#final-code code').append( code + "\n" );

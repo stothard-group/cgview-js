@@ -407,6 +407,13 @@
   }
 
   /**
+   * Return the next largest base 2 value for the given number
+   */
+  CGV.base2 = function(value) {
+    return Math.pow(2, Math.ceil(Math.log(value) / Math.log(2)));
+  }
+
+  /**
    * Merges top level properties of each supplied object.
    * ```javascript
    * CGV.merge({a:1, b:1}, {b:2, c:2}, {c:3, d:3});

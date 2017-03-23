@@ -38,7 +38,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -72,37 +72,6 @@
         <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
     </div>
     <ul class="list">
-    
-        <li class="item" data-name="ArcPlot">
-            <span class="title">
-                <a href="ArcPlot.html">ArcPlot</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="ArcPlot#baseline"><a href="ArcPlot.html#baseline">baseline</a></li>
-            
-                <li data-name="ArcPlot#legendItem"><a href="ArcPlot.html#legendItem">legendItem</a></li>
-            
-                <li data-name="ArcPlot#positions"><a href="ArcPlot.html#positions">positions</a></li>
-            
-                <li data-name="ArcPlot#score"><a href="ArcPlot.html#score">score</a></li>
-            
-                <li data-name="ArcPlot#viewer"><a href="ArcPlot.html#viewer">viewer</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
     
         <li class="item" data-name="Backbone">
             <span class="title">
@@ -570,6 +539,8 @@
             
                 <li data-name="Feature#label"><a href="Feature.html#label">label</a></li>
             
+                <li data-name="Feature#legend"><a href="Feature.html#legend">legend</a></li>
+            
                 <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
             
                 <li data-name="Feature#range"><a href="Feature.html#range">range</a></li>
@@ -764,6 +735,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="LegendItem#color"><a href="LegendItem.html#color">color</a></li>
+            
                 <li data-name="LegendItem#drawSwatch"><a href="LegendItem.html#drawSwatch">drawSwatch</a></li>
             
                 <li data-name="LegendItem#legend"><a href="LegendItem.html#legend">legend</a></li>
@@ -855,6 +828,49 @@
                 <li data-name="Messenger#open"><a href="Messenger.html#open">open</a></li>
             
                 <li data-name="Messenger#toString"><a href="Messenger.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Plot">
+            <span class="title">
+                <a href="Plot.html">Plot</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Plot#baseline"><a href="Plot.html#baseline">baseline</a></li>
+            
+                <li data-name="Plot#color"><a href="Plot.html#color">color</a></li>
+            
+                <li data-name="Plot#legend"><a href="Plot.html#legend">legend</a></li>
+            
+                <li data-name="Plot#legendItem"><a href="Plot.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Plot#legendItemNegative"><a href="Plot.html#legendItemNegative">legendItemNegative</a></li>
+            
+                <li data-name="Plot#legendItemPositive"><a href="Plot.html#legendItemPositive">legendItemPositive</a></li>
+            
+                <li data-name="Plot#legendNegative"><a href="Plot.html#legendNegative">legendNegative</a></li>
+            
+                <li data-name="Plot#legendPositive"><a href="Plot.html#legendPositive">legendPositive</a></li>
+            
+                <li data-name="Plot#positions"><a href="Plot.html#positions">positions</a></li>
+            
+                <li data-name="Plot#score"><a href="Plot.html#score">score</a></li>
+            
+                <li data-name="Plot#viewer"><a href="Plot.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -1191,7 +1207,6 @@
      */
     constructor(viewer, data = {}, display = {}, meta = {}) {
       this.viewer = viewer;
-      // this._color = new CGV.Color(data.color);
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
@@ -1204,12 +1219,7 @@
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
-      if (data.legend &amp;&amp; data.legend.toString() == 'LegendItem') {
-        this.legendItem  = data.legend;
-      } else {
-        this.legendItem  = viewer.legend.findLegendItemByName(data.legend);
-        this.legendItem  = viewer.legend.findLegendItemOrCreate(data.legend);
-      }
+      this.legendItem  = data.legend;
     }
 
     /**
@@ -1246,36 +1256,6 @@
     set extractedFromSequence(value) {
       this._extractedFromSequence = value;
     }
-
-    // /**
-    //  * @member {Slot} - Get or set the *Slot*
-    //  */
-    // get slot() {
-    //   return this._slot
-    // }
-    //
-    // set slot(slot) {
-    //   if (this.slot) {
-    //     // TODO: Remove if already attached to Slot
-    //   }
-    //   this._slot = slot;
-    //   slot._features.push(this);
-    // }
-
-    // /**
-    //  * @member {Track} - Get or set the *Track*
-    //  */
-    // get track() {
-    //   return this._track
-    // }
-    //
-    // set track(track) {
-    //   if (this.track) {
-    //     // TODO: Remove if already attached to Track
-    //   }
-    //   this._track = track;
-    //   track._features.push(this);
-    // }
 
     /**
      * @member {Viewer} - Get the *Viewer*
@@ -1367,19 +1347,6 @@
       return (this.legendItem) ? this.legendItem.swatchColor : this._color;
     }
 
-    // FIXME: should you be able to change feature color directly??
-    // set color(color) {
-    //   if (color.toString() == 'Color') {
-    //     this._color = color;
-    //   } else {
-    //     if (this._color &amp;&amp; this._color.toString() == 'Color') {
-    //       this._color.setColor(color);
-    //     } else {
-    //       this._color = new CGV.Color(color);
-    //     }
-    //   }
-    // }
-
     /**
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
      */
@@ -1395,23 +1362,33 @@
       }
     }
 
-    // set decoration(value) {
-    //   this._decoration = value;
-    // }
-
     /**
-     * @member {LegendItem} - Get or set the LegendItem. If a LegendItem is associated with this feature,
-     *   the LegendItem swatch Color and Opacity will be used for drawing this feature. The swatch settings will
-     *   override the color and opacity set for this feature.
+     * @member {LegendItem} - Get or set the LegendItem. The LegendItem can be set with a LegendItem object
+     *   or with the name of a legenedItem.
      */
     get legendItem() {
       return this._legendItem;
     }
 
     set legendItem(value) {
-      this._legendItem = value;
+      if (this.legendItem &amp;&amp; value == undefined) { return }
+      if (value &amp;&amp; value.toString() == 'LegendItem') {
+        this._legendItem  = value
+      } else {
+        this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
+      }
     }
 
+    /**
+     * @member {LegendItem} - Alias for [legendItem](Feature.html#legendItem).
+     */
+    get legend() {
+      return this.legendItem;
+    }
+
+    set legend(value) {
+      this.legendItem = value;
+    }
 
 
     draw(canvas, slotRadius, slotThickness, visibleRange) {
@@ -1481,7 +1458,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 15 2017 15:48:32 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 23 2017 14:16:22 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

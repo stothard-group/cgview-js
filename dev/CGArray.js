@@ -114,19 +114,26 @@
     // The idea is to alter the start index based on the step so the same
     // indices should be returned. i.e. the indices should be divisible by the step.
     if (startIndex > 0 && step > 1) {
-      // startIndex = startIndex - (startIndex % step);
       startIndex += step - (startIndex % step);
     }
     if (stopValue >= startValue) {
+      // Return if both start and stop are between values in array
+      if (this[startIndex] > stopValue || this[stopIndex] < startValue) { return }
       for (var i = startIndex; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);
       }
     } else {
-      for (var i = startIndex, len = this.length; i < len; i += step) {
-        callback.call(this[i], i, this[i]);
+      // Skip cases where the the start value is greater than the last value in array
+      if (this[startIndex] >= startValue) {
+        for (var i = startIndex, len = this.length; i < len; i += step) {
+          callback.call(this[i], i, this[i]);
+        }
       }
-      for (var i = 0; i <= stopIndex; i += step) {
-        callback.call(this[i], i, this[i]);
+      // Skip cases where the the stop value is less than the first value in array
+      if (this[stopIndex] <= stopValue) {
+        for (var i = 0; i <= stopIndex; i += step) {
+          callback.call(this[i], i, this[i]);
+        }
       }
     }
     return this;

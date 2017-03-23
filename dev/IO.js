@@ -216,21 +216,21 @@
     //       }
     //     }
     //   }
-    //   // ArcPlots
-    //   var arcPlots = viewer.arcPlots();
-    //   var arcPlot;
-    //   for (var i = 0, len = arcPlots.length; i < len; i++) {
-    //     arcPlot = arcPlots[i];
+    //   // Plots
+    //   var plots = viewer.plots();
+    //   var plot;
+    //   for (var i = 0, len = plots.length; i < len; i++) {
+    //     plot = plots[i];
     //     for (var j = 0; j < itemsLength; j++) {
     //       legendItem = swatchedLegendItems[j];
-    //       if (arcPlot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItem = legendItem;
+    //       if (plot._color.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItem = legendItem;
     //       }
-    //       if (arcPlot._colorPositive && arcPlot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItemPositive = legendItem;
+    //       if (plot._colorPositive && plot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItemPositive = legendItem;
     //       }
-    //       if (arcPlot._colorNegative && arcPlot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         arcPlot.legendItemNegative = legendItem;
+    //       if (plot._colorNegative && plot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
+    //         plot.legendItemNegative = legendItem;
     //       }
     //     }
     //   }
