@@ -70,16 +70,14 @@
 
 # Basic Map #
 
-In this tutorial, a simple map will be created. Maps consist of
-[features](Feature.html) and/or [plots](Plot.html). How the features
+CGView Maps consist of [features](Feature.html) and/or [plots](Plot.html). How the features
 and plots are organized on the map is through the viewer [Layout](Layout.html).
 The [Layout](Layout.html) consists of one or more [Tracks](Track.html) where each
 [Track](Track.html) describes which features/plots it consists of and how they should be displayed.
-For example the [Track](Track.html) can show [Features](Feature.html) as separated by strand as two
-[Slots](Slot.html) or combined as a single [Slot](Slot.html). Each [Slot](Slot.html) represents a single
-ring on the map.
-
 [Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
+Each [Slot](Slot.html) represents a single ring on the map.
+For example a [Track](Track.html) can draw [Features](Feature.html) separated by strand as two
+[Slots](Slot.html) or combined as a single [Slot](Slot.html).
 
 ## Create a new [Viewer](Viewer.html) ##
 
@@ -92,8 +90,8 @@ tutorial to see the benefits of using the sequence.
 ```js
 // The first argument is the id of the container that will hold the viewer.
 cgv = new CGV.Viewer('#my-viewer', {
-  height: 400,
-  width: 400,
+  height: 500,
+  width: 500,
   sequence: {
     // The length of the sequence
     length: 1000
@@ -111,7 +109,7 @@ new CGV.Feature(cgv, {
   // (e.g. the decoration will be an 'arc').
   type: 'CDS',
   // Name of the feature.
-  label: 'My Feature Name',
+  label: 'Feature',
   // Beginning of the feature in bp. Must be <= stop.
   start: 100,
   // End of the feature in bp. Must be >= start.
@@ -141,7 +139,26 @@ new CGV.Feature(cgv, {
 });
 ```
 
-#TODO - CHANGE DECORATION AND COLOR
+## Change the colors of the Features
+The [color](Color.html) of features is altered through the [LegendItem](LegendItem.html).
+
+```js
+// Find the legend item
+var legendItem = cgv.legend.items('CDS')
+// Change the color. The color can be a color name, RGB, or RGBA.
+legendItem.color = 'green'
+```
+
+## Change the decoration of the Features
+Features can be draw as arcs or as arrows.
+The decoration of features is altered through the [FeatureType](FeatureType.html).
+
+```js
+// Find the feature type
+var featureType = cgv.featureTypes('CDS')
+// Change the decoration. Options: 'arc', 'arrow'
+featureType.decoration = 'arrow'
+```
 
 ## Create a [Plot](Plot.html). ##
 
@@ -252,7 +269,7 @@ If you want play around with the viewer object, open your browser web inspector.
 	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
     code = code.replace('&lt;', '<');
     code = code.replace('&gt;', '>');
-    console.log(code);
+    // console.log(code);
     eval( code );
 		$('#final-code code').append( code + "\n" );
   });

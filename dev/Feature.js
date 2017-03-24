@@ -75,6 +75,14 @@
       viewer._features.push(this);
     }
 
+    /**
+     * @member {Canvas} - Get the *Canvas*
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+
     get strand() {
       return this._strand;
     }
@@ -194,12 +202,14 @@
     }
 
 
-    draw(canvas, slotRadius, slotThickness, visibleRange) {
+    draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
       if (this.range.overlapsRange(visibleRange)) {
+        var canvas = this.canvas;
         var start = this.start;
         var stop = this.stop;
         var containsStart = visibleRange.contains(start);
         var containsStop = visibleRange.contains(stop);
+        var color = options.color || this.color;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -207,21 +217,21 @@
           stop = visibleRange.stop + 100;
         }
         // When zoomed in, if the feature starts in the visible range and wraps around to end
-        // in the visible range, the feature should be draw as 2 arcs.
+        // in the visible range, the feature should be drawn as 2 arcs.
         if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
 
-          canvas.drawArc('map', visibleRange.start - 100, stop,
+          canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
-          canvas.drawArc('map', start, visibleRange.stop + 100,
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+          canvas.drawArc(layer, start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         } else {
-          canvas.drawArc('map', start, stop,
+          canvas.drawArc(layer, start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         }
       }
     }

@@ -183,6 +183,32 @@
       return this._largestFeatureLength
     }
 
+    /**
+     * Does the slot contain the given *radius*.
+     * @param {Number} radius - The radius.
+     * @return {Boolean}
+     */
+    containsRadius(radius) {
+      var halfthickness = this.thickness / 2;
+      return (radius >= (this.radius - halfthickness)) && (radius <= (this.radius + halfthickness))
+    }
+
+    /**
+     * Return the first feature in this slot that contains the given bp.
+     * @param {Number} bp - the position in bp to search for.
+     * @return {Feature}
+     */
+    findFeatureForBp(bp) {
+      var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
+      var feature;
+      this._featureStarts.eachFromRange(start, bp, 1, (i) => {
+        if (!feature && this._features[i].range.contains(bp)) {
+          feature = this._features[i];
+        }
+      });
+      return feature
+    }
+
     findLargestFeatureLength() {
       var length = 0;
       var nextLength;
@@ -250,7 +276,7 @@
           }
           // Draw Features
           this._featureStarts.eachFromRange(start, stop, step, (i) => {
-            this._features[i].draw(canvas, slotRadius, slotThickness, range);
+            this._features[i].draw('map', slotRadius, slotThickness, range);
           })
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {

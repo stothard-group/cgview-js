@@ -260,7 +260,6 @@
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
 
       if (decoration == 'arc') {

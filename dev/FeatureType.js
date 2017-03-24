@@ -32,14 +32,25 @@
     }
 
     /**
-     * @member {type} - Get or set the *type*
+     * @member {String} - Get or set the *name*
      */
-    get type() {
-      return this._type
+    get name() {
+      return this._name
     }
 
-    set type(value) {
-      this._type = value;
+    set name(value) {
+      this._name = value;
+    }
+
+    /**
+     * @member {String} - Alias for [name](FeatureType.html#name)
+     */
+    get id() {
+      return this.name
+    }
+
+    set id(value) {
+      this.name = value;
     }
 
     /**

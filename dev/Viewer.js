@@ -35,6 +35,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * layout          | Object | [Layout](Layout.html) options
      * ruler           | Object | [Ruler](Ruler.html) options
      * annotation      | Object | [Annotation](Annotation.html) options
+     * highlighter     | Object | [Highlighter](Highlighter.html) options
      *
      */
     constructor(containerId, options = {}) {
@@ -82,6 +83,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
       this.ruler = new CGV.Ruler(this, options.ruler);
+      // Initialize Highlighter
+      this.highlighter = new CGV.Highlighter(this, options.highlighter);
       // Initialize Events
       this.initializeDragging();
       this.initializeZooming();

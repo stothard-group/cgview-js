@@ -22,7 +22,7 @@
       this._initializeMousemove();
       this._initializeClick();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
-      // this.events.on('click', (e) => {console.log(e)})
+      this.events.on('click', (e) => {console.log(e)})
 
       this.events.on('mousemove', (e) => {
         // console.log(e.bp);
@@ -30,6 +30,8 @@
         if (this.viewer.debug && this.viewer.debug.data.position) {
           this.viewer.debug.data.position['xy'] = Math.round(e.mapX) + ', ' + Math.round(e.mapY);
           this.viewer.debug.data.position['bp'] = e.bp;
+          this.viewer.debug.data.position['feature'] = e.feature && e.feature.label.name;
+          this.viewer.debug.data.position['score'] = e.score;
           this.canvas.clear('ui');
           this.viewer.debug.draw(this.canvas.context('ui'));
         }
@@ -37,7 +39,7 @@
 
       this._legendSwatchClick();
       this._legendSwatchMouseOver();
-
+      this._highlighterMouseOver();
     }
 
     /**
@@ -73,9 +75,18 @@
       var mapX = scale.x.invert(canvasX);
       var mapY = scale.y.invert(canvasY);
       var radius = Math.sqrt( mapX*mapX + mapY*mapY);
+      var slot = this.viewer.layout.slotForRadius(radius);
+      var bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      var feature = slot && slot.findFeatureForBp(bp);
+      var plot = slot && slot._plot;
+      var score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {
-        bp: this.canvas.bpForPoint({x: mapX, y: mapY}),
+        bp: bp,
         radius: radius,
+        slot: slot,
+        feature: feature,
+        plot: plot,
+        score: score,
         canvasX: canvasX,
         canvasY: canvasY,
         mapX: mapX,
@@ -134,6 +145,38 @@
         if (oldHighlightedItem && !legend.highlightedSwatchedItem) {
           this.canvas.cursor = 'auto';
           legend.draw();
+        }
+      });
+    }
+
+    _highlighterMouseOver() {
+      var viewer = this.viewer;
+      var highlighter = viewer.highlighter;
+      var colorAdjustment = 0.25;
+      this.events.on('mousemove.highlighter', (e) => {
+        if (e.feature) {
+          var color = e.feature.color.copy();
+          // var hsv = color.hsv;
+          // hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
+          // color.hsv = hsv;
+          color.highlight();
+          e.feature.draw('ui', e.slot.radius, e.slot.thickness, e.slot.visibleRange, {color: color});
+        } else if (e.plot) {
+          var score = e.plot.scoreForPosition(e.bp);
+          if (score) {
+            var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+            var start = e.plot.positions[startIndex];
+            var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+            var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+            var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
+            var thickness = Math.abs(baselineRadius - scoredRadius);
+            var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+            var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+            color.highlight();
+
+            viewer.canvas.drawArc('ui', start, stop, radius, color, thickness);
+          }
+
         }
       });
     }

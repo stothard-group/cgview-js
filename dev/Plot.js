@@ -193,6 +193,15 @@
       }
     }
 
+    scoreForPosition(bp) {
+      var index = CGV.indexOfValue(this.positions, bp);
+      if (index == 0 && bp < this.positions[index]) {
+        return undefined
+      } else {
+        return this.scores[index]
+      }
+    }
+
     draw(canvas, slotRadius, slotThickness, fast, range) {
       // var startTime = new Date().getTime();
       if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {

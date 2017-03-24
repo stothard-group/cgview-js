@@ -33,3 +33,33 @@ new CGV.LegendItem(cgv.legend, {
   swatchColor: 'rgba(200, 150, 150, 0.8)'
 });
 ```
+
+Examples of contents
+```js
+contents: {
+  features: {
+    // Features can be extracted from the sequence (if it's been added to the viewer).
+    // What should be extracted. Options: 'orfs', 'start_stop_codons'
+    sequence: orfs,
+    // Additional options can also be provided.
+    // In this case, what start and stop codons to use.
+    start: 'ATG',
+    stop: 'TAA,TAG,TGA'
+  }
+}
+```
+
+
+
+LOAD JSON
+
+```js
+cgv.loadJSON(jsonData);
+```
+
+The format of the JSON...
+
+
+
+## TODO
+* Have image of map and parts (e.g. track, slot, caption, ruler, etc)

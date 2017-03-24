@@ -152,6 +152,16 @@
     get hla() {
     }
 
+    copy() {
+      return new CGV.Color(this.rgbaString)
+    }
+
+    highlight(colorAdjustment = 0.25) {
+      var hsv = this.hsv;
+      hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
+      this.hsv = hsv;
+    }
+
     /**
      * Update the internal RGBA String using the current opacity property.
      * @private

@@ -34,6 +34,12 @@
       return this._viewer
     }
 
+    /** * @member {Canvas} - Get the *Canvas*
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
     /** * @member {Number} - Get the inside radius
      */
     get insideRadius() {
@@ -114,6 +120,18 @@
       return slots.get(term);
     }
 
+    slotForRadius(radius) {
+      var slots = this.slots();
+      var slot;
+      for (var i=0, len=slots.length; i < len; i++) {
+        if (slots[i].containsRadius(radius)) {
+          slot = slots[i];
+          break;
+        }
+      }
+      return slot
+    }
+
     get slotLength() {
       return this._slotLength || 0
     }
@@ -140,7 +158,7 @@
     drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
-      var canvas = viewer.canvas;
+      var canvas = this.canvas;
       var startTime = new Date().getTime();
 
       viewer.clear();
@@ -171,7 +189,7 @@
       this.drawProgress();
       // Debug
       if (viewer.debug) {
-        viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
+        viewer.debug.data.time['fastDraw'] = CGV.elapsed_time(startTime);
         viewer.clear('ui');
         viewer.debug.draw(canvas.context('ui'));
       }
@@ -197,6 +215,7 @@
     drawFull() {
       this.drawMapWithoutSlots();
       this.drawAllSlots(true);
+      this._drawFullStartTime = new Date().getTime();
       this.drawSlotWithTimeOut(this);
     }
 
@@ -215,7 +234,7 @@
         track = this._tracks[i];
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];
-          slot.draw(this.viewer.canvas, fast)
+          slot.draw(this.canvas, fast)
         }
       }
     }
@@ -224,10 +243,13 @@
       var slots = layout.slots();
       var slot = slots[layout._slotIndex];
       slot.clear();
-      slot.draw(layout.viewer.canvas);
+      slot.draw(layout.canvas);
       layout._slotIndex++;
       if (layout._slotIndex < slots.length) {
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
+      } else if (layout.viewer.debug) {
+        layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
+        layout.viewer.debug.draw(layout.canvas.context('ui'));
       }
     }
 
@@ -307,7 +329,7 @@
     }
 
     drawProgress() {
-      this.viewer.canvas.clear('background');
+      this.canvas.clear('background');
       var track, slot, progress;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];

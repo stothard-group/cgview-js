@@ -576,7 +576,9 @@
             
                 <li data-name="FeatureType#decoration"><a href="FeatureType.html#decoration">decoration</a></li>
             
-                <li data-name="FeatureType#type"><a href="FeatureType.html#type">type</a></li>
+                <li data-name="FeatureType#id"><a href="FeatureType.html#id">id</a></li>
+            
+                <li data-name="FeatureType#name"><a href="FeatureType.html#name">name</a></li>
             
                 <li data-name="FeatureType#viewer"><a href="FeatureType.html#viewer">viewer</a></li>
             
@@ -628,6 +630,29 @@
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Highlighter">
+            <span class="title">
+                <a href="Highlighter.html">Highlighter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Highlighter#viewer"><a href="Highlighter.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -1075,6 +1100,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Slot#containsRadius"><a href="Slot.html#containsRadius">containsRadius</a></li>
+            
                 <li data-name="Slot#pixelsPerBp"><a href="Slot.html#pixelsPerBp">pixelsPerBp</a></li>
             
             </ul>
@@ -1229,8 +1256,8 @@ with resolutions upto 6000x6000 pixels.</p>
 <li>Copy <em>cgview.css</em> to your stylesheets folder and add a link to the file in your html:</li>
 </ul>
 <pre class="prettyprint source lang-html"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;stylesheets/cgview.css&quot; /></code></pre><h3>Overview</h3><p>CGView.js draws maps as a series of <a href="Track.html">Tracks</a> around the <a href="Backbone.html">Backbone</a>.
-The <em>Backbone</em> represents the sequence and if the seqeunce is provided to
-CGView.js, then you can actually zoom in far enough to see the sequence in the
+The <em>Backbone</em> represents the sequence and if the sequence is provided to
+CGView.js, then you can zoom in far enough to see the sequence in the
 backbone. <em>Tracks</em> contain either a <a href="Plot.html">Plot</a> or a set of
 <a href="Feature.html">Features</a>. <em>Tracks</em> are drawn as as one or more
 <a href="Slot.html">Slots</a> where each <em>Slot</em> is a single ring on the map. Slots outside
@@ -1343,6 +1370,11 @@ viewer.features('my_feature')</code></pre><table>
 <td>Provides control for the Menu.</td>
 </tr>
 <tr>
+<td><a href="Highlighter.html">Highlighter</a></td>
+<td><a href="Viewer.html#highlighter">highlighter</a></td>
+<td>Highlighter controls what happens when mousing over features/plots.</td>
+</tr>
+<tr>
 <td><a href="Feature.html">Feature</a></td>
 <td><a href="Viewer.html#features">features()</a></td>
 <td>Returns one or more Features.</td>
@@ -1365,101 +1397,10 @@ viewer.features('my_feature')</code></pre><table>
 </tbody>
 </table>
 <h3>Tutorials</h3><ul>
-<li>Basic Map: Learn how to create a simple map features and a plot</li>
+<li><a href="basic_map.html">Basic Map</a>: Learn how to create a simple map features and a plot</li>
 <li>Sequence Map: Learn how to create a map with features and plots extracted from the sequence.</li>
 <li>JSON Map: Learn how to create a map by importing from JSON.</li>
 <li>Helpful tips: Learch about some useful CGView.js tips.</li>
-</ul>
-<h3>Creating a New Viewer</h3><p>Create a container for the viewer in HTML:</p>
-<pre class="prettyprint source lang-html"><code>&lt;div id='my-viewer'>&lt;/div></code></pre><p>Create a new <a href="Viewer.html">Viewer</a></p>
-<p>The <em>Viewer</em> is the main object in CGView.js. While many options can be
-provided when creating the viewer, the most important is the sequence options.
-For the sequence, you can provide the length or the sequence itself. If the
-sequence is provided, you will be able to see the sequence when zoomed in far
-enough. Also with the sequence, you can easily create new tracks with plots
-(e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs) extracted
-from the sequence.</p>
-<pre class="prettyprint source lang-js"><code>cgv = new CGV.Viewer('#my-viewer', {
-  height: 600,
-  width: 600,
-  sequence: {
-    // Proved the sequence length
-    length: 100000
-    // Or the sequence itself
-    // seq: 'ATGCGATGCA...'
-  }
-});
-sv.flash('Loading...')</code></pre><p>Maps are made up of <a href="Track.html">Tracks</a> that contain <a href="Feature.html">Features</a> or <a href="ArcPlot.html">Plots</a>.</p>
-<p>Before creating a feature, a <a href="LegendItem.html">LegendItem</a> and <a href="FeatureType.html">FeatureType</a> should be created first
-to describe the shape and color of the feature.</p>
-<p>Create <a href="FeatureType.html">FeatureType</a></p>
-<pre class="prettyprint source lang-js"><code>new CGV.FeatureType(cgv, {
-  // Name of feature type.
-  name: 'CDS',
-  // How to draw features of this type. Options: 'arrow' or 'arc'
-  decoration: 'arrow'
-});</code></pre><p>Create <a href="LegendItem.html">LegendItem</a></p>
-<pre class="prettyprint source lang-js"><code>new CGV.LegendItem(cgv.legend, {
-  // Text of LegendItem label.
-  text: 'CDS',
-  // Color of swatch beside legend item. Features associated with
-  // this legend item will be drawn using this color. Colors can be rgb, rgba format
-  // or as a string (e.g. 'blue').
-  swatchColor: 'rgba(200, 150, 150, 0.8)'
-});</code></pre><p>Create <a href="Feature.html">Feature</a></p>
-<pre class="prettyprint source lang-js"><code>new CGV.Feature(cgv, {
-  // Feature type. Used to determine how the feature is drawn (e.g. arrow or arc).
-  // If a FeatureType with this name does not exist, a new FeatureType will be
-  // created with this name and the default settings (e.g. the decoration will be an 'arc').
-  type: 'CDS',
-  // Name of the feature.
-  label: 'My Feature Name',
-  // Beginning of the feature in bp. Must be &lt;= stop.
-  start: 100,
-  // End of the feature in bp. Must be >= start.
-  stop: 250,
-  // Which strand is the feature on. 1: forward strand; -1: reverse strand.
-  strand: 1,
-  // Used to group features into a track.
-  source: 'genome-features',
-  // Name of LegendItem to associate with the feature.
-  // If a LegendItem with this text does not exist, a new LegendItem will be created
-  // with this text and the default settings (e.g. the color will be 'black').
-  legend: 'CDS'
-});</code></pre><p>Create <a href="Track.html">Track</a>, which is a part of the the Viewer <a href="Layout.html">Layout</a></p>
-<pre class="prettyprint source lang-js"><code>new CGV.Track(cgv.layout, {
-  // Name for the track.
-  name: 'My track',
-  // Draw the track using separated or combined slots for each reading frame. Options: 'separated', 'combined'.
-  readingFrame: 'combined',
-  // Draw the track using separated or combined slots for the forward and reverse strand. Options: 'separated', 'combined'.
-  strand: 'combined',
-  // Where to draw the track in relation to the backbone. Options: 'inside', 'outside', 'both'.
-  position: 'both',
-  // Here we describe what features or plot will be in the track.
-  contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
-    features: {
-      // Which Features to use. Options: 'source', 'types' or 'sequence' (see examples below).
-      source: 'genome-features' // All features with the source 'genome-features' will be added to this track.
-    }
-  }
-});</code></pre><p><a href="Track.html">Tracks</a> are drawn as one or more <a href="Slot.html">Slots</a> on the map.</p>
-<p>Examples of contents</p>
-<pre class="prettyprint source lang-js"><code>contents: {
-  features: {
-    // Features can be extracted from the sequence (if it's been added to the viewer).
-    // What should be extracted. Options: 'orfs', 'start_stop_codons'
-    sequence: orfs,
-    // Additional options can also be provided.
-    // In this case, what start and stop codons to use.
-    start: 'ATG',
-    stop: 'TAA,TAG,TGA'
-  }
-}</code></pre><p>LOAD JSON</p>
-<pre class="prettyprint source lang-js"><code>cgv.loadJSON(jsonData);</code></pre><p>The format of the JSON...</p>
-<h2>TODO</h2><ul>
-<li>Have image of map and parts (e.g. track, slot, caption, ruler, etc)</li>
 </ul></article>
     </section>
 
@@ -1471,7 +1412,7 @@ to describe the shape and color of the feature.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Mar 23 2017 14:16:22 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 24 2017 10:04:05 GMT-0600 (MDT)
         </footer>
     </div>
 </div>
