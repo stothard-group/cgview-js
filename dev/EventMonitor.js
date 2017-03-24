@@ -156,9 +156,6 @@
       this.events.on('mousemove.highlighter', (e) => {
         if (e.feature) {
           var color = e.feature.color.copy();
-          // var hsv = color.hsv;
-          // hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
-          // color.hsv = hsv;
           color.highlight();
           e.feature.draw('ui', e.slot.radius, e.slot.thickness, e.slot.visibleRange, {color: color});
         } else if (e.plot) {

@@ -60,7 +60,8 @@
 
       if (json.plots) {
         json.plots.forEach((plotData) => {
-          // new CGV.Feature(viewer, featureData);
+          console.log('PLOT')
+          new CGV.Plot(viewer, plotData);
         });
       }
 

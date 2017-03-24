@@ -300,9 +300,10 @@
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
 
-      // ctx.lineWidth = 1;
+      ctx.lineWidth = 0.25;
       // ctx.strokeStyle = 'black';
-      // ctx.stroke();
+      ctx.strokeStyle = color.rgbaString;
+      ctx.stroke();
 
     }
 

@@ -1,6 +1,7 @@
 require 'json'
 require 'yaml'
 require 'bio'
+require 'csv'
 
 
 class CGViewJSON
@@ -14,10 +15,12 @@ class CGViewJSON
     @cgview = initialize_cgview
     @options = options
     @features = []
+    @plots = []
     @debug = options[:debug]
     read_config(options[:config]) if options[:config]
     read_sequence(sequence_path)
     extract_features
+    read_gff_analysis(options[:analysis_path]) if options[:analysis_path]
     build_feature_types
     build_legend
     build_captions
@@ -175,6 +178,49 @@ class CGViewJSON
     end
   end
 
+  def read_gff_analysis(path)
+    starts = []
+    stops = []
+    raw_scores = []
+    CSV.foreach(path, col_sep: "\t", headers: true) do |row|
+      starts << row['start'].to_i
+      stops << row['end'].to_i
+      raw_scores << row['score'].to_f
+    end
+    max = raw_scores.max.to_f
+    min = raw_scores.min.to_f
+    baseline = 0
+    if min < 0
+      baseline = scale_score(0, min, max)
+    end
+    positions = []
+    scores = []
+    starts.each_with_index do |start, i|
+      stop = stops[i]
+      score = scale_score(raw_scores[i], min, max)
+      positions << start
+      scores << score
+      positions << stop
+      scores << baseline
+    end
+    puts(min)
+    puts(max)
+    puts(raw_scores[1..10])
+    puts(scores[1..10])
+
+    @plots.push({
+      source: 'analysis',
+      positions: positions,
+      scores: scores,
+      baseline: baseline
+    })
+
+  end
+
+  def scale_score(score, min, max)
+    (score - min) / (max - min)
+  end
+
   def build_tracks
     @tracks = [
       {
@@ -189,6 +235,18 @@ class CGViewJSON
         }
       }
     ]
+
+    if @options[:analysis_path]
+      @tracks << {
+        name: 'Analysis',
+        position: 'inside',
+        contents: {
+          plot: {
+            source: 'analysis'
+          }
+        }
+      }
+    end
   end
 
   def build_cgview
@@ -201,6 +259,10 @@ class CGViewJSON
     end
     # @cgview[:layout][:tracks] += @tracks
     @cgview[:layout][:tracks] = @tracks + @cgview[:layout][:tracks]
+    unless @plots.empty?
+      @cgview[:plots] = @plots
+    end
+
     @cgview[:captions] += @captions
   end
 
@@ -230,7 +292,14 @@ debug = false
 file = "data/sequences/NC_001823.gbk" # 70 KB
 # file = "data/sequences/NC_000907.gbk" # 1.8 MB
 # file = "data/sequences/NC_000913.gbk" # 4.6 MB
-cgview = CGViewJSON.new(file, config: "scripts/cgview_json_builder/config.yaml", debug: debug)
+config_path = 'scripts/cgview_json_builder/config.yaml'
+# cgview = CGViewJSON.new(file, config: config_path, debug: debug)
+
+file = "data/sequences/B_pert_TahomaI.gbk" # 4 MB
+config_path = 'scripts/cgview_json_builder/test_config.yaml'
+analysis_path = '/Users/jason/Desktop/merged_hits_cov.gff'
+cgview = CGViewJSON.new(file, config: config_path, debug: debug, analysis_path: analysis_path)
+
 
 cgview.write_json("/Users/jason/workspace/stothard_group/cgview-js/data/tests/builder.json")
 
