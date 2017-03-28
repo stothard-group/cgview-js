@@ -76,7 +76,7 @@
      */
     addLabel(label) {
       this._labels.push(label);
-      this.sort();
+      // this.sort();
     }
 
     /**
@@ -96,6 +96,10 @@
       this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
     }
 
+    refresh() {
+      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
+    }
+
     refreshLabelWidths() {
       // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
@@ -106,20 +110,49 @@
       }
     }
 
+    _calculatePositions(labels) {
+      labels = labels || this._labels;
+      var visibleRange = this._visibleRange;
+      var label, feature, containsStart, containsStop;
+      var featureLengthDownStream, featureLengthUpStream;
+      var sequence = this.viewer.sequence;
+      for (var i = 0, len = labels.length; i < len; i++) {
+        label = labels[i];
+        feature = label.feature;
+        // bp = feature.start + (feature.length / 2);
+        containsStart = visibleRange.contains(feature.start);
+        containsStop = visibleRange.contains(feature.stop);
+        if (containsStart && containsStop) {
+          label.bp = feature.start + (feature.length / 2);
+        } else if (containsStart) {
+          label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
+        } else if (containsStop) {
+          label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
+        } else {
+          featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
+          featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
+          label.bp = (featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream) * visibleRange.length) + visibleRange.start;
+        }
+
+      }
+    }
+
     // Should be called when
     //  - Labels are added or removed
     //  - Font changes (Annotation or individual label)
     //  - Label name changes
     //  - Zoom level changes
-    _calculateLabelRects() {
+    _calculateLabelRects(labels) {
+      labels = labels || this._labels;
       var canvas = this._canvas;
       var scale = canvas.scale;
       var label, feature, radians, bp, x, y;
       var radius = this._outerRadius + this._labelLineMargin;
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        label = this._labels[i];
+      for (var i = 0, len = labels.length; i < len; i++) {
+        label = labels[i];
         feature = label.feature;
-        bp = feature.start + (feature.length / 2);
+        // bp = feature.start + (feature.length / 2);
+        bp = label.bp;
         radians = scale.bp(bp);
         var innerPt = canvas.pointFor(bp, radius);
         var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
@@ -133,32 +166,37 @@
 
     visibleLabels(radius) {
       var labelArray = new CGV.CGArray();
-      var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      // var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      var visibleRange = this._visibleRange;
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
         if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
           labelArray = this._labels;
         } else {
-          for (var i = 0, len = this._labels.length; i < len; i++) {
-            if (visibleRange.contains(this._labels[i].bp)) {
-              labelArray.push(this._labels[i]);
-            }
-          }
+          labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
+
+          // for (var i = 0, len = this._labels.length; i < len; i++) {
+          //   if (visibleRange.contains(this._labels[i].bp)) {
+          //     labelArray.push(this._labels[i]);
+          //   }
+          // }
         }
       }
       return labelArray
     }
 
     draw(reverseRadius, directRadius) {
+      this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
 
       // TODO: change origin when moving image
       // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
         this._innerRadius = reverseRadius;
         this._outerRadius = directRadius;
-        this._calculateLabelRects();
       // }
-      
+
       this._labelsToDraw = this.visibleLabels(directRadius);
+      this._calculatePositions(this._labelsToDraw);
+      this._calculateLabelRects(this._labelsToDraw);
 
       // Remove overlapping labels (TEMP)
       var labelRects = new CGV.CGArray();

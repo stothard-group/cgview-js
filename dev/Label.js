@@ -127,6 +127,20 @@
       return this._feature
     }
 
+    /**
+     * @member {Number} - Get the start position of the feature
+     */
+    get start() {
+      return this.feature.start
+    }
+
+    /**
+     * @member {Number} - Get the stop position of the feature
+     */
+    get stop() {
+      return this.feature.stop
+    }
+
 
   }
 

@@ -386,6 +386,7 @@
 
     while (max_index - min_index > 1) {
       current_index = (min_index + max_index) / 2 | 0;
+      // current_index = (min_index + max_index) >>> 1 | 0;
       current_value = data[current_index];
       if (current_value < search_value) {
         min_index = current_index;

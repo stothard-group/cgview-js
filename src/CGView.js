@@ -461,7 +461,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     addLabel(label) {
       this._labels.push(label);
-      this.sort();
+      // this.sort();
     }
 
     /**
@@ -481,6 +481,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
     }
 
+    refresh() {
+      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
+    }
+
     refreshLabelWidths() {
       // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
@@ -491,20 +495,49 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    _calculatePositions(labels) {
+      labels = labels || this._labels;
+      var visibleRange = this._visibleRange;
+      var label, feature, containsStart, containsStop;
+      var featureLengthDownStream, featureLengthUpStream;
+      var sequence = this.viewer.sequence;
+      for (var i = 0, len = labels.length; i < len; i++) {
+        label = labels[i];
+        feature = label.feature;
+        // bp = feature.start + (feature.length / 2);
+        containsStart = visibleRange.contains(feature.start);
+        containsStop = visibleRange.contains(feature.stop);
+        if (containsStart && containsStop) {
+          label.bp = feature.start + (feature.length / 2);
+        } else if (containsStart) {
+          label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
+        } else if (containsStop) {
+          label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
+        } else {
+          featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
+          featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
+          label.bp = (featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream) * visibleRange.length) + visibleRange.start;
+        }
+
+      }
+    }
+
     // Should be called when
     //  - Labels are added or removed
     //  - Font changes (Annotation or individual label)
     //  - Label name changes
     //  - Zoom level changes
-    _calculateLabelRects() {
+    _calculateLabelRects(labels) {
+      labels = labels || this._labels;
       var canvas = this._canvas;
       var scale = canvas.scale;
       var label, feature, radians, bp, x, y;
       var radius = this._outerRadius + this._labelLineMargin;
-      for (var i = 0, len = this._labels.length; i < len; i++) {
-        label = this._labels[i];
+      for (var i = 0, len = labels.length; i < len; i++) {
+        label = labels[i];
         feature = label.feature;
-        bp = feature.start + (feature.length / 2);
+        // bp = feature.start + (feature.length / 2);
+        bp = label.bp;
         radians = scale.bp(bp);
         var innerPt = canvas.pointFor(bp, radius);
         var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
@@ -518,32 +551,37 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     visibleLabels(radius) {
       var labelArray = new CGV.CGArray();
-      var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      // var visibleRange = this._canvas.visibleRangeForRadius(radius);
+      var visibleRange = this._visibleRange;
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
         if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
           labelArray = this._labels;
         } else {
-          for (var i = 0, len = this._labels.length; i < len; i++) {
-            if (visibleRange.contains(this._labels[i].bp)) {
-              labelArray.push(this._labels[i]);
-            }
-          }
+          labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
+
+          // for (var i = 0, len = this._labels.length; i < len; i++) {
+          //   if (visibleRange.contains(this._labels[i].bp)) {
+          //     labelArray.push(this._labels[i]);
+          //   }
+          // }
         }
       }
       return labelArray
     }
 
     draw(reverseRadius, directRadius) {
+      this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
 
       // TODO: change origin when moving image
       // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
         this._innerRadius = reverseRadius;
         this._outerRadius = directRadius;
-        this._calculateLabelRects();
       // }
-      
+
       this._labelsToDraw = this.visibleLabels(directRadius);
+      this._calculatePositions(this._labelsToDraw);
+      this._calculateLabelRects(this._labelsToDraw);
 
       // Remove overlapping labels (TEMP)
       var labelRects = new CGV.CGArray();
@@ -1144,7 +1182,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
 
       if (decoration == 'arc') {
@@ -2293,9 +2330,9 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get length() {
       if (this.stop >= this.start) {
-        return this.stop - this.start
+        return this.stop - this.start + 1
       } else {
-        return this.sequenceLength + (this.stop - this.start)
+        return this.sequenceLength + (this.stop - this.start) + 1
       } 
     }
 
@@ -2586,6 +2623,16 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     get hla() {
+    }
+
+    copy() {
+      return new CGV.Color(this.rgbaString)
+    }
+
+    highlight(colorAdjustment = 0.25) {
+      var hsv = this.hsv;
+      hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
+      this.hsv = hsv;
     }
 
     /**
@@ -3781,7 +3828,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._initializeMousemove();
       this._initializeClick();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
-      // this.events.on('click', (e) => {console.log(e)})
+      this.events.on('click', (e) => {console.log(e)})
 
       this.events.on('mousemove', (e) => {
         // console.log(e.bp);
@@ -3789,6 +3836,8 @@ if (window.CGV === undefined) window.CGV = CGView;
         if (this.viewer.debug && this.viewer.debug.data.position) {
           this.viewer.debug.data.position['xy'] = Math.round(e.mapX) + ', ' + Math.round(e.mapY);
           this.viewer.debug.data.position['bp'] = e.bp;
+          this.viewer.debug.data.position['feature'] = e.feature && e.feature.label.name;
+          this.viewer.debug.data.position['score'] = e.score;
           this.canvas.clear('ui');
           this.viewer.debug.draw(this.canvas.context('ui'));
         }
@@ -3796,7 +3845,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this._legendSwatchClick();
       this._legendSwatchMouseOver();
-
+      this._highlighterMouseOver();
     }
 
     /**
@@ -3814,7 +3863,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     _initializeMousemove() {
+      var viewer = this.viewer;
       d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
+        viewer.clear('ui');
         this.events.trigger('mousemove', this._createEvent(d3.event));
       });
     }
@@ -3833,10 +3884,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       var mapY = scale.y.invert(canvasY);
       var radius = Math.sqrt( mapX*mapX + mapY*mapY);
       var slot = this.viewer.layout.slotForRadius(radius);
+      var bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      // var feature = slot && slot.findFeatureForBp(bp);
+      var feature = slot && slot.findFeaturesForBp(bp)[0];
+      var plot = slot && slot._plot;
+      var score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {
-        bp: this.canvas.bpForPoint({x: mapX, y: mapY}),
+        bp: bp,
         radius: radius,
         slot: slot,
+        feature: feature,
+        plot: plot,
+        score: score,
         canvasX: canvasX,
         canvasY: canvasY,
         mapX: mapX,
@@ -3901,23 +3960,30 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     _highlighterMouseOver() {
       var viewer = this.viewer;
+      var highlighter = viewer.highlighter;
+      var colorAdjustment = 0.25;
       this.events.on('mousemove.highlighter', (e) => {
-        var highlighter = viewer.highlighter;
-        // legend.highlightedSwatchedItem = undefined;
-        // for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
-        //   if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
-        //     var legendItem = swatchedLegendItems[i];
-        //     legendItem.swatchHighlighted = true
-        //     this.canvas.cursor = 'pointer';
-        //     legend.draw();
-        //     break;
-        //   }
-        // }
-        // // No swatch selected
-        // if (oldHighlightedItem && !legend.highlightedSwatchedItem) {
-        //   this.canvas.cursor = 'auto';
-        //   legend.draw();
-        // }
+        if (e.feature) {
+          var color = e.feature.color.copy();
+          color.highlight();
+          e.feature.draw('ui', e.slot.radius, e.slot.thickness, e.slot.visibleRange, {color: color});
+        } else if (e.plot) {
+          var score = e.plot.scoreForPosition(e.bp);
+          if (score) {
+            var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+            var start = e.plot.positions[startIndex];
+            var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+            var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+            var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
+            var thickness = Math.abs(baselineRadius - scoredRadius);
+            var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+            var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+            color.highlight();
+
+            viewer.canvas.drawArc('ui', start, stop, radius, color, thickness);
+          }
+
+        }
       });
     }
 
@@ -4160,6 +4226,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       viewer._features.push(this);
     }
 
+    /**
+     * @member {Canvas} - Get the *Canvas*
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+
     get strand() {
       return this._strand;
     }
@@ -4279,12 +4353,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
 
-    draw(canvas, slotRadius, slotThickness, visibleRange) {
+    draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
       if (this.range.overlapsRange(visibleRange)) {
+        var canvas = this.canvas;
         var start = this.start;
         var stop = this.stop;
         var containsStart = visibleRange.contains(start);
         var containsStop = visibleRange.contains(stop);
+        var color = options.color || this.color;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -4292,21 +4368,21 @@ if (window.CGV === undefined) window.CGV = CGView;
           stop = visibleRange.stop + 100;
         }
         // When zoomed in, if the feature starts in the visible range and wraps around to end
-        // in the visible range, the feature should be draw as 2 arcs.
+        // in the visible range, the feature should be drawn as 2 arcs.
         if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
 
-          canvas.drawArc('map', visibleRange.start - 100, stop,
+          canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
-          canvas.drawArc('map', start, visibleRange.stop + 100,
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+          canvas.drawArc(layer, start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         } else {
-          canvas.drawArc('map', start, stop,
+          canvas.drawArc(layer, start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            this.color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
         }
       }
     }
@@ -4893,6 +4969,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         json.features.forEach((featureData) => {
           new CGV.Feature(viewer, featureData);
         });
+        viewer.annotation.refresh();
       }
 
       if (json.dividers) {
@@ -4900,7 +4977,8 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       if (json.plots) {
         json.plots.forEach((plotData) => {
-          // new CGV.Feature(viewer, featureData);
+          console.log('PLOT')
+          new CGV.Plot(viewer, plotData);
         });
       }
 
@@ -5204,6 +5282,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._feature
     }
 
+    /**
+     * @member {Number} - Get the start position of the feature
+     */
+    get start() {
+      return this.feature.start
+    }
+
+    /**
+     * @member {Number} - Get the stop position of the feature
+     */
+    get stop() {
+      return this.feature.stop
+    }
+
 
   }
 
@@ -5246,6 +5338,12 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get viewer() {
       return this._viewer
+    }
+
+    /** * @member {Canvas} - Get the *Canvas*
+     */
+    get canvas() {
+      return this.viewer.canvas
     }
 
     /** * @member {Number} - Get the inside radius
@@ -5328,6 +5426,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       return slots.get(term);
     }
 
+    slotForRadius(radius) {
+      var slots = this.slots();
+      var slot;
+      for (var i=0, len=slots.length; i < len; i++) {
+        if (slots[i].containsRadius(radius)) {
+          slot = slots[i];
+          break;
+        }
+      }
+      return slot
+    }
+
     get slotLength() {
       return this._slotLength || 0
     }
@@ -5354,10 +5464,11 @@ if (window.CGV === undefined) window.CGV = CGView;
     drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
-      var canvas = viewer.canvas;
+      var canvas = this.canvas;
       var startTime = new Date().getTime();
 
-      viewer.clear();
+      viewer.clear('map');
+      viewer.clear('ui');
 
       if (viewer.messenger.visible) {
         viewer.messenger.close();
@@ -5385,8 +5496,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.drawProgress();
       // Debug
       if (viewer.debug) {
-        viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
-        viewer.clear('ui');
+        viewer.debug.data.time['fastDraw'] = CGV.elapsed_time(startTime);
         viewer.debug.draw(canvas.context('ui'));
       }
       if (canvas._testDrawRange) {
@@ -5411,6 +5521,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     drawFull() {
       this.drawMapWithoutSlots();
       this.drawAllSlots(true);
+      this._drawFullStartTime = new Date().getTime();
       this.drawSlotWithTimeOut(this);
     }
 
@@ -5429,7 +5540,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         track = this._tracks[i];
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];
-          slot.draw(this.viewer.canvas, fast)
+          slot.draw(this.canvas, fast)
         }
       }
     }
@@ -5438,10 +5549,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       var slots = layout.slots();
       var slot = slots[layout._slotIndex];
       slot.clear();
-      slot.draw(layout.viewer.canvas);
+      slot.draw(layout.canvas);
       layout._slotIndex++;
       if (layout._slotIndex < slots.length) {
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
+      } else if (layout.viewer.debug) {
+        layout.viewer.clear('ui');
+        layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
+        layout.viewer.debug.draw(layout.canvas.context('ui'));
       }
     }
 
@@ -5521,7 +5636,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     drawProgress() {
-      this.viewer.canvas.clear('background');
+      this.canvas.clear('background');
       var track, slot, progress;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
@@ -6593,6 +6708,305 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 })(CGView);
 //////////////////////////////////////////////////////////////////////////////
+// NCList
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  /**
+   * The NCList is a container for intervals that allows fast searching of overlaping regions.
+   * Alekseyenko, A., and Lee, C. (2007).
+   * Nested Containment List (NCList): A new algorithm for accelerating
+   * interval query of genome alignment and interval databases.
+   * Bioinformatics, doi:10.1093/bioinformatics/btl647
+   * https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
+   *
+   * Code adapted from
+   * https://searchcode.com/codesearch/view/17093141
+   */
+  class NCList {
+    /**
+     * @param {Viewer} intervals - Intervals to create the NCList
+     * @return {NCList}
+     */
+    constructor(intervals = [], options = {}) {
+      this.intervals = [];
+      this.circularLength = options.circularLength;
+
+      // for (var i = 0, len = intervals.length; i < len; i++) {
+      //   this.intervals.push( {interval: intervals[i], index: i})
+      // }
+      this.fill(intervals);
+      // intervals.forEach( (i) => { console.log(i)})
+    }
+
+    _normalize(intervals) {
+      var interval;
+      var nomalizedIntervals = []
+      for (var i = 0, len = intervals.length; i < len; i++) {
+        interval = intervals[i];
+        if (interval.start <= interval.stop) {
+          nomalizedIntervals.push( {interval: interval, index: i});
+        } else {
+          nomalizedIntervals.push({
+            interval: interval,
+            index: i,
+            start: interval.start,
+            stop: this.circularLength,
+            crossesOrigin: true
+          });
+          nomalizedIntervals.push({
+            interval: interval,
+            index: i,
+            start: 1,
+            stop: interval.stop,
+            crossesOrigin: true
+          });
+        }
+      }
+      return nomalizedIntervals
+    }
+
+    fill(intervals) {
+      if (intervals.length == 0) {
+          this.topList = [];
+          return;
+      }
+      var start = this.start;
+      var end = this.end;
+      var sublist = this.sublist;
+
+      intervals = this._normalize(intervals);
+      this.intervals = intervals;
+
+      // Sort by overlap
+      intervals.sort(function(a, b) {
+          if (start(a) != start(b))
+              return start(a) - start(b);
+          else
+              return end(b) - end(a);
+      });
+      var sublistStack = [];
+      var curList = [];
+      this.topList = curList;
+      curList.push(intervals[0]);
+      if (intervals.length == 1) return;
+      var curInterval, topSublist;
+      for (var i = 1, len = intervals.length; i < len; i++) {
+          curInterval = intervals[i];
+          //if this interval is contained in the previous interval,
+          if (end(curInterval) < end(intervals[i - 1])) {
+              //create a new sublist starting with this interval
+              sublistStack.push(curList);
+              curList = new Array(curInterval);
+              sublist(intervals[i - 1], curList);
+          } else {
+              //find the right sublist for this interval
+              while (true) {
+                  if (0 == sublistStack.length) {
+                      curList.push(curInterval);
+                      break;
+                  } else {
+                      topSublist = sublistStack[sublistStack.length - 1];
+                      if (end(topSublist[topSublist.length - 1])
+                          > end(curInterval)) {
+                          //curList is the first (deepest) sublist that
+                          //curInterval fits into
+                          curList.push(curInterval);
+                          break;
+                      } else {
+                          curList = sublistStack.pop();
+                      }
+                  }
+              }
+          }
+      }
+    }
+
+    end(interval) {
+      return interval.stop || interval.interval.stop
+    }
+
+    start(interval) {
+      return interval.start || interval.interval.start
+    }
+
+    sublist(interval, list) {
+      interval.sublist = list;
+    }
+
+
+    _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
+      var skip;
+      var len = list.length;
+      var i = this.binarySearch(list, start, true, 'stop')
+      while (i >= 0 && i < len && this.start(list[i]) <= stop) {
+        skip = false
+
+        if (list[i].crossesOrigin) {
+          if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+            skip = true;
+          } else {
+            this._runIntervalsCrossingOrigin.push(list[i].interval);
+          }
+        }
+
+        if (!skip && list[i].index % step == 0) {
+          callback.call(list[i].interval, list[i].interval);
+        }
+        if (list[i].sublist) {
+          this._run(start, stop, step, callback, list[i].sublist);
+        }
+        i++;
+      }
+    }
+
+    run(start, stop, step, callback = function() {}) {
+      this._runIntervalsCrossingOrigin = [];
+      if (this.circularLength && stop < start) {
+        this._run(start, this.circularLength, step,  callback);
+        this._run(1, stop, step,  callback);
+      } else {
+        this._run(start, stop, step, callback);
+      }
+    }
+
+    count(start, stop, step) {
+      var count = 0;
+      this.run(start, stop, step, (i) => {
+        count++
+      });
+      return count
+    }
+
+    find(start, stop, step) {
+      var overlaps = [];
+      this.run(start, stop, step, (i) => {
+        overlaps.push(i);
+      });
+      return overlaps
+    }
+
+
+    binarySearch(data, search_value, upper, getter) {
+      var min_index = -1;
+      var max_index = data.length;
+      var current_index, current_value;
+
+      while (max_index - min_index > 1) {
+        current_index = (min_index + max_index) / 2 | 0;
+        current_value = this.end(data[current_index]);
+        if (current_value < search_value) {
+          min_index = current_index;
+        } else if (current_value > search_value){
+          max_index = current_index;
+        } else {
+          return current_index;
+        }
+      }
+      return (upper ? max_index : min_index);
+    }
+
+
+    test() {
+      function testInterval(nc, start, stop, expected) {
+        var result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
+        var expected = expected.sort().join(', ');
+        var testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
+        testOut += (result == expected) ? 'Pass' : 'FAIL' + ' - ' + result;
+        console.log(testOut);
+      }
+
+      var intervals = [
+        {name: 'A', start: 1, stop: 20},
+        {name: 'B', start: 10, stop: 15},
+        {name: 'C', start: 10, stop: 20},
+        {name: 'D', start: 15, stop: 30},
+        {name: 'E', start: 20, stop: 30},
+        {name: 'F', start: 20, stop: 50},
+        {name: 'G', start: 80, stop: 100},
+        {name: 'H', start: 90, stop: 95},
+        {name: 'I', start: 90, stop: 5},
+        {name: 'J', start: 95, stop: 15},
+        {name: 'K', start: 95, stop: 2},
+        {name: 'L', start: 92, stop: 50}
+      ]
+      var nc = new CGV.NCList(intervals, { circularLength: 100 });
+      
+      testInterval(nc, 10, 20, ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'L']);
+      testInterval(nc, 40, 85, ['F', 'G', 'L']);
+      testInterval(nc, 40, 95, ['F', 'G', 'H', 'I', 'J', 'K', 'L']);
+      testInterval(nc, 95, 10, ['A', 'B', 'C', 'G', 'H', 'I', 'J', 'K', 'L']);
+
+      
+
+      return nc
+    }
+
+  }
+
+
+
+  CGV.NCList = NCList;
+
+})(CGView);
+
+// n = new CGV.NCList([{start: 1, stop: 100}, {start: 10, stop: 80}, {start: 70, stop: 200}])
+// n = new CGV.NCList(cgv.slots(1)._features)
+
+
+    // fill(intervals) {
+    //   if (intervals.length == 0) {
+    //       this.topList = [];
+    //       return;
+    //   }
+    //   var start = this.start;
+    //   var end = this.end;
+    //   var sublist = this.sublist;
+    //
+    //   // Sort by overlap
+    //   intervals.sort(function(a, b) {
+    //       if (start(a) != start(b))
+    //           return start(a) - start(b);
+    //       else
+    //           return end(b) - end(a);
+    //   });
+    //   var sublistStack = [];
+    //   var curList = [];
+    //   this.topList = curList;
+    //   curList.push(intervals[0]);
+    //   if (intervals.length == 1) return;
+    //   var curInterval, topSublist;
+    //   for (var i = 1, len = intervals.length; i < len; i++) {
+    //       curInterval = intervals[i];
+    //       //if this interval is contained in the previous interval,
+    //       if (end(curInterval) < end(intervals[i - 1])) {
+    //           //create a new sublist starting with this interval
+    //           sublistStack.push(curList);
+    //           curList = new Array(curInterval);
+    //           sublist(intervals[i - 1], curList);
+    //       } else {
+    //           //find the right sublist for this interval
+    //           while (true) {
+    //               if (0 == sublistStack.length) {
+    //                   curList.push(curInterval);
+    //                   break;
+    //               } else {
+    //                   topSublist = sublistStack[sublistStack.length - 1];
+    //                   if (end(topSublist[topSublist.length - 1])
+    //                       > end(curInterval)) {
+    //                       //curList is the first (deepest) sublist that
+    //                       //curInterval fits into
+    //                       curList.push(curInterval);
+    //                       break;
+    //                   } else {
+    //                       curList = sublistStack.pop();
+    //                   }
+    //               }
+    //           }
+    //       }
+    //   }
+    // }
+//////////////////////////////////////////////////////////////////////////////
 // Plot
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
@@ -6787,6 +7201,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    scoreForPosition(bp) {
+      var index = CGV.indexOfValue(this.positions, bp);
+      if (index == 0 && bp < this.positions[index]) {
+        return undefined
+      } else {
+        return this.scores[index]
+      }
+    }
+
     draw(canvas, slotRadius, slotThickness, fast, range) {
       // var startTime = new Date().getTime();
       if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
@@ -6885,8 +7308,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
 
-      // ctx.lineWidth = 1;
       // ctx.strokeStyle = 'black';
+      // TODO: draw stroked line for sparse data
+      // ctx.lineWidth = 0.05;
+      // ctx.strokeStyle = color.rgbaString;
       // ctx.stroke();
 
     }
@@ -7530,6 +7955,33 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     static count(seq, pattern) {
       return (seq.match(new RegExp(pattern, 'gi')) || []).length
+    }
+
+    /**
+     * Create a random sequence of the specified length
+     * @param {Number} length - The length of the sequence to create
+     * @return {String}
+     */
+    static random(length) {
+      var seq = '';
+      var num;
+      for (var i = 0; i < length; i++) {
+        num = Math.floor(Math.random() * 4)
+        switch (num % 4) {
+          case 0:
+            seq += 'A';
+            break;
+          case 1:
+            seq += 'T';
+            break;
+          case 2:
+            seq += 'G';
+            break;
+          case 3:
+            seq += 'C';
+        }
+      }
+      return seq
     }
 
     reverseComplement() {
@@ -8372,18 +8824,9 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.type = 'feature'
       }
 
-      this._featureStarts = new CGV.CGArray();
 
-      // if (data.features) {
-      //   data.features.forEach((featureData) => {
-      //     new CGV.Feature(this, featureData);
-      //   });
-      //   this.refresh();
-      // }
+      // this._featureStarts = new CGV.CGArray();
 
-      // if (data.plot) {
-      //   new CGV.Plot(this, data.plot);
-      // }
     }
 
     /** * @member {Track} - Get the *Track*
@@ -8492,6 +8935,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._plot
     }
 
+    features(term) {
+      return this._features.get(term)
+    }
+
     replaceFeatures(features) {
       this._features = features;
       this.refresh();
@@ -8514,12 +8961,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       // this._features.sort( (a, b) => {
       //   return a.start - b.start
       // });
+      this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length});
       // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
+      // this._featureStarts = new CGV.CGArray();
+      // for (var i = 0, len = this._features.length; i < len; i++) {
+      //   this._featureStarts.push(this._features[i].start);
+      // }
+      // this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -8530,9 +8978,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._visibleRange
     }
 
-    get largestFeatureLength() {
-      return this._largestFeatureLength
-    }
+    // get largestFeatureLength() {
+    //   return this._largestFeatureLength
+    // }
 
     /**
      * Does the slot contain the given *radius*.
@@ -8540,8 +8988,28 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Boolean}
      */
     containsRadius(radius) {
-
+      var halfthickness = this.thickness / 2;
+      return (radius >= (this.radius - halfthickness)) && (radius <= (this.radius + halfthickness))
     }
+
+    /**
+     * Return the first feature in this slot that contains the given bp.
+     * @param {Number} bp - the position in bp to search for.
+     * @return {Feature}
+     */
+    findFeaturesForBp(bp) {
+      return this._featureNCList.find(bp);
+    }
+    // findFeatureForBp(bp) {
+    //   var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
+    //   var feature;
+    //   this._featureStarts.eachFromRange(start, bp, 1, (i) => {
+    //     if (!feature && this._features[i].range.contains(bp)) {
+    //       feature = this._features[i];
+    //     }
+    //   });
+    //   return feature
+    // }
 
     findLargestFeatureLength() {
       var length = 0;
@@ -8580,7 +9048,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         var stop = range.stop;
         if (this.hasFeatures) {
           var featureCount = this._features.length;
-          var largestLength = this.largestFeatureLength;
+          // var largestLength = this.largestFeatureLength;
           // Case where the largest feature should not be subtracted
           // _____ Visible
           // ----- Not Visbile
@@ -8588,13 +9056,16 @@ if (window.CGV === undefined) window.CGV = CGView;
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
-            if (this.sequence.subtractBp(start, stop) <= largestLength) {
-              start = range.getStopPlus(1);
-            } else {
-              start = range.getStartPlus(-largestLength);
-            }
-            featureCount = this._featureStarts.countFromRange(start, stop);
+          // if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
+          //   if (this.sequence.subtractBp(start, stop) <= largestLength) {
+          //     start = range.getStopPlus(1);
+          //   } else {
+          //     start = range.getStartPlus(-largestLength);
+          //   }
+          //   featureCount = this._featureStarts.countFromRange(start, stop);
+          // }
+          if (!range.isFullCircle()) {
+            featureCount = this._featureNCList.count(start, stop);
           }
           var step = 1;
           // Change step if drawing fast and there are too many features
@@ -8609,9 +9080,20 @@ if (window.CGV === undefined) window.CGV = CGView;
             step = CGV.base2(initialStep);
           }
           // Draw Features
-          this._featureStarts.eachFromRange(start, stop, step, (i) => {
-            this._features[i].draw(canvas, slotRadius, slotThickness, range);
+
+          // var startTime = new Date().getTime();
+          //
+          // this._featureStarts.eachFromRange(start, stop, step, (i) => {
+          //   this._features[i].draw('map', slotRadius, slotThickness, range);
+          // })
+          // var time1 = CGV.elapsed_time(startTime);
+          // var startTime2 = new Date().getTime();
+          this._featureNCList.run(start, stop, step, (feature) => {
+            feature.draw('map', slotRadius, slotThickness, range);
           })
+          // var time2 = CGV.elapsed_time(startTime2);
+          // console.log(time1 + ' -> ' +  time2);
+
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
             var index = this.viewer._slots.indexOf(this);
@@ -9333,6 +9815,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     while (max_index - min_index > 1) {
       current_index = (min_index + max_index) / 2 | 0;
+      // current_index = (min_index + max_index) >>> 1 | 0;
       current_value = data[current_index];
       if (current_value < search_value) {
         min_index = current_index;

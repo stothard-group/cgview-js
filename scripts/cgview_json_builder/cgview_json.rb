@@ -293,12 +293,12 @@ file = "data/sequences/NC_001823.gbk" # 70 KB
 # file = "data/sequences/NC_000907.gbk" # 1.8 MB
 # file = "data/sequences/NC_000913.gbk" # 4.6 MB
 config_path = 'scripts/cgview_json_builder/config.yaml'
-# cgview = CGViewJSON.new(file, config: config_path, debug: debug)
+cgview = CGViewJSON.new(file, config: config_path, debug: debug)
 
-file = "data/sequences/B_pert_TahomaI.gbk" # 4 MB
-config_path = 'scripts/cgview_json_builder/test_config.yaml'
-analysis_path = '/Users/jason/Desktop/merged_hits_cov.gff'
-cgview = CGViewJSON.new(file, config: config_path, debug: debug, analysis_path: analysis_path)
+# file = "data/sequences/B_pert_TahomaI.gbk" # 4 MB
+# config_path = 'scripts/cgview_json_builder/test_config.yaml'
+# analysis_path = '/Users/jason/Desktop/merged_hits_cov.gff'
+# cgview = CGViewJSON.new(file, config: config_path, debug: debug, analysis_path: analysis_path)
 
 
 cgview.write_json("/Users/jason/workspace/stothard_group/cgview-js/data/tests/builder.json")

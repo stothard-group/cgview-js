@@ -57,7 +57,9 @@
     }
 
     _initializeMousemove() {
+      var viewer = this.viewer;
       d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
+        viewer.clear('ui');
         this.events.trigger('mousemove', this._createEvent(d3.event));
       });
     }
@@ -77,7 +79,8 @@
       var radius = Math.sqrt( mapX*mapX + mapY*mapY);
       var slot = this.viewer.layout.slotForRadius(radius);
       var bp = this.canvas.bpForPoint({x: mapX, y: mapY});
-      var feature = slot && slot.findFeatureForBp(bp);
+      // var feature = slot && slot.findFeatureForBp(bp);
+      var feature = slot && slot.findFeaturesForBp(bp)[0];
       var plot = slot && slot._plot;
       var score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {

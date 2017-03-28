@@ -75,16 +75,16 @@ cgview:
             # The Following are the default values:
             start: 'ATG'
             stop: 'TAA,TAG,TGA'
-      - name: 'CG Content'
-        position: 'inside'
-        contents:
-          plot:
-            sequence: 'gc_content'
-      - name: 'CG Skew'
-        position: 'inside'
-        contents:
-          plot:
-            sequence: 'gc_skew'
+      # - name: 'CG Content'
+      #   position: 'inside'
+      #   contents:
+      #     plot:
+      #       sequence: 'gc_content'
+      # - name: 'CG Skew'
+      #   position: 'inside'
+      #   contents:
+      #     plot:
+      #       sequence: 'gc_skew'
 
 
 

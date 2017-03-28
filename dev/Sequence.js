@@ -89,6 +89,33 @@
       return (seq.match(new RegExp(pattern, 'gi')) || []).length
     }
 
+    /**
+     * Create a random sequence of the specified length
+     * @param {Number} length - The length of the sequence to create
+     * @return {String}
+     */
+    static random(length) {
+      var seq = '';
+      var num;
+      for (var i = 0; i < length; i++) {
+        num = Math.floor(Math.random() * 4)
+        switch (num % 4) {
+          case 0:
+            seq += 'A';
+            break;
+          case 1:
+            seq += 'T';
+            break;
+          case 2:
+            seq += 'G';
+            break;
+          case 3:
+            seq += 'C';
+        }
+      }
+      return seq
+    }
+
     reverseComplement() {
       return Sequence.reverseComplement(this.seq)
     }

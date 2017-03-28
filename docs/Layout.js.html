@@ -53,7 +53,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="basic_map.html">Basic Map</a></li>
-            <li><a href="#">Sequence Map </a></li>
+            <li><a href="sequence_map.html">Sequence Map</a></li>
             <li><a href="#">JSON Map</a></li>
           </ul>
         </li>
@@ -529,6 +529,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Feature#canvas"><a href="Feature.html#canvas">canvas</a></li>
+            
                 <li data-name="Feature#color"><a href="Feature.html#color">color</a></li>
             
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
@@ -691,6 +693,8 @@
             <ul class="members itemMembers">
             
             <span class="subtitle">Members</span>
+            
+                <li data-name="Layout#canvas"><a href="Layout.html#canvas">canvas</a></li>
             
                 <li data-name="Layout#insideRadius"><a href="Layout.html#insideRadius">insideRadius</a></li>
             
@@ -860,6 +864,25 @@
             </ul>
         </li>
     
+        <li class="item" data-name="NCList">
+            <span class="title">
+                <a href="NCList.html">NCList</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Plot">
             <span class="title">
                 <a href="Plot.html">Plot</a>
@@ -1018,6 +1041,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Sequence.random"><a href="Sequence.html#.random">random</a></li>
+            
                 <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
             
                 <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
@@ -1101,6 +1126,8 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Slot#containsRadius"><a href="Slot.html#containsRadius">containsRadius</a></li>
+            
+                <li data-name="Slot#findFeaturesForBp"><a href="Slot.html#findFeaturesForBp">findFeaturesForBp</a></li>
             
                 <li data-name="Slot#pixelsPerBp"><a href="Slot.html#pixelsPerBp">pixelsPerBp</a></li>
             
@@ -1258,6 +1285,12 @@
       return this._viewer
     }
 
+    /** * @member {Canvas} - Get the *Canvas*
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
     /** * @member {Number} - Get the inside radius
      */
     get insideRadius() {
@@ -1338,6 +1371,18 @@
       return slots.get(term);
     }
 
+    slotForRadius(radius) {
+      var slots = this.slots();
+      var slot;
+      for (var i=0, len=slots.length; i &lt; len; i++) {
+        if (slots[i].containsRadius(radius)) {
+          slot = slots[i];
+          break;
+        }
+      }
+      return slot
+    }
+
     get slotLength() {
       return this._slotLength || 0
     }
@@ -1364,10 +1409,11 @@
     drawMapWithoutSlots() {
       var viewer = this.viewer;
       var backbone = viewer.backbone;
-      var canvas = viewer.canvas;
+      var canvas = this.canvas;
       var startTime = new Date().getTime();
 
-      viewer.clear();
+      viewer.clear('map');
+      viewer.clear('ui');
 
       if (viewer.messenger.visible) {
         viewer.messenger.close();
@@ -1395,8 +1441,7 @@
       this.drawProgress();
       // Debug
       if (viewer.debug) {
-        viewer.debug.data.time['draw'] = CGV.elapsed_time(startTime);
-        viewer.clear('ui');
+        viewer.debug.data.time['fastDraw'] = CGV.elapsed_time(startTime);
         viewer.debug.draw(canvas.context('ui'));
       }
       if (canvas._testDrawRange) {
@@ -1421,6 +1466,7 @@
     drawFull() {
       this.drawMapWithoutSlots();
       this.drawAllSlots(true);
+      this._drawFullStartTime = new Date().getTime();
       this.drawSlotWithTimeOut(this);
     }
 
@@ -1439,7 +1485,7 @@
         track = this._tracks[i];
         for (var j = 0, slotLen = track._slots.length; j &lt; slotLen; j++) {
           slot = track._slots[j];
-          slot.draw(this.viewer.canvas, fast)
+          slot.draw(this.canvas, fast)
         }
       }
     }
@@ -1448,10 +1494,14 @@
       var slots = layout.slots();
       var slot = slots[layout._slotIndex];
       slot.clear();
-      slot.draw(layout.viewer.canvas);
+      slot.draw(layout.canvas);
       layout._slotIndex++;
       if (layout._slotIndex &lt; slots.length) {
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
+      } else if (layout.viewer.debug) {
+        layout.viewer.clear('ui');
+        layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
+        layout.viewer.debug.draw(layout.canvas.context('ui'));
       }
     }
 
@@ -1531,7 +1581,7 @@
     }
 
     drawProgress() {
-      this.viewer.canvas.clear('background');
+      this.canvas.clear('background');
       var track, slot, progress;
       for (var i = 0, trackLen = this._tracks.length; i &lt; trackLen; i++) {
         track = this._tracks[i];
@@ -1560,7 +1610,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 24 2017 10:04:05 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 28 2017 16:13:25 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

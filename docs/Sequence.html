@@ -53,7 +53,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="basic_map.html">Basic Map</a></li>
-            <li><a href="#">Sequence Map </a></li>
+            <li><a href="sequence_map.html">Sequence Map</a></li>
             <li><a href="#">JSON Map</a></li>
           </ul>
         </li>
@@ -529,6 +529,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Feature#canvas"><a href="Feature.html#canvas">canvas</a></li>
+            
                 <li data-name="Feature#color"><a href="Feature.html#color">color</a></li>
             
                 <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
@@ -691,6 +693,8 @@
             <ul class="members itemMembers">
             
             <span class="subtitle">Members</span>
+            
+                <li data-name="Layout#canvas"><a href="Layout.html#canvas">canvas</a></li>
             
                 <li data-name="Layout#insideRadius"><a href="Layout.html#insideRadius">insideRadius</a></li>
             
@@ -860,6 +864,25 @@
             </ul>
         </li>
     
+        <li class="item" data-name="NCList">
+            <span class="title">
+                <a href="NCList.html">NCList</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Plot">
             <span class="title">
                 <a href="Plot.html">Plot</a>
@@ -1018,6 +1041,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Sequence.random"><a href="Sequence.html#.random">random</a></li>
+            
                 <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
             
                 <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
@@ -1101,6 +1126,8 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="Slot#containsRadius"><a href="Slot.html#containsRadius">containsRadius</a></li>
+            
+                <li data-name="Slot#findFeaturesForBp"><a href="Slot.html#findFeaturesForBp">findFeaturesForBp</a></li>
             
                 <li data-name="Slot#pixelsPerBp"><a href="Slot.html#pixelsPerBp">pixelsPerBp</a></li>
             
@@ -1716,6 +1743,151 @@ it via an API.</p></div>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id=".random">
+            
+            <span class="type-signature static">static</span>Sequence.random<span class="signature">(length)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line97">line 97</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Create a random sequence of the specified length</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The length of the sequence to create</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="addBp">
             
             addBp<span class="signature">(position, bpToAdd)</span>
@@ -1723,7 +1895,7 @@ it via an API.</p></div>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line235">line 235</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line262">line 262</a>
         </div>
         
     </div>
@@ -1862,7 +2034,7 @@ it via an API.</p></div>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line320">line 320</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line347">line 347</a>
         </div>
         
     </div>
@@ -1988,7 +2160,7 @@ This method will return overlapping matches.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line250">line 250</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line277">line 277</a>
         </div>
         
     </div>
@@ -2156,7 +2328,7 @@ This method will return overlapping matches.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line222">line 222</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line249">line 249</a>
         </div>
         
     </div>
@@ -2301,7 +2473,7 @@ This method will return overlapping matches.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Mar 24 2017 10:04:05 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 28 2017 16:13:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

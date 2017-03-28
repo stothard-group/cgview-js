@@ -21,18 +21,9 @@
         this.type = 'feature'
       }
 
-      this._featureStarts = new CGV.CGArray();
 
-      // if (data.features) {
-      //   data.features.forEach((featureData) => {
-      //     new CGV.Feature(this, featureData);
-      //   });
-      //   this.refresh();
-      // }
+      // this._featureStarts = new CGV.CGArray();
 
-      // if (data.plot) {
-      //   new CGV.Plot(this, data.plot);
-      // }
     }
 
     /** * @member {Track} - Get the *Track*
@@ -141,6 +132,10 @@
       return this._plot
     }
 
+    features(term) {
+      return this._features.get(term)
+    }
+
     replaceFeatures(features) {
       this._features = features;
       this.refresh();
@@ -163,12 +158,13 @@
       // this._features.sort( (a, b) => {
       //   return a.start - b.start
       // });
+      this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length});
       // Clear feature starts
-      this._featureStarts = new CGV.CGArray();
-      for (var i = 0, len = this._features.length; i < len; i++) {
-        this._featureStarts.push(this._features[i].start);
-      }
-      this._largestFeatureLength = this.findLargestFeatureLength();
+      // this._featureStarts = new CGV.CGArray();
+      // for (var i = 0, len = this._features.length; i < len; i++) {
+      //   this._featureStarts.push(this._features[i].start);
+      // }
+      // this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -179,9 +175,9 @@
       return this._visibleRange
     }
 
-    get largestFeatureLength() {
-      return this._largestFeatureLength
-    }
+    // get largestFeatureLength() {
+    //   return this._largestFeatureLength
+    // }
 
     /**
      * Does the slot contain the given *radius*.
@@ -198,16 +194,19 @@
      * @param {Number} bp - the position in bp to search for.
      * @return {Feature}
      */
-    findFeatureForBp(bp) {
-      var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
-      var feature;
-      this._featureStarts.eachFromRange(start, bp, 1, (i) => {
-        if (!feature && this._features[i].range.contains(bp)) {
-          feature = this._features[i];
-        }
-      });
-      return feature
+    findFeaturesForBp(bp) {
+      return this._featureNCList.find(bp);
     }
+    // findFeatureForBp(bp) {
+    //   var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
+    //   var feature;
+    //   this._featureStarts.eachFromRange(start, bp, 1, (i) => {
+    //     if (!feature && this._features[i].range.contains(bp)) {
+    //       feature = this._features[i];
+    //     }
+    //   });
+    //   return feature
+    // }
 
     findLargestFeatureLength() {
       var length = 0;
@@ -246,7 +245,7 @@
         var stop = range.stop;
         if (this.hasFeatures) {
           var featureCount = this._features.length;
-          var largestLength = this.largestFeatureLength;
+          // var largestLength = this.largestFeatureLength;
           // Case where the largest feature should not be subtracted
           // _____ Visible
           // ----- Not Visbile
@@ -254,13 +253,16 @@
           // -----Start_____Stop-----
           // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
           // _____Stop-----Start_____
-          if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
-            if (this.sequence.subtractBp(start, stop) <= largestLength) {
-              start = range.getStopPlus(1);
-            } else {
-              start = range.getStartPlus(-largestLength);
-            }
-            featureCount = this._featureStarts.countFromRange(start, stop);
+          // if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
+          //   if (this.sequence.subtractBp(start, stop) <= largestLength) {
+          //     start = range.getStopPlus(1);
+          //   } else {
+          //     start = range.getStartPlus(-largestLength);
+          //   }
+          //   featureCount = this._featureStarts.countFromRange(start, stop);
+          // }
+          if (!range.isFullCircle()) {
+            featureCount = this._featureNCList.count(start, stop);
           }
           var step = 1;
           // Change step if drawing fast and there are too many features
@@ -275,9 +277,20 @@
             step = CGV.base2(initialStep);
           }
           // Draw Features
-          this._featureStarts.eachFromRange(start, stop, step, (i) => {
-            this._features[i].draw('map', slotRadius, slotThickness, range);
+
+          // var startTime = new Date().getTime();
+          //
+          // this._featureStarts.eachFromRange(start, stop, step, (i) => {
+          //   this._features[i].draw('map', slotRadius, slotThickness, range);
+          // })
+          // var time1 = CGV.elapsed_time(startTime);
+          // var startTime2 = new Date().getTime();
+          this._featureNCList.run(start, stop, step, (feature) => {
+            feature.draw('map', slotRadius, slotThickness, range);
           })
+          // var time2 = CGV.elapsed_time(startTime2);
+          // console.log(time1 + ' -> ' +  time2);
+
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
             var index = this.viewer._slots.indexOf(this);

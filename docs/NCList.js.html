@@ -1242,7 +1242,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Canvas.js.html">Source: Canvas.js</h1>
+        <h1 class="page-title" data-filename="NCList.js.html">Source: NCList.js</h1>
         
 
 
@@ -1250,524 +1250,304 @@
     <section>
         <article>
             <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Canvas
+// NCList
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Canvas {
-
+  /**
+   * The NCList is a container for intervals that allows fast searching of overlaping regions.
+   * Alekseyenko, A., and Lee, C. (2007).
+   * Nested Containment List (NCList): A new algorithm for accelerating
+   * interval query of genome alignment and interval databases.
+   * Bioinformatics, doi:10.1093/bioinformatics/btl647
+   * https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
+   *
+   * Code adapted from
+   * https://searchcode.com/codesearch/view/17093141
+   */
+  class NCList {
     /**
-     * - Adds several layers (canvases) for drawing
-     * - Contains the x, y, bp scales
-     * - has methods for for determining visible regions of the circle at a particular radius
-     * NOTE: anything drawn to the canvas must take the pixel ratio into account
-     *       and should use the CGV.pixel() method.
-     * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
+     * @param {Viewer} intervals - Intervals to create the NCList
+     * @return {NCList}
      */
-    constructor(viewer, container, options = {}) {
-      this._viewer = viewer;
-      this.width = CGV.defaultFor(options.width, 600);
-      this.height = CGV.defaultFor(options.height, 600);
+    constructor(intervals = [], options = {}) {
+      this.intervals = [];
+      this.circularLength = options.circularLength;
 
-      // Create layers
-      this.determinePixelRatio(container);
-      this._layerNames = ['background', 'map', 'captions', 'ui'];
-      this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
-
-      // Setup scales
-      this._scale = {};
-      this.refreshScales();
-    }
-
-    determinePixelRatio(container) {
-      var testNode = container.append("canvas")
-        .style('position',  'absolute')
-        .style('top',  0)
-        .style('left',  0)
-        .attr("width", this._width)
-        .attr("height", this._height).node();
-      // Check for canvas support
-      if (testNode.getContext) {
-        // Get pixel ratio and upscale canvas depending on screen resolution
-        // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-        CGV.pixelRatio = CGV.getPixelRatio(testNode);
-      } else {
-        container.html('&lt;h3>CGView requires Canvas, which is not supported by this browser.&lt;/h3>');
-      }
-      d3.select(testNode).remove();
-    }
-
-    createLayers(container, layerNames, width, height) {
-      var layers = {};
-
-      for (var i = 0, len = layerNames.length; i &lt; len; i++) {
-        var layerName = layerNames[i]
-        var zIndex = (i + 1) * 10;
-        var node = container.append("canvas")
-          .classed('cgv-layer', true)
-          .classed('cgv-layer-' + layerName, true)
-          .style('z-index',  zIndex)
-          .attr("width", width)
-          .attr("height", height).node();
-
-        CGV.scaleResolution(node, CGV.pixelRatio);
-
-        // Set viewer context
-        var ctx = node.getContext('2d');
-        layers[layerName] = { ctx: ctx, node: node };
-      }
-      return layers
-    }
-
-    resize(width, height) {
-      this.width = width;
-      this.height = height;
-      for (var layerName of this.layerNames) {
-        var layerNode = this.layers(layerName).node;
-        // Note, here the width/height will take into account the pixelRatio
-        layerNode.width = this.width;
-        layerNode.height = this.height;
-        // Note, here the width/height will be the same as viewer (no pixel ratio)
-        layerNode.style.width = width + 'px';
-        layerNode.style.height = height + 'px';
-      }
-      this.refreshScales();
-    }
-
-
-
-
-
-
-
-
-
-    /**
-     * @member {Viewer} - Get the viewer.
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
-     *
-     * Scale | Description
-     * ------|------------
-     *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
-     *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
-     *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
-     *
-     * ```js
-     * // Examples:
-     * // For a map with canvas width and height of 600. Before moving or zooming the map.
-     * canvas.scale.x(0)          // 300
-     * canvas.scale.y(0)          // 300
-     * canvas.scale.x.invert(300) // 0
-     * canvas.scale.y.invert(300) // 0
-     * // For a map with a length of 1000
-     * canvas.scale.bp(1)        // -π/2
-     * canvas.scale.bp(250)      // 0
-     * canvas.scale.bp(500)      // π/2
-     * canvas.scale.bp(750)      // π
-     * canvas.scale.bp(1000)     // 3π/2
-     * canvas.scale.bp(1000)     // 3π/2
-     * canvas.scale.bp.invert(π) // 750
-     * ```
-     *
-     */
-    get scale() {
-      return this._scale
-    }
-
-    /**
-     * @member {Array} - Get the names of the layers.
-     */
-    get layerNames() {
-      return this._layerNames
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
-
-    //TODO: move to setter for width and height
-    refreshScales() {
-      var x_domain, y_domain;
-      var x1, x2, y1, y2;
-      // Save scale domains to keep tract of translation
-      if (this.scale.x) {
-        var orig_x_domain = this.scale.x.domain();
-        var orig_width = orig_x_domain[1] - orig_x_domain[0];
-        x1 = orig_x_domain[0] / orig_width;
-        x2 = orig_x_domain[1] / orig_width;
-      } else {
-        x1 = -0.5;
-        x2 = 0.5;
-      }
-      if (this.scale.y) {
-        var orig_y_domain = this.scale.y.domain();
-        var orig_width = orig_y_domain[0] - orig_y_domain[1];
-        y1 = orig_y_domain[0] / orig_width;
-        y2 = orig_y_domain[1] / orig_width;
-      } else {
-        y1 = 0.5;
-        y2 = -0.5;
-      }
-      this.scale.x = d3.scaleLinear()
-        .domain([this.width * x1, this.width * x2])
-        .range([0, this.width]);
-      this.scale.y = d3.scaleLinear()
-        .domain([this.height * y1, this.height * y2])
-        .range([0, this.height]);
-    }
-
-    get width() {
-      return CGV.pixel(this._width)
-    }
-
-    set width(width) {
-      this._width = width;
-    }
-
-    get height() {
-      return CGV.pixel(this._height)
-    }
-
-    set height(height) {
-      this._height = height;
-    }
-
-    get cursor() {
-      return d3.select(this.node('ui')).style('cursor')
-    }
-
-    set cursor(value) {
-      d3.select(this.node('ui')).style('cursor', value);
-    }
-
-    /**
-     * Clear the viewer canvas
-     */
-    clear(layerName = 'map') {
-      if (layerName == 'all') {
-        for (var i = 0, len = this.layerNames.length; i &lt; len; i++) {
-          this.clear(this.layerNames[i]);
-        }
-      } else {
-        this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-      }
-    }
-    // clear(color = 'white') {
-    //   this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-    //   // this.ctx.fillStyle = color;
-    //   // this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-    // }
-
-    /**
-    * Flash a message on the center of the viewer.
-    */
-    // flash(msg) {
-    //   var ctx = this.ctx;
-    //   // this.ctx.font = this.adjust_font(1.5);
-    //   ctx.textAlign = 'center';
-    //   ctx.textBaseline = 'center';
-    //   var x = this.width / 2
-    //   var y = this.height / 2
-    //   ctx.fillText(msg, x, y);
-    // }
-
-    // Decoration: arc, clockwise-arrow, counterclockwise-arrow
-    //
-    //  clockwise-arrow (drawn clockwise from arcStartBp; direction = 1):
-    //
-    //    arcStartBp (feature start)      arcStopBp
-    //           |                        |
-    //           --------------------------  arrowTipBp
-    //           |                          \|
-    //           |                           x - arrowTipPt (feature stop)
-    //           |                          /
-    //           -------------------------x
-    //                                    |
-    //                                    innerArcStartPt
-    //
-    //  counterclockwise-arrow (drawn counterclockwise from arcStartBp; direction = -1):
-    //
-    //                arcStopBp                      arcStartBp (feature stop)
-    //                       |                        |
-    //           arrowTipBp   -------------------------
-    //                    | /                         |
-    //       arrowTipPt - x                           |
-    //  (feature start)    \                          |
-    //                       x-------------------------
-    //                       |
-    //                       innerArcStartPt
-    //
-    // If the zoomFactor gets too large, the arc drawing becomes unstable.
-    // (ie the arc wiggle in the map as zooming)
-    // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
-    drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
-      var scale = this.scale;
-      var ctx = this.context(layer);
-
-      if (decoration == 'arc') {
-        ctx.beginPath();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        this.arcPath(layer, radius, start, stop);
-        ctx.stroke();
-      }
-
-      // Looks like we're drawing an arrow
-      if (decoration != 'arc') {
-        // Determine Arrowhead length
-        // Using width which changes according zoom factor upto a point
-        var arrowHeadLengthPixels = width / 2;
-        var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
-
-        // If arrow head length is longer than feature length, adjust start and stop
-        var featureLength = this.sequence.lengthOfRange(start, stop);
-        if ( featureLength &lt; arrowHeadLengthBp ) {
-          var middleBP = start + ( featureLength / 2 );
-          start = middleBP - arrowHeadLengthBp / 2;
-          stop = middleBP + arrowHeadLengthBp / 2;
-        }
-
-        // Set up drawing direction
-        var arcStartBp = (decoration == 'clockwise-arrow') ? start : stop;
-        var arrowTipBp = (decoration == 'clockwise-arrow') ? stop : start;
-        var direction = (decoration == 'clockwise-arrow') ? 1 : -1;
-
-        // Calculate important points
-        var halfWidth = width / 2;
-        var arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
-        var arrowTipPt = this.pointFor(arrowTipBp, radius);
-        var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
-
-        // Draw arc with arrow head
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
-        ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
-        ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
-        ctx.closePath();
-        ctx.fill();
-      }
-
-    }
-
-    /**
-     * The method add an arc to the path. However, if the zoomFactor is very large,
-     * the arc is added as a straight line.
-     */
-    arcPath(layer, radius, startBp, stopBp, anticlockwise=false, startType='moveTo') {
-      var ctx = this.context(layer);
-      var scale = this.scale;
-
-      // Features less than 1000th the length of the sequence are drawn as straight lines
-      var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
-      if ( rangeLength &lt; (this.sequence.length / 1000)) {
-        var p2 = this.pointFor(stopBp, radius);
-        if (startType == 'lineTo') {
-          var p1 = this.pointFor(startBp, radius);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType == 'moveTo') {
-          var p1 = this.pointFor(startBp, radius);
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType == 'noMoveTo'){
-          ctx.lineTo(p2.x, p2.y);
-        }
-      } else {
-        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      }
-    }
-
-    // drawArc(start, stop, radius, color = '#000000', width = 1) {
-    //   var scale = this.scale;
-    //   var ctx = this.ctx;
-    //   ctx.beginPath();
-    //   ctx.strokeStyle = color;
-    //   ctx.lineWidth = width;
-    //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
-    //   ctx.stroke();
-    // }
-
-    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black') {
-      var innerPt = this.pointFor(bp, radius);
-      var outerPt = this.pointFor(bp, radius + length);
-      // var ctx = this.ctx;
-      var ctx = this.context(layer);
-
-      ctx.beginPath();
-      ctx.moveTo(innerPt.x, innerPt.y);
-      ctx.lineTo(outerPt.x, outerPt.y);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = lineWidth;
-      ctx.stroke();
-    }
-
-
-    pointFor(bp, radius) {
-      var radians = this.scale.bp(bp);
-      var x = this.scale.x(0) + radius * Math.cos(radians);
-      var y = this.scale.y(0) + radius * Math.sin(radians);
-      return {x: x, y: y}
-    }
-
-    bpForPoint(point) {
-      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) )
-    }
-
-    visibleRangesForRadius(radius, margin = 0) {
-      var angles = CGV.circleAnglesFromIntersectingRect(radius,
-        this.scale.x.invert(0 - margin),
-        this.scale.y.invert(0 - margin),
-        this.width + margin * 2,
-        this.height + margin * 2
-      )
-      return angles.map( (a) => { return Math.round(this.scale.bp.invert(a)) })
-    }
-
-    //TODO if undefined, see if radius is visible
-    visibleRangeForRadius(radius, margin = 0) {
-      var ranges = this.visibleRangesForRadius(radius, margin);
-      if (ranges.length == 2) {
-        // return ranges
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[1])
-      } else if (ranges.length > 2) {
-        // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length -1])
-      } else if ( (radius - margin) > this.maximumVisibleRadius() ) {
-        return undefined
-      } else if ( (radius + margin) &lt; this.minimumVisibleRadius() ) {
-        return undefined
-      } else {
-        return new CGV.CGRange(this.sequence, 1, this.sequence.length)
-      }
-      // } else {
-      //   return undefined
+      // for (var i = 0, len = intervals.length; i &lt; len; i++) {
+      //   this.intervals.push( {interval: intervals[i], index: i})
       // }
+      this.fill(intervals);
+      // intervals.forEach( (i) => { console.log(i)})
     }
 
-    centerVisible() {
-      var x = this.scale.x(0);
-      var y = this.scale.y(0);
-      return (x >= 0 &amp;&amp;
-              x &lt;= this.width &amp;&amp;
-              y >= 0 &amp;&amp;
-              y &lt;= this.height)
+    _normalize(intervals) {
+      var interval;
+      var nomalizedIntervals = []
+      for (var i = 0, len = intervals.length; i &lt; len; i++) {
+        interval = intervals[i];
+        if (interval.start &lt;= interval.stop) {
+          nomalizedIntervals.push( {interval: interval, index: i});
+        } else {
+          nomalizedIntervals.push({
+            interval: interval,
+            index: i,
+            start: interval.start,
+            stop: this.circularLength,
+            crossesOrigin: true
+          });
+          nomalizedIntervals.push({
+            interval: interval,
+            index: i,
+            start: 1,
+            stop: interval.stop,
+            crossesOrigin: true
+          });
+        }
+      }
+      return nomalizedIntervals
     }
 
-    /**
-     * Return the distance between the circle center and the farthest corner of the canvas
-     */
-    maximumVisibleRadius() {
-      // Maximum distance on x axis between circle center and the canvas 0 or width
-      var maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
-      // Maximum distance on y axis between circle center and the canvas 0 or height
-      var maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
-      // Return the hypotenuse
-      return Math.sqrt( maxX * maxX + maxY * maxY)
-    }
+    fill(intervals) {
+      if (intervals.length == 0) {
+          this.topList = [];
+          return;
+      }
+      var start = this.start;
+      var end = this.end;
+      var sublist = this.sublist;
 
-    minimumVisibleRadius() {
-      if (this.centerVisible()) {
-        // Center is visible so the minimum radius has to be 0
-        return 0
-      } else if ( CGV.oppositeSigns(this.scale.x.invert(0), this.scale.x.invert(this.width)) ) {
-        // The canvas straddles 0 on the x axis, so the minimum radius is the distance to the closest horizontal line
-        return Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)))
-      } else if ( CGV.oppositeSigns(this.scale.y.invert(0), this.scale.y.invert(this.height)) ) {
-        // The canvas straddles 0 on the y axis, so the minimum radius is the distance to the closest vertical line
-        return Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)))
-      } else {
-        // Closest corner of the canvas
-        // Minimum distance on x axis between circle center and the canvas 0 or width
-        var minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
-        // Minimum distance on y axis between circle center and the canvas 0 or height
-        var minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
-        // Return the hypotenuse
-        return Math.sqrt( minX * minX + minY * minY)
+      intervals = this._normalize(intervals);
+      this.intervals = intervals;
+
+      // Sort by overlap
+      intervals.sort(function(a, b) {
+          if (start(a) != start(b))
+              return start(a) - start(b);
+          else
+              return end(b) - end(a);
+      });
+      var sublistStack = [];
+      var curList = [];
+      this.topList = curList;
+      curList.push(intervals[0]);
+      if (intervals.length == 1) return;
+      var curInterval, topSublist;
+      for (var i = 1, len = intervals.length; i &lt; len; i++) {
+          curInterval = intervals[i];
+          //if this interval is contained in the previous interval,
+          if (end(curInterval) &lt; end(intervals[i - 1])) {
+              //create a new sublist starting with this interval
+              sublistStack.push(curList);
+              curList = new Array(curInterval);
+              sublist(intervals[i - 1], curList);
+          } else {
+              //find the right sublist for this interval
+              while (true) {
+                  if (0 == sublistStack.length) {
+                      curList.push(curInterval);
+                      break;
+                  } else {
+                      topSublist = sublistStack[sublistStack.length - 1];
+                      if (end(topSublist[topSublist.length - 1])
+                          > end(curInterval)) {
+                          //curList is the first (deepest) sublist that
+                          //curInterval fits into
+                          curList.push(curInterval);
+                          break;
+                      } else {
+                          curList = sublistStack.pop();
+                      }
+                  }
+              }
+          }
       }
     }
 
-    visibleRadii(margin) {
-      return {min: this.minimumVisibleRadius(), max: this.maximumVisibleRadius()}
+    end(interval) {
+      return interval.stop || interval.interval.stop
     }
 
-    pixelsPerBp(radius) {
-      return ( (radius * 2 * Math.PI) / this.sequence.length );
+    start(interval) {
+      return interval.start || interval.interval.start
     }
 
-    /**
-     * Return the layer with the specified name (defaults to map layer)
-     */
-    layers(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
-        return this._layers[layer]
-      } else {
-        console.error('Returning map layer by default')
-        return this._layers['map']
+    sublist(interval, list) {
+      interval.sublist = list;
+    }
+
+
+    _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
+      var skip;
+      var len = list.length;
+      var i = this.binarySearch(list, start, true, 'stop')
+      while (i >= 0 &amp;&amp; i &lt; len &amp;&amp; this.start(list[i]) &lt;= stop) {
+        skip = false
+
+        if (list[i].crossesOrigin) {
+          if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+            skip = true;
+          } else {
+            this._runIntervalsCrossingOrigin.push(list[i].interval);
+          }
+        }
+
+        if (!skip &amp;&amp; list[i].index % step == 0) {
+          callback.call(list[i].interval, list[i].interval);
+        }
+        if (list[i].sublist) {
+          this._run(start, stop, step, callback, list[i].sublist);
+        }
+        i++;
       }
     }
 
-    /**
-     * Return the context for the specified layer (defaults to map layer)
-     */
-    context(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
-        return this.layers(layer).ctx
+    run(start, stop, step, callback = function() {}) {
+      this._runIntervalsCrossingOrigin = [];
+      if (this.circularLength &amp;&amp; stop &lt; start) {
+        this._run(start, this.circularLength, step,  callback);
+        this._run(1, stop, step,  callback);
       } else {
-        console.error('Returning map layer by default')
-        return this.layers('map').ctx
+        this._run(start, stop, step, callback);
       }
     }
 
-    /**
-     * Return the node for the specified layer (defaults to map layer)
-     */
-    node(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
-        return this.layers(layer).node
-      } else {
-        console.error('Returning map layer by default')
-        return this.layers('map').node
+    count(start, stop, step) {
+      var count = 0;
+      this.run(start, stop, step, (i) => {
+        count++
+      });
+      return count
+    }
+
+    find(start, stop, step) {
+      var overlaps = [];
+      this.run(start, stop, step, (i) => {
+        overlaps.push(i);
+      });
+      return overlaps
+    }
+
+
+    binarySearch(data, search_value, upper, getter) {
+      var min_index = -1;
+      var max_index = data.length;
+      var current_index, current_value;
+
+      while (max_index - min_index > 1) {
+        current_index = (min_index + max_index) / 2 | 0;
+        current_value = this.end(data[current_index]);
+        if (current_value &lt; search_value) {
+          min_index = current_index;
+        } else if (current_value > search_value){
+          max_index = current_index;
+        } else {
+          return current_index;
+        }
       }
+      return (upper ? max_index : min_index);
     }
 
-    /**
-     * This test method reduces the canvas width and height so
-     * you can see how the features are reduced (not drawn) as
-     * you move the map out of the visible range.
-     */
-    get _testDrawRange() {
-      return this.__testDrawRange;
-    }
 
-    set _testDrawRange(value) {
-      this.__testDrawRange = value;
-      if (value) {
-        this.width = this.width * 0.4;
-        this.height = this.height * 0.4;
-      } else {
-        this.width = this.width / 0.4;
-        this.height = this.height / 0.4;
+    test() {
+      function testInterval(nc, start, stop, expected) {
+        var result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
+        var expected = expected.sort().join(', ');
+        var testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
+        testOut += (result == expected) ? 'Pass' : 'FAIL' + ' - ' + result;
+        console.log(testOut);
       }
-      this.viewer.drawFull();
-    }
 
+      var intervals = [
+        {name: 'A', start: 1, stop: 20},
+        {name: 'B', start: 10, stop: 15},
+        {name: 'C', start: 10, stop: 20},
+        {name: 'D', start: 15, stop: 30},
+        {name: 'E', start: 20, stop: 30},
+        {name: 'F', start: 20, stop: 50},
+        {name: 'G', start: 80, stop: 100},
+        {name: 'H', start: 90, stop: 95},
+        {name: 'I', start: 90, stop: 5},
+        {name: 'J', start: 95, stop: 15},
+        {name: 'K', start: 95, stop: 2},
+        {name: 'L', start: 92, stop: 50}
+      ]
+      var nc = new CGV.NCList(intervals, { circularLength: 100 });
+      
+      testInterval(nc, 10, 20, ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'L']);
+      testInterval(nc, 40, 85, ['F', 'G', 'L']);
+      testInterval(nc, 40, 95, ['F', 'G', 'H', 'I', 'J', 'K', 'L']);
+      testInterval(nc, 95, 10, ['A', 'B', 'C', 'G', 'H', 'I', 'J', 'K', 'L']);
+
+      
+
+      return nc
+    }
 
   }
 
-  CGV.Canvas = Canvas;
+
+
+  CGV.NCList = NCList;
 
 })(CGView);
+
+// n = new CGV.NCList([{start: 1, stop: 100}, {start: 10, stop: 80}, {start: 70, stop: 200}])
+// n = new CGV.NCList(cgv.slots(1)._features)
+
+
+    // fill(intervals) {
+    //   if (intervals.length == 0) {
+    //       this.topList = [];
+    //       return;
+    //   }
+    //   var start = this.start;
+    //   var end = this.end;
+    //   var sublist = this.sublist;
+    //
+    //   // Sort by overlap
+    //   intervals.sort(function(a, b) {
+    //       if (start(a) != start(b))
+    //           return start(a) - start(b);
+    //       else
+    //           return end(b) - end(a);
+    //   });
+    //   var sublistStack = [];
+    //   var curList = [];
+    //   this.topList = curList;
+    //   curList.push(intervals[0]);
+    //   if (intervals.length == 1) return;
+    //   var curInterval, topSublist;
+    //   for (var i = 1, len = intervals.length; i &lt; len; i++) {
+    //       curInterval = intervals[i];
+    //       //if this interval is contained in the previous interval,
+    //       if (end(curInterval) &lt; end(intervals[i - 1])) {
+    //           //create a new sublist starting with this interval
+    //           sublistStack.push(curList);
+    //           curList = new Array(curInterval);
+    //           sublist(intervals[i - 1], curList);
+    //       } else {
+    //           //find the right sublist for this interval
+    //           while (true) {
+    //               if (0 == sublistStack.length) {
+    //                   curList.push(curInterval);
+    //                   break;
+    //               } else {
+    //                   topSublist = sublistStack[sublistStack.length - 1];
+    //                   if (end(topSublist[topSublist.length - 1])
+    //                       > end(curInterval)) {
+    //                       //curList is the first (deepest) sublist that
+    //                       //curInterval fits into
+    //                       curList.push(curInterval);
+    //                       break;
+    //                   } else {
+    //                       curList = sublistStack.pop();
+    //                   }
+    //               }
+    //           }
+    //       }
+    //   }
+    // }
 </code></pre>
         </article>
     </section>

@@ -300,10 +300,11 @@
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
 
-      ctx.lineWidth = 0.25;
       // ctx.strokeStyle = 'black';
-      ctx.strokeStyle = color.rgbaString;
-      ctx.stroke();
+      // TODO: draw stroked line for sparse data
+      // ctx.lineWidth = 0.05;
+      // ctx.strokeStyle = color.rgbaString;
+      // ctx.stroke();
 
     }
 

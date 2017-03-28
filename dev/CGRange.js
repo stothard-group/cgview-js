@@ -65,9 +65,9 @@
      */
     get length() {
       if (this.stop >= this.start) {
-        return this.stop - this.start
+        return this.stop - this.start + 1
       } else {
-        return this.sequenceLength + (this.stop - this.start)
+        return this.sequenceLength + (this.stop - this.start) + 1
       } 
     }
 
