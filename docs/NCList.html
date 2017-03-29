@@ -871,11 +871,27 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="NCList#length"><a href="NCList.html#length">length</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
             </ul>
             <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="NCList#_normalize"><a href="NCList.html#_normalize">_normalize</a></li>
+            
+                <li data-name="NCList#end"><a href="NCList.html#end">end</a></li>
+            
+                <li data-name="NCList#fill"><a href="NCList.html#fill">fill</a></li>
+            
+                <li data-name="NCList#start"><a href="NCList.html#start">start</a></li>
+            
+                <li data-name="NCList#sublist"><a href="NCList.html#sublist">sublist</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1254,10 +1270,10 @@
     NCList
     </h2>
     
-        <div class="class-description"><p>The NCList is a container for intervals that allows fast searching of overlaping regions.
-Alekseyenko, A., and Lee, C. (2007).
-Nested Containment List (NCList): A new algorithm for accelerating
+        <div class="class-description"><p>The NCList is a container for intervals that allows fast searching of overlaping regions.</p>
+<p>Nested Containment List (NCList): A new algorithm for accelerating
 interval query of genome alignment and interval databases.
+Alekseyenko, A., and Lee, C. (2007).
 Bioinformatics, doi:10.1093/bioinformatics/btl647
 https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for</p>
 <p>Code adapted from
@@ -1275,12 +1291,12 @@ https://searchcode.com/codesearch/view/17093141</p></div>
     <div class="nameContainer">
         <h4 class="name" id="NCList">
             
-            new NCList<span class="signature">(intervals)</span>
+            new NCList<span class="signature">(intervals, options)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line17">line 17</a>
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line18">line 18</a>
         </div>
         
     </div>
@@ -1289,6 +1305,10 @@ https://searchcode.com/codesearch/view/17093141</p></div>
 </dt>
 <dd>
     
+    
+    <div class="description">
+        <p>Each interval should have a start and stop property.</p>
+    </div>
     
 
     
@@ -1324,7 +1344,7 @@ https://searchcode.com/codesearch/view/17093141</p></div>
             <td class="type">
             
                 
-<span class="param-type"><a href="Viewer.html">Viewer</a></span>
+<span class="param-type">Array</span>
 
 
             
@@ -1334,7 +1354,30 @@ https://searchcode.com/codesearch/view/17093141</p></div>
             
             <td class="description last">
                 
-                <p>Intervals to create the NCList</p></td>
+                <p>Array of Intervals used to create the NCList.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>-</p></td>
         </tr>
 	
 	
@@ -1395,7 +1438,460 @@ https://searchcode.com/codesearch/view/17093141</p></div>
     
     
     
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="length">length<span class="type-signature type number">Number</span> </h4>
+    </div>
     
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The number of intervals in the NCList</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_normalize">
+            
+            _normalize<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line43">line 43</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Splits intervals that span the Origin of cicular sequences</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="end">
+            
+            end<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line134">line 134</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Method to retrieve the stop coordinate of the interval</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="fill">
+            
+            fill<span class="signature">(intervals)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line74">line 74</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Fils the NCList with the given intervals</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>intervals</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Array of intervals</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="start">
+            
+            start<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line141">line 141</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Method to retrieve the start coordinate of the interval</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="sublist">
+            
+            sublist<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="NCList.js.html">NCList.js</a>, <a href="NCList.js.html#line148">line 148</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Method to set the sublist for the given interval.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -1412,7 +1908,7 @@ https://searchcode.com/codesearch/view/17093141</p></div>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Mar 28 2017 16:13:26 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 11:37:19 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

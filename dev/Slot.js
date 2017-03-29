@@ -14,16 +14,13 @@
       this._features = new CGV.CGArray();
       this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
+      this.refresh();
       //TEMP
       if (data.type == 'plot') {
         this.type = 'plot'
       } else {
         this.type = 'feature'
       }
-
-
-      // this._featureStarts = new CGV.CGArray();
-
     }
 
     /** * @member {Track} - Get the *Track*

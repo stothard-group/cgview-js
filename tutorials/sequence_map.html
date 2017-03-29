@@ -86,10 +86,12 @@ cgv = new CGV.Viewer('#my-viewer', {
   width: 500,
   sequence: {
     // Provide the sequence.
-    seq: CGV.Sequence.random(1000)
+    seq: CGV.Sequence.random(10000)
   }
 });
 ```
+
+## Create a [Track](Track.html) with ORFs extracted from the seqeunce ##
 
 ```js
 // The first argument for a track is the viewer layout
@@ -98,7 +100,7 @@ new CGV.Track(cgv.layout, {
   name: 'ORFs',
   // Draw the track using separated or combined slots for each reading frame.
   // Options: 'separated', 'combined'.
-  readingFrame: 'combined',
+  readingFrame: 'separated',
   // Draw the track using separated or combined slots for the forward and reverse strand.
   // Options: 'separated', 'combined'.
   strand: 'separated',
@@ -120,6 +122,83 @@ new CGV.Track(cgv.layout, {
   }
 });
 ```
+
+## Create a [Track](Track.html) with start/stop codons extracted from the seqeunce ##
+
+```js
+// The first argument for a track is the viewer layout
+new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'Start Stop Codons',
+  // Draw the track using separated or combined slots for each reading frame.
+  // Options: 'separated', 'combined'.
+  readingFrame: 'separated',
+  // Draw the track using separated or combined slots for the forward and reverse strand.
+  // Options: 'separated', 'combined'.
+  strand: 'separated',
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
+  position: 'both',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    features: {
+      // Which Features to use.
+      // Options: 'source', 'types' or 'sequence' (see examples below).
+      sequence: 'start_stop_codons',
+      // Additional options can also be provided.
+      // In this case, what start and stop codons to use.
+      start: 'ATG',
+      stop: 'TAA,TAG,TGA'
+    }
+  }
+});
+```
+
+## Create a [Track](Track.html) with a GC Skew plot extracted from the seqeunce ##
+
+```js
+// The first argument for a track is the viewer layout
+new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'GC Skew',
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
+  position: 'inside',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    plot: {
+      // Which Features to use.
+      // Options: 'source', 'types' or 'sequence' (see examples below).
+      sequence: 'gc_skew'
+    }
+  }
+});
+```
+
+## Create a [Track](Track.html) with a GC Content plot extracted from the seqeunce ##
+
+```js
+// The first argument for a track is the viewer layout
+new CGV.Track(cgv.layout, {
+  // Name for the track.
+  name: 'GC Content',
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
+  position: 'inside',
+  // Here we describe what features or plot will be in the track.
+  contents: {
+    // What type of track is this. Options: 'features' or 'plot'.
+    plot: {
+      // Which Features to use.
+      // Options: 'source', 'types' or 'sequence' (see examples below).
+      sequence: 'gc_content'
+    }
+  }
+});
+```
+
 Examples of contents
 ```js
 //contents: {

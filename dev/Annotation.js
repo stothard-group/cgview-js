@@ -14,7 +14,8 @@
       this._labelLineMargin = CGV.pixel(10);
       this._labelLineWidth = CGV.pixel(1);
       this._visible = CGV.defaultFor(options.visible, true);
-      // this._visibleLabels = new CGV.CGArray();
+      this.refresh();
+      this._visibleLabels = new CGV.CGArray();
     }
 
     /**
@@ -70,13 +71,21 @@
     }
 
     /**
+     * Returns an [CGArray](CGArray.js.html) of Labels or a single Label.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    labels(term) {
+      return this._labels.get(term)
+    }
+
+    /**
      * Add a new label to the set.
      *
      * @param {Label} label - The Label to add to the set.
      */
     addLabel(label) {
       this._labels.push(label);
-      // this.sort();
     }
 
     /**
@@ -88,20 +97,11 @@
       this._labels = this._labels.remove(label);
     }
 
-    /**
-     * Sort the labels by position (middle of the feature in bp). 
-     */
-    sort() {
-      // this._labels = this._labels.remove(label);
-      this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
-    }
-
     refresh() {
       this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
     }
 
     refreshLabelWidths() {
-      // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
       var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
@@ -119,7 +119,6 @@
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
         if (containsStart && containsStop) {
@@ -174,41 +173,38 @@
           labelArray = this._labels;
         } else {
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
-
-          // for (var i = 0, len = this._labels.length; i < len; i++) {
-          //   if (visibleRange.contains(this._labels[i].bp)) {
-          //     labelArray.push(this._labels[i]);
-          //   }
-          // }
         }
       }
       return labelArray
     }
 
     draw(reverseRadius, directRadius) {
+      if (this._labels.length != this._labelsNCList.length) {
+        this.refresh();
+      }
+
       this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
 
-      // TODO: change origin when moving image
-      // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
-        this._innerRadius = reverseRadius;
-        this._outerRadius = directRadius;
-      // }
+      this._innerRadius = reverseRadius;
+      this._outerRadius = directRadius;
 
-      this._labelsToDraw = this.visibleLabels(directRadius);
-      this._calculatePositions(this._labelsToDraw);
-      this._calculateLabelRects(this._labelsToDraw);
+      // Find Labels that are within the visible range and calculate bounds
+      var possibleLabels = this.visibleLabels(directRadius);
+      this._calculatePositions(possibleLabels);
+      this._calculateLabelRects(possibleLabels);
 
-      // Remove overlapping labels (TEMP)
+      // Remove overlapping labels
       var labelRects = new CGV.CGArray();
       this._visibleLabels = new CGV.CGArray();
-      for (var i = 0, len = this._labelsToDraw.length; i < len; i++) {
-        label = this._labelsToDraw[i];
+      for (var i = 0, len = possibleLabels.length; i < len; i++) {
+        label = possibleLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
         }
       }
 
+      // Draw nonoverlapping labels
       var canvas = this._canvas;
       var ctx = canvas.context('map');
       var label, feature, bp, origin;
@@ -218,13 +214,11 @@
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
-        // origin = canvas.pointFor(bp, directRadius + 5);
         ctx.fillStyle = feature.color.rgbaString;
-        // ctx.fillText(label.name, origin.x, origin.y);
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
+
       if (this.viewer.debug && this.viewer.debug.data.n) {
         this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
       }

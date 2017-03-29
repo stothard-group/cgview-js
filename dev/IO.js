@@ -53,7 +53,6 @@
         json.features.forEach((featureData) => {
           new CGV.Feature(viewer, featureData);
         });
-        viewer.annotation.refresh();
       }
 
       if (json.dividers) {
