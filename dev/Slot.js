@@ -147,21 +147,8 @@
     }
 
     // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
     refresh() {
-      // NOTE: all features should be sorted from json builder or in workers to save time here
-      // Sort the features by start
-      // this._features.sort( (a, b) => {
-      //   return a.start - b.start
-      // });
       this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length});
-      // Clear feature starts
-      // this._featureStarts = new CGV.CGArray();
-      // for (var i = 0, len = this._features.length; i < len; i++) {
-      //   this._featureStarts.push(this._features[i].start);
-      // }
-      // this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -171,10 +158,6 @@
     get visibleRange() {
       return this._visibleRange
     }
-
-    // get largestFeatureLength() {
-    //   return this._largestFeatureLength
-    // }
 
     /**
      * Does the slot contain the given *radius*.
@@ -194,16 +177,6 @@
     findFeaturesForBp(bp) {
       return this._featureNCList.find(bp);
     }
-    // findFeatureForBp(bp) {
-    //   var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
-    //   var feature;
-    //   this._featureStarts.eachFromRange(start, bp, 1, (i) => {
-    //     if (!feature && this._features[i].range.contains(bp)) {
-    //       feature = this._features[i];
-    //     }
-    //   });
-    //   return feature
-    // }
 
     findLargestFeatureLength() {
       var length = 0;
@@ -231,8 +204,6 @@
 
     // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
-      // this._radius = slotRadius;
-      // this._thickness = slotThickness;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
       var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
@@ -242,29 +213,12 @@
         var stop = range.stop;
         if (this.hasFeatures) {
           var featureCount = this._features.length;
-          // var largestLength = this.largestFeatureLength;
-          // Case where the largest feature should not be subtracted
-          // _____ Visible
-          // ----- Not Visbile
-          // Do no subtract the largest feature so that the start loops around to before the stop
-          // -----Start_____Stop-----
-          // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-          // _____Stop-----Start_____
-          // if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
-          //   if (this.sequence.subtractBp(start, stop) <= largestLength) {
-          //     start = range.getStopPlus(1);
-          //   } else {
-          //     start = range.getStartPlus(-largestLength);
-          //   }
-          //   featureCount = this._featureStarts.countFromRange(start, stop);
-          // }
           if (!range.isFullCircle()) {
             featureCount = this._featureNCList.count(start, stop);
           }
           var step = 1;
           // Change step if drawing fast and there are too many features
           if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
-            // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
             // Use a step that is rounded up to the nearest power of 2
             // This combined with eachFromRange altering the start index based on the step
             // means that as we zoom, the visible features remain consistent.
@@ -274,19 +228,9 @@
             step = CGV.base2(initialStep);
           }
           // Draw Features
-
-          // var startTime = new Date().getTime();
-          //
-          // this._featureStarts.eachFromRange(start, stop, step, (i) => {
-          //   this._features[i].draw('map', slotRadius, slotThickness, range);
-          // })
-          // var time1 = CGV.elapsed_time(startTime);
-          // var startTime2 = new Date().getTime();
           this._featureNCList.run(start, stop, step, (feature) => {
             feature.draw('map', slotRadius, slotThickness, range);
           })
-          // var time2 = CGV.elapsed_time(startTime2);
-          // console.log(time1 + ' -> ' +  time2);
 
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
@@ -304,11 +248,6 @@
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
       var range = this._visibleRange;
-      // Draw progress like a clock
-      // if (progress > 0 && progress < 100) {
-      //   var stop = this.sequence.length * progress / 100;
-      //   canvas.drawArc('background', 1, stop, slotRadius, '#EAEAEE', slotThickness);
-      // }
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
         var thickness = slotThickness * progress / 100;
