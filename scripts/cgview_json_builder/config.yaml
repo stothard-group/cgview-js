@@ -61,30 +61,28 @@ cgview:
         readingFrame: 'separated'
         position: 'both'
         contents:
-          features:
-            sequence: 'start_stop_codons'
-            # The Following are the default values:
-            start: 'ATG'
-            stop: 'TAA,TAG,TGA'
+          type: 'feature'
+          from: 'sequence'
+          extract: 'start_stop_codons'
       - name: 'ORFs'
         readingFrame: 'separated'
         position: 'both'
         contents:
-          features:
-            sequence: 'orfs'
-            # The Following are the default values:
-            start: 'ATG'
-            stop: 'TAA,TAG,TGA'
-      # - name: 'CG Content'
-      #   position: 'inside'
-      #   contents:
-      #     plot:
-      #       sequence: 'gc_content'
-      # - name: 'CG Skew'
-      #   position: 'inside'
-      #   contents:
-      #     plot:
-      #       sequence: 'gc_skew'
+          type: 'feature'
+          from: 'sequence'
+          extract: 'orfs'
+      - name: 'CG Content'
+        position: 'inside'
+        contents:
+          type: 'plot'
+          from: 'sequence'
+          extract: 'gc_content'
+      - name: 'CG Skew'
+        position: 'inside'
+        contents:
+          type: 'plot'
+          from: 'sequence'
+          extract: 'gc_skew'
 
 
 

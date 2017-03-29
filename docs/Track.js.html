@@ -1129,6 +1129,8 @@
             
                 <li data-name="Slot#track"><a href="Slot.html#track">track</a></li>
             
+                <li data-name="Slot#type"><a href="Slot.html#type">type</a></li>
+            
                 <li data-name="Slot#viewer"><a href="Slot.html#viewer">viewer</a></li>
             
                 <li data-name="Slot#visibleRange"><a href="Slot.html#visibleRange">visibleRange</a></li>
@@ -1164,8 +1166,6 @@
             
                 <li data-name="Track#contents"><a href="Track.html#contents">contents</a></li>
             
-                <li data-name="Track#contentType"><a href="Track.html#contentType">contentType</a></li>
-            
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
                 <li data-name="Track#layout"><a href="Track.html#layout">layout</a></li>
@@ -1181,6 +1181,8 @@
                 <li data-name="Track#sequence"><a href="Track.html#sequence">sequence</a></li>
             
                 <li data-name="Track#strand"><a href="Track.html#strand">strand</a></li>
+            
+                <li data-name="Track#type"><a href="Track.html#type">type</a></li>
             
                 <li data-name="Track#viewer"><a href="Track.html#viewer">viewer</a></li>
             
@@ -1278,18 +1280,54 @@
     /**
      * Create a new track.
      */
-    constructor(layout, data = {}, display = {}, meta = {}) {
+    constructor(layout, data = {}, meta = {}) {
       this.layout = layout;
       this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
-      this.name = CGV.defaultFor(data.name, 'Unknown')
-      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
-      this.strand = CGV.defaultFor(data.strand, 'separated')
-      this.position = CGV.defaultFor(data.position, 'both')
-      this.contents = data.contents
+      this.name = CGV.defaultFor(data.name, 'Unknown');
+      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
+      this.strand = CGV.defaultFor(data.strand, 'separated');
+      this.position = CGV.defaultFor(data.position, 'both');
+      this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
+
+      var contents = {
+        contents: {
+          // Type of track. Options: 'feature', 'plot'
+          // The type is set automatically when extracting from the sequence.
+          type: 'feature',
+          // From where to extract the features/plot. Options:
+          //  - 'source'   : the source property of the features/plots will be used for selection
+          //  - 'sequence' : the features/plot will be generated from the sequence
+          from: 'source',
+          // How to extract the features/plot.
+          // For 'source', the extract value can be a single value or an array of values.
+          // For 'sequence', the extract value can be one of the following:
+          //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
+          // e.g. In this example all features with a source of 'genome-1' will be used
+          extract: 'genome-1'
+        },
+        contents: {
+          type: 'feature',
+          from: 'sequence',
+          extract: 'orfs',
+          options: {
+            start: 'ATG',
+            stop: 'TAA,TAG'
+          }
+        },
+        data: {
+          type: 'plot',
+          from: 'sequence',
+          extract: 'gc_skew',
+          options: {
+            step: 1,
+            window: 100
+          }
+        }
+      }
     }
 
     /** * @member {Viewer} - Get or set the *Viewer*
@@ -1338,21 +1376,19 @@
 
     set contents(value) {
       this._contents = value;
-      // FIXME: Have validation and removal of extra things.
-      if (value.features) {
-        this._contentType = 'features';
-      } else if (value.plot) {
-        this._contentType = 'plot';
-      } else {
-        this._contentType = undefined;
-      }
     }
 
     /** * @member {String} - Get the *Content Type*.
      */
-    get contentType() {
-      return this._contentType
+    get type() {
+      return this.contents &amp;&amp; this.contents.type
     }
+
+    // /** * @member {String} - Get the *Content Type*.
+    //  */
+    // get contentType() {
+    //   return this._contentType
+    // }
 
     /**
      * @member {Sequence} - Get the sequence.
@@ -1418,55 +1454,38 @@
     }
 
     refresh() {
-      if (this.contentType == 'features') {
+      this._features = new CGV.CGArray();
+      this._plot = undefined;
+      if (this.contents.from == 'sequence') {
+        this.extractFromSequence();
+      } else if (this.type == 'feature') {
         this.updateFeatures();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlot();
       }
       this.updateSlots();
     }
 
-    updatePlot() {
-      if (this.contents.plot.sequence) {
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // This could be the fallback if not able to use workers
-          // this._plot = sequenceExtractor.extractPlot(this.contents.plot);
-          sequenceExtractor.generatePlot(this, this.contents.plot);
-        }
-      } else if (this.contents.plot.source) {
-        // Plot with particular Source
-        this.viewer.plots().find( (plot) => {
-          if (plot.source == this.contents.plot.source) {
-            this._plot = plot;
-          }
-        });
+    extractFromSequence() {
+      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      if (sequenceExtractor) {
+        sequenceExtractor.extractTrackData(this, this.contents.extract, this.contents.options);
+      } else {
+        console.error('No sequence is available to extract features/plots from');
       }
-
     }
 
     updateFeatures() {
-      this._features = new CGV.CGArray();
-      if (this.contents.features.sequence) {
-        // Features extracted from the  Sequence
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // this._features = sequenceExtractor.extractFeatures(this.contents.features);
-          this.extractFeaturesFromSequence()
-        } else {
-          console.error('No sequence is available to extract features from');
-        }
-
-      } else if (this.contents.features.source) {
+      if (this.contents.from == 'source') {
         // Features with particular Source
         this.viewer.features().each( (i, feature) => {
-          if (feature.source == this.contents.features.source) {
+          if (feature.source == this.contents.extract) {
             this._features.push(feature);
           }
         });
-      } else if (this.contents.features.types) {
-        // Features with paricular Type
-        var featureTypes = new CGV.CGArray(this.contents.features.types);
+      } else if (this.contents.types) {
+        // Features with particular Type
+        var featureTypes = new CGV.CGArray(this.contents.featureType);
         this.viewer.features().each( (i, feature) => {
           if (featureTypes.contains(feature.type)) {
             this._features.push(feature);
@@ -1475,33 +1494,21 @@
       }
     }
 
-    extractFeaturesFromSequence() {
-      var featureOptions = this.contents.features;
-      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-      if (sequenceExtractor) {
-        sequenceExtractor.generateFeatures(this, this.contents.features);
+    updatePlot() {
+      if (this.contents.from == 'source') {
+        // Plot with particular Source
+        this.viewer.plots().find( (plot) => {
+          if (plot.source == this.contents.extract) {
+            this._plot = plot;
+          }
+        });
       }
-      // if (featureOptions.sequence == 'start_stop_codons') {
-      // } else if (options.sequence == 'orfs') {
-      // }
-      // setTimeout(() => {
-      //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-      //   this.updateFeatureSlots();
-      //   this.viewer.drawFull();
-      // }, 0);
     }
 
-    // extractFeaturesTimeout() {
-    //   var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-    //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-    //   this.updateFeatureSlots();
-    //   this.veiwer.draw_full();
-    // }
-
     updateSlots() {
-      if (this.contentType == 'features') {
+      if (this.type == 'feature') {
         this.updateFeatureSlots();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();
@@ -1576,7 +1583,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 11:37:19 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 15:25:56 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

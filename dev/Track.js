@@ -16,16 +16,18 @@
       this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
-      this.name = CGV.defaultFor(data.name, 'Unknown')
-      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
-      this.strand = CGV.defaultFor(data.strand, 'separated')
-      this.position = CGV.defaultFor(data.position, 'both')
-      this.contents = data.contents
+      this.name = CGV.defaultFor(data.name, 'Unknown');
+      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
+      this.strand = CGV.defaultFor(data.strand, 'separated');
+      this.position = CGV.defaultFor(data.position, 'both');
+      this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
+
       var contents = {
         contents: {
           // Type of track. Options: 'feature', 'plot'
+          // The type is set automatically when extracting from the sequence.
           type: 'feature',
           // From where to extract the features/plot. Options:
           //  - 'source'   : the source property of the features/plots will be used for selection
@@ -105,21 +107,19 @@
 
     set contents(value) {
       this._contents = value;
-      // FIXME: Have validation and removal of extra things.
-      if (value.features) {
-        this._contentType = 'features';
-      } else if (value.plot) {
-        this._contentType = 'plot';
-      } else {
-        this._contentType = undefined;
-      }
     }
 
     /** * @member {String} - Get the *Content Type*.
      */
-    get contentType() {
-      return this._contentType
+    get type() {
+      return this.contents && this.contents.type
     }
+
+    // /** * @member {String} - Get the *Content Type*.
+    //  */
+    // get contentType() {
+    //   return this._contentType
+    // }
 
     /**
      * @member {Sequence} - Get the sequence.
@@ -185,55 +185,38 @@
     }
 
     refresh() {
-      if (this.contentType == 'features') {
+      this._features = new CGV.CGArray();
+      this._plot = undefined;
+      if (this.contents.from == 'sequence') {
+        this.extractFromSequence();
+      } else if (this.type == 'feature') {
         this.updateFeatures();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlot();
       }
       this.updateSlots();
     }
 
-    updatePlot() {
-      if (this.contents.plot.sequence) {
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // This could be the fallback if not able to use workers
-          // this._plot = sequenceExtractor.extractPlot(this.contents.plot);
-          sequenceExtractor.generatePlot(this, this.contents.plot);
-        }
-      } else if (this.contents.plot.source) {
-        // Plot with particular Source
-        this.viewer.plots().find( (plot) => {
-          if (plot.source == this.contents.plot.source) {
-            this._plot = plot;
-          }
-        });
+    extractFromSequence() {
+      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      if (sequenceExtractor) {
+        sequenceExtractor.extractTrackData(this, this.contents.extract, this.contents.options);
+      } else {
+        console.error('No sequence is available to extract features/plots from');
       }
-
     }
 
     updateFeatures() {
-      this._features = new CGV.CGArray();
-      if (this.contents.features.sequence) {
-        // Features extracted from the  Sequence
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // this._features = sequenceExtractor.extractFeatures(this.contents.features);
-          this.extractFeaturesFromSequence()
-        } else {
-          console.error('No sequence is available to extract features from');
-        }
-
-      } else if (this.contents.features.source) {
+      if (this.contents.from == 'source') {
         // Features with particular Source
         this.viewer.features().each( (i, feature) => {
-          if (feature.source == this.contents.features.source) {
+          if (feature.source == this.contents.extract) {
             this._features.push(feature);
           }
         });
-      } else if (this.contents.features.types) {
-        // Features with paricular Type
-        var featureTypes = new CGV.CGArray(this.contents.features.types);
+      } else if (this.contents.types) {
+        // Features with particular Type
+        var featureTypes = new CGV.CGArray(this.contents.featureType);
         this.viewer.features().each( (i, feature) => {
           if (featureTypes.contains(feature.type)) {
             this._features.push(feature);
@@ -242,33 +225,21 @@
       }
     }
 
-    extractFeaturesFromSequence() {
-      var featureOptions = this.contents.features;
-      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-      if (sequenceExtractor) {
-        sequenceExtractor.generateFeatures(this, this.contents.features);
+    updatePlot() {
+      if (this.contents.from == 'source') {
+        // Plot with particular Source
+        this.viewer.plots().find( (plot) => {
+          if (plot.source == this.contents.extract) {
+            this._plot = plot;
+          }
+        });
       }
-      // if (featureOptions.sequence == 'start_stop_codons') {
-      // } else if (options.sequence == 'orfs') {
-      // }
-      // setTimeout(() => {
-      //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-      //   this.updateFeatureSlots();
-      //   this.viewer.drawFull();
-      // }, 0);
     }
 
-    // extractFeaturesTimeout() {
-    //   var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-    //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-    //   this.updateFeatureSlots();
-    //   this.veiwer.draw_full();
-    // }
-
     updateSlots() {
-      if (this.contentType == 'features') {
+      if (this.type == 'feature') {
         this.updateFeatureSlots();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();

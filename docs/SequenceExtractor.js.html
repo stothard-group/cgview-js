@@ -1129,6 +1129,8 @@
             
                 <li data-name="Slot#track"><a href="Slot.html#track">track</a></li>
             
+                <li data-name="Slot#type"><a href="Slot.html#type">type</a></li>
+            
                 <li data-name="Slot#viewer"><a href="Slot.html#viewer">viewer</a></li>
             
                 <li data-name="Slot#visibleRange"><a href="Slot.html#visibleRange">visibleRange</a></li>
@@ -1164,8 +1166,6 @@
             
                 <li data-name="Track#contents"><a href="Track.html#contents">contents</a></li>
             
-                <li data-name="Track#contentType"><a href="Track.html#contentType">contentType</a></li>
-            
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
                 <li data-name="Track#layout"><a href="Track.html#layout">layout</a></li>
@@ -1181,6 +1181,8 @@
                 <li data-name="Track#sequence"><a href="Track.html#sequence">sequence</a></li>
             
                 <li data-name="Track#strand"><a href="Track.html#strand">strand</a></li>
+            
+                <li data-name="Track#type"><a href="Track.html#type">type</a></li>
             
                 <li data-name="Track#viewer"><a href="Track.html#viewer">viewer</a></li>
             
@@ -1331,40 +1333,42 @@
     // METHODS
     //////////////////////////////////////////////////////////////////////////
 
-    extractFeatures(options = {}) {
-      var features = new CGV.CGArray();
-      if (options.sequence == 'start_stop_codons') {
-        features = this.extractStartStops(options);
-      } else if (options.sequence == 'orfs') {
-        features = this.extractORFs(options);
-      }
-      return features
+    fn2workerURL(fn) {
+      var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
+      return URL.createObjectURL(blob)
     }
 
-    // generateFeatures(track, options) {
-    //   if (options.sequence == 'start_stop_codons') {
-    //     features = this.generateStartStops(options);
-    //   } else if (options.sequence == 'orfs') {
-    //     features = this.extractORFs(options);
-    //   }
-    // }
-    //
+    extractTrackData(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs', 'gc_skew', 'gc_content'])) { return }
+      switch (extractType) {
+        case 'start_stop_codons':
+        case 'orfs':
+          track.contents.type = 'feature';
+          this.generateFeatures(track, extractType, options);
+          break;
+        case 'gc_skew':
+        case 'gc_content':
+          track.contents.type = 'plot';
+          this.generatePlot(track, extractType, options);
+          break;
+      }
+    }
 
-    generateFeatures(track, options) {
-      if (!CGV.validate(options.sequence, ['start_stop_codons', 'orfs'])) { return }
+    generateFeatures(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs'])) { return }
       var startTime = new Date().getTime();
-      var type = options.sequence;
       var viewer = this.viewer;
       // Start worker
       var url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
       var worker = new Worker(url);
       // Prepare message
-      var message = {};
-      message.type = type;
-      message.startPattern = CGV.defaultFor(options.start, 'ATG');
-      message.stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      message.seqString = this.seqString;
-      message.minORFLength = CGV.defaultFor(options.minORFLength, 100);
+      var message = {
+        type:         extractType,
+        startPattern: CGV.defaultFor(options.start, 'ATG'),
+        stopPattern:  CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
+        seqString:    this.seqString,
+        minORFLength: CGV.defaultFor(options.minORFLength, 100)
+      }
       worker.postMessage(message);
       worker.onmessage = (e) => {
         var messageType = e.data.messageType;
@@ -1375,23 +1379,23 @@
         if (messageType == 'complete') {
           track.loadProgress = 100;
           var featureDataArray = e.data.featureDataArray;
-          console.log("Features '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
           var features = new CGV.CGArray();
           startTime = new Date().getTime();
           var featureData;
-          var legends = this.createLegendItems(type);
-          var featureType = this.getFeatureType(type); // this will create the feature type
-          console.log(type)
+          var legends = this.createLegendItems(extractType);
+          var featureType = this.getFeatureType(extractType); // this will create the feature type
+          console.log(extractType)
           for (var i = 0, len = featureDataArray.length; i &lt; len; i++) {
             featureData = featureDataArray[i];
             featureData.legend = legends[featureData.type];
             features.push( new CGV.Feature(viewer, featureData) );
           }
-          console.log("Features '" + type + "' Creation Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Creation Time: " + CGV.elapsed_time(startTime) );
           startTime = new Date().getTime();
           track._features = features;
           track.updateSlots();
-          console.log("Features '" + type + "' Update Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Update Time: " + CGV.elapsed_time(startTime) );
           viewer.drawFull();
         }
       }
@@ -1402,136 +1406,54 @@
 
     }
 
-    createLegendItems(type) {
-      var legends = {};
-      if (type == 'orfs') {
-        legends = {
-          'ORF': this.getLegendItem('ORF')
-        }
-      } else if (type == 'start_stop_codons') {
-        legends = {
-          'start-codon': this.getLegendItem('start-codon'),
-          'stop-codon': this.getLegendItem('stop-codon')
-        }
-      }
-      return legends
-    }
 
-    extractORFs(options = {}) {
-      this.viewer.flash('Finding ORFs...');
+    generatePlot(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['gc_content', 'gc_skew'])) { return }
       var startTime = new Date().getTime();
-      var features = new CGV.CGArray();
-      var type = 'ORF'
-      var source = 'orfs'
-      var minORFLength = CGV.defaultFor(options.minORFLength, 100)
-      // Get start features by reading frame
-      var startPattern = CGV.defaultFor(options.start, 'ATG')
-      var startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-      var startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
-      // Get stop features by reading frame
-      var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      var stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
-      var stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
-      // Get forward ORFs
-      var position,  orfLength, range, readingFrames;
-      readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
-      var start, stop, stopIndex;
-      for (var rf of readingFrames) {
-        position = 1;
-        stopIndex = 0;
-        for (var i = 0, len_i = startsByRF[rf].length; i &lt; len_i; i++) {
-          start = startsByRF[rf][i];
-          if (start.start &lt; position) {
-            continue;
-          }
-          for (var j = stopIndex, len_j = stopsByRF[rf].length; j &lt; len_j; j++) {
-            stop = stopsByRF[rf][j];
-            orfLength = stop.stop - start.start;
-            if (orfLength >= minORFLength) {
-              position = stop.stop;
-              range = new CGV.CGRange(this.sequence, start.start, stop.stop);
-              features.push( this.createFeature(range, type, 1, source ) );
-              stopIndex = j;
-              break;
-            }
-          }
+      // var extractType = options.sequence;
+      var viewer = this.viewer;
+      // Start worker
+      var url = this.fn2workerURL(CGV.WorkerBaseContent);
+      var worker = new Worker(url);
+      // Prepare message
+      var message = {
+        type:      extractType,
+        window:    CGV.defaultFor(options.window, this.getWindowStep().window),
+        step:      CGV.defaultFor(options.step, this.getWindowStep().step),
+        deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
+        seqString: this.seqString
+      };
+      worker.postMessage(message);
+      worker.onmessage = (e) => {
+        var messageType = e.data.messageType;
+        if (messageType == 'progress') {
+          track.loadProgress = e.data.progress;
+          viewer.layout.drawProgress();
+        }
+        if (messageType == 'complete') {
+          var baseContent = e.data.baseContent;
+          var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
+          data.legendPositive = this.getLegendItem(extractType, '+').text;
+          data.legendNegative = this.getLegendItem(extractType, '-').text;
+
+          var plot = new CGV.Plot(viewer, data);
+          track._plot = plot;
+          track.updateSlots();
+          console.log("Plot '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          viewer.drawFull();
         }
       }
-      // Get reverse ORFs
-      readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-      for (var rf of readingFrames) {
-        stopIndex = 0;
-        position = this.sequence.length;
-        var startsByRFSorted = startsByRF[rf].order_by('start', true);
-        var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
-        for (var i = 0, len_i = startsByRF[rf].length; i &lt; len_i; i++) {
-          start = startsByRF[rf][i];
-          if (start.start > position) {
-            continue;
-          }
-          for (var j = stopIndex, len_j = stopsByRF[rf].length; j &lt; len_j; j++) {
-            stop = stopsByRF[rf][j];
-            orfLength = start.stop - stop.start;
-            if (orfLength >= minORFLength) {
-              position = stop.start;
-              range = new CGV.CGRange(this.sequence, stop.start, start.stop);
-              features.push( this.createFeature(range, type, -1, source ) );
-              stopIndex = j;
-              break;
-            }
-          }
-        }
+
+      worker.onerror = (e) => {
+        // do stuff
       }
-      console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
-      return features
+
     }
 
-    extractStartStops(options = {}) {
-      this.viewer.flash('Finding Start/Stop Codons...');
-      var startTime = new Date().getTime();
-      // Forward and Reverse Starts
-      var startPattern = CGV.defaultFor(options.start, 'ATG')
-      var features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-      // Forward and Reverse Stops
-      var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
-      console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
-      return features
-    }
-
-    createFeaturesFromPattern(pattern, type, source) {
-      var features = new CGV.CGArray();
-      pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
-      for (var strand of [1, -1]) {
-        // var startTime = new Date().getTime();
-        var ranges = this.sequence.findPattern(pattern, strand)
-        // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
-        // var startTime = new Date().getTime();
-        for (var i = 0, len = ranges.length; i &lt; len; i++) {
-          features.push( this.createFeature(ranges[i], type, strand, source ) );
-        }
-        // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
-      }
-      return features.order_by('start')
-    }
-
-    createFeature(range, type, strand, source) {
-      var featureData = {
-        type: type,
-        start: range.start,
-        stop: range.stop,
-        strand: strand,
-        source: source,
-        extractedFromSequence: true
-      }
-      featureData.legend = this.getLegendItem(type).text;
-      return new CGV.Feature(this.viewer, featureData)
-    }
-
-    getFeatureType(type) {
+    getFeatureType(extractType) {
       var viewer = this.viewer;
       var featureType;
-      switch (type) {
+      switch (extractType) {
         case 'start_stop_codons':
           featureType = viewer.findFeatureTypeOrCreate('Codon', 'arc');
           break;
@@ -1544,10 +1466,25 @@
       return featureType 
     }
 
-    getLegendItem(type, sign) {
+    createLegendItems(extractType) {
+      var legends = {};
+      if (extractType == 'orfs') {
+        legends = {
+          'ORF': this.getLegendItem('ORF')
+        }
+      } else if (extractType == 'start_stop_codons') {
+        legends = {
+          'start-codon': this.getLegendItem('start-codon'),
+          'stop-codon': this.getLegendItem('stop-codon')
+        }
+      }
+      return legends
+    }
+
+    getLegendItem(extractType, sign) {
       var legend = this.viewer.legend;
       var item;
-      switch (type) {
+      switch (extractType) {
         case 'start-codon':
           item = legend.findLegendItemOrCreate('Start', 'blue');
           break;
@@ -1571,56 +1508,54 @@
       return item 
     }
 
-
-    fn2workerURL(fn) {
-      var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
-      return URL.createObjectURL(blob)
+    getWindowStep() {
+      var windowSize, step;
+      var length = this.length;
+      if (length &lt; 1e3 ) {
+        windowSize = 10;
+        step = 1;
+      } else if (length &lt; 1e4) {
+        windowSize = 50;
+        step = 1;
+      } else if (length &lt; 1e5) {
+        windowSize = 500;
+        step = 1;
+      } else if (length &lt; 1e6) {
+        windowSize = 1000;
+        step = 10;
+      } else if (length &lt; 1e7) {
+        windowSize = 10000;
+        step = 100;
+      }
+      return { step: step, window: windowSize }
     }
 
+  }
 
-    generatePlot(track, options = {}) {
-      if (!CGV.validate(options.sequence, ['gc_content', 'gc_skew'])) { return }
-      var startTime = new Date().getTime();
-      var type = options.sequence;
-      var viewer = this.viewer;
-      // Start worker
-      var url = this.fn2workerURL(CGV.WorkerBaseContent);
-      var worker = new Worker(url);
-      // Prepare message
-      var message = {};
-      message.type = type;
-      message.window = CGV.defaultFor(options.window, this.getWindowStep().window);
-      var step = CGV.defaultFor(options.step, this.getWindowStep().step);
-      message.step = step
-      message.deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-      message.seqString = this.seqString;
-      worker.postMessage(message);
-      worker.onmessage = (e) => {
-        var messageType = e.data.messageType;
-        if (messageType == 'progress') {
-          track.loadProgress = e.data.progress;
-          viewer.layout.drawProgress();
-        }
-        if (messageType == 'complete') {
-          var baseContent = e.data.baseContent;
-          var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
-          data.legendPositive = this.getLegendItem(type, '+').text;
-          data.legendNegative = this.getLegendItem(type, '-').text;
+  CGV.SequenceExtractor = SequenceExtractor;
 
-          var plot = new CGV.Plot(viewer, data);
-          track._plot = plot;
-          track.updateSlots();
-          console.log("Plot '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
-          viewer.drawFull();
-        }
-      }
+})(CGView);
 
-      worker.onerror = (e) => {
-        // do stuff
-      }
 
-    }
+    // extractFeatures(options = {}) {
+    //   var features = new CGV.CGArray();
+    //   if (options.sequence == 'start_stop_codons') {
+    //     features = this.extractStartStops(options);
+    //   } else if (options.sequence == 'orfs') {
+    //     features = this.extractORFs(options);
+    //   }
+    //   return features
+    // }
 
+    // generateFeatures(track, options) {
+    //   if (options.sequence == 'start_stop_codons') {
+    //     features = this.generateStartStops(options);
+    //   } else if (options.sequence == 'orfs') {
+    //     features = this.extractORFs(options);
+    //   }
+    // }
+    //
+    //
     // extractPlot(options = {}) {
     //   if (options.sequence == 'gc_content') {
     //     return this.extractBaseContentPlot('gc_content', options);
@@ -1723,37 +1658,114 @@
     //   }
     //   return { positions: positions, scores: scores, min: min, max: max, average: average }
     // }
-
-
-    getWindowStep() {
-      var windowSize, step;
-      var length = this.length;
-      if (length &lt; 1e3 ) {
-        windowSize = 10;
-        step = 1;
-      } else if (length &lt; 1e4) {
-        windowSize = 50;
-        step = 1;
-      } else if (length &lt; 1e5) {
-        windowSize = 500;
-        step = 1;
-      } else if (length &lt; 1e6) {
-        windowSize = 1000;
-        step = 10;
-      } else if (length &lt; 1e7) {
-        windowSize = 10000;
-        step = 100;
-      }
-      return { step: step, window: windowSize }
-    }
-
-
-  }
-
-  CGV.SequenceExtractor = SequenceExtractor;
-
-})(CGView);
-
+    // extractORFs(options = {}) {
+    //   this.viewer.flash('Finding ORFs...');
+    //   var startTime = new Date().getTime();
+    //   var features = new CGV.CGArray();
+    //   var type = 'ORF'
+    //   var source = 'orfs'
+    //   var minORFLength = CGV.defaultFor(options.minORFLength, 100)
+    //   // Get start features by reading frame
+    //   var startPattern = CGV.defaultFor(options.start, 'ATG')
+    //   var startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+    //   var startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
+    //   // Get stop features by reading frame
+    //   var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+    //   var stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
+    //   var stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
+    //   // Get forward ORFs
+    //   var position,  orfLength, range, readingFrames;
+    //   readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
+    //   var start, stop, stopIndex;
+    //   for (var rf of readingFrames) {
+    //     position = 1;
+    //     stopIndex = 0;
+    //     for (var i = 0, len_i = startsByRF[rf].length; i &lt; len_i; i++) {
+    //       start = startsByRF[rf][i];
+    //       if (start.start &lt; position) {
+    //         continue;
+    //       }
+    //       for (var j = stopIndex, len_j = stopsByRF[rf].length; j &lt; len_j; j++) {
+    //         stop = stopsByRF[rf][j];
+    //         orfLength = stop.stop - start.start;
+    //         if (orfLength >= minORFLength) {
+    //           position = stop.stop;
+    //           range = new CGV.CGRange(this.sequence, start.start, stop.stop);
+    //           features.push( this.createFeature(range, type, 1, source ) );
+    //           stopIndex = j;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // Get reverse ORFs
+    //   readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
+    //   for (var rf of readingFrames) {
+    //     stopIndex = 0;
+    //     position = this.sequence.length;
+    //     var startsByRFSorted = startsByRF[rf].order_by('start', true);
+    //     var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
+    //     for (var i = 0, len_i = startsByRF[rf].length; i &lt; len_i; i++) {
+    //       start = startsByRF[rf][i];
+    //       if (start.start > position) {
+    //         continue;
+    //       }
+    //       for (var j = stopIndex, len_j = stopsByRF[rf].length; j &lt; len_j; j++) {
+    //         stop = stopsByRF[rf][j];
+    //         orfLength = start.stop - stop.start;
+    //         if (orfLength >= minORFLength) {
+    //           position = stop.start;
+    //           range = new CGV.CGRange(this.sequence, stop.start, start.stop);
+    //           features.push( this.createFeature(range, type, -1, source ) );
+    //           stopIndex = j;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   return features
+    // }
+    // extractStartStops(options = {}) {
+    //   this.viewer.flash('Finding Start/Stop Codons...');
+    //   var startTime = new Date().getTime();
+    //   // Forward and Reverse Starts
+    //   var startPattern = CGV.defaultFor(options.start, 'ATG')
+    //   var features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+    //   // Forward and Reverse Stops
+    //   var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+    //   features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
+    //   console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   return features
+    // }
+    //
+    // createFeaturesFromPattern(pattern, type, source) {
+    //   var features = new CGV.CGArray();
+    //   pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
+    //   for (var strand of [1, -1]) {
+    //     // var startTime = new Date().getTime();
+    //     var ranges = this.sequence.findPattern(pattern, strand)
+    //     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //     // var startTime = new Date().getTime();
+    //     for (var i = 0, len = ranges.length; i &lt; len; i++) {
+    //       features.push( this.createFeature(ranges[i], type, strand, source ) );
+    //     }
+    //     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //   }
+    //   return features.order_by('start')
+    // }
+    // createFeature(range, type, strand, source) {
+    //   var featureData = {
+    //     type: type,
+    //     start: range.start,
+    //     stop: range.stop,
+    //     strand: strand,
+    //     source: source,
+    //     extractedFromSequence: true
+    //   }
+    //   featureData.legend = this.getLegendItem(type).text;
+    //   return new CGV.Feature(this.viewer, featureData)
+    // }
 
 </code></pre>
         </article>
@@ -1767,7 +1779,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 11:37:19 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 15:25:56 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

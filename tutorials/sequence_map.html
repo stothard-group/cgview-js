@@ -109,15 +109,25 @@ new CGV.Track(cgv.layout, {
   position: 'both',
   // Here we describe what features or plot will be in the track.
   contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
-    features: {
-      // Which Features to use.
-      // Options: 'source', 'types' or 'sequence' (see examples below).
-      sequence: 'orfs',
-      // Additional options can also be provided.
-      // In this case, what start and stop codons to use.
+    // Type of track. Options: 'feature', 'plot'
+    // The type is set automatically when extracting from the sequence.
+    type: 'feature',
+    // From where to extract the features/plot. Options:
+    //  - 'source'   : the source property of the features/plots will be used for selection
+    //  - 'sequence' : the features/plot will be generated from the sequence
+    from: 'sequence',
+    // How to extract the features/plot.
+    // For 'source', the extract value can be a single value or an array of values.
+    // For 'sequence', the extract value can be one of the following:
+    //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
+    // e.g. In this example, the ORF features will be extracted from the seqeunce.
+    extract: 'orfs',
+    // Additional options may be passed to the extractor
+    // The following are the default options
+    options: {
       start: 'ATG',
-      stop: 'TAA,TAG,TGA'
+      stop: 'TAA,TAG,TGA',
+      minORFLength: 100
     }
   }
 });
@@ -126,28 +136,18 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with start/stop codons extracted from the seqeunce ##
 
 ```js
-// The first argument for a track is the viewer layout
 new CGV.Track(cgv.layout, {
-  // Name for the track.
   name: 'Start Stop Codons',
-  // Draw the track using separated or combined slots for each reading frame.
-  // Options: 'separated', 'combined'.
   readingFrame: 'separated',
-  // Draw the track using separated or combined slots for the forward and reverse strand.
-  // Options: 'separated', 'combined'.
   strand: 'separated',
-  // Where to draw the track in relation to the backbone.
-  // Options: 'inside', 'outside', 'both'.
   position: 'both',
-  // Here we describe what features or plot will be in the track.
   contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
-    features: {
-      // Which Features to use.
-      // Options: 'source', 'types' or 'sequence' (see examples below).
-      sequence: 'start_stop_codons',
-      // Additional options can also be provided.
-      // In this case, what start and stop codons to use.
+    type: 'feature',
+    from: 'sequence',
+    // e.g. In this example, the start and stop codon features will be extracted from the seqeunce.
+    extract: 'start_stop_codons',
+    // The following are the default options
+    options: {
       start: 'ATG',
       stop: 'TAA,TAG,TGA'
     }
@@ -158,20 +158,19 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with a GC Skew plot extracted from the seqeunce ##
 
 ```js
-// The first argument for a track is the viewer layout
 new CGV.Track(cgv.layout, {
-  // Name for the track.
   name: 'GC Skew',
-  // Where to draw the track in relation to the backbone.
-  // Options: 'inside', 'outside', 'both'.
   position: 'inside',
-  // Here we describe what features or plot will be in the track.
   contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
-    plot: {
-      // Which Features to use.
-      // Options: 'source', 'types' or 'sequence' (see examples below).
-      sequence: 'gc_skew'
+    type: 'feature',
+    from: 'sequence',
+    // e.g. In this example, GC Skew plot will be extracted from the seqeunce.
+    extract: 'gc_skew',
+    // By default, the step and window values are calculated based on the sequence length,
+    // but they can be overridden here.
+    options: {
+      step: 1,
+      window: 100
     }
   }
 });
@@ -180,41 +179,23 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with a GC Content plot extracted from the seqeunce ##
 
 ```js
-// The first argument for a track is the viewer layout
 new CGV.Track(cgv.layout, {
-  // Name for the track.
   name: 'GC Content',
-  // Where to draw the track in relation to the backbone.
-  // Options: 'inside', 'outside', 'both'.
   position: 'inside',
-  // Here we describe what features or plot will be in the track.
   contents: {
-    // What type of track is this. Options: 'features' or 'plot'.
-    plot: {
-      // Which Features to use.
-      // Options: 'source', 'types' or 'sequence' (see examples below).
-      sequence: 'gc_content'
+    type: 'feature',
+    from: 'sequence',
+    // e.g. In this example, GC Content plot will be extracted from the seqeunce.
+    extract: 'gc_content',
+    // By default, the step and window values are calculated based on the sequence length,
+    // but they can be overridden here.
+    options: {
+      step: 1,
+      window: 100
     }
   }
 });
 ```
-
-Examples of contents
-```js
-//contents: {
-//  features: {
-//    // Features can be extracted from the sequence (if it's been added to the viewer).
-//    // What should be extracted. Options: 'orfs', 'start_stop_codons'
-//    sequence: orfs,
-//    // Additional options can also be provided.
-//    // In this case, what start and stop codons to use.
-//    start: 'ATG',
-//    stop: 'TAA,TAG,TGA'
-//  }
-//}
-```
-
-
 
 ## TODO
 * Have image of map and parts (e.g. track, slot, caption, ruler, etc)

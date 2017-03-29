@@ -229,9 +229,9 @@ class CGViewJSON
         strand: 'separated',
         position: 'both',
         contents: {
-          features: {
-            source: 'sequence-features'
-          }
+          type: 'feature',
+          from: 'source',
+          extract: 'sequence-features'
         }
       }
     ]
@@ -241,9 +241,9 @@ class CGViewJSON
         name: 'Analysis',
         position: 'inside',
         contents: {
-          plot: {
-            source: 'analysis'
-          }
+          type: 'plot',
+          from: 'source',
+          extract: 'analysis'
         }
       }
     end

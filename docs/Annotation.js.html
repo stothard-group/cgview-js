@@ -1129,6 +1129,8 @@
             
                 <li data-name="Slot#track"><a href="Slot.html#track">track</a></li>
             
+                <li data-name="Slot#type"><a href="Slot.html#type">type</a></li>
+            
                 <li data-name="Slot#viewer"><a href="Slot.html#viewer">viewer</a></li>
             
                 <li data-name="Slot#visibleRange"><a href="Slot.html#visibleRange">visibleRange</a></li>
@@ -1164,8 +1166,6 @@
             
                 <li data-name="Track#contents"><a href="Track.html#contents">contents</a></li>
             
-                <li data-name="Track#contentType"><a href="Track.html#contentType">contentType</a></li>
-            
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
                 <li data-name="Track#layout"><a href="Track.html#layout">layout</a></li>
@@ -1181,6 +1181,8 @@
                 <li data-name="Track#sequence"><a href="Track.html#sequence">sequence</a></li>
             
                 <li data-name="Track#strand"><a href="Track.html#strand">strand</a></li>
+            
+                <li data-name="Track#type"><a href="Track.html#type">type</a></li>
             
                 <li data-name="Track#viewer"><a href="Track.html#viewer">viewer</a></li>
             
@@ -1282,7 +1284,7 @@
       this._labelLineWidth = CGV.pixel(1);
       this._visible = CGV.defaultFor(options.visible, true);
       this.refresh();
-      // this._visibleLabels = new CGV.CGArray();
+      this._visibleLabels = new CGV.CGArray();
     }
 
     /**
@@ -1353,7 +1355,6 @@
      */
     addLabel(label) {
       this._labels.push(label);
-      // this.sort();
     }
 
     /**
@@ -1365,20 +1366,11 @@
       this._labels = this._labels.remove(label);
     }
 
-    /**
-     * Sort the labels by position (middle of the feature in bp). 
-     */
-    // sort() {
-    //   // this._labels = this._labels.remove(label);
-    //   this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
-    // }
-
     refresh() {
       this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
     }
 
     refreshLabelWidths() {
-      // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
       var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
@@ -1396,7 +1388,6 @@
       for (var i = 0, len = labels.length; i &lt; len; i++) {
         label = labels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
         if (containsStart &amp;&amp; containsStop) {
@@ -1461,30 +1452,28 @@
         this.refresh();
       }
 
-
       this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
 
-      // TODO: change origin when moving image
-      // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
-        this._innerRadius = reverseRadius;
-        this._outerRadius = directRadius;
-      // }
+      this._innerRadius = reverseRadius;
+      this._outerRadius = directRadius;
 
-      this._labelsToDraw = this.visibleLabels(directRadius);
-      this._calculatePositions(this._labelsToDraw);
-      this._calculateLabelRects(this._labelsToDraw);
+      // Find Labels that are within the visible range and calculate bounds
+      var possibleLabels = this.visibleLabels(directRadius);
+      this._calculatePositions(possibleLabels);
+      this._calculateLabelRects(possibleLabels);
 
-      // Remove overlapping labels (TEMP)
+      // Remove overlapping labels
       var labelRects = new CGV.CGArray();
       this._visibleLabels = new CGV.CGArray();
-      for (var i = 0, len = this._labelsToDraw.length; i &lt; len; i++) {
-        label = this._labelsToDraw[i];
+      for (var i = 0, len = possibleLabels.length; i &lt; len; i++) {
+        label = possibleLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
         }
       }
 
+      // Draw nonoverlapping labels
       var canvas = this._canvas;
       var ctx = canvas.context('map');
       var label, feature, bp, origin;
@@ -1494,13 +1483,11 @@
       for (var i = 0, len = this._visibleLabels.length; i &lt; len; i++) {
         label = this._visibleLabels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
-        // origin = canvas.pointFor(bp, directRadius + 5);
         ctx.fillStyle = feature.color.rgbaString;
-        // ctx.fillText(label.name, origin.x, origin.y);
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
+
       if (this.viewer.debug &amp;&amp; this.viewer.debug.data.n) {
         this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
       }
@@ -1526,7 +1513,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 11:37:19 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Mar 29 2017 15:25:56 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

@@ -400,7 +400,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._labelLineWidth = CGV.pixel(1);
       this._visible = CGV.defaultFor(options.visible, true);
       this.refresh();
-      // this._visibleLabels = new CGV.CGArray();
+      this._visibleLabels = new CGV.CGArray();
     }
 
     /**
@@ -471,7 +471,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     addLabel(label) {
       this._labels.push(label);
-      // this.sort();
     }
 
     /**
@@ -483,20 +482,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._labels = this._labels.remove(label);
     }
 
-    /**
-     * Sort the labels by position (middle of the feature in bp). 
-     */
-    // sort() {
-    //   // this._labels = this._labels.remove(label);
-    //   this._labels.sort( (a,b) => { return a.bp > b.bp ? 1 : -1 } );
-    // }
-
     refresh() {
       this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
     }
 
     refreshLabelWidths() {
-      // Refresh labels widths
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
       var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
@@ -514,7 +504,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
         if (containsStart && containsStop) {
@@ -579,30 +568,28 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.refresh();
       }
 
-
       this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
 
-      // TODO: change origin when moving image
-      // if (reverseRadius != this._innerRadius || directRadius != this._outerRadius) {
-        this._innerRadius = reverseRadius;
-        this._outerRadius = directRadius;
-      // }
+      this._innerRadius = reverseRadius;
+      this._outerRadius = directRadius;
 
-      this._labelsToDraw = this.visibleLabels(directRadius);
-      this._calculatePositions(this._labelsToDraw);
-      this._calculateLabelRects(this._labelsToDraw);
+      // Find Labels that are within the visible range and calculate bounds
+      var possibleLabels = this.visibleLabels(directRadius);
+      this._calculatePositions(possibleLabels);
+      this._calculateLabelRects(possibleLabels);
 
-      // Remove overlapping labels (TEMP)
+      // Remove overlapping labels
       var labelRects = new CGV.CGArray();
       this._visibleLabels = new CGV.CGArray();
-      for (var i = 0, len = this._labelsToDraw.length; i < len; i++) {
-        label = this._labelsToDraw[i];
+      for (var i = 0, len = possibleLabels.length; i < len; i++) {
+        label = possibleLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
         }
       }
 
+      // Draw nonoverlapping labels
       var canvas = this._canvas;
       var ctx = canvas.context('map');
       var label, feature, bp, origin;
@@ -612,13 +599,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
         feature = label.feature;
-        // bp = feature.start + (feature.length / 2);
         canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
-        // origin = canvas.pointFor(bp, directRadius + 5);
         ctx.fillStyle = feature.color.rgbaString;
-        // ctx.fillText(label.name, origin.x, origin.y);
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
+
       if (this.viewer.debug && this.viewer.debug.data.n) {
         this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
       }
@@ -8371,40 +8356,42 @@ if (window.CGV === undefined) window.CGV = CGView;
     // METHODS
     //////////////////////////////////////////////////////////////////////////
 
-    extractFeatures(options = {}) {
-      var features = new CGV.CGArray();
-      if (options.sequence == 'start_stop_codons') {
-        features = this.extractStartStops(options);
-      } else if (options.sequence == 'orfs') {
-        features = this.extractORFs(options);
-      }
-      return features
+    fn2workerURL(fn) {
+      var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
+      return URL.createObjectURL(blob)
     }
 
-    // generateFeatures(track, options) {
-    //   if (options.sequence == 'start_stop_codons') {
-    //     features = this.generateStartStops(options);
-    //   } else if (options.sequence == 'orfs') {
-    //     features = this.extractORFs(options);
-    //   }
-    // }
-    //
+    extractTrackData(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs', 'gc_skew', 'gc_content'])) { return }
+      switch (extractType) {
+        case 'start_stop_codons':
+        case 'orfs':
+          track.contents.type = 'feature';
+          this.generateFeatures(track, extractType, options);
+          break;
+        case 'gc_skew':
+        case 'gc_content':
+          track.contents.type = 'plot';
+          this.generatePlot(track, extractType, options);
+          break;
+      }
+    }
 
-    generateFeatures(track, options) {
-      if (!CGV.validate(options.sequence, ['start_stop_codons', 'orfs'])) { return }
+    generateFeatures(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs'])) { return }
       var startTime = new Date().getTime();
-      var type = options.sequence;
       var viewer = this.viewer;
       // Start worker
       var url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
       var worker = new Worker(url);
       // Prepare message
-      var message = {};
-      message.type = type;
-      message.startPattern = CGV.defaultFor(options.start, 'ATG');
-      message.stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      message.seqString = this.seqString;
-      message.minORFLength = CGV.defaultFor(options.minORFLength, 100);
+      var message = {
+        type:         extractType,
+        startPattern: CGV.defaultFor(options.start, 'ATG'),
+        stopPattern:  CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
+        seqString:    this.seqString,
+        minORFLength: CGV.defaultFor(options.minORFLength, 100)
+      }
       worker.postMessage(message);
       worker.onmessage = (e) => {
         var messageType = e.data.messageType;
@@ -8415,23 +8402,23 @@ if (window.CGV === undefined) window.CGV = CGView;
         if (messageType == 'complete') {
           track.loadProgress = 100;
           var featureDataArray = e.data.featureDataArray;
-          console.log("Features '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
           var features = new CGV.CGArray();
           startTime = new Date().getTime();
           var featureData;
-          var legends = this.createLegendItems(type);
-          var featureType = this.getFeatureType(type); // this will create the feature type
-          console.log(type)
+          var legends = this.createLegendItems(extractType);
+          var featureType = this.getFeatureType(extractType); // this will create the feature type
+          console.log(extractType)
           for (var i = 0, len = featureDataArray.length; i < len; i++) {
             featureData = featureDataArray[i];
             featureData.legend = legends[featureData.type];
             features.push( new CGV.Feature(viewer, featureData) );
           }
-          console.log("Features '" + type + "' Creation Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Creation Time: " + CGV.elapsed_time(startTime) );
           startTime = new Date().getTime();
           track._features = features;
           track.updateSlots();
-          console.log("Features '" + type + "' Update Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Update Time: " + CGV.elapsed_time(startTime) );
           viewer.drawFull();
         }
       }
@@ -8442,136 +8429,54 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     }
 
-    createLegendItems(type) {
-      var legends = {};
-      if (type == 'orfs') {
-        legends = {
-          'ORF': this.getLegendItem('ORF')
-        }
-      } else if (type == 'start_stop_codons') {
-        legends = {
-          'start-codon': this.getLegendItem('start-codon'),
-          'stop-codon': this.getLegendItem('stop-codon')
-        }
-      }
-      return legends
-    }
 
-    extractORFs(options = {}) {
-      this.viewer.flash('Finding ORFs...');
+    generatePlot(track, extractType, options = {}) {
+      if (!CGV.validate(extractType, ['gc_content', 'gc_skew'])) { return }
       var startTime = new Date().getTime();
-      var features = new CGV.CGArray();
-      var type = 'ORF'
-      var source = 'orfs'
-      var minORFLength = CGV.defaultFor(options.minORFLength, 100)
-      // Get start features by reading frame
-      var startPattern = CGV.defaultFor(options.start, 'ATG')
-      var startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-      var startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
-      // Get stop features by reading frame
-      var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      var stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
-      var stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
-      // Get forward ORFs
-      var position,  orfLength, range, readingFrames;
-      readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
-      var start, stop, stopIndex;
-      for (var rf of readingFrames) {
-        position = 1;
-        stopIndex = 0;
-        for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-          start = startsByRF[rf][i];
-          if (start.start < position) {
-            continue;
-          }
-          for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-            stop = stopsByRF[rf][j];
-            orfLength = stop.stop - start.start;
-            if (orfLength >= minORFLength) {
-              position = stop.stop;
-              range = new CGV.CGRange(this.sequence, start.start, stop.stop);
-              features.push( this.createFeature(range, type, 1, source ) );
-              stopIndex = j;
-              break;
-            }
-          }
+      // var extractType = options.sequence;
+      var viewer = this.viewer;
+      // Start worker
+      var url = this.fn2workerURL(CGV.WorkerBaseContent);
+      var worker = new Worker(url);
+      // Prepare message
+      var message = {
+        type:      extractType,
+        window:    CGV.defaultFor(options.window, this.getWindowStep().window),
+        step:      CGV.defaultFor(options.step, this.getWindowStep().step),
+        deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
+        seqString: this.seqString
+      };
+      worker.postMessage(message);
+      worker.onmessage = (e) => {
+        var messageType = e.data.messageType;
+        if (messageType == 'progress') {
+          track.loadProgress = e.data.progress;
+          viewer.layout.drawProgress();
+        }
+        if (messageType == 'complete') {
+          var baseContent = e.data.baseContent;
+          var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
+          data.legendPositive = this.getLegendItem(extractType, '+').text;
+          data.legendNegative = this.getLegendItem(extractType, '-').text;
+
+          var plot = new CGV.Plot(viewer, data);
+          track._plot = plot;
+          track.updateSlots();
+          console.log("Plot '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          viewer.drawFull();
         }
       }
-      // Get reverse ORFs
-      readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-      for (var rf of readingFrames) {
-        stopIndex = 0;
-        position = this.sequence.length;
-        var startsByRFSorted = startsByRF[rf].order_by('start', true);
-        var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
-        for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-          start = startsByRF[rf][i];
-          if (start.start > position) {
-            continue;
-          }
-          for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-            stop = stopsByRF[rf][j];
-            orfLength = start.stop - stop.start;
-            if (orfLength >= minORFLength) {
-              position = stop.start;
-              range = new CGV.CGRange(this.sequence, stop.start, start.stop);
-              features.push( this.createFeature(range, type, -1, source ) );
-              stopIndex = j;
-              break;
-            }
-          }
-        }
+
+      worker.onerror = (e) => {
+        // do stuff
       }
-      console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
-      return features
+
     }
 
-    extractStartStops(options = {}) {
-      this.viewer.flash('Finding Start/Stop Codons...');
-      var startTime = new Date().getTime();
-      // Forward and Reverse Starts
-      var startPattern = CGV.defaultFor(options.start, 'ATG')
-      var features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-      // Forward and Reverse Stops
-      var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-      features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
-      console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
-      return features
-    }
-
-    createFeaturesFromPattern(pattern, type, source) {
-      var features = new CGV.CGArray();
-      pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
-      for (var strand of [1, -1]) {
-        // var startTime = new Date().getTime();
-        var ranges = this.sequence.findPattern(pattern, strand)
-        // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
-        // var startTime = new Date().getTime();
-        for (var i = 0, len = ranges.length; i < len; i++) {
-          features.push( this.createFeature(ranges[i], type, strand, source ) );
-        }
-        // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
-      }
-      return features.order_by('start')
-    }
-
-    createFeature(range, type, strand, source) {
-      var featureData = {
-        type: type,
-        start: range.start,
-        stop: range.stop,
-        strand: strand,
-        source: source,
-        extractedFromSequence: true
-      }
-      featureData.legend = this.getLegendItem(type).text;
-      return new CGV.Feature(this.viewer, featureData)
-    }
-
-    getFeatureType(type) {
+    getFeatureType(extractType) {
       var viewer = this.viewer;
       var featureType;
-      switch (type) {
+      switch (extractType) {
         case 'start_stop_codons':
           featureType = viewer.findFeatureTypeOrCreate('Codon', 'arc');
           break;
@@ -8584,10 +8489,25 @@ if (window.CGV === undefined) window.CGV = CGView;
       return featureType 
     }
 
-    getLegendItem(type, sign) {
+    createLegendItems(extractType) {
+      var legends = {};
+      if (extractType == 'orfs') {
+        legends = {
+          'ORF': this.getLegendItem('ORF')
+        }
+      } else if (extractType == 'start_stop_codons') {
+        legends = {
+          'start-codon': this.getLegendItem('start-codon'),
+          'stop-codon': this.getLegendItem('stop-codon')
+        }
+      }
+      return legends
+    }
+
+    getLegendItem(extractType, sign) {
       var legend = this.viewer.legend;
       var item;
-      switch (type) {
+      switch (extractType) {
         case 'start-codon':
           item = legend.findLegendItemOrCreate('Start', 'blue');
           break;
@@ -8611,56 +8531,54 @@ if (window.CGV === undefined) window.CGV = CGView;
       return item 
     }
 
-
-    fn2workerURL(fn) {
-      var blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
-      return URL.createObjectURL(blob)
+    getWindowStep() {
+      var windowSize, step;
+      var length = this.length;
+      if (length < 1e3 ) {
+        windowSize = 10;
+        step = 1;
+      } else if (length < 1e4) {
+        windowSize = 50;
+        step = 1;
+      } else if (length < 1e5) {
+        windowSize = 500;
+        step = 1;
+      } else if (length < 1e6) {
+        windowSize = 1000;
+        step = 10;
+      } else if (length < 1e7) {
+        windowSize = 10000;
+        step = 100;
+      }
+      return { step: step, window: windowSize }
     }
 
+  }
 
-    generatePlot(track, options = {}) {
-      if (!CGV.validate(options.sequence, ['gc_content', 'gc_skew'])) { return }
-      var startTime = new Date().getTime();
-      var type = options.sequence;
-      var viewer = this.viewer;
-      // Start worker
-      var url = this.fn2workerURL(CGV.WorkerBaseContent);
-      var worker = new Worker(url);
-      // Prepare message
-      var message = {};
-      message.type = type;
-      message.window = CGV.defaultFor(options.window, this.getWindowStep().window);
-      var step = CGV.defaultFor(options.step, this.getWindowStep().step);
-      message.step = step
-      message.deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-      message.seqString = this.seqString;
-      worker.postMessage(message);
-      worker.onmessage = (e) => {
-        var messageType = e.data.messageType;
-        if (messageType == 'progress') {
-          track.loadProgress = e.data.progress;
-          viewer.layout.drawProgress();
-        }
-        if (messageType == 'complete') {
-          var baseContent = e.data.baseContent;
-          var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
-          data.legendPositive = this.getLegendItem(type, '+').text;
-          data.legendNegative = this.getLegendItem(type, '-').text;
+  CGV.SequenceExtractor = SequenceExtractor;
 
-          var plot = new CGV.Plot(viewer, data);
-          track._plot = plot;
-          track.updateSlots();
-          console.log("Plot '" + type + "' Worker Time: " + CGV.elapsed_time(startTime) );
-          viewer.drawFull();
-        }
-      }
+})(CGView);
 
-      worker.onerror = (e) => {
-        // do stuff
-      }
 
-    }
+    // extractFeatures(options = {}) {
+    //   var features = new CGV.CGArray();
+    //   if (options.sequence == 'start_stop_codons') {
+    //     features = this.extractStartStops(options);
+    //   } else if (options.sequence == 'orfs') {
+    //     features = this.extractORFs(options);
+    //   }
+    //   return features
+    // }
 
+    // generateFeatures(track, options) {
+    //   if (options.sequence == 'start_stop_codons') {
+    //     features = this.generateStartStops(options);
+    //   } else if (options.sequence == 'orfs') {
+    //     features = this.extractORFs(options);
+    //   }
+    // }
+    //
+    //
     // extractPlot(options = {}) {
     //   if (options.sequence == 'gc_content') {
     //     return this.extractBaseContentPlot('gc_content', options);
@@ -8763,37 +8681,114 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   }
     //   return { positions: positions, scores: scores, min: min, max: max, average: average }
     // }
-
-
-    getWindowStep() {
-      var windowSize, step;
-      var length = this.length;
-      if (length < 1e3 ) {
-        windowSize = 10;
-        step = 1;
-      } else if (length < 1e4) {
-        windowSize = 50;
-        step = 1;
-      } else if (length < 1e5) {
-        windowSize = 500;
-        step = 1;
-      } else if (length < 1e6) {
-        windowSize = 1000;
-        step = 10;
-      } else if (length < 1e7) {
-        windowSize = 10000;
-        step = 100;
-      }
-      return { step: step, window: windowSize }
-    }
-
-
-  }
-
-  CGV.SequenceExtractor = SequenceExtractor;
-
-})(CGView);
-
+    // extractORFs(options = {}) {
+    //   this.viewer.flash('Finding ORFs...');
+    //   var startTime = new Date().getTime();
+    //   var features = new CGV.CGArray();
+    //   var type = 'ORF'
+    //   var source = 'orfs'
+    //   var minORFLength = CGV.defaultFor(options.minORFLength, 100)
+    //   // Get start features by reading frame
+    //   var startPattern = CGV.defaultFor(options.start, 'ATG')
+    //   var startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+    //   var startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
+    //   // Get stop features by reading frame
+    //   var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+    //   var stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
+    //   var stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
+    //   // Get forward ORFs
+    //   var position,  orfLength, range, readingFrames;
+    //   readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
+    //   var start, stop, stopIndex;
+    //   for (var rf of readingFrames) {
+    //     position = 1;
+    //     stopIndex = 0;
+    //     for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+    //       start = startsByRF[rf][i];
+    //       if (start.start < position) {
+    //         continue;
+    //       }
+    //       for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
+    //         stop = stopsByRF[rf][j];
+    //         orfLength = stop.stop - start.start;
+    //         if (orfLength >= minORFLength) {
+    //           position = stop.stop;
+    //           range = new CGV.CGRange(this.sequence, start.start, stop.stop);
+    //           features.push( this.createFeature(range, type, 1, source ) );
+    //           stopIndex = j;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   // Get reverse ORFs
+    //   readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
+    //   for (var rf of readingFrames) {
+    //     stopIndex = 0;
+    //     position = this.sequence.length;
+    //     var startsByRFSorted = startsByRF[rf].order_by('start', true);
+    //     var stopsByRFSorted = stopsByRF[rf].order_by('start', true);
+    //     for (var i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+    //       start = startsByRF[rf][i];
+    //       if (start.start > position) {
+    //         continue;
+    //       }
+    //       for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
+    //         stop = stopsByRF[rf][j];
+    //         orfLength = start.stop - stop.start;
+    //         if (orfLength >= minORFLength) {
+    //           position = stop.start;
+    //           range = new CGV.CGRange(this.sequence, stop.start, start.stop);
+    //           features.push( this.createFeature(range, type, -1, source ) );
+    //           stopIndex = j;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   return features
+    // }
+    // extractStartStops(options = {}) {
+    //   this.viewer.flash('Finding Start/Stop Codons...');
+    //   var startTime = new Date().getTime();
+    //   // Forward and Reverse Starts
+    //   var startPattern = CGV.defaultFor(options.start, 'ATG')
+    //   var features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+    //   // Forward and Reverse Stops
+    //   var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+    //   features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
+    //   console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   return features
+    // }
+    //
+    // createFeaturesFromPattern(pattern, type, source) {
+    //   var features = new CGV.CGArray();
+    //   pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
+    //   for (var strand of [1, -1]) {
+    //     // var startTime = new Date().getTime();
+    //     var ranges = this.sequence.findPattern(pattern, strand)
+    //     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //     // var startTime = new Date().getTime();
+    //     for (var i = 0, len = ranges.length; i < len; i++) {
+    //       features.push( this.createFeature(ranges[i], type, strand, source ) );
+    //     }
+    //     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //   }
+    //   return features.order_by('start')
+    // }
+    // createFeature(range, type, strand, source) {
+    //   var featureData = {
+    //     type: type,
+    //     start: range.start,
+    //     stop: range.stop,
+    //     strand: strand,
+    //     source: source,
+    //     extractedFromSequence: true
+    //   }
+    //   featureData.legend = this.getLegendItem(type).text;
+    //   return new CGV.Feature(this.viewer, featureData)
+    // }
 
 //////////////////////////////////////////////////////////////////////////////
 // Slot
@@ -8813,15 +8808,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       this.refresh();
       //TEMP
-      if (data.type == 'plot') {
-        this.type = 'plot'
-      } else {
-        this.type = 'feature'
-      }
-
-
-      // this._featureStarts = new CGV.CGArray();
-
+      // if (data.type == 'plot') {
+      //   this.type = 'plot'
+      // } else {
+      //   this.type = 'feature'
+      // }
     }
 
     /** * @member {Track} - Get the *Track*
@@ -8836,6 +8827,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
       this._track = track;
       track._slots.push(this);
+    }
+
+    /** * @member {String} - Get the Track Type
+     */
+    get type() {
+      return this.track.type
     }
 
     /** * @member {Layout} - Get the *Layout*
@@ -9136,18 +9133,54 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Create a new track.
      */
-    constructor(layout, data = {}, display = {}, meta = {}) {
+    constructor(layout, data = {}, meta = {}) {
       this.layout = layout;
       this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
-      this.name = CGV.defaultFor(data.name, 'Unknown')
-      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined')
-      this.strand = CGV.defaultFor(data.strand, 'separated')
-      this.position = CGV.defaultFor(data.position, 'both')
-      this.contents = data.contents
+      this.name = CGV.defaultFor(data.name, 'Unknown');
+      this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
+      this.strand = CGV.defaultFor(data.strand, 'separated');
+      this.position = CGV.defaultFor(data.position, 'both');
+      this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
+
+      var contents = {
+        contents: {
+          // Type of track. Options: 'feature', 'plot'
+          // The type is set automatically when extracting from the sequence.
+          type: 'feature',
+          // From where to extract the features/plot. Options:
+          //  - 'source'   : the source property of the features/plots will be used for selection
+          //  - 'sequence' : the features/plot will be generated from the sequence
+          from: 'source',
+          // How to extract the features/plot.
+          // For 'source', the extract value can be a single value or an array of values.
+          // For 'sequence', the extract value can be one of the following:
+          //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
+          // e.g. In this example all features with a source of 'genome-1' will be used
+          extract: 'genome-1'
+        },
+        contents: {
+          type: 'feature',
+          from: 'sequence',
+          extract: 'orfs',
+          options: {
+            start: 'ATG',
+            stop: 'TAA,TAG'
+          }
+        },
+        data: {
+          type: 'plot',
+          from: 'sequence',
+          extract: 'gc_skew',
+          options: {
+            step: 1,
+            window: 100
+          }
+        }
+      }
     }
 
     /** * @member {Viewer} - Get or set the *Viewer*
@@ -9196,21 +9229,19 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set contents(value) {
       this._contents = value;
-      // FIXME: Have validation and removal of extra things.
-      if (value.features) {
-        this._contentType = 'features';
-      } else if (value.plot) {
-        this._contentType = 'plot';
-      } else {
-        this._contentType = undefined;
-      }
     }
 
     /** * @member {String} - Get the *Content Type*.
      */
-    get contentType() {
-      return this._contentType
+    get type() {
+      return this.contents && this.contents.type
     }
+
+    // /** * @member {String} - Get the *Content Type*.
+    //  */
+    // get contentType() {
+    //   return this._contentType
+    // }
 
     /**
      * @member {Sequence} - Get the sequence.
@@ -9276,55 +9307,38 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     refresh() {
-      if (this.contentType == 'features') {
+      this._features = new CGV.CGArray();
+      this._plot = undefined;
+      if (this.contents.from == 'sequence') {
+        this.extractFromSequence();
+      } else if (this.type == 'feature') {
         this.updateFeatures();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlot();
       }
       this.updateSlots();
     }
 
-    updatePlot() {
-      if (this.contents.plot.sequence) {
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // This could be the fallback if not able to use workers
-          // this._plot = sequenceExtractor.extractPlot(this.contents.plot);
-          sequenceExtractor.generatePlot(this, this.contents.plot);
-        }
-      } else if (this.contents.plot.source) {
-        // Plot with particular Source
-        this.viewer.plots().find( (plot) => {
-          if (plot.source == this.contents.plot.source) {
-            this._plot = plot;
-          }
-        });
+    extractFromSequence() {
+      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      if (sequenceExtractor) {
+        sequenceExtractor.extractTrackData(this, this.contents.extract, this.contents.options);
+      } else {
+        console.error('No sequence is available to extract features/plots from');
       }
-
     }
 
     updateFeatures() {
-      this._features = new CGV.CGArray();
-      if (this.contents.features.sequence) {
-        // Features extracted from the  Sequence
-        var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-        if (sequenceExtractor) {
-          // this._features = sequenceExtractor.extractFeatures(this.contents.features);
-          this.extractFeaturesFromSequence()
-        } else {
-          console.error('No sequence is available to extract features from');
-        }
-
-      } else if (this.contents.features.source) {
+      if (this.contents.from == 'source') {
         // Features with particular Source
         this.viewer.features().each( (i, feature) => {
-          if (feature.source == this.contents.features.source) {
+          if (feature.source == this.contents.extract) {
             this._features.push(feature);
           }
         });
-      } else if (this.contents.features.types) {
-        // Features with paricular Type
-        var featureTypes = new CGV.CGArray(this.contents.features.types);
+      } else if (this.contents.types) {
+        // Features with particular Type
+        var featureTypes = new CGV.CGArray(this.contents.featureType);
         this.viewer.features().each( (i, feature) => {
           if (featureTypes.contains(feature.type)) {
             this._features.push(feature);
@@ -9333,33 +9347,21 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    extractFeaturesFromSequence() {
-      var featureOptions = this.contents.features;
-      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-      if (sequenceExtractor) {
-        sequenceExtractor.generateFeatures(this, this.contents.features);
+    updatePlot() {
+      if (this.contents.from == 'source') {
+        // Plot with particular Source
+        this.viewer.plots().find( (plot) => {
+          if (plot.source == this.contents.extract) {
+            this._plot = plot;
+          }
+        });
       }
-      // if (featureOptions.sequence == 'start_stop_codons') {
-      // } else if (options.sequence == 'orfs') {
-      // }
-      // setTimeout(() => {
-      //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-      //   this.updateFeatureSlots();
-      //   this.viewer.drawFull();
-      // }, 0);
     }
 
-    // extractFeaturesTimeout() {
-    //   var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
-    //   this._features = sequenceExtractor.extractFeatures(this.contents.features);
-    //   this.updateFeatureSlots();
-    //   this.veiwer.draw_full();
-    // }
-
     updateSlots() {
-      if (this.contentType == 'features') {
+      if (this.type == 'feature') {
         this.updateFeatureSlots();
-      } else if (this.contentType == 'plot') {
+      } else if (this.type == 'plot') {
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();

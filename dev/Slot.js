@@ -15,12 +15,6 @@
       this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       this.refresh();
-      //TEMP
-      if (data.type == 'plot') {
-        this.type = 'plot'
-      } else {
-        this.type = 'feature'
-      }
     }
 
     /** * @member {Track} - Get the *Track*
@@ -35,6 +29,12 @@
       }
       this._track = track;
       track._slots.push(this);
+    }
+
+    /** * @member {String} - Get the Track Type
+     */
+    get type() {
+      return this.track.type
     }
 
     /** * @member {Layout} - Get the *Layout*
