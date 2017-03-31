@@ -65,7 +65,7 @@
       var minInnerProportion = 0.15;
       var minInnerRadius = minInnerProportion * viewer.minDimension;
       // The maximum amount of space for drawing slots
-      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
+      var dividerSpace = this.visibleSlots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
       var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
       // Max slotnesses in pixels
       var maxFeatureSlotThickness = 30;
@@ -73,8 +73,8 @@
       // The maximum thickness ratio between plot and feature slots. If there is
       // space try to keep the plot thickness this many times thicker than the feature slot thickness.
       var maxPlotToFeatureRatio = 6;
-      var nPlotSlots = this.slots().filter( (t) => { return t.type == 'plot' }).length;
-      var nFeatureSlots = this.slots().filter( (t) => { return t.type == 'feature' }).length;
+      var nPlotSlots = this.visibleSlots().filter( (t) => { return t.type == 'plot' }).length;
+      var nFeatureSlots = this.visibleSlots().filter( (t) => { return t.type == 'feature' }).length;
       // slotSpace = nPlotSlots * plotThickness + nFeatureSlots * featureThickness
       // plotThickness = maxPlotToFeatureRatio * featureThickness
       // Solve:
@@ -83,7 +83,7 @@
       featureThickness = Math.min(featureThickness, maxFeatureSlotThickness);
       plotThickness = Math.min(plotThickness, maxPlotSlotThickness);
       // Determine thickness of outside slots
-      var nOutsideSlots = this.slots().filter( (t) => { return t.outside });
+      var nOutsideSlots = this.visibleSlots().filter( (t) => { return t.outside });
       var outsideThickness = 0;
       nOutsideSlots.forEach( (slot) => {
         if (slot.type == 'feature') {
@@ -98,7 +98,7 @@
       // Update slot thick proportions
       var featureProportionOfRadius = featureThickness / backboneRadius;
       var plotProportionOfRadius = plotThickness / backboneRadius;
-      this.slots().each( (i, slot) => {
+      this.visibleSlots().each( (i, slot) => {
         if (slot.type == 'feature') {
           slot.proportionOfRadius = featureProportionOfRadius;
         } else if (slot.type == 'plot') {
@@ -120,8 +120,15 @@
       return slots.get(term);
     }
 
+    visibleSlots(term) {
+      var slots = new CGV.CGArray(
+        this.slots().filter( (s) => { return s.visible && s.track.visible })
+      );
+      return slots.get(term);
+    }
+
     slotForRadius(radius) {
-      var slots = this.slots();
+      var slots = this.visibleSlots();
       var slot;
       for (var i=0, len=slots.length; i < len; i++) {
         if (slots[i].containsRadius(radius)) {
@@ -232,16 +239,19 @@
       var track, slot;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
+        if (!track.visible) { continue }
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];
+          if (!slot.visible) { continue }
           slot.draw(this.canvas, fast)
         }
       }
     }
 
     drawSlotWithTimeOut(layout) {
-      var slots = layout.slots();
+      var slots = layout.visibleSlots();
       var slot = slots[layout._slotIndex];
+      if (!slot) { return }
       slot.clear();
       slot.draw(layout.canvas);
       layout._slotIndex++;
@@ -276,9 +286,11 @@
       this._slotLength = 0;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
+        if (!track.visible) { continue }
         // Slots and Dividers
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           var slot = track._slots[j];
+          if (!slot.visible) { continue }
           this._slotLength++;
           // Calculate Slot dimensions
           // The slotRadius is the radius at the center of the slot
@@ -341,6 +353,13 @@
         }
       }
     }
+
+    moveTrack(oldIndex, newIndex) {
+      this._tracks.move(oldIndex, newIndex);
+      this._adjustProportions();
+    }
+
+
 
   }
 

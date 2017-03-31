@@ -6,6 +6,7 @@
   /**
    * <br />
    * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
+   * @extends Caption
    */
   class Legend extends CGV.Caption {
 

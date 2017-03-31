@@ -8,6 +8,7 @@
    * A *legendItem* is used to add text to a map *legend*. Individual
    * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
    * or plot color will use the swatchColor of *legendItem*.
+   * @extends CaptionItem
    */
   class LegendItem extends CGV.CaptionItem {
 

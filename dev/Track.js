@@ -5,13 +5,15 @@
 
   /**
    * The Track is used for layout information
+   * @extends CGObject
    */
-  class Track {
+  class Track extends CGV.CGObject {
 
     /**
      * Create a new track.
      */
     constructor(layout, data = {}, meta = {}) {
+      super(layout.viewer, data, meta);
       this.layout = layout;
       this._plot;
       this._features = new CGV.CGArray();
@@ -23,48 +25,25 @@
       this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
+    }
 
-      var contents = {
-        contents: {
-          // Type of track. Options: 'feature', 'plot'
-          // The type is set automatically when extracting from the sequence.
-          type: 'feature',
-          // From where to extract the features/plot. Options:
-          //  - 'source'   : the source property of the features/plots will be used for selection
-          //  - 'sequence' : the features/plot will be generated from the sequence
-          from: 'source',
-          // How to extract the features/plot.
-          // For 'source', the extract value can be a single value or an array of values.
-          // For 'sequence', the extract value can be one of the following:
-          //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
-          // e.g. In this example all features with a source of 'genome-1' will be used
-          extract: 'genome-1'
-        },
-        contents: {
-          type: 'feature',
-          from: 'sequence',
-          extract: 'orfs',
-          options: {
-            start: 'ATG',
-            stop: 'TAA,TAG'
-          }
-        },
-        data: {
-          type: 'plot',
-          from: 'sequence',
-          extract: 'gc_skew',
-          options: {
-            step: 1,
-            window: 100
-          }
-        }
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Track'
+     */
+    toString() {
+      return 'Track';
+    }
+
+    set visible(value) {
+      super.visible = value;
+      if (this.layout) {
+        this.layout._adjustProportions();
       }
     }
 
-    /** * @member {Viewer} - Get or set the *Viewer*
-     */
-    get viewer() {
-      return this.layout.viewer
+    get visible() {
+      return super.visible
     }
 
     /**
@@ -115,19 +94,6 @@
       return this.contents && this.contents.type
     }
 
-    // /** * @member {String} - Get the *Content Type*.
-    //  */
-    // get contentType() {
-    //   return this._contentType
-    // }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
-
     /**
      * @member {String} - Get or set the strand. Possible values are 'separated' or 'combined'.
      */
@@ -166,6 +132,7 @@
     set position(value) {
       if (CGV.validate(value, ['inside', 'outside', 'both'])) {
         this._position = value;
+        this.updateSlots();
       }
     }
 
@@ -182,6 +149,10 @@
 
     features(term) {
       return this._features.get(term)
+    }
+
+    slots(term) {
+      return this._slots.get(term)
     }
 
     refresh() {
@@ -295,6 +266,14 @@
       this._slots = new CGV.CGArray();
       var slot = new CGV.Slot(this, {type: 'plot'});
       slot._plot = this._plot;
+    }
+
+    highlight(color='#FFFF55') {
+      if (this.visible) {
+        this.slots().each( (i, slot) => {
+          slot.highlight(color);
+        });
+      }
     }
 
   }

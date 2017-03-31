@@ -193,6 +193,24 @@
   }
 
   /**
+   * Move the an item from oldIndex to newIndex.
+   * @param {Number} oldIndex - index of element to move
+   * @param {Number} newIndex - move element to this index
+   */
+  CGArray.prototype.move = function(oldIndex, newIndex) {
+		if (newIndex >= this.length) {
+			var k = newIndex - this.length;
+			while ((k--) + 1) {
+				this.push(undefined);
+			}
+		}
+		this.splice(newIndex, 0, this.splice(oldIndex, 1)[0]);
+		return this
+  }
+
+
+
+  /**
    * Sorts the CGArray by the provided property name.
    * @param {String} property Property to order each element set by [default: 'center']
    * @param {Boolean} descending Order in descending order (default: false)
@@ -252,10 +270,10 @@
     } else if (Number.isInteger(term)) {
       return this[term-1];
     } else if (typeof term == 'string') {
-      if ( term.match(/^path-id-/) ) {
-        return this.filter(function(element) { return element.path_id() == term; })[0];
-      } else if ( term.match(/^label-id-/) ) {
-        return this.filter(function(element) { return element.label_id() == term; })[0];
+      if ( term.match(/^cgv-id-/) ) {
+        return this.filter(function(element) { return element.cgvID == term; })[0];
+      // } else if ( term.match(/^label-id-/) ) {
+      //   return this.filter(function(element) { return element.label_id() == term; })[0];
       } else {
         return this.filter(function(element) { return element.id.toLowerCase() == term.toLowerCase(); })[0];
       }

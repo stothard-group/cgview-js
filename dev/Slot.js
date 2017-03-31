@@ -3,18 +3,31 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Slot {
+  /**
+   * A Slot is a single ring on the Map.
+   * @extends CGObject
+   */
+  class Slot extends CGV.CGObject {
 
     /**
      * Slot
      */
-    constructor(track, data = {}, display = {}, meta = {}) {
+    constructor(track, data = {}, meta = {}) {
+      super(track.viewer, data, meta);
       this.track = track;
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       this.refresh();
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Slot'
+     */
+    toString() {
+      return 'Slot';
     }
 
     /** * @member {Track} - Get the *Track*
@@ -41,20 +54,6 @@
      */
     get layout() {
       return this.track.layout
-    }
-
-
-    /** * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this.track.viewer
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
     }
 
     /**
@@ -195,10 +194,19 @@
       if (range) {
         var slotRadius = this.radius;
         var slotThickness = this.thickness;
-        var ctx = this.viewer.canvas.context('map');
+        var ctx = this.canvas.context('map');
         ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
-        this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
+        this.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
         ctx.globalCompositeOperation = "source-over"; // Default
+      }
+    }
+
+    highlight(color='#FFFF55') {
+      var range = this._visibleRange;
+      if (range && this.visible) {
+        var slotRadius = this.radius;
+        var slotThickness = this.thickness;
+        this.canvas.drawArc('background', range.start, range.stop, slotRadius, color, slotThickness);
       }
     }
 
@@ -244,7 +252,7 @@
     }
 
     drawProgress(progress) {
-      var canvas = this.viewer.canvas;
+      var canvas = this.canvas;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
       var range = this._visibleRange;

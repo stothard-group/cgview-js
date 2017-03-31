@@ -2120,6 +2120,24 @@ if (window.CGV === undefined) window.CGV = CGView;
   }
 
   /**
+   * Move the an item from oldIndex to newIndex.
+   * @param {Number} oldIndex - index of element to move
+   * @param {Number} newIndex - move element to this index
+   */
+  CGArray.prototype.move = function(oldIndex, newIndex) {
+		if (newIndex >= this.length) {
+			var k = newIndex - this.length;
+			while ((k--) + 1) {
+				this.push(undefined);
+			}
+		}
+		this.splice(newIndex, 0, this.splice(oldIndex, 1)[0]);
+		return this
+  }
+
+
+
+  /**
    * Sorts the CGArray by the provided property name.
    * @param {String} property Property to order each element set by [default: 'center']
    * @param {Boolean} descending Order in descending order (default: false)
@@ -2179,10 +2197,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     } else if (Number.isInteger(term)) {
       return this[term-1];
     } else if (typeof term == 'string') {
-      if ( term.match(/^path-id-/) ) {
-        return this.filter(function(element) { return element.path_id() == term; })[0];
-      } else if ( term.match(/^label-id-/) ) {
-        return this.filter(function(element) { return element.label_id() == term; })[0];
+      if ( term.match(/^cgv-id-/) ) {
+        return this.filter(function(element) { return element.cgvID == term; })[0];
+      // } else if ( term.match(/^label-id-/) ) {
+      //   return this.filter(function(element) { return element.label_id() == term; })[0];
       } else {
         return this.filter(function(element) { return element.id.toLowerCase() == term.toLowerCase(); })[0];
       }
@@ -2257,6 +2275,96 @@ if (window.CGV === undefined) window.CGV = CGView;
 })(CGView);
 
 
+//////////////////////////////////////////////////////////////////////////////
+// CGObject
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  cgvID = 0;
+
+  /**
+   * The CGObject is the base class of many CGV Classes. In particular, any class that
+   * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
+   * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
+   */
+  class CGObject {
+
+    /**
+     * @param {Viewer} viewer - The viewer object.
+     * @param {Object} options - 
+     * @param {Obejct} meta - 
+     */
+    constructor(viewer, options = {}, meta = {}) {
+      this._viewer = viewer;
+      this.meta = meta;
+      this.visible = CGV.defaultFor(options.visible, true);
+      this._cgvID = generateID();
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'CGObject'
+     */
+    toString() {
+      return 'CGObject';
+    }
+
+    get cgvID() {
+      return this._cgvID
+    }
+
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Canvas} - Get the canvas.
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
+
+    /**
+     * @member {Boolean} - Get or Set the visibility of this object.
+     */
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
+    }
+
+    /**
+     * @member {Boolean} - Get or Set the meta data of this object.
+     */
+    get meta() {
+      return this._meta
+    }
+
+    set meta(value) {
+      this._meta = value;
+    }
+
+  }
+
+  var generateID = function() {
+    return 'cgv-id-' + cgvID++;
+  }
+
+  CGV.CGObject = CGObject;
+
+})(CGView);
 //////////////////////////////////////////////////////////////////////////////
 // CGRange
 //////////////////////////////////////////////////////////////////////////////
@@ -5363,7 +5471,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var minInnerProportion = 0.15;
       var minInnerRadius = minInnerProportion * viewer.minDimension;
       // The maximum amount of space for drawing slots
-      var dividerSpace = this.slots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
+      var dividerSpace = this.visibleSlots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
       var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
       // Max slotnesses in pixels
       var maxFeatureSlotThickness = 30;
@@ -5371,8 +5479,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // The maximum thickness ratio between plot and feature slots. If there is
       // space try to keep the plot thickness this many times thicker than the feature slot thickness.
       var maxPlotToFeatureRatio = 6;
-      var nPlotSlots = this.slots().filter( (t) => { return t.type == 'plot' }).length;
-      var nFeatureSlots = this.slots().filter( (t) => { return t.type == 'feature' }).length;
+      var nPlotSlots = this.visibleSlots().filter( (t) => { return t.type == 'plot' }).length;
+      var nFeatureSlots = this.visibleSlots().filter( (t) => { return t.type == 'feature' }).length;
       // slotSpace = nPlotSlots * plotThickness + nFeatureSlots * featureThickness
       // plotThickness = maxPlotToFeatureRatio * featureThickness
       // Solve:
@@ -5381,7 +5489,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       featureThickness = Math.min(featureThickness, maxFeatureSlotThickness);
       plotThickness = Math.min(plotThickness, maxPlotSlotThickness);
       // Determine thickness of outside slots
-      var nOutsideSlots = this.slots().filter( (t) => { return t.outside });
+      var nOutsideSlots = this.visibleSlots().filter( (t) => { return t.outside });
       var outsideThickness = 0;
       nOutsideSlots.forEach( (slot) => {
         if (slot.type == 'feature') {
@@ -5396,7 +5504,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Update slot thick proportions
       var featureProportionOfRadius = featureThickness / backboneRadius;
       var plotProportionOfRadius = plotThickness / backboneRadius;
-      this.slots().each( (i, slot) => {
+      this.visibleSlots().each( (i, slot) => {
         if (slot.type == 'feature') {
           slot.proportionOfRadius = featureProportionOfRadius;
         } else if (slot.type == 'plot') {
@@ -5418,8 +5526,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       return slots.get(term);
     }
 
+    visibleSlots(term) {
+      var slots = new CGV.CGArray(
+        this.slots().filter( (s) => { return s.visible && s.track.visible })
+      );
+      return slots.get(term);
+    }
+
     slotForRadius(radius) {
-      var slots = this.slots();
+      var slots = this.visibleSlots();
       var slot;
       for (var i=0, len=slots.length; i < len; i++) {
         if (slots[i].containsRadius(radius)) {
@@ -5530,16 +5645,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       var track, slot;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
+        if (!track.visible) { continue }
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];
+          if (!slot.visible) { continue }
           slot.draw(this.canvas, fast)
         }
       }
     }
 
     drawSlotWithTimeOut(layout) {
-      var slots = layout.slots();
+      var slots = layout.visibleSlots();
       var slot = slots[layout._slotIndex];
+      if (!slot) { return }
       slot.clear();
       slot.draw(layout.canvas);
       layout._slotIndex++;
@@ -5574,9 +5692,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._slotLength = 0;
       for (var i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
         track = this._tracks[i];
+        if (!track.visible) { continue }
         // Slots and Dividers
         for (var j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           var slot = track._slots[j];
+          if (!slot.visible) { continue }
           this._slotLength++;
           // Calculate Slot dimensions
           // The slotRadius is the radius at the center of the slot
@@ -5640,6 +5760,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    moveTrack(oldIndex, newIndex) {
+      this._tracks.move(oldIndex, newIndex);
+      this._adjustProportions();
+    }
+
+
+
   }
 
   CGV.Layout = Layout;
@@ -5653,6 +5780,7 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
+   * @extends Caption
    */
   class Legend extends CGV.Caption {
 
@@ -5806,6 +5934,7 @@ if (window.CGV === undefined) window.CGV = CGView;
    * A *legendItem* is used to add text to a map *legend*. Individual
    * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
    * or plot color will use the swatchColor of *legendItem*.
+   * @extends CaptionItem
    */
   class LegendItem extends CGV.CaptionItem {
 
@@ -8795,24 +8924,31 @@ if (window.CGV === undefined) window.CGV = CGView;
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Slot {
+  /**
+   * A Slot is a single ring on the Map.
+   * @extends CGObject
+   */
+  class Slot extends CGV.CGObject {
 
     /**
      * Slot
      */
-    constructor(track, data = {}, display = {}, meta = {}) {
+    constructor(track, data = {}, meta = {}) {
+      super(track.viewer, data, meta);
       this.track = track;
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._plot;
       this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1)
       this.refresh();
-      //TEMP
-      // if (data.type == 'plot') {
-      //   this.type = 'plot'
-      // } else {
-      //   this.type = 'feature'
-      // }
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Slot'
+     */
+    toString() {
+      return 'Slot';
     }
 
     /** * @member {Track} - Get the *Track*
@@ -8839,20 +8975,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get layout() {
       return this.track.layout
-    }
-
-
-    /** * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this.track.viewer
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
     }
 
     /**
@@ -8945,21 +9067,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     // Refresh needs to be called when new features are added, etc
-    // Features need to be sorted by start position
-    // NOTE: consider using d3 bisect for inserting new features in the proper sort order
     refresh() {
-      // NOTE: all features should be sorted from json builder or in workers to save time here
-      // Sort the features by start
-      // this._features.sort( (a, b) => {
-      //   return a.start - b.start
-      // });
       this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length});
-      // Clear feature starts
-      // this._featureStarts = new CGV.CGArray();
-      // for (var i = 0, len = this._features.length; i < len; i++) {
-      //   this._featureStarts.push(this._features[i].start);
-      // }
-      // this._largestFeatureLength = this.findLargestFeatureLength();
     }
 
     /**
@@ -8969,10 +9078,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     get visibleRange() {
       return this._visibleRange
     }
-
-    // get largestFeatureLength() {
-    //   return this._largestFeatureLength
-    // }
 
     /**
      * Does the slot contain the given *radius*.
@@ -8992,16 +9097,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     findFeaturesForBp(bp) {
       return this._featureNCList.find(bp);
     }
-    // findFeatureForBp(bp) {
-    //   var start = this.sequence.subtractBp(bp, this.largestFeatureLength);
-    //   var feature;
-    //   this._featureStarts.eachFromRange(start, bp, 1, (i) => {
-    //     if (!feature && this._features[i].range.contains(bp)) {
-    //       feature = this._features[i];
-    //     }
-    //   });
-    //   return feature
-    // }
 
     findLargestFeatureLength() {
       var length = 0;
@@ -9020,17 +9115,24 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (range) {
         var slotRadius = this.radius;
         var slotThickness = this.thickness;
-        var ctx = this.viewer.canvas.context('map');
+        var ctx = this.canvas.context('map');
         ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
-        this.viewer.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
+        this.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
         ctx.globalCompositeOperation = "source-over"; // Default
+      }
+    }
+
+    highlight(color='#FFFF55') {
+      var range = this._visibleRange;
+      if (range && this.visible) {
+        var slotRadius = this.radius;
+        var slotThickness = this.thickness;
+        this.canvas.drawArc('background', range.start, range.stop, slotRadius, color, slotThickness);
       }
     }
 
     // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
-      // this._radius = slotRadius;
-      // this._thickness = slotThickness;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
       var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
@@ -9040,29 +9142,12 @@ if (window.CGV === undefined) window.CGV = CGView;
         var stop = range.stop;
         if (this.hasFeatures) {
           var featureCount = this._features.length;
-          // var largestLength = this.largestFeatureLength;
-          // Case where the largest feature should not be subtracted
-          // _____ Visible
-          // ----- Not Visbile
-          // Do no subtract the largest feature so that the start loops around to before the stop
-          // -----Start_____Stop-----
-          // In cases where the start is shortly after the stop, make sure that subtracting the largest feature does not put the start before the stop
-          // _____Stop-----Start_____
-          // if ( (largestLength <= (this.sequence.length - Math.abs(start - stop))) ) {
-          //   if (this.sequence.subtractBp(start, stop) <= largestLength) {
-          //     start = range.getStopPlus(1);
-          //   } else {
-          //     start = range.getStartPlus(-largestLength);
-          //   }
-          //   featureCount = this._featureStarts.countFromRange(start, stop);
-          // }
           if (!range.isFullCircle()) {
             featureCount = this._featureNCList.count(start, stop);
           }
           var step = 1;
           // Change step if drawing fast and there are too many features
           if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
-            // canvas.drawArc(1, this.sequence.length, slotRadius, 'rgba(0,0,200,0.03)', slotThickness);
             // Use a step that is rounded up to the nearest power of 2
             // This combined with eachFromRange altering the start index based on the step
             // means that as we zoom, the visible features remain consistent.
@@ -9072,19 +9157,9 @@ if (window.CGV === undefined) window.CGV = CGView;
             step = CGV.base2(initialStep);
           }
           // Draw Features
-
-          // var startTime = new Date().getTime();
-          //
-          // this._featureStarts.eachFromRange(start, stop, step, (i) => {
-          //   this._features[i].draw('map', slotRadius, slotThickness, range);
-          // })
-          // var time1 = CGV.elapsed_time(startTime);
-          // var startTime2 = new Date().getTime();
           this._featureNCList.run(start, stop, step, (feature) => {
             feature.draw('map', slotRadius, slotThickness, range);
           })
-          // var time2 = CGV.elapsed_time(startTime2);
-          // console.log(time1 + ' -> ' +  time2);
 
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
@@ -9098,15 +9173,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     drawProgress(progress) {
-      var canvas = this.viewer.canvas;
+      var canvas = this.canvas;
       var slotRadius = this.radius;
       var slotThickness = this.thickness;
       var range = this._visibleRange;
-      // Draw progress like a clock
-      // if (progress > 0 && progress < 100) {
-      //   var stop = this.sequence.length * progress / 100;
-      //   canvas.drawArc('background', 1, stop, slotRadius, '#EAEAEE', slotThickness);
-      // }
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
         var thickness = slotThickness * progress / 100;
@@ -9127,13 +9197,15 @@ if (window.CGV === undefined) window.CGV = CGView;
 
   /**
    * The Track is used for layout information
+   * @extends CGObject
    */
-  class Track {
+  class Track extends CGV.CGObject {
 
     /**
      * Create a new track.
      */
     constructor(layout, data = {}, meta = {}) {
+      super(layout.viewer, data, meta);
       this.layout = layout;
       this._plot;
       this._features = new CGV.CGArray();
@@ -9145,48 +9217,25 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
+    }
 
-      var contents = {
-        contents: {
-          // Type of track. Options: 'feature', 'plot'
-          // The type is set automatically when extracting from the sequence.
-          type: 'feature',
-          // From where to extract the features/plot. Options:
-          //  - 'source'   : the source property of the features/plots will be used for selection
-          //  - 'sequence' : the features/plot will be generated from the sequence
-          from: 'source',
-          // How to extract the features/plot.
-          // For 'source', the extract value can be a single value or an array of values.
-          // For 'sequence', the extract value can be one of the following:
-          //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
-          // e.g. In this example all features with a source of 'genome-1' will be used
-          extract: 'genome-1'
-        },
-        contents: {
-          type: 'feature',
-          from: 'sequence',
-          extract: 'orfs',
-          options: {
-            start: 'ATG',
-            stop: 'TAA,TAG'
-          }
-        },
-        data: {
-          type: 'plot',
-          from: 'sequence',
-          extract: 'gc_skew',
-          options: {
-            step: 1,
-            window: 100
-          }
-        }
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Track'
+     */
+    toString() {
+      return 'Track';
+    }
+
+    set visible(value) {
+      super.visible = value;
+      if (this.layout) {
+        this.layout._adjustProportions();
       }
     }
 
-    /** * @member {Viewer} - Get or set the *Viewer*
-     */
-    get viewer() {
-      return this.layout.viewer
+    get visible() {
+      return super.visible
     }
 
     /**
@@ -9237,19 +9286,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this.contents && this.contents.type
     }
 
-    // /** * @member {String} - Get the *Content Type*.
-    //  */
-    // get contentType() {
-    //   return this._contentType
-    // }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
-
     /**
      * @member {String} - Get or set the strand. Possible values are 'separated' or 'combined'.
      */
@@ -9288,6 +9324,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     set position(value) {
       if (CGV.validate(value, ['inside', 'outside', 'both'])) {
         this._position = value;
+        this.updateSlots();
       }
     }
 
@@ -9304,6 +9341,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     features(term) {
       return this._features.get(term)
+    }
+
+    slots(term) {
+      return this._slots.get(term)
     }
 
     refresh() {
@@ -9417,6 +9458,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._slots = new CGV.CGArray();
       var slot = new CGV.Slot(this, {type: 'plot'});
       slot._plot = this._plot;
+    }
+
+    highlight(color='#FFFF55') {
+      if (this.visible) {
+        this.slots().each( (i, slot) => {
+          slot.highlight(color);
+        });
+      }
     }
 
   }
