@@ -268,7 +268,7 @@
       slot._plot = this._plot;
     }
 
-    highlight(color='#FFFF55') {
+    highlight(color='#FFB') {
       if (this.visible) {
         this.slots().each( (i, slot) => {
           slot.highlight(color);

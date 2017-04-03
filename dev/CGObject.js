@@ -19,7 +19,7 @@
      */
     constructor(viewer, options = {}, meta = {}) {
       this._viewer = viewer;
-      this.meta = meta;
+      this.meta = CGV.merge(options.meta, meta);
       this.visible = CGV.defaultFor(options.visible, true);
       this._cgvID = generateID();
     }
@@ -35,6 +35,7 @@
     get cgvID() {
       return this._cgvID
     }
+
 
     /**
      * @member {Viewer} - Get the viewer.

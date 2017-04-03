@@ -3,30 +3,28 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Annotation {
+  /**
+   * Annotation controls the drawing and layout of features labels
+   */
+  class Annotation extends CGV.CGObject {
 
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
-      this._canvas = viewer.canvas;
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       this._labels = new CGV.CGArray();
       this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
       this._labelLineMargin = CGV.pixel(10);
       this._labelLineWidth = CGV.pixel(1);
-      this._visible = CGV.defaultFor(options.visible, true);
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
     }
 
     /**
-     * @member {Boolean} - Get or set whether the labels are visible.
+     * Return the class name as a string.
+     * @return {String} - 'Annotation'
      */
-    get visible() {
-      return this._visible
-    }
-
-    set visible(value) {
-      this._visible = value;
+    toString() {
+      return 'Annotation';
     }
 
     /**
@@ -54,13 +52,6 @@
         this._font = new CGV.Font(value);
       }
       this.refreshLabelWidths();
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
     }
 
     /**
@@ -98,13 +89,13 @@
     }
 
     refresh() {
-      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
+      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.sequence.length });
     }
 
     refreshLabelWidths() {
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
+      var labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
       for (var i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];
       }
@@ -115,7 +106,7 @@
       var visibleRange = this._visibleRange;
       var label, feature, containsStart, containsStop;
       var featureLengthDownStream, featureLengthUpStream;
-      var sequence = this.viewer.sequence;
+      var sequence = this.sequence;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
@@ -143,7 +134,7 @@
     //  - Zoom level changes
     _calculateLabelRects(labels) {
       labels = labels || this._labels;
-      var canvas = this._canvas;
+      var canvas = this.canvas;
       var scale = canvas.scale;
       var label, feature, radians, bp, x, y;
       var radius = this._outerRadius + this._labelLineMargin;
@@ -169,7 +160,7 @@
       var visibleRange = this._visibleRange;
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
-        if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
+        if (visibleRange.start == 1 && visibleRange.stop == this.sequence.length) {
           labelArray = this._labels;
         } else {
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
@@ -183,7 +174,7 @@
         this.refresh();
       }
 
-      this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
+      this._visibleRange = this.canvas.visibleRangeForRadius(directRadius);
 
       this._innerRadius = reverseRadius;
       this._outerRadius = directRadius;
@@ -205,7 +196,7 @@
       }
 
       // Draw nonoverlapping labels
-      var canvas = this._canvas;
+      var canvas = this.canvas;
       var ctx = canvas.context('map');
       var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes

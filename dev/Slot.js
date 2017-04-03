@@ -201,7 +201,7 @@
       }
     }
 
-    highlight(color='#FFFF55') {
+    highlight(color='#FFB') {
       var range = this._visibleRange;
       if (range && this.visible) {
         var slotRadius = this.radius;

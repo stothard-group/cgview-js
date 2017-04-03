@@ -8,7 +8,7 @@
    * The *Caption* object can be used to add additional annotation to
    * the map. A *Caption* contain one or more [CaptionItem]{@link CaptionItem} elements
    */
-  class Caption {
+  class Caption extends CGV.CGObject {
 
     /**
      * Create a new Caption.
@@ -27,10 +27,11 @@
      * @param {Object=} meta - User-defined key:value pairs to add to the caption.
      */
     constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta);
       this.viewer = viewer;
-      this.meta = CGV.merge(data.meta, meta);
       this._items = new CGV.CGArray();
       this._position = CGV.defaultFor(data.position, 'upper-right');
+      this.name = data.name;
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
       this.fontColor = CGV.defaultFor(data.fontColor, 'black');
@@ -68,11 +69,13 @@
       viewer._captions.push(this);
     }
 
-    /**
-     * @member {Canvas} - Get the *Canvas*
-     */
-    get canvas() {
-      return this.viewer.canvas
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      super.visible = value;
+      this.refresh();
     }
 
     /**
@@ -88,7 +91,6 @@
     get id() {
       return this.position
     }
-
 
     /**
      * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
@@ -185,6 +187,7 @@
       this.clear();
       this.height = 0;
       var maxHeight = 0;
+      if (!this._items) { return }
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItemHeight = this._items[i].height;
         this.height += captionItemHeight;
@@ -215,7 +218,9 @@
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
-      this.draw();
+      if (this.visible) {
+        this.draw();
+      }
     }
 
     _updateOrigin() {
@@ -265,6 +270,13 @@
       this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 
+    highlight(color = '#FFB') {
+      if (!this.visible) { return }
+      var ctx = this.canvas.context('background');
+      ctx.fillStyle = color;
+      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+    }
+
     draw() {
       var ctx = this.ctx;
       this.fillBackground();
@@ -272,8 +284,8 @@
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItem = this._items[i];
+        if (!captionItem.visible) { continue }
         var captionItemHeight = captionItem.height;
-        var drawSwatch = captionItem.drawSwatch;
         ctx.font = captionItem.font.css;
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label

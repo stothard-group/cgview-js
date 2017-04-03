@@ -8,7 +8,7 @@
    * of the map. All the slot thicknesses are measures in relation to the backbone
    * radius.
    */
-  class Backbone {
+  class Backbone extends CGV.CGObject {
 
     /**
      * Create a Backbone
@@ -16,8 +16,8 @@
      * @param {Viewer} viewer - The viewer that contains the backbone
      * @param {Object} options - Options and stuff
      */
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
@@ -29,24 +29,11 @@
     }
 
     /**
-     * @member {Viewer} - Get the viewer.
+     * Return the class name as a string.
+     * @return {String} - 'Backbone'
      */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
+    toString() {
+      return 'Backbone';
     }
 
     /**
@@ -236,32 +223,6 @@
       // return '•'.repeat(length);
       return Array(length + 1).join('•')
     }
-
-
-    // _drawSequenceDots() {
-    //   var ctx = this.canvas.ctx;
-    //   var scale = this.canvas.scale;
-    //   var radius = CGV.pixel(this.zoomedRadius);
-    //   var range = this.visibleRange
-    //   if (range) {
-    //     var bp = range.start;
-    //     ctx.save();
-    //     ctx.fillStyle = this.fontColor.rgbaString;
-    //     var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-    //     for (var i = 0, len = range.length; i < len; i++) {
-    //       var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-    //       ctx.beginPath();
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       ctx.beginPath();
-    //       var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       bp++;
-    //     }
-    //     ctx.restore();
-    //   }
-    // }
 
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);

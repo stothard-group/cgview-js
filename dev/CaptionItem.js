@@ -9,7 +9,7 @@
    * *Features* and *Plots* can be linked to a *captionItem*, so that the feature
    * or plot color will use the swatchColor of *captionItem*.
    */
-  class CaptionItem {
+  class CaptionItem extends CGV.CGObject {
 
     /**
      * Create a new CaptionItem. By default a captionItem will use its parent legend font, fontColor and textAlignment.
@@ -30,6 +30,7 @@
      * @param {Object=} meta - User-defined key:value pairs to add to the captionItem.
      */
     constructor(parent, data = {}, meta = {}) {
+      super(parent.viewer, data, meta);
       this.parent = parent;
       this.meta = CGV.merge(data.meta, meta);
       this._text = CGV.defaultFor(data.text, '');
@@ -78,7 +79,6 @@
 
     set parent(newParent) {
       var oldParent = this.parent;
-      this._viewer = newParent.viewer;
       this._parent = newParent;
       newParent._items.push(this);
       if (oldParent) {
@@ -88,6 +88,16 @@
         newParent.refresh();
       }
     }
+
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      super.visible = value;
+      this.refresh();
+    }
+
 
     /**
      * @member {String} - Get or set the text
@@ -99,6 +109,17 @@
     set text(text) {
       this._text = text;
       this.refresh();
+    }
+
+    /**
+     * @member {String} - Alias for text
+     */
+    get name() {
+      return this.text
+    }
+
+    set name(value) {
+      this.text = value;
     }
 
     /**
@@ -117,12 +138,12 @@
       this.refresh();
     }
 
-    /**
-     * @member {Viewer} - Get the *Viewer*.
-     */
-    get viewer() {
-      return this._viewer
-    }
+    // /**
+    //  * @member {Viewer} - Get the *Viewer*.
+    //  */
+    // get viewer() {
+    //   return this._viewer
+    // }
 
     /**
      * @member {Number} - Get the width in pixels.
@@ -193,6 +214,26 @@
       } else if (this.textAlignment == 'right') {
         return parent.originX + parent.width - parent.padding;
       }
+    }
+
+    textY() {
+      var parent = this.parent;
+      var y = parent.originY + parent.padding;
+      var myIndex = parent._items.indexOf(this);
+      for (var i = 0, len = parent._items.length; i < len; i++) {
+        var captionItem = parent._items[i];
+        if (captionItem == this) { break }
+        if (!captionItem.visible) { continue }
+        y += captionItem.height * 1.5;
+      }
+      return y
+    }
+
+    highlight(color = '#FFB') {
+      if (!this.visible || !this.parent.visible) { return }
+      var ctx = this.canvas.context('background');
+      ctx.fillStyle = color;
+      ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
     }
 
   }

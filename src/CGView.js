@@ -384,27 +384,67 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 })(CGView);
 //////////////////////////////////////////////////////////////////////////////
-// Annotation
+// CGObject
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Annotation {
+  cgvID = 0;
 
-    constructor(viewer, options = {}) {
+  /**
+   * The CGObject is the base class of many CGV Classes. In particular, any class that
+   * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
+   * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
+   */
+  class CGObject {
+
+    /**
+     * @param {Viewer} viewer - The viewer object.
+     * @param {Object} options - 
+     * @param {Obejct} meta - 
+     */
+    constructor(viewer, options = {}, meta = {}) {
       this._viewer = viewer;
-      this._canvas = viewer.canvas;
-      this._labels = new CGV.CGArray();
-      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
-      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
-      this._labelLineMargin = CGV.pixel(10);
-      this._labelLineWidth = CGV.pixel(1);
-      this._visible = CGV.defaultFor(options.visible, true);
-      this.refresh();
-      this._visibleLabels = new CGV.CGArray();
+      this.meta = CGV.merge(options.meta, meta);
+      this.visible = CGV.defaultFor(options.visible, true);
+      this._cgvID = generateID();
     }
 
     /**
-     * @member {Boolean} - Get or set whether the labels are visible.
+     * Return the class name as a string.
+     * @return {String} - 'CGObject'
+     */
+    toString() {
+      return 'CGObject';
+    }
+
+    get cgvID() {
+      return this._cgvID
+    }
+
+
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    /**
+     * @member {Canvas} - Get the canvas.
+     */
+    get canvas() {
+      return this.viewer.canvas
+    }
+
+    /**
+     * @member {Sequence} - Get the sequence.
+     */
+    get sequence() {
+      return this.viewer.sequence
+    }
+
+    /**
+     * @member {Boolean} - Get or Set the visibility of this object.
      */
     get visible() {
       return this._visible
@@ -412,6 +452,55 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set visible(value) {
       this._visible = value;
+    }
+
+    /**
+     * @member {Boolean} - Get or Set the meta data of this object.
+     */
+    get meta() {
+      return this._meta
+    }
+
+    set meta(value) {
+      this._meta = value;
+    }
+
+  }
+
+  var generateID = function() {
+    return 'cgv-id-' + cgvID++;
+  }
+
+  CGV.CGObject = CGObject;
+
+})(CGView);
+//////////////////////////////////////////////////////////////////////////////
+// Annotation
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  /**
+   * Annotation controls the drawing and layout of features labels
+   */
+  class Annotation extends CGV.CGObject {
+
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
+      this._labels = new CGV.CGArray();
+      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
+      this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
+      this._labelLineMargin = CGV.pixel(10);
+      this._labelLineWidth = CGV.pixel(1);
+      this.refresh();
+      this._visibleLabels = new CGV.CGArray();
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Annotation'
+     */
+    toString() {
+      return 'Annotation';
     }
 
     /**
@@ -439,13 +528,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         this._font = new CGV.Font(value);
       }
       this.refreshLabelWidths();
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
-     */
-    get viewer() {
-      return this._viewer
     }
 
     /**
@@ -483,13 +565,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     refresh() {
-      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.viewer.sequence.length });
+      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.sequence.length });
     }
 
     refreshLabelWidths() {
       var labelFonts = this._labels.map( (i) => { return i.font.css});
       var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this._canvas.context('map'), labelFonts, labelTexts);
+      var labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
       for (var i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];
       }
@@ -500,7 +582,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var visibleRange = this._visibleRange;
       var label, feature, containsStart, containsStop;
       var featureLengthDownStream, featureLengthUpStream;
-      var sequence = this.viewer.sequence;
+      var sequence = this.sequence;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
@@ -528,7 +610,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //  - Zoom level changes
     _calculateLabelRects(labels) {
       labels = labels || this._labels;
-      var canvas = this._canvas;
+      var canvas = this.canvas;
       var scale = canvas.scale;
       var label, feature, radians, bp, x, y;
       var radius = this._outerRadius + this._labelLineMargin;
@@ -554,7 +636,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var visibleRange = this._visibleRange;
       // FIXME: probably better to store bp values in array and use that to find indices of labels to keep
       if (visibleRange) {
-        if (visibleRange.start == 1 && visibleRange.stop == this.viewer.sequence.length) {
+        if (visibleRange.start == 1 && visibleRange.stop == this.sequence.length) {
           labelArray = this._labels;
         } else {
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
@@ -568,7 +650,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.refresh();
       }
 
-      this._visibleRange = this._canvas.visibleRangeForRadius(directRadius);
+      this._visibleRange = this.canvas.visibleRangeForRadius(directRadius);
 
       this._innerRadius = reverseRadius;
       this._outerRadius = directRadius;
@@ -590,7 +672,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
 
       // Draw nonoverlapping labels
-      var canvas = this._canvas;
+      var canvas = this.canvas;
       var ctx = canvas.context('map');
       var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
@@ -627,7 +709,7 @@ if (window.CGV === undefined) window.CGV = CGView;
    * of the map. All the slot thicknesses are measures in relation to the backbone
    * radius.
    */
-  class Backbone {
+  class Backbone extends CGV.CGObject {
 
     /**
      * Create a Backbone
@@ -635,8 +717,8 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Viewer} viewer - The viewer that contains the backbone
      * @param {Object} options - Options and stuff
      */
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
@@ -648,24 +730,11 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Viewer} - Get the viewer.
+     * Return the class name as a string.
+     * @return {String} - 'Backbone'
      */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
+    toString() {
+      return 'Backbone';
     }
 
     /**
@@ -855,32 +924,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       // return '•'.repeat(length);
       return Array(length + 1).join('•')
     }
-
-
-    // _drawSequenceDots() {
-    //   var ctx = this.canvas.ctx;
-    //   var scale = this.canvas.scale;
-    //   var radius = CGV.pixel(this.zoomedRadius);
-    //   var range = this.visibleRange
-    //   if (range) {
-    //     var bp = range.start;
-    //     ctx.save();
-    //     ctx.fillStyle = this.fontColor.rgbaString;
-    //     var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-    //     for (var i = 0, len = range.length; i < len; i++) {
-    //       var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-    //       ctx.beginPath();
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       ctx.beginPath();
-    //       var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       bp++;
-    //     }
-    //     ctx.restore();
-    //   }
-    // }
 
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
@@ -1443,7 +1486,7 @@ if (window.CGV === undefined) window.CGV = CGView;
    * The *Caption* object can be used to add additional annotation to
    * the map. A *Caption* contain one or more [CaptionItem]{@link CaptionItem} elements
    */
-  class Caption {
+  class Caption extends CGV.CGObject {
 
     /**
      * Create a new Caption.
@@ -1462,10 +1505,11 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Object=} meta - User-defined key:value pairs to add to the caption.
      */
     constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta);
       this.viewer = viewer;
-      this.meta = CGV.merge(data.meta, meta);
       this._items = new CGV.CGArray();
       this._position = CGV.defaultFor(data.position, 'upper-right');
+      this.name = data.name;
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
       this.fontColor = CGV.defaultFor(data.fontColor, 'black');
@@ -1503,11 +1547,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       viewer._captions.push(this);
     }
 
-    /**
-     * @member {Canvas} - Get the *Canvas*
-     */
-    get canvas() {
-      return this.viewer.canvas
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      super.visible = value;
+      this.refresh();
     }
 
     /**
@@ -1523,7 +1569,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     get id() {
       return this.position
     }
-
 
     /**
      * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
@@ -1620,6 +1665,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.clear();
       this.height = 0;
       var maxHeight = 0;
+      if (!this._items) { return }
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItemHeight = this._items[i].height;
         this.height += captionItemHeight;
@@ -1650,7 +1696,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
-      this.draw();
+      if (this.visible) {
+        this.draw();
+      }
     }
 
     _updateOrigin() {
@@ -1700,6 +1748,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 
+    highlight(color = '#FFB') {
+      if (!this.visible) { return }
+      var ctx = this.canvas.context('background');
+      ctx.fillStyle = color;
+      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+    }
+
     draw() {
       var ctx = this.ctx;
       this.fillBackground();
@@ -1707,8 +1762,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItem = this._items[i];
+        if (!captionItem.visible) { continue }
         var captionItemHeight = captionItem.height;
-        var drawSwatch = captionItem.drawSwatch;
         ctx.font = captionItem.font.css;
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
@@ -1734,7 +1789,7 @@ if (window.CGV === undefined) window.CGV = CGView;
    * *Features* and *Plots* can be linked to a *captionItem*, so that the feature
    * or plot color will use the swatchColor of *captionItem*.
    */
-  class CaptionItem {
+  class CaptionItem extends CGV.CGObject {
 
     /**
      * Create a new CaptionItem. By default a captionItem will use its parent legend font, fontColor and textAlignment.
@@ -1755,6 +1810,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Object=} meta - User-defined key:value pairs to add to the captionItem.
      */
     constructor(parent, data = {}, meta = {}) {
+      super(parent.viewer, data, meta);
       this.parent = parent;
       this.meta = CGV.merge(data.meta, meta);
       this._text = CGV.defaultFor(data.text, '');
@@ -1803,7 +1859,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set parent(newParent) {
       var oldParent = this.parent;
-      this._viewer = newParent.viewer;
       this._parent = newParent;
       newParent._items.push(this);
       if (oldParent) {
@@ -1813,6 +1868,16 @@ if (window.CGV === undefined) window.CGV = CGView;
         newParent.refresh();
       }
     }
+
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      super.visible = value;
+      this.refresh();
+    }
+
 
     /**
      * @member {String} - Get or set the text
@@ -1824,6 +1889,17 @@ if (window.CGV === undefined) window.CGV = CGView;
     set text(text) {
       this._text = text;
       this.refresh();
+    }
+
+    /**
+     * @member {String} - Alias for text
+     */
+    get name() {
+      return this.text
+    }
+
+    set name(value) {
+      this.text = value;
     }
 
     /**
@@ -1842,12 +1918,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.refresh();
     }
 
-    /**
-     * @member {Viewer} - Get the *Viewer*.
-     */
-    get viewer() {
-      return this._viewer
-    }
+    // /**
+    //  * @member {Viewer} - Get the *Viewer*.
+    //  */
+    // get viewer() {
+    //   return this._viewer
+    // }
 
     /**
      * @member {Number} - Get the width in pixels.
@@ -1918,6 +1994,26 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else if (this.textAlignment == 'right') {
         return parent.originX + parent.width - parent.padding;
       }
+    }
+
+    textY() {
+      var parent = this.parent;
+      var y = parent.originY + parent.padding;
+      var myIndex = parent._items.indexOf(this);
+      for (var i = 0, len = parent._items.length; i < len; i++) {
+        var captionItem = parent._items[i];
+        if (captionItem == this) { break }
+        if (!captionItem.visible) { continue }
+        y += captionItem.height * 1.5;
+      }
+      return y
+    }
+
+    highlight(color = '#FFB') {
+      if (!this.visible || !this.parent.visible) { return }
+      var ctx = this.canvas.context('background');
+      ctx.fillStyle = color;
+      ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
     }
 
   }
@@ -2275,96 +2371,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 })(CGView);
 
 
-//////////////////////////////////////////////////////////////////////////////
-// CGObject
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
-
-  cgvID = 0;
-
-  /**
-   * The CGObject is the base class of many CGV Classes. In particular, any class that
-   * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
-   * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
-   */
-  class CGObject {
-
-    /**
-     * @param {Viewer} viewer - The viewer object.
-     * @param {Object} options - 
-     * @param {Obejct} meta - 
-     */
-    constructor(viewer, options = {}, meta = {}) {
-      this._viewer = viewer;
-      this.meta = meta;
-      this.visible = CGV.defaultFor(options.visible, true);
-      this._cgvID = generateID();
-    }
-
-    /**
-     * Return the class name as a string.
-     * @return {String} - 'CGObject'
-     */
-    toString() {
-      return 'CGObject';
-    }
-
-    get cgvID() {
-      return this._cgvID
-    }
-
-    /**
-     * @member {Viewer} - Get the viewer.
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
-
-    /**
-     * @member {Boolean} - Get or Set the visibility of this object.
-     */
-    get visible() {
-      return this._visible
-    }
-
-    set visible(value) {
-      this._visible = value;
-    }
-
-    /**
-     * @member {Boolean} - Get or Set the meta data of this object.
-     */
-    get meta() {
-      return this._meta
-    }
-
-    set meta(value) {
-      this._meta = value;
-    }
-
-  }
-
-  var generateID = function() {
-    return 'cgv-id-' + cgvID++;
-  }
-
-  CGV.CGObject = CGObject;
-
-})(CGView);
 //////////////////////////////////////////////////////////////////////////////
 // CGRange
 //////////////////////////////////////////////////////////////////////////////
@@ -9122,7 +9128,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
-    highlight(color='#FFFF55') {
+    highlight(color='#FFB') {
       var range = this._visibleRange;
       if (range && this.visible) {
         var slotRadius = this.radius;
@@ -9460,7 +9466,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       slot._plot = this._plot;
     }
 
-    highlight(color='#FFFF55') {
+    highlight(color='#FFB') {
       if (this.visible) {
         this.slots().each( (i, slot) => {
           slot.highlight(color);
