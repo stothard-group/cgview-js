@@ -28,6 +28,7 @@
      */
     constructor(viewer, data = {}, meta = {}) {
       super(viewer, data, meta);
+      this.name = 'Legend'
     }
 
     /**
@@ -108,14 +109,16 @@
     }
 
     draw() {
+      if (!this.visible) { return }
       var ctx = this.ctx;
       this.fillBackground();
       var textX, swatchX;
-      var y = this.originY + this.padding;
       ctx.lineWidth = 1;
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var legendItem = this._items[i];
+        if (!legendItem.visible) { continue }
+        var y = legendItem.textY();
         var legendItemHeight = legendItem.height;
         var drawSwatch = legendItem.drawSwatch;
         var swatchWidth = legendItem.swatchWidth;
@@ -141,7 +144,6 @@
         // Draw Text Label
         ctx.fillStyle = legendItem.fontColor.rgbaString;
         ctx.fillText(legendItem.text, legendItem.textX(), y);
-        y += (legendItemHeight * 1.5);
       }
     }
 

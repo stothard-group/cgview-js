@@ -263,6 +263,16 @@
       }
     }
 
+    /**
+     * Remove a feature from the slot.
+     *
+     * @param {Feature} feature - The Feature to remove.
+     */
+    removeFeature(feature) {
+      this._features = this._features.remove(feature);
+      this.refresh();
+    }
+
 
   }
 

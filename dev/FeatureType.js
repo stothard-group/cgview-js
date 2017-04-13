@@ -3,17 +3,18 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class FeatureType {
+  class FeatureType extends CGV.CGObject {
 
     /**
      * A Feature Type 
      */
-    constructor(viewer, data = {}) {
+    constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta)
       this.viewer = viewer
       this.name = CGV.defaultFor(data.name, '');
       // Decoration: arc, arrow, score
       this.decoration = CGV.defaultFor(data.decoration, 'arc');
-
+      this.viewer.trigger('feature-type-update');
     }
 
     /**
@@ -70,6 +71,12 @@
       var viewer = this.viewer;
       var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.featureType == this } ));
       return _features.get(term);
+    }
+
+    remove() {
+      var viewer = this.viewer;
+      viewer._featureTypes = viewer._featureTypes.remove(this);
+      viewer.trigger('feature-type-update');
     }
 
   }

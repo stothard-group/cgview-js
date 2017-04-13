@@ -46,7 +46,7 @@
     }
 
     set start(value) {
-      this._start = value;
+      this._start = Number(value);
     }
 
     /**
@@ -57,7 +57,7 @@
     }
 
     set stop(value) {
-      this._stop = value;
+      this._stop = Number(value);
     }
 
     /**

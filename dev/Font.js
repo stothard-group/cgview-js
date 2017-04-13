@@ -133,6 +133,52 @@
     }
 
     /**
+     * @member {Boolean} - Get or set the font boldness.
+     */
+    get bold() {
+      return ( this.style == 'bold' || this.style == 'bold-italic')
+    }
+
+    set bold(value) {
+      if (value) {
+        if (this.style == 'plain') {
+          this.style = 'bold';
+        } else if (this.style == 'italic') {
+          this.style = 'bold-italic';
+        }
+      } else {
+        if (this.style == 'bold') {
+          this.style = 'plain';
+        } else if (this.style == 'bold-italic') {
+          this.style = 'italic';
+        }
+      }
+    }
+
+    /**
+     * @member {Boolean} - Get or set the font italics.
+     */
+    get italic() {
+      return ( this.style == 'italic' || this.style == 'bold-italic')
+    }
+
+    set italic(value) {
+      if (value) {
+        if (this.style == 'plain') {
+          this.style = 'italic';
+        } else if (this.style == 'bold') {
+          this.style = 'bold-italic';
+        }
+      } else {
+        if (this.style == 'italic') {
+          this.style = 'plain';
+        } else if (this.style == 'bold-italic') {
+          this.style = 'bold';
+        }
+      }
+    }
+
+    /**
      * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
      */
     get height() {

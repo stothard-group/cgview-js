@@ -65,12 +65,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.io = new CGV.IO(this);
       // Initialize Sequence
       this._sequence = new CGV.Sequence(this, options.sequence);
+      // Initialize Backbone
+      this.backbone = new CGV.Backbone(this, options.backbone);
+      // Initialize Events
+      this.initializeDragging();
+      this.initializeZooming();
+      this.events = new CGV.Events();
+      this.eventMonitor = new CGV.EventMonitor(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
-      // Initialize Backbone
-      this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Slot Divider
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       // Initialize Layout
@@ -85,10 +90,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Highlighter
       this.highlighter = new CGV.Highlighter(this, options.highlighter);
-      // Initialize Events
-      this.initializeDragging();
-      this.initializeZooming();
-      this.eventMonitor = new CGV.EventMonitor(this);
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
 
@@ -237,7 +238,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.resize(this.width, this.height)
 
       this.refreshCaptions();
-      this.legend.refresh();
+      // this.legend.refresh();
 
       this.layout._adjustProportions();
 
@@ -364,6 +365,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = this._captions.length; i < len; i++) {
         this._captions[i].refresh();
       }
+      this.legend.refresh();
     }
 
     /**
@@ -377,6 +379,24 @@ if (window.CGV === undefined) window.CGV = CGView;
     moveTo(start, stop) {
 
     }
+
+    moveCaption(oldIndex, newIndex) {
+      this._captions.move(oldIndex, newIndex);
+      this.refreshCaptions();
+    }
+
+    on(event, callback) {
+      this.events.on(event, callback);
+    }
+
+    off(event, callback) {
+      this.events.off(event, callback);
+    }
+
+    trigger(event, object) {
+      this.events.trigger(event, object);
+    }
+
 
   }
 
@@ -562,6 +582,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     removeLabel(label) {
       this._labels = this._labels.remove(label);
+      this.refresh();
     }
 
     refresh() {
@@ -1508,7 +1529,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       super(viewer, data, meta);
       this.viewer = viewer;
       this._items = new CGV.CGArray();
-      this._position = CGV.defaultFor(data.position, 'upper-right');
+      this._position = CGV.defaultFor(data.position, 'upper-left');
       this.name = data.name;
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
@@ -1580,6 +1601,17 @@ if (window.CGV === undefined) window.CGV = CGView;
     set position(value) {
       this._position = value;
       this.refresh();
+    }
+
+    /**
+     * @member {String} - Get or set the caption name.
+     */
+    get name() {
+      return this._name
+    }
+
+    set name(value) {
+      this._name = value;
     }
 
     /**
@@ -1656,6 +1688,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {CGArray} - Get the *CaptionItems*
+     */
+    visibleItems(term) {
+      var filtered = this._items.filter( (i) => { return i.visible });
+      return new CGV.CGArray(filtered).get(term)
+    }
+
+    /**
      * Recalculates the *Caption* size and position as well as the width of the child {@link CaptionItem}s.
      */
     // FIXME: should be called when ever a text or font changes
@@ -1666,8 +1706,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.height = 0;
       var maxHeight = 0;
       if (!this._items) { return }
-      for (var i = 0, len = this._items.length; i < len; i++) {
-        var captionItemHeight = this._items[i].height;
+      var visibleItems = this.visibleItems();
+      // for (var i = 0, len = this._items.length; i < len; i++) {
+      for (var i = 0, len = visibleItems.length; i < len; i++) {
+        var captionItem = visibleItems[i];
+        var captionItemHeight = captionItem.height;
         this.height += captionItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -1682,11 +1725,11 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // Calculate Caption Width
       this.width = 0;
-      var itemFonts = this._items.map( (i) => { return i.font.css });
-      var itemTexts = this._items.map( (i) => { return i.text });
+      var itemFonts = visibleItems.map( (i) => { return i.font.css });
+      var itemTexts = visibleItems.map( (i) => { return i.text });
       var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemTexts);
       for (var i = 0, len = itemWidths.length; i < len; i++) {
-        var item = this._items[i];
+        var item = visibleItems[i];
         // This should only be used for legends
         if (item.drawSwatch) {
           itemWidths[i] += item.height + (this.padding / 2);
@@ -1696,9 +1739,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
-      if (this.visible) {
-        this.draw();
-      }
+      this.draw();
     }
 
     _updateOrigin() {
@@ -1739,6 +1780,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    moveItem(oldIndex, newIndex) {
+      this._items.move(oldIndex, newIndex);
+      this.refresh();
+    }
+
     clear() {
       this.ctx.clearRect(this.originX, this.originY, this.width, this.height);
     }
@@ -1750,15 +1796,19 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     highlight(color = '#FFB') {
       if (!this.visible) { return }
-      var ctx = this.canvas.context('background');
-      ctx.fillStyle = color;
-      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      // var ctx = this.canvas.context('background');
+      // ctx.fillStyle = color;
+      // ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      var ctx = this.canvas.context('ui');
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(this.originX, this.originY, this.width, this.height);
     }
 
     draw() {
+      if (!this.visible) { return }
       var ctx = this.ctx;
       this.fillBackground();
-      var y = this.originY + this.padding;
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItem = this._items[i];
@@ -1768,9 +1818,15 @@ if (window.CGV === undefined) window.CGV = CGView;
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
         ctx.fillStyle = captionItem.fontColor.rgbaString;
-        ctx.fillText(captionItem.text, captionItem.textX(), y);
-        y += (captionItemHeight * 1.5);
+        ctx.fillText(captionItem.text, captionItem.textX(), captionItem.textY());
       }
+    }
+
+    remove() {
+      var viewer = this.viewer;
+      viewer._captions = viewer._captions.remove(this);
+      viewer.clear('captions');
+      viewer.refreshCaptions();
     }
 
   }
@@ -1906,15 +1962,16 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {String} - Get or set the text alignment. Defaults to the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
-      return this._textAlignment
+      return this._textAlignment || this.parent.textAlignment
     }
 
     set textAlignment(value) {
-      if (value == undefined) {
-        this._textAlignment = this.parent.textAlignment;
-      } else {
-        this._textAlignment = value;
-      }
+      // if (value == undefined) {
+      //   this._textAlignment = this.parent.textAlignment;
+      // } else {
+      //   this._textAlignment = value;
+      // }
+		 	this._textAlignment = value;
       this.refresh();
     }
 
@@ -2011,10 +2068,23 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     highlight(color = '#FFB') {
       if (!this.visible || !this.parent.visible) { return }
-      var ctx = this.canvas.context('background');
-      ctx.fillStyle = color;
-      ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
+      // var ctx = this.canvas.context('background');
+      // ctx.fillStyle = color;
+      // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
+      var ctx = this.canvas.context('ui');
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(this.textX(), this.textY(), this.width, this.height);
     }
+
+    remove() {
+      var parent = this.parent;
+      parent._items = parent._items.remove(this);
+      this.viewer.clear('captions');
+      this.viewer.refreshCaptions();
+      this.viewer.trigger( parent.toString().toLowerCase() + '-update');
+    }
+
 
   }
 
@@ -2419,7 +2489,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set start(value) {
-      this._start = value;
+      this._start = Number(value);
     }
 
     /**
@@ -2430,7 +2500,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set stop(value) {
-      this._stop = value;
+      this._stop = Number(value);
     }
 
     /**
@@ -3926,12 +3996,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._viewer = viewer;
 
       // Setup Events on the viewer
-      var events = new CGV.Events();
-      this.events = events;
+      // var events = new CGV.Events();
+      this.events = viewer.events;
       // viewer._events = events;
       // viewer.on = events.on;
       // viewer.off = events.off;
       // viewer.trigger = events.trigger;
+      // viewer.events = events;
 
       this._initializeMousemove();
       this._initializeClick();
@@ -4015,7 +4086,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var viewer = this.viewer;
       this.events.on('click.swatch', (e) => {
         var legend = viewer.legend;
-        var swatchedLegendItems = legend.items();
+        var swatchedLegendItems = legend.visibleItems();
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
             var legendItem = swatchedLegendItems[i];
@@ -4045,7 +4116,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var viewer = this.viewer;
       this.events.on('mousemove.swatch', (e) => {
         var legend = viewer.legend;
-        var swatchedLegendItems = legend.items();
+        var swatchedLegendItems = legend.visibleItems();
         var oldHighlightedItem = legend.highlightedSwatchedItem;
         legend.highlightedSwatchedItem = undefined;
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
@@ -4068,12 +4139,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     _highlighterMouseOver() {
       var viewer = this.viewer;
       var highlighter = viewer.highlighter;
-      var colorAdjustment = 0.25;
       this.events.on('mousemove.highlighter', (e) => {
         if (e.feature) {
-          var color = e.feature.color.copy();
-          color.highlight();
-          e.feature.draw('ui', e.slot.radius, e.slot.thickness, e.slot.visibleRange, {color: color});
+          e.feature.highlight(e.slot);
         } else if (e.plot) {
           var score = e.plot.scoreForPosition(e.bp);
           if (score) {
@@ -4113,6 +4181,12 @@ if (window.CGV === undefined) window.CGV = CGView;
    *
    *  Event               | Description
    *  --------------------|-------------
+   *  legend-update       | Called after legend items removed or added
+   *  caption-update      | Called after caption items removed or added
+   *  track-update        | Called when track is updated
+   *  feature-type-update | Called when featureTypes is updated
+   *
+   *
    *  mousemove           | Called when the mouse moves on the map
    *  drag-start          | Called once before viewer starts drag animation
    *  drag                | Called every frame of the drag animation
@@ -4261,12 +4335,13 @@ if (window.CGV === undefined) window.CGV = CGView;
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Feature {
+  class Feature extends CGV.CGObject {
 
     /**
      * A Feature
      */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
+    constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta)
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
@@ -4281,6 +4356,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
       this.legendItem  = data.legend;
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Feature'
+     */
+    toString() {
+      return 'Feature';
     }
 
     /**
@@ -4304,6 +4387,21 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set featureType(value) {
       this._featureType = value;
+    }
+
+    /**
+     * @member {String} - Get or set the name via the [Label](Label.html).
+     */
+    get name() {
+      return this.label && this.label.name
+    }
+
+    set name(value) {
+      if (this.label) {
+        this.label.name = value;
+      } else {
+        this.label = new CGV.Label(this, {name: value} );
+      }
     }
 
     /**
@@ -4333,16 +4431,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       viewer._features.push(this);
     }
 
-    /**
-     * @member {Canvas} - Get the *Canvas*
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
+    // /**
+    //  * @member {Canvas} - Get the *Canvas*
+    //  */
+    // get canvas() {
+    //   return this.viewer.canvas
+    // }
 
 
     get strand() {
       return this._strand;
+    }
+
+    set strand(value) {
+      this._strand = value;
     }
 
     isDirect() {
@@ -4461,6 +4563,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 
     draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
+      if (!this.visible) { return }
       if (this.range.overlapsRange(visibleRange)) {
         var canvas = this.canvas;
         var start = this.start;
@@ -4494,6 +4597,27 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * Highlights the feature on every slot it is visible. An optional slot can be provided,
+     * in which case the feature will on ly be highlighted on the slot.
+     * @param {Slot} slot - Only highlight the feature on this slot.
+     */
+    highlight(slot) {
+      if (!this.visible) { return }
+      this.canvas.clear('ui');
+      var color = this.color.copy();
+      color.highlight();
+      if (slot && slot.features().contains(this)) {
+        this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
+      } else {
+        this.viewer.slots().each( (i, slot) => {
+          if (slot.features().contains(this)) {
+            this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
+          }
+        });
+      }
+    }
+
     // radius by default would be the center of the slot as provided unless:
     // - _radiusAdjustment is not 0
     // - _proportionOfThickness is not 1
@@ -4512,6 +4636,63 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._proportionOfThickness * width;
     }
 
+    /**
+     * Return an array of the tracks that contain this feature
+     */
+    tracks() {
+      var tracks = new CGV.CGArray();
+      this.viewer.tracks().each( (i, track) => {
+        if (track.features().contains(this)) {
+          tracks.push(track);
+        }
+      });
+      return tracks
+    }
+
+    /**
+     * Return an array of the slots that contain this feature
+     */
+   slots() {
+      var slots = new CGV.CGArray();
+      this.tracks().each( (i, track) => {
+        track.slots().each( (j, slot) => {
+          if (slot.features().contains(this)) {
+            slots.push(slot);
+          }
+        });
+      });
+      return slots
+    }
+
+    /**
+     * Remove the Feature from the viewer, tracks and slots
+     */
+    remove() {
+      this.viewer._features = this.viewer._features.remove(this);
+      this.viewer.annotation.removeLabel(this.label);
+      this.tracks().each( (i, track) => {
+        track.removeFeature(this);
+      });
+
+    }
+
+    // Update tracks, slots, etc associated with feature.
+    // Or add feature to tracks and refresh them, if this is a new feature.
+    // Don't refresh if bulkImport is true
+    //
+    refresh() {
+      // this.bulkImport = false;
+      // Get tracks currently associated with this feature.
+      // And find any new tracks that may now need to be associated with this feature
+      // (e.g. if the feature source changed, it may now belong to a different track)
+      this.viewer.tracks().each( (i, track) => {
+        if ( track.features().contains(this) ||
+             (track.contents.from == 'source' && track.contents.extract == this.source) ) {
+          track.refresh();
+        }
+      });
+    }
+
   }
 
   CGV.Feature = Feature;
@@ -4522,17 +4703,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class FeatureType {
+  class FeatureType extends CGV.CGObject {
 
     /**
      * A Feature Type 
      */
-    constructor(viewer, data = {}) {
+    constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta)
       this.viewer = viewer
       this.name = CGV.defaultFor(data.name, '');
       // Decoration: arc, arrow, score
       this.decoration = CGV.defaultFor(data.decoration, 'arc');
-
+      this.viewer.trigger('feature-type-update');
     }
 
     /**
@@ -4589,6 +4771,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       var viewer = this.viewer;
       var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.featureType == this } ));
       return _features.get(term);
+    }
+
+    remove() {
+      var viewer = this.viewer;
+      viewer._featureTypes = viewer._featureTypes.remove(this);
+      viewer.trigger('feature-type-update');
     }
 
   }
@@ -4728,6 +4916,52 @@ if (window.CGV === undefined) window.CGV = CGView;
     set style(value) {
       this._style = value;
       this._generateFont();
+    }
+
+    /**
+     * @member {Boolean} - Get or set the font boldness.
+     */
+    get bold() {
+      return ( this.style == 'bold' || this.style == 'bold-italic')
+    }
+
+    set bold(value) {
+      if (value) {
+        if (this.style == 'plain') {
+          this.style = 'bold';
+        } else if (this.style == 'italic') {
+          this.style = 'bold-italic';
+        }
+      } else {
+        if (this.style == 'bold') {
+          this.style = 'plain';
+        } else if (this.style == 'bold-italic') {
+          this.style = 'italic';
+        }
+      }
+    }
+
+    /**
+     * @member {Boolean} - Get or set the font italics.
+     */
+    get italic() {
+      return ( this.style == 'italic' || this.style == 'bold-italic')
+    }
+
+    set italic(value) {
+      if (value) {
+        if (this.style == 'plain') {
+          this.style = 'italic';
+        } else if (this.style == 'bold') {
+          this.style = 'bold-italic';
+        }
+      } else {
+        if (this.style == 'italic') {
+          this.style = 'plain';
+        } else if (this.style == 'bold-italic') {
+          this.style = 'bold';
+        }
+      }
     }
 
     /**
@@ -5771,6 +6005,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._adjustProportions();
     }
 
+    removeTrack(track) {
+      this._tracks = this._tracks.remove(track);
+      this._adjustProportions();
+    }
+
 
 
   }
@@ -5808,6 +6047,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     constructor(viewer, data = {}, meta = {}) {
       super(viewer, data, meta);
+      this.name = 'Legend'
     }
 
     /**
@@ -5888,14 +6128,16 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     draw() {
+      if (!this.visible) { return }
       var ctx = this.ctx;
       this.fillBackground();
       var textX, swatchX;
-      var y = this.originY + this.padding;
       ctx.lineWidth = 1;
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var legendItem = this._items[i];
+        if (!legendItem.visible) { continue }
+        var y = legendItem.textY();
         var legendItemHeight = legendItem.height;
         var drawSwatch = legendItem.drawSwatch;
         var swatchWidth = legendItem.swatchWidth;
@@ -5921,7 +6163,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         // Draw Text Label
         ctx.fillStyle = legendItem.fontColor.rgbaString;
         ctx.fillText(legendItem.text, legendItem.textX(), y);
-        y += (legendItemHeight * 1.5);
       }
     }
 
@@ -5967,6 +6208,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
       this.refresh();
+      this.viewer.trigger('legend-update');
     }
 
     /**
@@ -6094,8 +6336,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     _swatchContainsPoint(pt) {
       var x = this.parent.originX + this.parent.padding;
       var y = this.parent.originY + this.parent.padding;
-      for (var i = 0, len = this.parent._items.length; i < len; i++) {
-        var item = this.parent._items[i];
+      var visibleItems = this.parent.visibleItems();
+      for (var i = 0, len = visibleItems.length; i < len; i++) {
+        var item = visibleItems[i];
         if (item == this) { break }
         y += (item.height * 1.5);
       }
@@ -7196,6 +7439,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (value) {
         this._score = new CGV.CGArray(value);
       }
+    }
+
+    /**
+     * @member {Number} - Get the number of points in the plot
+     */
+    get length() {
+      return this.positions.length
     }
 
     /**
@@ -9190,6 +9440,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * Remove a feature from the slot.
+     *
+     * @param {Feature} feature - The Feature to remove.
+     */
+    removeFeature(feature) {
+      this._features = this._features.remove(feature);
+      this.refresh();
+    }
+
 
   }
 
@@ -9335,6 +9595,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Plot} - Get the plot associated with this track
+     */
+    get plot() {
+      return this._plot
+    }
+
+    /**
      * @member {Number} - Get or set the load progress position (integer between 0 and 100)
      */
     get loadProgress() {
@@ -9345,12 +9612,36 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._loadProgress = value;
     }
 
+    /**
+     * @member {Number} - Return the number of features or plot points contained in this track.
+     */
+    get count() {
+      if (this.type == 'plot') {
+        return (this.plot) ? this.plot.length : 0
+      } else if (this.type == 'feature') {
+        return this.features().length
+      }
+    }
+
     features(term) {
       return this._features.get(term)
     }
 
     slots(term) {
       return this._slots.get(term)
+    }
+
+    /**
+     * Remove a feature from the track and slots.
+     *
+     * @param {Feature} feature - The Feature to remove.
+     */
+    removeFeature(feature) {
+      this._features = this._features.remove(feature);
+      this.slots().each( (i, slot) => {
+        slot.removeFeature(feature);
+      });
+      this.viewer.trigger('track-update', this);
     }
 
     refresh() {
@@ -9412,6 +9703,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();
+      this.viewer.trigger('track-update', this);
     }
 
     updateFeatureSlots() {
@@ -9472,6 +9764,10 @@ if (window.CGV === undefined) window.CGV = CGView;
           slot.highlight(color);
         });
       }
+    }
+
+    remove() {
+      this.layout.removeTrack(this);
     }
 
   }

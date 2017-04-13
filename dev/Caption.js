@@ -30,7 +30,7 @@
       super(viewer, data, meta);
       this.viewer = viewer;
       this._items = new CGV.CGArray();
-      this._position = CGV.defaultFor(data.position, 'upper-right');
+      this._position = CGV.defaultFor(data.position, 'upper-left');
       this.name = data.name;
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
@@ -102,6 +102,17 @@
     set position(value) {
       this._position = value;
       this.refresh();
+    }
+
+    /**
+     * @member {String} - Get or set the caption name.
+     */
+    get name() {
+      return this._name
+    }
+
+    set name(value) {
+      this._name = value;
     }
 
     /**
@@ -178,6 +189,14 @@
     }
 
     /**
+     * @member {CGArray} - Get the *CaptionItems*
+     */
+    visibleItems(term) {
+      var filtered = this._items.filter( (i) => { return i.visible });
+      return new CGV.CGArray(filtered).get(term)
+    }
+
+    /**
      * Recalculates the *Caption* size and position as well as the width of the child {@link CaptionItem}s.
      */
     // FIXME: should be called when ever a text or font changes
@@ -188,8 +207,11 @@
       this.height = 0;
       var maxHeight = 0;
       if (!this._items) { return }
-      for (var i = 0, len = this._items.length; i < len; i++) {
-        var captionItemHeight = this._items[i].height;
+      var visibleItems = this.visibleItems();
+      // for (var i = 0, len = this._items.length; i < len; i++) {
+      for (var i = 0, len = visibleItems.length; i < len; i++) {
+        var captionItem = visibleItems[i];
+        var captionItemHeight = captionItem.height;
         this.height += captionItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -204,11 +226,11 @@
 
       // Calculate Caption Width
       this.width = 0;
-      var itemFonts = this._items.map( (i) => { return i.font.css });
-      var itemTexts = this._items.map( (i) => { return i.text });
+      var itemFonts = visibleItems.map( (i) => { return i.font.css });
+      var itemTexts = visibleItems.map( (i) => { return i.text });
       var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemTexts);
       for (var i = 0, len = itemWidths.length; i < len; i++) {
-        var item = this._items[i];
+        var item = visibleItems[i];
         // This should only be used for legends
         if (item.drawSwatch) {
           itemWidths[i] += item.height + (this.padding / 2);
@@ -218,9 +240,7 @@
       this.width = d3.max(itemWidths) + (this.padding * 2);
 
       this._updateOrigin();
-      if (this.visible) {
-        this.draw();
-      }
+      this.draw();
     }
 
     _updateOrigin() {
@@ -261,6 +281,11 @@
       }
     }
 
+    moveItem(oldIndex, newIndex) {
+      this._items.move(oldIndex, newIndex);
+      this.refresh();
+    }
+
     clear() {
       this.ctx.clearRect(this.originX, this.originY, this.width, this.height);
     }
@@ -272,15 +297,19 @@
 
     highlight(color = '#FFB') {
       if (!this.visible) { return }
-      var ctx = this.canvas.context('background');
-      ctx.fillStyle = color;
-      ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      // var ctx = this.canvas.context('background');
+      // ctx.fillStyle = color;
+      // ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      var ctx = this.canvas.context('ui');
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(this.originX, this.originY, this.width, this.height);
     }
 
     draw() {
+      if (!this.visible) { return }
       var ctx = this.ctx;
       this.fillBackground();
-      var y = this.originY + this.padding;
       ctx.textBaseline = 'top';
       for (var i = 0, len = this._items.length; i < len; i++) {
         var captionItem = this._items[i];
@@ -290,9 +319,15 @@
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
         ctx.fillStyle = captionItem.fontColor.rgbaString;
-        ctx.fillText(captionItem.text, captionItem.textX(), y);
-        y += (captionItemHeight * 1.5);
+        ctx.fillText(captionItem.text, captionItem.textX(), captionItem.textY());
       }
+    }
+
+    remove() {
+      var viewer = this.viewer;
+      viewer._captions = viewer._captions.remove(this);
+      viewer.clear('captions');
+      viewer.refreshCaptions();
     }
 
   }

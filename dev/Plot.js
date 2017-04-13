@@ -77,6 +77,13 @@
     }
 
     /**
+     * @member {Number} - Get the number of points in the plot
+     */
+    get length() {
+      return this.positions.length
+    }
+
+    /**
      * @member {Array|Color} - Return an array of the positive and negativ colors [PositiveColor, NegativeColor].
      */
     get color() {

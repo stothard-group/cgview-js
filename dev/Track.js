@@ -137,6 +137,13 @@
     }
 
     /**
+     * @member {Plot} - Get the plot associated with this track
+     */
+    get plot() {
+      return this._plot
+    }
+
+    /**
      * @member {Number} - Get or set the load progress position (integer between 0 and 100)
      */
     get loadProgress() {
@@ -147,12 +154,36 @@
       this._loadProgress = value;
     }
 
+    /**
+     * @member {Number} - Return the number of features or plot points contained in this track.
+     */
+    get count() {
+      if (this.type == 'plot') {
+        return (this.plot) ? this.plot.length : 0
+      } else if (this.type == 'feature') {
+        return this.features().length
+      }
+    }
+
     features(term) {
       return this._features.get(term)
     }
 
     slots(term) {
       return this._slots.get(term)
+    }
+
+    /**
+     * Remove a feature from the track and slots.
+     *
+     * @param {Feature} feature - The Feature to remove.
+     */
+    removeFeature(feature) {
+      this._features = this._features.remove(feature);
+      this.slots().each( (i, slot) => {
+        slot.removeFeature(feature);
+      });
+      this.viewer.trigger('track-update', this);
     }
 
     refresh() {
@@ -214,6 +245,7 @@
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();
+      this.viewer.trigger('track-update', this);
     }
 
     updateFeatureSlots() {
@@ -274,6 +306,10 @@
           slot.highlight(color);
         });
       }
+    }
+
+    remove() {
+      this.layout.removeTrack(this);
     }
 
   }

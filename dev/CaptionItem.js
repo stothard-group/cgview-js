@@ -126,15 +126,16 @@
      * @member {String} - Get or set the text alignment. Defaults to the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
-      return this._textAlignment
+      return this._textAlignment || this.parent.textAlignment
     }
 
     set textAlignment(value) {
-      if (value == undefined) {
-        this._textAlignment = this.parent.textAlignment;
-      } else {
-        this._textAlignment = value;
-      }
+      // if (value == undefined) {
+      //   this._textAlignment = this.parent.textAlignment;
+      // } else {
+      //   this._textAlignment = value;
+      // }
+		 	this._textAlignment = value;
       this.refresh();
     }
 
@@ -231,10 +232,23 @@
 
     highlight(color = '#FFB') {
       if (!this.visible || !this.parent.visible) { return }
-      var ctx = this.canvas.context('background');
-      ctx.fillStyle = color;
-      ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
+      // var ctx = this.canvas.context('background');
+      // ctx.fillStyle = color;
+      // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
+      var ctx = this.canvas.context('ui');
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(this.textX(), this.textY(), this.width, this.height);
     }
+
+    remove() {
+      var parent = this.parent;
+      parent._items = parent._items.remove(this);
+      this.viewer.clear('captions');
+      this.viewer.refreshCaptions();
+      this.viewer.trigger( parent.toString().toLowerCase() + '-update');
+    }
+
 
   }
 

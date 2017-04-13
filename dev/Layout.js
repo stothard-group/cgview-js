@@ -359,6 +359,11 @@
       this._adjustProportions();
     }
 
+    removeTrack(track) {
+      this._tracks = this._tracks.remove(track);
+      this._adjustProportions();
+    }
+
 
 
   }

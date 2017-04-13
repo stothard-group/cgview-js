@@ -35,6 +35,7 @@
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
       this.refresh();
+      this.viewer.trigger('legend-update');
     }
 
     /**
@@ -162,8 +163,9 @@
     _swatchContainsPoint(pt) {
       var x = this.parent.originX + this.parent.padding;
       var y = this.parent.originY + this.parent.padding;
-      for (var i = 0, len = this.parent._items.length; i < len; i++) {
-        var item = this.parent._items[i];
+      var visibleItems = this.parent.visibleItems();
+      for (var i = 0, len = visibleItems.length; i < len; i++) {
+        var item = visibleItems[i];
         if (item == this) { break }
         y += (item.height * 1.5);
       }

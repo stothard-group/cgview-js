@@ -12,12 +12,13 @@
       this._viewer = viewer;
 
       // Setup Events on the viewer
-      var events = new CGV.Events();
-      this.events = events;
+      // var events = new CGV.Events();
+      this.events = viewer.events;
       // viewer._events = events;
       // viewer.on = events.on;
       // viewer.off = events.off;
       // viewer.trigger = events.trigger;
+      // viewer.events = events;
 
       this._initializeMousemove();
       this._initializeClick();
@@ -101,7 +102,7 @@
       var viewer = this.viewer;
       this.events.on('click.swatch', (e) => {
         var legend = viewer.legend;
-        var swatchedLegendItems = legend.items();
+        var swatchedLegendItems = legend.visibleItems();
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
             var legendItem = swatchedLegendItems[i];
@@ -131,7 +132,7 @@
       var viewer = this.viewer;
       this.events.on('mousemove.swatch', (e) => {
         var legend = viewer.legend;
-        var swatchedLegendItems = legend.items();
+        var swatchedLegendItems = legend.visibleItems();
         var oldHighlightedItem = legend.highlightedSwatchedItem;
         legend.highlightedSwatchedItem = undefined;
         for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
@@ -154,12 +155,9 @@
     _highlighterMouseOver() {
       var viewer = this.viewer;
       var highlighter = viewer.highlighter;
-      var colorAdjustment = 0.25;
       this.events.on('mousemove.highlighter', (e) => {
         if (e.feature) {
-          var color = e.feature.color.copy();
-          color.highlight();
-          e.feature.draw('ui', e.slot.radius, e.slot.thickness, e.slot.visibleRange, {color: color});
+          e.feature.highlight(e.slot);
         } else if (e.plot) {
           var score = e.plot.scoreForPosition(e.bp);
           if (score) {

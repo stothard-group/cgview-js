@@ -65,12 +65,17 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.io = new CGV.IO(this);
       // Initialize Sequence
       this._sequence = new CGV.Sequence(this, options.sequence);
+      // Initialize Backbone
+      this.backbone = new CGV.Backbone(this, options.backbone);
+      // Initialize Events
+      this.initializeDragging();
+      this.initializeZooming();
+      this.events = new CGV.Events();
+      this.eventMonitor = new CGV.EventMonitor(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
-      // Initialize Backbone
-      this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Slot Divider
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       // Initialize Layout
@@ -85,10 +90,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Highlighter
       this.highlighter = new CGV.Highlighter(this, options.highlighter);
-      // Initialize Events
-      this.initializeDragging();
-      this.initializeZooming();
-      this.eventMonitor = new CGV.EventMonitor(this);
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
 
@@ -237,7 +238,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.resize(this.width, this.height)
 
       this.refreshCaptions();
-      this.legend.refresh();
+      // this.legend.refresh();
 
       this.layout._adjustProportions();
 
@@ -364,6 +365,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = this._captions.length; i < len; i++) {
         this._captions[i].refresh();
       }
+      this.legend.refresh();
     }
 
     /**
@@ -377,6 +379,24 @@ if (window.CGV === undefined) window.CGV = CGView;
     moveTo(start, stop) {
 
     }
+
+    moveCaption(oldIndex, newIndex) {
+      this._captions.move(oldIndex, newIndex);
+      this.refreshCaptions();
+    }
+
+    on(event, callback) {
+      this.events.on(event, callback);
+    }
+
+    off(event, callback) {
+      this.events.off(event, callback);
+    }
+
+    trigger(event, object) {
+      this.events.trigger(event, object);
+    }
+
 
   }
 

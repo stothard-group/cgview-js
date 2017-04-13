@@ -86,6 +86,7 @@
      */
     removeLabel(label) {
       this._labels = this._labels.remove(label);
+      this.refresh();
     }
 
     refresh() {
