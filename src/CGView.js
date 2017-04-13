@@ -4870,13 +4870,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} scale - Scale factor.
      * @return {String} - Return the font as CSS usable string.
      */
-    cssScaled(scale) {
-      if (scale && scale != 1) {
-        return this._styleAsCss() + ' ' + (this.size * scale) + 'px ' + this.family;
-      } else {
-        return this.css
-      }
-    }
+    // cssScaled(scale) {
+    //   if (scale && scale != 1) {
+    //     return this._styleAsCss() + ' ' + (this.size * scale) + 'px ' + this.family;
+    //   } else {
+    //     return this.css
+    //   }
+    // }
 
 
     /**
@@ -4897,11 +4897,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      * ratio of the screen. Defaults to *12*.
      */
     get size() {
-      return this._size || CGV.pixel(12)
+      // return this._size || CGV.pixel(12)
+      return this._size || 12
     }
 
     set size(value) {
-      this._size = CGV.pixel(Number(value));
+      // this._size = CGV.pixel(Number(value));
+      this._size = Number(value);
       this._generateFont();
     }
 
@@ -4968,7 +4970,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
      */
     get height() {
-      return this.size
+      return CGV.pixel(this.size)
     }
 
 
@@ -4982,6 +4984,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     width(ctx, text) {
       ctx.font = this.css;
       return ctx.measureText(text).width
+    }
+
+    copy() {
+      return new CGV.Font(this.string)
     }
 
     _styleAsCss() {
@@ -4999,7 +5005,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     _generateFont() {
-      this._font = this._styleAsCss() + ' ' + this.size + 'px ' + this.family;
+      this._font = this._styleAsCss() + ' ' + CGV.pixel(this.size) + 'px ' + this.family;
     }
 
   }
