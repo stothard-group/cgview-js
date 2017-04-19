@@ -63,7 +63,7 @@
      * @member {Number} - Get the label height which is based on the font size.
      */
     get height() {
-      return this.font.size
+      return this.font.height
     }
 
     /**

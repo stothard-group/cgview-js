@@ -180,6 +180,14 @@
       var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem == this } ));
       return _features.get(term);
     }
+
+    plots(term) {
+      var viewer = this.viewer;
+      var _plots = new CGV.CGArray( viewer._plots.filter( (f) => {
+        return (f.legendItem == this || f.legendItemPositive == this || f.legendNegative == this)
+      }));
+      return _plots.get(term);
+    }
   }
 
   CGV.LegendItem = LegendItem;

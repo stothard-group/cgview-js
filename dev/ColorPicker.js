@@ -75,7 +75,8 @@
     setColor(value) {
       this._color.setColor(value);
       this.hsv = this._color.hsv;
-      this.opacity = this._color.opacity;
+      // this.opacity = this._color.opacity;
+      this.opacity = Number(this._color.opacity.toFixed(2));
       this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
       this.updateColor();
     }
@@ -298,7 +299,8 @@
       var alphaElement = cp.alphaElement;
       return function() {
         var mouse = mousePosition(alphaElement);
-        cp.opacity = mouse.x / alphaElement.offsetWidth;
+        var opacity =  mouse.x / alphaElement.offsetWidth;
+        cp.opacity = Number(opacity.toFixed(2));
         cp.updateColor();
       }
     };

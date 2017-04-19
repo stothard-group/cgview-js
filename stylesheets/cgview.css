@@ -19,8 +19,11 @@
 /*******************************************/
 /* NOTE: dimensions have to be changed in ColorPicker.js as well. */
 .cp-color-picker-dialog {
-  box-sizing: content-box;
   z-index: 1000;
+}
+
+.cp-color-picker-dialog * {
+  box-sizing: content-box;
 }
 
 .cp-done-button {

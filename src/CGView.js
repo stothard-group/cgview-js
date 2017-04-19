@@ -3315,7 +3315,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     setColor(value) {
       this._color.setColor(value);
       this.hsv = this._color.hsv;
-      this.opacity = this._color.opacity;
+      // this.opacity = this._color.opacity;
+      this.opacity = Number(this._color.opacity.toFixed(2));
       this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
       this.updateColor();
     }
@@ -3538,7 +3539,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       var alphaElement = cp.alphaElement;
       return function() {
         var mouse = mousePosition(alphaElement);
-        cp.opacity = mouse.x / alphaElement.offsetWidth;
+        var opacity =  mouse.x / alphaElement.offsetWidth;
+        cp.opacity = Number(opacity.toFixed(2));
         cp.updateColor();
       }
     };
@@ -5564,7 +5566,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {Number} - Get the label height which is based on the font size.
      */
     get height() {
-      return this.font.size
+      return this.font.height
     }
 
     /**
@@ -6358,6 +6360,14 @@ if (window.CGV === undefined) window.CGV = CGView;
       var viewer = this.viewer;
       var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem == this } ));
       return _features.get(term);
+    }
+
+    plots(term) {
+      var viewer = this.viewer;
+      var _plots = new CGV.CGArray( viewer._plots.filter( (f) => {
+        return (f.legendItem == this || f.legendItemPositive == this || f.legendNegative == this)
+      }));
+      return _plots.get(term);
     }
   }
 
