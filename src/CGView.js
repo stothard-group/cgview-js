@@ -7932,40 +7932,21 @@ if (window.CGV === undefined) window.CGV = CGView;
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
-  class Ruler {
+  class Ruler extends CGV.CGObject {
 
     /**
      * The *Ruler* controls and draws the sequence ruler in bp.
      */
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 5);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
+      this.color = new CGV.Color( CGV.defaultFor(options.color, 'black') );
     }
 
-    /**
-     * @member {Viewer} - Get the viewer.
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
-
-    /**
-     * @member {Sequence} - Get the sequence.
-     */
-    get sequence() {
-      return this.viewer.sequence
-    }
     get font() {
       return this._font
     }
@@ -7975,6 +7956,21 @@ if (window.CGV === undefined) window.CGV = CGView;
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
+      }
+    }
+
+    /**
+     * @member {Color} - Get or set the Color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get color() {
+      return this._color
+    }
+
+    set color(color) {
+      if (color.toString() == 'Color') {
+        this._color = color;
+      } else {
+        this._color.setColor(color);
       }
     }
 
@@ -8166,9 +8162,11 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     draw(innerRadius, outerRadius) {
-      this._updateTicks(innerRadius, outerRadius);
-      this.drawForRadius(innerRadius, 'inner');
-      this.drawForRadius(outerRadius, 'outer', false);
+      if (this.visible) {
+        this._updateTicks(innerRadius, outerRadius);
+        this.drawForRadius(innerRadius, 'inner');
+        this.drawForRadius(outerRadius, 'outer', false);
+      }
     }
 
 
@@ -8176,7 +8174,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       var ctx = this.canvas.context('map');
       var scale = this.canvas.scale;
       var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
-      ctx.fillStyle = 'black'; // Label Color
+      // ctx.fillStyle = 'black'; // Label Color
+      ctx.fillStyle = this.color.rgbaString; // Label Color
       ctx.font = this.font.css;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
