@@ -109,6 +109,7 @@
     set thickness(value) {
       if (value) {
         this._thickness = value;
+        this.viewer.layout && this.viewer.layout._adjustProportions();
       }
     }
 

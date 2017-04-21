@@ -325,9 +325,9 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     fillBackground() {
       this.clear('background');
-      var ctx = this.canvas.context('background');
-      ctx.fillStyle = this.backgroundColor.rgbaString;
-      ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+      // var ctx = this.canvas.context('background');
+      // ctx.fillStyle = this.backgroundColor.rgbaString;
+      // ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
     }
 
     drawFull() {
@@ -374,10 +374,41 @@ if (window.CGV === undefined) window.CGV = CGView;
      * the viewer will center the image on that bp with the current zoom level.
      *
      * @param {Number} start - The start position in bp
-     * @param {Number} stop - The stop position in bp
+     * @param {Number} stop - The stop position in bp (NOT IMPLEMENTED YET)
      */
-    moveTo(start, stop) {
+    moveTo(start, duration = 1000) {
+      var self = this;
+      var domainX = this.scale.x.domain();
+      var domainY = this.scale.y.domain();
+      var halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
+      var halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
 
+      var radius = CGV.pixel(this.backbone.zoomedRadius);
+      var radians = this.scale.bp(start);
+      var x = radius * Math.cos(radians);
+      var y = -radius * Math.sin(radians);
+
+      var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+      var endDomains = [ x - halfWidth, x + halfWidth, y + halfHeight, y - halfHeight];
+
+      d3.select(this.canvas.node).transition()
+        .duration(duration)
+        .tween('move', function() {
+          var intermDomains = d3.interpolateArray(startDomains, endDomains)
+          return function(t) {
+            self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
+            self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+            self.drawFast();
+          }
+        }).on('end', function() { self.drawFull(); });
+    }
+
+    getCurrentBp() {
+      var domainX = this.scale.x.domain();
+      var domainY = this.scale.y.domain();
+      var centerX = (domainX[1] - domainX[0]) / 2 + domainX[0];
+      var centerY = (domainY[1] - domainY[0]) / 2 + domainY[0];
+      return this.canvas.bpForPoint( {x: centerX, y: centerY} );
     }
 
     moveCaption(oldIndex, newIndex) {

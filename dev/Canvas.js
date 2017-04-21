@@ -206,6 +206,11 @@
         for (var i = 0, len = this.layerNames.length; i < len; i++) {
           this.clear(this.layerNames[i]);
         }
+      } else if (layerName == 'background') {
+        var ctx = this.context('background');
+        ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        ctx.fillStyle = this.viewer.backgroundColor.rgbaString;
+        ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       } else {
         this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       }

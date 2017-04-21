@@ -6,7 +6,7 @@
   /**
    * The CGView Divider is a line that separates tracks or slots.
    */
-  class Divider {
+  class Divider extends CGV.CGObject {
 
     /**
      * Create a divider
@@ -14,27 +14,12 @@
      * @param {Viewer} viewer - The viewer that contains the divider
      * @param {Object} options - Options and stuff
      */
-    constructor(viewer, options = {}) {
-      this._viewer = viewer;
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       this.color = CGV.defaultFor(options.color, 'grey');
-      this.thickness = CGV.defaultFor(options.thickness, 1);
-      this.visible = CGV.defaultFor(options.visible, true);
-      this.spacing = CGV.defaultFor(options.spacing, 1);
+      this._thickness = CGV.defaultFor(options.thickness, 1);
+      this._spacing = CGV.defaultFor(options.spacing, 1);
       this.radii = new CGV.CGArray();
-    }
-
-    /**
-     * @member {Viewer} - Get the viewer.
-     */
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
     }
 
     /**
@@ -57,7 +42,8 @@
      */
     set thickness(value) {
       if (value) {
-        this._thickness = value;
+        this._thickness = Math.round(value);
+        this.viewer.layout._adjustProportions();
       }
     }
 
@@ -70,7 +56,8 @@
      */
     set spacing(value) {
       if (value) {
-        this._spacing = value;
+        this._spacing = Math.round(value);
+        this.viewer.layout._adjustProportions();
       }
     }
 
@@ -108,6 +95,7 @@
     }
 
     draw() {
+      if (!this.visible) { return }
       for (var i = 0, len = this._radii.length; i < len; i++) {
         var radius = this._radii[i]
         this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);
