@@ -1408,7 +1408,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="CaptionItem.html">Class: CaptionItem</h1>
+        <h1 class="page-title" data-filename="Annotation.html">Class: Annotation</h1>
         
 
 
@@ -1417,13 +1417,10 @@
     
 <header>
     <h2>
-    CaptionItem
+    Annotation
     </h2>
     
-        <div class="class-description"><p><br />
-A <em>captionItem</em> is used to add text to a map <em>legend</em>. Individual
-<em>Features</em> and <em>Plots</em> can be linked to a <em>captionItem</em>, so that the feature
-or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
+        <div class="class-description"><p>Annotation controls the drawing and layout of features labels</p></div>
     
 </header>  
 
@@ -1435,14 +1432,14 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="CaptionItem">
+        <h4 class="name" id="Annotation">
             
-            new CaptionItem<span class="signature">(caption, data, <span class="optional">meta</span>)</span>
+            new Annotation<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            CaptionItem.js, line 12
+            Annotation.js, line 9
         </div>
         
     </div>
@@ -1452,169 +1449,11 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
 <dd>
     
     
-    <div class="description">
-        <p>Create a new CaptionItem. By default a captionItem will use its parent legend font, fontColor and textAlignment.</p>
-    </div>
-    
 
     
     
     
     
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>caption</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Caption.html">Caption</a></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                <p>The parent <em>Caption</em> for the <em>CaptionItem</em>.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                <p>Data used to create the captionItem:</p>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> text</td>
-<td>&quot;&quot;</td>
-<td>Text to display</td>
-</tr>
-<tr>
-<td> drawSwatch</td>
-<td>false</td>
-<td>Should a swatch be drawn beside the text</td>
-</tr>
-<tr>
-<td> font</td>
-<td>Caption font</td>
-<td>A string describing the font. See <a href="Font.html"><code>Font</code></a> for details.</td>
-</tr>
-<tr>
-<td> fontColor</td>
-<td>Caption fontColor</td>
-<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
-</tr>
-<tr>
-<td> textAlignment</td>
-<td>Caption textAlignment</td>
-<td><em>left</em>, <em>center</em>, or <em>right</em></td>
-</tr>
-<tr>
-<td> swatchColor</td>
-<td>'black'</td>
-<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
-</tr>
-<tr>
-<td> swatchOpacity</td>
-<td>1</td>
-<td>A value between 0 and 1.</td>
-</tr>
-</tbody>
-</table></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>meta</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>User-defined key:value pairs to add to the captionItem.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -1676,7 +1515,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="caption">caption<span class="type-signature type caption"><a href="Caption.html">Caption</a></span> </h4>
+        <h4 class="name" id="color">color<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
     </div>
     
     
@@ -1684,7 +1523,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
 <dd>
     
     <div class="description">
-        <p>Get the <em>Caption</em></p>
+        <p>Get or set the divider color. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
     </div>
     
     
@@ -1766,7 +1605,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="fontColor">fontColor<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
+        <h4 class="name" id="labelLineLength">labelLineLength<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -1774,7 +1613,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
 <dd>
     
     <div class="description">
-        <p>Get or set the fontColor. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
+        <p>Get or set the label line length.</p>
     </div>
     
     
@@ -1811,7 +1650,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="height">height<span class="type-signature type number">Number</span> </h4>
+        <h4 class="name" id="length">length<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -1819,322 +1658,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
 <dd>
     
     <div class="description">
-        <p>Get the height in pixels. This will be the same as the font size.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="id">id<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Alias for getting the text. Useful for querying CGArrays.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="name">name<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Alias for text</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="parent">parent<span class="type-signature type caption"><a href="Caption.html">Caption</a></span> <span class="type-signature type legend"><a href="Legend.html">Legend</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>Parent</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="parent">parent<span class="type-signature type caption"><a href="Caption.html">Caption</a></span> <span class="type-signature type legend"><a href="Legend.html">Legend</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the <em>Parent</em></p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="text">text<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the text</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="textAlignment">textAlignment<span class="type-signature type string">String</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the text alignment. Defaults to the parent <em>Caption</em> text alignment. Possible values are <em>left</em>, <em>center</em>, or <em>right</em>.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="width">width<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get the width in pixels.</p>
+        <p>The number of labels in the set.</p>
     </div>
     
     
@@ -2177,6 +1701,389 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="addLabel">
+            
+            addLabel<span class="signature">(label)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            Annotation.js, line 94
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Add a new label to the set.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Label.html">Label</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The Label to add to the set.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="labels">
+            
+            labels<span class="signature">(term)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{CGArray}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            Annotation.js, line 85
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns an <a href="CGArray.js.html">CGArray</a> of Labels or a single Label.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>See <a href="CGArray.js.html#get">CGArray.get</a> for details.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        CGArray
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="removeLabel">
+            
+            removeLabel<span class="signature">(label)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            Annotation.js, line 103
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Remove a label from the set.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Label.html">Label</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The Label to remove from the set.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="toString">
             
             toString<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
@@ -2184,7 +2091,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
     
         
         <div class="tag-source">
-            CaptionItem.js, line 48
+            Annotation.js, line 27
         </div>
         
     </div>
@@ -2263,7 +2170,7 @@ or plot color will use the swatchColor of <em>captionItem</em>.</p></div>
                     
             </td>
             <td class="description last"><ul>
-<li>'CaptionItem'</li>
+<li>'Annotation'</li>
 </ul></td>
         </tr>
     

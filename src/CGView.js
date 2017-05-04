@@ -544,6 +544,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._labelLineWidth = CGV.pixel(1);
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
+      this.color = options.color;
     }
 
     /**
@@ -552,6 +553,21 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     toString() {
       return 'Annotation';
+    }
+
+    /**
+     * @member {Color} - Get or set the divider color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get color() {
+      return this._color
+    }
+
+    set color(value) {
+      if (value === undefined || value.toString() == 'Color') {
+        this._color = value;
+      } else {
+        this._color = new CGV.Color(value);
+      }
     }
 
     /**
@@ -733,8 +749,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
         feature = label.feature;
-        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, feature.color.rgbaString);
-        ctx.fillStyle = feature.color.rgbaString;
+        var color = this.color || feature.color;
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString);
+        ctx.fillStyle = color.rgbaString;
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
 
