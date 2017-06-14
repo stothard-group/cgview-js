@@ -36,14 +36,16 @@
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       if (this.layout) {
         this.layout._adjustProportions();
       }
     }
 
     get visible() {
-      return super.visible
+      // return super.visible
+      return this._visible
     }
 
     /**

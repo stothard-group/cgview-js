@@ -27,6 +27,8 @@
       // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
       // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
+      // General Settings
+      viewer.settings = new CGV.Settings(viewer, settings.general);
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
       // Backbone

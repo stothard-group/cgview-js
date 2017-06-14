@@ -74,7 +74,8 @@
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       this.refresh();
     }
 
@@ -126,7 +127,7 @@
     set backgroundColor(color) {
       // this._backgroundColor.color = color;
       if (color == undefined) {
-        this._backgroundColor = this.viewer.backgroundColor;
+        this._backgroundColor = this.viewer.settings.backgroundColor;
       } else if (color.toString() == 'Color') {
         this._backgroundColor = color;
       } else {

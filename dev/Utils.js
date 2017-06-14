@@ -415,6 +415,17 @@
   }
 
   /**
+   * Contain the value between the min and max values
+   * @param {Number} value - Number to contrain
+   * @param {Number} min - If the value is less than min, min will be returned
+   * @param {Number} max - If the value is greater than max, max will be returned
+   * @return {Number}
+   */
+  CGV.constrain = function(value, min, max) {
+    return Math.max( Math.min(max, value), min)
+  }
+
+  /**
    * Merges top level properties of each supplied object.
    * ```javascript
    * CGV.merge({a:1, b:1}, {b:2, c:2}, {c:3, d:3});

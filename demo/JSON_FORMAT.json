@@ -27,6 +27,9 @@
           "thickness": 1,
           "color": "black"
         }
+      },
+      "general": {
+        "arrowHeadLength": 0.3
       }
     },
     "sequence": {

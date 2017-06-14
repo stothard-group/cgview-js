@@ -1431,446 +1431,83 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Dialog.html">Class: Dialog</h1>
+        <h1 class="page-title" data-filename="Settings.js.html">Source: Settings.js</h1>
         
 
 
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Settings
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
 
-<section>
-    
-<header>
-    <h2>
-    Dialog
-    </h2>
-    
-        <div class="class-description"><p>This class is for creating dialog boxes with custom content.</p></div>
-    
-</header>  
+  /**
+   * The CGView Settings contain general settings for the viewer.
+   */
+  class Settings {
 
-<article>
-    <div class="container-overview">
-    
-    
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="Dialog">
-            
-            new Dialog<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line9">line 9</a>
-        </div>
-        
-    </div>
+    /**
+     * Create a the Settings
+     *
+     * @param {Viewer} viewer - The viewer
+     * @param {Object} options - Settings values to override the defaults
+     * &lt;br />
+     *
+     * Name         | Type   | Description
+     * -------------|--------|------------
+     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
+     * arrowHeadLength | Number | Arrow head length as a fraction (0-1) of the slot width (Default: 0.3)
+     */
+    constructor(viewer, options = {}, meta = {}) {
+      this.viewer = viewer;
+      this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
+      this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
+    }
 
-    
-</dt>
-<dd>
-    
-    
+    /**
+     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get backgroundColor() {
+      return this._backgroundColor
+    }
 
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+    set backgroundColor(color) {
+      if (color == undefined) {
+        this._backgroundColor = new CGV.Color('white');
+      } else if (color.toString() == 'Color') {
+        this._backgroundColor = color;
+      } else {
+        this._backgroundColor = new CGV.Color(color);
+      }
+      this.viewer.fillBackground();
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
+    /**
+     * @member {Number} - Set or get the arrow head length as a fraction of the slot width. The value must be between 0 and 1 [Default: 0.3].
+     */
+    set arrowHeadLength(value) {
+      if (value) {
+        this._arrowHeadLength = CGV.constrain(value, 0, 1);
+      }
+    }
 
-    
-    
+    get arrowHeadLength() {
+      return this._arrowHeadLength
+    }
 
-    
+  }
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+  CGV.Settings = Settings;
 
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Members</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="fadeTime">fadeTime<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the time it take for the dialog to appear and disappear in milliseconds [Default: 500].</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="visible">visible<span class="type-signature type boolean">Boolean</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Returns true if the dialog is visible.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
-        
-        <dl>
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="close">
-            
-            close<span class="signature">(duration)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line94">line 94</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Closes the dialog</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>duration</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
+})(CGView);
 
 
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>The duration of the close animation in milliseconds. Defaults to fadeTime <a href="Dialog.html#fadeTime">Dialog.fadeTime</a>.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
+</code></pre>
+        </article>
+    </section>
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="open">
-            
-            open<span class="signature">(duration)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Dialog.js.html">Dialog.js</a>, <a href="Dialog.js.html#line81">line 81</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Opens the dialog</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>duration</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>The duration of the open animation in milliseconds. Defaults to fadeTime <a href="Dialog.html#fadeTime">Dialog.fadeTime</a>.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        </dl>
-    
-    
-    
-    
-    
-</article>
-
-</section>  
 
 
 
@@ -1879,7 +1516,7 @@
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 14 2017 10:39:57 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 14 2017 10:39:56 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

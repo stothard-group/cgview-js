@@ -209,7 +209,7 @@
       } else if (layerName == 'background') {
         var ctx = this.context('background');
         ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-        ctx.fillStyle = this.viewer.backgroundColor.rgbaString;
+        ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
         ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       } else {
         this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
@@ -279,7 +279,8 @@
       if (decoration != 'arc') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
-        var arrowHeadLengthPixels = width / 2;
+        // var arrowHeadLengthPixels = width / 3;
+        var arrowHeadLengthPixels = width * this.viewer.settings.arrowHeadLength;
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop

@@ -9,7 +9,7 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * The *Viewer* is the main container class for CGView. It controls the
-   * overal appearance of the map (e.g. width, height, backgroundColor, etc).
+   * overal appearance of the map (e.g. width, height, etc).
    * It also contains all the major components of the map (e.g. [Layout](Layout.html),
    * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
    * of component options can be set during construction of the Viewer.
@@ -28,7 +28,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      * -------------|--------|------------
      * width           | Number | Width of viewer in pixels (Default: 600)
      * height          | Number | Height of viewer in pixels (Default: 600)
-     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
      * sequence        | Object | [Sequence](Sequence.html) options
      * legend          | Object | [Legend](Legend.html) options
      * backbone        | Object | [Backbone](Backbone.html) options
@@ -53,7 +52,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      this.backgroundColor = options.backgroundColor;
+      // this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
 
       this._features = new CGV.CGArray();
@@ -74,6 +73,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.eventMonitor = new CGV.EventMonitor(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
+      // Initialize General Setttings
+      this.settings = new CGV.Settings(this, options.settings);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Slot Divider
@@ -136,24 +137,24 @@ if (window.CGV === undefined) window.CGV = CGView;
       return Math.min(this.height, this.width);
     }
 
-    /**
-     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get backgroundColor() {
-      return this._backgroundColor
-    }
-
-    set backgroundColor(color) {
-      if (color == undefined) {
-        this._backgroundColor = new CGV.Color('white');
-      } else if (color.toString() == 'Color') {
-        this._backgroundColor = color;
-      } else {
-        this._backgroundColor = new CGV.Color(color);
-      }
-      this.fillBackground();
-    }
-
+    // /**
+    //  * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+    //  */
+    // get backgroundColor() {
+    //   return this._backgroundColor
+    // }
+    //
+    // set backgroundColor(color) {
+    //   if (color == undefined) {
+    //     this._backgroundColor = new CGV.Color('white');
+    //   } else if (color.toString() == 'Color') {
+    //     this._backgroundColor = color;
+    //   } else {
+    //     this._backgroundColor = new CGV.Color(color);
+    //   }
+    //   this.fillBackground();
+    // }
+    //
     /**
      * @member {Number} - Get or set the zoom level of the image
      */
@@ -245,6 +246,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.draw(fast);
     }
 
+    // mergeGeneralSettings(settings = {}) {
+    //   var defaults = {
+    //     arrowHeadLength: 0.3,
+    //     linear: false
+    //     // maxSlotThickness
+    //   }
+    //   var keys = Object.keys(defaults);
+    //   var mergedSettings = {};
+    //   keys.forEach( (key) => {
+    //     mergedSettings[key] = CGV.defaultFor(settings[key], defaults[key]);
+    //   });
+    //   return mergedSettings
+    // }
 
     /**
      * Returns an [CGArray](CGArray.js.html) of Slots or a single Slot from all the Slots in the Layout.
@@ -556,7 +570,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Color} - Get or set the divider color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     * @member {Color} - Get or set the label color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
       return this._color
@@ -1238,7 +1252,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else if (layerName == 'background') {
         var ctx = this.context('background');
         ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-        ctx.fillStyle = this.viewer.backgroundColor.rgbaString;
+        ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
         ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       } else {
         this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
@@ -1308,7 +1322,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (decoration != 'arc') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
-        var arrowHeadLengthPixels = width / 2;
+        // var arrowHeadLengthPixels = width / 3;
+        var arrowHeadLengthPixels = width * this.viewer.settings.arrowHeadLength;
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
@@ -1627,7 +1642,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       this.refresh();
     }
 
@@ -1679,7 +1695,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     set backgroundColor(color) {
       // this._backgroundColor.color = color;
       if (color == undefined) {
-        this._backgroundColor = this.viewer.backgroundColor;
+        this._backgroundColor = this.viewer.settings.backgroundColor;
       } else if (color.toString() == 'Color') {
         this._backgroundColor = color;
       } else {
@@ -1984,7 +2000,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       this.refresh();
     }
 
@@ -5334,6 +5351,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
       // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
+      // General Settings
+      viewer.settings = new CGV.Settings(viewer, settings.general);
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
       // Backbone
@@ -5953,10 +5972,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       layout._slotIndex++;
       if (layout._slotIndex < slots.length) {
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
-      } else if (layout.viewer.debug) {
-        layout.viewer.clear('ui');
-        layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
-        layout.viewer.debug.draw(layout.canvas.context('ui'));
+      } else {
+        if (layout.viewer.debug) {
+          layout.viewer.clear('ui');
+          layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
+          layout.viewer.debug.draw(layout.canvas.context('ui'));
+        }
+        // if (typeof complete === 'function') { complete.call() }
       }
     }
 
@@ -9233,6 +9255,72 @@ if (window.CGV === undefined) window.CGV = CGView;
     // }
 
 //////////////////////////////////////////////////////////////////////////////
+// Settings
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+
+  /**
+   * The CGView Settings contain general settings for the viewer.
+   */
+  class Settings {
+
+    /**
+     * Create a the Settings
+     *
+     * @param {Viewer} viewer - The viewer
+     * @param {Object} options - Settings values to override the defaults
+     * <br />
+     *
+     * Name         | Type   | Description
+     * -------------|--------|------------
+     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
+     * arrowHeadLength | Number | Arrow head length as a fraction (0-1) of the slot width (Default: 0.3)
+     */
+    constructor(viewer, options = {}, meta = {}) {
+      this.viewer = viewer;
+      this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
+      this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
+    }
+
+    /**
+     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get backgroundColor() {
+      return this._backgroundColor
+    }
+
+    set backgroundColor(color) {
+      if (color == undefined) {
+        this._backgroundColor = new CGV.Color('white');
+      } else if (color.toString() == 'Color') {
+        this._backgroundColor = color;
+      } else {
+        this._backgroundColor = new CGV.Color(color);
+      }
+      this.viewer.fillBackground();
+    }
+
+    /**
+     * @member {Number} - Set or get the arrow head length as a fraction of the slot width. The value must be between 0 and 1 [Default: 0.3].
+     */
+    set arrowHeadLength(value) {
+      if (value) {
+        this._arrowHeadLength = CGV.constrain(value, 0, 1);
+      }
+    }
+
+    get arrowHeadLength() {
+      return this._arrowHeadLength
+    }
+
+  }
+
+  CGV.Settings = Settings;
+
+})(CGView);
+
+
+//////////////////////////////////////////////////////////////////////////////
 // Slot
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
@@ -9551,14 +9639,16 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       if (this.layout) {
         this.layout._adjustProportions();
       }
     }
 
     get visible() {
-      return super.visible
+      // return super.visible
+      return this._visible
     }
 
     /**
@@ -10246,6 +10336,17 @@ if (window.CGV === undefined) window.CGV = CGView;
    */
   CGV.base2 = function(value) {
     return Math.pow(2, Math.ceil(Math.log(value) / Math.log(2)));
+  }
+
+  /**
+   * Contain the value between the min and max values
+   * @param {Number} value - Number to contrain
+   * @param {Number} min - If the value is less than min, min will be returned
+   * @param {Number} max - If the value is greater than max, max will be returned
+   * @return {Number}
+   */
+  CGV.constrain = function(value, min, max) {
+    return Math.max( Math.min(max, value), min)
   }
 
   /**

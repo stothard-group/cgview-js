@@ -9,7 +9,7 @@ if (window.CGV === undefined) window.CGV = CGView;
   /**
    * <br />
    * The *Viewer* is the main container class for CGView. It controls the
-   * overal appearance of the map (e.g. width, height, backgroundColor, etc).
+   * overal appearance of the map (e.g. width, height, etc).
    * It also contains all the major components of the map (e.g. [Layout](Layout.html),
    * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
    * of component options can be set during construction of the Viewer.
@@ -28,7 +28,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      * -------------|--------|------------
      * width           | Number | Width of viewer in pixels (Default: 600)
      * height          | Number | Height of viewer in pixels (Default: 600)
-     * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
      * sequence        | Object | [Sequence](Sequence.html) options
      * legend          | Object | [Legend](Legend.html) options
      * backbone        | Object | [Backbone](Backbone.html) options
@@ -53,7 +52,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      this.backgroundColor = options.backgroundColor;
+      // this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
 
       this._features = new CGV.CGArray();
@@ -74,6 +73,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.eventMonitor = new CGV.EventMonitor(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
+      // Initialize General Setttings
+      this.settings = new CGV.Settings(this, options.settings);
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Slot Divider
@@ -136,24 +137,24 @@ if (window.CGV === undefined) window.CGV = CGView;
       return Math.min(this.height, this.width);
     }
 
-    /**
-     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get backgroundColor() {
-      return this._backgroundColor
-    }
-
-    set backgroundColor(color) {
-      if (color == undefined) {
-        this._backgroundColor = new CGV.Color('white');
-      } else if (color.toString() == 'Color') {
-        this._backgroundColor = color;
-      } else {
-        this._backgroundColor = new CGV.Color(color);
-      }
-      this.fillBackground();
-    }
-
+    // /**
+    //  * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+    //  */
+    // get backgroundColor() {
+    //   return this._backgroundColor
+    // }
+    //
+    // set backgroundColor(color) {
+    //   if (color == undefined) {
+    //     this._backgroundColor = new CGV.Color('white');
+    //   } else if (color.toString() == 'Color') {
+    //     this._backgroundColor = color;
+    //   } else {
+    //     this._backgroundColor = new CGV.Color(color);
+    //   }
+    //   this.fillBackground();
+    // }
+    //
     /**
      * @member {Number} - Get or set the zoom level of the image
      */
@@ -245,6 +246,19 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.draw(fast);
     }
 
+    // mergeGeneralSettings(settings = {}) {
+    //   var defaults = {
+    //     arrowHeadLength: 0.3,
+    //     linear: false
+    //     // maxSlotThickness
+    //   }
+    //   var keys = Object.keys(defaults);
+    //   var mergedSettings = {};
+    //   keys.forEach( (key) => {
+    //     mergedSettings[key] = CGV.defaultFor(settings[key], defaults[key]);
+    //   });
+    //   return mergedSettings
+    // }
 
     /**
      * Returns an [CGArray](CGArray.js.html) of Slots or a single Slot from all the Slots in the Layout.

@@ -94,7 +94,8 @@
     }
 
     set visible(value) {
-      super.visible = value;
+      // super.visible = value;
+      this._visible = value;
       this.refresh();
     }
 
