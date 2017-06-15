@@ -150,13 +150,68 @@
     }
 
 
+    // _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
+    //   var skip;
+    //   var len = list.length;
+    //   if (step > 0) {
+    //     var i = this._binarySearch(list, start, true, 'end')
+    //     while (i >= 0 && i < len && this.start(list[i]) <= stop) {
+    //       skip = false
+    //
+    //       if (list[i].crossesOrigin) {
+    //         if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+    //           skip = true;
+    //         } else {
+    //           this._runIntervalsCrossingOrigin.push(list[i].interval);
+    //         }
+    //       }
+    //
+    //       if (!skip && list[i].index % step == 0) {
+    //         callback.call(list[i].interval, list[i].interval);
+    //       }
+    //       if (list[i].sublist) {
+    //         this._run(start, stop, step, callback, list[i].sublist);
+    //       }
+    //       i++;
+    //     }
+    //   } else if (step < 0) {
+    //     var i = this._binarySearch(list, stop, false, 'start')
+    //     while (i >= 0 && i < len && this.end(list[i]) >= start) {
+    //       skip = false
+    //
+    //       if (list[i].crossesOrigin) {
+    //         if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+    //           skip = true;
+    //         } else {
+    //           this._runIntervalsCrossingOrigin.push(list[i].interval);
+    //         }
+    //       }
+    //
+    //       if (!skip && list[i].index % step == 0) {
+    //         callback.call(list[i].interval, list[i].interval);
+    //       }
+    //       if (list[i].sublist) {
+    //         this._run(start, stop, step, callback, list[i].sublist);
+    //       }
+    //       i--;
+    //     }
+    //   }
+    // }
+
     _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
       var skip;
       var len = list.length;
-      var i = this._binarySearch(list, start, true, 'stop')
-      while (i >= 0 && i < len && this.start(list[i]) <= stop) {
+      var i, direction;
+      if (step > 0) {
+        direction = 1;
+        i = this._binarySearch(list, start, true, 'end')
+      } else if (step < 0) {
+        direction = -1;
+        i = this._binarySearch(list, stop, false, 'start')
+      }
+      while (i >= 0 && i < len &&
+        ( (direction == 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
         skip = false
-
         if (list[i].crossesOrigin) {
           if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
             skip = true;
@@ -171,9 +226,35 @@
         if (list[i].sublist) {
           this._run(start, stop, step, callback, list[i].sublist);
         }
-        i++;
+        i += direction;
       }
     }
+
+
+    // _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
+    //   var skip;
+    //   var len = list.length;
+    //   var i = this._binarySearch(list, start, true, 'stop')
+    //   while (i >= 0 && i < len && this.start(list[i]) <= stop) {
+    //     skip = false
+    //
+    //     if (list[i].crossesOrigin) {
+    //       if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+    //         skip = true;
+    //       } else {
+    //         this._runIntervalsCrossingOrigin.push(list[i].interval);
+    //       }
+    //     }
+    //
+    //     if (!skip && list[i].index % step == 0) {
+    //       callback.call(list[i].interval, list[i].interval);
+    //     }
+    //     if (list[i].sublist) {
+    //       this._run(start, stop, step, callback, list[i].sublist);
+    //     }
+    //     i++;
+    //   }
+    // }
 
     /*
      * Run the callback for each interval that overlaps with the given range.
@@ -181,7 +262,7 @@
      * @param {Number} stop - Stop position of the range [Default: same as start]
      * @param {Number} step - Skip intervals by increasing the step [Default: 1]
      */
-    run(start, stop, step, callback = function() {}) {
+    run(start, stop=start, step=1, callback = function() {}) {
       this._runIntervalsCrossingOrigin = [];
       if (this.circularLength && stop < start) {
         this._run(start, this.circularLength, step,  callback);
@@ -229,7 +310,7 @@
 
       while (max_index - min_index > 1) {
         current_index = (min_index + max_index) / 2 | 0;
-        current_value = this.end(data[current_index]);
+        current_value = this[getter](data[current_index]);
         if (current_value < search_value) {
           min_index = current_index;
         } else if (current_value > search_value){

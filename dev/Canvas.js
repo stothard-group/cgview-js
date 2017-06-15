@@ -266,6 +266,7 @@
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
       var ctx = this.context(layer);
+      var settings = this.viewer.settings;
 
       if (decoration == 'arc') {
         ctx.beginPath();
@@ -280,7 +281,7 @@
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
         // var arrowHeadLengthPixels = width / 3;
-        var arrowHeadLengthPixels = width * this.viewer.settings.arrowHeadLength;
+        var arrowHeadLengthPixels = width * settings.arrowHeadLength;
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
@@ -302,15 +303,55 @@
         var arrowTipPt = this.pointFor(arrowTipBp, radius);
         var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
 
-        // Draw arc with arrow head
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
-        ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
-        ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
-        ctx.closePath();
-        ctx.fill();
+        if (settings.showShading) {
+          var shadowFraction = 0.10;
+          var shadowColor = 0.15;
+          var halfMainWidth =  width * (0.5 - shadowFraction);
+          var shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
+
+          // Main Arrow
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          this.arcPath(layer, radius + halfMainWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(shadowPt.x, shadowPt.y);
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+          // Highlight
+          var highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
+          ctx.beginPath();
+          ctx.fillStyle = new CGV.Color(color).lighten(shadowColor).rgbaString;
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(highlightPt.x, highlightPt.y);
+          this.arcPath(layer, radius + halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+          // Shadow
+          ctx.beginPath();
+          ctx.fillStyle = new CGV.Color(color).darken(shadowColor).rgbaString;
+          this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(shadowPt.x, shadowPt.y);
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+        } else {
+          // Draw arc with arrow head
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
+          this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+        }
+
       }
 
     }
@@ -363,6 +404,9 @@
       ctx.moveTo(innerPt.x, innerPt.y);
       ctx.lineTo(outerPt.x, outerPt.y);
       ctx.strokeStyle = color;
+
+      // ctx.lineCap = 'round';
+
       ctx.lineWidth = lineWidth;
       ctx.stroke();
     }

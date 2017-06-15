@@ -149,7 +149,14 @@
     get hex() {
     }
 
-    get hla() {
+    get hsl() {
+      return Color.rgb2hsl(this.rgb)
+    }
+
+    set hsl(value) {
+      var rgba = Color.hsl2rgb(value); 
+      rgba.a = this.opacity;
+      this.rgba = rgba;
     }
 
     copy() {
@@ -160,6 +167,22 @@
       var hsv = this.hsv;
       hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
       this.hsv = hsv;
+    }
+
+    lighten(fraction) {
+      var hsl = this.hsl;
+      hsl.l += CGV.constrain(fraction, 0, 1);
+      hsl.l = Math.min(hsl.l, 1);
+      this.hsl = hsl
+      return this
+    }
+
+    darken(fraction) {
+      var hsl = this.hsl;
+      hsl.l -= CGV.constrain(fraction, 0, 1);
+      hsl.l = Math.max(hsl.l, 0);
+      this.hsl = hsl
+      return this
     }
 
     /**
@@ -356,7 +379,7 @@
 
   /**
    * Convert a Hexidecimal color string to an RGBA object.
-   * Credite to http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+   * Credited to http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
    * @function hex2rgba
    * @memberof Color
    * @param {String} hex - *hex* can be shorthand (e.g. "03F") or fullform (e.g. "0033FF"), with or without the starting '#'.
@@ -382,6 +405,91 @@
     }
     return { r: red, g: green, b: blue, a: opacity }
   }
+
+  /**
+   * Credited: https://gist.github.com/mjackson/5311256
+   * Converts an RGB color value to HSL. Conversion formula
+   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+   * Assumes r, g, and b are contained in the set [0, 255] and
+   * returns h, s, and l in the set [0, 1].
+   *
+   * @param   Number  r       The red color value
+   * @param   Number  g       The green color value
+   * @param   Number  b       The blue color value
+   * @return  Array           The HSL representation
+   */
+  Color.rgb2hsl = function(rgb) {
+
+    var r = rgb.r / 255;
+    var g = rgb.g / 255;
+    var b = rgb.b / 255;
+
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max == min) {
+      h = s = 0; // achromatic
+    } else {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+
+      h /= 6;
+    }
+
+    // return [ h, s, l ];
+    return { h: h, s: s, l: l }
+  }
+
+	/**
+   * Credited: https://gist.github.com/mjackson/5311256
+	 * Converts an HSL color value to RGB. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+	 * Assumes h, s, and l are contained in the set [0, 1] and
+	 * returns r, g, and b in the set [0, 255].
+	 *
+	 * @param   Number  h       The hue
+	 * @param   Number  s       The saturation
+	 * @param   Number  l       The lightness
+	 * @return  Array           The RGB representation
+	 */
+	Color.hsl2rgb = function(hsl) {
+    var h = hsl.h;
+    var s = hsl.s;
+    var l = hsl.l;
+		var r, g, b;
+
+		if (s == 0) {
+			r = g = b = l; // achromatic
+		} else {
+			function hue2rgb(p, q, t) {
+				if (t < 0) t += 1;
+				if (t > 1) t -= 1;
+				if (t < 1/6) return p + (q - p) * 6 * t;
+				if (t < 1/2) return q;
+				if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+				return p;
+			}
+
+			var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			var p = 2 * l - q;
+
+			r = hue2rgb(p, q, h + 1/3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1/3);
+		}
+
+    r = Math.floor(r * 255);
+    g = Math.floor(g * 255);
+    b = Math.floor(b * 255);
+
+		return { r: r, g: g, b: b };
+	}
 
   /**
    * Convert a RGBA object to a RGBA string

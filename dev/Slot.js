@@ -235,6 +235,8 @@
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
             step = CGV.base2(initialStep);
           }
+          // When drawing shadows, draw in reverse order to make them look better
+          if (this.viewer.settings.showShading && this.isDirect()) { step *= -1 }
           // Draw Features
           this._featureNCList.run(start, stop, step, (feature) => {
             feature.draw('map', slotRadius, slotThickness, range);

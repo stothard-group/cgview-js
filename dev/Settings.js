@@ -19,11 +19,13 @@
      * -------------|--------|------------
      * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
      * arrowHeadLength | Number | Arrow head length as a fraction (0-1) of the slot width (Default: 0.3)
+     * showShading     | Boolean | Should arrows and other components be drawn with shading (Default: true)
      */
     constructor(viewer, options = {}, meta = {}) {
       this.viewer = viewer;
       this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
       this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
+      this._showShading = CGV.defaultFor(options.showShading, true);
     }
 
     /**
@@ -55,6 +57,18 @@
 
     get arrowHeadLength() {
       return this._arrowHeadLength
+    }
+
+    /**
+     * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
+     */
+    get showShading() {
+      return this._showShading
+    }
+
+    set showShading(value) {
+      this._showShading = value;
+      this.viewer.drawFull();
     }
 
   }

@@ -51,17 +51,19 @@ end
 
 
 # Build CGView.js
-puts 'Building CGView.js'
-build_cgviewjs_path = File.join(CGVIEW_JS_DIR, 'scripts', 'build.sh')
-system("bash #{build_cgviewjs_path}")
+# puts 'Building CGView.js'
+# build_cgviewjs_path = File.join(CGVIEW_JS_DIR, 'scripts', 'build.sh')
+# system("bash #{build_cgviewjs_path}")
 
 # Minify javascript
 puts "Minifying javascript"
-cgview_js_path = File.join(CGVIEW_JS_DIR, 'src', 'CGView.js')
+# cgview_js_path = File.join(CGVIEW_JS_DIR, 'src', 'CGView.js')
+cgview_js_path = options.infile
 closure = Closure::Compiler.new(language_in: 'ECMASCRIPT6', language_out: 'ES5')
 # closure = Closure::Compiler.new(language_in: 'ECMASCRIPT6', language_out: 'ES5_STRICT')
 min_js = closure.compile(File.open(cgview_js_path, 'r'))
-cgview_js_min_path = cgview_js_path.sub('.js', '') + ".min.js"
+# cgview_js_min_path = cgview_js_path.sub('.js', '') + ".min.js"
+cgview_js_min_path = options.outfile
 File.open(cgview_js_min_path, 'w') do |f|
   f.puts(min_js)
 end
