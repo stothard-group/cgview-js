@@ -1309,13 +1309,42 @@ if (window.CGV === undefined) window.CGV = CGView;
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
       var scale = this.scale;
       var ctx = this.context(layer);
+      var settings = this.viewer.settings;
+      var shadowFraction = 0.10;
+      var shadowColorDiff = 0.15;
 
       if (decoration == 'arc') {
-        ctx.beginPath();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        this.arcPath(layer, radius, start, stop);
-        ctx.stroke();
+        if (settings.showShading) {
+          var shadowWidth = width * shadowFraction;
+          // Main Arc
+          var mainWidth = width - (2 * shadowWidth);
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = mainWidth;
+          this.arcPath(layer, radius, start, stop);
+          ctx.stroke();
+
+          var shadowRadiusDiff = (mainWidth / 2) + (shadowWidth / 2);
+          ctx.lineWidth = shadowWidth;
+          // Highlight
+          ctx.beginPath();
+          ctx.strokeStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius + shadowRadiusDiff, start, stop);
+          ctx.stroke();
+
+          // Shadow
+          ctx.beginPath();
+          ctx.strokeStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius - shadowRadiusDiff, start, stop);
+          ctx.stroke();
+
+        } else {
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = width;
+          this.arcPath(layer, radius, start, stop);
+          ctx.stroke();
+        }
       }
 
       // Looks like we're drawing an arrow
@@ -1323,7 +1352,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
         // var arrowHeadLengthPixels = width / 3;
-        var arrowHeadLengthPixels = width * this.viewer.settings.arrowHeadLength;
+        var arrowHeadLengthPixels = width * settings.arrowHeadLength;
         var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
@@ -1345,15 +1374,53 @@ if (window.CGV === undefined) window.CGV = CGView;
         var arrowTipPt = this.pointFor(arrowTipBp, radius);
         var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
 
-        // Draw arc with arrow head
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
-        ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
-        ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-        this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
-        ctx.closePath();
-        ctx.fill();
+        if (settings.showShading) {
+          var halfMainWidth =  width * (0.5 - shadowFraction);
+          var shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
+
+          // Main Arrow
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          this.arcPath(layer, radius + halfMainWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(shadowPt.x, shadowPt.y);
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+          // Highlight
+          var highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
+          ctx.beginPath();
+          ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(highlightPt.x, highlightPt.y);
+          this.arcPath(layer, radius + halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+          // Shadow
+          ctx.beginPath();
+          ctx.fillStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(shadowPt.x, shadowPt.y);
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+
+        } else {
+          // Draw arc with arrow head
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
+          ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
+          this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          ctx.closePath();
+          ctx.fill();
+        }
+
       }
 
     }
@@ -1396,16 +1463,18 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   ctx.stroke();
     // }
 
-    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black') {
+    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black', cap = 'butt') {
       var innerPt = this.pointFor(bp, radius);
       var outerPt = this.pointFor(bp, radius + length);
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
 
       ctx.beginPath();
       ctx.moveTo(innerPt.x, innerPt.y);
       ctx.lineTo(outerPt.x, outerPt.y);
       ctx.strokeStyle = color;
+
+      ctx.lineCap = cap;
+
       ctx.lineWidth = lineWidth;
       ctx.stroke();
     }
@@ -2871,7 +2940,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     get hex() {
     }
 
-    get hla() {
+    get hsl() {
+      return Color.rgb2hsl(this.rgb)
+    }
+
+    set hsl(value) {
+      var rgba = Color.hsl2rgb(value); 
+      rgba.a = this.opacity;
+      this.rgba = rgba;
     }
 
     copy() {
@@ -2882,6 +2958,22 @@ if (window.CGV === undefined) window.CGV = CGView;
       var hsv = this.hsv;
       hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
       this.hsv = hsv;
+    }
+
+    lighten(fraction) {
+      var hsl = this.hsl;
+      hsl.l += CGV.constrain(fraction, 0, 1);
+      hsl.l = Math.min(hsl.l, 1);
+      this.hsl = hsl
+      return this
+    }
+
+    darken(fraction) {
+      var hsl = this.hsl;
+      hsl.l -= CGV.constrain(fraction, 0, 1);
+      hsl.l = Math.max(hsl.l, 0);
+      this.hsl = hsl
+      return this
     }
 
     /**
@@ -3078,7 +3170,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
   /**
    * Convert a Hexidecimal color string to an RGBA object.
-   * Credite to http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+   * Credited to http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
    * @function hex2rgba
    * @memberof Color
    * @param {String} hex - *hex* can be shorthand (e.g. "03F") or fullform (e.g. "0033FF"), with or without the starting '#'.
@@ -3104,6 +3196,91 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
     return { r: red, g: green, b: blue, a: opacity }
   }
+
+  /**
+   * Credited: https://gist.github.com/mjackson/5311256
+   * Converts an RGB color value to HSL. Conversion formula
+   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+   * Assumes r, g, and b are contained in the set [0, 255] and
+   * returns h, s, and l in the set [0, 1].
+   *
+   * @param   Number  r       The red color value
+   * @param   Number  g       The green color value
+   * @param   Number  b       The blue color value
+   * @return  Array           The HSL representation
+   */
+  Color.rgb2hsl = function(rgb) {
+
+    var r = rgb.r / 255;
+    var g = rgb.g / 255;
+    var b = rgb.b / 255;
+
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max == min) {
+      h = s = 0; // achromatic
+    } else {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+
+      h /= 6;
+    }
+
+    // return [ h, s, l ];
+    return { h: h, s: s, l: l }
+  }
+
+	/**
+   * Credited: https://gist.github.com/mjackson/5311256
+	 * Converts an HSL color value to RGB. Conversion formula
+	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+	 * Assumes h, s, and l are contained in the set [0, 1] and
+	 * returns r, g, and b in the set [0, 255].
+	 *
+	 * @param   Number  h       The hue
+	 * @param   Number  s       The saturation
+	 * @param   Number  l       The lightness
+	 * @return  Array           The RGB representation
+	 */
+	Color.hsl2rgb = function(hsl) {
+    var h = hsl.h;
+    var s = hsl.s;
+    var l = hsl.l;
+		var r, g, b;
+
+		if (s == 0) {
+			r = g = b = l; // achromatic
+		} else {
+			function hue2rgb(p, q, t) {
+				if (t < 0) t += 1;
+				if (t > 1) t -= 1;
+				if (t < 1/6) return p + (q - p) * 6 * t;
+				if (t < 1/2) return q;
+				if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+				return p;
+			}
+
+			var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			var p = 2 * l - q;
+
+			r = hue2rgb(p, q, h + 1/3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1/3);
+		}
+
+    r = Math.floor(r * 255);
+    g = Math.floor(g * 255);
+    b = Math.floor(b * 255);
+
+		return { r: r, g: g, b: b };
+	}
 
   /**
    * Convert a RGBA object to a RGBA string
@@ -5903,7 +6080,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Divider rings
       viewer.slotDivider.draw();
       // Ruler
-      viewer.ruler.draw(this.insideRadius, this.outsideRadius);
+      var radiusAdjustment = CGV.pixel(viewer.slotDivider.thickness * 2);
+      viewer.ruler.draw(this.insideRadius - radiusAdjustment, this.outsideRadius + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
         viewer.annotation.draw(this.insideRadius, this.outsideRadius);
@@ -7308,14 +7486,20 @@ if (window.CGV === undefined) window.CGV = CGView;
       interval.sublist = list;
     }
 
-
     _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
       var skip;
       var len = list.length;
-      var i = this._binarySearch(list, start, true, 'stop')
-      while (i >= 0 && i < len && this.start(list[i]) <= stop) {
+      var i, direction;
+      if (step > 0) {
+        direction = 1;
+        i = this._binarySearch(list, start, true, 'end')
+      } else if (step < 0) {
+        direction = -1;
+        i = this._binarySearch(list, stop, false, 'start')
+      }
+      while (i >= 0 && i < len &&
+        ( (direction == 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
         skip = false
-
         if (list[i].crossesOrigin) {
           if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
             skip = true;
@@ -7330,7 +7514,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         if (list[i].sublist) {
           this._run(start, stop, step, callback, list[i].sublist);
         }
-        i++;
+        i += direction;
       }
     }
 
@@ -7340,7 +7524,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} stop - Stop position of the range [Default: same as start]
      * @param {Number} step - Skip intervals by increasing the step [Default: 1]
      */
-    run(start, stop, step, callback = function() {}) {
+    run(start, stop=start, step=1, callback = function() {}) {
       this._runIntervalsCrossingOrigin = [];
       if (this.circularLength && stop < start) {
         this._run(start, this.circularLength, step,  callback);
@@ -7388,7 +7572,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       while (max_index - min_index > 1) {
         current_index = (min_index + max_index) / 2 | 0;
-        current_value = this.end(data[current_index]);
+        current_value = this[getter](data[current_index]);
         if (current_value < search_value) {
           min_index = current_index;
         } else if (current_value > search_value){
@@ -8005,10 +8189,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       super(viewer, options, meta);
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
-      this.tickLength = CGV.defaultFor(options.tickLength, 5);
+      this.tickLength = CGV.defaultFor(options.tickLength, 4);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
       this.color = new CGV.Color( CGV.defaultFor(options.color, 'black') );
+      this.lineCap = 'round';
     }
 
     get font() {
@@ -8244,10 +8429,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw Tick for first bp (Origin)
-      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2);
+      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.linecap);
       // Draw Major ticks
       this.majorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth);
+        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.linecap);
         if (drawLabels) {
           var label = this.tickFormater(bp);
           this.drawLabel(bp, label, radius, position);
@@ -8255,7 +8440,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       });
       // Draw Minor ticks
       this.minorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth);
+        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.linecap);
       });
     }
 
@@ -9275,11 +9460,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      * -------------|--------|------------
      * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
      * arrowHeadLength | Number | Arrow head length as a fraction (0-1) of the slot width (Default: 0.3)
+     * showShading     | Boolean | Should arrows and other components be drawn with shading (Default: true)
      */
     constructor(viewer, options = {}, meta = {}) {
       this.viewer = viewer;
       this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
       this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
+      this._showShading = CGV.defaultFor(options.showShading, true);
     }
 
     /**
@@ -9311,6 +9498,18 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     get arrowHeadLength() {
       return this._arrowHeadLength
+    }
+
+    /**
+     * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
+     */
+    get showShading() {
+      return this._showShading
+    }
+
+    set showShading(value) {
+      this._showShading = value;
+      this.viewer.drawFull();
     }
 
   }
@@ -9557,6 +9756,8 @@ if (window.CGV === undefined) window.CGV = CGView;
             var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
             step = CGV.base2(initialStep);
           }
+          // When drawing shadows, draw in reverse order to make them look better
+          if (this.viewer.settings.showShading && this.isDirect()) { step *= -1 }
           // Draw Features
           this._featureNCList.run(start, stop, step, (feature) => {
             feature.draw('map', slotRadius, slotThickness, range);

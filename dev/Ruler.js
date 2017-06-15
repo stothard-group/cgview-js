@@ -12,10 +12,11 @@
       super(viewer, options, meta);
       this.tickCount = CGV.defaultFor(options.tickCount, 10);
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
-      this.tickLength = CGV.defaultFor(options.tickLength, 5);
+      this.tickLength = CGV.defaultFor(options.tickLength, 4);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
       this.color = new CGV.Color( CGV.defaultFor(options.color, 'black') );
+      this.lineCap = 'round';
     }
 
     get font() {
@@ -251,10 +252,10 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw Tick for first bp (Origin)
-      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2);
+      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.linecap);
       // Draw Major ticks
       this.majorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth);
+        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.linecap);
         if (drawLabels) {
           var label = this.tickFormater(bp);
           this.drawLabel(bp, label, radius, position);
@@ -262,7 +263,7 @@
       });
       // Draw Minor ticks
       this.minorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth);
+        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.linecap);
       });
     }
 

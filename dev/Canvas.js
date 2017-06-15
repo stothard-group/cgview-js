@@ -267,13 +267,41 @@
       var scale = this.scale;
       var ctx = this.context(layer);
       var settings = this.viewer.settings;
+      var shadowFraction = 0.10;
+      var shadowColorDiff = 0.15;
 
       if (decoration == 'arc') {
-        ctx.beginPath();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        this.arcPath(layer, radius, start, stop);
-        ctx.stroke();
+        if (settings.showShading) {
+          var shadowWidth = width * shadowFraction;
+          // Main Arc
+          var mainWidth = width - (2 * shadowWidth);
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = mainWidth;
+          this.arcPath(layer, radius, start, stop);
+          ctx.stroke();
+
+          var shadowRadiusDiff = (mainWidth / 2) + (shadowWidth / 2);
+          ctx.lineWidth = shadowWidth;
+          // Highlight
+          ctx.beginPath();
+          ctx.strokeStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius + shadowRadiusDiff, start, stop);
+          ctx.stroke();
+
+          // Shadow
+          ctx.beginPath();
+          ctx.strokeStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
+          this.arcPath(layer, radius - shadowRadiusDiff, start, stop);
+          ctx.stroke();
+
+        } else {
+          ctx.beginPath();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = width;
+          this.arcPath(layer, radius, start, stop);
+          ctx.stroke();
+        }
       }
 
       // Looks like we're drawing an arrow
@@ -304,8 +332,6 @@
         var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
 
         if (settings.showShading) {
-          var shadowFraction = 0.10;
-          var shadowColor = 0.15;
           var halfMainWidth =  width * (0.5 - shadowFraction);
           var shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
 
@@ -322,7 +348,7 @@
           // Highlight
           var highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
           ctx.beginPath();
-          ctx.fillStyle = new CGV.Color(color).lighten(shadowColor).rgbaString;
+          ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
           this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(highlightPt.x, highlightPt.y);
@@ -332,7 +358,7 @@
 
           // Shadow
           ctx.beginPath();
-          ctx.fillStyle = new CGV.Color(color).darken(shadowColor).rgbaString;
+          ctx.fillStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
           this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction == -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
@@ -394,10 +420,9 @@
     //   ctx.stroke();
     // }
 
-    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black') {
+    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black', cap = 'butt') {
       var innerPt = this.pointFor(bp, radius);
       var outerPt = this.pointFor(bp, radius + length);
-      // var ctx = this.ctx;
       var ctx = this.context(layer);
 
       ctx.beginPath();
@@ -405,7 +430,7 @@
       ctx.lineTo(outerPt.x, outerPt.y);
       ctx.strokeStyle = color;
 
-      // ctx.lineCap = 'round';
+      ctx.lineCap = cap;
 
       ctx.lineWidth = lineWidth;
       ctx.stroke();

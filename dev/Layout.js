@@ -188,7 +188,8 @@
       // Divider rings
       viewer.slotDivider.draw();
       // Ruler
-      viewer.ruler.draw(this.insideRadius, this.outsideRadius);
+      var radiusAdjustment = CGV.pixel(viewer.slotDivider.thickness * 2);
+      viewer.ruler.draw(this.insideRadius - radiusAdjustment, this.outsideRadius + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
         viewer.annotation.draw(this.insideRadius, this.outsideRadius);

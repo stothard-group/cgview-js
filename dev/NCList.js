@@ -149,55 +149,6 @@
       interval.sublist = list;
     }
 
-
-    // _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
-    //   var skip;
-    //   var len = list.length;
-    //   if (step > 0) {
-    //     var i = this._binarySearch(list, start, true, 'end')
-    //     while (i >= 0 && i < len && this.start(list[i]) <= stop) {
-    //       skip = false
-    //
-    //       if (list[i].crossesOrigin) {
-    //         if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
-    //           skip = true;
-    //         } else {
-    //           this._runIntervalsCrossingOrigin.push(list[i].interval);
-    //         }
-    //       }
-    //
-    //       if (!skip && list[i].index % step == 0) {
-    //         callback.call(list[i].interval, list[i].interval);
-    //       }
-    //       if (list[i].sublist) {
-    //         this._run(start, stop, step, callback, list[i].sublist);
-    //       }
-    //       i++;
-    //     }
-    //   } else if (step < 0) {
-    //     var i = this._binarySearch(list, stop, false, 'start')
-    //     while (i >= 0 && i < len && this.end(list[i]) >= start) {
-    //       skip = false
-    //
-    //       if (list[i].crossesOrigin) {
-    //         if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
-    //           skip = true;
-    //         } else {
-    //           this._runIntervalsCrossingOrigin.push(list[i].interval);
-    //         }
-    //       }
-    //
-    //       if (!skip && list[i].index % step == 0) {
-    //         callback.call(list[i].interval, list[i].interval);
-    //       }
-    //       if (list[i].sublist) {
-    //         this._run(start, stop, step, callback, list[i].sublist);
-    //       }
-    //       i--;
-    //     }
-    //   }
-    // }
-
     _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
       var skip;
       var len = list.length;
@@ -229,32 +180,6 @@
         i += direction;
       }
     }
-
-
-    // _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
-    //   var skip;
-    //   var len = list.length;
-    //   var i = this._binarySearch(list, start, true, 'stop')
-    //   while (i >= 0 && i < len && this.start(list[i]) <= stop) {
-    //     skip = false
-    //
-    //     if (list[i].crossesOrigin) {
-    //       if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
-    //         skip = true;
-    //       } else {
-    //         this._runIntervalsCrossingOrigin.push(list[i].interval);
-    //       }
-    //     }
-    //
-    //     if (!skip && list[i].index % step == 0) {
-    //       callback.call(list[i].interval, list[i].interval);
-    //     }
-    //     if (list[i].sublist) {
-    //       this._run(start, stop, step, callback, list[i].sublist);
-    //     }
-    //     i++;
-    //   }
-    // }
 
     /*
      * Run the callback for each interval that overlaps with the given range.
