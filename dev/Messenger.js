@@ -87,7 +87,7 @@
 
   /**
    * Opens the messenger
-   * @param {Number} duration - The duration of the open animation in milliseconds. Defaults to fadeTime [Dialog.fadeTime](Dialog.html#fadeTime).
+   * @param {Number} duration - The duration of the open animation in milliseconds. Defaults to fadeTime [Messenger.fadeTime](Messenger.html#fadeTime).
    */
     open(duration) {
       duration = CGV.defaultFor(duration, this.fadeTime)
@@ -101,7 +101,7 @@
 
   /**
    * Closes the messenger
-   * @param {Number} duration - The duration of the close animation in milliseconds. Defaults to fadeTime [Dialog.fadeTime](Dialog.html#fadeTime).
+   * @param {Number} duration - The duration of the close animation in milliseconds. Defaults to fadeTime [Messenger.fadeTime](Messenger.html#fadeTime).
    */
     close(duration) {
       duration = CGV.defaultFor(duration, this.fadeTime)

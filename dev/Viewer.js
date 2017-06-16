@@ -81,10 +81,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       // Initialize Layout
       this.layout = new CGV.Layout(this, options.layout);
-      // Initialize Menu
-      this.menu = new CGV.Menu(this);
-      // Initialize Help
-      this.help = new CGV.Help(this);
       // Initialize Annotation
       this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
