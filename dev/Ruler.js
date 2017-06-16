@@ -262,10 +262,10 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw Tick for first bp (Origin)
-      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.linecap);
+      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
       // Draw Major ticks
       this.majorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.linecap);
+        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.lineCap);
         if (drawLabels) {
           var label = this.tickFormater(bp);
           this.drawLabel(bp, label, radius, position);
@@ -273,7 +273,7 @@
       });
       // Draw Minor ticks
       this.minorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.linecap);
+        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.lineCap);
       });
     }
 

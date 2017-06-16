@@ -18,6 +18,7 @@
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
+      this.lineCap = 'round';
     }
 
     /**
@@ -223,7 +224,7 @@
         label = this._visibleLabels[i];
         feature = label.feature;
         var color = this.color || feature.color;
-        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString);
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString, this.lineCap);
         ctx.fillStyle = color.rgbaString;
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
