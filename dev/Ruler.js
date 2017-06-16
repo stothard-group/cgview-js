@@ -14,6 +14,7 @@
       this.tickWidth = CGV.defaultFor(options.tickWidth, 1);
       this.tickLength = CGV.defaultFor(options.tickLength, 4);
       this.rulerPadding = CGV.defaultFor(options.rulerPadding, 10);
+      this.spacing = CGV.defaultFor(options.spacing, 2);
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 10');
       this.color = new CGV.Color( CGV.defaultFor(options.color, 'black') );
       this.lineCap = 'round';
@@ -76,6 +77,15 @@
 
     set rulerPadding(padding) {
       this._rulerPadding = CGV.pixel(padding);
+    }
+
+    // Distance between divider and tick marks
+    get spacing() {
+      return this._spacing
+    }
+
+    set spacing(value) {
+      this._spacing = value;
     }
 
     /**

@@ -188,7 +188,7 @@
       // Divider rings
       viewer.slotDivider.draw();
       // Ruler
-      var radiusAdjustment = CGV.pixel(viewer.slotDivider.thickness * 2);
+      var radiusAdjustment = CGV.pixel(viewer.slotDivider.thickness / 2 + viewer.ruler.spacing);
       viewer.ruler.draw(this.insideRadius - radiusAdjustment, this.outsideRadius + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
@@ -313,18 +313,16 @@
           residualSlotThickness = slotThickness / 2;
 
           // Calculate Divider dimensions
-          if (viewer.slotDivider.visible) {
-            var dividerThickness = viewer.slotDivider.thickness;
-            if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
-              directRadius += spacing + residualSlotThickness + dividerThickness;
-              slotRadius = directRadius;
-            } else {
-              reverseRadius -= spacing + residualSlotThickness + dividerThickness;
-              slotRadius = reverseRadius;
-            }
-            viewer.slotDivider.addRadius(slotRadius);
-            residualSlotThickness = dividerThickness / 2;
+          var dividerThickness = viewer.slotDivider.thickness;
+          if (track.position == 'outside' || (track.position == 'both' && slot.isDirect()) ) {
+            directRadius += spacing + residualSlotThickness + dividerThickness;
+            slotRadius = directRadius;
+          } else {
+            reverseRadius -= spacing + residualSlotThickness + dividerThickness;
+            slotRadius = reverseRadius;
           }
+          viewer.slotDivider.addRadius(slotRadius);
+          residualSlotThickness = dividerThickness / 2;
         }
       }
       this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;
