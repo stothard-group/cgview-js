@@ -413,6 +413,63 @@ if (window.CGV === undefined) window.CGV = CGView;
         }).on('end', function() { self.drawFull(); });
     }
 
+    /**
+     * Move the viewer to *bp* position at the provided *zoomFactor*.
+     * If *bp* is falsy (inc. 0), the map is centered.
+     *
+     * @param {Number} bp - The position in bp
+     * @param {Number} zoomFactor - The zoome level
+     */
+    zoomTo(bp, zoomFactor, duration = 1000) {
+      var self = this;
+
+      var zoomExtent = self._zoom.scaleExtent();
+      zoomFactor = CGV.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
+
+      // Current Domains
+      var domainX = this.scale.x.domain();
+      var domainY = this.scale.y.domain();
+
+      // Get range
+      var halfRangeWidth = this.scale.x.range()[1] / 2
+      var halfRangeHeight = this.scale.y.range()[1] / 2
+
+      var radius = CGV.pixel(this.backbone.radius * zoomFactor);
+      var radians = this.scale.bp(bp);
+      var x, y;
+      if (bp) {
+        x = radius * Math.cos(radians);
+        y = -radius * Math.sin(radians);
+      } else {
+        x = 0;
+        y = 0;
+      }
+
+      var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+      var endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
+
+      d3.select(this.canvas.node).transition()
+        .duration(duration)
+        .tween('move', function() {
+          var intermDomains = d3.interpolateArray(startDomains, endDomains);
+          var intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
+          return function(t) {
+            self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
+            self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+            self._zoomFactor = intermZoomFactors(t);
+            d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
+            self.drawFast();
+          }
+        }).on('end', function() { self.drawFull(); });
+    }
+
+    /*
+     * Set zoom level to 1 and centers map
+     */
+    reset(duration=1000) {
+      this.zoomTo(0, 1, duration);
+    }
+
     getCurrentBp() {
       var domainX = this.scale.x.domain();
       var domainY = this.scale.y.domain();
@@ -555,6 +612,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
+      this.lineCap = 'round';
     }
 
     /**
@@ -760,7 +818,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         label = this._visibleLabels[i];
         feature = label.feature;
         var color = this.color || feature.color;
-        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString);
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString, this.lineCap);
         ctx.fillStyle = color.rgbaString;
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }
@@ -7686,10 +7744,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw Tick for first bp (Origin)
-      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.linecap);
+      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
       // Draw Major ticks
       this.majorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.linecap);
+        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.lineCap);
         if (drawLabels) {
           var label = this.tickFormater(bp);
           this.drawLabel(bp, label, radius, position);
@@ -7697,7 +7755,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       });
       // Draw Minor ticks
       this.minorTicks.each( (i, bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.linecap);
+        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.lineCap);
       });
     }
 
