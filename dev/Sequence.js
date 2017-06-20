@@ -233,6 +233,10 @@
       return true
     }
 
+    asFasta(id='') {
+      return `>${id}\n${this.seq}`
+    }
+
     lengthOfRange(start, stop) {
       if (stop >= start) {
         return stop - start

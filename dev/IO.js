@@ -12,6 +12,16 @@
     constructor(viewer) {
       this._viewer = viewer;
     }
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    asJSON() {
+      return {test: 42}
+    }
 
     /**
      * Load data from NEW JSON format.
@@ -114,7 +124,8 @@
       exportContext.drawImage(tempLayers['captions'].node, 0, 0);
 
       // Generate image from export layer
-      var image = tempLayers['export'].node.toDataURL();
+      // var image = tempLayers['export'].node.toDataURL();
+      var image = tempLayers['export'].node.toBlob( (blob) => { this.download(blob, 'image.png', 'image/png')} );
 
       // Restore original layers and settings
       canvas._layers = origLayers
@@ -125,36 +136,83 @@
         d3.select(tempLayers[name].node).remove();
       }
 
-      // Preview
-      var previewWidth = Math.min(400, width);
-      var previewHeight = Math.min(400, height);
 
-      var win = window.open();
-      var html = [
-        '<html>',
-          '<head>',
-            '<title>',
-              windowTitle,
-            '</title>',
-            '<style>',
-              'body { font-family: sans-serif; }',
-            '</style>',
-          '</head>',
-          '<body>',
-        // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            '<h2>Your CGView Image is Below</h2>',
-            '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-            '<h3>Preview</h3>',
-            '<img style="border: 1px solid grey" width="' + previewWidth+ '" height="' + previewHeight +  '" src="' + image +  '"/ >',
-            '<h3>Actual Size</h3>',
-            // '<img style="border: 1px solid grey" src="' + image +  '"/ >',
-            '<img style="border: 1px solid grey" width="' + width+ '" height="' + height +  '" src="' + image +  '"/ >',
-          '</body>',
-        '<html>'
-      ].join('');
-      win.document.write(html);
+      // // Preview
+      // var previewWidth = Math.min(400, width);
+      // var previewHeight = Math.min(400, height);
+      //
+      // var win = window.open();
+      // var html = [
+      //   '<html>',
+      //     '<head>',
+      //       '<title>',
+      //         windowTitle,
+      //       '</title>',
+      //       '<style>',
+      //         'body { font-family: sans-serif; }',
+      //       '</style>',
+      //     '</head>',
+      //     '<body>',
+      //       '<h2>Your CGView Image is Below</h2>',
+      //       '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
+      //       '<h3>Preview</h3>',
+      //       '<img style="border: 1px solid grey" width="' + previewWidth+ '" height="' + previewHeight +  '" src="' + image +  '"/ >',
+      //       '<h3>Actual Size</h3>',
+      //       // '<img style="border: 1px solid grey" src="' + image +  '"/ >',
+      //       '<img style="border: 1px solid grey" width="' + width+ '" height="' + height +  '" src="' + image +  '"/ >',
+      //     '</body>',
+      //   '<html>'
+      // ].join('');
+      // win.document.write(html);
     }
 
+    exportFasta(id) {
+      var fasta = this.viewer.sequence.asFasta(id);
+      this.download(fasta, 'sequence.fa', 'text/plain');
+    }
+
+    exportJSON() {
+      var json = this.viewer.io.asJSON();
+      this.download(JSON.stringify(json), 'cgview.json', 'text/json');
+    }
+
+    // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+		download(data, filename, type='text/plain') {
+		  var file = new Blob([data], {type: type});
+			if (window.navigator.msSaveOrOpenBlob) // IE10+
+				window.navigator.msSaveOrOpenBlob(file, filename);
+			else { // Others
+				var a = document.createElement("a");
+				var	url = URL.createObjectURL(file);
+				a.href = url;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(function() {
+						document.body.removeChild(a);
+						window.URL.revokeObjectURL(url);  
+				}, 0); 
+			}
+		}
+
+  }
+
+  // A low performance polyfill based on toDataURL.
+  if (!HTMLCanvasElement.prototype.toBlob) {
+    Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+      value: function (callback, type, quality) {
+
+        var binStr = atob( this.toDataURL(type, quality).split(',')[1] ),
+          len = binStr.length,
+          arr = new Uint8Array(len);
+
+        for (var i = 0; i < len; i++ ) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback( new Blob( [arr], {type: type || 'image/png'} ) );
+      }
+    });
   }
 
   CGV.IO = IO;
@@ -162,80 +220,3 @@
 })(CGView);
 
 
-    /**
-     * Load data from OLD JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
-     */
-    // load_json(json) {
-    //   var viewer = this._viewer;
-    //
-    //   // Determine scale factor between viewer and json map data
-    //   var jsonMinDimension = Math.min(json.height, json.width);
-    //   var viewerMinDimension = Math.min(viewer.height, viewer.width);
-    //   var scaleFacter = jsonMinDimension / viewerMinDimension;
-    //
-    //   // Override Main Viewer settings
-    //   if (json.sequence) {
-    //     viewer.sequence.seq = json.sequence.seq;
-    //   } else {
-    //     viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
-    //   }
-    //   viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-    //   viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
-    //   viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
-    //   viewer.backbone.radius = json.backboneRadius / scaleFacter;
-    //   viewer.backbone.color = CGV.defaultFor(json.backboneColor, viewer.backbone.color);
-    //   viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
-    //   // ...
-    //
-    //   // Load Tracks
-    //   if (json.tracks) {
-    //     json.tracks.forEach((slotData) => {
-    //       new CGV.Track(viewer, slotData);
-    //     });
-    //   }
-    //
-    //   // Load Legends
-    //   if (json.legends) {
-    //     json.legends.forEach((legendData) => {
-    //       new CGV.Legend(viewer, legendData);
-    //     });
-    //   }
-    //
-    //   // Associate features and arcplots with LegendItems
-    //   var swatchedLegendItems = viewer.swatchedLegendItems();
-    //   var itemsLength = swatchedLegendItems.length;
-    //   var legendItem;
-    //   // Features
-    //   var features = viewer.features();
-    //   var feature;
-    //   for (var i = 0, len = features.length; i < len; i++) {
-    //     feature = features[i];
-    //     for (var j = 0; j < itemsLength; j++) {
-    //       legendItem = swatchedLegendItems[j];
-    //       if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         feature.legendItem = legendItem;
-    //         break
-    //       }
-    //     }
-    //   }
-    //   // Plots
-    //   var plots = viewer.plots();
-    //   var plot;
-    //   for (var i = 0, len = plots.length; i < len; i++) {
-    //     plot = plots[i];
-    //     for (var j = 0; j < itemsLength; j++) {
-    //       legendItem = swatchedLegendItems[j];
-    //       if (plot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItem = legendItem;
-    //       }
-    //       if (plot._colorPositive && plot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItemPositive = legendItem;
-    //       }
-    //       if (plot._colorNegative && plot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItemNegative = legendItem;
-    //       }
-    //     }
-    //   }
-    // }

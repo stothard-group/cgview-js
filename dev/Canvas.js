@@ -307,7 +307,7 @@
       }
 
       // Looks like we're drawing an arrow
-      if (decoration == 'arrow') {
+      if (decoration == 'clockwise-arrow' || decoration == 'counterclockwise-arrow') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
         // var arrowHeadLengthPixels = width / 3;
