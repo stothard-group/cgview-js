@@ -331,6 +331,22 @@
       viewer.refreshCaptions();
     }
 
+    toJSON() {
+      var json = {
+        name: this.name,
+        position: this.position,
+        textAlignment: this.textAlignment,
+        font: this.font.string,
+        fontColor: this.fontColor.rgbaString,
+        backgroundColor: this.backgroundColor.rgbaString,
+        items: []
+      }
+      this.items().each( (i, item) => {
+        json.items.push(item.toJSON());
+      });
+      return json
+    }
+
   }
 
   CGV.Caption = Caption;

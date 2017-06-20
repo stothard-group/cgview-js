@@ -366,6 +366,13 @@
       this._adjustProportions();
     }
 
+    toJSON() {
+      var json = {tracks: []};
+      this.tracks().each( (i, track) => {
+        json.tracks.push(track.toJSON());
+      });
+      return json
+    }
 
 
   }

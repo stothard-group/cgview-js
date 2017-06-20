@@ -292,6 +292,13 @@
       ctx.fillText(label, labelPt.x, labelPt.y);
     }
 
+    toJSON() {
+      return {
+        font: this.font.string,
+        color: this.color.rgbaString
+      }
+    }
+
   }
 
   CGV.Ruler = Ruler;

@@ -59,8 +59,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
 
-      // Initial IO
+      // Initialize IO
       this.io = new CGV.IO(this);
+      // Initialize DragAndDrop
+      this.allowDragAndDrop = CGV.defaultFor(options.allowDragAndDrop, true);
       // Initialize Sequence
       this._sequence = new CGV.Sequence(this, options.sequence);
       // Initialize Backbone
@@ -132,24 +134,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return Math.min(this.height, this.width);
     }
 
-    // /**
-    //  * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-    //  */
-    // get backgroundColor() {
-    //   return this._backgroundColor
-    // }
-    //
-    // set backgroundColor(color) {
-    //   if (color == undefined) {
-    //     this._backgroundColor = new CGV.Color('white');
-    //   } else if (color.toString() == 'Color') {
-    //     this._backgroundColor = color;
-    //   } else {
-    //     this._backgroundColor = new CGV.Color(color);
-    //   }
-    //   this.fillBackground();
-    // }
-    //
     /**
      * @member {Number} - Get or set the zoom level of the image
      */
@@ -205,6 +189,23 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._sequence;
     }
 
+    /**
+     * @member {Number} - Get or set the ability to drag-n-drop JSON files on to viewer
+     */
+    get allowDragAndDrop() {
+      return this._allowDragAndDrop;
+    }
+
+    set allowDragAndDrop(value) {
+      this._allowDragAndDrop = value;
+      if (value) {
+        this.io.initializeDragAndDrop();
+      } else {
+        this.canvas.node('ui').on('.dragndrop', null);
+      }
+    }
+
+
 
     //////////////////////////////////////////////////////////////////////////
     // METHODS
@@ -240,20 +241,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.draw(fast);
     }
-
-    // mergeGeneralSettings(settings = {}) {
-    //   var defaults = {
-    //     arrowHeadLength: 0.3,
-    //     linear: false
-    //     // maxSlotThickness
-    //   }
-    //   var keys = Object.keys(defaults);
-    //   var mergedSettings = {};
-    //   keys.forEach( (key) => {
-    //     mergedSettings[key] = CGV.defaultFor(settings[key], defaults[key]);
-    //   });
-    //   return mergedSettings
-    // }
 
     /**
      * Returns an [CGArray](CGArray.js.html) of Slots or a single Slot from all the Slots in the Layout.

@@ -19,8 +19,38 @@
       return this._viewer
     }
 
-    asJSON() {
-      return {test: 42}
+    toJSON() {
+      var v = this.viewer;
+      var json = {
+        cgview: {
+          version: '1.0',
+          settings: {
+            general: v.settings.toJSON(),
+            backbone: v.backbone.toJSON(),
+            ruler: v.ruler.toJSON(),
+            annotation: v.annotation.toJSON(),
+            dividers: {
+              slot: v.slotDivider.toJSON()
+            }
+          },
+          captions: [],
+          legend: v.legend.toJSON(),
+          sequence: v.sequence.toJSON(),
+          features: [],
+          plots: [],
+          layout: v.layout.toJSON()
+        }
+      }
+      v.captions().each( (i, caption) => {
+        json.cgview.captions.push(caption.toJSON());
+      });
+      v.features().each( (i, feature) => {
+        // Only export features that were not extracted from the sequence.
+        if (!feature.extractedFromSequence) {
+          json.cgview.features.push(feature.toJSON());
+        }
+      });
+      return json
     }
 
     /**
@@ -32,17 +62,18 @@
       var viewer = this._viewer;
       // Load Sequence
       viewer._sequence = new CGV.Sequence(viewer, json.sequence);
-      // Load Settings TODO:
-      var settings = json.settings;
-      // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
+      // Load Settings
+      var settings = json.settings || {};
       // General Settings
       viewer.settings = new CGV.Settings(viewer, settings.general);
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
       // Backbone
       viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
+      // Annotation
+      viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
+
       // Load Captions
       if (json.captions) {
         json.captions.forEach((captionData) => {
@@ -52,6 +83,11 @@
 
       // Load Legend
       viewer.legend = new CGV.Legend(viewer, json.legend);
+
+      // Reset arrays
+      viewer._features = new CGV.CGArray();
+      viewer._plots = new CGV.CGArray();
+      viewer._captions = new CGV.CGArray();
 
       // Create features
       if (json.features) {
@@ -65,14 +101,12 @@
 
       if (json.plots) {
         json.plots.forEach((plotData) => {
-          console.log('PLOT')
           new CGV.Plot(viewer, plotData);
         });
       }
 
       // Load Layout
       viewer.layout = new CGV.Layout(viewer, json.layout);
-
     }
 
     exportImage(width, height) {
@@ -172,7 +206,7 @@
     }
 
     exportJSON() {
-      var json = this.viewer.io.asJSON();
+      var json = this.viewer.io.toJSON();
       this.download(JSON.stringify(json), 'cgview.json', 'text/json');
     }
 
@@ -194,6 +228,51 @@
 				}, 0); 
 			}
 		}
+
+    /**
+     * Initialize Viewer Drag-n-Drop.
+     */
+    initializeDragAndDrop() {
+      var viewer = this.viewer;
+      var canvas = viewer.canvas
+      d3.select(canvas.node('ui')).on('dragleave.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        viewer.drawFull();
+      });
+
+      d3.select(canvas.node('ui')).on('dragover.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        // sv.draw();
+        // sv.flash('Drop Bayesil JSON File...');
+      });
+
+      d3.select(canvas.node('ui')).on('drop.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        // sv.draw();
+        viewer.drawFull();
+        var file = d3.event.dataTransfer.files[0];
+        // console.log(file.type)
+        // sv.flash('Loading "' + file.name + '"...');
+        var reader = new FileReader();
+        // sv.json_file = file;
+        reader.onload = function() {
+          var jsonObj = reader.result;
+          try {
+            var jsonParsed = JSON.parse(jsonObj);
+            // sv.trigger('drop');
+            viewer.io.loadJSON(jsonParsed.cgview)
+            viewer.drawFull();
+          } catch (e) {
+            // sv.draw();
+            // sv.flash('Could not read file: ' + e.message);
+          }
+        }
+        reader.readAsText(file);
+      });
+    }
 
   }
 

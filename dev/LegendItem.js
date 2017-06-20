@@ -202,6 +202,14 @@
       }));
       return _plots.get(term);
     }
+
+    toJSON() {
+      var json = super.toJSON();
+      json.swatchColor = this.swatchColor.rgbaString;
+      json.decoration = this.decoration;
+      return json
+    }
+
   }
 
   CGV.LegendItem = LegendItem;

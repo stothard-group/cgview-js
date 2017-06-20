@@ -249,6 +249,12 @@
       }
     }
 
+    toJSON() {
+      return {
+        color: this.color.rgbaString,
+        thickness: this.thickness
+      }
+    }
 
   }
 

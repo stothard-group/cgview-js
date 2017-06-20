@@ -71,6 +71,14 @@
       this.viewer.drawFull();
     }
 
+    toJSON() {
+      return {
+        backgroundColor: this.backgroundColor.rgbaString,
+        showShading: this.showShading,
+        arrowHeadLength: this.arrowHeadLength
+      }
+    }
+
   }
 
   CGV.Settings = Settings;

@@ -415,6 +415,14 @@
       return featuresByRF
     }
 
+    toJSON() {
+      return {
+        font: this.font.string,
+        color: this.color.rgbString,
+        seq: this.seq
+      }
+    }
+
     // _drawSequenceDots() {
     //   var ctx = this.canvas.ctx;
     //   var scale = this.canvas.scale;

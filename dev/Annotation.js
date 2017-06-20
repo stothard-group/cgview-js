@@ -11,7 +11,7 @@
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
       this._labels = new CGV.CGArray();
-      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 12');
+      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
       this._labelLineMargin = CGV.pixel(10);
       this._labelLineWidth = CGV.pixel(1);
@@ -234,6 +234,12 @@
       }
     }
 
+    toJSON() {
+      return {
+        font: this.font.string,
+        color: this.color && this.color.rgbaString
+      }
+    }
 
   }
 

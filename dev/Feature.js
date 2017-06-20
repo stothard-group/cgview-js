@@ -356,6 +356,18 @@
       });
     }
 
+    toJSON() {
+      return {
+        label: this.name,
+        type: this.type,
+        start: this.start,
+        stop: this.stop,
+        strand: this.strand,
+        source: this.source,
+        legend: this.legend.name
+      }
+    }
+
   }
 
   CGV.Feature = Feature;

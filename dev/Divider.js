@@ -105,6 +105,15 @@
       }
     }
 
+    toJSON() {
+      return {
+        visible: this.visible,
+        color: this.color.rgbaString,
+        thickness: this.thickness,
+        spacing: this.spacing
+      }
+    }
+
   }
 
   CGV.Divider = Divider;

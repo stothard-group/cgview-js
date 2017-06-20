@@ -24,8 +24,6 @@
      *  font                  | Caption font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Caption fontColor | A string describing the color. See {@link Color} for details.
      *  textAlignment         | Caption textAlignment | *left*, *center*, or *right*
-     *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
-     *  swatchOpacity         | 1                | A value between 0 and 1.
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the captionItem.
      */
@@ -250,6 +248,14 @@
       this.viewer.trigger( parent.toString().toLowerCase() + '-update');
     }
 
+    toJSON() {
+      return {
+        name: this.text,
+        font: this.font.string,
+        fontColor: this.fontColor.rgbaString,
+        textAlignment: this.textAlignment
+      }
+    }
 
   }
 

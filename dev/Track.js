@@ -314,6 +314,16 @@
       this.layout.removeTrack(this);
     }
 
+    toJSON() {
+      return {
+        name: this.name,
+        readingFrame: this.readingFrame,
+        strand: this.strand,
+        position: this.position,
+        contents: this.contents
+      }
+    }
+
   }
 
   CGV.Track = Track;
