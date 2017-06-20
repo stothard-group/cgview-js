@@ -386,8 +386,9 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} start - The start position in bp
      * @param {Number} stop - The stop position in bp (NOT IMPLEMENTED YET)
      */
-    moveTo(start, duration = 1000) {
+    moveTo(start, duration = 1000, ease) {
       var self = this;
+      ease = ease || d3.easeCubic;
       var domainX = this.scale.x.domain();
       var domainY = this.scale.y.domain();
       var halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
@@ -401,8 +402,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
       var endDomains = [ x - halfWidth, x + halfWidth, y + halfHeight, y - halfHeight];
 
-      d3.select(this.canvas.node).transition()
+      d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
+        .ease(ease)
         .tween('move', function() {
           var intermDomains = d3.interpolateArray(startDomains, endDomains)
           return function(t) {
@@ -420,8 +422,9 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} bp - The position in bp
      * @param {Number} zoomFactor - The zoome level
      */
-    zoomTo(bp, zoomFactor, duration = 1000) {
+    zoomTo(bp, zoomFactor, duration = 1000, ease) {
       var self = this;
+      ease = ease || d3.easeCubic;
 
       var zoomExtent = self._zoom.scaleExtent();
       zoomFactor = CGV.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
@@ -448,8 +451,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
       var endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
 
-      d3.select(this.canvas.node).transition()
+      d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
+        .ease(ease)
         .tween('move', function() {
           var intermDomains = d3.interpolateArray(startDomains, endDomains);
           var intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
@@ -466,8 +470,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     /*
      * Set zoom level to 1 and centers map
      */
-    reset(duration=1000) {
-      this.zoomTo(0, 1, duration);
+    reset(duration=1000, ease) {
+      this.zoomTo(0, 1, duration, ease);
     }
 
     getCurrentBp() {

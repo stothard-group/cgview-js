@@ -269,6 +269,7 @@
       var settings = this.viewer.settings;
       var shadowFraction = 0.10;
       var shadowColorDiff = 0.15;
+      ctx.lineCap = 'butt';
 
       if (decoration == 'arc') {
         if (settings.showShading) {
