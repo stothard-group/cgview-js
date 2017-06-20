@@ -264,6 +264,7 @@
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
+      if (decoration == 'none') { return }
       var scale = this.scale;
       var ctx = this.context(layer);
       var settings = this.viewer.settings;
@@ -306,7 +307,7 @@
       }
 
       // Looks like we're drawing an arrow
-      if (decoration != 'arc') {
+      if (decoration == 'arrow') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
         // var arrowHeadLengthPixels = width / 3;

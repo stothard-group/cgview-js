@@ -2,3 +2,5 @@
 jsv
 examples
 data
+src/CGView.js
+src/CGView.min.js
