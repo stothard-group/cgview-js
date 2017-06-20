@@ -115,7 +115,6 @@
           startTime = new Date().getTime();
           var featureData;
           var legends = this.createLegendItems(extractType);
-          var featureType = this.getFeatureType(extractType); // this will create the feature type
           console.log(extractType)
           for (var i = 0, len = featureDataArray.length; i < len; i++) {
             featureData = featureDataArray[i];
@@ -181,22 +180,6 @@
 
     }
 
-    getFeatureType(extractType) {
-      var viewer = this.viewer;
-      var featureType;
-      switch (extractType) {
-        case 'start_stop_codons':
-          featureType = viewer.findFeatureTypeOrCreate('Codon', 'arc');
-          break;
-        case 'orfs':
-          featureType = viewer.findFeatureTypeOrCreate('ORF', 'arrow');
-          break;
-        default:
-          featureType = viewer.findFeatureTypeOrCreate('Unknown', 'arc');
-      }
-      return featureType 
-    }
-
     createLegendItems(extractType) {
       var legends = {};
       if (extractType == 'orfs') {
@@ -217,13 +200,13 @@
       var item;
       switch (extractType) {
         case 'start-codon':
-          item = legend.findLegendItemOrCreate('Start', 'blue');
+          item = legend.findLegendItemOrCreate('Start', 'blue', 'arc');
           break;
         case 'stop-codon':
-          item = legend.findLegendItemOrCreate('Stop', 'red');
+          item = legend.findLegendItemOrCreate('Stop', 'red', 'arc');
           break;
         case 'ORF':
-          item = legend.findLegendItemOrCreate('ORF', 'green');
+          item = legend.findLegendItemOrCreate('ORF', 'green', 'arc');
           break;
         case 'gc_content':
           item = legend.findLegendItemOrCreate('GC Content', 'black');

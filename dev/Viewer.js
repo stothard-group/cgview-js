@@ -58,7 +58,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
-      this._featureTypes = new CGV.CGArray();
 
       // Initial IO
       this.io = new CGV.IO(this);
@@ -302,15 +301,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of featureTypes or a single featureTypes.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
-     * @return {CGArray}
-     */
-    featureTypes(term) {
-      return this._featureTypes.get(term);
-    }
-
-    /**
      * Clear the viewer canvas
      */
     clear(layerName = 'map') {
@@ -356,19 +346,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.layout.draw(fast);
     }
 
-    findFeatureTypeByName(name) {
-      return this._featureTypes.find( (i) => { return i.name.toLowerCase() == name.toLowerCase() });
+    featureTypes(term) {
+      var types = this._features.map( (f) => { return f.type });
+      return new CGV.CGArray([...new Set(types)]).get(term)
     }
 
-    findFeatureTypeOrCreate(name, decoration = 'arc') {
-      var type = this.findFeatureTypeByName(name);
-      if (!type) {
-        type = new CGV.FeatureType(this, {
-          name: name,
-          decoration: decoration
-        });
-      }
-      return type
+    featuresByType(type) {
+      return new CGV.CGArray( this._features.filter( (f) => { return f.type === type }));
     }
 
     refreshCaptions() {

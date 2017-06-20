@@ -26,7 +26,7 @@
      *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
      *  textAlignment         | Legend textAlignment | *left*, *center*, or *right*
      *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
-     *  swatchOpacity         | 1                | A value between 0 and 1.
+     *  decoration            | 'arc'            | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none'.
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
      */
@@ -34,6 +34,7 @@
       super(parent, data, meta)
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
+      this._decoration = CGV.defaultFor(data.decoration, 'arc');
       this.refresh();
       this.viewer.trigger('legend-update');
     }
@@ -84,6 +85,19 @@
         this._swatchColor.setColor(color);
       }
       this.refresh();
+    }
+
+    /**
+     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*, *none*.
+     */
+    get decoration() {
+      return this._decoration || 'arc'
+    }
+
+    set decoration(value) {
+      if ( CGV.validate(value, ['arc', 'arrow', 'none', 'score']) ) {
+        this._decoration = value;
+      }
     }
 
     /**

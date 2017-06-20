@@ -18,8 +18,6 @@
       this.label = new CGV.Label(this, {name: data.label} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-      // Decoration: arc, clockwise-arrow, counterclockwise-arrow
-      // this._decoration = CGV.defaultFor(data.decoration, 'arc');
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
@@ -43,18 +41,6 @@
 
     set type(value) {
       this._type = value;
-      this.featureType  = this.viewer.findFeatureTypeOrCreate(value, 'arc');
-    }
-
-    /**
-     * @member {featureType} - Get or set the *featureType*
-     */
-    get featureType() {
-      return this._featureType
-    }
-
-    set featureType(value) {
-      this._featureType = value;
     }
 
     /**
@@ -187,17 +173,26 @@
     }
 
     /**
-     * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*
+     * @member {String} - Get the decoration.
      */
     get decoration() {
-      if (this.featureType) {
-        if (this.featureType.decoration == 'arrow') {
-          return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
-        } else {
-          return this.featureType.decoration
-        }
+      // if (this.legendItem) {
+      //   if (this.legendItem.decoration == 'arrow') {
+      //     return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
+      //   } else {
+      //     return this.legendItem.decoration
+      //   }
+      // } else {
+      //   return 'arc'
+      // }
+      return (this.legendItem && this.legendItem.decoration || 'arc')
+    }
+
+    get directionalDecoration() {
+      if (this.decoration == 'arrow') {
+        return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
       } else {
-        return 'arc'
+        return this.decoration
       }
     }
 
@@ -253,14 +248,14 @@
 
           canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
           canvas.drawArc(layer, start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
         } else {
           canvas.drawArc(layer, start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.decoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
         }
       }
     }

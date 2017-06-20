@@ -13,7 +13,6 @@
    *  legend-update       | Called after legend items removed or added
    *  caption-update      | Called after caption items removed or added
    *  track-update        | Called when track is updated
-   *  feature-type-update | Called when featureTypes is updated
    *
    *
    *  mousemove           | Called when the mouse moves on the map
