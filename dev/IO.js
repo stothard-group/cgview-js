@@ -19,11 +19,21 @@
       return this._viewer
     }
 
+    formatDate(d) {
+      // return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+      var timeformat = d3.timeFormat("%Y-%m-%d %H:%M:%S");
+      return timeformat(d)
+    }
+
     toJSON() {
       var v = this.viewer;
+      var jsonInfo = v._jsonInfo || {};
+
       var json = {
         cgview: {
-          version: '1.0',
+          version: CGV.version,
+          created: jsonInfo.created || this.formatDate(new Date()),
+          updated: this.formatDate(new Date()),
           settings: {
             general: v.settings.toJSON(),
             backbone: v.backbone.toJSON(),
@@ -60,9 +70,20 @@
      */
     loadJSON(json) {
       var viewer = this._viewer;
+
+      // JSON Info
+      viewer._jsonInfo = {
+        version: json.version,
+        created: json.created
+      }
+
+      // Reset arrays
+      viewer._features = new CGV.CGArray();
+      viewer._plots = new CGV.CGArray();
+      viewer._captions = new CGV.CGArray();
+
       // Load Sequence
       viewer._sequence = new CGV.Sequence(viewer, json.sequence);
-
       // Load Settings
       var settings = json.settings || {};
       // General Settings
@@ -83,11 +104,6 @@
 
       // Load Legend
       viewer.legend = new CGV.Legend(viewer, json.legend);
-
-      // Reset arrays
-      viewer._features = new CGV.CGArray();
-      viewer._plots = new CGV.CGArray();
-      viewer._captions = new CGV.CGArray();
 
       // Create features
       if (json.features) {

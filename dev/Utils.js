@@ -3,6 +3,10 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
 
+  CGV.log = function(msg, level) {
+    console.log(msg);
+  }
+
   CGV.testSearch = function(length) {
     var pattern = /ATG/igm;
     var indices = []

@@ -1,6 +1,7 @@
 var CGView = {};
 
 CGView.version = '0.1';
+console.log(`CGView Version: ${CGView.version}`)
 
 if (window.CGV === undefined) window.CGV = CGView;
 

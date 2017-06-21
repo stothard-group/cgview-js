@@ -80,7 +80,7 @@
     }
 
     /**
-     * @member {Context} - Get the *Context*
+     * @member {Context} - Get the *Context* for drawing.
      */
     get ctx() {
       return this.canvas.context('captions')
