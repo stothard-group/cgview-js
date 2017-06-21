@@ -30,6 +30,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * width           | Number | Width of viewer in pixels (Default: 600)
      * height          | Number | Height of viewer in pixels (Default: 600)
      * sequence        | Object | [Sequence](Sequence.html) options
+     * settings        | Object | [Settings](Settings.html) options
      * legend          | Object | [Legend](Legend.html) options
      * backbone        | Object | [Backbone](Backbone.html) options
      * layout          | Object | [Layout](Layout.html) options
@@ -144,7 +145,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set zoomFactor(value) {
       this._zoomFactor = value;
-      // TODO: update anything related to zoom
     }
 
     /**
@@ -211,10 +211,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     //////////////////////////////////////////////////////////////////////////
     // METHODS
     //////////////////////////////////////////////////////////////////////////
-
-    // load_json(json) {
-    //   this._io.load_json(json);
-    // }
 
     /**
      * Resizes the the Viewer
@@ -307,15 +303,11 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {Number}
      */
     maxZoomedRadius() {
-      // return this.minDimension * 1.4; // TODO: need to add up all proportions
-      return this.minDimension * 1; // TODO: need to add up all proportions
+      return this.minDimension;
     }
 
     fillBackground() {
       this.clear('background');
-      // var ctx = this.canvas.context('background');
-      // ctx.fillStyle = this.backgroundColor.rgbaString;
-      // ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
     }
 
     drawFull() {

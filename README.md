@@ -77,6 +77,7 @@ Component                        | Accessor                                   | 
 [Layout](Layout.html)            | [layout](Viewer.html#layout)               | The Layout describes what's in each Track and how to lay them out.
 [Ruler](Ruler.html)              | [ruler](Viewer.html#ruler)                 | The Ruler controls how the sequence ruler is drawn.
 [Annotation](Annotation.html)    | [annotation](Viewer.html#annotation)       | Annotation controls how feature labels are drawn.
+[Settings](Settings.html)        | [settings](Viewer.html#settings)           | Settings store general options for the viewer.
 [Messenger](Messenger.html)      | [messenger](Viewer.html#messenger)         | Messenger provides the interface for showing messages.
 [Divider](Divider.html)          | [slotDivider](Viewer.html#slotDivider)     | The slotDivider controls the space and lines between each slot.
 [Help](Help.html)                | [help](Viewer.html#help)                   | Help control what is draw in the help menu.
@@ -87,12 +88,15 @@ Component                        | Accessor                                   | 
 [Caption](Caption.html)          | [captions()](Viewer.html#captions)         | Returns one or more Captions.
 [FeatureType](FeatureType.html)  | [featureType()](Viewer.html#featureTypes)  | Returns one or more FeatureTypes.
 
+### JSON Format ###
+
+[See the CGView JSON format](json_format.html)
 
 ### Tutorials ###
 
 - [Basic Map](basic_map.html): Learn how to create a simple map features and a plot
-- Sequence Map: Learn how to create a map with features and plots extracted from the sequence.
-- JSON Map: Learn how to create a map by importing from JSON.
+- [Sequence Map](sequence_map.html): Learn how to create a map with features and plots extracted from the sequence.
+- [JSON Map](json_map.html): Learn how to create a map by importing from JSON.
 - Helpful tips: Learch about some useful CGView.js tips.
 
 

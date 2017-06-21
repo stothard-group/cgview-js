@@ -49,12 +49,13 @@
 			<ul class="nav navbar-nav">
 				<li><a href="../viewer.html">Demo</a></li>
 				<li class="active"><a href="#">Docs</a></li>
+        <li><a href="json_format.html">JSON</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="basic_map.html">Basic Map</a></li>
             <li><a href="sequence_map.html">Sequence Map</a></li>
-            <li><a href="#">JSON Map</a></li>
+            <li><a href="json_map.html">JSON Map</a></li>
           </ul>
         </li>
 			</ul>
@@ -474,37 +475,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="Dialog">
-            <span class="title">
-                <a href="Dialog.html">Dialog</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="Dialog#fadeTime"><a href="Dialog.html#fadeTime">fadeTime</a></li>
-            
-                <li data-name="Dialog#visible"><a href="Dialog.html#visible">visible</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="Dialog#close"><a href="Dialog.html#close">close</a></li>
-            
-                <li data-name="Dialog#open"><a href="Dialog.html#open">open</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="Divider">
             <span class="title">
                 <a href="Divider.html">Divider</a>
@@ -603,8 +573,6 @@
             
                 <li data-name="Feature#extractedFromSequence"><a href="Feature.html#extractedFromSequence">extractedFromSequence</a></li>
             
-                <li data-name="Feature#featureType"><a href="Feature.html#featureType">featureType</a></li>
-            
                 <li data-name="Feature#label"><a href="Feature.html#label">label</a></li>
             
                 <li data-name="Feature#legend"><a href="Feature.html#legend">legend</a></li>
@@ -640,35 +608,6 @@
                 <li data-name="Feature#toString"><a href="Feature.html#toString">toString</a></li>
             
                 <li data-name="Feature#tracks"><a href="Feature.html#tracks">tracks</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="FeatureType">
-            <span class="title">
-                <a href="FeatureType.html">FeatureType</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="FeatureType#decoration"><a href="FeatureType.html#decoration">decoration</a></li>
-            
-                <li data-name="FeatureType#id"><a href="FeatureType.html#id">id</a></li>
-            
-                <li data-name="FeatureType#name"><a href="FeatureType.html#name">name</a></li>
-            
-                <li data-name="FeatureType#viewer"><a href="FeatureType.html#viewer">viewer</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -751,6 +690,10 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="IO#viewer"><a href="IO.html#viewer">viewer</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -759,7 +702,9 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
+                <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
+            
+                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -872,6 +817,8 @@
             
                 <li data-name="LegendItem#color"><a href="LegendItem.html#color">color</a></li>
             
+                <li data-name="LegendItem#decoration"><a href="LegendItem.html#decoration">decoration</a></li>
+            
                 <li data-name="LegendItem#drawSwatch"><a href="LegendItem.html#drawSwatch">drawSwatch</a></li>
             
                 <li data-name="LegendItem#font"><a href="LegendItem.html#font">font</a></li>
@@ -909,43 +856,6 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="LegendItem#toString"><a href="LegendItem.html#toString">toString</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="Menu">
-            <span class="title">
-                <a href="Menu.html">Menu</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="Menu#available"><a href="Menu.html#available">available</a></li>
-            
-                <li data-name="Menu#height"><a href="Menu.html#height">height</a></li>
-            
-                <li data-name="Menu#opened"><a href="Menu.html#opened">opened</a></li>
-            
-                <li data-name="Menu#slideTime"><a href="Menu.html#slideTime">slideTime</a></li>
-            
-                <li data-name="Menu#width"><a href="Menu.html#width">width</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="Menu#close"><a href="Menu.html#close">close</a></li>
-            
-                <li data-name="Menu#open"><a href="Menu.html#open">open</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1237,6 +1147,8 @@
             
                 <li data-name="Settings#backgroundColor"><a href="Settings.html#backgroundColor">backgroundColor</a></li>
             
+                <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -1380,6 +1292,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#allowDragAndDrop"><a href="Viewer.html#allowDragAndDrop">allowDragAndDrop</a></li>
+            
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
@@ -1406,8 +1320,6 @@
             
                 <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
             
-                <li data-name="Viewer#featureTypes"><a href="Viewer.html#featureTypes">featureTypes</a></li>
-            
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#maxZoomedRadius"><a href="Viewer.html#maxZoomedRadius">maxZoomedRadius</a></li>
@@ -1421,6 +1333,8 @@
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#zoomTo"><a href="Viewer.html#zoomTo">zoomTo</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1467,7 +1381,7 @@ of component options can be set during construction of the Viewer.</p></div>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line17">line 17</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line18">line 18</a>
         </div>
         
     </div>
@@ -1576,6 +1490,11 @@ options will be passed to the contructor of that component.</p>
 <td><a href="Sequence.html">Sequence</a> options</td>
 </tr>
 <tr>
+<td>settings</td>
+<td>Object</td>
+<td><a href="Settings.html">Settings</a> options</td>
+</tr>
+<tr>
 <td>legend</td>
 <td>Object</td>
 <td><a href="Legend.html">Legend</a> options</td>
@@ -1670,6 +1589,51 @@ options will be passed to the contructor of that component.</p>
         <h3 class="subsection-title">Members</h3>
         
         <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="allowDragAndDrop">allowDragAndDrop<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the ability to drag-n-drop JSON files on to viewer</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
             
 <dt>
     <div class="nameContainer">
@@ -1956,7 +1920,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line304">line 304</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line283">line 283</a>
         </div>
         
     </div>
@@ -2107,7 +2071,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line320">line 320</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line290">line 290</a>
         </div>
         
     </div>
@@ -2178,7 +2142,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line277">line 277</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line256">line 256</a>
         </div>
         
     </div>
@@ -2322,157 +2286,6 @@ options will be passed to the contructor of that component.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="featureTypes">
-            
-            featureTypes<span class="signature">(term)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{CGArray}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line313">line 313</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns an <a href="CGArray.js.html">CGArray</a> of featureTypes or a single featureTypes.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>term</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Integer</span>
-|
-
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>See <a href="CGArray.js.html#get">CGArray.get</a> for details.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        CGArray
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="flash">
             
             flash<span class="signature">()</span>
@@ -2480,7 +2293,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line327">line 327</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line297">line 297</a>
         </div>
         
     </div>
@@ -2551,7 +2364,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line335">line 335</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line305">line 305</a>
         </div>
         
     </div>
@@ -2651,7 +2464,7 @@ options will be passed to the contructor of that component.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line393">line 393</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line353">line 353</a>
         </div>
         
     </div>
@@ -2792,7 +2605,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line295">line 295</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line274">line 274</a>
         </div>
         
     </div>
@@ -2943,7 +2756,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line230">line 230</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line223">line 223</a>
         </div>
         
     </div>
@@ -3148,7 +2961,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line268">line 268</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line247">line 247</a>
         </div>
         
     </div>
@@ -3299,7 +3112,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line286">line 286</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line265">line 265</a>
         </div>
         
     </div>
@@ -3439,6 +3252,146 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="zoomTo">
+            
+            zoomTo<span class="signature">(bp, zoomFactor)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line389">line 389</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Move the viewer to <em>bp</em> position at the provided <em>zoomFactor</em>.
+If <em>bp</em> is falsy (inc. 0), the map is centered.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>bp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The position in bp</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>zoomFactor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The zoome level</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3456,7 +3409,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 14 2017 10:39:57 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

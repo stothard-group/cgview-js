@@ -64,17 +64,21 @@
     }
 
     /**
-     * Load data from NEW JSON format.
+     * Load data from object literal or JSON string ([Format details](json_format.html).
      * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
+     * @param {Object} data - JSON string or Object Literal
      */
-    loadJSON(json) {
+    loadJSON(data) {
       var viewer = this._viewer;
 
-      // JSON Info
-      viewer._jsonInfo = {
-        version: json.version,
-        created: json.created
+      if (typeof data === 'string') {
+        data = JSON.parse(data);
+      }
+
+      // data Info
+      viewer._dataInfo = {
+        version: data.version,
+        created: data.created
       }
 
       // Reset arrays
@@ -83,9 +87,9 @@
       viewer._captions = new CGV.CGArray();
 
       // Load Sequence
-      viewer._sequence = new CGV.Sequence(viewer, json.sequence);
+      viewer._sequence = new CGV.Sequence(viewer, data.sequence);
       // Load Settings
-      var settings = json.settings || {};
+      var settings = data.settings || {};
       // General Settings
       viewer.settings = new CGV.Settings(viewer, settings.general);
       // Ruler
@@ -96,33 +100,33 @@
       viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
 
       // Load Captions
-      if (json.captions) {
-        json.captions.forEach((captionData) => {
+      if (data.captions) {
+        data.captions.forEach((captionData) => {
           new CGV.Caption(viewer, captionData);
         });
       }
 
       // Load Legend
-      viewer.legend = new CGV.Legend(viewer, json.legend);
+      viewer.legend = new CGV.Legend(viewer, data.legend);
 
       // Create features
-      if (json.features) {
-        json.features.forEach((featureData) => {
+      if (data.features) {
+        data.features.forEach((featureData) => {
           new CGV.Feature(viewer, featureData);
         });
       }
 
-      if (json.dividers) {
+      if (data.dividers) {
       }
 
-      if (json.plots) {
-        json.plots.forEach((plotData) => {
+      if (data.plots) {
+        data.plots.forEach((plotData) => {
           new CGV.Plot(viewer, plotData);
         });
       }
 
       // Load Layout
-      viewer.layout = new CGV.Layout(viewer, json.layout);
+      viewer.layout = new CGV.Layout(viewer, data.layout);
     }
 
     exportImage(width, height) {

@@ -49,12 +49,13 @@
 			<ul class="nav navbar-nav">
 				<li><a href="../viewer.html">Demo</a></li>
 				<li class="active"><a href="#">Docs</a></li>
+        <li><a href="json_format.html">JSON</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="basic_map.html">Basic Map</a></li>
             <li><a href="sequence_map.html">Sequence Map</a></li>
-            <li><a href="#">JSON Map</a></li>
+            <li><a href="json_map.html">JSON Map</a></li>
           </ul>
         </li>
 			</ul>
@@ -474,37 +475,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="Dialog">
-            <span class="title">
-                <a href="Dialog.html">Dialog</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="Dialog#fadeTime"><a href="Dialog.html#fadeTime">fadeTime</a></li>
-            
-                <li data-name="Dialog#visible"><a href="Dialog.html#visible">visible</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="Dialog#close"><a href="Dialog.html#close">close</a></li>
-            
-                <li data-name="Dialog#open"><a href="Dialog.html#open">open</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="Divider">
             <span class="title">
                 <a href="Divider.html">Divider</a>
@@ -603,8 +573,6 @@
             
                 <li data-name="Feature#extractedFromSequence"><a href="Feature.html#extractedFromSequence">extractedFromSequence</a></li>
             
-                <li data-name="Feature#featureType"><a href="Feature.html#featureType">featureType</a></li>
-            
                 <li data-name="Feature#label"><a href="Feature.html#label">label</a></li>
             
                 <li data-name="Feature#legend"><a href="Feature.html#legend">legend</a></li>
@@ -640,35 +608,6 @@
                 <li data-name="Feature#toString"><a href="Feature.html#toString">toString</a></li>
             
                 <li data-name="Feature#tracks"><a href="Feature.html#tracks">tracks</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="FeatureType">
-            <span class="title">
-                <a href="FeatureType.html">FeatureType</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="FeatureType#decoration"><a href="FeatureType.html#decoration">decoration</a></li>
-            
-                <li data-name="FeatureType#id"><a href="FeatureType.html#id">id</a></li>
-            
-                <li data-name="FeatureType#name"><a href="FeatureType.html#name">name</a></li>
-            
-                <li data-name="FeatureType#viewer"><a href="FeatureType.html#viewer">viewer</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
             
             </ul>
             <ul class="events itemMembers">
@@ -751,6 +690,10 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="IO#viewer"><a href="IO.html#viewer">viewer</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -759,7 +702,9 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
+                <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
+            
+                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -872,6 +817,8 @@
             
                 <li data-name="LegendItem#color"><a href="LegendItem.html#color">color</a></li>
             
+                <li data-name="LegendItem#decoration"><a href="LegendItem.html#decoration">decoration</a></li>
+            
                 <li data-name="LegendItem#drawSwatch"><a href="LegendItem.html#drawSwatch">drawSwatch</a></li>
             
                 <li data-name="LegendItem#font"><a href="LegendItem.html#font">font</a></li>
@@ -909,43 +856,6 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="LegendItem#toString"><a href="LegendItem.html#toString">toString</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="Menu">
-            <span class="title">
-                <a href="Menu.html">Menu</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="Menu#available"><a href="Menu.html#available">available</a></li>
-            
-                <li data-name="Menu#height"><a href="Menu.html#height">height</a></li>
-            
-                <li data-name="Menu#opened"><a href="Menu.html#opened">opened</a></li>
-            
-                <li data-name="Menu#slideTime"><a href="Menu.html#slideTime">slideTime</a></li>
-            
-                <li data-name="Menu#width"><a href="Menu.html#width">width</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="Menu#close"><a href="Menu.html#close">close</a></li>
-            
-                <li data-name="Menu#open"><a href="Menu.html#open">open</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1237,6 +1147,8 @@
             
                 <li data-name="Settings#backgroundColor"><a href="Settings.html#backgroundColor">backgroundColor</a></li>
             
+                <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -1380,6 +1292,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#allowDragAndDrop"><a href="Viewer.html#allowDragAndDrop">allowDragAndDrop</a></li>
+            
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
@@ -1406,8 +1320,6 @@
             
                 <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
             
-                <li data-name="Viewer#featureTypes"><a href="Viewer.html#featureTypes">featureTypes</a></li>
-            
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#maxZoomedRadius"><a href="Viewer.html#maxZoomedRadius">maxZoomedRadius</a></li>
@@ -1421,6 +1333,8 @@
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#zoomTo"><a href="Viewer.html#zoomTo">zoomTo</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1452,64 +1366,117 @@
     constructor(viewer) {
       this._viewer = viewer;
     }
+    /**
+     * @member {Viewer} - Get the viewer.
+     */
+    get viewer() {
+      return this._viewer
+    }
+
+    formatDate(d) {
+      // return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+      var timeformat = d3.timeFormat("%Y-%m-%d %H:%M:%S");
+      return timeformat(d)
+    }
+
+    toJSON() {
+      var v = this.viewer;
+      var jsonInfo = v._jsonInfo || {};
+
+      var json = {
+        cgview: {
+          version: CGV.version,
+          created: jsonInfo.created || this.formatDate(new Date()),
+          updated: this.formatDate(new Date()),
+          settings: {
+            general: v.settings.toJSON(),
+            backbone: v.backbone.toJSON(),
+            ruler: v.ruler.toJSON(),
+            annotation: v.annotation.toJSON(),
+            dividers: {
+              slot: v.slotDivider.toJSON()
+            }
+          },
+          captions: [],
+          legend: v.legend.toJSON(),
+          sequence: v.sequence.toJSON(),
+          features: [],
+          plots: [],
+          layout: v.layout.toJSON()
+        }
+      }
+      v.captions().each( (i, caption) => {
+        json.cgview.captions.push(caption.toJSON());
+      });
+      v.features().each( (i, feature) => {
+        // Only export features that were not extracted from the sequence.
+        if (!feature.extractedFromSequence) {
+          json.cgview.features.push(feature.toJSON());
+        }
+      });
+      return json
+    }
 
     /**
-     * Load data from NEW JSON format.
+     * Load data from object literal or JSON string ([Format details](json_format.html).
      * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
+     * @param {Object} data -
      */
-    loadJSON(json) {
+    loadData(data) {
       var viewer = this._viewer;
-      // Load Sequence
-      viewer._sequence = new CGV.Sequence(viewer, json.sequence);
-      // Load Settings TODO:
-      var settings = json.settings;
-      // viewer.annotation.visible = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-      // viewer.annotation.font = CGV.defaultFor(json.labelFont, viewer.labelFont);
 
+      // data Info
+      viewer._dataInfo = {
+        version: data.version,
+        created: data.created
+      }
+
+      // Reset arrays
+      viewer._features = new CGV.CGArray();
+      viewer._plots = new CGV.CGArray();
+      viewer._captions = new CGV.CGArray();
+
+      // Load Sequence
+      viewer._sequence = new CGV.Sequence(viewer, data.sequence);
+      // Load Settings
+      var settings = data.settings || {};
       // General Settings
       viewer.settings = new CGV.Settings(viewer, settings.general);
       // Ruler
       viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
       // Backbone
       viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
+      // Annotation
+      viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
+
       // Load Captions
-      if (json.captions) {
-        json.captions.forEach((captionData) => {
+      if (data.captions) {
+        data.captions.forEach((captionData) => {
           new CGV.Caption(viewer, captionData);
         });
       }
 
       // Load Legend
-      viewer.legend = new CGV.Legend(viewer, json.legend);
-
-      // Create featureTypes
-      if (json.featureTypes) {
-        json.featureTypes.forEach((featureTypeData) => {
-          new CGV.FeatureType(viewer, featureTypeData);
-        });
-      }
+      viewer.legend = new CGV.Legend(viewer, data.legend);
 
       // Create features
-      if (json.features) {
-        json.features.forEach((featureData) => {
+      if (data.features) {
+        data.features.forEach((featureData) => {
           new CGV.Feature(viewer, featureData);
         });
       }
 
-      if (json.dividers) {
+      if (data.dividers) {
       }
 
-      if (json.plots) {
-        json.plots.forEach((plotData) => {
-          console.log('PLOT')
+      if (data.plots) {
+        data.plots.forEach((plotData) => {
           new CGV.Plot(viewer, plotData);
         });
       }
 
       // Load Layout
-      viewer.layout = new CGV.Layout(viewer, json.layout);
-
+      viewer.layout = new CGV.Layout(viewer, data.layout);
     }
 
     exportImage(width, height) {
@@ -1561,7 +1528,8 @@
       exportContext.drawImage(tempLayers['captions'].node, 0, 0);
 
       // Generate image from export layer
-      var image = tempLayers['export'].node.toDataURL();
+      // var image = tempLayers['export'].node.toDataURL();
+      var image = tempLayers['export'].node.toBlob( (blob) => { this.download(blob, 'image.png', 'image/png')} );
 
       // Restore original layers and settings
       canvas._layers = origLayers
@@ -1572,28 +1540,128 @@
         d3.select(tempLayers[name].node).remove();
       }
 
-      var win = window.open();
-      var html = [
-        '&lt;html>',
-          '&lt;head>',
-            '&lt;title>',
-              windowTitle,
-            '&lt;/title>',
-          '&lt;/head>',
-          '&lt;body>',
-        // FIXME: The following 3 lines are TEMPORARILY commented out while making preview comparisons
-            '&lt;h2>Your CGView Image is Below&lt;/h2>',
-            '&lt;p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.&lt;/p>',
-            '&lt;h3>Preview&lt;/h3>',
-            '&lt;img style="border: 1px solid grey" width="' + viewer.width + '" height="' + viewer.height +  '" src="' + image +  '"/ >',
-            '&lt;h3>Actual Size&lt;/h3>',
-            '&lt;img style="border: 1px solid grey" src="' + image +  '"/ >',
-          '&lt;/body>',
-        '&lt;html>'
-      ].join('');
-      win.document.write(html);
+
+      // // Preview
+      // var previewWidth = Math.min(400, width);
+      // var previewHeight = Math.min(400, height);
+      //
+      // var win = window.open();
+      // var html = [
+      //   '&lt;html>',
+      //     '&lt;head>',
+      //       '&lt;title>',
+      //         windowTitle,
+      //       '&lt;/title>',
+      //       '&lt;style>',
+      //         'body { font-family: sans-serif; }',
+      //       '&lt;/style>',
+      //     '&lt;/head>',
+      //     '&lt;body>',
+      //       '&lt;h2>Your CGView Image is Below&lt;/h2>',
+      //       '&lt;p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.&lt;/p>',
+      //       '&lt;h3>Preview&lt;/h3>',
+      //       '&lt;img style="border: 1px solid grey" width="' + previewWidth+ '" height="' + previewHeight +  '" src="' + image +  '"/ >',
+      //       '&lt;h3>Actual Size&lt;/h3>',
+      //       // '&lt;img style="border: 1px solid grey" src="' + image +  '"/ >',
+      //       '&lt;img style="border: 1px solid grey" width="' + width+ '" height="' + height +  '" src="' + image +  '"/ >',
+      //     '&lt;/body>',
+      //   '&lt;html>'
+      // ].join('');
+      // win.document.write(html);
     }
 
+    exportFasta(id) {
+      var fasta = this.viewer.sequence.asFasta(id);
+      this.download(fasta, 'sequence.fa', 'text/plain');
+    }
+
+    exportJSON() {
+      var json = this.viewer.io.toJSON();
+      this.download(JSON.stringify(json), 'cgview.json', 'text/json');
+    }
+
+    // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+		download(data, filename, type='text/plain') {
+		  var file = new Blob([data], {type: type});
+			if (window.navigator.msSaveOrOpenBlob) // IE10+
+				window.navigator.msSaveOrOpenBlob(file, filename);
+			else { // Others
+				var a = document.createElement("a");
+				var	url = URL.createObjectURL(file);
+				a.href = url;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(function() {
+						document.body.removeChild(a);
+						window.URL.revokeObjectURL(url);  
+				}, 0); 
+			}
+		}
+
+    /**
+     * Initialize Viewer Drag-n-Drop.
+     */
+    initializeDragAndDrop() {
+      var viewer = this.viewer;
+      var canvas = viewer.canvas
+      d3.select(canvas.node('ui')).on('dragleave.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        viewer.drawFull();
+      });
+
+      d3.select(canvas.node('ui')).on('dragover.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        // sv.draw();
+        // sv.flash('Drop Bayesil JSON File...');
+      });
+
+      d3.select(canvas.node('ui')).on('drop.dragndrop', () => {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        // sv.draw();
+        viewer.drawFull();
+        var file = d3.event.dataTransfer.files[0];
+        // console.log(file.type)
+        // sv.flash('Loading "' + file.name + '"...');
+        var reader = new FileReader();
+        // sv.json_file = file;
+        reader.onload = function() {
+          var jsonObj = reader.result;
+          try {
+            var jsonParsed = JSON.parse(jsonObj);
+            // sv.trigger('drop');
+            viewer.io.loadJSON(jsonParsed.cgview)
+            viewer.drawFull();
+          } catch (e) {
+            // sv.draw();
+            // sv.flash('Could not read file: ' + e.message);
+          }
+        }
+        reader.readAsText(file);
+      });
+    }
+
+  }
+
+  // A low performance polyfill based on toDataURL.
+  if (!HTMLCanvasElement.prototype.toBlob) {
+    Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+      value: function (callback, type, quality) {
+
+        var binStr = atob( this.toDataURL(type, quality).split(',')[1] ),
+          len = binStr.length,
+          arr = new Uint8Array(len);
+
+        for (var i = 0; i &lt; len; i++ ) {
+          arr[i] = binStr.charCodeAt(i);
+        }
+
+        callback( new Blob( [arr], {type: type || 'image/png'} ) );
+      }
+    });
   }
 
   CGV.IO = IO;
@@ -1601,83 +1669,6 @@
 })(CGView);
 
 
-    /**
-     * Load data from OLD JSON format (modeled after XML from original CGView).
-     * Removes any previous viewer data and overrides options that are already set.
-     * @param {Object} data - TODO
-     */
-    // load_json(json) {
-    //   var viewer = this._viewer;
-    //
-    //   // Determine scale factor between viewer and json map data
-    //   var jsonMinDimension = Math.min(json.height, json.width);
-    //   var viewerMinDimension = Math.min(viewer.height, viewer.width);
-    //   var scaleFacter = jsonMinDimension / viewerMinDimension;
-    //
-    //   // Override Main Viewer settings
-    //   if (json.sequence) {
-    //     viewer.sequence.seq = json.sequence.seq;
-    //   } else {
-    //     viewer.sequence.length = CGV.defaultFor(json.sequenceLength, viewer.sequence.length);
-    //   }
-    //   viewer.globalLabel = CGV.defaultFor(json.globalLabel, viewer.globalLabel);
-    //   viewer.labelFont = CGV.defaultFor(json.labelFont, viewer.labelFont);
-    //   viewer.ruler.font = CGV.defaultFor(json.rulerFont, viewer.ruler.font);
-    //   viewer.backbone.radius = json.backboneRadius / scaleFacter;
-    //   viewer.backbone.color = CGV.defaultFor(json.backboneColor, viewer.backbone.color);
-    //   viewer.backbone.thickness = Math.ceil(json.backboneThickness / scaleFacter);
-    //   // ...
-    //
-    //   // Load Tracks
-    //   if (json.tracks) {
-    //     json.tracks.forEach((slotData) => {
-    //       new CGV.Track(viewer, slotData);
-    //     });
-    //   }
-    //
-    //   // Load Legends
-    //   if (json.legends) {
-    //     json.legends.forEach((legendData) => {
-    //       new CGV.Legend(viewer, legendData);
-    //     });
-    //   }
-    //
-    //   // Associate features and arcplots with LegendItems
-    //   var swatchedLegendItems = viewer.swatchedLegendItems();
-    //   var itemsLength = swatchedLegendItems.length;
-    //   var legendItem;
-    //   // Features
-    //   var features = viewer.features();
-    //   var feature;
-    //   for (var i = 0, len = features.length; i &lt; len; i++) {
-    //     feature = features[i];
-    //     for (var j = 0; j &lt; itemsLength; j++) {
-    //       legendItem = swatchedLegendItems[j];
-    //       if (feature._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         feature.legendItem = legendItem;
-    //         break
-    //       }
-    //     }
-    //   }
-    //   // Plots
-    //   var plots = viewer.plots();
-    //   var plot;
-    //   for (var i = 0, len = plots.length; i &lt; len; i++) {
-    //     plot = plots[i];
-    //     for (var j = 0; j &lt; itemsLength; j++) {
-    //       legendItem = swatchedLegendItems[j];
-    //       if (plot._color.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItem = legendItem;
-    //       }
-    //       if (plot._colorPositive &amp;&amp; plot._colorPositive.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItemPositive = legendItem;
-    //       }
-    //       if (plot._colorNegative &amp;&amp; plot._colorNegative.rgbaString == legendItem.swatchColor.rgbaString) {
-    //         plot.legendItemNegative = legendItem;
-    //       }
-    //     }
-    //   }
-    // }
 </code></pre>
         </article>
     </section>
@@ -1690,7 +1681,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 14 2017 10:39:56 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

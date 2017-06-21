@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CGView: Sequence Map</title>
+  <meta charset="UTF-8">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- <script src="javascript/jquery&#45;1.11.1.min.js"></script> -->
+  <!-- Bootstrap 3 -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="../javascript/marked.min.js"></script>
+
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+	<link rel="stylesheet" href="styles/prettify-jsdoc.css">
+	<link rel="stylesheet" href="styles/prettify-tomorrow.css">
+	<link rel="stylesheet" href="../stylesheets/tutorial.css">
+	<!-- <link rel="stylesheet" href="docs/styles/jaguar.css"> -->
+
+  <!-- Prerequisites -->
+  <!-- Local -->
+  <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+  <script src="../javascript/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
+  <!-- CGView -->
+  <script src='../src/CGView.js'></script>
+  <link rel="stylesheet" href="../stylesheets/cgview.css" />
+
+  <style>
+    a.json-link span{
+      color: rgb(100, 100, 250);
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+<body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">CGView.js</a>
+			</div>
+			<div class="collapse navbar-collapse" id="main-nav">
+				<ul class="nav navbar-nav">
+					<li><a href="../viewer.html">Demo</a></li>
+					<li><a href="index.html">Docs</a></li>
+					<li class='active'><a href="json_format.html">JSON</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="basic_map.html">Basic Map</a></li>
+              <li><a href="sequence_map.html">Sequence Map</a></li>
+              <li><a href="json_map.html">JSON Map</a></li>
+            </ul>
+          </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+  <div id='main'>
+		<div id='markdown-out'></div>
+  </div>
+
+<div id='markdown-in' style='display:none;'>
+
+# CGView Data Format #
+
+Data can be loaded from a JavaScript object literal or a JSON string. The two formats are very similar and can be 
+converted using the JSON.parse and JSON.stringify. The example below is shown as an object literal.
+
+```js
+{
+    "cgview": {
+        "version": "0.1",
+        "created": "2017-06-21 13:29:07",
+        "updated": "2017-06-21 13:29:07",
+        "settings": {
+            "general": {
+                "backgroundColor": "rgba(255,255,255,1)",
+                "showShading": true,
+                "arrowHeadLength": 0.3
+            },
+            "backbone": {
+                "color": "rgba(128,128,128,1)",
+                "thickness": 5
+            },
+            "ruler": {
+                "font": "sans-serif,plain,10",
+                "color": "rgba(0,0,0,1)"
+            },
+            "annotation": {
+                "font": "sans-serif,plain,12"
+            },
+            "dividers": {
+                "slot": {
+                    "visible": true,
+                    "color": "rgba(128,128,128,1)",
+                    "thickness": 1,
+                    "spacing": 1
+                }
+            }
+        },
+        "captions": [
+            {
+                "name": "Title",
+                "position": "lower-center",
+                "textAlignment": "left",
+                "font": "sans-serif,plain,24",
+                "backgroundColor": "rgba(255,255,255,0.4)",
+                "items": [
+                    {
+                        "name": "Reclinomonas americana mitochondrion, complete genome.",
+                        "font": "sans-serif,plain,24",
+                        "fontColor": "rgba(255,165,0,1)",
+                        "textAlignment": "left"
+                    }
+                ]
+            }
+        ],
+        "legend": {
+            "name": "Legend",
+            "position": "upper-right",
+            "textAlignment": "left",
+            "font": "sans-serif,plain,14",
+            "backgroundColor": "rgba(255,255,255,0.75)",
+            "items": [
+                {
+                    "name": "CDS",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "swatchColor": "rgba(0,0,153,0.5)",
+                    "decoration": "arrow"
+                },
+                {
+                    "name": "rRNA",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "swatchColor": "rgba(0,153,53,0.5)",
+                    "decoration": "arrow"
+                }
+            ]
+        },
+        "sequence": {
+            "font": "sans-serif,plain,10",
+            "color": "rgb(0,0,0)",
+            "seq": "TAAAAAAATCGGTATAATTAAGAATTTTTTTCTTAAATATGCAATAAAAATATTATAAA..."
+        },
+        "features": [
+            {
+                "label": "rnl",
+                "type": "rRNA",
+                "start": 56,
+                "stop": 2806,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "rRNA"
+            },
+            {
+                "label": "nad8",
+                "type": "CDS",
+                "start": 3252,
+                "stop": 3740,
+                "strand": -1,
+                "source": "sequence-features",
+                "legend": "CDS"
+            }
+        ],
+        "plots": [],
+        "layout": {
+            "tracks": [
+                {
+                    "name": "Features",
+                    "readingFrame": "combined",
+                    "strand": "separated",
+                    "position": "both",
+                    "contents": {
+                        "type": "feature",
+                        "from": "source",
+                        "extract": "sequence-features"
+                    }
+                }
+            ]
+        }
+    }
+}
+```
+
+</div>
+
+<script>
+	// Convert Markdown to HTML
+  // https://github.com/chjj/marked
+  //marked.setOptions({
+  //  sanitize: true
+  //});
+	var marked_ = marked;
+	var marked = function(text) {
+			var tok = marked_.lexer(text);
+			text = marked_.parser(tok);
+			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
+      text = text.replace(/&amp;gt;/g, '>');
+      text = text.replace(/&amp;lt;/g, '<');
+      // var re = /\[(.*?)\]\((.*?)\)/g;
+      // text = text.replace(re, "<a href='$2'>$1</a>");
+
+      text = text.replace('cgview:', "<a class='json-link' href='Viewer.html'>cgview</a>:");
+      text = text.replace('general:', "<a class='json-link' href='Settings.html'>general</a>:");
+      text = text.replace('backbone:', "<a class='json-link' href='Backbone.html'>backbone</a>:");
+      text = text.replace('ruler:', "<a class='json-link' href='Ruler.html'>ruler</a>:");
+      text = text.replace('annotation:', "<a class='json-link' href='Annotation.html'>annotation</a>:");
+      text = text.replace('dividers:', "<a class='json-link' href='Divider.html'>dividers</a>:");
+      text = text.replace('captions:', "<a class='json-link' href='Caption.html'>captions</a>:");
+      text = text.replace('items:', "<a class='json-link' href='CaptionItem.html'>items</a>:");
+      text = text.replace('legend:', "<a class='json-link' href='Legend.html'>legend</a>:");
+      text = text.replace('items:', "<a class='json-link' href='LegendItem.html'>items</a>:");
+      text = text.replace('sequence:', "<a class='json-link' href='Sequence.html'>sequence</a>:");
+      text = text.replace('features:', "<a class='json-link' href='Feature.html'>features</a>:");
+      text = text.replace('plots:', "<a class='json-link' href='Plot.html'>plots</a>:");
+      text = text.replace('layout:', "<a class='json-link' href='Layout.html'>layout</a>:");
+      text = text.replace('tracks:', "<a class='json-link' href='Track.html'>tracks</a>:");
+
+			return text;
+		};
+	$('#markdown-out').html( marked($('#markdown-in').html().replace(/"(.*)":/g, '$1:')) );
+
+  // var code = '';
+  // $('code.lang-js:not(.final)').each( function(c) {
+	//   var code = $(this).html().replace(/\s*\/\/.*/g, '');
+  //   code = code.replace('&lt;', '<');
+  //   code = code.replace('&gt;', '>');
+  //   // console.log(code);
+  //   eval( code );
+	// 	$('#final-code code').append( code + "\n" );
+  // });
+
+ 
+
+
+</script>
+
+</html>

@@ -35,6 +35,8 @@ jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}
 echo "Copying Tutorials"
 ln -s ../tutorials/basic_map.html docs/basic_map.html
 ln -s ../tutorials/sequence_map.html docs/sequence_map.html
+ln -s ../tutorials/json_map.html docs/json_map.html
+ln -s ../tutorials/json_format.html docs/json_format.html
 
 
 echo "Done!"
