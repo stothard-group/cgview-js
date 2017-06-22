@@ -73,8 +73,12 @@
 
 # CGView Data Format #
 
-Data can be loaded from a JavaScript object literal or a JSON string. The two formats are very similar and can be 
-converted using the JSON.parse and JSON.stringify. The example below is shown as an object literal.
+Data can be loaded from a JavaScript object literal or a JSON string using [IO.loadJSON](IO.html#loadJSON).
+The two formats are very similar and can be converted using the JSON.parse and JSON.stringify.
+The example below is shown as an object literal and only show some of the possible options for each key.
+Click on a key (e.g. backbone, captions, etc) options and defaults. There are 2 options that are available
+for most sections of the JSON: _visible_ (Default: true) and _meta_ (Default: {}). The _meta_ key is a place
+to store user/app-defined data.
 
 ```js
 {
