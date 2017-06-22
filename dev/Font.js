@@ -84,13 +84,13 @@
      * @param {Number} scale - Scale factor.
      * @return {String} - Return the font as CSS usable string.
      */
-    // cssScaled(scale) {
-    //   if (scale && scale != 1) {
-    //     return this._styleAsCss() + ' ' + (this.size * scale) + 'px ' + this.family;
-    //   } else {
-    //     return this.css
-    //   }
-    // }
+    cssScaled(scale) {
+      if (scale && scale != 1) {
+        return this._styleAsCss() + ' ' + CGV.pixel(this.size * scale) + 'px ' + this.family;
+      } else {
+        return this.css
+      }
+    }
 
 
     /**

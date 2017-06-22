@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The CGView Backbone is the ring that separates the direct and reverse slots
    * of the map. All the slot thicknesses are measures in relation to the backbone
    * radius.
@@ -21,11 +22,8 @@
       var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
-      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
-      this.fontColor = CGV.defaultFor(options.fontColor, 'black');
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
-      this.bpMargin = 4;
     }
 
     /**
@@ -49,37 +47,6 @@
       } else {
         this._color = new CGV.Color(value);
       }
-    }
-
-    /**
-     * @member {Color} - Get or set the sequence color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get fontColor() {
-      return this._fontColor
-    }
-
-    set fontColor(value) {
-      if (value.toString() == 'Color') {
-        this._fontColor = value;
-      } else {
-        this._fontColor = new CGV.Color(value);
-      }
-    }
-
-    /**
-     * @member {Font} - Get or set sequence font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get font() {
-      return this._font
-    }
-
-    set font(value) {
-      if (value.toString() == 'Font') {
-        this._font = value;
-      } else {
-        this._font = new CGV.Font(value);
-      }
-      this.bpSpacing = this.font.size;
     }
 
     /**
@@ -128,31 +95,7 @@
      * @member {Number} - Maximum thickness the backbone should become to allow viewing of the sequence
      */
     get maxThickness() {
-      return this.bpSpacing * 2 + (this.bpMargin * 4);
-    }
-
-    /**
-     * @member {Number} - Get or set the basepair spacing.
-     */
-    get bpSpacing() {
-      return this._bpSpacing
-    }
-
-    set bpSpacing(value) {
-      this._bpSpacing = value;
-      this.viewer._updateZoomMax();
-    }
-
-    /**
-     * @member {Number} - Get or set the margin around sequence letters.
-     */
-    get bpMargin() {
-      return this._bpMargin
-    }
-
-    set bpMargin(value) {
-      // this._bpMargin = CGV.pixel(value);
-      this._bpMargin = value;
+      return d3.max(this.thickness, this.sequence.thickness)
     }
 
     /**
@@ -176,7 +119,8 @@
      * @return {Number}
      */
     maxZoomFactor() {
-      return (this.sequence.length * this.bpSpacing) / (2 * Math.PI * this.radius);
+      // return (this.sequence.length * this.sequence.bpSpacing) / (2 * Math.PI * this.radius);
+      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.radius);
     }
 
     /**
@@ -185,44 +129,6 @@
      */
     pixelsPerBp() {
       return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
-    }
-
-    _drawSequence() {
-      var ctx = this.canvas.context('map');
-      var scale = this.canvas.scale;
-      var radius = CGV.pixel(this.zoomedRadius);
-      var range = this.visibleRange
-      var seq, complement;
-      if (range) {
-        if (this.sequence.seq) {
-          seq = this.sequence.forRange(range);
-          complement = CGV.Sequence.complement(seq);
-        } else {
-          seq = this._emptySequence(range.length);
-          complement = this._emptySequence(range.length);
-        }
-        var bp = range.start;
-        ctx.save();
-        ctx.fillStyle = this.fontColor.rgbaString;
-        ctx.font = this.font.css;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-        for (var i = 0, len = range.length; i < len; i++) {
-          var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
-          var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-          ctx.fillText(complement[i], origin.x, origin.y);
-          bp++;
-        }
-        ctx.restore();
-      }
-    }
-
-    _emptySequence(length) {
-      // ES6
-      // return '•'.repeat(length);
-      return Array(length + 1).join('•')
     }
 
     draw() {
@@ -238,11 +144,7 @@
           } else {
             this._bpThicknessAddition = addition;
           }
-          if (this.pixelsPerBp() >= (this.bpSpacing - this.bpMargin)) {
-            this._drawSequence();
-          // } else if (this.pixelsPerBp() > 4) {
-          //   this._drawSequenceDots();
-          }
+          this.sequence.draw();
         } else {
           this._bpThicknessAddtion = 0
         }

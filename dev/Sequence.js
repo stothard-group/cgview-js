@@ -7,7 +7,7 @@
    * The CGView Sequence class hold the sequence of the map or is able to access
    * it via an API.
    */
-  class Sequence {
+  class Sequence extends CGV.CGObject {
 
     /**
      * Create a Sequence
@@ -15,17 +15,19 @@
      * @param {Viewer} viewer - The viewer that contains the backbone
      * @param {Object} options - Options and stuff [MUST PROVIDE SEQUENCE OR LENGTH]
      */
-    constructor(viewer, options = {}) {
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
       this._viewer = viewer;
+      this.seq = options.seq;
+      this.bpMargin = 2;
       this.color = CGV.defaultFor(options.color, 'black');
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
-      this.seq = options.seq;
+
       if (!this.seq) {
         this.length = options.length;
       }
       if (!this.length) {
         this.length = 1000;
-        // throw('Sequence invalid. The seq or length must be provided.')
       }
     }
 
@@ -129,21 +131,6 @@
     //////////////////////////////////////////////////////////////////////////
 
     /**
-     * @member {Viewer} - Get the viewer.
-     */
-
-    get viewer() {
-      return this._viewer
-    }
-
-    /**
-     * @member {Canvas} - Get the canvas.
-     */
-    get canvas() {
-      return this.viewer.canvas
-    }
-
-    /**
      * @member {String} - Get or set the seqeunce.
      */
     get seq() {
@@ -182,7 +169,7 @@
           this._length = Number(value);
           this._updateScale();
         } else {
-          console.error('Can not change the sequence length of *seq* is set.');
+          console.error('Can not change the sequence length if *seq* is set.');
         }
       }
     }
@@ -223,6 +210,37 @@
         this._font = new CGV.Font(value);
       }
       this.bpSpacing = this.font.size;
+    }
+
+    /**
+     * @member {Number} - Get or set the basepair spacing.
+     */
+    get bpSpacing() {
+      return this._bpSpacing
+    }
+
+    set bpSpacing(value) {
+      this._bpSpacing = value;
+      this.viewer._updateZoomMax();
+    }
+
+    /**
+     * @member {Number} - Get or set the margin around sequence letters.
+     */
+    get bpMargin() {
+      return this._bpMargin
+    }
+
+    set bpMargin(value) {
+      this._bpMargin = value;
+    }
+
+    /**
+     * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
+     */
+    get thickness() {
+      // return this.bpSpacing * 2 + (this.bpMargin * 4);
+      return CGV.pixel(this.bpSpacing * 2 + (this.bpMargin * 4));
     }
 
     get isLinear() {
@@ -316,32 +334,6 @@
       return seq
     }
 
-    _drawSequence() {
-      var ctx = this.canvas.context('map');
-      var scale = this.canvas.scale;
-      var radius = CGV.pixel(this.zoomedRadius);
-      var range = this.visibleRange
-      if (range) {
-        var seq = this._sequenceForRange(range);
-        var bp = range.start;
-        ctx.save();
-        ctx.fillStyle = this.fontColor.rgbaString;
-        ctx.font = this.font.css;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-        for (var i = 0, len = range.length; i < len; i++) {
-          var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
-          var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
-          bp++;
-        }
-        ctx.restore();
-      }
-
-    }
-
     /**
      * Returns an array of Ranges where the pattern was located. The pattern can be a RegEx or a String.
      * This method will return overlapping matches.
@@ -360,6 +352,91 @@
       }
       return ranges
     }
+
+
+    featuresByReadingFrame(features) {
+      var featuresByRF = {
+        rf_plus_1: new CGV.CGArray(),
+        rf_plus_2: new CGV.CGArray(),
+        rf_plus_3: new CGV.CGArray(),
+        rf_minus_1: new CGV.CGArray(),
+        rf_minus_2: new CGV.CGArray(),
+        rf_minus_3: new CGV.CGArray()
+      };
+      var rf;
+      features.each( (i, feature) => {
+        if (feature.strand == -1) {
+          rf = (this.length - feature.stop + 1) % 3;
+          if (rf == 0) { rf = 3; }
+          featuresByRF['rf_minus_' + rf].push(feature);
+        } else {
+          rf = feature.start % 3;
+          if (rf == 0) { rf = 3; }
+          featuresByRF['rf_plus_' + rf].push(feature);
+        }
+      });
+      return featuresByRF
+    }
+
+    _emptySequence(length) {
+      // ES6
+      // return '•'.repeat(length);
+      return Array(length + 1).join('•')
+    }
+
+    draw() {
+      if (!this.visible) { return }
+      var ctx = this.canvas.context('map');
+      var scale = this.canvas.scale;
+      var backbone = this.viewer.backbone;
+      var pixelsPerBp = backbone.pixelsPerBp();
+      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) / 2) { return }
+
+      var scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
+
+      var radius = CGV.pixel(backbone.zoomedRadius);
+      var range = backbone.visibleRange;
+      var seq, complement;
+      if (range) {
+        if (this.seq) {
+          seq = this.forRange(range);
+          complement = CGV.Sequence.complement(seq);
+        } else {
+          seq = this._emptySequence(range.length);
+          complement = this._emptySequence(range.length);
+        }
+        var bp = range.start;
+        ctx.save();
+        ctx.fillStyle = this.color.rgbaString;
+        ctx.font = this.font.cssScaled(scaleFactor);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        var radiusDiff = CGV.pixel(this.bpSpacing / 2 + this.bpMargin) * scaleFactor;
+        for (var i = 0, len = range.length; i < len; i++) {
+          var origin = this.canvas.pointFor(bp, radius + radiusDiff);
+          ctx.fillText(seq[i], origin.x, origin.y);
+          var origin = this.canvas.pointFor(bp, radius - radiusDiff);
+          ctx.fillText(complement[i], origin.x, origin.y);
+          bp++;
+        }
+        ctx.restore();
+      }
+    }
+
+    toJSON() {
+      return {
+        font: this.font.string,
+        color: this.color.rgbString,
+        seq: this.seq
+      }
+    }
+
+  }
+
+  CGV.Sequence = Sequence;
+
+})(CGView);
+
 
     // testRF(features) {
     //   var startTime, rf;
@@ -390,68 +467,3 @@
     //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsed_time(startTime) );
     //   return rf2;
     // }
-
-    featuresByReadingFrame(features) {
-      var featuresByRF = {
-        rf_plus_1: new CGV.CGArray(),
-        rf_plus_2: new CGV.CGArray(),
-        rf_plus_3: new CGV.CGArray(),
-        rf_minus_1: new CGV.CGArray(),
-        rf_minus_2: new CGV.CGArray(),
-        rf_minus_3: new CGV.CGArray()
-      };
-      var rf;
-      features.each( (i, feature) => {
-        if (feature.strand == -1) {
-          rf = (this.length - feature.stop + 1) % 3;
-          if (rf == 0) { rf = 3; }
-          featuresByRF['rf_minus_' + rf].push(feature);
-        } else {
-          rf = feature.start % 3;
-          if (rf == 0) { rf = 3; }
-          featuresByRF['rf_plus_' + rf].push(feature);
-        }
-      });
-      return featuresByRF
-    }
-
-    toJSON() {
-      return {
-        font: this.font.string,
-        color: this.color.rgbString,
-        seq: this.seq
-      }
-    }
-
-    // _drawSequenceDots() {
-    //   var ctx = this.canvas.ctx;
-    //   var scale = this.canvas.scale;
-    //   var radius = CGV.pixel(this.zoomedRadius);
-    //   var range = this.visibleRange
-    //   if (range) {
-    //     var bp = range.start;
-    //     ctx.save();
-    //     ctx.fillStyle = this.fontColor.rgbaString;
-    //     var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-    //     for (var i = 0, len = range.length; i < len; i++) {
-    //       var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-    //       ctx.beginPath();
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       ctx.beginPath();
-    //       var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-    //       ctx.arc(origin.x, origin.y, 3, 0, Math.PI * 2);
-    //       ctx.fill();
-    //       bp++;
-    //     }
-    //     ctx.restore();
-    //   }
-    // }
-
-  }
-
-  CGV.Sequence = Sequence;
-
-})(CGView);
-
-
