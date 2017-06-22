@@ -15,7 +15,7 @@
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this._strand = CGV.defaultFor(data.strand, 1);
-      this.label = new CGV.Label(this, {name: data.label} );
+      this.label = new CGV.Label(this, {name: data.name} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
@@ -358,7 +358,7 @@
 
     toJSON() {
       return {
-        label: this.name,
+        name: this.name,
         type: this.type,
         start: this.start,
         stop: this.stop,
