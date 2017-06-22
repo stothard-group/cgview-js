@@ -129,11 +129,11 @@
       viewer.layout = new CGV.Layout(viewer, data.layout);
     }
 
-    exportImage(width, height) {
+    downloadImage(size, filename = 'image.png') {
       var viewer = this._viewer;
       var canvas = viewer.canvas;
-      width = width || viewer.width;
-      height = height || viewer.height;
+      width = size || viewer.width;
+      height = size || viewer.height;
 
       var windowTitle = 'CGV-Image-' + width + 'x' + height;
 
@@ -179,7 +179,7 @@
 
       // Generate image from export layer
       // var image = tempLayers['export'].node.toDataURL();
-      var image = tempLayers['export'].node.toBlob( (blob) => { this.download(blob, 'image.png', 'image/png')} );
+      var image = tempLayers['export'].node.toBlob( (blob) => { this.download(blob, filename, 'image/png')} );
 
       // Restore original layers and settings
       canvas._layers = origLayers
@@ -189,45 +189,16 @@
       for (var name of layerNames) {
         d3.select(tempLayers[name].node).remove();
       }
-
-
-      // // Preview
-      // var previewWidth = Math.min(400, width);
-      // var previewHeight = Math.min(400, height);
-      //
-      // var win = window.open();
-      // var html = [
-      //   '<html>',
-      //     '<head>',
-      //       '<title>',
-      //         windowTitle,
-      //       '</title>',
-      //       '<style>',
-      //         'body { font-family: sans-serif; }',
-      //       '</style>',
-      //     '</head>',
-      //     '<body>',
-      //       '<h2>Your CGView Image is Below</h2>',
-      //       '<p>To save, right click on either image below and choose "Save Image As...". The two images are the same. The first is scaled down for easier previewing, while the second shows the map at actual size. Saving either image will download the full size map.</p>',
-      //       '<h3>Preview</h3>',
-      //       '<img style="border: 1px solid grey" width="' + previewWidth+ '" height="' + previewHeight +  '" src="' + image +  '"/ >',
-      //       '<h3>Actual Size</h3>',
-      //       // '<img style="border: 1px solid grey" src="' + image +  '"/ >',
-      //       '<img style="border: 1px solid grey" width="' + width+ '" height="' + height +  '" src="' + image +  '"/ >',
-      //     '</body>',
-      //   '<html>'
-      // ].join('');
-      // win.document.write(html);
     }
 
-    exportFasta(id) {
-      var fasta = this.viewer.sequence.asFasta(id);
-      this.download(fasta, 'sequence.fa', 'text/plain');
+    downloadFasta(fastaId, filename = 'sequence.fa') {
+      var fasta = this.viewer.sequence.asFasta(fastaId);
+      this.download(fasta, filename, 'text/plain');
     }
 
-    exportJSON() {
+    downloadJSON(filename = 'cgview.json') {
       var json = this.viewer.io.toJSON();
-      this.download(JSON.stringify(json), 'cgview.json', 'text/json');
+      this.download(JSON.stringify(json), filename, 'text/json');
     }
 
     // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file

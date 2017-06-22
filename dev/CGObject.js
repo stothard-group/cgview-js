@@ -15,6 +15,11 @@
     /**
      * @param {Viewer} viewer - The viewer object.
      * @param {Object} options - 
+     *
+     *  Option                | Default          | Description
+     *  ----------------------|-------------------------------------------------
+     *  visible               | true             | Whether to draw the object or not.
+     *
      * @param {Obejct} meta - 
      */
     constructor(viewer, options = {}, meta = {}) {
