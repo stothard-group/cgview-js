@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1357,7 +1349,8 @@
     CGObject
     </h2>
     
-        <div class="class-description"><p>The CGObject is the base class of many CGV Classes. In particular, any class that
+        <div class="class-description"><p><br />
+The CGObject is the base class of many CGV Classes. In particular, any class that
 that is drawn on the map will be a subclass of CGObject (e.g. <a href="Track.html">Track</a>,
 <a href="Slot.html">Slot</a>, <a href="Feature.html">Feature</a>, <a href="Plot.html">Plot</a>, etc).</p></div>
     
@@ -1378,7 +1371,7 @@ that is drawn on the map will be a subclass of CGObject (e.g. <a href="Track.htm
     
         
         <div class="tag-source">
-            <a href="CGObject.js.html">CGObject.js</a>, <a href="CGObject.js.html#line13">line 13</a>
+            <a href="CGObject.js.html">CGObject.js</a>, <a href="CGObject.js.html#line14">line 14</a>
         </div>
         
     </div>
@@ -1455,7 +1448,22 @@ that is drawn on the map will be a subclass of CGObject (e.g. <a href="Track.htm
             
             <td class="description last">
                 
-                <p>-</p></td>
+                <table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> visible</td>
+<td>true</td>
+<td>Whether to draw the object or not.</td>
+</tr>
+</tbody>
+</table></td>
         </tr>
 	
 	
@@ -1783,7 +1791,7 @@ that is drawn on the map will be a subclass of CGObject (e.g. <a href="Track.htm
     
         
         <div class="tag-source">
-            <a href="CGObject.js.html">CGObject.js</a>, <a href="CGObject.js.html#line31">line 31</a>
+            <a href="CGObject.js.html">CGObject.js</a>, <a href="CGObject.js.html#line37">line 37</a>
         </div>
         
     </div>
@@ -1891,7 +1899,7 @@ that is drawn on the map will be a subclass of CGObject (e.g. <a href="Track.htm
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

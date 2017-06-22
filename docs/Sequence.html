@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1357,8 +1349,8 @@
     Sequence
     </h2>
     
-        <div class="class-description"><p>The CGView Sequence class hold the sequence of the map or is able to access
-it via an API.</p></div>
+        <div class="class-description"><p><br />
+The CGView Sequence class hold the sequence of the map.</p></div>
     
 </header>  
 
@@ -1372,7 +1364,7 @@ it via an API.</p></div>
     <div class="nameContainer">
         <h4 class="name" id="Sequence">
             
-            new Sequence<span class="signature">(viewer, options)</span>
+            new Sequence<span class="signature">(viewer, options, <span class="optional">meta</span>)</span>
         </h4>
     
         
@@ -1435,6 +1427,11 @@ it via an API.</p></div>
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 <p>The viewer that contains the backbone</p></td>
         </tr>
 	
@@ -1458,7 +1455,73 @@ it via an API.</p></div>
             
             <td class="description last">
                 
-                <p>Options and stuff [MUST PROVIDE SEQUENCE OR LENGTH]</p></td>
+                    
+                    
+                        
+                    
+                
+                <p>Options used to create the sequence</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> font</td>
+<td>&quot;sans-serif,plain,14&quot;</td>
+<td>A string describing the font. See <a href="Font.html"><code>Font</code></a> for details.</td>
+</tr>
+<tr>
+<td> color</td>
+<td>&quot;black&quot;</td>
+<td>A string describing the color. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
+<td> seq</td>
+<td>undefined</td>
+<td>The sequence as a string.</td>
+</tr>
+<tr>
+<td> length</td>
+<td>seq length or 1000</td>
+<td>If no sequence is provided, the length can be used to set up the map.</td>
+</tr>
+</tbody>
+</table></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>meta</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>User-defined key:value pairs to add to the caption.</p></td>
         </tr>
 	
 	
@@ -1525,7 +1588,7 @@ it via an API.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="canvas">canvas<span class="type-signature type canvas"><a href="Canvas.html">Canvas</a></span> </h4>
+        <h4 class="name" id="bpMargin">bpMargin<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -1533,7 +1596,52 @@ it via an API.</p></div>
 <dd>
     
     <div class="description">
-        <p>Get the canvas.</p>
+        <p>Get or set the margin around sequence letters.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="bpSpacing">bpSpacing<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the basepair spacing.</p>
     </div>
     
     
@@ -1795,7 +1903,7 @@ it via an API.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="viewer">viewer<span class="type-signature type viewer"><a href="Viewer.html">Viewer</a></span> </h4>
+        <h4 class="name" id="thickness">thickness<span class="type-signature type number">Number</span> </h4>
     </div>
     
     
@@ -1803,7 +1911,7 @@ it via an API.</p></div>
 <dd>
     
     <div class="description">
-        <p>Get the viewer.</p>
+        <p>Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.</p>
     </div>
     
     
@@ -1853,7 +1961,7 @@ it via an API.</p></div>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line97">line 97</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line108">line 108</a>
         </div>
         
     </div>
@@ -1998,7 +2106,7 @@ it via an API.</p></div>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line266">line 266</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line293">line 293</a>
         </div>
         
     </div>
@@ -2137,7 +2245,7 @@ it via an API.</p></div>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line351">line 351</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line352">line 352</a>
         </div>
         
     </div>
@@ -2263,7 +2371,7 @@ This method will return overlapping matches.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line281">line 281</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line308">line 308</a>
         </div>
         
     </div>
@@ -2431,7 +2539,7 @@ This method will return overlapping matches.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line253">line 253</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line280">line 280</a>
         </div>
         
     </div>
@@ -2576,7 +2684,7 @@ This method will return overlapping matches.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

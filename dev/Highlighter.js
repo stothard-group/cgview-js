@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The Highlighter object controls highlighting of features and plots on the Viewer
    * when the mouse hovers over them.
    */

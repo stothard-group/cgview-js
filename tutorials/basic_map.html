@@ -110,7 +110,7 @@ new CGV.Feature(cgv, {
   // (e.g. the decoration will be an 'arc').
   type: 'CDS',
   // Name of the feature.
-  label: 'Feature',
+  name: 'Feature',
   // Beginning of the feature in bp. Must be <= stop.
   start: 100,
   // End of the feature in bp. Must be >= start.
@@ -131,7 +131,7 @@ new CGV.Feature(cgv, {
 ```js
 new CGV.Feature(cgv, {
   type: 'CDS',
-  label: 'Another Feature',
+  name: 'Another Feature',
   start: 400,
   stop: 750,
   strand: -1,
@@ -140,26 +140,22 @@ new CGV.Feature(cgv, {
 });
 ```
 
-## Change the colors of the Features
-The [color](Color.html) of features is altered through the [LegendItem](LegendItem.html).
+## Change the color and decoration of the Features
+The [color](Color.html) and decoration of features is altered through the [LegendItem](LegendItem.html).
+When a feature is created, the _legend_ attribute is used to find any
+previously created [LegendItem](LegendItem.html) with the same name.
+If no LegendItem is found, one will be created with the default settings.
+Here we find the generated LegendItem and change it's color and decoration.
 
 ```js
 // Find the legend item
-var legendItem = cgv.legend.items('CDS')
+var legendItem = cgv.legend.items('CDS');
 // Change the color. The color can be a color name, RGB, or RGBA.
-legendItem.color = 'green'
+legendItem.color = 'green';
+// Change the decoration. Options: 'arc', 'arrow', 'none'
+legendItem.decoration = 'arrow';
 ```
 
-## Change the decoration of the Features
-Features can be draw as arcs or as arrows.
-The decoration of features is altered through the [FeatureType](FeatureType.html).
-
-```js
-// Find the feature type
-var featureType = cgv.featureTypes('CDS')
-// Change the decoration. Options: 'arc', 'arrow'
-featureType.decoration = 'arrow'
-```
 
 ## Create a [Plot](Plot.html). ##
 

@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1357,7 +1349,8 @@
     Backbone
     </h2>
     
-        <div class="class-description"><p>The CGView Backbone is the ring that separates the direct and reverse slots
+        <div class="class-description"><p><br />
+The CGView Backbone is the ring that separates the direct and reverse slots
 of the map. All the slot thicknesses are measures in relation to the backbone
 radius.</p></div>
     
@@ -1378,7 +1371,7 @@ radius.</p></div>
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line11">line 11</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line12">line 12</a>
         </div>
         
     </div>
@@ -1526,96 +1519,6 @@ radius.</p></div>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="bpMargin">bpMargin<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the margin around sequence letters.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="bpSpacing">bpSpacing<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the basepair spacing.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="bpThicknessAddition">bpThicknessAddition<span class="type-signature type number">number</span> </h4>
     </div>
     
@@ -1670,96 +1573,6 @@ radius.</p></div>
     
     <div class="description">
         <p>Get or set the backbone color. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="font">font<span class="type-signature type font"><a href="Font.html">Font</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set sequence font. When setting the font, a string representing the font or a <a href="Font.html"><code>Font</code></a> object can be used. For details see <a href="Font.html"><code>Font</code></a>.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="fontColor">fontColor<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Get or set the sequence color. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
     </div>
     
     
@@ -2079,7 +1892,7 @@ radius.</p></div>
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line178">line 178</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line121">line 121</a>
         </div>
         
     </div>
@@ -2179,7 +1992,7 @@ radius.</p></div>
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line186">line 186</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line130">line 130</a>
         </div>
         
     </div>
@@ -2279,7 +2092,7 @@ radius.</p></div>
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line35">line 35</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line33">line 33</a>
         </div>
         
     </div>
@@ -2387,7 +2200,7 @@ radius.</p></div>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

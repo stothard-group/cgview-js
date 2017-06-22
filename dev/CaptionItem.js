@@ -51,7 +51,7 @@
      * @member {String} - Alias for getting the text. Useful for querying CGArrays.
      */
     get id() {
-      return this.text
+      return this.name
     }
 
     /**

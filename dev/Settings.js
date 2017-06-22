@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The CGView Settings contain general settings for the viewer.
    */
   class Settings {

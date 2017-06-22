@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * Initialize Spectra Viewer Dragging.
    */
   CGV.Viewer.prototype.initializeDragging = function() {

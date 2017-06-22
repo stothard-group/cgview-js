@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The Track is used for layout information
    * @extends CGObject
    */

@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The CGView Divider is a line that separates tracks or slots.
    */
   class Divider extends CGV.CGObject {

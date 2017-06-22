@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * A CGRange contains a start, stop and sequence length. Because the genomes
    * are circular the range start can be bigger than the start. This means the start
    * is before 0 and the stop is after 0.

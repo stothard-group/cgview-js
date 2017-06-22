@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * EventMonitor monitor events on the CGView Canvas and triggers events.
    */
   class EventMonitor {

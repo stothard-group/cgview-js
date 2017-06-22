@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * A Slot is a single ring on the Map.
    * @extends CGObject
    */

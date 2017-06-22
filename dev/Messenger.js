@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    *
    */
   class Messenger {

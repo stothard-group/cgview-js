@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * CGArray is essentially an array for holding CGV Objects. Any method
    * that works directly on an Array (Mutator methods) will work on a CGArray
    * (e.g. pop, push, reverse)
@@ -275,7 +276,7 @@
       // } else if ( term.match(/^label-id-/) ) {
       //   return this.filter(function(element) { return element.label_id() == term; })[0];
       } else {
-        return this.filter(function(element) { return element.id.toLowerCase() == term.toLowerCase(); })[0];
+        return this.filter(function(element) { return element.id && element.id.toLowerCase() == term.toLowerCase(); })[0];
       }
     } else if (Array.isArray(term)) {
       var filtered = this.filter(function(element) { return term.some(function(id) { return element.id == id; }); });

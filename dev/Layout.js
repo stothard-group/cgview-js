@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * The Layout is in control of creating slots from tracks and drawing the map.
    */
   class Layout {

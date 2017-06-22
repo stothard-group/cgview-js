@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1357,7 +1349,8 @@
     Events
     </h2>
     
-        <div class="class-description"><p>Events is a system to plug in callbacks to specific events in CGV.
+        <div class="class-description"><p><br />
+Events is a system to plug in callbacks to specific events in CGV.
 Use <a href="#on">on</a> to add a callback and <a href="#off">off</a> to remove it.
 Here are a list of events supported in CGV:</p>
 <table>
@@ -1415,7 +1408,7 @@ Here are a list of events supported in CGV:</p>
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line34">line 34</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line35">line 35</a>
         </div>
         
     </div>
@@ -1500,7 +1493,7 @@ Here are a list of events supported in CGV:</p>
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line79">line 79</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line80">line 80</a>
         </div>
         
     </div>
@@ -1650,7 +1643,7 @@ sv.off('.my_plugin');</code></pre>
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line53">line 53</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line54">line 54</a>
         </div>
         
     </div>
@@ -1794,7 +1787,7 @@ sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line115">line 115</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line116">line 116</a>
         </div>
         
     </div>
@@ -1944,7 +1937,7 @@ sv.trigger('drag-start.my_plugin');</code></pre>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

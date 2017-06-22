@@ -4,6 +4,7 @@
 (function(CGV) {
 
   /**
+   * <br />
    * Annotation controls the drawing and layout of features labels
    */
   class Annotation extends CGV.CGObject {

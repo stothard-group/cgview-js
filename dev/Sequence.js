@@ -4,8 +4,8 @@
 (function(CGV) {
 
   /**
-   * The CGView Sequence class hold the sequence of the map or is able to access
-   * it via an API.
+   * <br />
+   * The CGView Sequence class holds the sequence of the map.
    */
   class Sequence extends CGV.CGObject {
 
@@ -13,7 +13,16 @@
      * Create a Sequence
      *
      * @param {Viewer} viewer - The viewer that contains the backbone
-     * @param {Object} options - Options and stuff [MUST PROVIDE SEQUENCE OR LENGTH]
+     * @param {Object} options - Options used to create the sequence
+     *
+     *  Option                | Default          | Description
+     *  ----------------------|-------------------------------------------------
+     *  font                  | "sans-serif,plain,14" | A string describing the font. See {@link Font} for details.
+     *  color                 | "black"          | A string describing the color. See {@link Color} for details.
+     *  seq                   | undefined        | The sequence as a string.
+     *  length                | seq length or 1000 | If no sequence is provided, the length can be used to set up the map.
+     *
+     * @param {Object=} meta - User-defined key:value pairs to add to the caption.
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);

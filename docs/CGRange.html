@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1357,7 +1349,8 @@
     CGRange
     </h2>
     
-        <div class="class-description"><p>A CGRange contains a start, stop and sequence length. Because the genomes
+        <div class="class-description"><p><br />
+A CGRange contains a start, stop and sequence length. Because the genomes
 are circular the range start can be bigger than the start. This means the start
 is before 0 and the stop is after 0.
 Ranges are always in a clockise direction.</p></div>
@@ -1379,7 +1372,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line12">line 12</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line13">line 13</a>
         </div>
         
     </div>
@@ -1833,7 +1826,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line152">line 152</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line153">line 153</a>
         </div>
         
     </div>
@@ -1978,7 +1971,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line166">line 166</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line167">line 167</a>
         </div>
         
     </div>
@@ -2078,7 +2071,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line118">line 118</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line119">line 119</a>
         </div>
         
     </div>
@@ -2223,7 +2216,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line127">line 127</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line128">line 128</a>
         </div>
         
     </div>
@@ -2368,7 +2361,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line135">line 135</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line136">line 136</a>
         </div>
         
     </div>
@@ -2468,7 +2461,7 @@ Ranges are always in a clockise direction.</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line185">line 185</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line186">line 186</a>
         </div>
         
     </div>
@@ -2614,7 +2607,7 @@ This may produce unexpected results of the ranges do not overlap.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line100">line 100</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line101">line 101</a>
         </div>
         
     </div>
@@ -2759,7 +2752,7 @@ This may produce unexpected results of the ranges do not overlap.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line91">line 91</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line92">line 92</a>
         </div>
         
     </div>
@@ -2860,7 +2853,7 @@ sequence length</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line175">line 175</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line176">line 176</a>
         </div>
         
     </div>
@@ -3005,7 +2998,7 @@ sequence length</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line143">line 143</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line144">line 144</a>
         </div>
         
     </div>
@@ -3111,7 +3104,7 @@ sequence length</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

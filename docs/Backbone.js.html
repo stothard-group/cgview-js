@@ -122,17 +122,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Backbone#bpMargin"><a href="Backbone.html#bpMargin">bpMargin</a></li>
-            
-                <li data-name="Backbone#bpSpacing"><a href="Backbone.html#bpSpacing">bpSpacing</a></li>
-            
                 <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
             
                 <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
-            
-                <li data-name="Backbone#font"><a href="Backbone.html#font">font</a></li>
-            
-                <li data-name="Backbone#fontColor"><a href="Backbone.html#fontColor">fontColor</a></li>
             
                 <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
             
@@ -286,8 +278,6 @@
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
             
                 <li data-name="CaptionItem#parent"><a href="CaptionItem.html#parent">parent</a></li>
-            
-                <li data-name="CaptionItem#text"><a href="CaptionItem.html#text">text</a></li>
             
                 <li data-name="CaptionItem#textAlignment"><a href="CaptionItem.html#textAlignment">textAlignment</a></li>
             
@@ -650,6 +640,8 @@
             
                 <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
             
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
                 <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
             
                 <li data-name="Font#width"><a href="Font.html#width">width</a></li>
@@ -704,7 +696,7 @@
             
                 <li data-name="IO#initializeDragAndDrop"><a href="IO.html#initializeDragAndDrop">initializeDragAndDrop</a></li>
             
-                <li data-name="IO#loadData"><a href="IO.html#loadData">loadData</a></li>
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -840,8 +832,6 @@
                 <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
             
                 <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
-            
-                <li data-name="LegendItem#text"><a href="LegendItem.html#text">text</a></li>
             
                 <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
             
@@ -1067,7 +1057,9 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
             
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
@@ -1079,7 +1071,7 @@
             
                 <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
             
-                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -1358,6 +1350,7 @@
 (function(CGV) {
 
   /**
+   * &lt;br />
    * The CGView Backbone is the ring that separates the direct and reverse slots
    * of the map. All the slot thicknesses are measures in relation to the backbone
    * radius.
@@ -1375,11 +1368,8 @@
       var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
-      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
-      this.fontColor = CGV.defaultFor(options.fontColor, 'black');
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
-      this.bpMargin = 4;
     }
 
     /**
@@ -1403,37 +1393,6 @@
       } else {
         this._color = new CGV.Color(value);
       }
-    }
-
-    /**
-     * @member {Color} - Get or set the sequence color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
-     */
-    get fontColor() {
-      return this._fontColor
-    }
-
-    set fontColor(value) {
-      if (value.toString() == 'Color') {
-        this._fontColor = value;
-      } else {
-        this._fontColor = new CGV.Color(value);
-      }
-    }
-
-    /**
-     * @member {Font} - Get or set sequence font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
-     */
-    get font() {
-      return this._font
-    }
-
-    set font(value) {
-      if (value.toString() == 'Font') {
-        this._font = value;
-      } else {
-        this._font = new CGV.Font(value);
-      }
-      this.bpSpacing = this.font.size;
     }
 
     /**
@@ -1482,31 +1441,7 @@
      * @member {Number} - Maximum thickness the backbone should become to allow viewing of the sequence
      */
     get maxThickness() {
-      return this.bpSpacing * 2 + (this.bpMargin * 4);
-    }
-
-    /**
-     * @member {Number} - Get or set the basepair spacing.
-     */
-    get bpSpacing() {
-      return this._bpSpacing
-    }
-
-    set bpSpacing(value) {
-      this._bpSpacing = value;
-      this.viewer._updateZoomMax();
-    }
-
-    /**
-     * @member {Number} - Get or set the margin around sequence letters.
-     */
-    get bpMargin() {
-      return this._bpMargin
-    }
-
-    set bpMargin(value) {
-      // this._bpMargin = CGV.pixel(value);
-      this._bpMargin = value;
+      return Math.max(this.thickness, this.sequence.thickness)
     }
 
     /**
@@ -1530,7 +1465,8 @@
      * @return {Number}
      */
     maxZoomFactor() {
-      return (this.sequence.length * this.bpSpacing) / (2 * Math.PI * this.radius);
+      // return (this.sequence.length * this.sequence.bpSpacing) / (2 * Math.PI * this.radius);
+      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.radius);
     }
 
     /**
@@ -1539,44 +1475,6 @@
      */
     pixelsPerBp() {
       return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
-    }
-
-    _drawSequence() {
-      var ctx = this.canvas.context('map');
-      var scale = this.canvas.scale;
-      var radius = CGV.pixel(this.zoomedRadius);
-      var range = this.visibleRange
-      var seq, complement;
-      if (range) {
-        if (this.sequence.seq) {
-          seq = this.sequence.forRange(range);
-          complement = CGV.Sequence.complement(seq);
-        } else {
-          seq = this._emptySequence(range.length);
-          complement = this._emptySequence(range.length);
-        }
-        var bp = range.start;
-        ctx.save();
-        ctx.fillStyle = this.fontColor.rgbaString;
-        ctx.font = this.font.css;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        var radiusDiff = this.bpSpacing / 2 + this.bpMargin;
-        for (var i = 0, len = range.length; i &lt; len; i++) {
-          var origin = this.canvas.pointFor(bp, radius + radiusDiff);
-          ctx.fillText(seq[i], origin.x, origin.y);
-          var origin = this.canvas.pointFor(bp, radius - radiusDiff);
-          ctx.fillText(complement[i], origin.x, origin.y);
-          bp++;
-        }
-        ctx.restore();
-      }
-    }
-
-    _emptySequence(length) {
-      // ES6
-      // return '•'.repeat(length);
-      return Array(length + 1).join('•')
     }
 
     draw() {
@@ -1592,11 +1490,7 @@
           } else {
             this._bpThicknessAddition = addition;
           }
-          if (this.pixelsPerBp() >= (this.bpSpacing - this.bpMargin)) {
-            this._drawSequence();
-          // } else if (this.pixelsPerBp() > 4) {
-          //   this._drawSequenceDots();
-          }
+          this.sequence.draw();
         } else {
           this._bpThicknessAddtion = 0
         }
@@ -1629,7 +1523,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Jun 21 2017 15:02:17 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
         </footer>
     </div>
 </div>
