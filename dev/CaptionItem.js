@@ -31,7 +31,7 @@
       super(parent.viewer, data, meta);
       this.parent = parent;
       this.meta = CGV.merge(data.meta, meta);
-      this._text = CGV.defaultFor(data.text, '');
+      this._name = CGV.defaultFor(data.name, '');
       this.font = data.font
       this.fontColor = data.fontColor;
       this.textAlignment = data.textAlignment;
@@ -98,27 +98,27 @@
     }
 
 
-    /**
-     * @member {String} - Get or set the text
-     */
-    get text() {
-      return this._text
-    }
-
-    set text(text) {
-      this._text = text;
-      this.refresh();
-    }
+    // /**
+    //  * @member {String} - Get or set the text
+    //  */
+    // get text() {
+    //   return this._name
+    // }
+    //
+    // set text(text) {
+    //   this._name = text;
+    //   this.refresh();
+    // }
 
     /**
      * @member {String} - Alias for text
      */
     get name() {
-      return this.text
+      return this._name
     }
 
     set name(value) {
-      this.text = value;
+      this._name = value;
     }
 
     /**
@@ -250,7 +250,7 @@
 
     toJSON() {
       return {
-        name: this.text,
+        name: this.name,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
         textAlignment: this.textAlignment

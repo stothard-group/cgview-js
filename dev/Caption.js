@@ -228,8 +228,8 @@
       // Calculate Caption Width
       this.width = 0;
       var itemFonts = visibleItems.map( (i) => { return i.font.css });
-      var itemTexts = visibleItems.map( (i) => { return i.text });
-      var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemTexts);
+      var itemNames = visibleItems.map( (i) => { return i.name });
+      var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
       for (var i = 0, len = itemWidths.length; i < len; i++) {
         var item = visibleItems[i];
         // This should only be used for legends
@@ -320,7 +320,7 @@
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
         ctx.fillStyle = captionItem.fontColor.rgbaString;
-        ctx.fillText(captionItem.text, captionItem.textX(), captionItem.textY());
+        ctx.fillText(captionItem.name, captionItem.textX(), captionItem.textY());
       }
     }
 
