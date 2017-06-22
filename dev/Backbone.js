@@ -95,7 +95,7 @@
      * @member {Number} - Maximum thickness the backbone should become to allow viewing of the sequence
      */
     get maxThickness() {
-      return d3.max(this.thickness, this.sequence.thickness)
+      return Math.max(this.thickness, this.sequence.thickness)
     }
 
     /**
