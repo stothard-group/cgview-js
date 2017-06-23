@@ -14,7 +14,7 @@
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
-      this._strand = CGV.defaultFor(data.strand, 1);
+      this.strand = CGV.defaultFor(data.strand, 1);
       this.label = new CGV.Label(this, {name: data.name} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -98,7 +98,11 @@
     }
 
     set strand(value) {
-      this._strand = value;
+      if (value == '-' || Number(value) == -1) {
+        this._strand = -1;
+      } else {
+        this._strand = 1;
+      }
     }
 
     isDirect() {

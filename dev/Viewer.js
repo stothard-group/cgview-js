@@ -285,6 +285,18 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * Returns an [CGArray](CGArray.js.html) of Feature/Plot Source name or a single item.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    sources(term) {
+      var featureSources = this._features.map( (f) => { return f.source });
+      var plotSources = this._plots.map( (p) => { return p.source });
+      var allSources = featureSources.concat(plotSources);
+      return new CGV.CGArray([...new Set(allSources)]).get(term)
+    }
+
+    /**
      * Clear the viewer canvas
      */
     clear(layerName = 'map') {

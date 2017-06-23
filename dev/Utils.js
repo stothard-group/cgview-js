@@ -474,27 +474,27 @@
 
 
 
-  //
-  // /**
-  //  * Returns a string id using the _id_base_ and _start_ while
-  //  * making sure the id is not in _current_ids_.
-  //  * ```javascript
-  //  * JSV.unique_id('spectra_', 1, ['spectra_1', 'spectra_2']);
-  //  * //=> 'spectra_3'
-  //  * ```
-  //  * @param {String} id_base Base of ids
-  //  * @param {Integer} start Integer to start trying to creat ids with
-  //  * @param {Array} current_ids Array of current ids
-  //  * @return {String}
-  //  */
-  // JSV.unique_id = function(id_base, start, current_ids) {
-  //   var id;
-  //   do {
-  //     id = id_base + start;
-  //     start++;
-  //   } while (current_ids.indexOf(id) > -1);
-  //   return id;
-  // }
+
+  /**
+   * Returns a string id using the _idBase_ and _start_ while
+   * making sure the id is not in _currentIds_.
+   * ```javascript
+   * JSV.uniqueId('spectra_', 1, ['spectra_1', 'spectra_2']);
+   * //=> 'spectra_3'
+   * ```
+   * @param {String} idBase - Base of ids
+   * @param {Integer} start - Integer to start trying to creat ids with
+   * @param {Array} currentIds - Array of current ids
+   * @return {String}
+   */
+  CGV.uniqueId = function(idBase, start, currentIds) {
+    var id;
+    do {
+      id = idBase + start;
+      start++;
+    } while (currentIds.indexOf(id) > -1);
+    return id;
+  }
   //
   //
   // /**
