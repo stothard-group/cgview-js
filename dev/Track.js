@@ -20,10 +20,10 @@
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this.name = CGV.defaultFor(data.name, 'Unknown');
+      this._contents = new CGV.TrackContents(this, data.contents);
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
       this.strand = CGV.defaultFor(data.strand, 'separated');
       this.position = CGV.defaultFor(data.position, 'both');
-      this.contents = data.contents || {};
       this.loadProgress = 0;
       this.refresh();
     }
@@ -81,20 +81,16 @@
       layout._tracks.push(this);
     }
 
-    /** * @member {Object} - Get or set the *Contents*.
+    /** * @member {Object} - Get the *Contents*.
      */
     get contents() {
       return this._contents
     }
 
-    set contents(value) {
-      this._contents = value;
-    }
-
     /** * @member {String} - Get the *Content Type*.
      */
     get type() {
-      return this.contents && this.contents.type
+      return this.contents.type
     }
 
     /**
@@ -205,25 +201,16 @@
     extractFromSequence() {
       var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
       if (sequenceExtractor) {
-        sequenceExtractor.extractTrackData(this, this.contents.extract, this.contents.options);
+        sequenceExtractor.extractTrackData(this, this.contents.extract[0], this.contents.options);
       } else {
         console.error('No sequence is available to extract features/plots from');
       }
     }
 
     updateFeatures() {
-      if (this.contents.from == 'source') {
-        // Features with particular Source
+      if (this.contents.from == 'source' || this.contents.from == 'type') {
         this.viewer.features().each( (i, feature) => {
-          if (feature.source == this.contents.extract) {
-            this._features.push(feature);
-          }
-        });
-      } else if (this.contents.types) {
-        // Features with particular Type
-        var featureTypes = new CGV.CGArray(this.contents.featureType);
-        this.viewer.features().each( (i, feature) => {
-          if (featureTypes.contains(feature.type)) {
+          if (this.contents.extract.contains(feature[this.contents.from])) {
             this._features.push(feature);
           }
         });
@@ -234,7 +221,7 @@
       if (this.contents.from == 'source') {
         // Plot with particular Source
         this.viewer.plots().find( (plot) => {
-          if (plot.source == this.contents.extract) {
+          if (plot.source == this.contents.extract[0]) {
             this._plot = plot;
           }
         });
