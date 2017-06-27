@@ -293,6 +293,7 @@
 
     fillBackground() {
       this.ctx.fillStyle = this.backgroundColor.rgbaString;
+      this.ctx.clearRect(this.originX, this.originY, this.width, this.height);
       this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 

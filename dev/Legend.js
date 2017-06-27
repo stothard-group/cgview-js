@@ -131,13 +131,13 @@
             ctx.strokeStyle = 'black';
           } else if (legendItem.swatchHighlighted) {
             ctx.strokeStyle = 'grey';
-          } else {
-            ctx.strokeStyle = this.backgroundColor.rgbaString;
           }
           // Draw box around Swatch depending on state
-          var border = CGV.pixel(2)
           var swatchX = legendItem.swatchX();
-          ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
+          if (legendItem.swatchSelected || legendItem.swatchHighlighted) {
+            var border = CGV.pixel(2)
+            ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
+          }
           // Draw Swatch
           ctx.fillStyle = legendItem.swatchColor.rgbaString;
           ctx.fillRect(swatchX, y, swatchWidth, swatchWidth);
