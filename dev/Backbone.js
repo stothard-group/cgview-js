@@ -34,6 +34,17 @@
       return 'Backbone';
     }
 
+
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
+      this.refreshThickness();
+      this.viewer.layout && this.viewer.layout._adjustProportions();
+    }
+
     /**
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
@@ -81,7 +92,7 @@
     }
 
     get thickness() {
-      return this._thickness
+      return this.visible ? this._thickness : 0
     }
 
     /**
@@ -95,7 +106,8 @@
      * @member {Number} - Maximum thickness the backbone should become to allow viewing of the sequence
      */
     get maxThickness() {
-      return Math.max(this.thickness, this.sequence.thickness)
+      // return Math.max(this.thickness, this.sequence.thickness)
+      return Math.max(this.zoomedThickness, this.sequence.thickness)
     }
 
     /**
@@ -133,21 +145,27 @@
 
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
-      if (this.visibleRange) {
+      if (this.visibleRange && this.visible) {
+        this.refreshThickness();
         this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.zoomedRadius), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
         if (this.pixelsPerBp() > 1) {
-          var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
-          var zoomedThickness = this.zoomedThickness;
-          var addition = this.pixelsPerBp() * 2;
-          if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
-            this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
-          } else {
-            this._bpThicknessAddition = addition;
-          }
           this.sequence.draw();
-        } else {
-          this._bpThicknessAddtion = 0
         }
+      }
+    }
+
+    refreshThickness() {
+      if (this.pixelsPerBp() > 1 && this.visible) {
+        var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
+        var zoomedThickness = this.zoomedThickness;
+        var addition = this.pixelsPerBp() * 2;
+        if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
+          this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
+        } else {
+          this._bpThicknessAddition = addition;
+        }
+      } else {
+        this._bpThicknessAddition = 0
       }
     }
 

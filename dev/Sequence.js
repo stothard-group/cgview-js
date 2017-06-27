@@ -248,7 +248,6 @@
      * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
      */
     get thickness() {
-      // return this.bpSpacing * 2 + (this.bpMargin * 4);
       return CGV.pixel(this.bpSpacing * 2 + (this.bpMargin * 4));
     }
 

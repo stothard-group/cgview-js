@@ -271,6 +271,7 @@
       var shadowFraction = 0.10;
       var shadowColorDiff = 0.15;
       ctx.lineCap = 'butt';
+      // ctx.lineJoin = 'round';
 
       if (decoration == 'arc') {
         if (settings.showShading) {
