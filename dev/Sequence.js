@@ -398,7 +398,8 @@
       var scale = this.canvas.scale;
       var backbone = this.viewer.backbone;
       var pixelsPerBp = backbone.pixelsPerBp();
-      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) / 2) { return }
+      var seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
+      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return }
 
       var scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
 
