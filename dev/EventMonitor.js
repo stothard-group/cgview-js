@@ -25,6 +25,12 @@
       this._initializeClick();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
       this.events.on('click', (e) => {console.log(e)})
+      // MoveTo On click
+      // this.events.on('click', (e) => {
+      //   if (e.feature) {
+      //     this.viewer.moveTo(e.feature.start, e.feature.stop);
+      //   }
+      // })
 
       this.events.on('mousemove', (e) => {
         // console.log(e.bp);

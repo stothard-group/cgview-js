@@ -360,9 +360,25 @@ if (window.CGV === undefined) window.CGV = CGView;
      * the viewer will center the image on that bp with the current zoom level.
      *
      * @param {Number} start - The start position in bp
-     * @param {Number} stop - The stop position in bp (NOT IMPLEMENTED YET)
+     * @param {Number} stop - The stop position in bp
+     * @param {Number} duration - The animation duration in milliseconds [Default: 1000]
+     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
-    moveTo(start, duration = 1000, ease) {
+    moveTo(start, stop, duration = 1000, ease) {
+      var bp = start + (stop - start) / 2;
+      if (stop) {
+        var bpLength = this.sequence.lengthOfRange(start, stop);
+        // Use viewer width as estimation arc length
+        var arcLength = this.width;
+        var zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
+        var zoomFactor = zoomedRadius / this.backbone.radius;
+        this.zoomTo(bp, zoomFactor, 500);
+      } else {
+        this._moveTo(bp, duration, ease);
+      }
+    }
+
+    _moveTo(bp, duration = 1000, ease) {
       var self = this;
       ease = ease || d3.easeCubic;
       var domainX = this.scale.x.domain();
@@ -371,7 +387,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
 
       var radius = CGV.pixel(this.backbone.zoomedRadius);
-      var radians = this.scale.bp(start);
+      var radians = this.scale.bp(bp);
       var x = radius * Math.cos(radians);
       var y = -radius * Math.sin(radians);
 
@@ -390,6 +406,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           }
         }).on('end', function() { self.drawFull(); });
     }
+
 
     /**
      * Move the viewer to *bp* position at the provided *zoomFactor*.
