@@ -365,16 +365,16 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
     moveTo(start, stop, duration = 1000, ease) {
-      var bpLength = this.sequence.lengthOfRange(start, stop);
-      var bp = this.sequence.addBp(start, bpLength / 2);
       if (stop) {
+        var bpLength = this.sequence.lengthOfRange(start, stop);
+        var bp = this.sequence.addBp(start, bpLength / 2);
         // Use viewer width as estimation arc length
         var arcLength = this.width;
         var zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
         var zoomFactor = zoomedRadius / this.backbone.radius;
         this.zoomTo(bp, zoomFactor, 500);
       } else {
-        this._moveTo(bp, duration, ease);
+        this._moveTo(start, duration, ease);
       }
     }
 
