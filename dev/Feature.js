@@ -343,6 +343,19 @@
 
     }
 
+    /**
+     * Zoom and pan map to show the feature
+     *
+     * @param {Number} duration - Length of animation
+     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
+     */
+    moveTo(duration, ease) {
+      var buffer = Math.ceil(this.length * 0.05);
+      var start = this.sequence.subtractBp(this.start, buffer);
+      var stop = this.sequence.addBp(this.stop, buffer);
+      this.viewer.moveTo(start, stop, duration, ease);
+    }
+
     // Update tracks, slots, etc associated with feature.
     // Or add feature to tracks and refresh them, if this is a new feature.
     // Don't refresh if bulkImport is true

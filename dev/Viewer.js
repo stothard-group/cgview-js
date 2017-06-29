@@ -365,9 +365,9 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
     moveTo(start, stop, duration = 1000, ease) {
-      var bp = start + (stop - start) / 2;
+      var bpLength = this.sequence.lengthOfRange(start, stop);
+      var bp = this.sequence.addBp(start, bpLength / 2);
       if (stop) {
-        var bpLength = this.sequence.lengthOfRange(start, stop);
         // Use viewer width as estimation arc length
         var arcLength = this.width;
         var zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
