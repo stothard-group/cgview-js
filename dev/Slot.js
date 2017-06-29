@@ -262,7 +262,7 @@
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
         var thickness = slotThickness * progress / 100;
-        canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness);
+        canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness, 'arc', false);
       }
     }
 

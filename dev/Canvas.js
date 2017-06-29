@@ -263,7 +263,7 @@
     // If the zoomFactor gets too large, the arc drawing becomes unstable.
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
-    drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc') {
+    drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc', showShading) {
       if (decoration == 'none') { return }
       var scale = this.scale;
       var ctx = this.context(layer);
@@ -272,9 +272,11 @@
       var shadowColorDiff = 0.15;
       ctx.lineCap = 'butt';
       // ctx.lineJoin = 'round';
+      showShading = (showShading === undefined) ? settings.showShading : showShading;
+
 
       if (decoration == 'arc') {
-        if (settings.showShading) {
+        if (showShading) {
           var shadowWidth = width * shadowFraction;
           // Main Arc
           var mainWidth = width - (2 * shadowWidth);
@@ -334,7 +336,7 @@
         var arrowTipPt = this.pointFor(arrowTipBp, radius);
         var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
 
-        if (settings.showShading) {
+        if (showShading) {
           var halfMainWidth =  width * (0.5 - shadowFraction);
           var shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
 
