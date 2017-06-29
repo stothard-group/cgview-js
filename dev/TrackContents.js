@@ -92,9 +92,16 @@
     toJSON() {
       var json = {
         type: this.type,
-        from: this.from,
-        extract: this.extract
+        from: this.from
       }
+      // Extract
+      if (this.extract.length == 1) {
+        json.extract = this.extract[0];
+      } else {
+        json.extract = [];
+        this.extract.each( (i, item) => { json.extract.push(item) });
+      }
+      // Options
       if (this.options && Object.keys(this.options).length > 0) {
         json.options = this.options
       }
