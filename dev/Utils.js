@@ -495,6 +495,23 @@
     } while (currentIds.indexOf(id) > -1);
     return id;
   }
+
+  /**
+   * Create a random hex string
+   *
+   * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+   */
+  CGV.randomHexString = function(len) {
+    var text = "";
+    var possible = "abcdef0123456789";
+    for (var i = 0; i < len; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+
+
   //
   //
   // /**

@@ -34,6 +34,7 @@
           version: CGV.version,
           created: jsonInfo.created || this.formatDate(new Date()),
           updated: this.formatDate(new Date()),
+          id: v.id,
           settings: {
             general: v.settings.toJSON(),
             backbone: v.backbone.toJSON(),
@@ -74,6 +75,8 @@
       if (typeof data === 'string') {
         data = JSON.parse(data);
       }
+
+      viewer._id = data.id;
 
       // data Info
       viewer._dataInfo = {

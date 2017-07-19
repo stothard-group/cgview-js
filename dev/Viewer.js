@@ -51,6 +51,9 @@ if (window.CGV === undefined) window.CGV = CGView;
         .style('width', this.width + 'px')
         .style('height', this.height + 'px');
 
+      // Create map id
+      this._id = CGV.randomHexString(40);
+
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
@@ -106,6 +109,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     //////////////////////////////////////////////////////////////////////////
     // MEMBERS
     //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @member {Number} - Get map id
+     */
+    get id() {
+      return this._id;
+    }
 
     /**
      * @member {Number} - Get or set the width of the Viewer
@@ -354,6 +364,50 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.refresh();
     }
 
+    test2MoveTo(start, stop) {
+      //TODO: check for visibile range
+      var startRange = this.backbone.visibleRange;
+      var startBp = startRange.middle;
+      var endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+      var startEndLength = Math.abs(endBp - startBp);
+
+      var zoomScale = d3.scalePow()
+        .exponent(5)
+      // var zoomScale = d3.scaleLinear()
+        .domain([1, this.sequence.length/4])
+        .range([this.backbone.maxZoomFactor(), 1]);
+
+      var zoomThrough = zoomScale(startEndLength);
+
+      this.testMoveTo(start, stop, {zoomThrough: zoomThrough})
+    }
+
+    testMoveTo(start, stop, options = {}) {
+      var duration = options.duration || 1000;
+      var ease = options.ease || d3.easeCubic;
+      var zoomThrough = options.zoomThrough;
+      var zoomFactor = this.zoomFactor;
+
+      if (zoomThrough && zoomThrough <= zoomFactor) {
+        var startRange = this.backbone.visibleRange;
+        var startBp = startRange.middle;
+        var endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+        var startEndLength = Math.abs(endBp - startBp);
+        var middleBp;
+        if ( startEndLength < (this.sequence.length / 2) ) {
+          middleBp = Math.min(startBp, endBp) + startEndLength / 2;
+        } else {
+          startEndLength = this.sequence.length - startEndLength;
+          middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
+        }
+        this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
+          this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
+        })
+      } else {
+        this.moveTo(start, stop, duration, ease);
+      }
+    }
+
     /**
      * Move the viewer to show the map from the *start* to the *stop* position.
      * If only the *start* position is provided,
@@ -372,7 +426,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         var arcLength = this.width;
         var zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
         var zoomFactor = zoomedRadius / this.backbone.radius;
-        this.zoomTo(bp, zoomFactor, 500);
+        this.zoomTo(bp, zoomFactor, duration, ease);
       } else {
         this._moveTo(start, duration, ease);
       }
@@ -415,7 +469,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} bp - The position in bp
      * @param {Number} zoomFactor - The zoome level
      */
-    zoomTo(bp, zoomFactor, duration = 1000, ease) {
+    zoomTo(bp, zoomFactor, duration = 1000, ease, callback) {
       var self = this;
       ease = ease || d3.easeCubic;
 
@@ -432,14 +486,8 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       var radius = CGV.pixel(this.backbone.radius * zoomFactor);
       var radians = this.scale.bp(bp);
-      var x, y;
-      if (bp) {
-        x = radius * Math.cos(radians);
-        y = -radius * Math.sin(radians);
-      } else {
-        x = 0;
-        y = 0;
-      }
+      var x = bp ? (radius * Math.cos(radians) ) : 0;
+      var y = bp ? (-radius * Math.sin(radians) ) : 0;
 
       var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
       var endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
@@ -457,7 +505,9 @@ if (window.CGV === undefined) window.CGV = CGView;
             d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
             self.drawFast();
           }
-        }).on('end', function() { self.drawFull(); });
+        }).on('end', function() {
+          callback ? callback.call() : self.drawFull();
+        });
     }
 
     /*
