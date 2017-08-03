@@ -191,6 +191,7 @@
     }
 
     set baseline(value) {
+      value = Number(baseline);
       if (value > 1) {
         this._baseline = 1;
       } else if (value < 0) {

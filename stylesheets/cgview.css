@@ -18,13 +18,13 @@
 /* COLOR PICKER */
 /*******************************************/
 /* NOTE: dimensions have to be changed in ColorPicker.js as well. */
-.cp-color-picker-dialog {
-  z-index: 1000;
-}
-
-.cp-color-picker-dialog * {
-  box-sizing: content-box;
-}
+/* .cp-color-picker-dialog { */
+/*   z-index: 1000; */
+/* } */
+/*  */
+/* .cp-color-picker-dialog * { */
+/*   box-sizing: content-box; */
+/* } */
 
 .cp-done-button {
   cursor: pointer;
@@ -157,12 +157,17 @@
 }
 
 .cp-dialog {
+  z-index: 1000;
   position: absolute;
   border: 1px solid black;
   padding: 5px;
   background-color: white;
   border-radius: 2px;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.cp-dialog * {
+  box-sizing: content-box;
 }
 
 /* Area at bottom of dialog buttons */

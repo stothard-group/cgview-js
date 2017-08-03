@@ -169,7 +169,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         // Create Color Picker
         var colorPickerId = this.containerId + '-color-picker';
         this._container.append('div')
-          .classed('cp-color-picker-dialog', true)
+          // .classed('cp-color-picker-dialog', true)
           .attr('id', this.containerId + '-color-picker');
         this._colorPicker = new CGV.ColorPicker(colorPickerId);
       }

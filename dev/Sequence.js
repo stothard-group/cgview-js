@@ -259,7 +259,7 @@
       return true
     }
 
-    asFasta(id='') {
+    asFasta(id='sequence') {
       return `>${id}\n${this.seq}`
     }
 

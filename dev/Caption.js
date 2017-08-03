@@ -31,7 +31,7 @@
       this.viewer = viewer;
       this._items = new CGV.CGArray();
       this._position = CGV.defaultFor(data.position, 'upper-left');
-      this.name = data.name;
+      this._name = data.name;
       this.backgroundColor = data.backgroundColor;
       this.font = CGV.defaultFor(data.font, 'SansSerif, plain, 8');
       this.fontColor = CGV.defaultFor(data.fontColor, 'black');

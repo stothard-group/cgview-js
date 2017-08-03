@@ -178,7 +178,7 @@
             var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
             color.highlight();
 
-            viewer.canvas.drawArc('ui', start, stop, radius, color, thickness);
+            viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
           }
 
         }

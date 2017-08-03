@@ -19,7 +19,7 @@
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
-     *  text                  | ""               | Text to display
+     *  name                  | ""               | Text to display
      *  drawSwatch            | false            | Should a swatch be drawn beside the text
      *  font                  | Caption font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Caption fontColor | A string describing the color. See {@link Color} for details.
@@ -119,6 +119,7 @@
 
     set name(value) {
       this._name = value;
+      this.refresh();
     }
 
     /**
