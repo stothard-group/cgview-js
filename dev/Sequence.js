@@ -61,6 +61,40 @@
             break;
           case 'C':
             compChar = 'G';
+            break;
+          case 'U':
+            compChar = 'A';
+            break;
+          case 'Y':
+            compChar = 'R';
+            break;
+          case 'S':
+            compChar = 'S';
+            break;
+          case 'W':
+            compChar = 'W';
+            break;
+          case 'K':
+            compChar = 'M';
+            break;
+          case 'M':
+            compChar = 'K';
+            break;
+          case 'B':
+            compChar = 'V';
+            break;
+          case 'D':
+            compChar = 'H';
+            break;
+          case 'H':
+            compChar = 'D';
+            break;
+          case 'V':
+            compChar = 'B';
+            break;
+          case 'N':
+            compChar = 'N';
+            break;
         }
         compSeq = compSeq + compChar;
       }
