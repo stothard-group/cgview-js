@@ -172,7 +172,8 @@
     toJSON() {
       return {
         color: this.color.rgbaString,
-        thickness: this.thickness
+        thickness: this.thickness,
+        visible: this.visible
       }
     }
 

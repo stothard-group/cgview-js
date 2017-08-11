@@ -308,7 +308,8 @@
         readingFrame: this.readingFrame,
         strand: this.strand,
         position: this.position,
-        contents: this.contents
+        contents: this.contents,
+        visible: this.visible
       }
     }
 

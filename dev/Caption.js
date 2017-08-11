@@ -340,6 +340,7 @@
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
         backgroundColor: this.backgroundColor.rgbaString,
+        visible: this.visible,
         items: []
       }
       this.items().each( (i, item) => {

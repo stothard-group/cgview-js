@@ -254,7 +254,8 @@
         name: this.name,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
-        textAlignment: this.textAlignment
+        textAlignment: this.textAlignment,
+        visible: this.visible
       }
     }
 

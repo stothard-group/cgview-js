@@ -470,7 +470,8 @@
       return {
         font: this.font.string,
         color: this.color.rgbString,
-        seq: this.seq
+        seq: this.seq,
+        visible: this.visible
       }
     }
 

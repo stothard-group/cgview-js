@@ -295,7 +295,8 @@
     toJSON() {
       return {
         font: this.font.string,
-        color: this.color.rgbaString
+        color: this.color.rgbaString,
+        visible: this.visible
       }
     }
 

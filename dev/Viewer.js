@@ -118,6 +118,17 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Number} - Get or set the map name
+     */
+    get name() {
+      return this._name;
+    }
+
+    set name(value) {
+      this._name = value;
+    }
+
+    /**
      * @member {Number} - Get or set the width of the Viewer
      */
     get width() {

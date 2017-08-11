@@ -238,6 +238,7 @@
         var containsStart = visibleRange.contains(start);
         var containsStop = visibleRange.contains(stop);
         var color = options.color || this.color;
+        var showShading = options.showShading;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -252,14 +253,14 @@
 
           canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
           canvas.drawArc(layer, start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         } else {
           canvas.drawArc(layer, start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         }
       }
     }
@@ -381,7 +382,8 @@
         stop: this.stop,
         strand: this.strand,
         source: this.source,
-        legend: this.legend.name
+        legend: this.legend.name,
+        visible: this.visible
       }
     }
 

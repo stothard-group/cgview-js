@@ -35,6 +35,7 @@
           created: jsonInfo.created || this.formatDate(new Date()),
           updated: this.formatDate(new Date()),
           id: v.id,
+          name: v.name,
           settings: {
             general: v.settings.toJSON(),
             backbone: v.backbone.toJSON(),
@@ -77,6 +78,7 @@
       }
 
       viewer._id = data.id;
+      viewer.name = data.name;
 
       // data Info
       viewer._dataInfo = {
