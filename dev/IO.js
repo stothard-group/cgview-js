@@ -103,6 +103,8 @@
       viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
       // Annotation
       viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
+      // Slot Dividers
+      viewer.slotDivider = new CGV.Divider(viewer, settings.dividers.slot);
 
       // Load Captions
       if (data.captions) {
@@ -119,9 +121,6 @@
         data.features.forEach((featureData) => {
           new CGV.Feature(viewer, featureData);
         });
-      }
-
-      if (data.dividers) {
       }
 
       if (data.plots) {
