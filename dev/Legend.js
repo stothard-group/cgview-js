@@ -97,12 +97,16 @@
       return this._items.find( (i) => { return name.toLowerCase() == i.name.toLowerCase() });
     }
 
-    findLegendItemOrCreate(name = 'Unknown', color = 'black', decoration = 'arc') {
+    findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
       var item = this.findLegendItemByName(name);
       if (!item) {
+        if (!color) {
+          var currentColors = this._items.map( (i) => { return i.swatchColor });
+          color = CGV.Color.getColor(currentColors);
+        }
         item = new CGV.LegendItem(this, {
           name: name,
-          swatchColor: color,
+          swatchColor: color.rgbaString,
           decoration: decoration
         });
       }

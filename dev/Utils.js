@@ -562,38 +562,41 @@
   //              - (match[2] ? +match[2] : 0));
   // }
   //
-  // // COLORS
-  // // http://krazydad.com/tutorials/makecolors.php
-  // JSV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
-  //                                  phase1, phase2, phase3) {
-  //   var colors = [];
-  //   if (len == undefined)      len    = 50;
-  //   if (center == undefined)   center = 200;
-  //   if (width == undefined)    width  = 30;
-  //   if (alpha == undefined)    alpha  = 1;
-  //   if (freq1 == undefined)    freq1  = 2.4;
-  //   if (freq2 == undefined)    freq2  = 2.4;
-  //   if (freq3 == undefined)    freq3  = 2.4;
-  //   if (phase1 == undefined)   phase1 = 0;
-  //   if (phase2 == undefined)   phase2 = 2;
-  //   if (phase3 == undefined)   phase3 = 4;
-  //
-  //   for (var i = 0; i < len; ++i) {
-  //     var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
-  //     var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
-  //     var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
-  //     colors.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')');
-  //   }
-  //   return colors;
-  // }
-  //
-  // JSV.test_colors = function(colors) {
-  //   colors.forEach(function(color) {
-  //     document.write( '<font style="color:' + color + '">&#9608;</font>')
-  //   })
-  //   document.write( '<br/>')
-  // }
-  //
+
+
+
+  // COLORS
+  // http://krazydad.com/tutorials/makecolors.php
+  CGV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
+                                   phase1, phase2, phase3) {
+    var colors = [];
+    if (len == undefined)      len    = 50;
+    if (center == undefined)   center = 200;
+    if (width == undefined)    width  = 30;
+    if (alpha == undefined)    alpha  = 1;
+    if (freq1 == undefined)    freq1  = 2.4;
+    if (freq2 == undefined)    freq2  = 2.4;
+    if (freq3 == undefined)    freq3  = 2.4;
+    if (phase1 == undefined)   phase1 = 0;
+    if (phase2 == undefined)   phase2 = 2;
+    if (phase3 == undefined)   phase3 = 4;
+
+    for (var i = 0; i < len; ++i) {
+      var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
+      var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
+      var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+      colors.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')');
+    }
+    return colors;
+  }
+
+  CGV.test_colors = function(colors) {
+    colors.forEach(function(color) {
+      document.write( '<font style="color:' + color + '">&#9608;</font>')
+    })
+    document.write( '<br/>')
+  }
+
 
 })(CGView);
 

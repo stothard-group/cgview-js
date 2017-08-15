@@ -163,6 +163,27 @@
       return new CGV.Color(this.rgbaString)
     }
 
+    equals(color, ignoreAlpha=false) {
+      var rgb1 = this.rgba;
+      var rgb2 = color.rgba;
+      if (ignoreAlpha) {
+        return (rgb1.r == rgb2.r) && (rgb1.g == rgb2.g) && (rgb1.b == rgb2.b)
+      } else {
+        return (rgb1.r == rgb2.r) && (rgb1.g == rgb2.g) && (rgb1.b == rgb2.b) && (rgb1.a == rgb2.a)
+      }
+    }
+
+    inArray(colors, ignoreAlpha) {
+      var present = false;
+      for (var color of colors) {
+        if (this.equals(color, ignoreAlpha)) {
+          present = true;
+          break;
+        }
+      }
+      return present
+    }
+
     highlight(colorAdjustment = 0.25) {
       var hsv = this.hsv;
       hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
@@ -537,6 +558,42 @@
       console.log('Name not found! Defaulting to Black')
       return '#000000'
     }
+  }
+
+
+  // Returns a color with RGB values centered around *center* and upto *width* away from the center.
+  // If *notColors* is provided, the method makes sure not to return one of those colors.
+  // Internally getColor creates an array of colors double the size of *notColors* plus 1 and then checks
+  // the color from array starting at the index of *notColors* length (ie if *colors* is an array of 4,
+  // the methods creates an array of 9 colors and starts at color number 5). This prevents always returning
+  // the first few colors, if they are being changed by the user.
+  Color.getColor = function(notColors=[], center=128, width=127, alpha=1) {
+    var colors = [];
+    var len = (notColors.length * 2) + 1;
+    var freq1  = 2.4;
+    var freq2  = 2.4;
+    var freq3  = 2.4;
+    var phase1 = 0;
+    var phase2 = 2;
+    var phase3 = 4;
+    // Generate Colors
+    for (var i = 0; i < len; ++i) {
+      var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
+      var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
+      var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+      colors.push(new Color(`rgba(${red}, ${green}, ${blue}, ${alpha})`));
+    }
+    // Check that is color has not been used before
+    var colorIndex = notColors.length;
+    if (colorIndex > 0) {
+      for (; colorIndex < colors.length; colorIndex++) {
+        var color = colors[colorIndex];
+        if (!color.inArray(notColors)) {
+          break
+        }
+      }
+    }
+    return colors[colorIndex]
   }
 
   Color.names = function() {
