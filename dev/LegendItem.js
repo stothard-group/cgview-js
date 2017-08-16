@@ -20,7 +20,7 @@
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
-     *  text                  | ""               | Text to display
+     *  name                  | ""               | Text to display
      *  drawSwatch            | false            | Should a swatch be drawn beside the text
      *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.

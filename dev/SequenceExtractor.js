@@ -164,8 +164,8 @@
         if (messageType == 'complete') {
           var baseContent = e.data.baseContent;
           var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
-          data.legendPositive = this.getLegendItem(extractType, '+').text;
-          data.legendNegative = this.getLegendItem(extractType, '-').text;
+          data.legendPositive = this.getLegendItem(extractType, '+').name;
+          data.legendNegative = this.getLegendItem(extractType, '-').name;
 
           var plot = new CGV.Plot(viewer, data);
           track._plot = plot;

@@ -102,11 +102,12 @@
       if (!item) {
         if (!color) {
           var currentColors = this._items.map( (i) => { return i.swatchColor });
-          color = CGV.Color.getColor(currentColors);
+          // color = CGV.Color.getColor(currentColors);
+          color = CGV.Color.getColor(currentColors).rgbaString;
         }
         item = new CGV.LegendItem(this, {
           name: name,
-          swatchColor: color.rgbaString,
+          swatchColor: color,
           decoration: decoration
         });
       }
