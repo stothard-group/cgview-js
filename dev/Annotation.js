@@ -188,6 +188,14 @@
       return labelArray
     }
 
+    _sortByLength(labels) {
+      labels = labels || this._labels;
+      labels.sort( (a,b) => {
+        return a.feature.length - b.feature.length
+      });
+      return labels
+    }
+
     draw(reverseRadius, directRadius) {
       if (this._labels.length != this._labelsNCList.length) {
         this.refresh();
@@ -200,6 +208,9 @@
 
       // Find Labels that are within the visible range and calculate bounds
       var possibleLabels = this.visibleLabels(directRadius);
+
+      possibleLabels = this._sortByLength(possibleLabels);
+
       this._calculatePositions(possibleLabels);
       this._calculateLabelRects(possibleLabels);
 
