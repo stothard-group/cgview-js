@@ -191,7 +191,7 @@
     _sortByLength(labels) {
       labels = labels || this._labels;
       labels.sort( (a,b) => {
-        return a.feature.length - b.feature.length
+        return b.feature.length - a.feature.length
       });
       return labels
     }
