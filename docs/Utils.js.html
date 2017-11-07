@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1323,6 +1374,8 @@
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -1820,27 +1873,44 @@
 
 
 
-  //
-  // /**
-  //  * Returns a string id using the _id_base_ and _start_ while
-  //  * making sure the id is not in _current_ids_.
-  //  * ```javascript
-  //  * JSV.unique_id('spectra_', 1, ['spectra_1', 'spectra_2']);
-  //  * //=> 'spectra_3'
-  //  * ```
-  //  * @param {String} id_base Base of ids
-  //  * @param {Integer} start Integer to start trying to creat ids with
-  //  * @param {Array} current_ids Array of current ids
-  //  * @return {String}
-  //  */
-  // JSV.unique_id = function(id_base, start, current_ids) {
-  //   var id;
-  //   do {
-  //     id = id_base + start;
-  //     start++;
-  //   } while (current_ids.indexOf(id) > -1);
-  //   return id;
-  // }
+
+  /**
+   * Returns a string id using the _idBase_ and _start_ while
+   * making sure the id is not in _currentIds_.
+   * ```javascript
+   * JSV.uniqueId('spectra_', 1, ['spectra_1', 'spectra_2']);
+   * //=> 'spectra_3'
+   * ```
+   * @param {String} idBase - Base of ids
+   * @param {Integer} start - Integer to start trying to creat ids with
+   * @param {Array} currentIds - Array of current ids
+   * @return {String}
+   */
+  CGV.uniqueId = function(idBase, start, currentIds) {
+    var id;
+    do {
+      id = idBase + start;
+      start++;
+    } while (currentIds.indexOf(id) > -1);
+    return id;
+  }
+
+  /**
+   * Create a random hex string
+   *
+   * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+   */
+  CGV.randomHexString = function(len) {
+    var text = "";
+    var possible = "abcdef0123456789";
+    for (var i = 0; i &lt; len; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+
+
   //
   //
   // /**
@@ -1891,38 +1961,41 @@
   //              - (match[2] ? +match[2] : 0));
   // }
   //
-  // // COLORS
-  // // http://krazydad.com/tutorials/makecolors.php
-  // JSV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
-  //                                  phase1, phase2, phase3) {
-  //   var colors = [];
-  //   if (len == undefined)      len    = 50;
-  //   if (center == undefined)   center = 200;
-  //   if (width == undefined)    width  = 30;
-  //   if (alpha == undefined)    alpha  = 1;
-  //   if (freq1 == undefined)    freq1  = 2.4;
-  //   if (freq2 == undefined)    freq2  = 2.4;
-  //   if (freq3 == undefined)    freq3  = 2.4;
-  //   if (phase1 == undefined)   phase1 = 0;
-  //   if (phase2 == undefined)   phase2 = 2;
-  //   if (phase3 == undefined)   phase3 = 4;
-  //
-  //   for (var i = 0; i &lt; len; ++i) {
-  //     var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
-  //     var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
-  //     var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
-  //     colors.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')');
-  //   }
-  //   return colors;
-  // }
-  //
-  // JSV.test_colors = function(colors) {
-  //   colors.forEach(function(color) {
-  //     document.write( '&lt;font style="color:' + color + '">&amp;#9608;&lt;/font>')
-  //   })
-  //   document.write( '&lt;br/>')
-  // }
-  //
+
+
+
+  // COLORS
+  // http://krazydad.com/tutorials/makecolors.php
+  CGV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
+                                   phase1, phase2, phase3) {
+    var colors = [];
+    if (len == undefined)      len    = 50;
+    if (center == undefined)   center = 200;
+    if (width == undefined)    width  = 30;
+    if (alpha == undefined)    alpha  = 1;
+    if (freq1 == undefined)    freq1  = 2.4;
+    if (freq2 == undefined)    freq2  = 2.4;
+    if (freq3 == undefined)    freq3  = 2.4;
+    if (phase1 == undefined)   phase1 = 0;
+    if (phase2 == undefined)   phase2 = 2;
+    if (phase3 == undefined)   phase3 = 4;
+
+    for (var i = 0; i &lt; len; ++i) {
+      var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
+      var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
+      var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+      colors.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')');
+    }
+    return colors;
+  }
+
+  CGV.test_colors = function(colors) {
+    colors.forEach(function(color) {
+      document.write( '&lt;font style="color:' + color + '">&amp;#9608;&lt;/font>')
+    })
+    document.write( '&lt;br/>')
+  }
+
 
 })(CGView);
 
@@ -1939,7 +2012,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

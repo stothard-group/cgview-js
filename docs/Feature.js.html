@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1323,6 +1374,8 @@
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -1360,8 +1413,8 @@
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
-      this._strand = CGV.defaultFor(data.strand, 1);
-      this.label = new CGV.Label(this, {name: data.label} );
+      this.strand = CGV.defaultFor(data.strand, 1);
+      this.label = new CGV.Label(this, {name: data.name} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
@@ -1444,7 +1497,11 @@
     }
 
     set strand(value) {
-      this._strand = value;
+      if (value == '-' || Number(value) == -1) {
+        this._strand = -1;
+      } else {
+        this._strand = 1;
+      }
     }
 
     isDirect() {
@@ -1580,6 +1637,7 @@
         var containsStart = visibleRange.contains(start);
         var containsStop = visibleRange.contains(stop);
         var color = options.color || this.color;
+        var showShading = options.showShading;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -1594,14 +1652,14 @@
 
           canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
           canvas.drawArc(layer, start, visibleRange.stop + 100,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         } else {
           canvas.drawArc(layer, start, stop,
             this.adjustedRadius(slotRadius, slotThickness),
-            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration);
+            color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         }
       }
     }
@@ -1685,6 +1743,19 @@
 
     }
 
+    /**
+     * Zoom and pan map to show the feature
+     *
+     * @param {Number} duration - Length of animation
+     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
+     */
+    moveTo(duration, ease) {
+      var buffer = Math.ceil(this.length * 0.05);
+      var start = this.sequence.subtractBp(this.start, buffer);
+      var stop = this.sequence.addBp(this.stop, buffer);
+      this.viewer.moveTo(start, stop, duration, ease);
+    }
+
     // Update tracks, slots, etc associated with feature.
     // Or add feature to tracks and refresh them, if this is a new feature.
     // Don't refresh if bulkImport is true
@@ -1704,13 +1775,14 @@
 
     toJSON() {
       return {
-        label: this.name,
+        name: this.name,
         type: this.type,
         start: this.start,
         stop: this.stop,
         strand: this.strand,
         source: this.source,
-        legend: this.legend.name
+        legend: this.legend.name,
+        visible: this.visible
       }
     }
 
@@ -1731,7 +1803,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

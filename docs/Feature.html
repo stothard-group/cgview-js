@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1323,6 +1374,8 @@
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -2004,7 +2057,7 @@ generated directly from the sequence and do not have to be saved when exported J
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line268">line 268</a>
+            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line273">line 273</a>
         </div>
         
     </div>
@@ -2114,6 +2167,145 @@ in which case the feature will on ly be highlighted on the slot.</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="moveTo">
+            
+            moveTo<span class="signature">(duration, ease)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line353">line 353</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Zoom and pan map to show the feature</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Length of animation</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ease</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The d3 animation ease [Default: d3.easeCubic]</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="remove">
             
             remove<span class="signature">()</span>
@@ -2121,7 +2313,7 @@ in which case the feature will on ly be highlighted on the slot.</p>
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line333">line 333</a>
+            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line338">line 338</a>
         </div>
         
     </div>
@@ -2192,7 +2384,7 @@ in which case the feature will on ly be highlighted on the slot.</p>
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line318">line 318</a>
+            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line323">line 323</a>
         </div>
         
     </div>
@@ -2365,7 +2557,7 @@ in which case the feature will on ly be highlighted on the slot.</p>
     
         
         <div class="tag-source">
-            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line305">line 305</a>
+            <a href="Feature.js.html">Feature.js</a>, <a href="Feature.js.html#line310">line 310</a>
         </div>
         
     </div>
@@ -2442,7 +2634,7 @@ in which case the feature will on ly be highlighted on the slot.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

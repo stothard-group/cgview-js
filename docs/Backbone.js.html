@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1323,6 +1374,8 @@
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -1380,6 +1433,17 @@
       return 'Backbone';
     }
 
+
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
+      this.refreshThickness();
+      this.viewer.layout &amp;&amp; this.viewer.layout._adjustProportions();
+    }
+
     /**
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
@@ -1427,7 +1491,7 @@
     }
 
     get thickness() {
-      return this._thickness
+      return this.visible ? this._thickness : 0
     }
 
     /**
@@ -1441,7 +1505,8 @@
      * @member {Number} - Maximum thickness the backbone should become to allow viewing of the sequence
      */
     get maxThickness() {
-      return Math.max(this.thickness, this.sequence.thickness)
+      // return Math.max(this.thickness, this.sequence.thickness)
+      return Math.max(this.zoomedThickness, this.sequence.thickness)
     }
 
     /**
@@ -1479,28 +1544,35 @@
 
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
-      if (this.visibleRange) {
+      if (this.visibleRange &amp;&amp; this.visible) {
+        this.refreshThickness();
         this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.zoomedRadius), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
         if (this.pixelsPerBp() > 1) {
-          var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
-          var zoomedThickness = this.zoomedThickness;
-          var addition = this.pixelsPerBp() * 2;
-          if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
-            this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
-          } else {
-            this._bpThicknessAddition = addition;
-          }
           this.sequence.draw();
-        } else {
-          this._bpThicknessAddtion = 0
         }
+      }
+    }
+
+    refreshThickness() {
+      if (this.pixelsPerBp() > 1 &amp;&amp; this.visible) {
+        var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
+        var zoomedThickness = this.zoomedThickness;
+        var addition = this.pixelsPerBp() * 2;
+        if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
+          this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
+        } else {
+          this._bpThicknessAddition = addition;
+        }
+      } else {
+        this._bpThicknessAddition = 0
       }
     }
 
     toJSON() {
       return {
         color: this.color.rgbaString,
-        thickness: this.thickness
+        thickness: this.thickness,
+        visible: this.visible
       }
     }
 
@@ -1523,7 +1595,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

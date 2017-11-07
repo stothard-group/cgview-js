@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1323,6 +1374,8 @@
                 <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -1397,6 +1450,9 @@ if (window.CGV === undefined) window.CGV = CGView;
         .style('width', this.width + 'px')
         .style('height', this.height + 'px');
 
+      // Create map id
+      this._id = CGV.randomHexString(40);
+
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
@@ -1454,6 +1510,24 @@ if (window.CGV === undefined) window.CGV = CGView;
     //////////////////////////////////////////////////////////////////////////
 
     /**
+     * @member {Number} - Get map id
+     */
+    get id() {
+      return this._id;
+    }
+
+    /**
+     * @member {Number} - Get or set the map name
+     */
+    get name() {
+      return this._name;
+    }
+
+    set name(value) {
+      this._name = value;
+    }
+
+    /**
      * @member {Number} - Get or set the width of the Viewer
      */
     get width() {
@@ -1505,7 +1579,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         // Create Color Picker
         var colorPickerId = this.containerId + '-color-picker';
         this._container.append('div')
-          .classed('cp-color-picker-dialog', true)
+          // .classed('cp-color-picker-dialog', true)
           .attr('id', this.containerId + '-color-picker');
         this._colorPicker = new CGV.ColorPicker(colorPickerId);
       }
@@ -1548,7 +1622,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (value) {
         this.io.initializeDragAndDrop();
       } else {
-        this.canvas.node('ui').on('.dragndrop', null);
+        console.log('COMONE')
+        d3.select(this.canvas.node('ui')).on('.dragndrop', null);
       }
     }
 
@@ -1631,6 +1706,18 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * Returns an [CGArray](CGArray.js.html) of Feature/Plot Source name or a single item.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    sources(term) {
+      var featureSources = this._features.map( (f) => { return f.source });
+      var plotSources = this._plots.map( (p) => { return p.source });
+      var allSources = featureSources.concat(plotSources);
+      return new CGV.CGArray([...new Set(allSources)]).get(term)
+    }
+
+    /**
      * Clear the viewer canvas
      */
     clear(layerName = 'map') {
@@ -1688,15 +1775,75 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.refresh();
     }
 
+    test2MoveTo(start, stop) {
+      //TODO: check for visibile range
+      var startRange = this.backbone.visibleRange;
+      var startBp = startRange.middle;
+      var endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+      var startEndLength = Math.abs(endBp - startBp);
+
+      var zoomScale = d3.scalePow()
+        .exponent(5)
+      // var zoomScale = d3.scaleLinear()
+        .domain([1, this.sequence.length/4])
+        .range([this.backbone.maxZoomFactor(), 1]);
+
+      var zoomThrough = zoomScale(startEndLength);
+
+      this.testMoveTo(start, stop, {zoomThrough: zoomThrough})
+    }
+
+    testMoveTo(start, stop, options = {}) {
+      var duration = options.duration || 1000;
+      var ease = options.ease || d3.easeCubic;
+      var zoomThrough = options.zoomThrough;
+      var zoomFactor = this.zoomFactor;
+
+      if (zoomThrough &amp;&amp; zoomThrough &lt;= zoomFactor) {
+        var startRange = this.backbone.visibleRange;
+        var startBp = startRange.middle;
+        var endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+        var startEndLength = Math.abs(endBp - startBp);
+        var middleBp;
+        if ( startEndLength &lt; (this.sequence.length / 2) ) {
+          middleBp = Math.min(startBp, endBp) + startEndLength / 2;
+        } else {
+          startEndLength = this.sequence.length - startEndLength;
+          middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
+        }
+        this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
+          this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
+        })
+      } else {
+        this.moveTo(start, stop, duration, ease);
+      }
+    }
+
     /**
      * Move the viewer to show the map from the *start* to the *stop* position.
      * If only the *start* position is provided,
      * the viewer will center the image on that bp with the current zoom level.
      *
      * @param {Number} start - The start position in bp
-     * @param {Number} stop - The stop position in bp (NOT IMPLEMENTED YET)
+     * @param {Number} stop - The stop position in bp
+     * @param {Number} duration - The animation duration in milliseconds [Default: 1000]
+     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
-    moveTo(start, duration = 1000, ease) {
+    moveTo(start, stop, duration = 1000, ease) {
+      if (stop) {
+        var bpLength = this.sequence.lengthOfRange(start, stop);
+        var bp = this.sequence.addBp(start, bpLength / 2);
+        // Use viewer width as estimation arc length
+        var arcLength = this.width;
+        var zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
+        var zoomFactor = zoomedRadius / this.backbone.radius;
+        this.zoomTo(bp, zoomFactor, duration, ease);
+      } else {
+        this._moveTo(start, duration, ease);
+      }
+    }
+
+    _moveTo(bp, duration = 1000, ease) {
       var self = this;
       ease = ease || d3.easeCubic;
       var domainX = this.scale.x.domain();
@@ -1705,7 +1852,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       var halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
 
       var radius = CGV.pixel(this.backbone.zoomedRadius);
-      var radians = this.scale.bp(start);
+      var radians = this.scale.bp(bp);
       var x = radius * Math.cos(radians);
       var y = -radius * Math.sin(radians);
 
@@ -1725,6 +1872,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         }).on('end', function() { self.drawFull(); });
     }
 
+
     /**
      * Move the viewer to *bp* position at the provided *zoomFactor*.
      * If *bp* is falsy (inc. 0), the map is centered.
@@ -1732,7 +1880,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} bp - The position in bp
      * @param {Number} zoomFactor - The zoome level
      */
-    zoomTo(bp, zoomFactor, duration = 1000, ease) {
+    zoomTo(bp, zoomFactor, duration = 1000, ease, callback) {
       var self = this;
       ease = ease || d3.easeCubic;
 
@@ -1749,14 +1897,8 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       var radius = CGV.pixel(this.backbone.radius * zoomFactor);
       var radians = this.scale.bp(bp);
-      var x, y;
-      if (bp) {
-        x = radius * Math.cos(radians);
-        y = -radius * Math.sin(radians);
-      } else {
-        x = 0;
-        y = 0;
-      }
+      var x = bp ? (radius * Math.cos(radians) ) : 0;
+      var y = bp ? (-radius * Math.sin(radians) ) : 0;
 
       var startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
       var endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
@@ -1774,7 +1916,9 @@ if (window.CGV === undefined) window.CGV = CGView;
             d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
             self.drawFast();
           }
-        }).on('end', function() { self.drawFull(); });
+        }).on('end', function() {
+          callback ? callback.call() : self.drawFull();
+        });
     }
 
     /*
@@ -1827,7 +1971,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

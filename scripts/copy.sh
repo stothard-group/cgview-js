@@ -10,7 +10,9 @@ echo "Building CGView.js"
 
 cat ${CGVIEW_DIR}/dev/Viewer.js > ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_DIR}/src/CGView.js
-find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js | xargs cat >> ${CGVIEW_DIR}/src/CGView.js
+cat ${CGVIEW_DIR}/dev/Caption.js >> ${CGVIEW_DIR}/src/CGView.js
+cat ${CGVIEW_DIR}/dev/CaptionItem.js >> ${CGVIEW_DIR}/src/CGView.js
+find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js ! -name Caption.js ! -name CaptionItem.js | xargs cat >> ${CGVIEW_DIR}/src/CGView.js
 
 echo "Convert ES6 to ES5..."
 ruby ${CGVIEW_DIR}/scripts/convert_cgv_to_es5.rb -i ${CGVIEW_DIR}/src/CGView.js -o ${CGVIEW_DIR}/src/CGView.min.js

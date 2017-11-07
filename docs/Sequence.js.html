@@ -591,6 +591,8 @@
             
                 <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
             
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
                 <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
             
                 <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
@@ -1275,6 +1277,51 @@
             </ul>
         </li>
     
+        <li class="item" data-name="TrackContents">
+            <span class="title">
+                <a href="TrackContents.html">TrackContents</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="TrackContents#canvas"><a href="TrackContents.html#canvas">canvas</a></li>
+            
+                <li data-name="TrackContents#extract"><a href="TrackContents.html#extract">extract</a></li>
+            
+                <li data-name="TrackContents#from"><a href="TrackContents.html#from">from</a></li>
+            
+                <li data-name="TrackContents#meta"><a href="TrackContents.html#meta">meta</a></li>
+            
+                <li data-name="TrackContents#options"><a href="TrackContents.html#options">options</a></li>
+            
+                <li data-name="TrackContents#sequence"><a href="TrackContents.html#sequence">sequence</a></li>
+            
+                <li data-name="TrackContents#track"><a href="TrackContents.html#track">track</a></li>
+            
+                <li data-name="TrackContents#type"><a href="TrackContents.html#type">type</a></li>
+            
+                <li data-name="TrackContents#viewer"><a href="TrackContents.html#viewer">viewer</a></li>
+            
+                <li data-name="TrackContents#visible"><a href="TrackContents.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="TrackContents#toString"><a href="TrackContents.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
         <li class="item" data-name="Viewer">
             <span class="title">
                 <a href="Viewer.html">Viewer</a>
@@ -1288,7 +1335,11 @@
             
                 <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
             
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
                 <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
             
                 <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
             
@@ -1324,6 +1375,8 @@
             
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
             
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
+            
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
                 <li data-name="Viewer#zoomTo"><a href="Viewer.html#zoomTo">zoomTo</a></li>
@@ -1351,7 +1404,7 @@
 
   /**
    * &lt;br />
-   * The CGView Sequence class hold the sequence of the map.
+   * The CGView Sequence class holds the sequence of the map.
    */
   class Sequence extends CGV.CGObject {
 
@@ -1407,6 +1460,40 @@
             break;
           case 'C':
             compChar = 'G';
+            break;
+          case 'U':
+            compChar = 'A';
+            break;
+          case 'Y':
+            compChar = 'R';
+            break;
+          case 'S':
+            compChar = 'S';
+            break;
+          case 'W':
+            compChar = 'W';
+            break;
+          case 'K':
+            compChar = 'M';
+            break;
+          case 'M':
+            compChar = 'K';
+            break;
+          case 'B':
+            compChar = 'V';
+            break;
+          case 'D':
+            compChar = 'H';
+            break;
+          case 'H':
+            compChar = 'D';
+            break;
+          case 'V':
+            compChar = 'B';
+            break;
+          case 'N':
+            compChar = 'N';
+            break;
         }
         compSeq = compSeq + compChar;
       }
@@ -1594,7 +1681,6 @@
      * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
      */
     get thickness() {
-      // return this.bpSpacing * 2 + (this.bpMargin * 4);
       return CGV.pixel(this.bpSpacing * 2 + (this.bpMargin * 4));
     }
 
@@ -1606,7 +1692,7 @@
       return true
     }
 
-    asFasta(id='') {
+    asFasta(id='sequence') {
       return `>${id}\n${this.seq}`
     }
 
@@ -1745,7 +1831,8 @@
       var scale = this.canvas.scale;
       var backbone = this.viewer.backbone;
       var pixelsPerBp = backbone.pixelsPerBp();
-      if (pixelsPerBp &lt; CGV.pixel(this.bpSpacing - this.bpMargin) / 2) { return }
+      var seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
+      if (pixelsPerBp &lt; CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return }
 
       var scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
 
@@ -1782,7 +1869,8 @@
       return {
         font: this.font.string,
         color: this.color.rgbString,
-        seq: this.seq
+        seq: this.seq,
+        visible: this.visible
       }
     }
 
@@ -1834,7 +1922,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Jun 22 2017 13:07:35 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 23 2017 14:18:26 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

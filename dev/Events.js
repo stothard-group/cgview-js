@@ -14,6 +14,7 @@
    *  legend-update       | Called after legend items removed or added
    *  caption-update      | Called after caption items removed or added
    *  track-update        | Called when track is updated
+   *  resize              | Called when the Viewer size is changed
    *
    *
    *  mousemove           | Called when the mouse moves on the map

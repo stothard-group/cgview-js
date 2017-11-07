@@ -133,11 +133,14 @@
       viewer.layout = new CGV.Layout(viewer, data.layout);
     }
 
-    downloadImage(size, filename = 'image.png') {
+    // downloadImage(size, filename = 'image.png') {
+    downloadImage(width, height, filename = 'image.png') {
       var viewer = this._viewer;
       var canvas = viewer.canvas;
-      width = size || viewer.width;
-      height = size || viewer.height;
+      // width = size || viewer.width;
+      // height = size || viewer.height;
+      width = width || viewer.width;
+      height = height || viewer.height;
 
       var windowTitle = 'CGV-Image-' + width + 'x' + height;
 
@@ -219,8 +222,8 @@
 				a.click();
 				setTimeout(function() {
 						document.body.removeChild(a);
-						window.URL.revokeObjectURL(url);  
-				}, 0); 
+						window.URL.revokeObjectURL(url);
+				}, 0);
 			}
 		}
 

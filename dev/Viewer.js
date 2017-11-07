@@ -223,7 +223,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (value) {
         this.io.initializeDragAndDrop();
       } else {
-        this.canvas.node('ui').on('.dragndrop', null);
+        // console.log('COMONE')
+        // d3.select(this.canvas.node('ui')).on('.dragndrop', null);
       }
     }
 
@@ -258,6 +259,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.layout._adjustProportions();
 
       this.draw(fast);
+
+      this.trigger('resize');
     }
 
     /**

@@ -159,9 +159,9 @@
       }
       if (this.scale.y) {
         var orig_y_domain = this.scale.y.domain();
-        var orig_width = orig_y_domain[0] - orig_y_domain[1];
-        y1 = orig_y_domain[0] / orig_width;
-        y2 = orig_y_domain[1] / orig_width;
+        var orig_height = orig_y_domain[0] - orig_y_domain[1];
+        y1 = orig_y_domain[0] / orig_height;
+        y2 = orig_y_domain[1] / orig_height;
       } else {
         y1 = 0.5;
         y2 = -0.5;
