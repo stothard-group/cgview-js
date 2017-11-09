@@ -9,6 +9,8 @@
       this._feature = feature;
       this.name = options.name;
       this.bp = this.feature.start + (this.feature.length / 2);
+      this.bpDefault = this.bp;
+      this.lineAttachmentDefault = CGV.clockPositionForAngle(this.feature.canvas.scale.bp(this.bp) + Math.PI);
     }
 
     /**

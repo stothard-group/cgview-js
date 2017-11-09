@@ -99,6 +99,7 @@
 
     /**
      * Check if any of the Rect overlaps with any Rects in the array.
+     * If there is an overlap the first overlapping Rect is returned.
      *
      * @param {Array} rectArray - Array of Rects
      * @return {Boolean}
@@ -111,7 +112,7 @@
       for (var i=0, len=rectArray.length; i < len; i++){
         var r2 = rectArray[i];
         if (r1.x <= r2.right && r2.x <= (r1.right + widthGap) && r1.y <= r2.bottom && r2.y <= r1.bottom) {
-          overlap = true;
+          overlap = r2;
           break;
         }else{
           overlap = false;
@@ -129,6 +130,48 @@
      */
     containsPt(x, y) {
       return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) )
+    }
+
+    ptForClockPosition(clockPosition) {
+      var x, y;
+      switch (clockPosition) {
+        case 1:
+        case 2:
+          x = this.x + this.width;
+          y = this.y;
+          break;
+        case 3:
+          x = this.x + this.width;
+          y = this.y + (this.height / 2);
+          break;
+        case 4:
+        case 5:
+          x = this.x + this.width;
+          y = this.y + this.height;
+          break;
+        case 6:
+          x = this.x + (this.width / 2);
+          y = this.y + this.height;
+          break;
+        case 7:
+        case 8:
+          x = this.x;
+          y = this.y + this.height;
+          break;
+        case 9:
+          x = this.x;
+          y = this.y + (this.height / 2);
+          break;
+        case 10:
+        case 11:
+          x = this.x;
+          y = this.y;
+          break;
+        case 12:
+          x = this.x + (this.width / 2);
+          y = this.y;
+      }
+      return {x: x, y: y}
     }
 
   }

@@ -20,7 +20,6 @@
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
       this.lineCap = 'round';
-      this.priorityMax = 50;
     }
 
     /**
@@ -124,86 +123,26 @@
     _calculatePositions(labels) {
       labels = labels || this._labels;
       var visibleRange = this._visibleRange;
-      var label, feature, containsStart, containsStop, radians;
+      var label, feature, containsStart, containsStop;
       var featureLengthDownStream, featureLengthUpStream;
       var sequence = this.sequence;
-      var scale = this.canvas.scale;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
-        var testType;
         if (containsStart && containsStop) {
-          label.bp = label.bpDefault;
-          label.lineAttachment = label.lineAttachmentDefault;
+          label.bp = feature.start + (feature.length / 2);
+        } else if (containsStart) {
+          label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
+        } else if (containsStop) {
+          label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
         } else {
-          if (containsStart) {
-            label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
-          } else if (containsStop) {
-            label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
-          } else {
-            featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
-            featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
-            var halfVisibleRangeLength = visibleRange.length / 2;
-            var center = visibleRange.start + halfVisibleRangeLength;
-            if (featureLengthUpStream > featureLengthDownStream) {
-              label.bp = center + halfVisibleRangeLength * featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream);
-            } else {
-              label.bp = center + halfVisibleRangeLength * featureLengthUpStream / (featureLengthDownStream + featureLengthUpStream);
-            }
-          }
-          // Calculate where the label line should attach to Label.
-          // The attachemnt point should be the opposite clock position of the feature.
-          // This might need to be recalculated of the label has moved alot
-          radians = scale.bp(label.bp);
-          label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
+          featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
+          featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
+          label.bp = (featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream) * visibleRange.length) + visibleRange.start;
         }
-      }
-    }
 
-    // Calculates non overlapping rects for the labels
-    _calculatePriorityLabelRects(labels) {
-      labels = labels || this._labels;
-      var canvas = this.canvas;
-      var scale = canvas.scale;
-      var label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
-      var radius = this._outerRadius + this._labelLineMargin;
-      var placedRects = new CGV.CGArray();
-      for (var i = 0, len = labels.length; i < len; i++) {
-        label = labels[i];
-        bp = label.bp;
-        lineLength = this.labelLineLength;
-        do {
-          var outerPt = canvas.pointFor(bp, radius + lineLength);
-          var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-          label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-          overlappingRect = label.rect.overlap(placedRects);
-          // if (overlappingRect) {
-          //   overlappingLabel = overlappingRect.label;
-          //   // adjust label rect
-          //   // NEED to account for circular
-          //   if (Math.abs(label.bp - bp) < 5000) {
-          //     if (overlappingLabel.bp < bp) {
-          //       bp += 1000;
-          //     } else {
-          //       bp -= 1000;
-          //     }
-          //   }
-          //   var outerPt = canvas.pointFor(bp, radius + lineLength);
-          //   var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-          //   label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-          //
-          //   overlappingRect = label.rect.overlap(placedRects);
-          //   lineLength += label.height;
-          //   // NEED to add max angle change
-          // }
-          lineLength += label.height;
-        } while (overlappingRect);
-        // Add label property to rect for getting access to while checking for overlap
-        label.rect.label = label;
-        placedRects.push(label.rect);
-        label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
     }
 
@@ -216,16 +155,21 @@
       labels = labels || this._labels;
       var canvas = this.canvas;
       var scale = canvas.scale;
-      var label, bp, x, y;
+      var label, feature, radians, bp, x, y;
       var radius = this._outerRadius + this._labelLineMargin;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
+        feature = label.feature;
+        // bp = feature.start + (feature.length / 2);
         bp = label.bp;
-        // var innerPt = canvas.pointFor(bp, radius);
+        radians = scale.bp(bp);
+        var innerPt = canvas.pointFor(bp, radius);
         var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
+        // Calculate where the label line should attach to Label.
+        // The attachemnt point should be the opposite clock position of the feature.
+        label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
         var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-        label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
     }
 
@@ -242,6 +186,14 @@
       }
       return labelArray
     }
+
+    // _sortByLength(labels) {
+    //   labels = labels || this._labels;
+    //   labels.sort( (a,b) => {
+    //     return b.feature.length - a.feature.length
+    //   });
+    //   return labels
+    // }
 
     _sortByPriority(labels) {
       labels = labels || this._labels;
@@ -269,69 +221,33 @@
       var possibleLabels = this.visibleLabels(directRadius);
 
       possibleLabels = this._sortByPriority(possibleLabels);
+
       this._calculatePositions(possibleLabels);
-
-      var priorityLabels = possibleLabels.slice(0, this.priorityMax);
-      var remainingLabels = possibleLabels.slice(this.priorityMax);
-
-      this._calculatePriorityLabelRects(priorityLabels);
-      this._calculateLabelRects(remainingLabels);
+      this._calculateLabelRects(possibleLabels);
 
       // Remove overlapping labels
-      // var labelRects = new CGV.CGArray();
-      var labelRects = priorityLabels.map( (p) => {return p.rect});
-      this._visibleLabels = priorityLabels;
-      for (var i = 0, len = remainingLabels.length; i < len; i++) {
-        label = remainingLabels[i];
+      var labelRects = new CGV.CGArray();
+      this._visibleLabels = new CGV.CGArray();
+      for (var i = 0, len = possibleLabels.length; i < len; i++) {
+        label = possibleLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
         }
       }
-      // this._visibleLabels = new CGV.CGArray();
-      // for (var i = 0, len = possibleLabels.length; i < len; i++) {
-      //   label = possibleLabels[i];
-      //   if (!label.rect.overlap(labelRects)) {
-      //     this._visibleLabels.push(label);
-      //     labelRects.push(label.rect);
-      //   }
-      // }
 
       // Draw nonoverlapping labels
       var canvas = this.canvas;
       var ctx = canvas.context('map');
-      var label, rect;
+      var label, feature, bp, origin;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
-      // Draw label lines first so that label text will draw over them
       for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
-        var color = this.color || label.feature.color;
-
-        var innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMargin);
-        var outerPt = label.attachementPt;
-        ctx.beginPath();
-        ctx.moveTo(innerPt.x, innerPt.y);
-        ctx.lineTo(outerPt.x, outerPt.y);
-        ctx.strokeStyle = color.rgbaString;
-        ctx.lineCap = this.lineCap;
-        ctx.lineWidth = this._labelLineWidth;
-        ctx.stroke();
-      }
-
-      // Draw label text
-      var backgroundColor = this.viewer.settings.backgroundColor.copy();
-      backgroundColor.opacity = 0.75;
-      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
-        label = this._visibleLabels[i];
-        var color = this.color || label.feature.color;
-
-
-        ctx.fillStyle = backgroundColor.rgbaString;
-        rect = label.rect;
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-
+        feature = label.feature;
+        var color = this.color || feature.color;
+        canvas.radiantLine('map', label.bp, directRadius + this._labelLineMargin, this.labelLineLength, this._labelLineWidth, color.rgbaString, this.lineCap);
         ctx.fillStyle = color.rgbaString;
         ctx.fillText(label.name, label.rect.x, label.rect.y);
       }

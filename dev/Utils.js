@@ -189,9 +189,9 @@
     var x, y;
     switch (clockPosition) {
       case 1:
-        x = point.x - (width * 3 / 4);
-        y = point.y;
-        break;
+        // x = point.x - (width * 3 / 4);
+        // y = point.y;
+        // break;
       case 2:
         x = point.x - width;
         y = point.y;
@@ -201,21 +201,22 @@
         y = point.y - (height / 2);
         break;
       case 4:
+      case 5:
         x = point.x - width;
         y = point.y - height;
         break;
-      case 5:
-        x = point.x - (width * 3 / 4);
-        y = point.y - height;
-        break;
+      // case 5:
+      //   x = point.x - (width * 3 / 4);
+      //   y = point.y - height;
+      //   break;
       case 6:
         x = point.x - (width / 2);
         y = point.y - height;
         break;
       case 7:
-        x = point.x - (width / 4);
-        y = point.y - height;
-        break;
+        // x = point.x - (width / 4);
+        // y = point.y - height;
+        // break;
       case 8:
         x = point.x;
         y = point.y - height;
@@ -225,13 +226,14 @@
         y = point.y - (height / 2);
         break;
       case 10:
+      case 11:
         x = point.x;
         y = point.y;
         break;
-      case 11:
-        x = point.x - (width / 4);
-        y = point.y;
-        break;
+      // case 11:
+      //   x = point.x - (width / 4);
+      //   y = point.y;
+      //   break;
       case 12:
         x = point.x - (width / 2);
         y = point.y;

@@ -170,6 +170,17 @@
     }
 
     /**
+     * @member {String} - Get or set the feature as a favorite.
+     */
+    get favorite() {
+      return this._favorite ? true : false
+    }
+
+    set favorite(value) {
+      this._favorite = value;
+    }
+
+    /**
      * @member {String} - Get or set the color. TODO: reference COLOR class
      */
     get color() {
