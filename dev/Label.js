@@ -11,6 +11,9 @@
       this.bp = this.feature.start + (this.feature.length / 2);
       this.bpDefault = this.bp;
       this.lineAttachmentDefault = CGV.clockPositionForAngle(this.feature.canvas.scale.bp(this.bp) + Math.PI);
+
+      this.bpLineDiff = 0; // Offset in bp for label line
+      this.radiusLineDiff = 0; // Extra distance for label line added to labelLineLength
     }
 
     /**
@@ -69,15 +72,15 @@
     }
 
     /**
-     * @member {Point} - Get or set the label origin. The upper-left corner of the label.
+     * @member {Point} - Get or set the label origin. The upper-left corner of the label rect.
      */
-    get origin() {
-      return this._origin
-    }
-
-    set origin(value) {
-      this._origin = value;
-    }
+    // get origin() {
+    //   return this._origin
+    // }
+    //
+    // set origin(value) {
+    //   this._origin = value;
+    // }
 
     /**
      * @member {Number} - Get or set the label attachment point. This number represents where on the label

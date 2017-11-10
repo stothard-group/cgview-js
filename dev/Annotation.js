@@ -21,6 +21,9 @@
       this.color = options.color;
       this.lineCap = 'round';
       this.priorityMax = 50;
+      this.maxLabelAngleDegrees = 1; // Degrees
+      this.maxLabelAngleBp = this.canvas.scale.bp.invert((-90+this.maxLabelAngleDegrees) * Math.PI / 180);
+      this.labelAngleBpIncrement = this.maxLabelAngleBp / 10;
     }
 
     /**
@@ -163,7 +166,8 @@
     }
 
     // Calculates non overlapping rects for the labels
-    _calculatePriorityLabelRects(labels) {
+    // No change in angle is done
+    _calculatePriorityLabelRects_NO_ANGLES(labels) {
       labels = labels || this._labels;
       var canvas = this.canvas;
       var scale = canvas.scale;
@@ -179,32 +183,119 @@
           var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
-          // if (overlappingRect) {
-          //   overlappingLabel = overlappingRect.label;
-          //   // adjust label rect
-          //   // NEED to account for circular
-          //   if (Math.abs(label.bp - bp) < 5000) {
-          //     if (overlappingLabel.bp < bp) {
-          //       bp += 1000;
-          //     } else {
-          //       bp -= 1000;
-          //     }
-          //   }
-          //   var outerPt = canvas.pointFor(bp, radius + lineLength);
-          //   var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-          //   label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-          //
-          //   overlappingRect = label.rect.overlap(placedRects);
-          //   lineLength += label.height;
-          //   // NEED to add max angle change
-          // }
           lineLength += label.height;
         } while (overlappingRect);
+        // TODO: try 2 label sliding window
         // Add label property to rect for getting access to while checking for overlap
         label.rect.label = label;
         placedRects.push(label.rect);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
+    }
+
+    // // Calculates non overlapping rects for the labels
+    // // Angle may change
+    // _calculatePriorityLabelRects(labels) {
+    //   labels = labels || this._labels;
+    //   var canvas = this.canvas;
+    //   var scale = canvas.scale;
+    //   var label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
+    //   var radius = this._outerRadius + this._labelLineMargin;
+    //   var placedRects = new CGV.CGArray();
+    //   for (var i = 0, len = labels.length; i < len; i++) {
+    //     label = labels[i];
+    //     bp = label.bp;
+    //     lineLength = this.labelLineLength;
+    //     do {
+    //       var outerPt = canvas.pointFor(bp, radius + lineLength);
+    //       var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+    //       label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+    //       overlappingRect = label.rect.overlap(placedRects);
+    //       // if (overlappingRect) {
+    //       //   overlappingLabel = overlappingRect.label;
+    //       //   // adjust label rect
+    //       //   // NEED to account for circular
+    //       //   if (Math.abs(label.bp - bp) < 5000) {
+    //       //     if (overlappingLabel.bp < bp) {
+    //       //       bp += 1000;
+    //       //     } else {
+    //       //       bp -= 1000;
+    //       //     }
+    //       //   }
+    //       //   var outerPt = canvas.pointFor(bp, radius + lineLength);
+    //       //   var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+    //       //   label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+    //       //
+    //       //   overlappingRect = label.rect.overlap(placedRects);
+    //       //   lineLength += label.height;
+    //       //   // NEED to add max angle change
+    //       // }
+    //       lineLength += label.height;
+    //     } while (overlappingRect);
+    //     // TODO: try 2 label sliding window
+    //     // Add label property to rect for getting access to while checking for overlap
+    //     label.rect.label = label;
+    //     placedRects.push(label.rect);
+    //     label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
+    //   }
+    // }
+
+    // Calculates non overlapping rects for the labels
+    // Angle may change
+    _calculatePriorityLabelRects_WITH_ANGLES(labels) {
+      labels = labels || this._labels;
+      var canvas = this.canvas;
+      var scale = canvas.scale;
+      var label, bp, x, y, lineLength, overlappingRect, overlappingLabel, label1, label2;
+      var radius = this._outerRadius + this._labelLineMargin;
+      var placedRects = new CGV.CGArray();
+
+      // Sort labels by feature position
+      labels.sort( (a,b) => { return a.bp - b.bp} );
+      // Reset label offsets
+      // TODO: need to reset when a feature becomes unfavorited
+      for (var i = 0, len = labels.length; i < len; i++) {
+        labels[i].bpLineDiff = 0;
+        labels[i].radiusLineDiff = 0;
+      }
+
+      // label = labels[0];
+      // // Set up the first label so it's ready for comparison
+      // var outerPt = canvas.pointFor(label.bp, radius + lineLength);
+      // var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+      // label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+
+      // Do comparision of labels 2 at a time
+      do {
+        var overlapFound = false;
+        for (var i = 0, len = labels.length; i < len; i++) {
+          label1 = labels[i];
+          label2 = (i == len - 1) ? labels[0] : labels[i+1];
+          // Label 1
+          var outerPt = canvas.pointFor(label1.bp + label1.bpLineDiff, radius + this.labelLineLength + label1.radiusLineDiff);
+          var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label1.lineAttachment, label1.width, label1.height);
+          label1.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label1.width, label1.height);
+          // Label 2
+          var outerPt = canvas.pointFor(label2.bp + label2.bpLineDiff, radius + this.labelLineLength + label2.radiusLineDiff);
+          var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label2.lineAttachment, label2.width, label2.height);
+          label2.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label2.width, label2.height);
+          if (label1.rect.overlap([label2.rect])) {
+            overlapFound = true;
+            if (Math.abs(label2.bpLineDiff) < this.maxLabelAngleBp) {
+              label2.bpLineDiff += this.labelAngleBpIncrement;
+              if (Math.abs(label1.bpLineDiff) < this.maxLabelAngleBp) {
+                label1.bpLineDiff -= this.labelAngleBpIncrement;
+              }
+            } else {
+              label1.bpLineDiff = 0;
+              label2.bpLineDiff = 0;
+              label2.radiusLineDiff += label2.height;
+            }
+          }
+        }
+        // TODO: do we need attachemntPt still?
+        // label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
+      } while (overlapFound);
     }
 
     // Should be called when
@@ -274,7 +365,9 @@
       var priorityLabels = possibleLabels.slice(0, this.priorityMax);
       var remainingLabels = possibleLabels.slice(this.priorityMax);
 
-      this._calculatePriorityLabelRects(priorityLabels);
+      // this._calculatePriorityLabelRects(priorityLabels);
+      // this._calculatePriorityLabelRects_WITH_ANGLES(priorityLabels);
+      this._calculatePriorityLabelRects_NO_ANGLES(priorityLabels);
       this._calculateLabelRects(remainingLabels);
 
       // Remove overlapping labels
@@ -310,6 +403,7 @@
         var color = this.color || label.feature.color;
 
         var innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMargin);
+        // var outerPt = canvas.pointFor(label.bp + label.bpLineDiff, directRadius + this._labelLineMargin + this.labelLineLength + label.radiusLineDiff);
         var outerPt = label.attachementPt;
         ctx.beginPath();
         ctx.moveTo(innerPt.x, innerPt.y);
