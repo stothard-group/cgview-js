@@ -133,28 +133,28 @@
 
   }
 
-    /** @ignore */
+  /** @ignore */
 
-    var checkType = function(type) {
-      if (typeof type != 'string') {
-        throw new Error('Type must be a string');
-      }
+  var checkType = function(type) {
+    if (typeof type != 'string') {
+      throw new Error('Type must be a string');
     }
+  }
 
-    var Handler = function(event, callback) {
-      this.callback = callback;
-      this.event_type = parseEvent(event);
-      this.namespace = parseNamespace(event);
-    }
+  var Handler = function(event, callback) {
+    this.callback = callback;
+    this.event_type = parseEvent(event);
+    this.namespace = parseNamespace(event);
+  }
 
-    var parseEvent = function(event) {
-      return event.replace(/\..*/, '');
-    }
+  var parseEvent = function(event) {
+    return event.replace(/\..*/, '');
+  }
 
-    var parseNamespace = function(event) {
-      result = event.match(/\.(.*)/);
-      return result ? result[1] : undefined
-    }
+  var parseNamespace = function(event) {
+    result = event.match(/\.(.*)/);
+    return result ? result[1] : undefined
+  }
 
   CGV.Events = Events;
 

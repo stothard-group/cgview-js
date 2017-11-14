@@ -11,7 +11,7 @@
    * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
    * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
    */
-  class CGObject {
+  class CGObject extends CGV.Events {
 
     /**
      * @param {Viewer} viewer - The viewer object.
@@ -24,6 +24,7 @@
      * @param {Obejct} meta - 
      */
     constructor(viewer, options = {}, meta = {}) {
+      super();
       this._viewer = viewer;
       this.meta = CGV.merge(options.meta, meta);
       this.visible = CGV.defaultFor(options.visible, true);

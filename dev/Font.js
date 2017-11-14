@@ -16,7 +16,7 @@
    *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
    *
    */
-  class Font {
+  class Font extends CGV.Events  {
 
     /**
      * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
@@ -26,7 +26,7 @@
      *   *style* and *size* property (e.g. { family: 'serif', style: 'plain', size: 12 })
      */
     constructor(font) {
-      this.events = new CGV.Events();
+      super();
       this._rawFont = font;
     }
 
@@ -36,18 +36,6 @@
      */
     toString() {
       return 'Font';
-    }
-
-    on(event, callback) {
-      this.events.on(event, callback);
-    }
-
-    off(event, callback) {
-      this.events.off(event, callback);
-    }
-
-    trigger(event, object) {
-      this.events.trigger(event, object);
     }
 
     set _rawFont(font) {
