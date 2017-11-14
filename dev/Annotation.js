@@ -14,13 +14,14 @@
       this._labels = new CGV.CGArray();
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
-      this._labelLineMargin = CGV.pixel(10);
+      this.priorityMax = CGV.defaultFor(options.priorityMax, 50);
+      this._labelLineMarginInner = CGV.pixel(10);
+      this._labelLineMarginOuter = CGV.pixel(5); // NOT REALLY IMPLEMENTED YET
       this._labelLineWidth = CGV.pixel(1);
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
       this.lineCap = 'round';
-      this.priorityMax = 50;
     }
 
     /**
@@ -55,6 +56,21 @@
 
     set labelLineLength(value) {
       this._labelLineLength = CGV.pixel(value);
+    }
+
+    /**
+     * @member {Number} - Get or set the number of priority labels that will be drawn for sure.
+     *    If they overlap the label will be moved until they no longer overlap.
+     *    Priority is defined as features that are marked as a "favorite". After favorites,
+     *    features are sorted by size. For example, if priorityMax is 50 and there are 10 "favorite"
+     *    features. The favorites will be drawn and then the 40 largest features will be drawn.
+     */
+    get priorityMax() {
+      return this._priorityMax
+    }
+
+    set priorityMax(value) {
+      this._priorityMax = value;
     }
 
     /**
@@ -172,14 +188,14 @@
       var canvas = this.canvas;
       var scale = canvas.scale;
       var label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
-      var radius = this._outerRadius + this._labelLineMargin;
+      var radius = this._outerRadius + this._labelLineMarginInner;
       var placedRects = new CGV.CGArray();
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         lineLength = this.labelLineLength;
         do {
-          var outerPt = canvas.pointFor(bp, radius + lineLength);
+          var outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
           var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
@@ -200,12 +216,12 @@
       var canvas = this.canvas;
       var scale = canvas.scale;
       var label, bp, x, y;
-      var radius = this._outerRadius + this._labelLineMargin;
+      var radius = this._outerRadius + this._labelLineMarginInner;
       for (var i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         // var innerPt = canvas.pointFor(bp, radius);
-        var outerPt = canvas.pointFor(bp, radius + this.labelLineLength);
+        var outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
         var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
@@ -283,7 +299,11 @@
         label = this._visibleLabels[i];
         var color = this.color || label.feature.color;
 
-        var innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMargin);
+        // canvas.radiantLine('map', label.bp,
+        //   directRadius + this._labelLineMarginInner,
+        //   this.labelLineLength + this._labelLineMarginOuter,
+          // this._labelLineWidth, color.rgbaString, this.lineCap);
+        var innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
         var outerPt = label.attachementPt;
         ctx.beginPath();
         ctx.moveTo(innerPt.x, innerPt.y);
