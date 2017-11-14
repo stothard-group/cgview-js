@@ -26,6 +26,7 @@
      *   *style* and *size* property (e.g. { family: 'serif', style: 'plain', size: 12 })
      */
     constructor(font) {
+      this.events = new CGV.Events();
       this._rawFont = font;
     }
 
@@ -37,15 +38,28 @@
       return 'Font';
     }
 
+    on(event, callback) {
+      this.events.on(event, callback);
+    }
+
+    off(event, callback) {
+      this.events.off(event, callback);
+    }
+
+    trigger(event, object) {
+      this.events.trigger(event, object);
+    }
+
     set _rawFont(font) {
       if (typeof font === 'string' || font instanceof String) {
         this.string = font;
       } else {
         var keys = new CGV.CGArray(Object.keys(font));
         if (keys.contains('family') && keys.contains('style') && keys.contains('size')) {
-          this.family = font.family;
-          this.style = font.style;
-          this.size = font.size;
+          this._family = font.family;
+          this._style = font.style;
+          this._size = Number(font.size);
+          this._generateFont();
         } else {
           console.log('Font objects require the following keys: family, style, and size');
         }
@@ -63,9 +77,9 @@
       value = value.replace(/ +/g, '');
       var parts = value.split(',');
       if (parts.length == 3) {
-        this.family = parts[0];
-        this.style = parts[1];
-        this.size = parts[2];
+        this._family = parts[0];
+        this._style = parts[1];
+        this._size = Number(parts[2]);
       } else {
         console.log('Font must have 3 parts')
       }
@@ -220,6 +234,7 @@
 
     _generateFont() {
       this._font = this._styleAsCss() + ' ' + CGV.pixel(this.size) + 'px ' + this.family;
+      this.trigger('change', this);
     }
 
   }

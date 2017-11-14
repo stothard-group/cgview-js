@@ -15,6 +15,7 @@
    *  caption-update      | Called after caption items removed or added
    *  track-update        | Called when track is updated
    *  resize              | Called when the Viewer size is changed
+   *  font-update         | Called when the font is changed (e.g. size, family, etc)
    *
    *
    *  mousemove           | Called when the mouse moves on the map

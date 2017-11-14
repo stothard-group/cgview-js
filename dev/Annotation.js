@@ -74,6 +74,7 @@
         this._font = new CGV.Font(value);
       }
       this.refreshLabelWidths();
+      this._font.on('change', () => { this.refreshLabelWidths() });
     }
 
     /**
