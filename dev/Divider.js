@@ -42,7 +42,7 @@
      * @member {Number} - Set or get the divider thickness. This is the unzoomed thickness.
      */
     set thickness(value) {
-      if (value) {
+      if (value !== undefined) {
         this._thickness = Math.round(value);
         this.viewer.layout._adjustProportions();
       }
@@ -56,7 +56,7 @@
      * @member {Number} - Set or get the divider spacing.
      */
     set spacing(value) {
-      if (value) {
+      if (value !== undefined) {
         this._spacing = Math.round(value);
         this.viewer.layout._adjustProportions();
       }

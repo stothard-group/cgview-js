@@ -16,15 +16,15 @@
    *  track-update        | Called when track is updated
    *  resize              | Called when the Viewer size is changed
    *  font-update         | Called when the font is changed (e.g. size, family, etc)
+   *  zoom-start          | Called once before viewer starts zoom animation
+   *  zoom                | Called every frame of the zoom animation
+   *  zoom-end            | Called after zooming is complete
    *
    *
    *  mousemove           | Called when the mouse moves on the map
    *  drag-start          | Called once before viewer starts drag animation
    *  drag                | Called every frame of the drag animation
    *  drag-end            | Called after dragging is complete
-   *  zoom-start          | Called once before viewer starts zoom animation
-   *  zoom                | Called every frame of the zoom animation
-   *  zoom-end            | Called after zooming is complete
    *  domain-change       | Called after the viewer domains have changed
    *  selection-add       | Called when an element is added to the selection
    *  selection-remove    | Called after an element is removed from the selection

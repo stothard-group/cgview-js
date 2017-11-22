@@ -348,9 +348,9 @@
      */
     remove() {
       this.viewer._features = this.viewer._features.remove(this);
-      this.viewer.annotation.removeLabel(this.label);
+      this.viewer.annotation.removeLabels(this.label);
       this.tracks().each( (i, track) => {
-        track.removeFeature(this);
+        track.removeFeatures(this);
       });
 
     }

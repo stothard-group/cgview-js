@@ -267,13 +267,26 @@
       }
     }
 
+    // #<{(|*
+    //  * Remove a feature from the slot.
+    //  *
+    //  * @param {Feature} feature - The Feature to remove.
+    //  |)}>#
+    // removeFeature(feature) {
+    //   this._features = this._features.remove(feature);
+    //   this.refresh();
+    // }
+
     /**
-     * Remove a feature from the slot.
+     * Remove a feature or array of features from the slot.
      *
-     * @param {Feature} feature - The Feature to remove.
+     * @param {Feature|Array} features - The Feature(s) to remove.
      */
-    removeFeature(feature) {
-      this._features = this._features.remove(feature);
+    removeFeatures(features) {
+      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      this._features = new CGV.CGArray(
+        this._features.filter( (f) => { return !features.contains(f) })
+      );
       this.refresh();
     }
 

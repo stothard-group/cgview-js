@@ -25,7 +25,7 @@
         this.width = 0;
         // Label was in Annotation, so remove it
         if (!(this._name == '' || this._name == undefined)) {
-          this.annotation.removeLabel(this);
+          this.annotation.removeLabels(this);
         }
         this._name = '';
       } else {

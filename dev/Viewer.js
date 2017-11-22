@@ -59,6 +59,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       // this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
+      this._minZoomFactor = 0.5;
 
       this._features = new CGV.CGArray();
       this._plots = new CGV.CGArray();
@@ -167,6 +168,21 @@ if (window.CGV === undefined) window.CGV = CGView;
     set zoomFactor(value) {
       this._zoomFactor = value;
     }
+
+    /**
+     * @member {Number} - Get the minimum allowed zoom level
+     */
+    get minZoomFactor() {
+      return this._minZoomFactor;
+    }
+
+    /**
+     * @member {Number} - Get the maximum allowed zoom level
+     */
+    get maxZoomFactor() {
+      return this.backbone.maxZoomFactor();
+    }
+
 
     /**
      * @member {Object} - Return the canvas [scales](Canvas.html#scale)
@@ -320,6 +336,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       return new CGV.CGArray([...new Set(allSources)]).get(term)
     }
 
+    removeFeatures(features) {
+      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      this._features = new CGV.CGArray(
+        this._features.filter( (f) => { return !features.contains(f) })
+      );
+      var labels = features.map( (f) => { return f.label });
+      this.annotation.removeLabels(labels);
+      this.tracks().each( (i, track) => {
+        track.removeFeatures(features);
+      });
+    }
+
     /**
      * Clear the viewer canvas
      */
@@ -369,6 +397,10 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     featuresByType(type) {
       return new CGV.CGArray( this._features.filter( (f) => { return f.type === type }));
+    }
+
+    featuresBySource(source) {
+      return new CGV.CGArray( this._features.filter( (f) => { return f.source === source }));
     }
 
     refreshCaptions() {
@@ -517,9 +549,13 @@ if (window.CGV === undefined) window.CGV = CGView;
             self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
             self._zoomFactor = intermZoomFactors(t);
             d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
+            self.trigger('zoom');
             self.drawFast();
           }
+        }).on('start', function() {
+          self.trigger('zoom-start');
         }).on('end', function() {
+          self.trigger('zoom-end');
           callback ? callback.call() : self.drawFull();
         });
     }

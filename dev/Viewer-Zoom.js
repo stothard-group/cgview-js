@@ -5,7 +5,7 @@
 
   CGV.Viewer.prototype._updateZoomMax = function() {
     if (this._zoom) {
-      this._zoom.scaleExtent([0.5, this.backbone.maxZoomFactor()]);
+      this._zoom.scaleExtent([this.minZoomFactor, this.maxZoomFactor]);
     }
   }
 
@@ -21,7 +21,7 @@
       .on('dblclick.zoom', null);
 
     function zoomstart() {
-      // self.trigger('zoom-start');
+      self.trigger('zoom-start');
       // console.log('START')
       // if (self.layout._slotTimeoutID) {
       //   clearTimeout(self.layout._slotTimeoutID);
@@ -57,8 +57,7 @@
       // console.log('TX: ', [dx, dy]);
       // console.log('rDiff: ', radiusDiff);
 
-      // self.trigger('zoom');
-      // self.fast_draw();
+      self.trigger('zoom');
 
       self.drawFast();
 
@@ -75,7 +74,7 @@
 
     function zoomend() {
       // self.svg.style('cursor', 'all-scroll');
-      // self.trigger('zoom-end');
+      self.trigger('zoom-end');
       // self.full_draw();
       self.drawFull();
     }

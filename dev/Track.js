@@ -172,15 +172,31 @@
       return this._slots.get(term)
     }
 
+    // #<{(|*
+    //  * Remove a feature from the track and slots.
+    //  *
+    //  * @param {Feature} feature - The Feature to remove.
+    //  |)}>#
+    // removeFeature(feature) {
+    //   this._features = this._features.remove(feature);
+    //   this.slots().each( (i, slot) => {
+    //     slot.removeFeature(feature);
+    //   });
+    //   this.viewer.trigger('track-update', this);
+    // }
+
     /**
-     * Remove a feature from the track and slots.
+     * Remove a feature or array of features from the track and slots.
      *
-     * @param {Feature} feature - The Feature to remove.
+     * @param {Feature|Array} features - The Feature(s) to remove.
      */
-    removeFeature(feature) {
-      this._features = this._features.remove(feature);
+    removeFeatures(features) {
+      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      this._features = new CGV.CGArray(
+        this._features.filter( (f) => { return !features.contains(f) })
+      );
       this.slots().each( (i, slot) => {
-        slot.removeFeature(feature);
+        slot.removeFeatures(features);
       });
       this.viewer.trigger('track-update', this);
     }

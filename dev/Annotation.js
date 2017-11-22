@@ -115,13 +115,26 @@
       this._labels.push(label);
     }
 
+    // #<{(|*
+    //  * Remove a label from the set.
+    //  *
+    //  * @param {Label} label - The Label to remove from the set.
+    //  |)}>#
+    // removeLabel(label) {
+    //   this._labels = this._labels.remove(label);
+    //   this.refresh();
+    // }
+
     /**
-     * Remove a label from the set.
+     * Remove a label or an array of labels from the set.
      *
-     * @param {Label} label - The Label to remove from the set.
+     * @param {Label|Array} labels - The Label(s) to remove from the set.
      */
-    removeLabel(label) {
-      this._labels = this._labels.remove(label);
+    removeLabels(labels) {
+      labels = (labels.toString() == 'CGArray') ? labels : new CGV.CGArray(labels);
+      this._labels = new CGV.CGArray(
+        this._labels.filter( (i) => { return !labels.contains(i) })
+      );
       this.refresh();
     }
 
