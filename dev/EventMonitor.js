@@ -13,13 +13,7 @@
       this._viewer = viewer;
 
       // Setup Events on the viewer
-      // var events = new CGV.Events();
       this.events = viewer.events;
-      // viewer._events = events;
-      // viewer.on = events.on;
-      // viewer.off = events.off;
-      // viewer.trigger = events.trigger;
-      // viewer.events = events;
 
       this._initializeMousemove();
       this._initializeClick();
@@ -47,7 +41,7 @@
 
       this._legendSwatchClick();
       this._legendSwatchMouseOver();
-      this._highlighterMouseOver();
+      // this._highlighterMouseOver();
     }
 
     /**
@@ -159,31 +153,31 @@
       });
     }
 
-    _highlighterMouseOver() {
-      var viewer = this.viewer;
-      var highlighter = viewer.highlighter;
-      this.events.on('mousemove.highlighter', (e) => {
-        if (e.feature) {
-          e.feature.highlight(e.slot);
-        } else if (e.plot) {
-          var score = e.plot.scoreForPosition(e.bp);
-          if (score) {
-            var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
-            var start = e.plot.positions[startIndex];
-            var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
-            var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
-            var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
-            var thickness = Math.abs(baselineRadius - scoredRadius);
-            var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
-            var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
-            color.highlight();
-
-            viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
-          }
-
-        }
-      });
-    }
+    // _highlighterMouseOver() {
+    //   var viewer = this.viewer;
+    //   var highlighter = viewer.highlighter;
+    //   this.events.on('mousemove.highlighter', (e) => {
+    //     if (e.feature) {
+    //       e.feature.highlight(e.slot);
+    //     } else if (e.plot) {
+    //       var score = e.plot.scoreForPosition(e.bp);
+    //       if (score) {
+    //         var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+    //         var start = e.plot.positions[startIndex];
+    //         var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+    //         var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+    //         var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
+    //         var thickness = Math.abs(baselineRadius - scoredRadius);
+    //         var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+    //         var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+    //         color.highlight();
+    //
+    //         viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
+    //       }
+    //
+    //     }
+    //   });
+    // }
 
   }
 

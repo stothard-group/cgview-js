@@ -5,46 +5,37 @@
 
   /**
    * <br />
-   * The Highlighter object controls highlighting of features and plots on the Viewer
-   * when the mouse hovers over them.
+   * The Highlighter object controls highlighting and popovers of features and
+   * plots on the Viewer when the mouse hovers over them.
    */
   class Highlighter {
     /**
-     * The following options can be set when creating a
-     * [SpectraViewer](SpectraViewer.js.html):
+     * Create a Highligher
      *
-     *  Option                | Default     | Description
-     *  ----------------------|-------------------------------------------------
-     *  textDisplay          | true        | Show popup with description of highlighted element. A custom display string can be provided to display specific information about the element. See below for examples.
-     *  display               | {lineWidth: 3} | Display options as described in [SVPath](SVPath.js.html)
-     *
-     * ####Custom Text Display####
-     *
-     * If a String is provided for _text_display_ it will parsed first to replace sections
-     * with this format: #{T:name} where T is how to extract the information and _name_ is the property/function name to call on the element
-     * T can be one of:
-     *   * p: property (e.g. element.name)
-     *   * f: function (e.g. element.name( ))
-     *   * m: meta property (e.g. element.meta.name)
-     *
-     * Example:
-     *
-     * If _text_display_ was "Compound: #{p:name} [#{f:display_concentration}]", this would
-     * this would display something like the following:
-     *   Compound: Glucose [132 uM]
-     *
-     *
-     * @param {Viewer} viewer - The [Viewer](Viewer.html) object
+     * @param {Viewer} viewer - The parent *Viewer* for the *Highligher*.
      * @param {Object} options - Options for how highlighting should work. Described below.
+     *
+     *  Option                  | Default     | Description
+     *  ------------------------|-------------------------------------------------
+     *  featureHighlighting    | true        | Highlight a feature when the mouse is over it
+     *  featurePopovers        | true        | Show a popover for the feature when the mouse is over it
+     *  featurePopoverContents | undefined   | Function to create html for the popover
+     *  plotHighlighting       | true        | Highlight a plot when the mouse is over it
+     *  plotPopovers           | true        | Show a popover for the plot when the mouse is over it
+     *  plotPopoverContents    | undefined   | Function to create html for the popover
+     *
      * @return {Highlighter}
      */
     constructor(viewer, options = {}) {
       this._viewer = viewer;
-      this.textDisplay = CGV.defaultFor(options.textDisplay, true);
-      // display_defaults = { lineWidth: 3, visible: true };
-      // this.display = CGV.merge(display_defaults, options.display);
-      // this.popup_box = this.sv.sv_wrapper.append('div').attr('class', 'jsv-highlight-popup-box').style('visibility', 'hidden');
+      // this.popoverBox = d3.select('body').append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
+      this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
       // this.text_container = this.popup_box.append('div').attr('class', 'jsv-highlight-text-container');
+      this.featureHighlighting = CGV.defaultFor(options.featureHighlighting, true);
+      this.featurePopovers = CGV.defaultFor(options.featurePopovers, true);
+      this.featurePopoverContents = options.featurePopoverContents;
+      this.plotHighlighting = CGV.defaultFor(options.plotHighlighting, true);
+      this.initializeEvents();
     }
 
     /**
@@ -52,6 +43,80 @@
      */
     get viewer() {
       return this._viewer
+    }
+
+    position(e) {
+      // FIXME: move constants to init, so we don't keep calculating
+      var ratio = CGV.pixel(1);
+      var wrapper = this.viewer._wrapper.node();
+      var offsetLeft = wrapper.offsetLeft;
+      var offsetTop = wrapper.offsetTop;
+      return { x: e.canvasX/ratio + offsetLeft + 10, y: e.canvasY/ratio + offsetTop - 20}
+    }
+
+    initializeEvents() {
+      this.viewer.on('mousemove.cgv-highlighter', (e) => {
+        if (e.feature) {
+          this.mouseOverFeature(e);
+        } else if (e.plot) {
+          this.mouseOverPlot(e);
+        } else {
+          this.hidePopoverBox();
+        }
+      });
+    }
+
+    mouseOverFeature(e) {
+      if (this.featureHighlighting) {
+        e.feature.highlight(e.slot);
+      }
+      if (this.featurePopovers) {
+        var position = this.position(e);
+        var html;
+        if (this.featurePopoverContents) {
+          html = this.featurePopoverContents(e.feature);
+        } else {
+          var f = e.feature;
+          var html = `<div style='margin: 0 5px;'>${f.type}: ${f.name}</div>`;
+        }
+        this.popoverBox.html(html);
+        this.popoverBox
+          .style('left', position.x)
+          .style('top', position.y);
+        this.showPopoverBox();
+      }
+    }
+
+    mouseOverPlot(e) {
+      if (this.plotHighlighting) {
+        this.highlightPlot(e);
+      }
+    }
+
+    highlightPlot(e) {
+      var viewer = this.viewer;
+      var score = e.plot.scoreForPosition(e.bp);
+      if (score) {
+        var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+        var start = e.plot.positions[startIndex];
+        var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+        var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+        var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
+        var thickness = Math.abs(baselineRadius - scoredRadius);
+        var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+        var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+        color.highlight();
+
+        viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
+      }
+    }
+
+    hidePopoverBox() {
+      this.popoverBox.style('visibility', 'hidden');
+    }
+
+    showPopoverBox() {
+      this.popoverBox.style('visibility', 'visible');
     }
 
 
@@ -157,6 +222,5 @@
   CGV.Highlighter = Highlighter;
 
 })(CGView);
-
 
 

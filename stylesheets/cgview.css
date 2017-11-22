@@ -492,3 +492,38 @@
   transform: translateY(-50%);
 }
 
+/*******************************************/
+/* Highlighter */
+/*******************************************/
+.cgv-highlighter-popover-box {
+  border: 1px solid grey;
+  background-color: white;
+  position: absolute;
+  z-index: 100;
+  margin: 5px;
+}
+
+.cgv-highlighter-popover-box:after,
+.cgv-highlighter-popover-box:before {
+    content: '';
+    pointer-events: none;
+    display: block;
+    position: absolute;
+    right: 100%;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.cgv-highlighter-popover-box:after {
+    top: 0px;
+    border-color: transparent white transparent transparent;
+    border-width: 10px;
+}
+
+.cgv-highlighter-popover-box:before {
+    top: -1px;
+    border-color: transparent grey transparent transparent;
+    border-width: 11px;
+}
+

@@ -13,7 +13,7 @@
     /**
      * Create a new Caption.
      *
-     * @param {Caption} viewer - The parent *Viewer* for the *Caption*.
+     * @param {Viewer} viewer - The parent *Viewer* for the *Caption*.
      * @param {Object} data - Data used to create the caption.
      *
      *  Option                | Default          | Description
