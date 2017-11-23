@@ -127,7 +127,6 @@
         this.popoverBox.html(options.html);
       }
       if (options.position) {
-        console.log(options.position)
         this.popoverBox
           .style('left', `${options.position.x}px`)
           .style('top', `${options.position.y}px`);
