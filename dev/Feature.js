@@ -318,20 +318,20 @@
     /**
      * Return an array of the tracks that contain this feature
      */
-    tracks() {
+    tracks(term) {
       var tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.features().contains(this)) {
           tracks.push(track);
         }
       });
-      return tracks
+      return tracks.get(term)
     }
 
     /**
      * Return an array of the slots that contain this feature
      */
-   slots() {
+   slots(term) {
       var slots = new CGV.CGArray();
       this.tracks().each( (i, track) => {
         track.slots().each( (j, slot) => {
@@ -340,7 +340,7 @@
           }
         });
       });
-      return slots
+      return slots.get(term)
     }
 
     /**
