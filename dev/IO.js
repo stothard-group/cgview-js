@@ -43,7 +43,8 @@
             annotation: v.annotation.toJSON(),
             dividers: {
               slot: v.slotDivider.toJSON()
-            }
+            },
+            highlighter: v.highlighter.toJSON()
           },
           captions: [],
           legend: v.legend.toJSON(),
@@ -105,6 +106,8 @@
       viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
       // Slot Dividers
       viewer.slotDivider = new CGV.Divider(viewer, settings.dividers.slot);
+      // Highlighter
+      viewer.highlighter = new CGV.Highlighter(viewer, settings.highlighter);
 
       // Load Captions
       if (data.captions) {

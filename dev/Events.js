@@ -85,7 +85,7 @@
       var type = parseEvent(event);
       var namespace = parseNamespace(event);
       // If no callback is supplied remove all of them
-      if (arguments.length == 1) {
+      if (callback === undefined) {
         if (namespace) {
           if (type) {
             handlers[type] = handlers[type].filter(function(h) { return h.namespace != namespace; });
@@ -101,6 +101,7 @@
         // Remove specific callback
         handlers[type] = handlers[type].filter(function(h) { return h.callback != callback; });
       }
+      this._handlers = handlers;
     }
 
     /**

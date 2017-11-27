@@ -8,7 +8,7 @@
    * The Highlighter object controls highlighting and popovers of features and
    * plots on the Viewer when the mouse hovers over them.
    */
-  class Highlighter {
+  class Highlighter extends CGV.CGObject {
     /**
      * Create a Highligher
      *
@@ -26,7 +26,8 @@
      *
      * @return {Highlighter}
      */
-    constructor(viewer, options = {}) {
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta)
       this._viewer = viewer;
       this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
       this.featureHighlighting = CGV.defaultFor(options.featureHighlighting, true);
@@ -58,6 +59,7 @@
     }
 
     initializeEvents() {
+      this.viewer.off('.cgv-highlighter');
       this.viewer.on('mousemove.cgv-highlighter', (e) => {
         if (e.feature) {
           this.mouseOverFeature(e);
@@ -82,7 +84,7 @@
       if (this.featureHighlighting) {
         e.feature.highlight(e.slot);
       }
-      if (this.featurePopovers) {
+      if (this.featurePopovers && this.visible) {
         var position = this.position(e);
         var html = this.featurePopoverContents && this.featurePopoverContents(e.feature) || this.featurePopoverContentsDefault(e.feature);
         this.showPopoverBox({position: position, html: html});
@@ -93,7 +95,7 @@
       if (this.plotHighlighting) {
         this.highlightPlot(e);
       }
-      if (this.plotPopovers) {
+      if (this.plotPopovers && this.visible) {
         var position = this.position(e);
         var html = this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp) || this.plotPopoverContentsDefault(e.plot, e.bp);
         this.showPopoverBox({position: position, html: html});
@@ -132,6 +134,12 @@
           .style('top', `${options.position.y}px`);
       }
       this.popoverBox.style('visibility', 'visible');
+    }
+
+    toJSON() {
+      return {
+        visible: this.visible
+      }
     }
 
   }
