@@ -15,6 +15,7 @@
       this.source = CGV.defaultFor(data.source, '');
       this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this.strand = CGV.defaultFor(data.strand, 1);
+      this.score = CGV.defaultFor(data.score, 1);
       this.label = new CGV.Label(this, {name: data.name} );
       this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -85,14 +86,6 @@
       viewer._features.push(this);
     }
 
-    // /**
-    //  * @member {Canvas} - Get the *Canvas*
-    //  */
-    // get canvas() {
-    //   return this.viewer.canvas
-    // }
-
-
     get strand() {
       return this._strand;
     }
@@ -103,6 +96,18 @@
       } else {
         this._strand = 1;
       }
+    }
+
+    /**
+     * @member {Number} - Get the *Score*
+     */
+    get score() {
+      return this._score
+    }
+
+    set score(value) {
+      if (Number.isNaN(Number(value))) { return }
+      this._score = CGV.constrain(Number(value), 0, 1);
     }
 
     isDirect() {
@@ -184,28 +189,23 @@
      * @member {String} - Get or set the color. TODO: reference COLOR class
      */
     get color() {
-      return (this.legendItem) ? this.legendItem.swatchColor : this._color;
+      // return (this.legendItem) ? this.legendItem.swatchColor : this._color;
+      return this.legendItem.swatchColor
     }
 
     /**
      * @member {String} - Get the decoration.
      */
     get decoration() {
-      // if (this.legendItem) {
-      //   if (this.legendItem.decoration == 'arrow') {
-      //     return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
-      //   } else {
-      //     return this.legendItem.decoration
-      //   }
-      // } else {
-      //   return 'arc'
-      // }
-      return (this.legendItem && this.legendItem.decoration || 'arc')
+      // return (this.legendItem && this.legendItem.decoration || 'arc')
+      return (this.legendItem.decoration || 'arc')
     }
 
     get directionalDecoration() {
       if (this.decoration == 'arrow') {
         return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
+      } else if (this.decoration == 'score') {
+        return 'arc'
       } else {
         return this.decoration
       }
@@ -300,19 +300,28 @@
     // radius by default would be the center of the slot as provided unless:
     // - _radiusAdjustment is not 0
     // - _proportionOfThickness is not 1
+    // TODO: Not using _radiusAdjustment yet
     adjustedRadius(radius, slotThickness) {
-      if (this._radiusAdjustment == 0 && this._proportionOfThickness == 1) {
-        return radius
-      } else if (this._radiusAdjustment == 0) {
-        return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
+      if (this.legendItem.decoration == 'score') {
+        //FIXME: does not take into account proportionOfThickness and radiusAdjustment for now
+        return radius - (slotThickness / 2) + (this.score * slotThickness / 2)
       } else {
-        // TODO:
-        return radius
+        if (this._radiusAdjustment == 0 && this._proportionOfThickness == 1) {
+          return radius
+        } else if (this._radiusAdjustment == 0) {
+          return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
+        } else {
+          return radius
+        }
       }
     }
 
     adjustedWidth(width) {
-      return this._proportionOfThickness * width;
+      if (this.legendItem.decoration == 'score') {
+        return this.score * width;
+      } else {
+        return this._proportionOfThickness * width;
+      }
     }
 
     /**
@@ -321,12 +330,25 @@
     tracks(term) {
       var tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
-        if (track.features().contains(this)) {
-          tracks.push(track);
+        if (track.type == 'feature') {
+          if ( (track.contents.from == 'source' && track.contents.extract.contains(this.source)) ||
+               (track.contents.from == 'type' && track.contents.extract.contains(this.type)) ) {
+            tracks.push(track);
+          }
         }
       });
       return tracks.get(term)
     }
+    // OLD SLOW WAY
+    // tracks(term) {
+    //   var tracks = new CGV.CGArray();
+    //   this.viewer.tracks().each( (i, track) => {
+    //     if (track.features().contains(this)) {
+    //       tracks.push(track);
+    //     }
+    //   });
+    //   return tracks.get(term)
+    // }
 
     /**
      * Return an array of the slots that contain this feature
@@ -394,6 +416,7 @@
         strand: this.strand,
         source: this.source,
         legend: this.legend.name,
+        score: this.score,
         visible: this.visible
       }
     }

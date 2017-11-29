@@ -164,6 +164,11 @@
       }
     }
 
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the features in this track.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
     features(term) {
       return this._features.get(term)
     }
@@ -172,18 +177,21 @@
       return this._slots.get(term)
     }
 
-    // #<{(|*
-    //  * Remove a feature from the track and slots.
-    //  *
-    //  * @param {Feature} feature - The Feature to remove.
-    //  |)}>#
-    // removeFeature(feature) {
-    //   this._features = this._features.remove(feature);
-    //   this.slots().each( (i, slot) => {
-    //     slot.removeFeature(feature);
-    //   });
-    //   this.viewer.trigger('track-update', this);
-    // }
+    /**
+     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the unique features in this track.
+     * Unique features are ones that only appear in this track.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @return {CGArray}
+     */
+    uniqueFeatures(term) {
+      var features = new CGV.CGArray();
+      for (var i=0, len=this._features.length; i < len; i++) {
+        if (this._features[i].tracks().length == 1) {
+          features.push(this._features[i]);
+        }
+      }
+      return features.get(term)
+    }
 
     /**
      * Remove a feature or array of features from the track and slots.

@@ -114,6 +114,51 @@
       return item
     }
 
+    // Returns a CGArray of LegendItems that only occur for the supplied features.
+    // (i.e. the returned LegendItems are not being used for any features (or plots) not provided.
+    // This is useful for determining of LegendItems should be deleted after deleting features.
+    uniqueLegendsItemsFor(options={}) {
+      var selectedFeatures = new Set(options.features || []);
+      var selectedPlots = new Set(options.plots || []);
+      var uniqueItems = new Set();
+
+      selectedFeatures.forEach( (f) => {
+        uniqueItems.add(f.legend);
+      });
+      selectedPlots.forEach( (p) => {
+        uniqueItems.add(p.legendItemPositive);
+        uniqueItems.add(p.legendItemNegative);
+      });
+
+      var nonSelectedFeatures = new Set();
+      this.viewer.features().each( (i, f) => {
+        if (!selectedFeatures.has(f)) {
+          nonSelectedFeatures.add(f);
+        }
+      });
+      var nonSelectedPlots = new Set();
+      this.viewer.plots().each( (i, p) => {
+        if (!selectedPlots.has(p)) {
+          nonSelectedPlots.add(p);
+        }
+      });
+
+      nonSelectedFeatures.forEach( (f) => {
+        if (uniqueItems.has(f.legend)) {
+          uniqueItems.delete(f.legend);
+        }
+      })
+      nonSelectedPlots.forEach( (p) => {
+        if (uniqueItems.has(p.legendItemPositive)) {
+          uniqueItems.delete(p.legendItemPositive);
+        }
+        if (uniqueItems.has(p.legendItemNegative)) {
+          uniqueItems.delete(p.legendItemNegative);
+        }
+      })
+      return uniqueItems
+    }
+
     draw() {
       if (!this.visible) { return }
       var ctx = this.ctx;

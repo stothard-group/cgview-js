@@ -234,7 +234,7 @@
     //   ctx.fillText(msg, x, y);
     // }
 
-    // Decoration: arc, clockwise-arrow, counterclockwise-arrow
+    // Decoration: arc, clockwise-arrow, counterclockwise-arrow, none
     //
     //  clockwise-arrow (drawn clockwise from arcStartBp; direction = 1):
     //
