@@ -52,7 +52,12 @@
     }
 
     position(e) {
-      var viewerRect = this.viewer._container.node().getBoundingClientRect();
+      var viewerRect = {top: 0, left: 0};
+      if (this.viewer._container.style('position') != 'fixed') {
+        viewerRect = this.viewer._container.node().getBoundingClientRect();
+      }
+      console.log(viewerRect.top)
+      // var viewerRect = this.viewer._container.node().getBoundingClientRect();
       var originX = e.canvasX / this._ratio + viewerRect.left + window.pageXOffset;
       var originY = e.canvasY / this._ratio + viewerRect.top + window.pageYOffset;
       return { x: originX + this._offsetLeft, y: originY + this._offsetTop }
