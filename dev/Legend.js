@@ -76,7 +76,10 @@
     setColorPickerPosition(cp) {
       var margin = 5;
       var pos;
-      var viewerRect = this.viewer._container.node().getBoundingClientRect();
+      var viewerRect = {top: 0, left: 0};
+      if (this.viewer._container.style('position') != 'fixed') {
+        viewerRect = this.viewer._container.node().getBoundingClientRect();
+      }
       var originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
       var originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
       var legendWidth = this.width / CGV.pixel(1);
