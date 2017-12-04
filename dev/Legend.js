@@ -159,7 +159,7 @@
           uniqueItems.delete(p.legendItemNegative);
         }
       })
-      return uniqueItems
+      return Array.from(uniqueItems)
     }
 
     draw() {

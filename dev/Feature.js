@@ -326,13 +326,16 @@
 
     /**
      * Return an array of the tracks that contain this feature
+     * FIXME: this will not return the tracks for features on tracks with 'from' = 'sequence'
+     *        - is this a problem??
      */
     tracks(term) {
       var tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.type == 'feature') {
           if ( (track.contents.from == 'source' && track.contents.extract.contains(this.source)) ||
-               (track.contents.from == 'type' && track.contents.extract.contains(this.type)) ) {
+               (track.contents.from == 'type' && track.contents.extract.contains(this.type)) ||
+               (track.contents.from == 'sequence' && this.extractedFromSequence && track.features().contains(this)) ) {
             tracks.push(track);
           }
         }

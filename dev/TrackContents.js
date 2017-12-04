@@ -51,7 +51,7 @@
     }
 
     /**
-     * @member {String} - Get or set the *from* attribute. *from* describes form where the features/plot should be extracted.
+     * @member {String} - Get or set the *from* attribute. *from* describes from where the features/plot should be extracted.
      *    Options are 'source', 'type', or 'sequence' [Default: 'source']
      */
     get from() {

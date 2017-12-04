@@ -59,7 +59,8 @@
       });
       v.features().each( (i, feature) => {
         // Only export features that were not extracted from the sequence.
-        if (!feature.extractedFromSequence) {
+        if (!feature.extractedFromSequence ||
+            feature.tracks().filter( (t) => { return t.contents.from != 'sequence' }).length > 0) {
           json.cgview.features.push(feature.toJSON());
         }
       });
