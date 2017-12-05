@@ -162,6 +162,7 @@
           viewer.layout.drawProgress();
         }
         if (messageType == 'complete') {
+          track.loadProgress = 100;
           var baseContent = e.data.baseContent;
           var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
           data.legendPositive = this.getLegendItem(extractType, '+').name;

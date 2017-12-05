@@ -24,7 +24,7 @@
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
       this.strand = CGV.defaultFor(data.strand, 'separated');
       this.position = CGV.defaultFor(data.position, 'both');
-      this.loadProgress = 0;
+      this._loadProgress = 0;
       this.refresh();
     }
 
@@ -150,6 +150,7 @@
     }
 
     set loadProgress(value) {
+      this.trigger('load-progress-changed', this);
       this._loadProgress = value;
     }
 
