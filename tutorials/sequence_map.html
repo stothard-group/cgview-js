@@ -120,7 +120,7 @@ new CGV.Track(cgv.layout, {
     // How to extract the features/plot.
     // For 'source', the extract value can be a single value or an array of values.
     // For 'sequence', the extract value can be one of the following:
-    //   'orfs', 'start_stop_codons', 'gc_skew', 'gc_content'
+    //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
     // e.g. In this example, the ORF features will be extracted from the seqeunce.
     extract: 'orfs',
     // Additional options may be passed to the extractor
@@ -146,7 +146,7 @@ new CGV.Track(cgv.layout, {
     type: 'feature',
     from: 'sequence',
     // e.g. In this example, the start and stop codon features will be extracted from the seqeunce.
-    extract: 'start_stop_codons',
+    extract: 'start-stop-codons',
     // The following are the default options
     options: {
       start: 'ATG',
@@ -166,7 +166,7 @@ new CGV.Track(cgv.layout, {
     type: 'feature',
     from: 'sequence',
     // e.g. In this example, GC Skew plot will be extracted from the seqeunce.
-    extract: 'gc_skew',
+    extract: 'gc-skew',
     // By default, the step and window values are calculated based on the sequence length,
     // but they can be overridden here.
     options: {
@@ -187,7 +187,7 @@ new CGV.Track(cgv.layout, {
     type: 'feature',
     from: 'sequence',
     // e.g. In this example, GC Content plot will be extracted from the seqeunce.
-    extract: 'gc_content',
+    extract: 'gc-content',
     // By default, the step and window values are calculated based on the sequence length,
     // but they can be overridden here.
     options: {

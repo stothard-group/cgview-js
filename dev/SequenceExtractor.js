@@ -71,15 +71,15 @@
     }
 
     extractTrackData(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs', 'gc_skew', 'gc_content'])) { return }
+      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs', 'gc-skew', 'gc-content'])) { return }
       switch (extractType) {
-        case 'start_stop_codons':
+        case 'start-stop-codons':
         case 'orfs':
           track.contents.type = 'feature';
           this.generateFeatures(track, extractType, options);
           break;
-        case 'gc_skew':
-        case 'gc_content':
+        case 'gc-skew':
+        case 'gc-content':
           track.contents.type = 'plot';
           this.generatePlot(track, extractType, options);
           break;
@@ -87,7 +87,7 @@
     }
 
     generateFeatures(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['start_stop_codons', 'orfs'])) { return }
+      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs'])) { return }
       var startTime = new Date().getTime();
       var viewer = this.viewer;
       // Start worker
@@ -139,7 +139,7 @@
 
 
     generatePlot(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['gc_content', 'gc_skew'])) { return }
+      if (!CGV.validate(extractType, ['gc-content', 'gc-skew'])) { return }
       var startTime = new Date().getTime();
       // var extractType = options.sequence;
       var viewer = this.viewer;
@@ -187,7 +187,7 @@
         legends = {
           'ORF': this.getLegendItem('ORF')
         }
-      } else if (extractType == 'start_stop_codons') {
+      } else if (extractType == 'start-stop-codons') {
         legends = {
           'start-codon': this.getLegendItem('start-codon'),
           'stop-codon': this.getLegendItem('stop-codon')
@@ -209,10 +209,10 @@
         case 'ORF':
           item = legend.findLegendItemOrCreate('ORF', 'green', 'arc');
           break;
-        case 'gc_content':
+        case 'gc-content':
           item = legend.findLegendItemOrCreate('GC Content', 'black');
           break;
-        case 'gc_skew':
+        case 'gc-skew':
           var color = (sign == '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
           var name = (sign == '+') ? 'GC Skew+' : 'GC Skew-';
           item = legend.findLegendItemOrCreate(name, color);
@@ -254,7 +254,7 @@
 
     // extractFeatures(options = {}) {
     //   var features = new CGV.CGArray();
-    //   if (options.sequence == 'start_stop_codons') {
+    //   if (options.sequence == 'start-stop-codons') {
     //     features = this.extractStartStops(options);
     //   } else if (options.sequence == 'orfs') {
     //     features = this.extractORFs(options);
@@ -263,7 +263,7 @@
     // }
 
     // generateFeatures(track, options) {
-    //   if (options.sequence == 'start_stop_codons') {
+    //   if (options.sequence == 'start-stop-codons') {
     //     features = this.generateStartStops(options);
     //   } else if (options.sequence == 'orfs') {
     //     features = this.extractORFs(options);
@@ -272,10 +272,10 @@
     //
     //
     // extractPlot(options = {}) {
-    //   if (options.sequence == 'gc_content') {
-    //     return this.extractBaseContentPlot('gc_content', options);
-    //   } else if (options.sequence == 'gc_skew') {
-    //     return this.extractBaseContentPlot('gc_skew', options);
+    //   if (options.sequence == 'gc-content') {
+    //     return this.extractBaseContentPlot('gc-content', options);
+    //   } else if (options.sequence == 'gc-skew') {
+    //     return this.extractBaseContentPlot('gc-skew', options);
     //   }
     // }
     //
@@ -283,7 +283,7 @@
     // // score must be between 0 and 1
     // extractBaseContentPlot(type, options = {}) {
     //   var startTime = new Date().getTime();
-    //   if (!CGV.validate(type, ['gc_content', 'gc_skew'])) { return }
+    //   if (!CGV.validate(type, ['gc-content', 'gc-skew'])) { return }
     //   this.viewer.flash("Creating '" + type + "' Plot...");
     //
     //

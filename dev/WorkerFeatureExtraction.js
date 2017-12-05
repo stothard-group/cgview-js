@@ -6,7 +6,7 @@
       var type = e.data.type;
       console.log('Starting ' + type);
       var featureDataArray = [];
-      if (type == 'start_stop_codons') {
+      if (type == 'start-stop-codons') {
         progressState = { start: 0, stop: 50 };
         featureDataArray = extractStartStopCodons(1, e.data, progressState);
         progressState = { start: 50, stop: 100 };

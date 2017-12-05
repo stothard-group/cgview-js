@@ -102,9 +102,9 @@
     }
 
     static baseCalculation(type, seq) {
-      if (type == 'gc_content') {
+      if (type == 'gc-content') {
         return Sequence.calcGCContent(seq);
-      } else if (type == 'gc_skew') {
+      } else if (type == 'gc-skew') {
         return Sequence.calcGCSkew(seq);
       }
     }

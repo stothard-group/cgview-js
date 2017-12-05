@@ -84,9 +84,9 @@
     }
 
     baseCalculation = function(type, seq) {
-      if (type == 'gc_content') {
+      if (type == 'gc-content') {
         return calcGCContent(seq);
-      } else if (type == 'gc_skew') {
+      } else if (type == 'gc-skew') {
         return calcGCSkew(seq);
       }
     }

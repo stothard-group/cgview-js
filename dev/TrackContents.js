@@ -67,7 +67,7 @@
     /**
      * @member {String} - Get or set the *extract* attribute. *extract* describes which features/plot should be extracted. For example,
      *    if *from* is 'type', and *extract* is 'CDS', then all features with a type of 'CDS' will be used to create the track.
-     *    For *from* of 'sequence', the following values are possible for *extract*: 'orfs', 'start_stop_codons', 'gc_content', 'gc_skew'.
+     *    For *from* of 'sequence', the following values are possible for *extract*: 'orfs', 'start-stop-codons', 'gc-content', 'gc-skew'.
      */
     get extract() {
       return this._extract
