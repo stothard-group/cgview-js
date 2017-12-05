@@ -199,7 +199,7 @@
       this.drawProgress();
       // Debug
       if (viewer.debug) {
-        viewer.debug.data.time['fastDraw'] = CGV.elapsed_time(startTime);
+        viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
         viewer.debug.draw(canvas.context('ui'));
       }
       if (canvas._testDrawRange) {
@@ -262,7 +262,7 @@
       } else {
         if (layout.viewer.debug) {
           layout.viewer.clear('ui');
-          layout.viewer.debug.data.time['fullDraw'] = CGV.elapsed_time(layout._drawFullStartTime);
+          layout.viewer.debug.data.time['fullDraw'] = CGV.elapsedTime(layout._drawFullStartTime);
           layout.viewer.debug.draw(layout.canvas.context('ui'));
         }
         // if (typeof complete === 'function') { complete.call() }

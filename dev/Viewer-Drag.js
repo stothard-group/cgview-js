@@ -43,7 +43,7 @@
       //
       // DEBUG INFO
       if (self.debug) {
-        self.debug.data.time['drag'] = CGV.elapsed_time(start_time);
+        self.debug.data.time['drag'] = CGV.elapsedTime(start_time);
         // self.debug_data.drag['dX'] = CGV.round(d3.event.dx);
         // self.debug_data.drag['dY'] = CGV.round(d3.event.dy);
         // self.debug_data.drag['zX'] = CGV.round(self.zoom_x);

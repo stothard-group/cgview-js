@@ -111,7 +111,7 @@
         if (messageType == 'complete') {
           track.loadProgress = 100;
           var featureDataArray = e.data.featureDataArray;
-          console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsedTime(startTime) );
           var features = new CGV.CGArray();
           startTime = new Date().getTime();
           var featureData;
@@ -122,11 +122,11 @@
             featureData.legend = legends[featureData.type];
             features.push( new CGV.Feature(viewer, featureData) );
           }
-          console.log("Features '" + extractType + "' Creation Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Creation Time: " + CGV.elapsedTime(startTime) );
           startTime = new Date().getTime();
           track._features = features;
           track.updateSlots();
-          console.log("Features '" + extractType + "' Update Time: " + CGV.elapsed_time(startTime) );
+          console.log("Features '" + extractType + "' Update Time: " + CGV.elapsedTime(startTime) );
           viewer.drawFull();
         }
       }
@@ -170,7 +170,7 @@
           var plot = new CGV.Plot(viewer, data);
           track._plot = plot;
           track.updateSlots();
-          console.log("Plot '" + extractType + "' Worker Time: " + CGV.elapsed_time(startTime) );
+          console.log("Plot '" + extractType + "' Worker Time: " + CGV.elapsedTime(startTime) );
           viewer.drawFull();
         }
       }
@@ -314,7 +314,7 @@
     //   data.legendNegative = this.getLegendItem(type, '-').text;
     //
     //   var plot = new CGV.Plot(this.viewer, data);
-    //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsed_time(startTime) );
+    //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsedTime(startTime) );
     //   return plot
     // }
 
@@ -438,7 +438,7 @@
     //       }
     //     }
     //   }
-    //   console.log('ORF Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   console.log('ORF Extraction Time: ' + CGV.elapsedTime(startTime) );
     //   return features
     // }
     // extractStartStops(options = {}) {
@@ -450,7 +450,7 @@
     //   // Forward and Reverse Stops
     //   var stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
     //   features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
-    //   console.log('Start/Stop Extraction Time: ' + CGV.elapsed_time(startTime) );
+    //   console.log('Start/Stop Extraction Time: ' + CGV.elapsedTime(startTime) );
     //   return features
     // }
     //
@@ -460,12 +460,12 @@
     //   for (var strand of [1, -1]) {
     //     // var startTime = new Date().getTime();
     //     var ranges = this.sequence.findPattern(pattern, strand)
-    //     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
     //     // var startTime = new Date().getTime();
     //     for (var i = 0, len = ranges.length; i < len; i++) {
     //       features.push( this.createFeature(ranges[i], type, strand, source ) );
     //     }
-    //     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsed_time(startTime) );
+    //     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
     //   }
     //   return features.order_by('start')
     // }

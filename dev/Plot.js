@@ -218,7 +218,7 @@
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive, 'positive');
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorNegative, 'negative');
       }
-      // console.log("Plot Time: '" + CGV.elapsed_time(startTime) );
+      // console.log("Plot Time: '" + CGV.elapsedTime(startTime) );
     }
 
     // To add a fast mode use a step when creating the indices

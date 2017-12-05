@@ -34,7 +34,7 @@
     // var start_time = new Date().getTime();
     // ....code and stuff....
     // if (this.debug) {
-    //   this.debug_data.time['draw'] = JSV.elapsed_time(start_time);
+    //   this.debug_data.time['draw'] = JSV.elapsedTime(start_time);
     //   this.draw_debug(this.legend.bottom());
     // }
     // 

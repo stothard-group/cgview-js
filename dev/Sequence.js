@@ -486,7 +486,7 @@
     //   var startTime, rf;
     //   startTime = new Date().getTime();
     //   var rf1 = this.featuresByReadingFrame(features);
-    //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsed_time(startTime) );
+    //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
     //   // SETUP
     //   features.each( (i, feature) => {
     //     if (feature.strand == -1) {
@@ -508,6 +508,6 @@
     //     rf_minus_2: new CGV.CGArray( features.filter( (f) => { return f.rf == 2  && f.strand == -1})),
     //     rf_minus_3: new CGV.CGArray( features.filter( (f) => { return f.rf == 3  && f.strand == -1}))
     //   };
-    //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsed_time(startTime) );
+    //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsedTime(startTime) );
     //   return rf2;
     // }

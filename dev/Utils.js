@@ -24,7 +24,7 @@
       indices.push(match.index);
     }
     console.log('ATGs found: ' + indices.length);
-    console.log('Time: ' + CGV.elapsed_time(start_time));
+    console.log('Time: ' + CGV.elapsedTime(start_time));
   }
 
   /**
@@ -117,7 +117,7 @@
     }
   }
 
-  CGV.elapsed_time = function(old_time) {
+  CGV.elapsedTime = function(old_time) {
     var elapsed = (new Date().getTime()) - old_time;
     return elapsed + ' ms';
   }
@@ -522,7 +522,7 @@
   //  * @param {Integer} old_time Old time in milliseconds
   //  * @return {Integer}
   //  */
-  // JSV.elapsed_time = function(old_time) {
+  // JSV.elapsedTime = function(old_time) {
   //   var elapsed = (new Date().getTime()) - old_time;
   //   return elapsed + ' ms';
   // }
