@@ -150,8 +150,9 @@
     }
 
     set loadProgress(value) {
-      this.trigger('load-progress-changed', this);
+      // this.trigger('load-progress-changed', this);
       this._loadProgress = value;
+      this.viewer.trigger('track-load-progress-changed', this);
     }
 
     /**
