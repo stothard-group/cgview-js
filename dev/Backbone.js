@@ -86,7 +86,7 @@
      */
     set thickness(value) {
       if (value) {
-        this._thickness = value;
+        this._thickness = Number(value);
         this.viewer.layout && this.viewer.layout._adjustProportions();
       }
     }

@@ -83,8 +83,7 @@
     }
 
     /**
-     * @member {Viewer} - Get or set the track size with is measured as a 
-     * proportion of the backbone radius.
+     * @member {Viewer} - Get or set the track size as a proportion of the backbone radius.
      */
     get proportionOfRadius() {
       return this._proportionOfRadius
@@ -92,6 +91,13 @@
 
     set proportionOfRadius(value) {
       this._proportionOfRadius = value;
+    }
+
+    /**
+     * @member {Viewer} - Get the track size as a ratio to all other tracks
+     */
+    get thicknessRatio() {
+      return this.track.thicknessRatio
     }
 
     /**

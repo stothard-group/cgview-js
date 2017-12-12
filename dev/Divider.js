@@ -96,7 +96,7 @@
     }
 
     draw() {
-      if (!this.visible) { return }
+      if (!this.visible || this.thickness == 0) { return }
       for (var i = 0, len = this._radii.length; i < len; i++) {
         var radius = this._radii[i]
         this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);

@@ -24,6 +24,7 @@
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
       this.strand = CGV.defaultFor(data.strand, 'separated');
       this.position = CGV.defaultFor(data.position, 'both');
+      this._thicknessRatio = CGV.defaultFor(data.thicknessRatio, 1)
       this._loadProgress = 0;
       this.refresh();
     }
@@ -164,6 +165,18 @@
       } else if (this.type == 'feature') {
         return this.features().length
       }
+    }
+
+    /**
+     * @member {Viewer} - Get or set the track size as a ratio to all other tracks
+     */
+    get thicknessRatio() {
+      return this._thicknessRatio
+    }
+
+    set thicknessRatio(value) {
+      this._thicknessRatio = value;
+      this.layout._adjustProportions();
     }
 
     /**
@@ -334,6 +347,7 @@
         readingFrame: this.readingFrame,
         strand: this.strand,
         position: this.position,
+        thicknessRatio: this.thicknessRatio,
         contents: this.contents,
         visible: this.visible
       }
