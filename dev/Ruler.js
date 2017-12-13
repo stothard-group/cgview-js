@@ -245,6 +245,8 @@
 
     draw(innerRadius, outerRadius) {
       if (this.visible) {
+        innerRadius -= CGV.pixel(this.spacing);
+        outerRadius += CGV.pixel(this.spacing);
         this._updateTicks(innerRadius, outerRadius);
         this.drawForRadius(innerRadius, 'inner');
         this.drawForRadius(outerRadius, 'outer', false);

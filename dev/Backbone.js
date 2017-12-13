@@ -85,7 +85,7 @@
      * @member {Number} - Set or get the backbone thickness. This is the unzoomed thickness.
      */
     set thickness(value) {
-      if (value) {
+      if (value != undefined) {
         this._thickness = Number(value);
         this.viewer.layout && this.viewer.layout._adjustProportions();
       }
@@ -172,7 +172,7 @@
     toJSON() {
       return {
         color: this.color.rgbaString,
-        thickness: this.thickness,
+        thickness: this._thickness,
         visible: this.visible
       }
     }

@@ -25,9 +25,6 @@
           new CGV.Track(this, trackData);
         });
       }
-      //TODO:
-      //console.log the number of features and plots not associated with a track
-
       this._adjustProportions();
     }
 
@@ -55,121 +52,83 @@
       return this._outsideRadius
     }
 
-    /**
-     * Calculate the backbone radius and slot proportions based on the Viewer size and
-     * the number of slots.
-     */
-    _adjustProportionsOLD() { // OLD
-      var viewer = this.viewer;
-      // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
-      var maxOuterProportion = 0.35;
-      var maxOuterRadius = maxOuterProportion * viewer.minDimension;
-      // Minimum space required at center of map as a proportion of Viewer size
-      var minInnerProportion = 0.15;
-      var minInnerRadius = minInnerProportion * viewer.minDimension;
-      // The maximum amount of space for drawing slots
-      var dividerSpace = this.visibleSlots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
-      var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
-      // Max slotnesses in pixels
-      var maxFeatureSlotThickness = 30;
-      var maxPlotSlotThickness = 100;
-      // The maximum thickness ratio between plot and feature slots. If there is
-      // space try to keep the plot thickness this many times thicker than the feature slot thickness.
-      var maxPlotToFeatureRatio = 6;
-      var nPlotSlots = this.visibleSlots().filter( (t) => { return t.type == 'plot' }).length;
-      var nFeatureSlots = this.visibleSlots().filter( (t) => { return t.type == 'feature' }).length;
-      // slotSpace = nPlotSlots * plotThickness + nFeatureSlots * featureThickness
-      // plotThickness = maxPlotToFeatureRatio * featureThickness
-      // Solve:
-      var featureThickness = slotSpace / ( (maxPlotToFeatureRatio * nPlotSlots) + nFeatureSlots );
-      var plotThickness = maxPlotToFeatureRatio * featureThickness;
-      featureThickness = Math.min(featureThickness, maxFeatureSlotThickness);
-      plotThickness = Math.min(plotThickness, maxPlotSlotThickness);
-      // Determine thickness of outside slots
-      var nOutsideSlots = this.visibleSlots().filter( (t) => { return t.outside });
-      var outsideThickness = 0;
-      nOutsideSlots.forEach( (slot) => {
-        if (slot.type == 'feature') {
-          outsideThickness += featureThickness;
-        } else if (slot.type == 'plot') {
-          outsideThickness += plotThickness;
-        }
-      });
-      // Set backbone radius
-      var backboneRadius = maxOuterRadius - outsideThickness;
-      viewer.backbone.radius = backboneRadius;
-      // Update slot thick proportions
-      var featureProportionOfRadius = featureThickness / backboneRadius;
-      var plotProportionOfRadius = plotThickness / backboneRadius;
-      this.visibleSlots().each( (i, slot) => {
-        if (slot.type == 'feature') {
-          slot.proportionOfRadius = featureProportionOfRadius;
-        } else if (slot.type == 'plot') {
-          slot.proportionOfRadius = plotProportionOfRadius;
-        }
-      });
-      this.updateLayout(true);
-    }
-
-    // _minSpace(visibleSlots) {
-    //   visibleSlots = visibleSlots || this.visibleSlots();
+    // #<{(|*
+    //  * Calculate the backbone radius and slot proportions based on the Viewer size and
+    //  * the number of slots.
+    //  |)}>#
+    // _adjustProportionsOLD() { // OLD
     //   var viewer = this.viewer;
-    //   var backbone = viewer.backbone;
-    //   var slotDivider = viewer.slotDivider;
-    //   var minSlotThickness = this.minSlotThickness;
-    //   var maxSlotThickness = this.maxSlotThickness;
-    //   var thicknessRatios = visibleSlots.map( s => s.thicknessRatio );
-    //   var minThicknessRatio = d3.min(thicknessRatios);
-    //   var maxThicknessRatio = d3.max(thicknessRatios);
-    //   // If the min and max slot thickness range is too small for the min/max thickness ratio,
-    //   // we have to scale the ratios
-    //   var scaleRatios = (minSlotThickness / minThicknessRatio * maxThicknessRatio > maxSlotThickness);
-    //   // The thickness when the thicknessRatio is 1
-    //   // var thicknessRatioUnity = 1 / minThicknessRatio * minSlotThickness;
-    //   // The sum of the thickness ratios
-    //   // var thicknessRatioSum = thicknessRatios.reduce( (prev, curr) => prev + curr );
-    //   var dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-    //   var nDividers = (slotDivider.thickness == 0) ? 0 : visibleSlots.length;
-    //   var nSpaces = visibleSlots.length + nDividers;
-    //   var spacing = slotDivider.spacing;
-    //   var minSpace = backbone.visible ? backbone.thickness : 0;
-    //   minSpace += (nDividers * dividerThickness) + (nSpaces * spacing);
-    //   // var slotOutside = false;
-    //   // var slotInside = false;
-    //   for (var i = 0, len = visibleSlots.length; i < len; i++) {
-    //     slot = visibleSlots[i];
-    //     // Add Spacing
-    //     // minSpace += spacing;
-    //     // Add Slot thickness based on thicknessRatio and min/max slot thickness
-    //     if (scaleRatios) {
-    //       minSpace += CGV.scaleValue(slot.thicknessRatio,
-    //         {min: minThicknessRatio, max: maxThicknessRatio},
-    //         {min: minSlotThickness, max: maxSlotThickness});
-    //     } else {
-    //       minSpace += slot.thicknessRatio * minSlotThickness / minThicknessRatio;
+    //   // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
+    //   var maxOuterProportion = 0.35;
+    //   var maxOuterRadius = maxOuterProportion * viewer.minDimension;
+    //   // Minimum space required at center of map as a proportion of Viewer size
+    //   var minInnerProportion = 0.15;
+    //   var minInnerRadius = minInnerProportion * viewer.minDimension;
+    //   // The maximum amount of space for drawing slots
+    //   var dividerSpace = this.visibleSlots().length * (viewer.slotDivider.thickness + viewer.slotDivider.spacing);
+    //   var slotSpace = maxOuterRadius - minInnerRadius - viewer.backbone.thickness - dividerSpace;
+    //   // Max slotnesses in pixels
+    //   var maxFeatureSlotThickness = 30;
+    //   var maxPlotSlotThickness = 100;
+    //   // The maximum thickness ratio between plot and feature slots. If there is
+    //   // space try to keep the plot thickness this many times thicker than the feature slot thickness.
+    //   var maxPlotToFeatureRatio = 6;
+    //   var nPlotSlots = this.visibleSlots().filter( (t) => { return t.type == 'plot' }).length;
+    //   var nFeatureSlots = this.visibleSlots().filter( (t) => { return t.type == 'feature' }).length;
+    //   // slotSpace = nPlotSlots * plotThickness + nFeatureSlots * featureThickness
+    //   // plotThickness = maxPlotToFeatureRatio * featureThickness
+    //   // Solve:
+    //   var featureThickness = slotSpace / ( (maxPlotToFeatureRatio * nPlotSlots) + nFeatureSlots );
+    //   var plotThickness = maxPlotToFeatureRatio * featureThickness;
+    //   featureThickness = Math.min(featureThickness, maxFeatureSlotThickness);
+    //   plotThickness = Math.min(plotThickness, maxPlotSlotThickness);
+    //   // Determine thickness of outside slots
+    //   var nOutsideSlots = this.visibleSlots().filter( (t) => { return t.outside });
+    //   var outsideThickness = 0;
+    //   nOutsideSlots.forEach( (slot) => {
+    //     if (slot.type == 'feature') {
+    //       outsideThickness += featureThickness;
+    //     } else if (slot.type == 'plot') {
+    //       outsideThickness += plotThickness;
     //     }
-    //     // if (slot.inside) { slotInside = true; }
-    //     // if (slot.outside) { slotOutside = true; }
-    //     // Add Divider and more spacing on other side of divider
-    //     // if (dividerThickness != 0) {
-    //     //   minSpace += dividerThickness;
-    //     //   minSpace += spacing;
-    //     // }
-    //   }
-    //   // Remove extra spacing for last slot on inside and outside
-    //   // minSpace -= (slotInside + slotOutside) * spacing;
-    //   return minSpace
+    //   });
+    //   // Set backbone radius
+    //   var backboneRadius = maxOuterRadius - outsideThickness;
+    //   viewer.backbone.radius = backboneRadius;
+    //   // Update slot thick proportions
+    //   var featureProportionOfRadius = featureThickness / backboneRadius;
+    //   var plotProportionOfRadius = plotThickness / backboneRadius;
+    //   this.visibleSlots().each( (i, slot) => {
+    //     if (slot.type == 'feature') {
+    //       slot.proportionOfRadius = featureProportionOfRadius;
+    //     } else if (slot.type == 'plot') {
+    //       slot.proportionOfRadius = plotProportionOfRadius;
+    //     }
+    //   });
+    //   this.updateLayout(true);
     // }
 
-    _nonSlotSpace(visibleSlots) {
-      visibleSlots = visibleSlots || this.visibleSlots();
+    // Returns the space (in pixels) of everything but the slots
+    // i.e. dividers, spacing, and backbone
+    // Note: the bockbone is only included if position is 'both'
+    _nonSlotSpace(visibleSlots, position='both') {
+      var slots = visibleSlots || this.visibleSlots();
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var slotDivider = viewer.slotDivider;
       var dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-      var nDividers = (slotDivider.thickness == 0) ? 0 : visibleSlots.length;
-      var nSpaces = visibleSlots.length + nDividers;
-      var space = backbone.visible ? backbone.thickness : 0;
+      if (position == 'inside') {
+        slots = slots.filter( slot => slot.inside );
+      } else if (position == 'outside') {
+        slots = slots.filter( slot => slot.outside );
+      }
+      // var nDividers = (slotDivider.thickness == 0) ? 0 : slots.length;
+      var nDividers = (dividerThickness == 0) ? 0 : slots.length;
+      var nSpaces = slots.length + nDividers;
+      var space = 0;
+      if (position == 'both') {
+        space += backbone.visible ? backbone.thickness : 0;
+      }
       space += (nDividers * dividerThickness) + (nSpaces * slotDivider.spacing);
       // console.log({
       //   nDividers: nDividers,
@@ -271,13 +230,12 @@
       // })
 
       var outsideSlots = this.visibleSlots().filter( (t) => { return t.outside });
-      var outsideThickness = 0;
+      var outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
       outsideSlots.forEach( (slot) => {
         var slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
         outsideThickness += slotThickness;
       });
       // Set backbone radius
-      // TODO: does not account for outside dividers
       var backboneRadius = maxOuterRadius - outsideThickness - (backbone.thickness / 2);
       viewer.backbone.radius = backboneRadius;
       // Update slot thick proportions
@@ -391,7 +349,7 @@
       // Divider rings
       viewer.slotDivider.draw();
       // Ruler
-      var radiusAdjustment = CGV.pixel(viewer.slotDivider.thickness / 2 + viewer.ruler.spacing);
+      var radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
       viewer.ruler.draw(this.insideRadius - radiusAdjustment, this.outsideRadius + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
@@ -482,14 +440,15 @@
         this._savedZoomFactor = viewer._zoomFactor;
       }
       var backbone = viewer.backbone;
+      var slotDivider = viewer.slotDivider;
       var backboneThickness = CGV.pixel(backbone.zoomedThickness);
       var slotRadius = CGV.pixel(backbone.zoomedRadius);
       var directRadius = slotRadius + (backboneThickness / 2);
       var reverseRadius = slotRadius - (backboneThickness / 2);
-      var spacing = CGV.pixel(viewer.slotDivider.spacing);
+      var spacing = CGV.pixel(slotDivider.spacing);
       var residualSlotThickness = 0;
       var track, slot;
-      viewer.slotDivider.clearRadii();
+      slotDivider.clearRadii();
       var visibleSlots = this.visibleSlots();
       this._slotLength = visibleSlots.length;
       for (var i = 0, len = visibleSlots.length; i < len; i++) {
@@ -512,15 +471,19 @@
         residualSlotThickness = slotThickness / 2;
 
         // Calculate Divider dimensions
-        var dividerThickness = viewer.slotDivider.thickness;
+        // var dividerThickness = slotDivider.thickness;
+        var dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
+        var spacingAndDividerThickness = (dividerThickness == 0) ? 0 : (dividerThickness + spacing);
         if (slot.outside) {
-          directRadius += spacing + residualSlotThickness + dividerThickness;
+          // directRadius += spacing + residualSlotThickness + dividerThickness;
+          directRadius += residualSlotThickness + spacingAndDividerThickness;
           slotRadius = directRadius;
         } else {
-          reverseRadius -= spacing + residualSlotThickness + dividerThickness;
+          // reverseRadius -= spacing + residualSlotThickness + dividerThickness;
+          reverseRadius -= residualSlotThickness + spacingAndDividerThickness;
           slotRadius = reverseRadius;
         }
-        viewer.slotDivider.addRadius(slotRadius);
+        slotDivider.addRadius(slotRadius);
         residualSlotThickness = dividerThickness / 2;
       }
       this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;

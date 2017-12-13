@@ -24,6 +24,23 @@
     }
 
     /**
+     * Return the class name as a string.
+     * @return {String} - 'Divider'
+     */
+    toString() {
+      return 'Divider';
+    }
+
+    get visible() {
+      return this._visible
+    }
+
+    set visible(value) {
+      this._visible = value;
+      this.viewer.layout && this.viewer.layout._adjustProportions();
+    }
+
+    /**
      * @member {Color} - Get or set the divider color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
