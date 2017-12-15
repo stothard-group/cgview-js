@@ -52,6 +52,36 @@
       return this._outsideRadius
     }
 
+    /** * @member {Number} - Get an object with stats about slot thickness ratios
+     */
+    get slotThicknessRatios() {
+      return this._slotThicknessRatios
+    }
+
+    /** * @member {Number} - Get an object with stats about slot proportion of radii
+     */
+    get slotProportionOfRadii() {
+      return this._slotProportionOfRadii
+    }
+
+    _updateSlotThicknessRatios(slots) {
+      var thicknessRatios = slots.map( s => s.thicknessRatio );
+      this._slotThicknessRatios = {
+        min: d3.min(thicknessRatios),
+        max: d3.max(thicknessRatios),
+        sum: d3.sum(thicknessRatios)
+      }
+    }
+
+    _updateSlotProportionOfRadii(slots) {
+      var proportions = slots.map( s => s.proportionOfRadius );
+      this._slotProportionOfRadii = {
+        min: d3.min(proportions),
+        max: d3.max(proportions),
+        sum: d3.sum(proportions)
+      }
+    }
+
     // Returns the space (in pixels) of everything but the slots
     // i.e. dividers, spacing, and backbone
     // Note: the bockbone is only included if position is 'both'
@@ -91,9 +121,8 @@
       var slotDivider = viewer.slotDivider;
       var minSlotThickness = this.minSlotThickness;
       var maxSlotThickness = this.maxSlotThickness;
-      var thicknessRatios = visibleSlots.map( s => s.thicknessRatio );
-      var minThicknessRatio = d3.min(thicknessRatios);
-      var maxThicknessRatio = d3.max(thicknessRatios);
+      var minThicknessRatio = this.slotThicknessRatios.min;
+      var maxThicknessRatio = this.slotThicknessRatios.max;
       var space = this._nonSlotSpace(visibleSlots);
       // If the min and max slot thickness range is too small for the min/max thickness ratio,
       // we have to scale the ratios
@@ -133,6 +162,7 @@
       var slotDivider = viewer.slotDivider;
       var backbone = viewer.backbone;
       var visibleSlots = this.visibleSlots();
+      this._updateSlotThicknessRatios(visibleSlots);
       // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
       var maxOuterProportion = 0.35;
       var maxOuterRadius = maxOuterProportion * viewer.minDimension;
@@ -144,7 +174,7 @@
       // Minium Space required (based on minSlotThickness)
       var minSpace = this._minSpace(visibleSlots);
       // Maximum Space possible (based on maxSlotThickness)
-      var maxSpace = this._maxSpace(visibleSlots);
+      // var maxSpace = this._maxSpace(visibleSlots);
       // May need to scale slots, backbone, dividers and spacing to fit everything
       var thicknessScaleFactor = Math.min(workingSpace/minSpace, 1);
       // Calculate nonSlotSpace
@@ -152,14 +182,7 @@
       var slotSpace = (workingSpace * thicknessScaleFactor) - nonSlotSpace;
 
       // The sum of the thickness ratios
-      var thicknessRatios = visibleSlots.map( s => s.thicknessRatio );
-      var thicknessRatioSum = d3.sum(thicknessRatios);
-
-      // var testScale = thicknessScaleFactor / (this._testScale || 1);
-      // this._testScale = thicknessScaleFactor;
-      // for (var name of this.canvas.layerNames) {
-      //   this.canvas.layers(name).ctx.scale(testScale, testScale);
-      // }
+      var thicknessRatioSum = this.slotThicknessRatios.sum;
 
       // console.log({
       //   workingSpace: workingSpace,
@@ -186,6 +209,7 @@
         var slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
         slot.proportionOfRadius = slotThickness / backboneRadius;
       });
+      this._updateSlotProportionOfRadii(visibleSlots);
 
       // NOTE:
       // - Also calculate the maxSpace
@@ -436,12 +460,29 @@
      * As the viewer is zoomed the slot radius increases until
      *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
      *    Therefore we should always be able to see all the slots in the viewer
-     *  - The slot thickness is greater than the maximum allowed slot thickness (if it's defined)
+     *  - The slot thickness is greater than the maximum allowed slot thickness
      */
     _calculateSlotThickness(proportionOfRadius) {
       var viewer = this.viewer;
-      var thickness = CGV.pixel( Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius()) * proportionOfRadius);
-      return (this.maxSlotThickness ? Math.min(thickness, CGV.pixel(this.maxSlotThickness)) : thickness)
+      var backboneRadius = Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius());
+      var maxAllowedProportion = this.maxSlotThickness / backboneRadius;
+      var slotProportionOfRadii = this.slotProportionOfRadii;
+      if (slotProportionOfRadii.max > maxAllowedProportion) {
+        if (slotProportionOfRadii.min == slotProportionOfRadii.max) {
+          proportionOfRadius = maxAllowedProportion;
+        } else {
+          // SCALE
+          // Based on the min and max allowed proportionOf Radii allowed
+          var minAllowedProportion = this.minSlotThickness / backboneRadius;
+          var minMaxRatio = slotProportionOfRadii.max / slotProportionOfRadii.min;
+          var minProportionOfRadius = maxAllowedProportion / minMaxRatio;
+          var minTo = (minProportionOfRadius < minAllowedProportion) ? minAllowedProportion : minProportionOfRadius;
+          proportionOfRadius = CGV.scaleValue(proportionOfRadius,
+                {min: slotProportionOfRadii.min, max: slotProportionOfRadii.max},
+                {min: minTo, max: maxAllowedProportion});
+        }
+      }
+      return CGV.pixel(proportionOfRadius * backboneRadius)
     }
 
     drawProgress() {
