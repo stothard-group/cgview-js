@@ -13,6 +13,7 @@
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId;
+      this._object = options.object;
       this.container = d3.select('#' + containerId).node();
       this._width = CGV.defaultFor(options.width, 100);
       this._height = CGV.defaultFor(options.height, 100);
@@ -59,6 +60,17 @@
 
     get color() {
       return this._color
+    }
+
+    /**
+     * Get or set the object currently associated with the color picker
+     */
+    get object() {
+      return this._object
+    }
+
+    set object(value) {
+      this._object = value;
     }
 
     updateColor() {
@@ -347,7 +359,8 @@
       value ? this.open() : this.close();
     }
 
-    open() {
+    open(object) {
+      if (object) { this.object = object; }
       var box = d3.select(this.container);
       box.style('visibility', 'visible');
       box.transition().duration(200)

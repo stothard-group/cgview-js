@@ -115,6 +115,7 @@
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
               cgv.drawFast();
+              cgv.trigger('legend-swatch-change', legendItem);
             };
             cp.onClose = function() {
               legendItem.swatchSelected = false;
@@ -122,7 +123,7 @@
               legend.draw();
             };
             cp.setColor(legendItem._swatchColor.rgba);
-            cp.open();
+            cp.open(legendItem);
             break;
           }
         }
