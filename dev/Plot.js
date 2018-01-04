@@ -100,10 +100,10 @@
 
     /**
      * @member {LegendItem} - Set both the legendItemPositive and
-     * legendItemNegative to this legendItem. Get an array of the legendItems: [legendItemPositive, legendItemNegative].
+     * legendItemNegative to this legendItem. Get an CGArray of the legendItems: [legendItemPositive, legendItemNegative].
      */
     get legendItem() {
-      return [this.legendItemPositive, this.legendItemNegative]
+      return new CGV.CGArray([this.legendItemPositive, this.legendItemNegative])
     }
 
     set legendItem(value) {

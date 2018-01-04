@@ -197,8 +197,8 @@
 
     plots(term) {
       var viewer = this.viewer;
-      var _plots = new CGV.CGArray( viewer._plots.filter( (f) => {
-        return (f.legendItem == this || f.legendItemPositive == this || f.legendNegative == this)
+      var _plots = new CGV.CGArray( viewer._plots.filter( (p) => {
+        return p.legendItem.contains(this)
       }));
       return _plots.get(term);
     }
