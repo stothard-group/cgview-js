@@ -224,6 +224,17 @@
       this.viewer.trigger('track-update', this);
     }
 
+    /**
+     * Remove the plot from the track and slots.
+     */
+    removePlot() {
+      this._plot = undefined;
+      this.slots().each( (i, slot) => {
+        slot.removePlot();
+      });
+      this.viewer.trigger('track-update', this);
+    }
+
     refresh() {
       this._features = new CGV.CGArray();
       this._plot = undefined;

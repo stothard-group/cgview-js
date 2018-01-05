@@ -131,8 +131,6 @@
     }
 
     set legendItemPositive(value) {
-      // this._legendItemPositive = value;
-
       if (this.legendItemPositive && value == undefined) { return }
       if (value && value.toString() == 'LegendItem') {
         this._legendItemPositive  = value
@@ -150,8 +148,6 @@
     }
 
     set legendItemNegative(value) {
-      // this._legendItemNegative = value;
-
       if (this.legendItemNegative && value == undefined) { return }
       if (value && value.toString() == 'LegendItem') {
         this._legendItemNegative  = value
@@ -199,6 +195,27 @@
       } else {
         this._baseline = value;
       }
+    }
+
+    tracks(term) {
+      var tracks = new CGV.CGArray();
+      this.viewer.tracks().each( (i, track) => {
+        if (track.plot == this) {
+          tracks.push(track);
+        }
+      });
+      return tracks.get(term)
+    }
+
+    /**
+     * Remove the Plot from the viewer, tracks and slots
+     */
+    remove() {
+      this.viewer._plots = this.viewer._plots.remove(this);
+      this.tracks().each( (i, track) => {
+        track.removePlot();
+      });
+
     }
 
     scoreForPosition(bp) {

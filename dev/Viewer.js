@@ -348,6 +348,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       });
     }
 
+    removePlots(plots) {
+      for (var i = 0, len = plots.length; i < len; i++) {
+        plots[i].remove();
+      }
+    }
+
     /**
      * Clear the viewer canvas
      */
