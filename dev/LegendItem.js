@@ -13,7 +13,7 @@
   class LegendItem extends CGV.CaptionItem {
 
     /**
-     * Create a new LegendItem. By default a legendItem will use its parent legend font, fontColor and textAlignment.
+     * Create a new LegendItem. By default a legendItem will use its parent legend font, and fontColor.
      *
      * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
      * @param {Object} data - Data used to create the legendItem:
@@ -24,7 +24,6 @@
      *  drawSwatch            | false            | Should a swatch be drawn beside the text
      *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
-     *  textAlignment         | Legend textAlignment | *left*, *center*, or *right*
      *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
      *  decoration            | 'arc'            | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none'.
      *
@@ -163,8 +162,6 @@
 
     swatchX() {
       var parent = this.parent;
-      console.log(this.textAlignment)
-
       if (this.textAlignment == 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment == 'center') {

@@ -12,7 +12,7 @@
   class CaptionItem extends CGV.CGObject {
 
     /**
-     * Create a new CaptionItem. By default a captionItem will use its parent legend font, fontColor and textAlignment.
+     * Create a new CaptionItem. By default a captionItem will use its parent legend font, and fontColor.
      *
      * @param {Caption} caption - The parent *Caption* for the *CaptionItem*.
      * @param {Object} data - Data used to create the captionItem:
@@ -23,7 +23,6 @@
      *  drawSwatch            | false            | Should a swatch be drawn beside the text
      *  font                  | Caption font      | A string describing the font. See {@link Font} for details.
      *  fontColor             | Caption fontColor | A string describing the color. See {@link Color} for details.
-     *  textAlignment         | Caption textAlignment | *left*, *center*, or *right*
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the captionItem.
      */
@@ -34,7 +33,6 @@
       this._name = CGV.defaultFor(data.name, '');
       this.font = data.font
       this.fontColor = data.fontColor;
-      this.textAlignment = data.textAlignment;
       this._initializationComplete = true;
       this.refresh();
     }
@@ -123,28 +121,11 @@
     }
 
     /**
-     * @member {String} - Get or set the text alignment. Defaults to the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
+     * @member {String} - Get the text alignment of the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
-      return this._textAlignment || this.parent.textAlignment
+      return this.parent.textAlignment
     }
-
-    set textAlignment(value) {
-      // if (value == undefined) {
-      //   this._textAlignment = this.parent.textAlignment;
-      // } else {
-      //   this._textAlignment = value;
-      // }
-		 	this._textAlignment = value;
-      this.refresh();
-    }
-
-    // /**
-    //  * @member {Viewer} - Get the *Viewer*.
-    //  */
-    // get viewer() {
-    //   return this._viewer
-    // }
 
     /**
      * @member {Number} - Get the width in pixels.
@@ -262,7 +243,6 @@
         name: this.name,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
-        textAlignment: this.textAlignment,
         visible: this.visible
       }
     }
