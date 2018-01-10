@@ -270,7 +270,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas.resize(this.width, this.height)
 
       this.refreshCaptions();
-      // this.legend.refresh();
+      // Hide Color Picker: otherwise it may disappear off the screen
+      this.colorPicker.close();
 
       this.layout._adjustProportions();
 

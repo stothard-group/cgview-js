@@ -513,6 +513,22 @@
   }
 
 
+  /**
+   * Returns the offset for an element by looking at the parent positioned elements.
+   * Also takes into account the scroll offset for each parent.
+   *
+   * Reference: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
+   */
+  CGV.getOffset = function(el) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+  }
 
   //
   //

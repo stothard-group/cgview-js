@@ -96,6 +96,7 @@
 	</div>
 
 	<div id='main'>
+    <div id='color-picker-testing'></div>
 		<div id='cgview'></div>
 		<!-- <a id='download&#45;svg' href='#'>SVG</a> -->
     <div style='margin-top: 5px;'>
@@ -110,6 +111,11 @@
   </div>
 
   <script>
+
+    if ($('#color-picker-testing').length > 0) {
+      var cp = new CGV.ColorPicker('color-picker-testing', {colorString: 'rgb(100,100,200)'});
+      cp.open();
+    }
 
     var demo = false;
     // var demo = true;

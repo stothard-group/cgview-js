@@ -40,9 +40,9 @@
       this._configureView();
 
       // Prevent the indicators from getting in the way of mouse events
-      this.slideIndicator.style.pointerEvents = 'none';
-      this.pickerIndicator.style.pointerEvents = 'none';
-      this.alphaIndicator.style.pointerEvents = 'none';
+      // this.slideIndicator.style.pointerEvents = 'none';
+      // this.pickerIndicator.style.pointerEvents = 'none';
+      // this.alphaIndicator.style.pointerEvents = 'none';
 
       d3.select(this.slideElement).on('mousedown.click', this.slideListener());
       d3.select(this.pickerElement).on('mousedown.click', this.pickerListener());
@@ -54,6 +54,13 @@
       this.enableDragging(this, this.pickerElement, this.pickerListener());
       this.enableDragging(this, this.alphaElement, this.alphaListener());
       this.enableDragging(this, this.container, this.dialogListener());
+
+      this.enableDragging(this, this.slideIndicator, this.slideListener());
+      this.enableDragging(this, this.pickerIndicator, this.pickerListener());
+      this.enableDragging(this, this.alphaIndicator, this.alphaListener());
+
+
+      this.setColor(this._color);
 
       d3.select(this.container).style('visibility', 'hidden');
     }
@@ -324,8 +331,11 @@
       var cp = this;
       var container = cp.container;
       return function(mouseStart) {
-        container.style.left = (d3.event.pageX - mouseStart.x) + 'px';
-        container.style.top = (d3.event.pageY - mouseStart.y) + 'px';
+        var parentOffset = CGV.getOffset(container.offsetParent);
+        var offsetX = parentOffset.left;
+        var offsetY = parentOffset.top;
+        container.style.left = (d3.event.pageX - offsetX - mouseStart.x) + 'px';
+        container.style.top = (d3.event.pageY - offsetY - mouseStart.y) + 'px';
       }
     };
 

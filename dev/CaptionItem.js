@@ -198,18 +198,6 @@
       }
     }
 
-    // textY() {
-    //   var parent = this.parent;
-    //   var y = parent.originY + parent.padding;
-    //   var myIndex = parent._items.indexOf(this);
-    //   for (var i = 0, len = parent._items.length; i < len; i++) {
-    //     var captionItem = parent._items[i];
-    //     if (captionItem == this) { break }
-    //     if (!captionItem.visible) { continue }
-    //     y += captionItem.height * 1.5;
-    //   }
-    //   return y
-    // }
     textY() {
       var parent = this.parent;
       var y = parent.originY + parent.padding;
@@ -236,9 +224,15 @@
       // ctx.fillStyle = color;
       // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
       var ctx = this.canvas.context('ui');
+      var x = this.textX();
+      if (this.textAlignment == 'center') {
+        x -= (this.width / 2);
+      } else if (this.textAlignment == 'right') {
+        x -= this.width;
+      }
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'black';
-      ctx.strokeRect(this.textX(), this.textY(), this.width, this.height);
+      ctx.strokeRect(x, this.textY(), this.width, this.height);
     }
 
     remove() {
