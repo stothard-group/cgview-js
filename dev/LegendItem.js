@@ -171,19 +171,13 @@
       }
     }
 
+    swatchY() {
+      return this.textY();
+    }
 
-    // FIXME: does not work for swatches aligned right; need swatchY method
-    //        - wouldn't textY work
     _swatchContainsPoint(pt) {
-      var x = this.parent.originX + this.parent.padding;
-      var y = this.parent.originY + this.parent.padding;
-      var visibleItems = this.parent.visibleItems();
-      for (var i = 0, len = visibleItems.length; i < len; i++) {
-        var item = visibleItems[i];
-        if (item == this) { break }
-        y += (item.height * 1.5);
-      }
-
+      var x = this.swatchX();
+      var y = this.swatchY();
       if (pt.x >= x && pt.x <= x + this.height && pt.y >= y && pt.y <= y + this.height) {
         return true
       }

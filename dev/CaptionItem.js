@@ -198,15 +198,26 @@
       }
     }
 
+    // textY() {
+    //   var parent = this.parent;
+    //   var y = parent.originY + parent.padding;
+    //   var myIndex = parent._items.indexOf(this);
+    //   for (var i = 0, len = parent._items.length; i < len; i++) {
+    //     var captionItem = parent._items[i];
+    //     if (captionItem == this) { break }
+    //     if (!captionItem.visible) { continue }
+    //     y += captionItem.height * 1.5;
+    //   }
+    //   return y
+    // }
     textY() {
       var parent = this.parent;
       var y = parent.originY + parent.padding;
-      var myIndex = parent._items.indexOf(this);
-      for (var i = 0, len = parent._items.length; i < len; i++) {
-        var captionItem = parent._items[i];
-        if (captionItem == this) { break }
-        if (!captionItem.visible) { continue }
-        y += captionItem.height * 1.5;
+      var visibleItems = this.parent.visibleItems();
+      for (var i = 0, len = visibleItems.length; i < len; i++) {
+        var item = visibleItems[i];
+        if (item == this) { break }
+        y += (item.height * 1.5);
       }
       return y
     }
