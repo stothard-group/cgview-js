@@ -230,6 +230,14 @@
       return y
     }
 
+    _textContainsPoint(pt) {
+      var textX = this.textX();
+      var textY = this.textY();
+      if (pt.x >= textX && pt.x <= textX + this.width && pt.y >= textY && pt.y <= textY + this.height) {
+        return true
+      }
+    }
+
     highlight(color = '#FFB') {
       if (!this.visible || !this.parent.visible) { return }
       // var ctx = this.canvas.context('background');

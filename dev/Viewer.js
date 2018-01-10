@@ -324,6 +324,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._captions.get(term);
     }
 
+    visibleCaptions(term) {
+      var filtered = this._captions.filter( (i) => { return i.visible });
+      return new CGV.CGArray(filtered).get(term)
+    }
+
     /**
      * Returns an [CGArray](CGArray.js.html) of Feature/Plot Source name or a single item.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.

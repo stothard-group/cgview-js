@@ -297,6 +297,14 @@
       this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 
+    containsPoint(pt) {
+      var x = this.originX;
+      var y = this.originY;
+      if (pt.x >= x && pt.x <= x + this.width && pt.y >= y && pt.y <= y + this.height) {
+        return true
+      }
+    }
+
     highlight(color = '#FFB') {
       if (!this.visible) { return }
       // var ctx = this.canvas.context('background');

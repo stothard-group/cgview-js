@@ -163,6 +163,8 @@
 
     swatchX() {
       var parent = this.parent;
+      console.log(this.textAlignment)
+
       if (this.textAlignment == 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment == 'center') {
@@ -174,6 +176,7 @@
 
 
     // FIXME: does not work for swatches aligned right; need swatchY method
+    //        - wouldn't textY work
     _swatchContainsPoint(pt) {
       var x = this.parent.originX + this.parent.padding;
       var y = this.parent.originY + this.parent.padding;
