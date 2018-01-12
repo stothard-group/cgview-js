@@ -33,6 +33,7 @@
       this.alphaElement = this.container.getElementsByClassName('cp-alpha-slider')[0];
       this.slideIndicator = this.container.getElementsByClassName('cp-color-slider-indicator')[0];
       this.pickerIndicator = this.container.getElementsByClassName('cp-color-picker-indicator')[0];
+      this.pickerIndicatorRect1 = this.container.getElementsByClassName('cp-picker-indicator-rect-1')[0];
       this.alphaIndicator = this.container.getElementsByClassName('cp-alpha-slider-indicator')[0];
       this.currentColorIndicator = this.container.getElementsByClassName('cp-color-current')[0];
       this.originalColorIndicator = this.container.getElementsByClassName('cp-color-original')[0];
@@ -86,6 +87,7 @@
       this.updateIndicators();
       var pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
       this.pickerElement.style.backgroundColor = pickerRgbString;
+      this.pickerIndicatorRect1.style.backgroundColor = this.color.rgbString;
       d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
       this.currentColorIndicator.style.backgroundColor = this.color.rgbaString;
       this.onChange && this.onChange(this.color);
@@ -94,7 +96,6 @@
     setColor(value) {
       this._color.setColor(value);
       this.hsv = this._color.hsv;
-      // this.opacity = this._color.opacity;
       this.opacity = Number(this._color.opacity.toFixed(2));
       this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
       this.updateColor();
