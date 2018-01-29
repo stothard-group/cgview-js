@@ -22,6 +22,7 @@
 
     function zoomstart() {
       self.trigger('zoom-start');
+      self.highlighter.hidePopoverBox();
       // console.log('START')
       // if (self.layout._slotTimeoutID) {
       //   clearTimeout(self.layout._slotTimeoutID);

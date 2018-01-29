@@ -19,6 +19,7 @@
       // d3.event.sourceEvent.preventDefault(); // Prevent text cursor
       // self.svg.style('cursor', 'all-scroll');
       d3.select(self.canvas.node('ui')).style('cursor', 'all-scroll');
+      self.highlighter.hidePopoverBox();
       // self.trigger('drag-start');
     }
 
