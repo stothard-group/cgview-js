@@ -80,8 +80,6 @@ Component                        | Accessor                                   | 
 [Settings](Settings.html)        | [settings](Viewer.html#settings)           | Settings store general options for the viewer.
 [Messenger](Messenger.html)      | [messenger](Viewer.html#messenger)         | Messenger provides the interface for showing messages.
 [Divider](Divider.html)          | [slotDivider](Viewer.html#slotDivider)     | The slotDivider controls the space and lines between each slot.
-[Help](Help.html)                | [help](Viewer.html#help)                   | Help control what is draw in the help menu.
-[Menu](Menu.html)                | [menu](Viewer.html#menu)                   | Provides control for the Menu.
 [Highlighter](Highlighter.html)  | [highlighter](Viewer.html#highlighter)     | Highlighter controls what happens when mousing over features/plots.
 [Feature](Feature.html)          | [features()](Viewer.html#features)         | Returns one or more Features.
 [Plot](Plot.html)                | [plots()](Viewer.html#plots)               | Returns one or more Plots.
