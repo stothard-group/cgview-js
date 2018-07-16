@@ -22,6 +22,7 @@
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
       this.lineCap = 'round';
+      this.onlyDrawFavorites = CGV.defaultFor(options.onlyDrawFavorites, false);
     }
 
     /**
@@ -255,6 +256,18 @@
       return labelArray
     }
 
+
+    // Labels must already be sorted so favorite are first
+    _onlyFavoriteLabels(labels) {
+      labels = labels || this._labels;
+      var nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite )
+      if (nonFavoriteIndex != -1) {
+        return labels.slice(0, nonFavoriteIndex);
+      } else {
+        return labels
+      }
+    }
+
     _sortByPriority(labels) {
       labels = labels || this._labels;
       labels.sort( (a,b) => {
@@ -281,6 +294,9 @@
       var possibleLabels = this.visibleLabels(directRadius);
 
       possibleLabels = this._sortByPriority(possibleLabels);
+      if (this.onlyDrawFavorites) {
+        possibleLabels = this._onlyFavoriteLabels(possibleLabels);
+      }
       this._calculatePositions(possibleLabels);
 
       var priorityLabels = possibleLabels.slice(0, this.priorityMax);
