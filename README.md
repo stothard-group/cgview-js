@@ -7,15 +7,13 @@ with resolutions upto 6000x6000 pixels.
 
 ### Dependencies
 * [D3](http://d3js.org) (Version 4)
-* [d3-selection-multi](https://github.com/d3/d3-selection-multi)
 
 ### Setup ###
 
-* For the D3 dependencies add the following to your html:
+* For the D3 dependency add the following to your html:
 
 ```html
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
 ```
 
 * Copy *cgview.js* to your javascript folder and add a script tag to your html:
