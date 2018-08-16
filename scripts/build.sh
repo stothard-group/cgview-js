@@ -8,8 +8,11 @@ echo "Building CGView.js"
 # ls ${CGVIEW_DIR}/dev/* | sort -r | xargs cat > ${CGVIEW_DIR}/src/CGView.js
 
 cat ${CGVIEW_DIR}/dev/Viewer.js > ${CGVIEW_DIR}/src/CGView.js
+cat ${CGVIEW_DIR}/dev/Events.js >> ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_DIR}/src/CGView.js
-find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js | xargs cat >> ${CGVIEW_DIR}/src/CGView.js
+cat ${CGVIEW_DIR}/dev/Caption.js >> ${CGVIEW_DIR}/src/CGView.js
+cat ${CGVIEW_DIR}/dev/CaptionItem.js >> ${CGVIEW_DIR}/src/CGView.js
+find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js ! -name Events.js ! -name Caption.js ! -name CaptionItem.js | xargs cat >> ${CGVIEW_DIR}/src/CGView.js
 
 # Create documentation
 # jsdoc must be installed
