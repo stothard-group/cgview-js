@@ -1,3 +1,9 @@
+# --------------------------------------------------------------------------------
+# This file no longer works with the CGView. There is no XML conversion, etc.
+# However, it could be useful to build a new system to make standalone
+# CGView HTML pages in the future
+# --------------------------------------------------------------------------------
+
 require 'optparse'
 require 'ostruct'
 require 'closure-compiler'
