@@ -21,16 +21,16 @@
     }
 
     set name(value) {
-      if (value == undefined || value == '') {
+      if (value === undefined || value === '') {
         this.width = 0;
         // Label was in Annotation, so remove it
-        if (!(this._name == '' || this._name == undefined)) {
+        if (!(this._name === '' || this._name === undefined)) {
           this.annotation.removeLabels(this);
         }
         this._name = '';
       } else {
         // Label was not in Annotation, so add it
-        if (this._name == '' || this._name == undefined) {
+        if (this._name === '' || this._name === undefined) {
           this.annotation.addLabel(this);
         }
         this._name = value;
@@ -99,9 +99,9 @@
     }
 
     set font(value) {
-      if (value == undefined) {
+      if (value === undefined) {
         this._font = this.annotation.font;
-      } else if (value.toString() == 'Font') {
+      } else if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);

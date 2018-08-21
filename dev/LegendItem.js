@@ -78,7 +78,7 @@
     }
 
     set swatchColor(color) {
-      if (color.toString() == 'Color') {
+      if (color.toString() === 'Color') {
         this._swatchColor = color;
       } else {
         this._swatchColor.setColor(color);
@@ -114,14 +114,14 @@
      * @member {Boolean} - Get or set whether this item is selected
      */
     get swatchSelected() {
-      return this.legend.selectedSwatchedItem == this
+      return this.legend.selectedSwatchedItem === this
     }
 
     set swatchSelected(value) {
       if (value) {
         this.legend.selectedSwatchedItem = this;
       } else {
-        if (this.legend.selectedSwatchedItem == this) {
+        if (this.legend.selectedSwatchedItem === this) {
           this.legend.selectedSwatchedItem = undefined;
         }
       }
@@ -131,14 +131,14 @@
      * @member {Boolean} - Get or set whether this item is highlighted
      */
     get swatchHighlighted() {
-      return this.legend.highlightedSwatchedItem == this
+      return this.legend.highlightedSwatchedItem === this
     }
 
     set swatchHighlighted(value) {
       if (value) {
         this.legend.highlightedSwatchedItem = this;
       } else {
-        if (this.legend.highlightedSwatchedItem == this) {
+        if (this.legend.highlightedSwatchedItem === this) {
           this.legend.highlightedSwatchedItem = undefined;
         }
       }
@@ -148,11 +148,11 @@
     textX() {
       if (this.drawSwatch) {
         var parent = this.parent;
-        if (this.textAlignment == 'left') {
+        if (this.textAlignment === 'left') {
           return this.swatchX() + this.swatchWidth + parent.swatchPadding;
-        } else if (this.textAlignment == 'center') {
+        } else if (this.textAlignment === 'center') {
           return parent.originX + (parent.width / 2);
-        } else if (this.textAlignment == 'right') {
+        } else if (this.textAlignment === 'right') {
           return this.swatchX() - parent.swatchPadding;
         }
       } else {
@@ -162,11 +162,11 @@
 
     swatchX() {
       var parent = this.parent;
-      if (this.textAlignment == 'left') {
+      if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
-      } else if (this.textAlignment == 'center') {
+      } else if (this.textAlignment === 'center') {
         return parent.originX + parent.padding;
-      } else if (this.textAlignment == 'right') {
+      } else if (this.textAlignment === 'right') {
         return parent.originX + parent.width - parent.padding - this.swatchWidth;
       }
     }
@@ -185,7 +185,7 @@
 
     features(term) {
       var viewer = this.viewer;
-      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem == this } ));
+      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem === this } ));
       return _features.get(term);
     }
 

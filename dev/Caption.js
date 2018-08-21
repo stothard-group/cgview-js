@@ -126,9 +126,9 @@
 
     set backgroundColor(color) {
       // this._backgroundColor.color = color;
-      if (color == undefined) {
+      if (color === undefined) {
         this._backgroundColor = this.viewer.settings.backgroundColor;
-      } else if (color.toString() == 'Color') {
+      } else if (color.toString() === 'Color') {
         this._backgroundColor = color;
       } else {
         this._backgroundColor = new CGV.Color(color);
@@ -144,7 +144,7 @@
     }
 
     set font(value) {
-      if (value.toString() == 'Font'){
+      if (value.toString() === 'Font'){
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -160,7 +160,7 @@
     }
 
     set fontColor(value) {
-      if (value.toString() == 'Color'){
+      if (value.toString() === 'Color'){
         this._fontColor = value;
       } else {
         this._fontColor = new CGV.Color(value);
@@ -252,31 +252,31 @@
       var captionHeight = this.height;
 
       var position = this.position;
-      if (position == 'upper-left') {
+      if (position === 'upper-left') {
         this.originX = margin;
         this.originY = margin;
-      } else if (position == 'upper-center') {
+      } else if (position === 'upper-center') {
         this.originX = (canvasWidth / 2) - (captionWidth / 2);
         this.originY = margin;
-      } else if (position == 'upper-right') {
+      } else if (position === 'upper-right') {
         this.originX = canvasWidth - captionWidth - margin;
         this.originY = margin;
-      } else if (position == 'middle-left') {
+      } else if (position === 'middle-left') {
         this.originX = margin;
         this.originY = (canvasHeight / 2) - (captionHeight / 2);
-      } else if (position == 'middle-center') {
+      } else if (position === 'middle-center') {
         this.originX = (canvasWidth / 2) - (captionWidth / 2);
         this.originY = (canvasHeight / 2) - (captionHeight / 2);
-      } else if (position == 'middle-right') {
+      } else if (position === 'middle-right') {
         this.originX = canvasWidth - captionWidth - margin;
         this.originY = (canvasHeight / 2) - (captionHeight / 2);
-      } else if (position == 'lower-left') {
+      } else if (position === 'lower-left') {
         this.originX = margin;
         this.originY = canvasHeight - captionHeight - margin;
-      } else if (position == 'lower-center') {
+      } else if (position === 'lower-center') {
         this.originX = (canvasWidth / 2) - (captionWidth / 2);
         this.originY = canvasHeight - captionHeight - margin;
-      } else if (position == 'lower-right') {
+      } else if (position === 'lower-right') {
         this.originX = canvasWidth - captionWidth - margin;
         this.originY = canvasHeight - captionHeight - margin;
       }

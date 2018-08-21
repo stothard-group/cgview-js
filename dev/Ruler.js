@@ -25,7 +25,7 @@
     }
 
     set font(value) {
-      if (value.toString() == 'Font') {
+      if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -40,7 +40,7 @@
     }
 
     set color(color) {
-      if (color.toString() == 'Color') {
+      if (color.toString() === 'Color') {
         this._color = color;
       } else {
         this._color.setColor(color);
@@ -257,7 +257,7 @@
     drawForRadius(radius, position = 'inner', drawLabels = true) {
       var ctx = this.canvas.context('map');
       var scale = this.canvas.scale;
-      var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
+      var tickLength = (position === 'inner') ? -this.tickLength : this.tickLength;
       // ctx.fillStyle = 'black'; // Label Color
       ctx.fillStyle = this.color.rgbaString; // Label Color
       ctx.font = this.font.css;
@@ -314,7 +314,7 @@
     //   var ranges = this.canvas.visibleRangeForRadius(radius);
     //   var start = ranges ? ranges[0] : 1;
     //   var stop = ranges ? ranges[1] : this.viewer.sequenceLength;
-    //   var tickLength = (position == 'inner') ? -this.tickLength : this.tickLength;
+    //   var tickLength = (position === 'inner') ? -this.tickLength : this.tickLength;
     //   ctx.fillStyle = 'black'; // Label Color
     //   ctx.font = this.font.css;
     //   ctx.textAlign = 'left';

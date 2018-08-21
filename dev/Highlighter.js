@@ -53,7 +53,7 @@
 
     position(e) {
       var viewerRect = {top: 0, left: 0};
-      if (this.viewer._container.style('position') != 'fixed') {
+      if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
       // var viewerRect = this.viewer._container.node().getBoundingClientRect();

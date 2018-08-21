@@ -48,7 +48,7 @@
         // Adjust the bp position to mark where the plot changes,
         // NOT the center point of the window.
         // i.e. half way between the current position and the last
-        if (position == 1) {
+        if (position === 1) {
           positions.push(1);
         } else {
           positions.push(position - step/2);
@@ -57,7 +57,7 @@
 
         scores.push(score);
         progress = Math.round(position / len * 100);
-        if ( (progress > savedProgress) && (progress % progressIncrement == 0) ) {
+        if ( (progress > savedProgress) && (progress % progressIncrement === 0) ) {
           savedProgress = progress;
           postMessage({ messageType: 'progress', progress: progress });
         }
@@ -67,7 +67,7 @@
       // Min value becomes 0
       // Max value becomes 1
       // Average becomes 0.5
-      if (deviation == 'scale') {
+      if (deviation === 'scale') {
         scores = scores.map( (score) => {
           if (score >= average) {
             return scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
@@ -84,15 +84,15 @@
     }
 
     baseCalculation = function(type, seq) {
-      if (type == 'gc-content') {
+      if (type === 'gc-content') {
         return calcGCContent(seq);
-      } else if (type == 'gc-skew') {
+      } else if (type === 'gc-skew') {
         return calcGCSkew(seq);
       }
     }
 
     calcGCContent = function(seq) {
-      if (seq.length == 0) { return  0.5 }
+      if (seq.length === 0) { return  0.5 }
       var g = count(seq, 'g');
       var c = count(seq, 'c');
       return ( (g + c) / seq.length )
@@ -101,7 +101,7 @@
     calcGCSkew = function(seq) {
       var g = count(seq, 'g');
       var c = count(seq, 'c');
-      if ( (g + c) == 0 ) { return 0.5 }
+      if ( (g + c) === 0 ) { return 0.5 }
       // Gives value between -1 and 1
       var value = (g - c) / (g + c);
       // Scale to a value between 0 and 1

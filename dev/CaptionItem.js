@@ -153,9 +153,9 @@
     }
 
     set font(value) {
-      if (value == undefined) {
+      if (value === undefined) {
         this._font = this.parent.font;
-      } else if (value.toString() == 'Font') {
+      } else if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -171,9 +171,9 @@
     }
 
     set fontColor(color) {
-      if (color == undefined) {
+      if (color === undefined) {
         this._fontColor = this.parent._fontColor;
-      } else if (color.toString() == 'Color') {
+      } else if (color.toString() === 'Color') {
         this._fontColor = color;
       } else {
         this._fontColor = new CGV.Color(color);
@@ -189,11 +189,11 @@
 
     textX() {
       var parent = this.parent;
-      if (this.textAlignment == 'left') {
+      if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
-      } else if (this.textAlignment == 'center') {
+      } else if (this.textAlignment === 'center') {
         return parent.originX + (parent.width / 2);
-      } else if (this.textAlignment == 'right') {
+      } else if (this.textAlignment === 'right') {
         return parent.originX + parent.width - parent.padding;
       }
     }
@@ -204,7 +204,7 @@
       var visibleItems = this.parent.visibleItems();
       for (var i = 0, len = visibleItems.length; i < len; i++) {
         var item = visibleItems[i];
-        if (item == this) { break }
+        if (item === this) { break }
         y += (item.height * 1.5);
       }
       return y
@@ -225,9 +225,9 @@
       // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
       var ctx = this.canvas.context('ui');
       var x = this.textX();
-      if (this.textAlignment == 'center') {
+      if (this.textAlignment === 'center') {
         x -= (this.width / 2);
-      } else if (this.textAlignment == 'right') {
+      } else if (this.textAlignment === 'right') {
         x -= this.width;
       }
       ctx.lineWidth = 1;

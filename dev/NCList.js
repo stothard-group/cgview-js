@@ -74,7 +74,7 @@
      */
     fill(intervals) {
       this._length = intervals.length;
-      if (intervals.length == 0) {
+      if (intervals.length === 0) {
           this.topList = [];
           return;
       }
@@ -87,7 +87,7 @@
 
       // Sort by overlap
       intervals.sort(function(a, b) {
-          if (start(a) != start(b))
+          if (start(a) !== start(b))
               return start(a) - start(b);
           else
               return end(b) - end(a);
@@ -96,7 +96,7 @@
       var curList = [];
       this.topList = curList;
       curList.push(intervals[0]);
-      if (intervals.length == 1) return;
+      if (intervals.length === 1) return;
       var curInterval, topSublist;
       for (var i = 1, len = intervals.length; i < len; i++) {
           curInterval = intervals[i];
@@ -109,7 +109,7 @@
           } else {
               //find the right sublist for this interval
               while (true) {
-                  if (0 == sublistStack.length) {
+                  if (0 === sublistStack.length) {
                       curList.push(curInterval);
                       break;
                   } else {
@@ -162,17 +162,17 @@
         i = this._binarySearch(list, stop, false, 'start')
       }
       while (i >= 0 && i < len &&
-        ( (direction == 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
+        ( (direction === 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
         skip = false
         if (list[i].crossesOrigin) {
-          if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) != -1) {
+          if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) !== -1) {
             skip = true;
           } else {
             this._runIntervalsCrossingOrigin.push(list[i].interval);
           }
         }
 
-        if (!skip && list[i].index % step == 0) {
+        if (!skip && list[i].index % step === 0) {
           callback.call(list[i].interval, list[i].interval);
         }
         if (list[i].sublist) {
@@ -257,7 +257,7 @@
         var result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
         var expected = expected.sort().join(', ');
         var testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
-        testOut += (result == expected) ? 'Pass' : 'FAIL' + ' - ' + result;
+        testOut += (result === expected) ? 'Pass' : 'FAIL' + ' - ' + result;
         console.log(testOut);
       }
 

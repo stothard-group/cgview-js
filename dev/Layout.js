@@ -91,15 +91,15 @@
       var backbone = viewer.backbone;
       var slotDivider = viewer.slotDivider;
       var dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-      if (position == 'inside') {
+      if (position === 'inside') {
         slots = slots.filter( slot => slot.inside );
-      } else if (position == 'outside') {
+      } else if (position === 'outside') {
         slots = slots.filter( slot => slot.outside );
       }
-      var nDividers = (dividerThickness == 0) ? 0 : slots.length;
+      var nDividers = (dividerThickness === 0) ? 0 : slots.length;
       var nSpaces = slots.length + nDividers;
       var space = 0;
-      if (position == 'both') {
+      if (position === 'both') {
         space += backbone.visible ? backbone.thickness : 0;
       }
       space += (nDividers * dividerThickness) + (nSpaces * slotDivider.spacing);
@@ -115,7 +115,7 @@
 
     _findSpace(visibleSlots, spaceType='min') {
       visibleSlots = visibleSlots || this.visibleSlots();
-      var findMinSpace = (spaceType == 'min');
+      var findMinSpace = (spaceType === 'min');
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var slotDivider = viewer.slotDivider;
@@ -407,7 +407,7 @@
      */
     updateLayout(force) {
       var viewer = this.viewer;
-      if (!force && this._savedZoomFactor == viewer._zoomFactor) {
+      if (!force && this._savedZoomFactor === viewer._zoomFactor) {
         return
       } else {
         this._savedZoomFactor = viewer._zoomFactor;
@@ -445,7 +445,7 @@
 
         // Calculate Divider dimensions
         var dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-        var spacingAndDividerThickness = (dividerThickness == 0) ? 0 : (dividerThickness + spacing);
+        var spacingAndDividerThickness = (dividerThickness === 0) ? 0 : (dividerThickness + spacing);
         if (slot.outside) {
           directRadius += residualSlotThickness + spacingAndDividerThickness;
           slotRadius = directRadius;
@@ -474,7 +474,7 @@
       var maxAllowedProportion = this.maxSlotThickness / backboneRadius;
       var slotProportionOfRadii = this.slotProportionOfRadii;
       if (slotProportionOfRadii.max > maxAllowedProportion) {
-        if (slotProportionOfRadii.min == slotProportionOfRadii.max) {
+        if (slotProportionOfRadii.min === slotProportionOfRadii.max) {
           proportionOfRadius = maxAllowedProportion;
         } else {
           // SCALE

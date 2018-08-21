@@ -64,7 +64,7 @@
     set string(value) {
       value = value.replace(/ +/g, '');
       var parts = value.split(',');
-      if (parts.length == 3) {
+      if (parts.length === 3) {
         this._family = parts[0];
         this._style = parts[1];
         this._size = Number(parts[2]);
@@ -87,7 +87,7 @@
      * @return {String} - Return the font as CSS usable string.
      */
     cssScaled(scale) {
-      if (scale && scale != 1) {
+      if (scale && scale !== 1) {
         return this._styleAsCss() + ' ' + CGV.pixel(this.size * scale) + 'px ' + this.family;
       } else {
         return this.css
@@ -140,20 +140,20 @@
      * @member {Boolean} - Get or set the font boldness.
      */
     get bold() {
-      return ( this.style == 'bold' || this.style == 'bold-italic')
+      return ( this.style === 'bold' || this.style === 'bold-italic')
     }
 
     set bold(value) {
       if (value) {
-        if (this.style == 'plain') {
+        if (this.style === 'plain') {
           this.style = 'bold';
-        } else if (this.style == 'italic') {
+        } else if (this.style === 'italic') {
           this.style = 'bold-italic';
         }
       } else {
-        if (this.style == 'bold') {
+        if (this.style === 'bold') {
           this.style = 'plain';
-        } else if (this.style == 'bold-italic') {
+        } else if (this.style === 'bold-italic') {
           this.style = 'italic';
         }
       }
@@ -163,20 +163,20 @@
      * @member {Boolean} - Get or set the font italics.
      */
     get italic() {
-      return ( this.style == 'italic' || this.style == 'bold-italic')
+      return ( this.style === 'italic' || this.style === 'bold-italic')
     }
 
     set italic(value) {
       if (value) {
-        if (this.style == 'plain') {
+        if (this.style === 'plain') {
           this.style = 'italic';
-        } else if (this.style == 'bold') {
+        } else if (this.style === 'bold') {
           this.style = 'bold-italic';
         }
       } else {
-        if (this.style == 'italic') {
+        if (this.style === 'italic') {
           this.style = 'plain';
-        } else if (this.style == 'bold-italic') {
+        } else if (this.style === 'bold-italic') {
           this.style = 'bold';
         }
       }
@@ -207,13 +207,13 @@
     }
 
     _styleAsCss() {
-      if (this.style == 'plain') {
+      if (this.style === 'plain') {
         return 'normal'
-      } else if (this.style == 'bold') {
+      } else if (this.style === 'bold') {
         return 'bold'
-      } else if (this.style == 'italic') {
+      } else if (this.style === 'italic') {
         return 'italic'
-      } else if (this.style == 'bold-italic') {
+      } else if (this.style === 'bold-italic') {
         return 'italic bold'
       } else {
         return ''
@@ -261,7 +261,7 @@
     for (var i = 0, len = map.length; i < len; i++) {
       font = map[i].font;
       text = map[i].text;
-      if (font != currentFont) {
+      if (font !== currentFont) {
         ctx.font = font;
         currentFont = font;
       }

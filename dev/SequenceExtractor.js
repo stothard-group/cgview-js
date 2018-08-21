@@ -104,11 +104,11 @@
       worker.postMessage(message);
       worker.onmessage = (e) => {
         var messageType = e.data.messageType;
-        if (messageType == 'progress') {
+        if (messageType === 'progress') {
           track.loadProgress = e.data.progress;
           viewer.layout.drawProgress();
         }
-        if (messageType == 'complete') {
+        if (messageType === 'complete') {
           track.loadProgress = 100;
           var featureDataArray = e.data.featureDataArray;
           console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsedTime(startTime) );
@@ -157,11 +157,11 @@
       worker.postMessage(message);
       worker.onmessage = (e) => {
         var messageType = e.data.messageType;
-        if (messageType == 'progress') {
+        if (messageType === 'progress') {
           track.loadProgress = e.data.progress;
           viewer.layout.drawProgress();
         }
-        if (messageType == 'complete') {
+        if (messageType === 'complete') {
           track.loadProgress = 100;
           var baseContent = e.data.baseContent;
           var data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
@@ -184,11 +184,11 @@
 
     createLegendItems(extractType) {
       var legends = {};
-      if (extractType == 'orfs') {
+      if (extractType === 'orfs') {
         legends = {
           'ORF': this.getLegendItem('ORF')
         }
-      } else if (extractType == 'start-stop-codons') {
+      } else if (extractType === 'start-stop-codons') {
         legends = {
           'start-codon': this.getLegendItem('start-codon'),
           'stop-codon': this.getLegendItem('stop-codon')
@@ -214,8 +214,8 @@
           item = legend.findLegendItemOrCreate('GC Content', 'black');
           break;
         case 'gc-skew':
-          var color = (sign == '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
-          var name = (sign == '+') ? 'GC Skew+' : 'GC Skew-';
+          var color = (sign === '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
+          var name = (sign === '+') ? 'GC Skew+' : 'GC Skew-';
           item = legend.findLegendItemOrCreate(name, color);
           break;
         default:
@@ -255,27 +255,27 @@
 
     // extractFeatures(options = {}) {
     //   var features = new CGV.CGArray();
-    //   if (options.sequence == 'start-stop-codons') {
+    //   if (options.sequence === 'start-stop-codons') {
     //     features = this.extractStartStops(options);
-    //   } else if (options.sequence == 'orfs') {
+    //   } else if (options.sequence === 'orfs') {
     //     features = this.extractORFs(options);
     //   }
     //   return features
     // }
 
     // generateFeatures(track, options) {
-    //   if (options.sequence == 'start-stop-codons') {
+    //   if (options.sequence === 'start-stop-codons') {
     //     features = this.generateStartStops(options);
-    //   } else if (options.sequence == 'orfs') {
+    //   } else if (options.sequence === 'orfs') {
     //     features = this.extractORFs(options);
     //   }
     // }
     //
     //
     // extractPlot(options = {}) {
-    //   if (options.sequence == 'gc-content') {
+    //   if (options.sequence === 'gc-content') {
     //     return this.extractBaseContentPlot('gc-content', options);
-    //   } else if (options.sequence == 'gc-skew') {
+    //   } else if (options.sequence === 'gc-skew') {
     //     return this.extractBaseContentPlot('gc-skew', options);
     //   }
     // }
@@ -304,7 +304,7 @@
     //   // i.e. half way between the current position and the last
     //   for (var i = 0, len = baseContent.positions.length; i < len; i++) {
     //     position = baseContent.positions[i];
-    //     if (i == 0) {
+    //     if (i === 0) {
     //       positions.push(1);
     //     } else {
     //       positions.push(position - step/2);
@@ -360,7 +360,7 @@
     //   // Min value becomes 0
     //   // Max value becomes 1
     //   // Average becomes 0.5
-    //   if (deviation == 'scale') {
+    //   if (deviation === 'scale') {
     //     scores = scores.map( (score) => {
     //       if (score >= average) {
     //         return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});

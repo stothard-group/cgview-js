@@ -53,7 +53,7 @@
     }
 
     set color(value) {
-      if (value.toString() == 'Color') {
+      if (value.toString() === 'Color') {
         this._color = value;
       } else {
         this._color = new CGV.Color(value);
@@ -85,7 +85,7 @@
      * @member {Number} - Set or get the backbone thickness. This is the unzoomed thickness.
      */
     set thickness(value) {
-      if (value != undefined) {
+      if (value !== undefined) {
         this._thickness = Number(value);
         this.viewer.layout && this.viewer.layout._adjustProportions();
       }

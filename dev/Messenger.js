@@ -68,7 +68,7 @@
      * @member {Boolean} - Returns true if the dialog is visible.
      */
     get visible() {
-      return (this.box.style('display') != 'none');
+      return (this.box.style('display') !== 'none');
     }
 
     /**

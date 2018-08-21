@@ -37,9 +37,9 @@
     }
 
     set backgroundColor(color) {
-      if (color == undefined) {
+      if (color === undefined) {
         this._backgroundColor = new CGV.Color('white');
-      } else if (color.toString() == 'Color') {
+      } else if (color.toString() === 'Color') {
         this._backgroundColor = color;
       } else {
         this._backgroundColor = new CGV.Color(color);

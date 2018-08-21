@@ -91,7 +91,7 @@
     }
 
     set strand(value) {
-      if (value == '-' || Number(value) == -1) {
+      if (value === '-' || Number(value) === -1) {
         this._strand = -1;
       } else {
         this._strand = 1;
@@ -111,13 +111,11 @@
     }
 
     isDirect() {
-      // return this.strand == 'direct'
-      return this.strand == 1
+      return this.strand === 1
     }
 
     isReverse() {
-      // return this.strand == 'reverse'
-      return this.strand == -1
+      return this.strand === -1
     }
 
     /**
@@ -202,9 +200,9 @@
     }
 
     get directionalDecoration() {
-      if (this.decoration == 'arrow') {
-        return this.strand == 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
-      } else if (this.decoration == 'score') {
+      if (this.decoration === 'arrow') {
+        return this.strand === 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
+      } else if (this.decoration === 'score') {
         return 'arc'
       } else {
         return this.decoration
@@ -220,8 +218,8 @@
     }
 
     set legendItem(value) {
-      if (this.legendItem && value == undefined) { return }
-      if (value && value.toString() == 'LegendItem') {
+      if (this.legendItem && value === undefined) { return }
+      if (value && value.toString() === 'LegendItem') {
         this._legendItem  = value
       } else {
         this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
@@ -302,13 +300,13 @@
     // - _proportionOfThickness is not 1
     // TODO: Not using _radiusAdjustment yet
     adjustedRadius(radius, slotThickness) {
-      if (this.legendItem.decoration == 'score') {
+      if (this.legendItem.decoration === 'score') {
         //FIXME: does not take into account proportionOfThickness and radiusAdjustment for now
         return radius - (slotThickness / 2) + (this.score * slotThickness / 2)
       } else {
-        if (this._radiusAdjustment == 0 && this._proportionOfThickness == 1) {
+        if (this._radiusAdjustment === 0 && this._proportionOfThickness === 1) {
           return radius
-        } else if (this._radiusAdjustment == 0) {
+        } else if (this._radiusAdjustment === 0) {
           return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
         } else {
           return radius
@@ -317,7 +315,7 @@
     }
 
     adjustedWidth(width) {
-      if (this.legendItem.decoration == 'score') {
+      if (this.legendItem.decoration === 'score') {
         return this.score * width;
       } else {
         return this._proportionOfThickness * width;
@@ -332,10 +330,10 @@
     tracks(term) {
       var tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
-        if (track.type == 'feature') {
-          if ( (track.contents.from == 'source' && track.contents.extract.contains(this.source)) ||
-               (track.contents.from == 'type' && track.contents.extract.contains(this.type)) ||
-               (track.contents.from == 'sequence' && this.extractedFromSequence && track.features().contains(this)) ) {
+        if (track.type === 'feature') {
+          if ( (track.contents.from === 'source' && track.contents.extract.contains(this.source)) ||
+               (track.contents.from === 'type' && track.contents.extract.contains(this.type)) ||
+               (track.contents.from === 'sequence' && this.extractedFromSequence && track.features().contains(this)) ) {
             tracks.push(track);
           }
         }
@@ -404,7 +402,7 @@
       // (e.g. if the feature source changed, it may now belong to a different track)
       this.viewer.tracks().each( (i, track) => {
         if ( track.features().contains(this) ||
-             (track.contents.from == 'source' && track.contents.extract == this.source) ) {
+             (track.contents.from === 'source' && track.contents.extract === this.source) ) {
           track.refresh();
         }
       });

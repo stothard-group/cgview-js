@@ -41,7 +41,7 @@
     }
 
     set color(value) {
-      if (value === undefined || value.toString() == 'Color') {
+      if (value === undefined || value.toString() === 'Color') {
         this._color = value;
       } else {
         this._color = new CGV.Color(value);
@@ -82,7 +82,7 @@
     }
 
     set font(value) {
-      if (value.toString() == 'Font') {
+      if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -132,7 +132,7 @@
      * @param {Label|Array} labels - The Label(s) to remove from the set.
      */
     removeLabels(labels) {
-      labels = (labels.toString() == 'CGArray') ? labels : new CGV.CGArray(labels);
+      labels = (labels.toString() === 'CGArray') ? labels : new CGV.CGArray(labels);
       this._labels = new CGV.CGArray(
         this._labels.filter( (i) => { return !labels.contains(i) })
       );
@@ -247,7 +247,7 @@
       // var visibleRange = this._canvas.visibleRangeForRadius(radius);
       var visibleRange = this._visibleRange;
       if (visibleRange) {
-        if (visibleRange.start == 1 && visibleRange.stop == this.sequence.length) {
+        if (visibleRange.start === 1 && visibleRange.stop === this.sequence.length) {
           labelArray = this._labels;
         } else {
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
@@ -261,7 +261,7 @@
     _onlyFavoriteLabels(labels) {
       labels = labels || this._labels;
       var nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite )
-      if (nonFavoriteIndex != -1) {
+      if (nonFavoriteIndex !== -1) {
         return labels.slice(0, nonFavoriteIndex);
       } else {
         return labels
@@ -271,7 +271,7 @@
     _sortByPriority(labels) {
       labels = labels || this._labels;
       labels.sort( (a,b) => {
-        if (b.feature.favorite == a.feature.favorite) {
+        if (b.feature.favorite === a.feature.favorite) {
           return b.feature.length - a.feature.length
         } else {
           return a.feature.favorite ? -1 : 1
@@ -281,7 +281,7 @@
     }
 
     draw(reverseRadius, directRadius) {
-      if (this._labels.length != this._labelsNCList.length) {
+      if (this._labels.length !== this._labelsNCList.length) {
         this.refresh();
       }
 

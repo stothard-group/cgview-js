@@ -48,7 +48,7 @@
     }
 
     set color(value) {
-      if (value.toString() == 'Color') {
+      if (value.toString() === 'Color') {
         this._color = value;
       } else {
         this._color = new CGV.Color(value);
@@ -87,7 +87,7 @@
      * @member {Number} - Set or get the array of divider radii.
      */
     set radii(value) {
-      if (value && value.toString() == 'CGArray') {
+      if (value && value.toString() === 'CGArray') {
         this._radii = value;
       }
     }
@@ -113,7 +113,7 @@
     }
 
     draw() {
-      if (!this.visible || this.thickness == 0) { return }
+      if (!this.visible || this.thickness === 0) { return }
       for (var i = 0, len = this._radii.length; i < len; i++) {
         var radius = this._radii[i]
         this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);

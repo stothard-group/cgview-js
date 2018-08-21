@@ -134,7 +134,7 @@
      * @return {Boolean}
      */
     isFullCircle() {
-      return (this.length == this.sequenceLength)
+      return (this.length === this.sequenceLength)
     }
 
     /**

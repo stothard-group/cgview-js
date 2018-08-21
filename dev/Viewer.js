@@ -192,7 +192,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     get colorPicker() {
-      if (this._colorPicker == undefined) {
+      if (this._colorPicker === undefined) {
         // Create Color Picker
         var colorPickerId = this.containerId + '-color-picker';
         this._container.append('div')
@@ -343,7 +343,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     removeFeatures(features) {
-      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
       this._features = new CGV.CGArray(
         this._features.filter( (f) => { return !features.contains(f) })
       );

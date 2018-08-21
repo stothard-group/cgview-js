@@ -95,7 +95,7 @@
         from: this.from
       }
       // Extract
-      if (this.extract.length == 1) {
+      if (this.extract.length === 1) {
         json.extract = this.extract[0];
       } else {
         json.extract = [];

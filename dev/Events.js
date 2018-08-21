@@ -88,10 +88,10 @@
       if (callback === undefined) {
         if (namespace) {
           if (type) {
-            handlers[type] = handlers[type].filter(function(h) { return h.namespace != namespace; });
+            handlers[type] = handlers[type].filter(function(h) { return h.namespace !== namespace; });
           } else {
             Object.keys(handlers).forEach(function(key) {
-              handlers[key] = handlers[key].filter(function(h) { return h.namespace != namespace; });
+              handlers[key] = handlers[key].filter(function(h) { return h.namespace !== namespace; });
             });
           }
         } else {
@@ -99,7 +99,7 @@
         }
       } else {
         // Remove specific callback
-        handlers[type] = handlers[type].filter(function(h) { return h.callback != callback; });
+        handlers[type] = handlers[type].filter(function(h) { return h.callback !== callback; });
       }
       this._handlers = handlers;
     }
@@ -124,7 +124,7 @@
       if (Array.isArray(handlers[type])) {
         handlers[type].forEach(function(handler) {
           if (namespace) {
-            if (handler.namespace == namespace) handler.callback.call(null, object);
+            if (handler.namespace === namespace) handler.callback.call(null, object);
           } else {
             handler.callback.call(null, object);
           }
@@ -137,7 +137,7 @@
   /** @ignore */
 
   var checkType = function(type) {
-    if (typeof type != 'string') {
+    if (typeof type !== 'string') {
       throw new Error('Type must be a string');
     }
   }

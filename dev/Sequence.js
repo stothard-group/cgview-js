@@ -102,15 +102,15 @@
     }
 
     static baseCalculation(type, seq) {
-      if (type == 'gc-content') {
+      if (type === 'gc-content') {
         return Sequence.calcGCContent(seq);
-      } else if (type == 'gc-skew') {
+      } else if (type === 'gc-skew') {
         return Sequence.calcGCSkew(seq);
       }
     }
 
     static calcGCContent(seq) {
-      if (seq.length == 0) { return  0.5 }
+      if (seq.length === 0) { return  0.5 }
       var g = CGV.Sequence.count(seq, 'g');
       var c = CGV.Sequence.count(seq, 'c');
       return ( (g + c) / seq.length )
@@ -119,7 +119,7 @@
     static calcGCSkew(seq) {
       var g = CGV.Sequence.count(seq, 'g');
       var c = CGV.Sequence.count(seq, 'c');
-      if ( (g + c) == 0 ) { return 0.5 }
+      if ( (g + c) === 0 ) { return 0.5 }
       // Gives value between -1 and 1
       var value = (g - c) / (g + c);
       // Scale to a value between 0 and 1
@@ -232,7 +232,7 @@
     }
 
     set color(value) {
-      if (value.toString() == 'Color') {
+      if (value.toString() === 'Color') {
         this._color = value;
       } else {
         this._color = new CGV.Color(value);
@@ -247,7 +247,7 @@
     }
 
     set font(value) {
-      if (value.toString() == 'Font') {
+      if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -386,9 +386,9 @@
       var re = new RegExp(pattern, 'g');
       var ranges = [];
       var match, start;
-      var seq = (strand == 1) ? this.seq : this.reverseComplement();
-      while ( (match = re.exec(seq)) != null) {
-        start = (strand == 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
+      var seq = (strand === 1) ? this.seq : this.reverseComplement();
+      while ( (match = re.exec(seq)) !== null) {
+        start = (strand === 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
         ranges.push( new CGV.CGRange(this, start, start + match[0].length - 1 ) );
         re.lastIndex = match.index + 1;
       }
@@ -407,13 +407,13 @@
       };
       var rf;
       features.each( (i, feature) => {
-        if (feature.strand == -1) {
+        if (feature.strand === -1) {
           rf = (this.length - feature.stop + 1) % 3;
-          if (rf == 0) { rf = 3; }
+          if (rf === 0) { rf = 3; }
           featuresByRF['rf_minus_' + rf].push(feature);
         } else {
           rf = feature.start % 3;
-          if (rf == 0) { rf = 3; }
+          if (rf === 0) { rf = 3; }
           featuresByRF['rf_plus_' + rf].push(feature);
         }
       });
@@ -489,24 +489,24 @@
     //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
     //   // SETUP
     //   features.each( (i, feature) => {
-    //     if (feature.strand == -1) {
+    //     if (feature.strand === -1) {
     //       rf = (this.length - feature.stop + 1) % 3;
-    //       if (rf == 0) { rf = 3; }
+    //       if (rf === 0) { rf = 3; }
     //       feature.rf = rf;
     //     } else {
     //       rf = feature.start % 3;
-    //       if (rf == 0) { rf = 3; }
+    //       if (rf === 0) { rf = 3; }
     //       feature.rf = rf;
     //     }
     //   });
     //   startTime = new Date().getTime();
     //   var rf2 = {
-    //     rf_plus_1: new CGV.CGArray( features.filter( (f) => { return f.rf == 1  && f.strand == 1})),
-    //     rf_plus_2: new CGV.CGArray( features.filter( (f) => { return f.rf == 2  && f.strand == 1})),
-    //     rf_plus_3: new CGV.CGArray( features.filter( (f) => { return f.rf == 3  && f.strand == 1})),
-    //     rf_minus_1: new CGV.CGArray( features.filter( (f) => { return f.rf == 1  && f.strand == -1})),
-    //     rf_minus_2: new CGV.CGArray( features.filter( (f) => { return f.rf == 2  && f.strand == -1})),
-    //     rf_minus_3: new CGV.CGArray( features.filter( (f) => { return f.rf == 3  && f.strand == -1}))
+    //     rf_plus_1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === 1})),
+    //     rf_plus_2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === 1})),
+    //     rf_plus_3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === 1})),
+    //     rf_minus_1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === -1})),
+    //     rf_minus_2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === -1})),
+    //     rf_minus_3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === -1}))
     //   };
     //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsedTime(startTime) );
     //   return rf2;

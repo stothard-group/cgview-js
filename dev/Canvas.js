@@ -202,11 +202,11 @@
      * Clear the viewer canvas
      */
     clear(layerName = 'map') {
-      if (layerName == 'all') {
+      if (layerName === 'all') {
         for (var i = 0, len = this.layerNames.length; i < len; i++) {
           this.clear(this.layerNames[i]);
         }
-      } else if (layerName == 'background') {
+      } else if (layerName === 'background') {
         var ctx = this.context('background');
         ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
         ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
@@ -264,7 +264,7 @@
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc', showShading) {
-      if (decoration == 'none') { return }
+      if (decoration === 'none') { return }
       var scale = this.scale;
       var ctx = this.context(layer);
       var settings = this.viewer.settings;
@@ -275,7 +275,7 @@
       showShading = (showShading === undefined) ? settings.showShading : showShading;
 
 
-      if (decoration == 'arc') {
+      if (decoration === 'arc') {
         if (showShading) {
           var shadowWidth = width * shadowFraction;
           // Main Arc
@@ -310,7 +310,7 @@
       }
 
       // Looks like we're drawing an arrow
-      if (decoration == 'clockwise-arrow' || decoration == 'counterclockwise-arrow') {
+      if (decoration === 'clockwise-arrow' || decoration === 'counterclockwise-arrow') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
         // var arrowHeadLengthPixels = width / 3;
@@ -326,9 +326,9 @@
         }
 
         // Set up drawing direction
-        var arcStartBp = (decoration == 'clockwise-arrow') ? start : stop;
-        var arrowTipBp = (decoration == 'clockwise-arrow') ? stop : start;
-        var direction = (decoration == 'clockwise-arrow') ? 1 : -1;
+        var arcStartBp = (decoration === 'clockwise-arrow') ? start : stop;
+        var arrowTipBp = (decoration === 'clockwise-arrow') ? stop : start;
+        var direction = (decoration === 'clockwise-arrow') ? 1 : -1;
 
         // Calculate important points
         var halfWidth = width / 2;
@@ -343,10 +343,10 @@
           // Main Arrow
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, radius + halfMainWidth, arcStartBp, arcStopBp, direction == -1);
+          this.arcPath(layer, radius + halfMainWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
@@ -354,20 +354,20 @@
           var highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(highlightPt.x, highlightPt.y);
-          this.arcPath(layer, radius + halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          this.arcPath(layer, radius + halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
           // Shadow
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction == -1);
+          this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
@@ -375,10 +375,10 @@
           // Draw arc with arrow head
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction == -1);
+          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-          this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction == 1, 'noMoveTo');
+          this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
         }
@@ -399,15 +399,15 @@
       var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (this.sequence.length / 1000)) {
         var p2 = this.pointFor(stopBp, radius);
-        if (startType == 'lineTo') {
+        if (startType === 'lineTo') {
           var p1 = this.pointFor(startBp, radius);
           ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-        } else if (startType == 'moveTo') {
+        } else if (startType === 'moveTo') {
           var p1 = this.pointFor(startBp, radius);
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
-        } else if (startType == 'noMoveTo'){
+        } else if (startType === 'noMoveTo'){
           ctx.lineTo(p2.x, p2.y);
         }
       } else {
@@ -466,7 +466,7 @@
     //TODO if undefined, see if radius is visible
     visibleRangeForRadius(radius, margin = 0) {
       var ranges = this.visibleRangesForRadius(radius, margin);
-      if (ranges.length == 2) {
+      if (ranges.length === 2) {
         // return ranges
         return new CGV.CGRange(this.sequence, ranges[0], ranges[1])
       } else if (ranges.length > 2) {

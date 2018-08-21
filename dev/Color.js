@@ -85,7 +85,7 @@
      * @member {Number} - Get or set the opacity (alpha) of the color.
      */
     get opacity() {
-      return (this._opacity == undefined) ? 1 : this._opacity;
+      return (this._opacity === undefined) ? 1 : this._opacity;
     }
 
     set opacity(value) {
@@ -167,9 +167,9 @@
       var rgb1 = this.rgba;
       var rgb2 = color.rgba;
       if (ignoreAlpha) {
-        return (rgb1.r == rgb2.r) && (rgb1.g == rgb2.g) && (rgb1.b == rgb2.b)
+        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b)
       } else {
-        return (rgb1.r == rgb2.r) && (rgb1.g == rgb2.g) && (rgb1.b == rgb2.b) && (rgb1.a == rgb2.a)
+        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b) && (rgb1.a === rgb2.a)
       }
     }
 
@@ -289,7 +289,7 @@
    */
   Color._validateRgbNumber = function(value) {
     value = Number(value)
-    if (value == NaN) {
+    if (value === NaN) {
       value = 0
     } else if (value > 255) {
       value = 255
@@ -365,12 +365,12 @@
     var H, S, V, C;
     V = Math.max(r, g, b);
     C = V - Math.min(r, g, b);
-    H = (C == 0 ? null :
-         V == r ? (g - b) / C + (g < b ? 6 : 0) :
-         V == g ? (b - r) / C + 2 :
+    H = (C === 0 ? null :
+         V === r ? (g - b) / C + (g < b ? 6 : 0) :
+         V === g ? (b - r) / C + 2 :
                   (r - g) / C + 4);
     H = (H % 6) * 60;
-    S = C == 0 ? 0 : C / V;
+    S = C === 0 ? 0 : C / V;
     return { h: H, s: S, v: V };
   }
 
@@ -448,7 +448,7 @@
     var max = Math.max(r, g, b), min = Math.min(r, g, b);
     var h, s, l = (max + min) / 2;
 
-    if (max == min) {
+    if (max === min) {
       h = s = 0; // achromatic
     } else {
       var d = max - min;
@@ -485,7 +485,7 @@
     var l = hsl.l;
 		var r, g, b;
 
-		if (s == 0) {
+		if (s === 0) {
 			r = g = b = l; // achromatic
 		} else {
 			function hue2rgb(p, q, t) {

@@ -131,8 +131,8 @@
     }
 
     set legendItemPositive(value) {
-      if (this.legendItemPositive && value == undefined) { return }
-      if (value && value.toString() == 'LegendItem') {
+      if (this.legendItemPositive && value === undefined) { return }
+      if (value && value.toString() === 'LegendItem') {
         this._legendItemPositive  = value
       } else {
         this._legendItemPositive  = this.viewer.legend.findLegendItemOrCreate(value);
@@ -148,8 +148,8 @@
     }
 
     set legendItemNegative(value) {
-      if (this.legendItemNegative && value == undefined) { return }
-      if (value && value.toString() == 'LegendItem') {
+      if (this.legendItemNegative && value === undefined) { return }
+      if (value && value.toString() === 'LegendItem') {
         this._legendItemNegative  = value
       } else {
         this._legendItemNegative  = this.viewer.legend.findLegendItemOrCreate(value);
@@ -200,7 +200,7 @@
     tracks(term) {
       var tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
-        if (track.plot == this) {
+        if (track.plot === this) {
           tracks.push(track);
         }
       });
@@ -220,7 +220,7 @@
 
     scoreForPosition(bp) {
       var index = CGV.indexOfValue(this.positions, bp);
-      if (index == 0 && bp < this.positions[index]) {
+      if (index === 0 && bp < this.positions[index]) {
         return undefined
       } else {
         return this.scores[index]
@@ -229,7 +229,7 @@
 
     draw(canvas, slotRadius, slotThickness, fast, range) {
       // var startTime = new Date().getTime();
-      if (this.colorNegative.rgbaString == this.colorPositive.rgbaString) {
+      if (this.colorNegative.rgbaString === this.colorPositive.rgbaString) {
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
       } else {
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive, 'positive');
@@ -253,14 +253,14 @@
       var startIndex = CGV.indexOfValue(positions, range.start, false);
       var stopIndex = CGV.indexOfValue(positions, range.stop, false);
       // Change stopIndex to last position if stop is between 1 and first position
-      if (stopIndex == 0 && range.stop < positions[stopIndex]) {
+      if (stopIndex === 0 && range.stop < positions[stopIndex]) {
         stopIndex = positions.length - 1;
       }
-      var startPosition = startIndex == 0 ? positions[startIndex] : range.start;
+      var startPosition = startIndex === 0 ? positions[startIndex] : range.start;
       var stopPosition = range.stop;
       // console.log(startPosition + '..' + stopPosition)
 
-      // var startScore = startIndex == 0 ? this.baseline : scores[startIndex];
+      // var startScore = startIndex === 0 ? this.baseline : scores[startIndex];
       var startScore = scores[startIndex];
 
       startScore = this._keepPoint(startScore, orientation) ? startScore : this.baseline;
@@ -293,7 +293,7 @@
       }
       positions.eachFromRange(startPosition, stopPosition, step, (i) => {
         // Handle Origin in middle of range
-        if (i == 0 && startIndex != 0) {
+        if (i === 0 && startIndex !== 0) {
           canvas.arcPath('map', savedR, savedPosition, sequenceLength, false, 'lineTo');
           savedPosition = 1;
           savedR = baselineRadius;
@@ -313,7 +313,7 @@
       });
 
       // Change stopPosition if between 1 and first position
-      if (stopIndex == positions.length - 1 && stopPosition < positions[0]) {
+      if (stopIndex === positions.length - 1 && stopPosition < positions[0]) {
         stopPosition = sequenceLength;
       }
       // Finish drawing plot to stop position
@@ -335,11 +335,11 @@
 
 
     _keepPoint(score, orientation) {
-      if (orientation == undefined) {
+      if (orientation === undefined) {
         return true
-      } else if (orientation == 'positive' && score > this.baseline) {
+      } else if (orientation === 'positive' && score > this.baseline) {
         return true
-      } else if (orientation == 'negative' && score < this.baseline ) {
+      } else if (orientation === 'negative' && score < this.baseline ) {
         return true
       }
       return false
@@ -399,7 +399,7 @@
     //
     //
       // positions.eachFromRange(startPosition, stopPosition, step, (i) => {
-        // if (i == 0) {
+        // if (i === 0) {
         //   lastScore = this.baseline;
         //   savedPosition = 1;
         //   savedR = baselineRadius;

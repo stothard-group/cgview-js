@@ -363,7 +363,7 @@
     };
 
     get visible() {
-      return d3.select(this.container).style('visibility') == 'visible';
+      return d3.select(this.container).style('visibility') === 'visible';
     }
 
     set visible(value) {
@@ -399,7 +399,7 @@
     el = document.createElementNS('http://www.w3.org/2000/svg', el);
     for (var key in attrs)
       el.setAttribute(key, attrs[key]);
-    if (Object.prototype.toString.call(children) != '[object Array]') children = [children];
+    if (Object.prototype.toString.call(children) !== '[object Array]') children = [children];
     var i = 0, len = (children[0] && children.length) || 0;
     for (; i < len; i++)
       el.appendChild(children[i]);

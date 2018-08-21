@@ -61,7 +61,7 @@
      * @member {String} - Get the position of the slot in relation to the backbone
      */
     get position() {
-      if (this.track.position == 'both') {
+      if (this.track.position === 'both') {
         return (this.isDirect() ? 'outside' : 'inside')
       } else {
         return this.track.position
@@ -72,14 +72,14 @@
      * @member {Boolean} - Is the slot position inside the backbone
      */
     get inside() {
-      return this.position == 'inside'
+      return this.position === 'inside'
     }
 
     /**
      * @member {Boolean} - Is the slot position outside the backbone
      */
     get outside() {
-      return this.position == 'outside'
+      return this.position === 'outside'
     }
 
     /**
@@ -120,11 +120,11 @@
     }
 
     isDirect() {
-      return this.strand == 'direct'
+      return this.strand === 'direct'
     }
 
     isReverse() {
-      return this.strand == 'reverse'
+      return this.strand === 'reverse'
     }
 
     get hasFeatures() {
@@ -279,7 +279,7 @@
      * @param {Feature|Array} features - The Feature(s) to remove.
      */
     removeFeatures(features) {
-      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
       this._features = new CGV.CGArray(
         this._features.filter( (f) => { return !features.contains(f) })
       );

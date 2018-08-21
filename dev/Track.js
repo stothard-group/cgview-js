@@ -160,9 +160,9 @@
      * @member {Number} - Return the number of features or plot points contained in this track.
      */
     get count() {
-      if (this.type == 'plot') {
+      if (this.type === 'plot') {
         return (this.plot) ? this.plot.length : 0
-      } else if (this.type == 'feature') {
+      } else if (this.type === 'feature') {
         return this.features().length
       }
     }
@@ -201,7 +201,7 @@
     uniqueFeatures(term) {
       var features = new CGV.CGArray();
       for (var i=0, len=this._features.length; i < len; i++) {
-        if (this._features[i].tracks().length == 1) {
+        if (this._features[i].tracks().length === 1) {
           features.push(this._features[i]);
         }
       }
@@ -214,7 +214,7 @@
      * @param {Feature|Array} features - The Feature(s) to remove.
      */
     removeFeatures(features) {
-      features = (features.toString() == 'CGArray') ? features : new CGV.CGArray(features);
+      features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
       this._features = new CGV.CGArray(
         this._features.filter( (f) => { return !features.contains(f) })
       );
@@ -238,11 +238,11 @@
     refresh() {
       this._features = new CGV.CGArray();
       this._plot = undefined;
-      if (this.contents.from == 'sequence') {
+      if (this.contents.from === 'sequence') {
         this.extractFromSequence();
-      } else if (this.type == 'feature') {
+      } else if (this.type === 'feature') {
         this.updateFeatures();
-      } else if (this.type == 'plot') {
+      } else if (this.type === 'plot') {
         this.updatePlot();
       }
       this.updateSlots();
@@ -258,7 +258,7 @@
     }
 
     updateFeatures() {
-      if (this.contents.from == 'source' || this.contents.from == 'type') {
+      if (this.contents.from === 'source' || this.contents.from === 'type') {
         this.viewer.features().each( (i, feature) => {
           if (this.contents.extract.contains(feature[this.contents.from])) {
             this._features.push(feature);
@@ -268,10 +268,10 @@
     }
 
     updatePlot() {
-      if (this.contents.from == 'source') {
+      if (this.contents.from === 'source') {
         // Plot with particular Source
         this.viewer.plots().find( (plot) => {
-          if (plot.source == this.contents.extract[0]) {
+          if (plot.source === this.contents.extract[0]) {
             this._plot = plot;
           }
         });
@@ -279,9 +279,9 @@
     }
 
     updateSlots() {
-      if (this.type == 'feature') {
+      if (this.type === 'feature') {
         this.updateFeatureSlots();
-      } else if (this.type == 'plot') {
+      } else if (this.type === 'plot') {
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();
@@ -290,7 +290,7 @@
 
     updateFeatureSlots() {
       this._slots = new CGV.CGArray();
-      if (this.readingFrame == 'separated') {
+      if (this.readingFrame === 'separated') {
         var features = this.sequence.featuresByReadingFrame(this.features());
         // Direct Reading Frames
         for (var rf of [1, 2, 3]) {
@@ -303,7 +303,7 @@
           slot.replaceFeatures(features['rf_minus_' + rf]);
         }
       } else {
-        if (this.strand == 'separated') {
+        if (this.strand === 'separated') {
           var features = this.featuresByStrand();
           // Direct Slot
           var slot = new CGV.Slot(this, {strand: 'direct'});
@@ -311,7 +311,7 @@
           // Reverse Slot
           var slot = new CGV.Slot(this, {strand: 'reverse'});
           slot.replaceFeatures(features.reverse)
-        } else if (this.strand == 'combined') {
+        } else if (this.strand === 'combined') {
           // Combined Slot
           var slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(this.features());
@@ -325,7 +325,7 @@
       features.direct = new CGV.CGArray();
       features.reverse = new CGV.CGArray();
       this.features().each( (i, feature) => {
-        if (feature.strand == -1) {
+        if (feature.strand === -1) {
           features.reverse.push(feature);
         } else {
           features.direct.push(feature);

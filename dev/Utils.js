@@ -45,7 +45,7 @@
    * @return {Boolean}
    */
   CGV.validate = function(value, validOptions) {
-    if (validOptions.indexOf(value) != -1) {
+    if (validOptions.indexOf(value) !== -1) {
       return true
     } else {
       console.error("The value '" + value + "' is not one of the following: " +  validOptions.join(', '))
@@ -61,7 +61,7 @@
    * @return {Boolean}
    */
   CGV.booleanify = function(value) {
-    if (value == 'false' || value == 'False' || value == undefined || value == false) {
+    if (value === 'false' || value === 'False' || value === undefined || value === false) {
       return false
     } else {
       return true
@@ -104,7 +104,7 @@
 
   CGV.scaleResolution = function(canvas, ratio){
     // upscale the canvas if the two ratios don't match
-    if (ratio != 1) {
+    if (ratio !== 1) {
 
       var oldWidth  = canvas.width;
       var oldHeight = canvas.height;
@@ -136,7 +136,7 @@
   //   - The center of the circle is always (0,0)
   CGV.angleFromPosition = function(x, y) {
     var angle = 1/2*Math.PI;
-    if (x != 0) {
+    if (x !== 0) {
       angle = Math.atan(Math.abs(y / x));
     }
     if (y >= 0 && x >= 0) {
@@ -345,19 +345,19 @@
       // T2 is always a start angle and T1 is always an end angle.
       // So if the very first angle is a T1 we want to move it to the end of the list of angles
       var firstKeys = Object.keys(angles[0]);
-      if (firstKeys.length == 1 && firstKeys[0] == 't1') {
+      if (firstKeys.length === 1 && firstKeys[0] === 't1') {
         angles.push(angles.shift());
       } 
-      if (firstKeys.length == 2) {
+      if (firstKeys.length === 2) {
         angles.push({t1: angles[0].t1});
         angles[0].t1 = undefined;
       }
       angles = angles.map( (a) => {
         var r = []
-        if (a.t1 != undefined) {
+        if (a.t1 !== undefined) {
           r.push(a.t1)
         }
-        if (a.t2 != undefined) {
+        if (a.t2 !== undefined) {
           r.push(a.t2)
         }
         return r
@@ -560,7 +560,7 @@
   //  * @return {Boolean}
   //  */
   // JSV.isNumeric = function (n) {
-  //   return isFinite(n) && parseFloat(n) == n;
+  //   return isFinite(n) && parseFloat(n) === n;
   // }
   //
   // /** 
@@ -588,16 +588,16 @@
   CGV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
                                    phase1, phase2, phase3) {
     var colors = [];
-    if (len == undefined)      len    = 50;
-    if (center == undefined)   center = 200;
-    if (width == undefined)    width  = 30;
-    if (alpha == undefined)    alpha  = 1;
-    if (freq1 == undefined)    freq1  = 2.4;
-    if (freq2 == undefined)    freq2  = 2.4;
-    if (freq3 == undefined)    freq3  = 2.4;
-    if (phase1 == undefined)   phase1 = 0;
-    if (phase2 == undefined)   phase2 = 2;
-    if (phase3 == undefined)   phase3 = 4;
+    if (len === undefined)      len    = 50;
+    if (center === undefined)   center = 200;
+    if (width === undefined)    width  = 30;
+    if (alpha === undefined)    alpha  = 1;
+    if (freq1 === undefined)    freq1  = 2.4;
+    if (freq2 === undefined)    freq2  = 2.4;
+    if (freq3 === undefined)    freq3  = 2.4;
+    if (phase1 === undefined)   phase1 = 0;
+    if (phase2 === undefined)   phase2 = 2;
+    if (phase3 === undefined)   phase3 = 4;
 
     for (var i = 0; i < len; ++i) {
       var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);

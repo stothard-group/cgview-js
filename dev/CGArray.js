@@ -13,7 +13,7 @@
    * If mulitple elements are provided, they will be added to the new CGArray.
    */
   var CGArray = function() {
-    if ( (arguments.length == 1) && (Array.isArray(arguments[0])) ) {
+    if ( (arguments.length === 1) && (Array.isArray(arguments[0])) ) {
       for (var i = 0, len = arguments[0].length; i < len; i++) {
         this.push(arguments[0][i]);
       }
@@ -53,7 +53,7 @@
    * @return {CGArray}
    */
   CGArray.prototype.attr = function(attributes) {
-    if ( (arguments.length == 1) && (typeof attributes == 'object') ) {
+    if ( (arguments.length === 1) && (typeof attributes === 'object') ) {
       var keys = Object.keys(attributes);
       var key_len = keys.length;
       for (var set_i=0, set_len=this.length; set_i < set_len; set_i++) {
@@ -61,11 +61,11 @@
           this[set_i][keys[key_i]] = attributes[keys[key_i]];
         }
       }
-    } else if (arguments.length == 2) {
+    } else if (arguments.length === 2) {
       for (var i=0, len=this.length; i < len; i++) {
         this[i][arguments[0]] = arguments[1];
       }
-    } else if (attributes != undefined) {
+    } else if (attributes !== undefined) {
       throw new Error('attr(): must be 2 arguments or a single object');
     }
     return this;
@@ -173,7 +173,7 @@
    */
   CGArray.prototype.remove = function(element) {
     var self = this;
-    self = new CGArray( self.filter(function(i) { return i != element }) );
+    self = new CGArray( self.filter(function(i) { return i !== element }) );
     return self;
   }
 
@@ -182,7 +182,7 @@
    * @return {Boolean}
    */
   CGArray.prototype.empty = function() {
-    return this.length == 0;
+    return this.length === 0;
   }
 
   /**
@@ -265,21 +265,21 @@
    * @return {CGArray|or|Element}
    */
   CGArray.prototype.get = function(term) {
-    // if (arguments.length == 0) {
-    if (term == undefined) {
+    // if (arguments.length === 0) {
+    if (term === undefined) {
       return this;
     } else if (Number.isInteger(term)) {
       return this[term-1];
-    } else if (typeof term == 'string') {
+    } else if (typeof term === 'string') {
       if ( term.match(/^cgv-id-/) ) {
-        return this.filter(function(element) { return element.cgvID == term; })[0];
+        return this.filter(function(element) { return element.cgvID === term; })[0];
       // } else if ( term.match(/^label-id-/) ) {
-      //   return this.filter(function(element) { return element.label_id() == term; })[0];
+      //   return this.filter(function(element) { return element.label_id() === term; })[0];
       } else {
-        return this.filter(function(element) { return element.id && element.id.toLowerCase() == term.toLowerCase(); })[0];
+        return this.filter(function(element) { return element.id && element.id.toLowerCase() === term.toLowerCase(); })[0];
       }
     } else if (Array.isArray(term)) {
-      var filtered = this.filter(function(element) { return term.some(function(id) { return element.id == id; }); });
+      var filtered = this.filter(function(element) { return term.some(function(id) { return element.id === id; }); });
       var cgarray = new CGArray();
       cgarray.push.apply(cgarray, filtered);
       return cgarray;
@@ -295,11 +295,11 @@
    * @return {Boolean}
    */
   CGArray.prototype.equals = function(set) {
-    if (set.toString() != 'CGArray' && !Array.isArray(set)) { return false }
+    if (set.toString() !== 'CGArray' && !Array.isArray(set)) { return false }
     var setA = this.unique();
     var setB = set.unique();
     var equals = true
-    if (setA.length != setB.length) {
+    if (setA.length !== setB.length) {
       return false
     }
     setA.forEach(function(a) {

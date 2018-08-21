@@ -77,7 +77,7 @@
       var margin = 5;
       var pos;
       var viewerRect = {top: 0, left: 0};
-      if (this.viewer._container.style('position') != 'fixed') {
+      if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
       var originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
@@ -97,7 +97,7 @@
 
     findLegendItemByName(name) {
       if (!name) { return }
-      return this._items.find( (i) => { return name.toLowerCase() == i.name.toLowerCase() });
+      return this._items.find( (i) => { return name.toLowerCase() === i.name.toLowerCase() });
     }
 
     findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
