@@ -117,8 +117,8 @@
     }
   }
 
-  CGV.elapsedTime = function(old_time) {
-    var elapsed = (new Date().getTime()) - old_time;
+  CGV.elapsedTime = function(oldTime) {
+    var elapsed = (new Date().getTime()) - oldTime;
     return elapsed + ' ms';
   }
 

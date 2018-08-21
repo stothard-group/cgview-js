@@ -294,7 +294,7 @@
       var viewer = this.viewer;
       var backbone = viewer.backbone;
       var canvas = this.canvas;
-      var startTime = new Date().getTime();
+      // var startTime = new Date().getTime();
 
       viewer.clear('map');
       viewer.clear('ui');
@@ -325,10 +325,10 @@
       // Progess
       this.drawProgress();
       // Debug
-      if (viewer.debug) {
-        viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
-        viewer.debug.draw(canvas.context('ui'));
-      }
+      // if (viewer.debug) {
+      //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
+      //   viewer.debug.draw(canvas.context('ui'));
+      // }
       if (canvas._testDrawRange) {
         var ctx = canvas.context('captions')
         ctx.strokeStyle = 'grey';
@@ -344,8 +344,14 @@
     }
 
     drawFast() {
+      var startTime = new Date().getTime();
       this.drawMapWithoutSlots();
       this.drawAllSlots(true);
+      // Debug
+      if (this.viewer.debug) {
+        this.viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
+        this.viewer.debug.draw(this.canvas.context('ui'));
+      }
     }
 
     drawFull() {
