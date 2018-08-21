@@ -90,7 +90,7 @@
 
 
     toJSON() {
-      var json = {
+      let json = {
         type: this.type,
         from: this.from
       }

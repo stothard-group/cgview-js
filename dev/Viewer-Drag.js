@@ -8,7 +8,7 @@
    * Initialize Spectra Viewer Dragging.
    */
   CGV.Viewer.prototype.initializeDragging = function() {
-    var self = this;
+    let self = this;
     self._drag = d3.drag()
       .on('start', dragstart)
       .on('drag',  dragging)
@@ -24,15 +24,15 @@
     }
 
     function dragging() {
-      var start_time = new Date().getTime();
+      let start_time = new Date().getTime();
       // // Restore selected peaks
       // // if (self.selection.empty()) self.selection._elements = current_selected_elements;
       // self.translate_axis('x', d3.event.dx);
       // self.translate_axis('y', d3.event.dy);
       domain_x = self.scale.x.domain();
       domain_y = self.scale.y.domain();
-      var dx = CGV.pixel(d3.event.dx);
-      var dy = CGV.pixel(d3.event.dy);
+      let dx = CGV.pixel(d3.event.dx);
+      let dy = CGV.pixel(d3.event.dy);
 
 
       self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])

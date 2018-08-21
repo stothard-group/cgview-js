@@ -117,18 +117,18 @@
 
     _adjust_size() {
       // Minimum buffer between dialog and edges of container (times 2)
-      var buffer = 50;
-      var wrapper_width = this._wrapper.offsetWidth;
-      var wrapper_height = this._wrapper.offsetHeight;
-      var width = this.width;
-      var height = this.height;
+      let buffer = 50;
+      let wrapper_width = this._wrapper.offsetWidth;
+      let wrapper_height = this._wrapper.offsetHeight;
+      let width = this.width;
+      let height = this.height;
 
       if (this.height > wrapper_height - buffer) height = wrapper_height - buffer;
       if (this.width > wrapper_width - buffer) width = wrapper_width - buffer;
 
-      var header_height = 20;
-      var footer_height = 20
-      var content_height = height - header_height - footer_height;
+      let header_height = 20;
+      let footer_height = 20
+      let content_height = height - header_height - footer_height;
 
       this.box
         .style('width', width + 'px')

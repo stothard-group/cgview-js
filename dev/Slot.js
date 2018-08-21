@@ -171,7 +171,7 @@
      * @return {Boolean}
      */
     containsRadius(radius) {
-      var halfthickness = this.thickness / 2;
+      let halfthickness = this.thickness / 2;
       return (radius >= (this.radius - halfthickness)) && (radius <= (this.radius + halfthickness))
     }
 
@@ -185,9 +185,9 @@
     }
 
     findLargestFeatureLength() {
-      var length = 0;
-      var nextLength;
-      for (var i = 0, len = this._features.length; i < len; i++) {
+      let length = 0;
+      let nextLength;
+      for (let i = 0, len = this._features.length; i < len; i++) {
         nextLength = this._features[i].length;
         if (nextLength > length) {
           length = nextLength
@@ -197,11 +197,11 @@
     }
 
     clear() {
-      var range = this._visibleRange;
+      let range = this._visibleRange;
       if (range) {
-        var slotRadius = this.radius;
-        var slotThickness = this.thickness;
-        var ctx = this.canvas.context('map');
+        let slotRadius = this.radius;
+        let slotThickness = this.thickness;
+        let ctx = this.canvas.context('map');
         ctx.globalCompositeOperation = "destination-out"; // The existing content is kept where it doesn't overlap the new shape.
         this.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
         ctx.globalCompositeOperation = "source-over"; // Default
@@ -209,29 +209,29 @@
     }
 
     highlight(color='#FFB') {
-      var range = this._visibleRange;
+      let range = this._visibleRange;
       if (range && this.visible) {
-        var slotRadius = this.radius;
-        var slotThickness = this.thickness;
+        let slotRadius = this.radius;
+        let slotThickness = this.thickness;
         this.canvas.drawArc('background', range.start, range.stop, slotRadius, color, slotThickness);
       }
     }
 
     // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
-      var slotRadius = this.radius;
-      var slotThickness = this.thickness;
-      var range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+      let slotRadius = this.radius;
+      let slotThickness = this.thickness;
+      let range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
       this._visibleRange = range;
       if (range) {
-        var start = range.start;
-        var stop = range.stop;
+        let start = range.start;
+        let stop = range.stop;
         if (this.hasFeatures) {
-          var featureCount = this._features.length;
+          let featureCount = this._features.length;
           if (!range.isFullCircle()) {
             featureCount = this._featureNCList.count(start, stop);
           }
-          var step = 1;
+          let step = 1;
           // Change step if drawing fast and there are too many features
           if (fast && featureCount > this.layout.fastFeaturesPerSlot) {
             // Use a step that is rounded up to the nearest power of 2
@@ -239,10 +239,10 @@
             // means that as we zoom, the visible features remain consistent.
             // e.g. When zooming all the features visible at a step of 16
             // will be visible when the step is 8 and so on.
-            var initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
+            let initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
             step = CGV.base2(initialStep);
           }
-          var showShading = fast ? false : undefined;
+          let showShading = fast ? false : undefined;
           // When drawing shadows, draw in reverse order to make them look better
           if (this.viewer.settings.showShading && this.isDirect()) { step *= -1 }
           // Draw Features
@@ -252,7 +252,7 @@
 
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
-            var index = this.viewer._slots.indexOf(this);
+            let index = this.viewer._slots.indexOf(this);
             this.viewer.debug.data.n['slot_' + index] = featureCount;
           }
         } else if (this.hasPlot) {
@@ -262,13 +262,13 @@
     }
 
     drawProgress(progress) {
-      var canvas = this.canvas;
-      var slotRadius = this.radius;
-      var slotThickness = this.thickness;
-      var range = this._visibleRange;
+      let canvas = this.canvas;
+      let slotRadius = this.radius;
+      let slotThickness = this.thickness;
+      let range = this._visibleRange;
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
-        var thickness = slotThickness * progress / 100;
+        let thickness = slotThickness * progress / 100;
         canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness, 'arc', false);
       }
     }

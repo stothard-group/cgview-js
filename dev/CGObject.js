@@ -89,7 +89,7 @@
 
   }
 
-  var generateID = function() {
+  let generateID = function() {
     return 'cgv-id-' + cgvID++;
   }
 

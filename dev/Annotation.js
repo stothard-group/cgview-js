@@ -144,10 +144,10 @@
     }
 
     refreshLabelWidths() {
-      var labelFonts = this._labels.map( (i) => { return i.font.css});
-      var labelTexts = this._labels.map( (i) => { return i.name});
-      var labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
-      for (var i = 0, len = this._labels.length; i < len; i++) {
+      let labelFonts = this._labels.map( (i) => { return i.font.css});
+      let labelTexts = this._labels.map( (i) => { return i.name});
+      let labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
+      for (let i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];
       }
     }
@@ -157,17 +157,17 @@
     // unless the the whole feature is not visible.
     _calculatePositions(labels) {
       labels = labels || this._labels;
-      var visibleRange = this._visibleRange;
-      var label, feature, containsStart, containsStop, radians;
-      var featureLengthDownStream, featureLengthUpStream;
-      var sequence = this.sequence;
-      var scale = this.canvas.scale;
-      for (var i = 0, len = labels.length; i < len; i++) {
+      let visibleRange = this._visibleRange;
+      let label, feature, containsStart, containsStop, radians;
+      let featureLengthDownStream, featureLengthUpStream;
+      let sequence = this.sequence;
+      let scale = this.canvas.scale;
+      for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
-        var testType;
+        let testType;
         if (containsStart && containsStop) {
           label.bp = label.bpDefault;
           label.lineAttachment = label.lineAttachmentDefault;
@@ -179,8 +179,8 @@
           } else {
             featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
             featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
-            var halfVisibleRangeLength = visibleRange.length / 2;
-            var center = visibleRange.start + halfVisibleRangeLength;
+            let halfVisibleRangeLength = visibleRange.length / 2;
+            let center = visibleRange.start + halfVisibleRangeLength;
             if (featureLengthUpStream > featureLengthDownStream) {
               label.bp = center + halfVisibleRangeLength * featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream);
             } else {
@@ -199,18 +199,18 @@
     // Calculates non overlapping rects for priority labels
     _calculatePriorityLabelRects(labels) {
       labels = labels || this._labels;
-      var canvas = this.canvas;
-      var scale = canvas.scale;
-      var label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
-      var radius = this._outerRadius + this._labelLineMarginInner;
-      var placedRects = new CGV.CGArray();
-      for (var i = 0, len = labels.length; i < len; i++) {
+      let canvas = this.canvas;
+      let scale = canvas.scale;
+      let label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
+      let radius = this._outerRadius + this._labelLineMarginInner;
+      let placedRects = new CGV.CGArray();
+      for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         lineLength = this.labelLineLength;
         do {
-          var outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
-          var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+          let outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
+          let rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
           lineLength += label.height;
@@ -227,25 +227,25 @@
     //  - Zoom level changes
     _calculateLabelRects(labels) {
       labels = labels || this._labels;
-      var canvas = this.canvas;
-      var scale = canvas.scale;
-      var label, bp, x, y;
-      var radius = this._outerRadius + this._labelLineMarginInner;
-      for (var i = 0, len = labels.length; i < len; i++) {
+      let canvas = this.canvas;
+      let scale = canvas.scale;
+      let label, bp, x, y;
+      let radius = this._outerRadius + this._labelLineMarginInner;
+      for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
-        // var innerPt = canvas.pointFor(bp, radius);
-        var outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
-        var rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+        // let innerPt = canvas.pointFor(bp, radius);
+        let outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
+        let rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
     }
 
     visibleLabels(radius) {
-      var labelArray = new CGV.CGArray();
-      // var visibleRange = this._canvas.visibleRangeForRadius(radius);
-      var visibleRange = this._visibleRange;
+      let labelArray = new CGV.CGArray();
+      // let visibleRange = this._canvas.visibleRangeForRadius(radius);
+      let visibleRange = this._visibleRange;
       if (visibleRange) {
         if (visibleRange.start === 1 && visibleRange.stop === this.sequence.length) {
           labelArray = this._labels;
@@ -260,7 +260,7 @@
     // Labels must already be sorted so favorite are first
     _onlyFavoriteLabels(labels) {
       labels = labels || this._labels;
-      var nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite )
+      let nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite )
       if (nonFavoriteIndex !== -1) {
         return labels.slice(0, nonFavoriteIndex);
       } else {
@@ -291,7 +291,7 @@
       this._outerRadius = directRadius;
 
       // Find Labels that are within the visible range and calculate bounds
-      var possibleLabels = this.visibleLabels(directRadius);
+      let possibleLabels = this.visibleLabels(directRadius);
 
       possibleLabels = this._sortByPriority(possibleLabels);
       if (this.onlyDrawFavorites) {
@@ -299,17 +299,17 @@
       }
       this._calculatePositions(possibleLabels);
 
-      var priorityLabels = possibleLabels.slice(0, this.priorityMax);
-      var remainingLabels = possibleLabels.slice(this.priorityMax);
+      let priorityLabels = possibleLabels.slice(0, this.priorityMax);
+      let remainingLabels = possibleLabels.slice(this.priorityMax);
 
       this._calculatePriorityLabelRects(priorityLabels);
       this._calculateLabelRects(remainingLabels);
 
       // Remove overlapping labels
-      var labelRects = priorityLabels.map( (p) => {return p.rect});
+      let labelRects = priorityLabels.map( (p) => {return p.rect});
       this._visibleLabels = priorityLabels;
-      for (var i = 0, len = remainingLabels.length; i < len; i++) {
-        label = remainingLabels[i];
+      for (let i = 0, len = remainingLabels.length; i < len; i++) {
+        let label = remainingLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
@@ -317,23 +317,23 @@
       }
 
       // Draw nonoverlapping labels
-      var canvas = this.canvas;
-      var ctx = canvas.context('map');
-      var label, rect;
+      let canvas = this.canvas;
+      let ctx = canvas.context('map');
+      let label, rect;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw label lines first so that label text will draw over them
-      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
+      for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
-        var color = this.color || label.feature.color;
+        let color = this.color || label.feature.color;
 
         // canvas.radiantLine('map', label.bp,
         //   directRadius + this._labelLineMarginInner,
         //   this.labelLineLength + this._labelLineMarginOuter,
           // this._labelLineWidth, color.rgbaString, this.lineCap);
-        var innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
-        var outerPt = label.attachementPt;
+        let innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
+        let outerPt = label.attachementPt;
         ctx.beginPath();
         ctx.moveTo(innerPt.x, innerPt.y);
         ctx.lineTo(outerPt.x, outerPt.y);
@@ -344,11 +344,11 @@
       }
 
       // Draw label text
-      var backgroundColor = this.viewer.settings.backgroundColor.copy();
+      let backgroundColor = this.viewer.settings.backgroundColor.copy();
       backgroundColor.opacity = 0.75;
-      for (var i = 0, len = this._visibleLabels.length; i < len; i++) {
+      for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
-        var color = this.color || label.feature.color;
+        let color = this.color || label.feature.color;
 
         ctx.fillStyle = backgroundColor.rgbaString;
         rect = label.rect;

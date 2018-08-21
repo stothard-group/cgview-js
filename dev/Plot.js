@@ -24,7 +24,7 @@
       if (data.legendNegative) {
         this.legendItemNegative  = data.legendNegative;
       }
-      var plotID = viewer.plots().indexOf(this) + 1;
+      let plotID = viewer.plots().indexOf(this) + 1;
       if (!this.legendItemPositive && !this.legendItemNegative) {
         this.legendItem  = 'Plot-' + plotID;
       } else if (!this.legendItemPositive) {
@@ -198,7 +198,7 @@
     }
 
     tracks(term) {
-      var tracks = new CGV.CGArray();
+      let tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.plot === this) {
           tracks.push(track);
@@ -219,7 +219,7 @@
     }
 
     scoreForPosition(bp) {
-      var index = CGV.indexOfValue(this.positions, bp);
+      let index = CGV.indexOfValue(this.positions, bp);
       if (index === 0 && bp < this.positions[index]) {
         return undefined
       } else {
@@ -228,7 +228,7 @@
     }
 
     draw(canvas, slotRadius, slotThickness, fast, range) {
-      // var startTime = new Date().getTime();
+      // let startTime = new Date().getTime();
       if (this.colorNegative.rgbaString === this.colorPositive.rgbaString) {
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
       } else {
@@ -240,53 +240,53 @@
 
     // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast, range, color, orientation) {
-      var ctx = canvas.context('map');
-      var scale = canvas.scale;
-      var positions = this.positions;
-      var scores = this.scores;
+      let ctx = canvas.context('map');
+      let scale = canvas.scale;
+      let positions = this.positions;
+      let scores = this.scores;
       // This is the difference in radial pixels required before a new arc is draw
-      var radialDiff = fast ? 1 : 0.5;
-      // var radialDiff = 0.5;
+      let radialDiff = fast ? 1 : 0.5;
+      // let radialDiff = 0.5;
 
-      var sequenceLength = this.viewer.sequence.length;
+      let sequenceLength = this.viewer.sequence.length;
 
-      var startIndex = CGV.indexOfValue(positions, range.start, false);
-      var stopIndex = CGV.indexOfValue(positions, range.stop, false);
+      let startIndex = CGV.indexOfValue(positions, range.start, false);
+      let stopIndex = CGV.indexOfValue(positions, range.stop, false);
       // Change stopIndex to last position if stop is between 1 and first position
       if (stopIndex === 0 && range.stop < positions[stopIndex]) {
         stopIndex = positions.length - 1;
       }
-      var startPosition = startIndex === 0 ? positions[startIndex] : range.start;
-      var stopPosition = range.stop;
+      let startPosition = startIndex === 0 ? positions[startIndex] : range.start;
+      let stopPosition = range.stop;
       // console.log(startPosition + '..' + stopPosition)
 
-      // var startScore = startIndex === 0 ? this.baseline : scores[startIndex];
-      var startScore = scores[startIndex];
+      // let startScore = startIndex === 0 ? this.baseline : scores[startIndex];
+      let startScore = scores[startIndex];
 
       startScore = this._keepPoint(startScore, orientation) ? startScore : this.baseline;
 
       ctx.beginPath();
 
       // Calculate baseline Radius
-      var baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+      let baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
 
       // Move to the first point
-      var startPoint = canvas.pointFor(startPosition, baselineRadius);
+      let startPoint = canvas.pointFor(startPosition, baselineRadius);
       ctx.moveTo(startPoint.x, startPoint.y);
 
-      var savedR = baselineRadius + (startScore - this.baseline) * slotThickness;
-      var savedPosition = startPosition;
-      var lastScore = startScore;
+      let savedR = baselineRadius + (startScore - this.baseline) * slotThickness;
+      let savedPosition = startPosition;
+      let lastScore = startScore;
 
-      var currentR, score, currentPosition;
-      var crossingBaseline = false;
-      var drawNow = false;
-      var step = 1;
+      let currentR, score, currentPosition;
+      let crossingBaseline = false;
+      let drawNow = false;
+      let step = 1;
       if (fast) {
         // When drawing fast, use a step value scaled to base-2
-        var positionsLength = positions.countFromRange(startPosition, stopPosition);
-        var maxPositions = 4000;
-        var initialStep = positionsLength / maxPositions;
+        let positionsLength = positions.countFromRange(startPosition, stopPosition);
+        let maxPositions = 4000;
+        let initialStep = positionsLength / maxPositions;
         if (initialStep > 1) {
           step = CGV.base2(initialStep);
         }
@@ -318,7 +318,7 @@
       }
       // Finish drawing plot to stop position
       canvas.arcPath('map', savedR, savedPosition, stopPosition, false, 'lineTo');
-      var endPoint = canvas.pointFor(stopPosition, baselineRadius);
+      let endPoint = canvas.pointFor(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       // Draw plot anticlockwise back to start along baseline
       canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');

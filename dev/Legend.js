@@ -74,15 +74,15 @@
 
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
-      var margin = 5;
-      var pos;
-      var viewerRect = {top: 0, left: 0};
+      let margin = 5;
+      let pos;
+      let viewerRect = {top: 0, left: 0};
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      var originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
-      var originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
-      var legendWidth = this.width / CGV.pixel(1);
+      let originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
+      let originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
+      let legendWidth = this.width / CGV.pixel(1);
       if (/-left$/.exec(this.position)) {
         pos = {x: originX + legendWidth + margin, y: originY}
       } else {
@@ -101,10 +101,10 @@
     }
 
     findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
-      var item = this.findLegendItemByName(name);
+      let item = this.findLegendItemByName(name);
       if (!item) {
         if (!color) {
-          var currentColors = this._items.map( (i) => { return i.swatchColor });
+          let currentColors = this._items.map( (i) => { return i.swatchColor });
           // color = CGV.Color.getColor(currentColors);
           color = CGV.Color.getColor(currentColors).rgbaString;
         }
@@ -121,9 +121,9 @@
     // (i.e. the returned LegendItems are not being used for any features (or plots) not provided.
     // This is useful for determining of LegendItems should be deleted after deleting features.
     uniqueLegendsItemsFor(options={}) {
-      var selectedFeatures = new Set(options.features || []);
-      var selectedPlots = new Set(options.plots || []);
-      var uniqueItems = new Set();
+      let selectedFeatures = new Set(options.features || []);
+      let selectedPlots = new Set(options.plots || []);
+      let uniqueItems = new Set();
 
       selectedFeatures.forEach( (f) => {
         uniqueItems.add(f.legend);
@@ -133,13 +133,13 @@
         uniqueItems.add(p.legendItemNegative);
       });
 
-      var nonSelectedFeatures = new Set();
+      let nonSelectedFeatures = new Set();
       this.viewer.features().each( (i, f) => {
         if (!selectedFeatures.has(f)) {
           nonSelectedFeatures.add(f);
         }
       });
-      var nonSelectedPlots = new Set();
+      let nonSelectedPlots = new Set();
       this.viewer.plots().each( (i, p) => {
         if (!selectedPlots.has(p)) {
           nonSelectedPlots.add(p);
@@ -164,18 +164,18 @@
 
     draw() {
       if (!this.visible) { return }
-      var ctx = this.ctx;
+      let ctx = this.ctx;
       this.fillBackground();
-      var textX, swatchX;
+      let textX, swatchX;
       ctx.lineWidth = 1;
       ctx.textBaseline = 'top';
-      for (var i = 0, len = this._items.length; i < len; i++) {
-        var legendItem = this._items[i];
+      for (let i = 0, len = this._items.length; i < len; i++) {
+        let legendItem = this._items[i];
         if (!legendItem.visible) { continue }
-        var y = legendItem.textY();
-        var legendItemHeight = legendItem.height;
-        var drawSwatch = legendItem.drawSwatch;
-        var swatchWidth = legendItem.swatchWidth;
+        let y = legendItem.textY();
+        let legendItemHeight = legendItem.height;
+        let drawSwatch = legendItem.drawSwatch;
+        let swatchWidth = legendItem.swatchWidth;
         ctx.font = legendItem.font.css;
         ctx.textAlign = legendItem.textAlignment;
         if (drawSwatch) {
@@ -186,9 +186,9 @@
             ctx.strokeStyle = 'grey';
           }
           // Draw box around Swatch depending on state
-          var swatchX = legendItem.swatchX();
+          let swatchX = legendItem.swatchX();
           if (legendItem.swatchSelected || legendItem.swatchHighlighted) {
-            var border = CGV.pixel(2)
+            let border = CGV.pixel(2)
             ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
           }
           // Draw Swatch

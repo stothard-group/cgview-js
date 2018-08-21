@@ -54,9 +54,9 @@
      * @param {Function} callback Function to call when event is triggered
      */
     on(event, callback) {
-      var handlers = this._handlers;
+      let handlers = this._handlers;
       checkType(event);
-      var type = parseEvent(event)
+      let type = parseEvent(event)
       if ( !handlers[type] ) handlers[type] = [];
       handlers[type].push( new Handler(event, callback) );
     }
@@ -80,10 +80,10 @@
      * @param {Function} callback Specfic function to remove
      */
     off(event, callback) {
-      var handlers = this._handlers;
+      let handlers = this._handlers;
       checkType(event);
-      var type = parseEvent(event);
-      var namespace = parseNamespace(event);
+      let type = parseEvent(event);
+      let namespace = parseNamespace(event);
       // If no callback is supplied remove all of them
       if (callback === undefined) {
         if (namespace) {
@@ -117,10 +117,10 @@
      * @param {Object} object Object to be passed back to 'on'.
      */
     trigger(event, object) {
-      var handlers = this._handlers;
+      let handlers = this._handlers;
       checkType(event);
-      var type = parseEvent(event);
-      var namespace = parseNamespace(event);
+      let type = parseEvent(event);
+      let namespace = parseNamespace(event);
       if (Array.isArray(handlers[type])) {
         handlers[type].forEach(function(handler) {
           if (namespace) {
@@ -136,23 +136,23 @@
 
   /** @ignore */
 
-  var checkType = function(type) {
+  let checkType = function(type) {
     if (typeof type !== 'string') {
       throw new Error('Type must be a string');
     }
   }
 
-  var Handler = function(event, callback) {
+  let Handler = function(event, callback) {
     this.callback = callback;
     this.event_type = parseEvent(event);
     this.namespace = parseNamespace(event);
   }
 
-  var parseEvent = function(event) {
+  let parseEvent = function(event) {
     return event.replace(/\..*/, '');
   }
 
-  var parseNamespace = function(event) {
+  let parseNamespace = function(event) {
     result = event.match(/\.(.*)/);
     return result ? result[1] : undefined
   }

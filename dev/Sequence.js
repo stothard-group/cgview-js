@@ -45,9 +45,9 @@
     //////////////////////////////////////////////////////////////////////////
     // TODO: Take into account lower case letters
     static complement(seq) {
-      var compSeq = ''
-      var char, compChar;
-      for (var i = 0, len = seq.length; i < len; i++) {
+      let compSeq = ''
+      let char, compChar;
+      for (let i = 0, len = seq.length; i < len; i++) {
         char = seq.charAt(i);
         switch (char) {
           case 'A':
@@ -111,17 +111,17 @@
 
     static calcGCContent(seq) {
       if (seq.length === 0) { return  0.5 }
-      var g = CGV.Sequence.count(seq, 'g');
-      var c = CGV.Sequence.count(seq, 'c');
+      let g = CGV.Sequence.count(seq, 'g');
+      let c = CGV.Sequence.count(seq, 'c');
       return ( (g + c) / seq.length )
     }
 
     static calcGCSkew(seq) {
-      var g = CGV.Sequence.count(seq, 'g');
-      var c = CGV.Sequence.count(seq, 'c');
+      let g = CGV.Sequence.count(seq, 'g');
+      let c = CGV.Sequence.count(seq, 'c');
       if ( (g + c) === 0 ) { return 0.5 }
       // Gives value between -1 and 1
-      var value = (g - c) / (g + c);
+      let value = (g - c) / (g + c);
       // Scale to a value between 0 and 1
       return  0.5 + (value / 2);
     }
@@ -140,9 +140,9 @@
      * @return {String}
      */
     static random(length) {
-      var seq = '';
-      var num;
-      for (var i = 0; i < length; i++) {
+      let seq = '';
+      let num;
+      for (let i = 0; i < length; i++) {
         num = Math.floor(Math.random() * 4)
         switch (num % 4) {
           case 0:
@@ -339,7 +339,7 @@
      * @return {String}
      */
     forRange(range) {
-      var seq;
+      let seq;
       if (this.seq) {
         if (range.spansOrigin()) {
           seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
@@ -355,9 +355,9 @@
 
     // FAKE method to get sequence
     _fakeSequenceForRange(range) {
-      var seq = '';
-      var bp = range.start;
-      for (var i = 0, len = range.length; i < len; i++) {
+      let seq = '';
+      let bp = range.start;
+      for (let i = 0, len = range.length; i < len; i++) {
         switch (bp % 4) {
           case 0:
             seq += 'A';
@@ -383,10 +383,10 @@
      * @return {Array)
      */
     findPattern(pattern, strand = 1) {
-      var re = new RegExp(pattern, 'g');
-      var ranges = [];
-      var match, start;
-      var seq = (strand === 1) ? this.seq : this.reverseComplement();
+      let re = new RegExp(pattern, 'g');
+      let ranges = [];
+      let match, start;
+      let seq = (strand === 1) ? this.seq : this.reverseComplement();
       while ( (match = re.exec(seq)) !== null) {
         start = (strand === 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
         ranges.push( new CGV.CGRange(this, start, start + match[0].length - 1 ) );
@@ -397,7 +397,7 @@
 
 
     featuresByReadingFrame(features) {
-      var featuresByRF = {
+      let featuresByRF = {
         rf_plus_1: new CGV.CGArray(),
         rf_plus_2: new CGV.CGArray(),
         rf_plus_3: new CGV.CGArray(),
@@ -405,7 +405,7 @@
         rf_minus_2: new CGV.CGArray(),
         rf_minus_3: new CGV.CGArray()
       };
-      var rf;
+      let rf;
       features.each( (i, feature) => {
         if (feature.strand === -1) {
           rf = (this.length - feature.stop + 1) % 3;
@@ -428,18 +428,18 @@
 
     draw() {
       if (!this.visible) { return }
-      var ctx = this.canvas.context('map');
-      var scale = this.canvas.scale;
-      var backbone = this.viewer.backbone;
-      var pixelsPerBp = backbone.pixelsPerBp();
-      var seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
+      let ctx = this.canvas.context('map');
+      let scale = this.canvas.scale;
+      let backbone = this.viewer.backbone;
+      let pixelsPerBp = backbone.pixelsPerBp();
+      let seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
       if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return }
 
-      var scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
+      let scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
 
-      var radius = CGV.pixel(backbone.zoomedRadius);
-      var range = backbone.visibleRange;
-      var seq, complement;
+      let radius = CGV.pixel(backbone.zoomedRadius);
+      let range = backbone.visibleRange;
+      let seq, complement;
       if (range) {
         if (this.seq) {
           seq = this.forRange(range);
@@ -448,17 +448,17 @@
           seq = this._emptySequence(range.length);
           complement = this._emptySequence(range.length);
         }
-        var bp = range.start;
+        let bp = range.start;
         ctx.save();
         ctx.fillStyle = this.color.rgbaString;
         ctx.font = this.font.cssScaled(scaleFactor);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        var radiusDiff = CGV.pixel(this.bpSpacing / 2 + this.bpMargin) * scaleFactor;
-        for (var i = 0, len = range.length; i < len; i++) {
-          var origin = this.canvas.pointFor(bp, radius + radiusDiff);
+        let radiusDiff = CGV.pixel(this.bpSpacing / 2 + this.bpMargin) * scaleFactor;
+        for (let i = 0, len = range.length; i < len; i++) {
+          let origin = this.canvas.pointFor(bp, radius + radiusDiff);
           ctx.fillText(seq[i], origin.x, origin.y);
-          var origin = this.canvas.pointFor(bp, radius - radiusDiff);
+          origin = this.canvas.pointFor(bp, radius - radiusDiff);
           ctx.fillText(complement[i], origin.x, origin.y);
           bp++;
         }
@@ -483,9 +483,9 @@
 
 
     // testRF(features) {
-    //   var startTime, rf;
+    //   let startTime, rf;
     //   startTime = new Date().getTime();
-    //   var rf1 = this.featuresByReadingFrame(features);
+    //   let rf1 = this.featuresByReadingFrame(features);
     //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
     //   // SETUP
     //   features.each( (i, feature) => {
@@ -500,7 +500,7 @@
     //     }
     //   });
     //   startTime = new Date().getTime();
-    //   var rf2 = {
+    //   let rf2 = {
     //     rf_plus_1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === 1})),
     //     rf_plus_2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === 1})),
     //     rf_plus_3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === 1})),

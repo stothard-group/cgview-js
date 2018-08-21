@@ -42,9 +42,9 @@
      * Splits intervals that span the Origin of cicular sequences
      */
     _normalize(intervals) {
-      var interval;
-      var nomalizedIntervals = []
-      for (var i = 0, len = intervals.length; i < len; i++) {
+      let interval;
+      let nomalizedIntervals = []
+      for (let i = 0, len = intervals.length; i < len; i++) {
         interval = intervals[i];
         if (interval.start <= interval.stop) {
           nomalizedIntervals.push( {interval: interval, index: i});
@@ -78,9 +78,9 @@
           this.topList = [];
           return;
       }
-      var start = this.start;
-      var end = this.end;
-      var sublist = this.sublist;
+      let start = this.start;
+      let end = this.end;
+      let sublist = this.sublist;
 
       intervals = this._normalize(intervals);
       this.intervals = intervals;
@@ -92,13 +92,13 @@
           else
               return end(b) - end(a);
       });
-      var sublistStack = [];
-      var curList = [];
+      let sublistStack = [];
+      let curList = [];
       this.topList = curList;
       curList.push(intervals[0]);
       if (intervals.length === 1) return;
-      var curInterval, topSublist;
-      for (var i = 1, len = intervals.length; i < len; i++) {
+      let curInterval, topSublist;
+      for (let i = 1, len = intervals.length; i < len; i++) {
           curInterval = intervals[i];
           //if this interval is contained in the previous interval,
           if (end(curInterval) < end(intervals[i - 1])) {
@@ -151,9 +151,9 @@
     }
 
     _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
-      var skip;
-      var len = list.length;
-      var i, direction;
+      let skip;
+      let len = list.length;
+      let i, direction;
       if (step > 0) {
         direction = 1;
         i = this._binarySearch(list, start, true, 'end')
@@ -206,7 +206,7 @@
      * @return {Number}
      */
     count(start, stop, step) {
-      var count = 0;
+      let count = 0;
       this.run(start, stop, step, (i) => {
         count++
       });
@@ -221,7 +221,7 @@
      * @return {Array}
      */
     find(start, stop, step) {
-      var overlaps = [];
+      let overlaps = [];
       this.run(start, stop, step, (i) => {
         overlaps.push(i);
       });
@@ -230,9 +230,9 @@
 
 
     _binarySearch(data, search_value, upper, getter) {
-      var min_index = -1;
-      var max_index = data.length;
-      var current_index, current_value;
+      let min_index = -1;
+      let max_index = data.length;
+      let current_index, current_value;
 
       while (max_index - min_index > 1) {
         current_index = (min_index + max_index) / 2 | 0;
@@ -254,14 +254,14 @@
      */
     static test() {
       function testInterval(nc, start, stop, expected) {
-        var result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
+        let result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
         var expected = expected.sort().join(', ');
-        var testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
+        let testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
         testOut += (result === expected) ? 'Pass' : 'FAIL' + ' - ' + result;
         console.log(testOut);
       }
 
-      var intervals = [
+      let intervals = [
         {name: 'A', start: 1, stop: 20},
         {name: 'B', start: 10, stop: 15},
         {name: 'C', start: 10, stop: 20},
@@ -275,7 +275,7 @@
         {name: 'K', start: 95, stop: 2},
         {name: 'L', start: 92, stop: 50}
       ]
-      var nc = new CGV.NCList(intervals, { circularLength: 100 });
+      let nc = new CGV.NCList(intervals, { circularLength: 100 });
 
       testInterval(nc, 10, 20, ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'L']);
       testInterval(nc, 40, 85, ['F', 'G', 'L']);

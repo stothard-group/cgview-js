@@ -199,8 +199,8 @@
      * @return {CGArray}
      */
     uniqueFeatures(term) {
-      var features = new CGV.CGArray();
-      for (var i=0, len=this._features.length; i < len; i++) {
+      let features = new CGV.CGArray();
+      for (let i=0, len=this._features.length; i < len; i++) {
         if (this._features[i].tracks().length === 1) {
           features.push(this._features[i]);
         }
@@ -249,7 +249,7 @@
     }
 
     extractFromSequence() {
-      var sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      let sequenceExtractor = this.viewer.sequence.sequenceExtractor;
       if (sequenceExtractor) {
         sequenceExtractor.extractTrackData(this, this.contents.extract[0], this.contents.options);
       } else {
@@ -291,29 +291,29 @@
     updateFeatureSlots() {
       this._slots = new CGV.CGArray();
       if (this.readingFrame === 'separated') {
-        var features = this.sequence.featuresByReadingFrame(this.features());
+        let features = this.sequence.featuresByReadingFrame(this.features());
         // Direct Reading Frames
-        for (var rf of [1, 2, 3]) {
-          var slot = new CGV.Slot(this, {strand: 'direct'});
+        for (let rf of [1, 2, 3]) {
+          let slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(features['rf_plus_' + rf]);
         }
         // Revers Reading Frames
-        for (var rf of [1, 2, 3]) {
-          var slot = new CGV.Slot(this, {strand: 'reverse'});
+        for (let rf of [1, 2, 3]) {
+          let slot = new CGV.Slot(this, {strand: 'reverse'});
           slot.replaceFeatures(features['rf_minus_' + rf]);
         }
       } else {
         if (this.strand === 'separated') {
-          var features = this.featuresByStrand();
+          let features = this.featuresByStrand();
           // Direct Slot
-          var slot = new CGV.Slot(this, {strand: 'direct'});
+          let slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(features.direct)
           // Reverse Slot
-          var slot = new CGV.Slot(this, {strand: 'reverse'});
+          slot = new CGV.Slot(this, {strand: 'reverse'});
           slot.replaceFeatures(features.reverse)
         } else if (this.strand === 'combined') {
           // Combined Slot
-          var slot = new CGV.Slot(this, {strand: 'direct'});
+          let slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(this.features());
 
         }
@@ -321,7 +321,7 @@
     }
 
     featuresByStrand() {
-      var features = {};
+      let features = {};
       features.direct = new CGV.CGArray();
       features.reverse = new CGV.CGArray();
       this.features().each( (i, feature) => {
@@ -336,7 +336,7 @@
 
     updatePlotSlot() {
       this._slots = new CGV.CGArray();
-      var slot = new CGV.Slot(this, {type: 'plot'});
+      let slot = new CGV.Slot(this, {type: 'plot'});
       slot._plot = this._plot;
     }
 

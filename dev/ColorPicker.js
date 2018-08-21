@@ -85,7 +85,7 @@
       this._color.hsv = this.hsv;
       this._color.opacity = this.opacity;
       this.updateIndicators();
-      var pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
+      let pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
       this.pickerElement.style.backgroundColor = pickerRgbString;
       this.pickerIndicatorRect1.style.backgroundColor = this.color.rgbString;
       d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
@@ -102,16 +102,16 @@
     }
 
     updateIndicators() {
-      var hsv = this.hsv;
-      var slideY = hsv.h * this.slideElement.offsetHeight / 360;
-      var pickerHeight = this.pickerElement.offsetHeight;
-      var pickerX = hsv.s * this.pickerElement.offsetWidth;
-      var pickerY = pickerHeight - (hsv.v * pickerHeight);
-      var alphaX = this.alphaElement.offsetWidth * this.opacity;
+      let hsv = this.hsv;
+      let slideY = hsv.h * this.slideElement.offsetHeight / 360;
+      let pickerHeight = this.pickerElement.offsetHeight;
+      let pickerX = hsv.s * this.pickerElement.offsetWidth;
+      let pickerY = pickerHeight - (hsv.v * pickerHeight);
+      let alphaX = this.alphaElement.offsetWidth * this.opacity;
 
-      var pickerIndicator = this.pickerIndicator;
-      var slideIndicator = this.slideIndicator;
-      var alphaIndicator = this.alphaIndicator;
+      let pickerIndicator = this.pickerIndicator;
+      let slideIndicator = this.slideIndicator;
+      let alphaIndicator = this.alphaIndicator;
       slideIndicator.style.top = (slideY - slideIndicator.offsetHeight/2) + 'px';
       pickerIndicator.style.top = (pickerY - pickerIndicator.offsetHeight/2) + 'px';
       pickerIndicator.style.left = (pickerX - pickerIndicator.offsetWidth/2) + 'px';
@@ -175,8 +175,8 @@
      * The container ID is used to make unique ids for the SVG defs
      */
     _configureView() {
-      var slide, picker, alpha;
-      var containerId = this.containerId;
+      let slide, picker, alpha;
+      let containerId = this.containerId;
       slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '20px', height: '100px' },
                 [
                   $el('defs', {},
@@ -262,7 +262,7 @@
       d3.select(element).on('mousedown', function() {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        var mouseStart = mousePosition(element);
+        let mouseStart = mousePosition(element);
         d3.select(document).on('mousemove.colordrag', function() {
           if (document.selection) {
             document.selection.empty()
@@ -282,10 +282,10 @@
      * Sets picker background color and calls ctx.callback if provided.
      */  
     slideListener() {
-      var cp = this;
-      var slideElement = cp.slideElement;
+      let cp = this;
+      let slideElement = cp.slideElement;
       return function() {
-        var mouse = mousePosition(slideElement);
+        let mouse = mousePosition(slideElement);
         cp.hsv.h = mouse.y / slideElement.offsetHeight * 360// + cp.hueOffset;
         // Hack to fix indicator bug
         if (cp.hsv.h >= 359) { cp.hsv.h = 359}
@@ -298,12 +298,12 @@
      * Calls ctx.callback if provided.
      */
     pickerListener() {
-      var cp = this;
-      var pickerElement = cp.pickerElement;
+      let cp = this;
+      let pickerElement = cp.pickerElement;
       return function() {
-        var width = pickerElement.offsetWidth;
-        var height = pickerElement.offsetHeight;
-        var mouse = mousePosition(pickerElement);
+        let width = pickerElement.offsetWidth;
+        let height = pickerElement.offsetHeight;
+        let mouse = mousePosition(pickerElement);
         cp.hsv.s = mouse.x / width;
         cp.hsv.v = (height - mouse.y) / height;
         cp.updateColor();
@@ -315,11 +315,11 @@
      * Sets alpha background color and calls ctx.callback if provided.
      */  
     alphaListener() {
-      var cp = this;
-      var alphaElement = cp.alphaElement;
+      let cp = this;
+      let alphaElement = cp.alphaElement;
       return function() {
-        var mouse = mousePosition(alphaElement);
-        var opacity =  mouse.x / alphaElement.offsetWidth;
+        let mouse = mousePosition(alphaElement);
+        let opacity =  mouse.x / alphaElement.offsetWidth;
         cp.opacity = Number(opacity.toFixed(2));
         cp.updateColor();
       }
@@ -329,12 +329,12 @@
      * Return click event handler for the dialog.
      */  
     dialogListener() {
-      var cp = this;
-      var container = cp.container;
+      let cp = this;
+      let container = cp.container;
       return function(mouseStart) {
-        var parentOffset = CGV.getOffset(container.offsetParent);
-        var offsetX = parentOffset.left;
-        var offsetY = parentOffset.top;
+        let parentOffset = CGV.getOffset(container.offsetParent);
+        let offsetX = parentOffset.left;
+        let offsetY = parentOffset.top;
         container.style.left = (d3.event.pageX - offsetX - mouseStart.x) + 'px';
         container.style.top = (d3.event.pageY - offsetY - mouseStart.y) + 'px';
       }
@@ -345,7 +345,7 @@
      * Return click event handler for the original color.
      */  
     originalColorListener() {
-      var cp = this;
+      let cp = this;
       return function() {
         cp.setColor(cp.originalColorIndicator.style.backgroundColor);
       }
@@ -355,7 +355,7 @@
      * Return click event handler for the done button.
      */  
     doneListener() {
-      var cp = this;
+      let cp = this;
       return function() {
         cp.onChange = undefined;
         cp.close()
@@ -372,7 +372,7 @@
 
     open(object) {
       if (object) { this.object = object; }
-      var box = d3.select(this.container);
+      let box = d3.select(this.container);
       box.style('visibility', 'visible');
       box.transition().duration(200)
         .style('opacity', 1);
@@ -397,10 +397,10 @@
    */
   function $el(el, attrs, children) {
     el = document.createElementNS('http://www.w3.org/2000/svg', el);
-    for (var key in attrs)
+    for (let key in attrs)
       el.setAttribute(key, attrs[key]);
     if (Object.prototype.toString.call(children) !== '[object Array]') children = [children];
-    var i = 0, len = (children[0] && children.length) || 0;
+    let i = 0, len = (children[0] && children.length) || 0;
     for (; i < len; i++)
       el.appendChild(children[i]);
     return el;
@@ -410,11 +410,11 @@
    * Return mouse position relative to the element el.
    */
   function mousePosition(element) {
-    var width = element.offsetWidth;
-    var height = element.offsetHeight;
+    let width = element.offsetWidth;
+    let height = element.offsetHeight;
 
-    var pos = d3.mouse(element);
-    var mouse = {x: pos[0], y: pos[1]}
+    let pos = d3.mouse(element);
+    let mouse = {x: pos[0], y: pos[1]}
     if (mouse.x > width) {
       mouse.x = width;
     } else if (mouse.x < 0) {

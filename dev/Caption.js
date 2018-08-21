@@ -193,7 +193,7 @@
      * @member {CGArray} - Get the *CaptionItems*
      */
     visibleItems(term) {
-      var filtered = this._items.filter( (i) => { return i.visible });
+      let filtered = this._items.filter( (i) => { return i.visible });
       return new CGV.CGArray(filtered).get(term)
     }
 
@@ -206,13 +206,13 @@
       // - height of each item; plus space between items (equal to half item height); plus padding (highest item)
       this.clear();
       this.height = 0;
-      var maxHeight = 0;
+      let maxHeight = 0;
       if (!this._items) { return }
-      var visibleItems = this.visibleItems();
-      // for (var i = 0, len = this._items.length; i < len; i++) {
-      for (var i = 0, len = visibleItems.length; i < len; i++) {
-        var captionItem = visibleItems[i];
-        var captionItemHeight = captionItem.height;
+      let visibleItems = this.visibleItems();
+      // for (let i = 0, len = this._items.length; i < len; i++) {
+      for (let i = 0, len = visibleItems.length; i < len; i++) {
+        let captionItem = visibleItems[i];
+        let captionItemHeight = captionItem.height;
         this.height += captionItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -227,11 +227,11 @@
 
       // Calculate Caption Width
       this.width = 0;
-      var itemFonts = visibleItems.map( (i) => { return i.font.css });
-      var itemNames = visibleItems.map( (i) => { return i.name });
-      var itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
-      for (var i = 0, len = itemWidths.length; i < len; i++) {
-        var item = visibleItems[i];
+      let itemFonts = visibleItems.map( (i) => { return i.font.css });
+      let itemNames = visibleItems.map( (i) => { return i.name });
+      let itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
+      for (let i = 0, len = itemWidths.length; i < len; i++) {
+        let item = visibleItems[i];
         // This should only be used for legends
         if (item.drawSwatch) {
           itemWidths[i] += item.height + (this.padding / 2);
@@ -245,13 +245,13 @@
     }
 
     _updateOrigin() {
-      var margin = CGV.pixel(0);
-      var canvasWidth = this.canvas.width;
-      var canvasHeight = this.canvas.height;
-      var captionWidth = this.width;
-      var captionHeight = this.height;
+      let margin = CGV.pixel(0);
+      let canvasWidth = this.canvas.width;
+      let canvasHeight = this.canvas.height;
+      let captionWidth = this.width;
+      let captionHeight = this.height;
 
-      var position = this.position;
+      let position = this.position;
       if (position === 'upper-left') {
         this.originX = margin;
         this.originY = margin;
@@ -298,8 +298,8 @@
     }
 
     containsPoint(pt) {
-      var x = this.originX;
-      var y = this.originY;
+      let x = this.originX;
+      let y = this.originY;
       if (pt.x >= x && pt.x <= x + this.width && pt.y >= y && pt.y <= y + this.height) {
         return true
       }
@@ -307,10 +307,10 @@
 
     highlight(color = '#FFB') {
       if (!this.visible) { return }
-      // var ctx = this.canvas.context('background');
+      // let ctx = this.canvas.context('background');
       // ctx.fillStyle = color;
       // ctx.fillRect(this.originX, this.originY, this.width, this.height);
-      var ctx = this.canvas.context('ui');
+      let ctx = this.canvas.context('ui');
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'black';
       ctx.strokeRect(this.originX, this.originY, this.width, this.height);
@@ -318,13 +318,13 @@
 
     draw() {
       if (!this.visible) { return }
-      var ctx = this.ctx;
+      let ctx = this.ctx;
       this.fillBackground();
       ctx.textBaseline = 'top';
-      for (var i = 0, len = this._items.length; i < len; i++) {
-        var captionItem = this._items[i];
+      for (let i = 0, len = this._items.length; i < len; i++) {
+        let captionItem = this._items[i];
         if (!captionItem.visible) { continue }
-        var captionItemHeight = captionItem.height;
+        let captionItemHeight = captionItem.height;
         ctx.font = captionItem.font.css;
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
@@ -334,14 +334,14 @@
     }
 
     remove() {
-      var viewer = this.viewer;
+      let viewer = this.viewer;
       viewer._captions = viewer._captions.remove(this);
       viewer.clear('captions');
       viewer.refreshCaptions();
     }
 
     toJSON() {
-      var json = {
+      let json = {
         name: this.name,
         position: this.position,
         textAlignment: this.textAlignment,

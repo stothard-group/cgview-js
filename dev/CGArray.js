@@ -12,9 +12,9 @@
    * If a single array is provided it will be converted to an CGArray.
    * If mulitple elements are provided, they will be added to the new CGArray.
    */
-  var CGArray = function() {
+  let CGArray = function() {
     if ( (arguments.length === 1) && (Array.isArray(arguments[0])) ) {
-      for (var i = 0, len = arguments[0].length; i < len; i++) {
+      for (let i = 0, len = arguments[0].length; i < len; i++) {
         this.push(arguments[0][i]);
       }
     } else if (arguments.length > 0) {
@@ -35,7 +35,7 @@
    * @return {CGArray}
    */
   CGArray.prototype.merge = function(cgarray) {
-    for (var i = 0, len = cgarray.length; i < len; i++) {
+    for (let i = 0, len = cgarray.length; i < len; i++) {
       this.push(cgarray[i]);
     }
     return this
@@ -54,15 +54,15 @@
    */
   CGArray.prototype.attr = function(attributes) {
     if ( (arguments.length === 1) && (typeof attributes === 'object') ) {
-      var keys = Object.keys(attributes);
-      var key_len = keys.length;
-      for (var set_i=0, set_len=this.length; set_i < set_len; set_i++) {
-        for (var key_i=0; key_i < key_len; key_i++) {
+      let keys = Object.keys(attributes);
+      let key_len = keys.length;
+      for (let set_i=0, set_len=this.length; set_i < set_len; set_i++) {
+        for (let key_i=0; key_i < key_len; key_i++) {
           this[set_i][keys[key_i]] = attributes[keys[key_i]];
         }
       }
     } else if (arguments.length === 2) {
-      for (var i=0, len=this.length; i < len; i++) {
+      for (let i=0, len=this.length; i < len; i++) {
         this[i][arguments[0]] = arguments[1];
       }
     } else if (attributes !== undefined) {
@@ -82,7 +82,7 @@
    * @retrun {CGArray}
    */
   CGArray.prototype.draw = function(context, scale, fast, calculated, pixel_skip) {
-    for (var i=0, len=this.length; i < len; i++) {
+    for (let i=0, len=this.length; i < len; i++) {
       this[i].draw(context, scale, fast, calculated, pixel_skip);
     }
     return this;
@@ -102,15 +102,15 @@
    * @return {CGArray}
    */
   CGArray.prototype.each = function(callback) {
-    for (var i = 0, len = this.length; i < len; i++) {
+    for (let i = 0, len = this.length; i < len; i++) {
       callback.call(this[i], i, this[i]);
     }
     return this;
   }
 
   CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
-    var startIndex = CGV.indexOfValue(this, startValue, true);
-    var stopIndex = CGV.indexOfValue(this, stopValue, false);
+    let startIndex = CGV.indexOfValue(this, startValue, true);
+    let stopIndex = CGV.indexOfValue(this, stopValue, false);
     // This helps reduce the jumpiness of feature drawing with a step 
     // The idea is to alter the start index based on the step so the same
     // indices should be returned. i.e. the indices should be divisible by the step.
@@ -120,19 +120,19 @@
     if (stopValue >= startValue) {
       // Return if both start and stop are between values in array
       if (this[startIndex] > stopValue || this[stopIndex] < startValue) { return }
-      for (var i = startIndex; i <= stopIndex; i += step) {
+      for (let i = startIndex; i <= stopIndex; i += step) {
         callback.call(this[i], i, this[i]);
       }
     } else {
       // Skip cases where the the start value is greater than the last value in array
       if (this[startIndex] >= startValue) {
-        for (var i = startIndex, len = this.length; i < len; i += step) {
+        for (let i = startIndex, len = this.length; i < len; i += step) {
           callback.call(this[i], i, this[i]);
         }
       }
       // Skip cases where the the stop value is less than the first value in array
       if (this[stopIndex] <= stopValue) {
-        for (var i = 0; i <= stopIndex; i += step) {
+        for (let i = 0; i <= stopIndex; i += step) {
           callback.call(this[i], i, this[i]);
         }
       }
@@ -141,8 +141,8 @@
   }
 
   CGArray.prototype.countFromRange = function(startValue, stopValue, step) {
-    var startIndex = CGV.indexOfValue(this, startValue, true);
-    var stopIndex = CGV.indexOfValue(this, stopValue, false);
+    let startIndex = CGV.indexOfValue(this, startValue, true);
+    let stopIndex = CGV.indexOfValue(this, stopValue, false);
 
     if (startValue > this[this.length - 1]) {
       startIndex++;
@@ -172,7 +172,7 @@
    * @return {CGArray}
    */
   CGArray.prototype.remove = function(element) {
-    var self = this;
+    let self = this;
     self = new CGArray( self.filter(function(i) { return i !== element }) );
     return self;
   }
@@ -200,7 +200,7 @@
    */
   CGArray.prototype.move = function(oldIndex, newIndex) {
 		if (newIndex >= this.length) {
-			var k = newIndex - this.length;
+			let k = newIndex - this.length;
 			while ((k--) + 1) {
 				this.push(undefined);
 			}
@@ -249,7 +249,7 @@
   }
 
   CGArray.prototype.lineWidth = function(width) {
-    for (var i=0, len=this.length; i < len; i++) {
+    for (let i=0, len=this.length; i < len; i++) {
       this[i].lineWidth = width;
     }
     return this;
@@ -279,8 +279,8 @@
         return this.filter(function(element) { return element.id && element.id.toLowerCase() === term.toLowerCase(); })[0];
       }
     } else if (Array.isArray(term)) {
-      var filtered = this.filter(function(element) { return term.some(function(id) { return element.id === id; }); });
-      var cgarray = new CGArray();
+      let filtered = this.filter(function(element) { return term.some(function(id) { return element.id === id; }); });
+      let cgarray = new CGArray();
       cgarray.push.apply(cgarray, filtered);
       return cgarray;
     } else {
@@ -296,9 +296,9 @@
    */
   CGArray.prototype.equals = function(set) {
     if (set.toString() !== 'CGArray' && !Array.isArray(set)) { return false }
-    var setA = this.unique();
-    var setB = set.unique();
-    var equals = true
+    let setA = this.unique();
+    let setB = set.unique();
+    let equals = true
     if (setA.length !== setB.length) {
       return false
     }
@@ -328,12 +328,12 @@
     if (typeof predicate !== 'function') {
       throw new TypeError('predicate must be a function');
     }
-    var list = Object(this);
-    var length = list.length >>> 0;
-    var thisArg = arguments[1];
-    var value;
+    let list = Object(this);
+    let length = list.length >>> 0;
+    let thisArg = arguments[1];
+    let value;
 
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       value = list[i];
       if (predicate.call(thisArg, value, i, list)) {
         return value;

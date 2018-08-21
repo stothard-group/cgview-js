@@ -19,7 +19,7 @@
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
-      var defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
+      let defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 5);
@@ -156,9 +156,9 @@
 
     refreshThickness() {
       if (this.pixelsPerBp() > 1 && this.visible) {
-        var zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
-        var zoomedThickness = this.zoomedThickness;
-        var addition = this.pixelsPerBp() * 2;
+        let zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
+        let zoomedThickness = this.zoomedThickness;
+        let addition = this.pixelsPerBp() * 2;
         if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
           this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
         } else {

@@ -10,8 +10,8 @@
   }
 
   CGV.Viewer.prototype.initializeZooming = function() {
-    var self = this;
-    var zoomMax = this.backbone.maxZoomFactor();
+    let self = this;
+    let zoomMax = this.backbone.maxZoomFactor();
     self._zoom = d3.zoom()
       .scaleExtent([1, zoomMax])
       .on('start', zoomstart)
@@ -26,23 +26,23 @@
     }
 
     function zooming() {
-      var start_time = new Date().getTime();
-      var pos = d3.mouse(self.canvas.node('ui'));
-      var mx = self.scale.x.invert(CGV.pixel(pos[0]))
-      var my = self.scale.y.invert(CGV.pixel(pos[1]))
+      let start_time = new Date().getTime();
+      let pos = d3.mouse(self.canvas.node('ui'));
+      let mx = self.scale.x.invert(CGV.pixel(pos[0]))
+      let my = self.scale.y.invert(CGV.pixel(pos[1]))
 
-      var radius = self.backbone.zoomedRadius;
-      var angle = CGV.angleFromPosition(mx, my);
+      let radius = self.backbone.zoomedRadius;
+      let angle = CGV.angleFromPosition(mx, my);
 
       self._zoomFactor = d3.event.transform.k
 
-      var radiusDiff = radius - self.backbone.zoomedRadius;
+      let radiusDiff = radius - self.backbone.zoomedRadius;
 
-      var dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
-      var dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
+      let dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
+      let dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
 
-      var domain_x = self.scale.x.domain();
-      var domain_y = self.scale.y.domain();
+      let domain_x = self.scale.x.domain();
+      let domain_y = self.scale.y.domain();
 
       self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])
       self.scale.y.domain([domain_y[0] - dy, domain_y[1] - dy])

@@ -9,7 +9,7 @@
       this._data = {};
       this._sections = CGV.defaultFor(options.sections, []);
       // Create object for each section
-      for (var section of this.sections) {
+      for (let section of this.sections) {
         this.data[section] = {}
       }
     }
@@ -31,7 +31,7 @@
     //   this.debug_data.zoom['r' + axis]  = JSV.round(axis_ratio);
     // }
     // Other Example
-    // var start_time = new Date().getTime();
+    // let start_time = new Date().getTime();
     // ....code and stuff....
     // if (this.debug) {
     //   this.debug_data.time['draw'] = JSV.elapsedTime(start_time);
@@ -42,17 +42,17 @@
     draw(ctx, x = 10, y = 20) {
       x = CGV.pixel(x);
       y = CGV.pixel(y);
-      var data = this._data;
-      var sections = this._sections;
+      let data = this._data;
+      let sections = this._sections;
 
       ctx.font = CGV.pixel(10) + 'pt Sans-Serif';
       ctx.fillStyle = 'black';
-      var line_height = CGV.pixel(18);
+      let line_height = CGV.pixel(18);
       ctx.textAlign = 'left';
-      var section_keys = this.debug === true ? Object.keys(data) : this.debug;
-      var i = 0;
+      let section_keys = this.debug === true ? Object.keys(data) : this.debug;
+      let i = 0;
       sections.forEach(function(section_key) {
-        var data_keys = Object.keys(data[section_key]);
+        let data_keys = Object.keys(data[section_key]);
         data_keys.forEach(function(data_key) {
           ctx.fillText((section_key + '|' + data_key + ': ' + data[section_key][data_key]), x, y + (line_height * i));
           i += 1;

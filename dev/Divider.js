@@ -114,8 +114,8 @@
 
     draw() {
       if (!this.visible || this.thickness === 0) { return }
-      for (var i = 0, len = this._radii.length; i < len; i++) {
-        var radius = this._radii[i]
+      for (let i = 0, len = this._radii.length; i < len; i++) {
+        let radius = this._radii[i]
         this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);
         if (this.visibleRange) {
           this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));

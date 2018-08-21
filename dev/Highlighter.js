@@ -52,13 +52,13 @@
     }
 
     position(e) {
-      var viewerRect = {top: 0, left: 0};
+      let viewerRect = {top: 0, left: 0};
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      // var viewerRect = this.viewer._container.node().getBoundingClientRect();
-      var originX = e.canvasX / this._ratio + viewerRect.left + window.pageXOffset;
-      var originY = e.canvasY / this._ratio + viewerRect.top + window.pageYOffset;
+      // let viewerRect = this.viewer._container.node().getBoundingClientRect();
+      let originX = e.canvasX / this._ratio + viewerRect.left + window.pageXOffset;
+      let originY = e.canvasY / this._ratio + viewerRect.top + window.pageYOffset;
       return { x: originX + this._offsetLeft, y: originY + this._offsetTop }
     }
 
@@ -80,7 +80,7 @@
     }
 
     plotPopoverContentsDefault(plot, bp) {
-      var score = plot.scoreForPosition(bp);
+      let score = plot.scoreForPosition(bp);
       return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`
     }
 
@@ -89,8 +89,8 @@
         e.feature.highlight(e.slot);
       }
       if (this.featurePopovers && this.visible) {
-        var position = this.position(e);
-        var html = this.featurePopoverContents && this.featurePopoverContents(e.feature) || this.featurePopoverContentsDefault(e.feature);
+        let position = this.position(e);
+        let html = this.featurePopoverContents && this.featurePopoverContents(e.feature) || this.featurePopoverContentsDefault(e.feature);
         this.showPopoverBox({position: position, html: html});
       }
     }
@@ -100,24 +100,24 @@
         this.highlightPlot(e);
       }
       if (this.plotPopovers && this.visible) {
-        var position = this.position(e);
-        var html = this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp) || this.plotPopoverContentsDefault(e.plot, e.bp);
+        let position = this.position(e);
+        let html = this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp) || this.plotPopoverContentsDefault(e.plot, e.bp);
         this.showPopoverBox({position: position, html: html});
       }
     }
 
     highlightPlot(e) {
-      var viewer = this.viewer;
-      var score = e.plot.scoreForPosition(e.bp);
+      let viewer = this.viewer;
+      let score = e.plot.scoreForPosition(e.bp);
       if (score) {
-        var startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
-        var start = e.plot.positions[startIndex];
-        var stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
-        var baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
-        var scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
-        var thickness = Math.abs(baselineRadius - scoredRadius);
-        var radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
-        var color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+        let startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+        let start = e.plot.positions[startIndex];
+        let stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+        let baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+        let scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
+        let thickness = Math.abs(baselineRadius - scoredRadius);
+        let radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+        let color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
         color.highlight();
 
         viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);

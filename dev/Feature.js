@@ -241,13 +241,13 @@
     draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
       if (!this.visible) { return }
       if (this.range.overlapsRange(visibleRange)) {
-        var canvas = this.canvas;
-        var start = this.start;
-        var stop = this.stop;
-        var containsStart = visibleRange.contains(start);
-        var containsStop = visibleRange.contains(stop);
-        var color = options.color || this.color;
-        var showShading = options.showShading;
+        let canvas = this.canvas;
+        let start = this.start;
+        let stop = this.stop;
+        let containsStart = visibleRange.contains(start);
+        let containsStop = visibleRange.contains(stop);
+        let color = options.color || this.color;
+        let showShading = options.showShading;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -282,7 +282,7 @@
     highlight(slot) {
       if (!this.visible) { return }
       this.canvas.clear('ui');
-      var color = this.color.copy();
+      let color = this.color.copy();
       color.highlight();
       if (slot && slot.features().contains(this)) {
         this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
@@ -328,7 +328,7 @@
      *        - is this a problem??
      */
     tracks(term) {
-      var tracks = new CGV.CGArray();
+      let tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.type === 'feature') {
           if ( (track.contents.from === 'source' && track.contents.extract.contains(this.source)) ||
@@ -342,7 +342,7 @@
     }
     // OLD SLOW WAY
     // tracks(term) {
-    //   var tracks = new CGV.CGArray();
+    //   let tracks = new CGV.CGArray();
     //   this.viewer.tracks().each( (i, track) => {
     //     if (track.features().contains(this)) {
     //       tracks.push(track);
@@ -355,7 +355,7 @@
      * Return an array of the slots that contain this feature
      */
    slots(term) {
-      var slots = new CGV.CGArray();
+      let slots = new CGV.CGArray();
       this.tracks().each( (i, track) => {
         track.slots().each( (j, slot) => {
           if (slot.features().contains(this)) {
@@ -385,9 +385,9 @@
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
     moveTo(duration, ease) {
-      var buffer = Math.ceil(this.length * 0.05);
-      var start = this.sequence.subtractBp(this.start, buffer);
-      var stop = this.sequence.addBp(this.stop, buffer);
+      let buffer = Math.ceil(this.length * 0.05);
+      let start = this.sequence.subtractBp(this.start, buffer);
+      let stop = this.sequence.addBp(this.stop, buffer);
       this.viewer.moveTo(start, stop, duration, ease);
     }
 

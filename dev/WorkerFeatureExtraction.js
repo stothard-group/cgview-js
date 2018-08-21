@@ -2,17 +2,17 @@
 
   CGV.WorkerFeatureExtraction = function() {
     onmessage = function(e) {
-      var progressState;
-      var type = e.data.type;
+      let progressState;
+      let type = e.data.type;
       console.log('Starting ' + type);
-      var featureDataArray = [];
+      let featureDataArray = [];
       if (type === 'start-stop-codons') {
         progressState = { start: 0, stop: 50 };
         featureDataArray = extractStartStopCodons(1, e.data, progressState);
         progressState = { start: 50, stop: 100 };
         featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
       } else if (type === 'orfs') {
-        var featureDataArray = extractORFs(e.data);
+        let featureDataArray = extractORFs(e.data);
       }
       // Sort the features by start
       featureDataArray.sort( (a, b) => {
@@ -28,20 +28,20 @@
 
 
     extractStartStopCodons = function(strand, options, progressState = {}) {
-      var progress = 0;
-      var savedProgress = 0;
-      var source = 'start-stop-codons';
-      var seq = (strand === 1) ? options.seqString : reverseComplement(options.seqString);
-      var startPattern = options.startPattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
-      var stopPattern = options.stopPattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
-      var totalPattern = startPattern + '|' + stopPattern;
-      var startPatternArray = startPattern.split('|');
-      var stopPatternArray = stopPattern.split('|');
+      let progress = 0;
+      let savedProgress = 0;
+      let source = 'start-stop-codons';
+      let seq = (strand === 1) ? options.seqString : reverseComplement(options.seqString);
+      let startPattern = options.startPattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
+      let stopPattern = options.stopPattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
+      let totalPattern = startPattern + '|' + stopPattern;
+      let startPatternArray = startPattern.split('|');
+      let stopPatternArray = stopPattern.split('|');
 
-      var re = new RegExp(totalPattern, 'g');
-      var match, start, featureData, type;
-      var seqLength = seq.length;
-      var featureDataArray = [];
+      let re = new RegExp(totalPattern, 'g');
+      let match, start, featureData, type;
+      let seqLength = seq.length;
+      let featureDataArray = [];
 
       while ( (match = re.exec(seq)) !== null) {
         start = (strand === 1) ? (match.index + 1) : (seqLength - match.index - match[0].length + 1);
@@ -71,13 +71,13 @@
     }
 
     postProgress = function(currentProgress, savedProgress, progressState = {}) {
-      var progressStart = progressState.start || 0;
-      var progressStop = progressState.stop || 100;
-      var progressIncrement = progressState.increment || 1;
-      var progressRange = progressStop - progressStart;
+      let progressStart = progressState.start || 0;
+      let progressStop = progressState.stop || 100;
+      let progressIncrement = progressState.increment || 1;
+      let progressRange = progressStop - progressStart;
       if ( (currentProgress > savedProgress) && (currentProgress % progressIncrement === 0) ) {
         savedProgress = currentProgress;
-        var messageProgress = progressStart + (progressRange * currentProgress / 100);
+        let messageProgress = progressStart + (progressRange * currentProgress / 100);
         if (messageProgress % progressIncrement === 0) {
           // console.log(messageProgress)
           postMessage({ messageType: 'progress', progress: messageProgress });
@@ -87,38 +87,38 @@
     }
 
     extractORFs = function(options) {
-      var minORFLength = options.minORFLength;
-      var seq = options.seqString;
-      var seqLength = seq.length;
-      var featureDataArray = [];
-      var progressState = {start: 0, stop: 25};
+      let minORFLength = options.minORFLength;
+      let seq = options.seqString;
+      let seqLength = seq.length;
+      let featureDataArray = [];
+      let progressState = {start: 0, stop: 25};
 
 
-      var codonDataArray = extractStartStopCodons(1, options, progressState);
-      var progressState = {start: 25, stop: 50};
+      let codonDataArray = extractStartStopCodons(1, options, progressState);
+      progressState = {start: 25, stop: 50};
       codonDataArray = codonDataArray.concat( extractStartStopCodons(-1, options, progressState) );
-      var startFeatures = codonDataArray.filter( (f) => { return f.type === 'start-codon' });
-      var stopFeatures = codonDataArray.filter( (f) => { return f.type === 'stop-codon' });
+      let startFeatures = codonDataArray.filter( (f) => { return f.type === 'start-codon' });
+      let stopFeatures = codonDataArray.filter( (f) => { return f.type === 'stop-codon' });
 
-      var startsByRF = featuresByReadingFrame(startFeatures, seqLength);
-      var stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
+      let startsByRF = featuresByReadingFrame(startFeatures, seqLength);
+      let stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
 
-      var progressState = {start: 50, stop: 75};
+      progressState = {start: 50, stop: 75};
       featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, minORFLength, seqLength, progressState);
-      var progressState = {start: 75, stop: 100};
+      progressState = {start: 75, stop: 100};
       featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, minORFLength, seqLength, progressState) );
       return featureDataArray
     }
 
     orfsByStrand = function(strand, startsByRF, stopsByRF, minORFLength, seqLength, progressState = {}) {
-      var position, orfLength, range, starts, stops;
-      var start, stop, stopIndex;
-      var progress, savedProgress;
-      var type = 'ORF';
-      var source = 'orfs';
-      var featureDataArray = [];
-      var readingFrames = (strand === 1) ? ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'] : ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-      // for (var rf of readingFrames) {
+      let position, orfLength, range, starts, stops;
+      let start, stop, stopIndex;
+      let progress, savedProgress;
+      let type = 'ORF';
+      let source = 'orfs';
+      let featureDataArray = [];
+      let readingFrames = (strand === 1) ? ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'] : ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
+      // for (let rf of readingFrames) {
       readingFrames.forEach( function(rf) {
         position = (strand === 1) ? 1 : seqLength;
         stopIndex = 0;
@@ -132,14 +132,14 @@
           starts.sort( (a,b) => { return b.start - a.start }); 
           stops.sort( (a,b) => { return b.start - a.start });
         }
-        for (var i = 0, len_i = starts.length; i < len_i; i++) {
+        for (let i = 0, len_i = starts.length; i < len_i; i++) {
           start = starts[i];
           progress = progressInitial + Math.round( i / len_i * 33);
           savedProgress = postProgress(progress, savedProgress, progressState);
           if ( (strand === 1) && (start.start < position) || (strand === -1) && (start.start > position) ) {
             continue;
           }
-          for (var j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
+          for (let j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
             stop = stops[j];
             orfLength = (strand === 1) ? stop.stop - start.start : start.stop - stop.start;
             if (orfLength >= minORFLength) {
@@ -179,9 +179,9 @@
     }
 
     complement = function(seq) {
-      var compSeq = ''
-      var char, compChar;
-      for (var i = 0, len = seq.length; i < len; i++) {
+      let compSeq = ''
+      let char, compChar;
+      for (let i = 0, len = seq.length; i < len; i++) {
         char = seq.charAt(i);
         switch (char) {
           case 'A':
@@ -202,7 +202,7 @@
     }
 
     featuresByReadingFrame = function(features, seqLength) {
-      var featuresByRF = {
+      let featuresByRF = {
         rf_plus_1: [],
         rf_plus_2: [],
         rf_plus_3: [],
@@ -210,8 +210,8 @@
         rf_minus_2: [],
         rf_minus_3: []
       };
-      var rf, feature;
-      for (var i = 0, len = features.length; i < len; i++) {
+      let rf, feature;
+      for (let i = 0, len = features.length; i < len; i++) {
         feature = features[i];
         if (feature.strand === -1) {
           rf = (seqLength - feature.stop + 1) % 3;

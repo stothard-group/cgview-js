@@ -147,7 +147,7 @@
 
     textX() {
       if (this.drawSwatch) {
-        var parent = this.parent;
+        let parent = this.parent;
         if (this.textAlignment === 'left') {
           return this.swatchX() + this.swatchWidth + parent.swatchPadding;
         } else if (this.textAlignment === 'center') {
@@ -161,7 +161,7 @@
     }
 
     swatchX() {
-      var parent = this.parent;
+      let parent = this.parent;
       if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment === 'center') {
@@ -176,29 +176,29 @@
     }
 
     _swatchContainsPoint(pt) {
-      var x = this.swatchX();
-      var y = this.swatchY();
+      let x = this.swatchX();
+      let y = this.swatchY();
       if (pt.x >= x && pt.x <= x + this.height && pt.y >= y && pt.y <= y + this.height) {
         return true
       }
     }
 
     features(term) {
-      var viewer = this.viewer;
-      var _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem === this } ));
+      let viewer = this.viewer;
+      let _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem === this } ));
       return _features.get(term);
     }
 
     plots(term) {
-      var viewer = this.viewer;
-      var _plots = new CGV.CGArray( viewer._plots.filter( (p) => {
+      let viewer = this.viewer;
+      let _plots = new CGV.CGArray( viewer._plots.filter( (p) => {
         return p.legendItem.contains(this)
       }));
       return _plots.get(term);
     }
 
     toJSON() {
-      var json = super.toJSON();
+      let json = super.toJSON();
       json.swatchColor = this.swatchColor.rgbaString;
       json.decoration = this.decoration;
       return json

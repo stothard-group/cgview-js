@@ -42,7 +42,7 @@
       if (typeof font === 'string' || font instanceof String) {
         this.string = font;
       } else {
-        var keys = new CGV.CGArray(Object.keys(font));
+        let keys = new CGV.CGArray(Object.keys(font));
         if (keys.contains('family') && keys.contains('style') && keys.contains('size')) {
           this._family = font.family;
           this._style = font.style;
@@ -63,7 +63,7 @@
 
     set string(value) {
       value = value.replace(/ +/g, '');
-      var parts = value.split(',');
+      let parts = value.split(',');
       if (parts.length === 3) {
         this._family = parts[0];
         this._style = parts[1];
@@ -241,10 +241,10 @@
    */
   Font.calculateWidths = function(ctx, fonts, strings) {
     ctx.save();
-    var widths = [];
-    var map = [];
+    let widths = [];
+    let map = [];
 
-    for (var i = 0, len = fonts.length; i < len; i++) {
+    for (let i = 0, len = fonts.length; i < len; i++) {
       map.push({
         index: i,
         font: fonts[i],
@@ -256,9 +256,9 @@
       return a.font > b.font ? 1 : -1;
     });
 
-    var currentFont = ''
-    var font;
-    for (var i = 0, len = map.length; i < len; i++) {
+    let currentFont = ''
+    let font;
+    for (let i = 0, len = map.length; i < len; i++) {
       font = map[i].font;
       text = map[i].text;
       if (font !== currentFont) {

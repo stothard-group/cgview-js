@@ -8,18 +8,18 @@
   }
 
   CGV.testSearch = function(length) {
-    var pattern = /ATG/igm;
-    var indices = []
-    var seq = "";
-    var possible = "ATCG";
+    let pattern = /ATG/igm;
+    let indices = []
+    let seq = "";
+    let possible = "ATCG";
 
     console.log('Making Sequence...');
-    for (var i=0; i < length; i++ ) {
+    for (let i=0; i < length; i++ ) {
       seq += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     window.seq = seq
     console.log('Finding Pattern...');
-    var start_time = new Date().getTime();
+    let start_time = new Date().getTime();
     while (match = pattern.exec(seq)) {
       indices.push(match.index);
     }
@@ -89,11 +89,11 @@
   }
 
   CGV.getPixelRatio = function(canvas) {
-    var context = canvas.getContext('2d');
+    let context = canvas.getContext('2d');
     //  query the various pixel ratios
-    var devicePixelRatio = window.devicePixelRatio || 1;
+    let devicePixelRatio = window.devicePixelRatio || 1;
 
-    var backingStoreRatio = context.webkitBackingStorePixelRatio ||
+    let backingStoreRatio = context.webkitBackingStorePixelRatio ||
       context.mozBackingStorePixelRatio ||
       context.msBackingStorePixelRatio ||
       context.oBackingStorePixelRatio ||
@@ -106,8 +106,8 @@
     // upscale the canvas if the two ratios don't match
     if (ratio !== 1) {
 
-      var oldWidth  = canvas.width;
-      var oldHeight = canvas.height;
+      let oldWidth  = canvas.width;
+      let oldHeight = canvas.height;
 
       canvas.width  = oldWidth  * ratio;
       canvas.height = oldHeight * ratio;
@@ -118,7 +118,7 @@
   }
 
   CGV.elapsedTime = function(oldTime) {
-    var elapsed = (new Date().getTime()) - oldTime;
+    let elapsed = (new Date().getTime()) - oldTime;
     return elapsed + ' ms';
   }
 
@@ -135,7 +135,7 @@
   //   - Quandrant 4 has minus angles to match up with the bp scale
   //   - The center of the circle is always (0,0)
   CGV.angleFromPosition = function(x, y) {
-    var angle = 1/2*Math.PI;
+    let angle = 1/2*Math.PI;
     if (x !== 0) {
       angle = Math.atan(Math.abs(y / x));
     }
@@ -166,7 +166,7 @@
    * @return {Number}
    */
   CGV.clockPositionForAngle = function(radians) {
-    var clockPostion = Math.round( (radians + Math.PI/2) * (6/Math.PI) );
+    let clockPostion = Math.round( (radians + Math.PI/2) * (6/Math.PI) );
     if (clockPostion > 12) {
       clockPostion -= 12;
     } else if (clockPostion < 1) {
@@ -186,7 +186,7 @@
    * @return {Object} - The origin for the Rect consisting of an x and y attribute
    */
   CGV.rectOriginForAttachementPoint = function(point, clockPosition, width, height) {
-    var x, y;
+    let x, y;
     switch (clockPosition) {
       case 1:
         // x = point.x - (width * 3 / 4);
@@ -258,29 +258,29 @@
    * @return {Number}
    */
   CGV.round = function(value, places) {
-    var places = places || 2;
+    places = places || 2;
     // return d3.round(value, places);
     return Number(value.toFixed(places));
   }
 
   // a and b should be arrays of equal length
   CGV.dotProduct = function(a, b) {
-    var value = 0;
-    for (var i = 0, len = a.length; i < len; i++) {
+    let value = 0;
+    for (let i = 0, len = a.length; i < len; i++) {
       value += a[i] * b[i];
     }
     return value
   }
 
   CGV.pointsAdd = function(a, b) {
-    var value =  [0, 0];
+    let value =  [0, 0];
     value[0] = a[0] + b[0];
     value[1] = a[1] + b[1];
     return value
   }
 
   CGV.pointsSubtract = function(a, b) {
-    var value = [0, 0];
+    let value = [0, 0];
     value[0] = a[0] - b[0];
     value[1] = a[1] - b[1];
     return value
@@ -290,32 +290,32 @@
   // http://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
   CGV.circleAnglesFromIntersectingLine = function(radius, x1, y1, x2, y2) {
     // Direction vector of line segment, from start to end
-    var d = CGV.pointsSubtract([x2,y2], [x1,y1]);
+    let d = CGV.pointsSubtract([x2,y2], [x1,y1]);
     // Vector from center of circle to line segment start
     // Center of circle is alwas [0,0]
-    var f = [x1, y1]
+    let f = [x1, y1]
 
     // t2 * (d DOT d) + 2t*( f DOT d ) + ( f DOT f - r2 ) = 0
-    var a = CGV.dotProduct(d, d);
-    var b = 2 * CGV.dotProduct(f, d);
-    var c = CGV.dotProduct(f, f) - (radius * radius);
+    let a = CGV.dotProduct(d, d);
+    let b = 2 * CGV.dotProduct(f, d);
+    let c = CGV.dotProduct(f, f) - (radius * radius);
 
-    var discriminant = b*b - 4*a*c;
+    let discriminant = b*b - 4*a*c;
 
-    var angles = {};
+    let angles = {};
     if (discriminant >= 0) {
       discriminant = Math.sqrt(discriminant);
-      var t1 = (-b - discriminant)/(2*a);
-      var t2 = (-b + discriminant)/(2*a);
+      let t1 = (-b - discriminant)/(2*a);
+      let t2 = (-b + discriminant)/(2*a);
       if (t1 >= 0 && t1 <=1) {
-        var px = x1 + (t1 * (x2 - x1));
-        var py = y1 + (t1 * (y2 - y1));
+        let px = x1 + (t1 * (x2 - x1));
+        let py = y1 + (t1 * (y2 - y1));
         // angles.push(CGV.angleFromPosition(px, py))
         angles.t1 = CGV.angleFromPosition(px, py)
       }
       if (t2 >= 0 && t2 <=1) {
-        var px = x1 + (t2 * (x2 - x1));
-        var py = y1 + (t2 * (y2 - y1));
+        let px = x1 + (t2 * (x2 - x1));
+        let py = y1 + (t2 * (y2 - y1));
         // angles.push(CGV.angleFromPosition(px, py))
         angles.t2 = CGV.angleFromPosition(px, py)
       }
@@ -327,7 +327,7 @@
   // Return 2 or more angles that intersect with rectangle defined by xy, height, and width
   // Center of circle is always (0,0)
   CGV.circleAnglesFromIntersectingRect = function(radius, x, y, width, height) {
-    var angles = [];
+    let angles = [];
     // Top
     angles.push(CGV.circleAnglesFromIntersectingLine(radius, x, y, x + width, y));
     // Right
@@ -344,7 +344,7 @@
       // Essentially, with the ways the lines of the rect have been set up
       // T2 is always a start angle and T1 is always an end angle.
       // So if the very first angle is a T1 we want to move it to the end of the list of angles
-      var firstKeys = Object.keys(angles[0]);
+      let firstKeys = Object.keys(angles[0]);
       if (firstKeys.length === 1 && firstKeys[0] === 't1') {
         angles.push(angles.shift());
       } 
@@ -353,7 +353,7 @@
         angles[0].t1 = undefined;
       }
       angles = angles.map( (a) => {
-        var r = []
+        let r = []
         if (a.t1 !== undefined) {
           r.push(a.t1)
         }
@@ -384,9 +384,9 @@
    * @return {Number}
    */
   CGV.indexOfValue = function(data, search_value, upper) {
-    var min_index = 0;
-    var max_index = data.length - 1;
-    var current_index, current_value;
+    let min_index = 0;
+    let max_index = data.length - 1;
+    let current_index, current_value;
     if (data[min_index] >= search_value) return min_index;
     if (data[max_index] <= search_value) return max_index;
 
@@ -443,13 +443,13 @@
    * @return {Object}
    */
   CGV.merge = function() {
-    var data = {};
-    var object, keys, key;
-    for (var arg_i=0, arg_len=arguments.length; arg_i < arg_len; arg_i++) {
+    let data = {};
+    let object, keys, key;
+    for (let arg_i=0, arg_len=arguments.length; arg_i < arg_len; arg_i++) {
       object = arguments[arg_i];
       if (typeof object === 'object') {
         keys = Object.keys(object);
-        for (var key_i=0, key_len=keys.length; key_i < key_len; key_i++){
+        for (let key_i=0, key_len=keys.length; key_i < key_len; key_i++){
           key = keys[key_i];
           data[key] = object[key];
         }
@@ -490,7 +490,7 @@
    * @return {String}
    */
   CGV.uniqueId = function(idBase, start, currentIds) {
-    var id;
+    let id;
     do {
       id = idBase + start;
       start++;
@@ -504,9 +504,9 @@
    * https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
    */
   CGV.randomHexString = function(len) {
-    var text = "";
-    var possible = "abcdef0123456789";
-    for (var i = 0; i < len; i++) {
+    let text = "";
+    let possible = "abcdef0123456789";
+    for (let i = 0; i < len; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
@@ -520,8 +520,8 @@
    * Reference: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
    */
   CGV.getOffset = function(el) {
-    var _x = 0;
-    var _y = 0;
+    let _x = 0;
+    let _y = 0;
     while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
         _x += el.offsetLeft - el.scrollLeft;
         _y += el.offsetTop - el.scrollTop;
@@ -539,7 +539,7 @@
   //  * @return {Integer}
   //  */
   // JSV.elapsedTime = function(old_time) {
-  //   var elapsed = (new Date().getTime()) - old_time;
+  //   let elapsed = (new Date().getTime()) - old_time;
   //   return elapsed + ' ms';
   // }
   //
@@ -570,7 +570,7 @@
   //  * @return {Number}
   //  */
   // JSV.decimalPlaces = function(num) {
-  //   var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+  //   let match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
   //   if (!match) { return 0; }
   //   return Math.max(
   //              0,
@@ -587,7 +587,7 @@
   // http://krazydad.com/tutorials/makecolors.php
   CGV.colors = function(len, center, width, alpha, freq1, freq2, freq3,
                                    phase1, phase2, phase3) {
-    var colors = [];
+    let colors = [];
     if (len === undefined)      len    = 50;
     if (center === undefined)   center = 200;
     if (width === undefined)    width  = 30;
@@ -599,10 +599,10 @@
     if (phase2 === undefined)   phase2 = 2;
     if (phase3 === undefined)   phase3 = 4;
 
-    for (var i = 0; i < len; ++i) {
-      var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
-      var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
-      var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+    for (let i = 0; i < len; ++i) {
+      let red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
+      let green = Math.round(Math.sin(freq2*i + phase2) * width + center);
+      let blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
       colors.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')');
     }
     return colors;

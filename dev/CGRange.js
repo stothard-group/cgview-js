@@ -76,7 +76,7 @@
      * @member {Number} - Get the middle of the range.
      */
     get middle() {
-      var _middle = this.start + (this.length / 2);
+      let _middle = this.start + (this.length / 2);
       if (_middle > this.sequenceLength) {
         return (_middle - this.sequenceLength)
       } else {
@@ -99,7 +99,7 @@
      * @return {Number}
      */
     normalize(value) {
-      var rotations;
+      let rotations;
       if (value > this.sequenceLength) {
         rotations = Math.floor(value / this.sequenceLength);
         return (value - (this.sequenceLength * rotations) )
@@ -184,13 +184,13 @@
      * @return {Range}
      */
     mergeWithRange(range2) {
-      var range1 = this;
-      var range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
-      var range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
-      var ranges = [range1, range2, range3, range4];
-      var greatestLength = 0;
-      var rangeLength, longestRange;
-      for (var i = 0, len = ranges.length; i < len; i++) {
+      let range1 = this;
+      let range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
+      let range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
+      let ranges = [range1, range2, range3, range4];
+      let greatestLength = 0;
+      let rangeLength, longestRange;
+      for (let i = 0, len = ranges.length; i < len; i++) {
         rangeLength = ranges[i].length;
         if (rangeLength > greatestLength) {
           greatestLength = rangeLength;

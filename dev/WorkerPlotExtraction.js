@@ -12,30 +12,30 @@
     }
 
     calculateBaseContent = function(options) {
-      var progress = 0;
-      var savedProgress = 0;
-      var progressIncrement = 1;
-      var positions = [];
-      var scores = [];
-      var type = options.type;
-      var seq = options.seqString;
-      var windowSize = options.window;
-      var step = options.step;
-      var deviation = options.deviation;
-      var average = baseCalculation(type, seq);
+      let progress = 0;
+      let savedProgress = 0;
+      let progressIncrement = 1;
+      let positions = [];
+      let scores = [];
+      let type = options.type;
+      let seq = options.seqString;
+      let windowSize = options.window;
+      let step = options.step;
+      let deviation = options.deviation;
+      let average = baseCalculation(type, seq);
       // Starting points for min and max
-      var min = 1;
-      var max = 0;
-      var halfWindowSize = windowSize / 2;
-      var start, stop;
+      let min = 1;
+      let max = 0;
+      let halfWindowSize = windowSize / 2;
+      let start, stop;
 
       // Position marks the middle of the calculated window
-      for (var position = 1, len = seq.length; position < len; position += step) {
+      for (let position = 1, len = seq.length; position < len; position += step) {
         // Extract DNA for window and calculate score
         start = subtractBp(seq, position, halfWindowSize);
         stop = addBp(seq, position, halfWindowSize);
-        var subSeq = subSequence(seq, start, stop);
-        var score = baseCalculation(type, subSeq);
+        let subSeq = subSequence(seq, start, stop);
+        let score = baseCalculation(type, subSeq);
 
         if (score > max) {
           max = score;
@@ -79,7 +79,7 @@
         max = 1;
         average = 0.5;
       }
-      var baseContent = { positions: positions, scores: scores, min: min, max: max, average: average }
+      let baseContent = { positions: positions, scores: scores, min: min, max: max, average: average }
       postMessage({ messageType: 'complete', baseContent: baseContent });
     }
 
@@ -93,17 +93,17 @@
 
     calcGCContent = function(seq) {
       if (seq.length === 0) { return  0.5 }
-      var g = count(seq, 'g');
-      var c = count(seq, 'c');
+      let g = count(seq, 'g');
+      let c = count(seq, 'c');
       return ( (g + c) / seq.length )
     }
 
     calcGCSkew = function(seq) {
-      var g = count(seq, 'g');
-      var c = count(seq, 'c');
+      let g = count(seq, 'g');
+      let c = count(seq, 'c');
       if ( (g + c) === 0 ) { return 0.5 }
       // Gives value between -1 and 1
-      var value = (g - c) / (g + c);
+      let value = (g - c) / (g + c);
       // Scale to a value between 0 and 1
       return  0.5 + (value / 2);
     }
@@ -139,7 +139,7 @@
     }
 
     subSequence = function(seq, start, stop) {
-      var subSeq;
+      let subSeq;
       if (stop < start) {
         subSeq = seq.substr(start - 1) + seq.substr(0, stop);
       } else {

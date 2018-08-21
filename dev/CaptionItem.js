@@ -74,7 +74,7 @@
     }
 
     set parent(newParent) {
-      var oldParent = this.parent;
+      let oldParent = this.parent;
       this._parent = newParent;
       newParent._items.push(this);
       if (oldParent) {
@@ -188,7 +188,7 @@
     }
 
     textX() {
-      var parent = this.parent;
+      let parent = this.parent;
       if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment === 'center') {
@@ -199,11 +199,11 @@
     }
 
     textY() {
-      var parent = this.parent;
-      var y = parent.originY + parent.padding;
-      var visibleItems = this.parent.visibleItems();
-      for (var i = 0, len = visibleItems.length; i < len; i++) {
-        var item = visibleItems[i];
+      let parent = this.parent;
+      let y = parent.originY + parent.padding;
+      let visibleItems = this.parent.visibleItems();
+      for (let i = 0, len = visibleItems.length; i < len; i++) {
+        let item = visibleItems[i];
         if (item === this) { break }
         y += (item.height * 1.5);
       }
@@ -211,8 +211,8 @@
     }
 
     _textContainsPoint(pt) {
-      var textX = this.textX();
-      var textY = this.textY();
+      let textX = this.textX();
+      let textY = this.textY();
       if (pt.x >= textX && pt.x <= textX + this.width && pt.y >= textY && pt.y <= textY + this.height) {
         return true
       }
@@ -220,11 +220,11 @@
 
     highlight(color = '#FFB') {
       if (!this.visible || !this.parent.visible) { return }
-      // var ctx = this.canvas.context('background');
+      // let ctx = this.canvas.context('background');
       // ctx.fillStyle = color;
       // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
-      var ctx = this.canvas.context('ui');
-      var x = this.textX();
+      let ctx = this.canvas.context('ui');
+      let x = this.textX();
       if (this.textAlignment === 'center') {
         x -= (this.width / 2);
       } else if (this.textAlignment === 'right') {
@@ -236,7 +236,7 @@
     }
 
     remove() {
-      var parent = this.parent;
+      let parent = this.parent;
       parent._items = parent._items.remove(this);
       this.viewer.clear('captions');
       this.viewer.refreshCaptions();

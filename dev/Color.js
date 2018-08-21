@@ -59,7 +59,7 @@
       if (typeof color === 'string' || color instanceof String) {
         this._string = color;
       } else {
-        var keys = new CGV.CGArray(Object.keys(color));
+        let keys = new CGV.CGArray(Object.keys(color));
         if (keys.contains('h') && keys.contains('s') && keys.contains('v')) {
           this.hsv = color;
         } else if (keys.contains('r') && keys.contains('g') && keys.contains('b') && keys.contains('a')) {
@@ -75,7 +75,7 @@
      * @private
      */
     set _string(value) {
-      var rgba = Color.string2rgba(value, this.opacity);
+      let rgba = Color.string2rgba(value, this.opacity);
       this._rgbaString = Color.rgba2String(rgba);
       this._updateOpacityFromRgba();
     }
@@ -111,7 +111,7 @@
      * @member {Object} - Get or set the color using a RGB object.
      */
     get rgb() {
-      var result = /^rgba\((\d+),(\d+),(\d+)/.exec(this.rgbaString);
+      let result = /^rgba\((\d+),(\d+),(\d+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]) } : undefined
     }
 
@@ -124,7 +124,7 @@
      * @member {Object} - Get or set the color using a RGBA object.
      */
     get rgba() {
-      var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
+      let result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
       return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
     }
 
@@ -141,7 +141,7 @@
     }
 
     set hsv(value) {
-      var rgba = Color.hsv2rgb(value); 
+      let rgba = Color.hsv2rgb(value); 
       rgba.a = this.opacity;
       this.rgba = rgba;
     }
@@ -154,7 +154,7 @@
     }
 
     set hsl(value) {
-      var rgba = Color.hsl2rgb(value); 
+      let rgba = Color.hsl2rgb(value); 
       rgba.a = this.opacity;
       this.rgba = rgba;
     }
@@ -164,8 +164,8 @@
     }
 
     equals(color, ignoreAlpha=false) {
-      var rgb1 = this.rgba;
-      var rgb2 = color.rgba;
+      let rgb1 = this.rgba;
+      let rgb2 = color.rgba;
       if (ignoreAlpha) {
         return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b)
       } else {
@@ -174,8 +174,8 @@
     }
 
     inArray(colors, ignoreAlpha) {
-      var present = false;
-      for (var color of colors) {
+      let present = false;
+      for (let color of colors) {
         if (this.equals(color, ignoreAlpha)) {
           present = true;
           break;
@@ -185,13 +185,13 @@
     }
 
     highlight(colorAdjustment = 0.25) {
-      var hsv = this.hsv;
+      let hsv = this.hsv;
       hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
       this.hsv = hsv;
     }
 
     lighten(fraction) {
-      var hsl = this.hsl;
+      let hsl = this.hsl;
       hsl.l += CGV.constrain(fraction, 0, 1);
       hsl.l = Math.min(hsl.l, 1);
       this.hsl = hsl
@@ -199,7 +199,7 @@
     }
 
     darken(fraction) {
-      var hsl = this.hsl;
+      let hsl = this.hsl;
       hsl.l -= CGV.constrain(fraction, 0, 1);
       hsl.l = Math.max(hsl.l, 0);
       this.hsl = hsl
@@ -221,7 +221,7 @@
      * @private
      */
     _updateOpacityFromRgba() {
-      var result = /^rgba.*,([\d\.]+?)\)$/.exec(this.rgbaString);
+      let result = /^rgba.*,([\d\.]+?)\)$/.exec(this.rgbaString);
       if (result) {
         this._opacity = Color._validateOpacity(result[1]);
       }
@@ -249,7 +249,7 @@
     } else if ( /^hsl\(/.test(value) ) {
       return Color.hslStringToRgba(value, opacity)
     } else {
-      var hex = Color.name2HexString(value);
+      let hex = Color.name2HexString(value);
       return Color.hexString2rgba(hex, opacity)
     }
   }
@@ -311,7 +311,7 @@
    */
   Color.rgbString2rgba = function(rgbString, opacity = 1) {
     rgbString = rgbString.replace(/ +/g, '');
-    var result = /^rgb\((\d+),(\d+),(\d+)\)/.exec(rgbString);
+    let result = /^rgb\((\d+),(\d+),(\d+)\)/.exec(rgbString);
     return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: opacity } : undefined
   }
 
@@ -326,7 +326,7 @@
    */
   Color.rgbaString2rgba = function(rgbaString) {
     rgbaString = rgbaString.replace(/ +/g, '');
-    var result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)\)/.exec(rgbaString);
+    let result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)\)/.exec(rgbaString);
     return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
   }
 
@@ -352,9 +352,9 @@
    */
   Color.rgb2hsv = function(rgb) {
 
-    var r = rgb.r;
-    var g = rgb.g;
-    var b = rgb.b;
+    let r = rgb.r;
+    let g = rgb.g;
+    let b = rgb.b;
 
     if (r > 1 || g > 1 || b > 1) {
       r /= 255;
@@ -362,7 +362,7 @@
       b /= 255;
     }
 
-    var H, S, V, C;
+    let H, S, V, C;
     V = Math.max(r, g, b);
     C = V - Math.min(r, g, b);
     H = (C === 0 ? null :
@@ -380,8 +380,8 @@
    * @private
    */
   Color.hsv2rgb = function(hsv) {
-    var R, G, B, X, C;
-    var h = (hsv.h % 360) / 60;
+    let R, G, B, X, C;
+    let h = (hsv.h % 360) / 60;
 
     C = hsv.v * hsv.s;
     X = C * (1 - Math.abs(h % 2 - 1));
@@ -392,9 +392,9 @@
     G += [X, C, C, X, 0, 0][h];
     B += [0, 0, X, C, C, X][h];
 
-    var r = Math.floor(R * 255);
-    var g = Math.floor(G * 255);
-    var b = Math.floor(B * 255);
+    let r = Math.floor(R * 255);
+    let g = Math.floor(G * 255);
+    let b = Math.floor(B * 255);
     return { r: r, g: g, b: b };
   }
 
@@ -410,15 +410,15 @@
    * @private
    */
   Color.hexString2rgba = function(hex, opacity = 1) {
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function(m, r, g, b) {
       return r + r + g + g + b + b;
     });
     // Defaults:
-    var red = 0;
-    var green = 0;
-    var blue = 0;
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    let red = 0;
+    let green = 0;
+    let blue = 0;
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (result) {
       red = parseInt(result[1], 16);
       green = parseInt(result[2], 16);
@@ -441,17 +441,17 @@
    */
   Color.rgb2hsl = function(rgb) {
 
-    var r = rgb.r / 255;
-    var g = rgb.g / 255;
-    var b = rgb.b / 255;
+    let r = rgb.r / 255;
+    let g = rgb.g / 255;
+    let b = rgb.b / 255;
 
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
 
     if (max === min) {
       h = s = 0; // achromatic
     } else {
-      var d = max - min;
+      let d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
       switch (max) {
@@ -480,10 +480,10 @@
 	 * @return  Array           The RGB representation
 	 */
 	Color.hsl2rgb = function(hsl) {
-    var h = hsl.h;
-    var s = hsl.s;
-    var l = hsl.l;
-		var r, g, b;
+    let h = hsl.h;
+    let s = hsl.s;
+    let l = hsl.l;
+		let r, g, b;
 
 		if (s === 0) {
 			r = g = b = l; // achromatic
@@ -497,8 +497,8 @@
 				return p;
 			}
 
-			var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			var p = 2 * l - q;
+			let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			let p = 2 * l - q;
 
 			r = hue2rgb(p, q, h + 1/3);
 			g = hue2rgb(p, q, h);
@@ -551,7 +551,7 @@
    */
   Color.name2HexString = function(name) {
     name = name.toLowerCase();
-    var hex = Color.names()[name];
+    let hex = Color.names()[name];
     if (hex) {
       return hex
     } else {
@@ -568,26 +568,26 @@
   // the methods creates an array of 9 colors and starts at color number 5). This prevents always returning
   // the first few colors, if they are being changed by the user.
   Color.getColor = function(notColors=[], center=128, width=127, alpha=1) {
-    var colors = [];
-    var len = (notColors.length * 2) + 1;
-    var freq1  = 2.4;
-    var freq2  = 2.4;
-    var freq3  = 2.4;
-    var phase1 = 0;
-    var phase2 = 2;
-    var phase3 = 4;
+    let colors = [];
+    let len = (notColors.length * 2) + 1;
+    let freq1  = 2.4;
+    let freq2  = 2.4;
+    let freq3  = 2.4;
+    let phase1 = 0;
+    let phase2 = 2;
+    let phase3 = 4;
     // Generate Colors
-    for (var i = 0; i < len; ++i) {
-      var red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
-      var green = Math.round(Math.sin(freq2*i + phase2) * width + center);
-      var blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+    for (let i = 0; i < len; ++i) {
+      let red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
+      let green = Math.round(Math.sin(freq2*i + phase2) * width + center);
+      let blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
       colors.push(new Color(`rgba(${red}, ${green}, ${blue}, ${alpha})`));
     }
     // Check that is color has not been used before
-    var colorIndex = notColors.length;
+    let colorIndex = notColors.length;
     if (colorIndex > 0) {
       for (; colorIndex < colors.length; colorIndex++) {
-        var color = colors[colorIndex];
+        let color = colors[colorIndex];
         if (!color.inArray(notColors)) {
           break
         }

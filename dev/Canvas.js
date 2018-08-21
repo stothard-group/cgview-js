@@ -29,7 +29,7 @@
     }
 
     determinePixelRatio(container) {
-      var testNode = container.append("canvas")
+      let testNode = container.append("canvas")
         .style('position',  'absolute')
         .style('top',  0)
         .style('left',  0)
@@ -47,12 +47,12 @@
     }
 
     createLayers(container, layerNames, width, height) {
-      var layers = {};
+      let layers = {};
 
-      for (var i = 0, len = layerNames.length; i < len; i++) {
-        var layerName = layerNames[i]
-        var zIndex = (i + 1) * 10;
-        var node = container.append("canvas")
+      for (let i = 0, len = layerNames.length; i < len; i++) {
+        let layerName = layerNames[i]
+        let zIndex = (i + 1) * 10;
+        let node = container.append("canvas")
           .classed('cgv-layer', true)
           .classed('cgv-layer-' + layerName, true)
           .style('z-index',  zIndex)
@@ -62,7 +62,7 @@
         CGV.scaleResolution(node, CGV.pixelRatio);
 
         // Set viewer context
-        var ctx = node.getContext('2d');
+        let ctx = node.getContext('2d');
         layers[layerName] = { ctx: ctx, node: node };
       }
       return layers
@@ -71,8 +71,8 @@
     resize(width, height) {
       this.width = width;
       this.height = height;
-      for (var layerName of this.layerNames) {
-        var layerNode = this.layers(layerName).node;
+      for (let layerName of this.layerNames) {
+        let layerNode = this.layers(layerName).node;
         // Note, here the width/height will take into account the pixelRatio
         layerNode.width = this.width;
         layerNode.height = this.height;
@@ -145,12 +145,12 @@
 
     //TODO: move to setter for width and height
     refreshScales() {
-      var x_domain, y_domain;
-      var x1, x2, y1, y2;
+      let x_domain, y_domain;
+      let x1, x2, y1, y2;
       // Save scale domains to keep tract of translation
       if (this.scale.x) {
-        var orig_x_domain = this.scale.x.domain();
-        var orig_width = orig_x_domain[1] - orig_x_domain[0];
+        let orig_x_domain = this.scale.x.domain();
+        let orig_width = orig_x_domain[1] - orig_x_domain[0];
         x1 = orig_x_domain[0] / orig_width;
         x2 = orig_x_domain[1] / orig_width;
       } else {
@@ -158,8 +158,8 @@
         x2 = 0.5;
       }
       if (this.scale.y) {
-        var orig_y_domain = this.scale.y.domain();
-        var orig_height = orig_y_domain[0] - orig_y_domain[1];
+        let orig_y_domain = this.scale.y.domain();
+        let orig_height = orig_y_domain[0] - orig_y_domain[1];
         y1 = orig_y_domain[0] / orig_height;
         y2 = orig_y_domain[1] / orig_height;
       } else {
@@ -203,11 +203,11 @@
      */
     clear(layerName = 'map') {
       if (layerName === 'all') {
-        for (var i = 0, len = this.layerNames.length; i < len; i++) {
+        for (let i = 0, len = this.layerNames.length; i < len; i++) {
           this.clear(this.layerNames[i]);
         }
       } else if (layerName === 'background') {
-        var ctx = this.context('background');
+        let ctx = this.context('background');
         ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
         ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
         ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
@@ -225,12 +225,12 @@
     * Flash a message on the center of the viewer.
     */
     // flash(msg) {
-    //   var ctx = this.ctx;
+    //   let ctx = this.ctx;
     //   // this.ctx.font = this.adjust_font(1.5);
     //   ctx.textAlign = 'center';
     //   ctx.textBaseline = 'center';
-    //   var x = this.width / 2
-    //   var y = this.height / 2
+    //   let x = this.width / 2
+    //   let y = this.height / 2
     //   ctx.fillText(msg, x, y);
     // }
 
@@ -265,11 +265,11 @@
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
     drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc', showShading) {
       if (decoration === 'none') { return }
-      var scale = this.scale;
-      var ctx = this.context(layer);
-      var settings = this.viewer.settings;
-      var shadowFraction = 0.10;
-      var shadowColorDiff = 0.15;
+      let scale = this.scale;
+      let ctx = this.context(layer);
+      let settings = this.viewer.settings;
+      let shadowFraction = 0.10;
+      let shadowColorDiff = 0.15;
       ctx.lineCap = 'butt';
       // ctx.lineJoin = 'round';
       showShading = (showShading === undefined) ? settings.showShading : showShading;
@@ -277,16 +277,16 @@
 
       if (decoration === 'arc') {
         if (showShading) {
-          var shadowWidth = width * shadowFraction;
+          let shadowWidth = width * shadowFraction;
           // Main Arc
-          var mainWidth = width - (2 * shadowWidth);
+          let mainWidth = width - (2 * shadowWidth);
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = mainWidth;
           this.arcPath(layer, radius, start, stop);
           ctx.stroke();
 
-          var shadowRadiusDiff = (mainWidth / 2) + (shadowWidth / 2);
+          let shadowRadiusDiff = (mainWidth / 2) + (shadowWidth / 2);
           ctx.lineWidth = shadowWidth;
           // Highlight
           ctx.beginPath();
@@ -313,32 +313,32 @@
       if (decoration === 'clockwise-arrow' || decoration === 'counterclockwise-arrow') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
-        // var arrowHeadLengthPixels = width / 3;
-        var arrowHeadLengthPixels = width * settings.arrowHeadLength;
-        var arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
+        // let arrowHeadLengthPixels = width / 3;
+        let arrowHeadLengthPixels = width * settings.arrowHeadLength;
+        let arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
 
         // If arrow head length is longer than feature length, adjust start and stop
-        var featureLength = this.sequence.lengthOfRange(start, stop);
+        let featureLength = this.sequence.lengthOfRange(start, stop);
         if ( featureLength < arrowHeadLengthBp ) {
-          var middleBP = start + ( featureLength / 2 );
+          let middleBP = start + ( featureLength / 2 );
           start = middleBP - arrowHeadLengthBp / 2;
           stop = middleBP + arrowHeadLengthBp / 2;
         }
 
         // Set up drawing direction
-        var arcStartBp = (decoration === 'clockwise-arrow') ? start : stop;
-        var arrowTipBp = (decoration === 'clockwise-arrow') ? stop : start;
-        var direction = (decoration === 'clockwise-arrow') ? 1 : -1;
+        let arcStartBp = (decoration === 'clockwise-arrow') ? start : stop;
+        let arrowTipBp = (decoration === 'clockwise-arrow') ? stop : start;
+        let direction = (decoration === 'clockwise-arrow') ? 1 : -1;
 
         // Calculate important points
-        var halfWidth = width / 2;
-        var arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
-        var arrowTipPt = this.pointFor(arrowTipBp, radius);
-        var innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
+        let halfWidth = width / 2;
+        let arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
+        let arrowTipPt = this.pointFor(arrowTipBp, radius);
+        let innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
 
         if (showShading) {
-          var halfMainWidth =  width * (0.5 - shadowFraction);
-          var shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
+          let halfMainWidth =  width * (0.5 - shadowFraction);
+          let shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
 
           // Main Arrow
           ctx.beginPath();
@@ -351,7 +351,7 @@
           ctx.fill();
 
           // Highlight
-          var highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
+          let highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
           this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction === -1);
@@ -392,19 +392,19 @@
      * the arc is added as a straight line.
      */
     arcPath(layer, radius, startBp, stopBp, anticlockwise=false, startType='moveTo') {
-      var ctx = this.context(layer);
-      var scale = this.scale;
+      let ctx = this.context(layer);
+      let scale = this.scale;
 
       // Features less than 1000th the length of the sequence are drawn as straight lines
-      var rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
+      let rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (this.sequence.length / 1000)) {
-        var p2 = this.pointFor(stopBp, radius);
+        let p2 = this.pointFor(stopBp, radius);
         if (startType === 'lineTo') {
-          var p1 = this.pointFor(startBp, radius);
+          let p1 = this.pointFor(startBp, radius);
           ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'moveTo') {
-          var p1 = this.pointFor(startBp, radius);
+          let p1 = this.pointFor(startBp, radius);
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'noMoveTo'){
@@ -416,8 +416,8 @@
     }
 
     // drawArc(start, stop, radius, color = '#000000', width = 1) {
-    //   var scale = this.scale;
-    //   var ctx = this.ctx;
+    //   let scale = this.scale;
+    //   let ctx = this.ctx;
     //   ctx.beginPath();
     //   ctx.strokeStyle = color;
     //   ctx.lineWidth = width;
@@ -426,9 +426,9 @@
     // }
 
     radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black', cap = 'butt') {
-      var innerPt = this.pointFor(bp, radius);
-      var outerPt = this.pointFor(bp, radius + length);
-      var ctx = this.context(layer);
+      let innerPt = this.pointFor(bp, radius);
+      let outerPt = this.pointFor(bp, radius + length);
+      let ctx = this.context(layer);
 
       ctx.beginPath();
       ctx.moveTo(innerPt.x, innerPt.y);
@@ -443,9 +443,9 @@
 
 
     pointFor(bp, radius) {
-      var radians = this.scale.bp(bp);
-      var x = this.scale.x(0) + radius * Math.cos(radians);
-      var y = this.scale.y(0) + radius * Math.sin(radians);
+      let radians = this.scale.bp(bp);
+      let x = this.scale.x(0) + radius * Math.cos(radians);
+      let y = this.scale.y(0) + radius * Math.sin(radians);
       return {x: x, y: y}
     }
 
@@ -454,7 +454,7 @@
     }
 
     visibleRangesForRadius(radius, margin = 0) {
-      var angles = CGV.circleAnglesFromIntersectingRect(radius,
+      let angles = CGV.circleAnglesFromIntersectingRect(radius,
         this.scale.x.invert(0 - margin),
         this.scale.y.invert(0 - margin),
         this.width + margin * 2,
@@ -465,7 +465,7 @@
 
     //TODO if undefined, see if radius is visible
     visibleRangeForRadius(radius, margin = 0) {
-      var ranges = this.visibleRangesForRadius(radius, margin);
+      let ranges = this.visibleRangesForRadius(radius, margin);
       if (ranges.length === 2) {
         // return ranges
         return new CGV.CGRange(this.sequence, ranges[0], ranges[1])
@@ -485,8 +485,8 @@
     }
 
     centerVisible() {
-      var x = this.scale.x(0);
-      var y = this.scale.y(0);
+      let x = this.scale.x(0);
+      let y = this.scale.y(0);
       return (x >= 0 &&
               x <= this.width &&
               y >= 0 &&
@@ -498,9 +498,9 @@
      */
     maximumVisibleRadius() {
       // Maximum distance on x axis between circle center and the canvas 0 or width
-      var maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+      let maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
       // Maximum distance on y axis between circle center and the canvas 0 or height
-      var maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+      let maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
       // Return the hypotenuse
       return Math.sqrt( maxX * maxX + maxY * maxY)
     }
@@ -518,9 +518,9 @@
       } else {
         // Closest corner of the canvas
         // Minimum distance on x axis between circle center and the canvas 0 or width
-        var minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+        let minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
         // Minimum distance on y axis between circle center and the canvas 0 or height
-        var minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+        let minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
         // Return the hypotenuse
         return Math.sqrt( minX * minX + minY * minY)
       }

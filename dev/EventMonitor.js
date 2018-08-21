@@ -59,7 +59,7 @@
     }
 
     _initializeMousemove() {
-      var viewer = this.viewer;
+      let viewer = this.viewer;
       d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
         viewer.clear('ui');
         this.events.trigger('mousemove', this._createEvent(d3.event));
@@ -73,17 +73,17 @@
     }
 
     _createEvent(d3_event) {
-      var scale = this.canvas.scale;
-      var canvasX = CGV.pixel(d3_event.offsetX);
-      var canvasY = CGV.pixel(d3_event.offsetY);
-      var mapX = scale.x.invert(canvasX);
-      var mapY = scale.y.invert(canvasY);
-      var radius = Math.sqrt( mapX*mapX + mapY*mapY);
-      var slot = this.viewer.layout.slotForRadius(radius);
-      var bp = this.canvas.bpForPoint({x: mapX, y: mapY});
-      var feature = slot && slot.findFeaturesForBp(bp)[0];
-      var plot = slot && slot._plot;
-      var score = plot && plot.scoreForPosition(bp).toFixed(2);
+      let scale = this.canvas.scale;
+      let canvasX = CGV.pixel(d3_event.offsetX);
+      let canvasY = CGV.pixel(d3_event.offsetY);
+      let mapX = scale.x.invert(canvasX);
+      let mapY = scale.y.invert(canvasY);
+      let radius = Math.sqrt( mapX*mapX + mapY*mapY);
+      let slot = this.viewer.layout.slotForRadius(radius);
+      let bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      let feature = slot && slot.findFeaturesForBp(bp)[0];
+      let plot = slot && slot._plot;
+      let score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {
         bp: bp,
         radius: radius,
@@ -100,15 +100,15 @@
     }
 
     _legendSwatchClick() {
-      var viewer = this.viewer;
+      let viewer = this.viewer;
       this.events.on('click.swatch', (e) => {
-        var legend = viewer.legend;
-        var swatchedLegendItems = legend.visibleItems();
-        for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
+        let legend = viewer.legend;
+        let swatchedLegendItems = legend.visibleItems();
+        for (let i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
-            var legendItem = swatchedLegendItems[i];
+            let legendItem = swatchedLegendItems[i];
             legendItem.swatchSelected = true
-            var cp = viewer.colorPicker;
+            let cp = viewer.colorPicker;
             if (!cp.visible) {
               legend.setColorPickerPosition(cp);
             }
@@ -131,15 +131,15 @@
     }
 
     _legendSwatchMouseOver() {
-      var viewer = this.viewer;
+      let viewer = this.viewer;
       this.events.on('mousemove.swatch', (e) => {
-        var legend = viewer.legend;
-        var swatchedLegendItems = legend.visibleItems();
-        var oldHighlightedItem = legend.highlightedSwatchedItem;
+        let legend = viewer.legend;
+        let swatchedLegendItems = legend.visibleItems();
+        let oldHighlightedItem = legend.highlightedSwatchedItem;
         legend.highlightedSwatchedItem = undefined;
-        for (var i = 0, len = swatchedLegendItems.length; i < len; i++) {
+        for (let i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
-            var legendItem = swatchedLegendItems[i];
+            let legendItem = swatchedLegendItems[i];
             legendItem.swatchHighlighted = true
             this.canvas.cursor = 'pointer';
             legend.draw();

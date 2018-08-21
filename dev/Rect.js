@@ -106,11 +106,11 @@
      */
     overlap(rectArray) {
       // Gap between labels
-      var widthGap = CGV.pixel(4);
-      var r1 = this;
-      var overlap = false;
-      for (var i=0, len=rectArray.length; i < len; i++){
-        var r2 = rectArray[i];
+      let widthGap = CGV.pixel(4);
+      let r1 = this;
+      let overlap = false;
+      for (let i=0, len=rectArray.length; i < len; i++){
+        let r2 = rectArray[i];
         if (r1.x <= r2.right && r2.x <= (r1.right + widthGap) && r1.y <= r2.bottom && r2.y <= r1.bottom) {
           overlap = r2;
           break;
@@ -133,7 +133,7 @@
     }
 
     ptForClockPosition(clockPosition) {
-      var x, y;
+      let x, y;
       switch (clockPosition) {
         case 1:
         case 2:
