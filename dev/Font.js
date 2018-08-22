@@ -42,8 +42,8 @@
       if (typeof font === 'string' || font instanceof String) {
         this.string = font;
       } else {
-        let keys = new CGV.CGArray(Object.keys(font));
-        if (keys.contains('family') && keys.contains('style') && keys.contains('size')) {
+        let keys = Object.keys(font);
+        if (keys.includes('family') && keys.includes('style') && keys.includes('size')) {
           this._family = font.family;
           this._style = font.style;
           this._size = Number(font.size);

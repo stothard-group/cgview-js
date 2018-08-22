@@ -59,12 +59,12 @@
       if (typeof color === 'string' || color instanceof String) {
         this._string = color;
       } else {
-        let keys = new CGV.CGArray(Object.keys(color));
-        if (keys.contains('h') && keys.contains('s') && keys.contains('v')) {
+        let keys = Object.keys(color);
+        if (keys.includes('h') && keys.includes('s') && keys.includes('v')) {
           this.hsv = color;
-        } else if (keys.contains('r') && keys.contains('g') && keys.contains('b') && keys.contains('a')) {
+        } else if (keys.includes('r') && keys.includes('g') && keys.includes('b') && keys.includes('a')) {
           this.rgba = color;
-        } else if (keys.contains('r') && keys.contains('g') && keys.contains('b')) {
+        } else if (keys.includes('r') && keys.includes('g') && keys.includes('b')) {
           this.rgb = color;
         }
       }

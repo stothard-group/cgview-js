@@ -192,7 +192,7 @@
     plots(term) {
       let viewer = this.viewer;
       let _plots = new CGV.CGArray( viewer._plots.filter( (p) => {
-        return p.legendItem.contains(this)
+        return p.legendItem.includes(this)
       }));
       return _plots.get(term);
     }

@@ -134,7 +134,7 @@
     removeLabels(labels) {
       labels = (labels.toString() === 'CGArray') ? labels : new CGV.CGArray(labels);
       this._labels = new CGV.CGArray(
-        this._labels.filter( (i) => { return !labels.contains(i) })
+        this._labels.filter( (i) => { return !labels.includes(i) })
       );
       this.refresh();
     }

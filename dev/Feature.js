@@ -284,11 +284,11 @@
       this.canvas.clear('ui');
       let color = this.color.copy();
       color.highlight();
-      if (slot && slot.features().contains(this)) {
+      if (slot && slot.features().includes(this)) {
         this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
       } else {
         this.viewer.slots().each( (i, slot) => {
-          if (slot.features().contains(this)) {
+          if (slot.features().includes(this)) {
             this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
           }
         });
@@ -331,9 +331,9 @@
       let tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.type === 'feature') {
-          if ( (track.contents.from === 'source' && track.contents.extract.contains(this.source)) ||
-               (track.contents.from === 'type' && track.contents.extract.contains(this.type)) ||
-               (track.contents.from === 'sequence' && this.extractedFromSequence && track.features().contains(this)) ) {
+          if ( (track.contents.from === 'source' && track.contents.extract.includes(this.source)) ||
+               (track.contents.from === 'type' && track.contents.extract.includes(this.type)) ||
+               (track.contents.from === 'sequence' && this.extractedFromSequence && track.features().includes(this)) ) {
             tracks.push(track);
           }
         }
@@ -344,7 +344,7 @@
     // tracks(term) {
     //   let tracks = new CGV.CGArray();
     //   this.viewer.tracks().each( (i, track) => {
-    //     if (track.features().contains(this)) {
+    //     if (track.features().includes(this)) {
     //       tracks.push(track);
     //     }
     //   });
@@ -358,7 +358,7 @@
       let slots = new CGV.CGArray();
       this.tracks().each( (i, track) => {
         track.slots().each( (j, slot) => {
-          if (slot.features().contains(this)) {
+          if (slot.features().includes(this)) {
             slots.push(slot);
           }
         });
@@ -401,7 +401,7 @@
       // And find any new tracks that may now need to be associated with this feature
       // (e.g. if the feature source changed, it may now belong to a different track)
       this.viewer.tracks().each( (i, track) => {
-        if ( track.features().contains(this) ||
+        if ( track.features().includes(this) ||
              (track.contents.from === 'source' && track.contents.extract === this.source) ) {
           track.refresh();
         }

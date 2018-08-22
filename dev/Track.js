@@ -216,7 +216,7 @@
     removeFeatures(features) {
       features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
       this._features = new CGV.CGArray(
-        this._features.filter( (f) => { return !features.contains(f) })
+        this._features.filter( (f) => { return !features.includes(f) })
       );
       this.slots().each( (i, slot) => {
         slot.removeFeatures(features);
@@ -260,7 +260,7 @@
     updateFeatures() {
       if (this.contents.from === 'source' || this.contents.from === 'type') {
         this.viewer.features().each( (i, feature) => {
-          if (this.contents.extract.contains(feature[this.contents.from])) {
+          if (this.contents.extract.includes(feature[this.contents.from])) {
             this._features.push(feature);
           }
         });

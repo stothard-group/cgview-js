@@ -163,9 +163,9 @@
    * @param {Object} element Element to check for
    * @return {Boolean}
    */
-  CGArray.prototype.contains = function(element) {
-    return (this.indexOf(element) >= 0)
-  }
+  // CGArray.prototype.contains = function(element) {
+  //   return (this.indexOf(element) >= 0)
+  // }
 
   /**
    * Returns new CGArray with element removed
@@ -303,7 +303,7 @@
       return false
     }
     setA.forEach(function(a) {
-      if (!setB.contains(a)) {
+      if (!setB.includes(a)) {
         equals = false
         return
       }
