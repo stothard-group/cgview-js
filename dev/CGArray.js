@@ -21,6 +21,11 @@
       if (elements.length === 1) {
         super();
         this.push(elements[0]);
+      } else if (elements.length > 50000) {
+        super();
+        for (let i = 0, len = elements.length; i < len; i++) {
+          this.push(elements[i]);
+        }
       } else {
         super(...elements)
       }
@@ -84,10 +89,10 @@
 
   /**
    * Retrieve subset of CGArray or an individual element from CGArray depending on term provided.
+   * To find elements by cgvID use [Viewer.objects](Viewer.js.html#objects) instead.
    * @param {Undefined} term Return full CGArray
    * @param {Integer}   term Return element at that index (base-1)
-   * @param {String}    term Return first element with id same as string. If the id starts
-   *   with 'path-id-', the first element with that path-id will be returned.
+   * @param {String}    term Return first element with an id property same as string.
    * @param {Array}     term Return CGArray with elements with matching ids
    * @return {CGArray|or|Element}
    */
@@ -97,11 +102,7 @@
     } else if (Number.isInteger(term)) {
       return this[term-1];
     } else if (typeof term === 'string') {
-      if ( term.match(/^cgv-id-/) ) {
-        return this.filter(function(element) { return element.cgvID === term; })[0];
-      } else {
-        return this.filter(function(element) { return element.id && element.id.toLowerCase() === term.toLowerCase(); })[0];
-      }
+      return this.filter(function(element) { return element.id && element.id.toLowerCase() === term.toLowerCase(); })[0];
     } else if (Array.isArray(term)) {
       return this.filter(function(element) { return term.some(function(id) { return element.id === id; }); });
     } else {

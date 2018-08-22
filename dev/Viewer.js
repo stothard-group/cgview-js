@@ -285,12 +285,26 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     /**
      * Returns an [CGArray](CGArray.js.html) of CGObjects or a single CGObject from all the CGObejcts in the viewer.
-     * NOTE: currently only excepts a single cgvID
-     * @param {String|Array} term - A single cgvID or an array of cgvIDs
-     * @return {CGArray}
+     * @param {Undefined} term Returns all objects
+     * @param {String}    term Returns the CGObject with a cgvID equal to the string.
+     * @param {Array}     term Returns an CGArray of CGObjects with with matching cgvIDs.
+     * @return {CGArray|or|CGObject}
      */
     objects(term) {
-      return this._objects[term]
+      // return this._objects[term]
+      if (term === undefined) {
+        return this._objects;
+      } else if (typeof term === 'string') {
+        return this._objects[term];
+      } else if (Array.isArray(term)) {
+        let array = new CGV.CGArray();
+        for (let i=0, len=term.length; i < len; i++) {
+          array.push(this._objects[term[i]]);
+        }
+        return array;
+      } else {
+        return new CGArray();
+      }
     }
 
     /**
