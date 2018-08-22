@@ -326,8 +326,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     visibleCaptions(term) {
-      let filtered = this._captions.filter( (i) => { return i.visible });
-      return new CGV.CGArray(filtered).get(term)
+      // let filtered = this._captions.filter( (i) => { return i.visible });
+      // return new CGV.CGArray(filtered).get(term)
+      return this._captions.filter( i => i.visible ).get(term);
     }
 
     /**
@@ -344,10 +345,11 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     removeFeatures(features) {
       features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
-      this._features = new CGV.CGArray(
-        this._features.filter( (f) => { return !features.includes(f) })
-      );
-      let labels = features.map( (f) => { return f.label });
+      // this._features = new CGV.CGArray(
+      //   this._features.filter( (f) => { return !features.includes(f) })
+      // );
+      this._features = this._features.filter( f => !features.includes(f) );
+      let labels = features.map( f => f.label );
       this.annotation.removeLabels(labels);
       this.tracks().each( (i, track) => {
         track.removeFeatures(features);
@@ -403,16 +405,15 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     featureTypes(term) {
-      let types = this._features.map( (f) => { return f.type });
-      return new CGV.CGArray([...new Set(types)]).get(term)
+      return this._features.map( f => f.type ).unique().get(term);
     }
 
     featuresByType(type) {
-      return new CGV.CGArray( this._features.filter( (f) => { return f.type === type }));
+      return this._features.filter( f => f.type === type );
     }
 
     featuresBySource(source) {
-      return new CGV.CGArray( this._features.filter( (f) => { return f.source === source }));
+      return this._features.filter( f => f.source === source );
     }
 
     refreshCaptions() {

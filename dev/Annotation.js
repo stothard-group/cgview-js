@@ -133,9 +133,10 @@
      */
     removeLabels(labels) {
       labels = (labels.toString() === 'CGArray') ? labels : new CGV.CGArray(labels);
-      this._labels = new CGV.CGArray(
-        this._labels.filter( (i) => { return !labels.includes(i) })
-      );
+      // this._labels = new CGV.CGArray(
+      //   this._labels.filter( (i) => { return !labels.includes(i) })
+      // );
+      this._labels = this._labels.filter( i => !labels.includes(i) );
       this.refresh();
     }
 
@@ -144,8 +145,8 @@
     }
 
     refreshLabelWidths() {
-      let labelFonts = this._labels.map( (i) => { return i.font.css});
-      let labelTexts = this._labels.map( (i) => { return i.name});
+      let labelFonts = this._labels.map( i => i.font.css );
+      let labelTexts = this._labels.map( i => i.name );
       let labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
       for (let i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];

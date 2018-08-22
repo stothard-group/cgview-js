@@ -236,10 +236,7 @@
     }
 
     visibleSlots(term) {
-      let slots = new CGV.CGArray(
-        this.slots().filter( (s) => { return s.visible && s.track.visible })
-      );
-      return slots.get(term);
+      return this.slots().filter( s => s.visible && s.track.visible ).get(term);
     }
 
     slotForRadius(radius) {

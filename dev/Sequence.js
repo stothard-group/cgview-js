@@ -398,23 +398,29 @@
 
     featuresByReadingFrame(features) {
       let featuresByRF = {
-        rf_plus_1: new CGV.CGArray(),
-        rf_plus_2: new CGV.CGArray(),
-        rf_plus_3: new CGV.CGArray(),
-        rf_minus_1: new CGV.CGArray(),
-        rf_minus_2: new CGV.CGArray(),
-        rf_minus_3: new CGV.CGArray()
+        rf_plus_1: [],
+        rf_plus_2: [],
+        rf_plus_3: [],
+        rf_minus_1: [],
+        rf_minus_2: [],
+        rf_minus_3: [],
+        // rf_plus_1: new CGV.CGArray(),
+        // rf_plus_2: new CGV.CGArray(),
+        // rf_plus_3: new CGV.CGArray(),
+        // rf_minus_1: new CGV.CGArray(),
+        // rf_minus_2: new CGV.CGArray(),
+        // rf_minus_3: new CGV.CGArray()
       };
       let rf;
       features.each( (i, feature) => {
         if (feature.strand === -1) {
           rf = (this.length - feature.stop + 1) % 3;
           if (rf === 0) { rf = 3; }
-          featuresByRF['rf_minus_' + rf].push(feature);
+          featuresByRF[`rf_minus_${rf}`].push(feature);
         } else {
           rf = feature.start % 3;
           if (rf === 0) { rf = 3; }
-          featuresByRF['rf_plus_' + rf].push(feature);
+          featuresByRF[`rf_plus_${rf}`].push(feature);
         }
       });
       return featuresByRF
