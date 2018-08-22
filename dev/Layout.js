@@ -230,7 +230,7 @@
     slots(term) {
       let slots = new CGV.CGArray();
       for (let i=0, len=this._tracks.length; i < len; i++) {
-        slots.merge(this._tracks[i]._slots);
+        slots = slots.concat(this._tracks[i]._slots);
       }
       return slots.get(term);
     }

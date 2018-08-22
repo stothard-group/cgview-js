@@ -149,9 +149,9 @@
       let sequenceLength = this.sequence.length;
       let start = 0;
       let stop = 0;
-      let majorTicks = new CGV.CGArray();
+      let majorTicks = [];
       let majorTickStep = 0;
-      let minorTicks = new CGV.CGArray();
+      let minorTicks = [];
       let minorTickStep = 0;
       let tickCount = this.tickCount;
 
@@ -178,7 +178,7 @@
 
       // Create Major ticks and tickStep
       if (stop > start) {
-        majorTicks.merge( d3.ticks(start, stop, tickCount) );
+        majorTicks = majorTicks.concat( d3.ticks(start, stop, tickCount) );
         majorTickStep = d3.tickStep(start, stop, tickCount);
       } else if (stop < start) {
         // Ratio of the sequence length before 0 to sequence length after zero
@@ -187,7 +187,7 @@
         let ticksBeforeZero = Math.round(tickCount * tickCountRatio);
         let ticksAfterZero = Math.round(tickCount * (1 - tickCountRatio)) * 2; // Multiply by 2 for a margin of safety
         if (ticksBeforeZero > 0) {
-          majorTicks.merge( d3.ticks(start, sequenceLength, ticksBeforeZero) );
+          majorTicks = majorTicks.concat( d3.ticks(start, sequenceLength, ticksBeforeZero) );
           majorTickStep = Math.round(d3.tickStep(start, sequenceLength, ticksBeforeZero));
           for (let i = 1; i <= ticksAfterZero; i ++) {
             if (majorTickStep * i < start) {
@@ -195,13 +195,13 @@
             }
           }
         } else {
-          majorTicks.merge( d3.ticks(1, stop, tickCount) );
+          majorTicks = majorTicks.concat( d3.ticks(1, stop, tickCount) );
           majorTickStep = Math.round(d3.tickStep(1, stop, tickCount));
         }
       }
 
       // Find Minor ticks
-      minorTicks = new CGV.CGArray();
+      minorTicks = [];
       if ( !(majorTickStep % 5) ) {
         minorTickStep = majorTickStep / 5;
       } else if ( !(majorTickStep % 2) ) {
@@ -266,7 +266,7 @@
       // Draw Tick for first bp (Origin)
       this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
       // Draw Major ticks
-      this.majorTicks.each( (i, bp) => {
+      this.majorTicks.forEach( (bp) => {
         this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.lineCap);
         if (drawLabels) {
           let label = this.tickFormater(bp);
@@ -274,7 +274,7 @@
         }
       });
       // Draw Minor ticks
-      this.minorTicks.each( (i, bp) => {
+      this.minorTicks.forEach( (bp) => {
         this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.lineCap);
       });
     }

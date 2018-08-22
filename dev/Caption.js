@@ -193,8 +193,9 @@
      * @member {CGArray} - Get the *CaptionItems*
      */
     visibleItems(term) {
-      let filtered = this._items.filter( (i) => { return i.visible });
-      return new CGV.CGArray(filtered).get(term)
+      // let filtered = this._items.filter( (i) => { return i.visible });
+      // return new CGV.CGArray(filtered).get(term)
+      return this._items.filter( (i) => { return i.visible }).get(term);
     }
 
     /**
