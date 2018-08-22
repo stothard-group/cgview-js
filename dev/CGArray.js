@@ -81,12 +81,12 @@
    * @param {} pixel_skip
    * @retrun {CGArray}
    */
-  CGArray.prototype.draw = function(context, scale, fast, calculated, pixel_skip) {
-    for (let i=0, len=this.length; i < len; i++) {
-      this[i].draw(context, scale, fast, calculated, pixel_skip);
-    }
-    return this;
-  }
+  // CGArray.prototype.draw = function(context, scale, fast, calculated, pixel_skip) {
+  //   for (let i=0, len=this.length; i < len; i++) {
+  //     this[i].draw(context, scale, fast, calculated, pixel_skip);
+  //   }
+  //   return this;
+  // }
 
   /**
    * Iterates through each element of the CGArray and run the callback.
@@ -108,54 +108,54 @@
     return this;
   }
 
-  CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
-    let startIndex = CGV.indexOfValue(this, startValue, true);
-    let stopIndex = CGV.indexOfValue(this, stopValue, false);
-    // This helps reduce the jumpiness of feature drawing with a step 
-    // The idea is to alter the start index based on the step so the same
-    // indices should be returned. i.e. the indices should be divisible by the step.
-    if (startIndex > 0 && step > 1) {
-      startIndex += step - (startIndex % step);
-    }
-    if (stopValue >= startValue) {
-      // Return if both start and stop are between values in array
-      if (this[startIndex] > stopValue || this[stopIndex] < startValue) { return }
-      for (let i = startIndex; i <= stopIndex; i += step) {
-        callback.call(this[i], i, this[i]);
-      }
-    } else {
-      // Skip cases where the the start value is greater than the last value in array
-      if (this[startIndex] >= startValue) {
-        for (let i = startIndex, len = this.length; i < len; i += step) {
-          callback.call(this[i], i, this[i]);
-        }
-      }
-      // Skip cases where the the stop value is less than the first value in array
-      if (this[stopIndex] <= stopValue) {
-        for (let i = 0; i <= stopIndex; i += step) {
-          callback.call(this[i], i, this[i]);
-        }
-      }
-    }
-    return this;
-  }
-
-  CGArray.prototype.countFromRange = function(startValue, stopValue, step) {
-    let startIndex = CGV.indexOfValue(this, startValue, true);
-    let stopIndex = CGV.indexOfValue(this, stopValue, false);
-
-    if (startValue > this[this.length - 1]) {
-      startIndex++;
-    }
-    if (stopValue < this[0]) {
-      stopIndex--;
-    }
-    if (stopValue >= startValue) {
-      return stopIndex - startIndex + 1
-    } else {
-      return (this.length - startIndex) + stopIndex + 1
-    }
-  }
+  // CGArray.prototype.eachFromRange = function(startValue, stopValue, step, callback) {
+  //   let startIndex = CGV.indexOfValue(this, startValue, true);
+  //   let stopIndex = CGV.indexOfValue(this, stopValue, false);
+  //   // This helps reduce the jumpiness of feature drawing with a step 
+  //   // The idea is to alter the start index based on the step so the same
+  //   // indices should be returned. i.e. the indices should be divisible by the step.
+  //   if (startIndex > 0 && step > 1) {
+  //     startIndex += step - (startIndex % step);
+  //   }
+  //   if (stopValue >= startValue) {
+  //     // Return if both start and stop are between values in array
+  //     if (this[startIndex] > stopValue || this[stopIndex] < startValue) { return }
+  //     for (let i = startIndex; i <= stopIndex; i += step) {
+  //       callback.call(this[i], i, this[i]);
+  //     }
+  //   } else {
+  //     // Skip cases where the the start value is greater than the last value in array
+  //     if (this[startIndex] >= startValue) {
+  //       for (let i = startIndex, len = this.length; i < len; i += step) {
+  //         callback.call(this[i], i, this[i]);
+  //       }
+  //     }
+  //     // Skip cases where the the stop value is less than the first value in array
+  //     if (this[stopIndex] <= stopValue) {
+  //       for (let i = 0; i <= stopIndex; i += step) {
+  //         callback.call(this[i], i, this[i]);
+  //       }
+  //     }
+  //   }
+  //   return this;
+  // }
+  //
+  // CGArray.prototype.countFromRange = function(startValue, stopValue, step) {
+  //   let startIndex = CGV.indexOfValue(this, startValue, true);
+  //   let stopIndex = CGV.indexOfValue(this, stopValue, false);
+  //
+  //   if (startValue > this[this.length - 1]) {
+  //     startIndex++;
+  //   }
+  //   if (stopValue < this[0]) {
+  //     stopIndex--;
+  //   }
+  //   if (stopValue >= startValue) {
+  //     return stopIndex - startIndex + 1
+  //   } else {
+  //     return (this.length - startIndex) + stopIndex + 1
+  //   }
+  // }
 
 
   /**

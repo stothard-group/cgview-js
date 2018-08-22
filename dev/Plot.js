@@ -284,14 +284,14 @@
       let step = 1;
       if (fast) {
         // When drawing fast, use a step value scaled to base-2
-        let positionsLength = positions.countFromRange(startPosition, stopPosition);
+        let positionsLength = this.countPositionsFromRange(startPosition, stopPosition);
         let maxPositions = 4000;
         let initialStep = positionsLength / maxPositions;
         if (initialStep > 1) {
           step = CGV.base2(initialStep);
         }
       }
-      positions.eachFromRange(startPosition, stopPosition, step, (i) => {
+      this.positionsFromRange(startPosition, stopPosition, step, (i) => {
         // Handle Origin in middle of range
         if (i === 0 && startIndex !== 0) {
           canvas.arcPath('map', savedR, savedPosition, sequenceLength, false, 'lineTo');
@@ -343,6 +343,57 @@
         return true
       }
       return false
+    }
+
+    positionsFromRange(startValue, stopValue, step, callback) {
+      let positions = this.positions;
+      let startIndex = CGV.indexOfValue(positions, startValue, true);
+      let stopIndex = CGV.indexOfValue(positions, stopValue, false);
+      // This helps reduce the jumpiness of feature drawing with a step 
+      // The idea is to alter the start index based on the step so the same
+      // indices should be returned. i.e. the indices should be divisible by the step.
+      if (startIndex > 0 && step > 1) {
+        startIndex += step - (startIndex % step);
+      }
+      if (stopValue >= startValue) {
+        // Return if both start and stop are between values in array
+        if (positions[startIndex] > stopValue || positions[stopIndex] < startValue) { return }
+        for (let i = startIndex; i <= stopIndex; i += step) {
+          callback.call(positions[i], i, positions[i]);
+        }
+      } else {
+        // Skip cases where the the start value is greater than the last value in array
+        if (positions[startIndex] >= startValue) {
+          for (let i = startIndex, len = positions.length; i < len; i += step) {
+            callback.call(positions[i], i, positions[i]);
+          }
+        }
+        // Skip cases where the the stop value is less than the first value in array
+        if (positions[stopIndex] <= stopValue) {
+          for (let i = 0; i <= stopIndex; i += step) {
+            callback.call(positions[i], i, positions[i]);
+          }
+        }
+      }
+      return positions;
+    }
+
+    countPositionsFromRange(startValue, stopValue, step) {
+      let positions = this.positions;
+      let startIndex = CGV.indexOfValue(positions, startValue, true);
+      let stopIndex = CGV.indexOfValue(positions, stopValue, false);
+
+      if (startValue > positions[positions.length - 1]) {
+        startIndex++;
+      }
+      if (stopValue < positions[0]) {
+        stopIndex--;
+      }
+      if (stopValue >= startValue) {
+        return stopIndex - startIndex + 1
+      } else {
+        return (positions.length - startIndex) + stopIndex + 1
+      }
     }
 
   }
