@@ -54,6 +54,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Create map id
       this._id = CGV.randomHexString(40);
 
+      // Create object to contain all CGObjects
+      this._objects = {};
+
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
@@ -278,6 +281,16 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.draw(fast);
 
       this.trigger('resize');
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.js.html) of CGObjects or a single CGObject from all the CGObejcts in the viewer.
+     * NOTE: currently only excepts a single cgvID
+     * @param {String|Array} term - A single cgvID or an array of cgvIDs
+     * @return {CGArray}
+     */
+    objects(term) {
+      return this._objects[term]
     }
 
     /**

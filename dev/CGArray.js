@@ -6,8 +6,7 @@
   /**
    * <br />
    * CGArray is essentially an array for holding CGV Objects. Any method
-   * that works directly on an Array (Mutator methods) will work on a CGArray
-   * (e.g. pop, push, reverse)
+   * that works on an Array will also work on a CGArray.
    *
    * If a single array is provided it will be converted to an CGArray.
    * If mulitple elements are provided, they will be added to the new CGArray.
@@ -93,7 +92,6 @@
    * @return {CGArray|or|Element}
    */
   get(term) {
-    // if (arguments.length === 0) {
     if (term === undefined) {
       return this;
     } else if (Number.isInteger(term)) {

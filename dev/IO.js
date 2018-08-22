@@ -75,6 +75,9 @@
     loadJSON(data) {
       let viewer = this._viewer;
 
+      // Reset objects
+      viewer._objects = {};
+
       if (typeof data === 'string') {
         data = JSON.parse(data);
       }
