@@ -1,12 +1,11 @@
-let CGView = {};
+const CGView = {};
 
 CGView.version = '0.2';
-console.log(`CGView Version: ${CGView.version}`)
+console.log(`CGView Version: ${CGView.version}`);
 
 if (window.CGV === undefined) window.CGV = CGView;
 
 (function(CGV) {
-
   /**
    * <br />
    * The *Viewer* is the main container class for CGView. It controls the
@@ -41,15 +40,15 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId.replace('#', '');
-      this._container = d3.select('#' + this.containerId);
+      this._container = d3.select(`#${this.containerId}`);
       // Get options
       this._width = CGV.defaultFor(options.width, 600);
       this._height = CGV.defaultFor(options.height, 600);
       this._wrapper = this._container.append('div')
         .attr('class', 'cgv-wrapper')
         .style('position', 'relative')
-        .style('width', this.width + 'px')
-        .style('height', this.height + 'px');
+        .style('width', `${this.width}px`)
+        .style('height', `${this.height}px`);
 
       // Create map id
       this._id = CGV.randomHexString(40);
@@ -106,7 +105,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //////////////////////////////////////////////////////////////////////////
     // STATIC CLASSS METHODS
     //////////////////////////////////////////////////////////////////////////
-    static get debug_sections() {
+    static get debugSections() {
       return ['time', 'zoom', 'position', 'n'];
     }
 
@@ -191,19 +190,19 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {Object} - Return the canvas [scales](Canvas.html#scale)
      */
     get scale() {
-      return this.canvas.scale
+      return this.canvas.scale;
     }
 
     get colorPicker() {
       if (this._colorPicker === undefined) {
         // Create Color Picker
-        let colorPickerId = this.containerId + '-color-picker';
+        const colorPickerId = `${this.containerId}-color-picker`;
         this._container.append('div')
           // .classed('cp-color-picker-dialog', true)
-          .attr('id', this.containerId + '-color-picker');
+          .attr('id', `${this.containerId}-color-picker`);
         this._colorPicker = new CGV.ColorPicker(colorPickerId);
       }
-      return this._colorPicker
+      return this._colorPicker;
     }
 
     get debug() {
@@ -215,7 +214,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         if (options === true) {
           // Select all sections
           options = {};
-          options.sections = Viewer.debug_sections;
+          options.sections = Viewer.debugSections;
         }
         this._debug = new CGV.Debug(options);
       } else {
@@ -249,9 +248,9 @@ if (window.CGV === undefined) window.CGV = CGView;
 
 
 
-    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // METHODS
-    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Resizes the the Viewer
@@ -261,16 +260,15 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Boolean} keepAspectRatio - If only one of width/height is given the ratio will remain the same. (NOT IMPLEMENTED YET)
      * @param {Boolean} fast -  After resize, should the viewer be draw redrawn fast.
      */
-    resize(width, height, keepAspectRatio=true, fast) {
-      let canvas = this.canvas;
+    resize(width, height, keepAspectRatio = true, fast) {
       this._width = width || this.width;
       this._height = height || this.height;
 
       this._wrapper
-        .style('width', this.width + 'px')
-        .style('height', this.height + 'px');
+        .style('width', `${this.width}px`)
+        .style('height', `${this.height}px`);
 
-      this.canvas.resize(this.width, this.height)
+      this.canvas.resize(this.width, this.height);
 
       this.refreshCaptions();
       // Hide Color Picker: otherwise it may disappear off the screen
@@ -296,8 +294,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else if (typeof term === 'string') {
         return this._objects[term];
       } else if (Array.isArray(term)) {
-        let array = new CGV.CGArray();
-        for (let i=0, len=term.length; i < len; i++) {
+        const array = new CGV.CGArray();
+        for (let i = 0, len = term.length; i < len; i++) {
           array.push(this._objects[term[i]]);
         }
         return array;
@@ -363,10 +361,10 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {CGArray}
      */
     sources(term) {
-      let featureSources = this._features.map( (f) => { return f.source });
-      let plotSources = this._plots.map( (p) => { return p.source });
-      let allSources = featureSources.concat(plotSources);
-      return new CGV.CGArray([...new Set(allSources)]).get(term)
+      const featureSources = this._features.map( f => f.source );
+      const plotSources = this._plots.map( p => p.source );
+      const allSources = featureSources.concat(plotSources);
+      return new CGV.CGArray([...new Set(allSources)]).get(term);
     }
 
     removeFeatures(features) {
@@ -375,7 +373,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       //   this._features.filter( (f) => { return !features.includes(f) })
       // );
       this._features = this._features.filter( f => !features.includes(f) );
-      let labels = features.map( f => f.label );
+      const labels = features.map( f => f.label );
       this.annotation.removeLabels(labels);
       this.tracks().each( (i, track) => {
         track.removeFeatures(features);
@@ -450,44 +448,44 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     test2MoveTo(start, stop) {
-      //TODO: check for visibile range
-      let startRange = this.backbone.visibleRange;
-      let startBp = startRange.middle;
-      let endBp = new CGV.CGRange(this.sequence, start, stop).middle;
-      let startEndLength = Math.abs(endBp - startBp);
+      // TODO: check for visibile range
+      const startRange = this.backbone.visibleRange;
+      const startBp = startRange.middle;
+      const endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+      const startEndLength = Math.abs(endBp - startBp);
 
-      let zoomScale = d3.scalePow()
+      const zoomScale = d3.scalePow()
         .exponent(5)
       // let zoomScale = d3.scaleLinear()
-        .domain([1, this.sequence.length/4])
+        .domain([1, this.sequence.length / 4])
         .range([this.backbone.maxZoomFactor(), 1]);
 
-      let zoomThrough = zoomScale(startEndLength);
+      const zoomThrough = zoomScale(startEndLength);
 
-      this.testMoveTo(start, stop, {zoomThrough: zoomThrough})
+      this.testMoveTo(start, stop, {zoomThrough: zoomThrough});
     }
 
     testMoveTo(start, stop, options = {}) {
-      let duration = options.duration || 1000;
-      let ease = options.ease || d3.easeCubic;
-      let zoomThrough = options.zoomThrough;
-      let zoomFactor = this.zoomFactor;
+      const duration = options.duration || 1000;
+      const ease = options.ease || d3.easeCubic;
+      const zoomThrough = options.zoomThrough;
+      const zoomFactor = this.zoomFactor;
 
       if (zoomThrough && zoomThrough <= zoomFactor) {
-        let startRange = this.backbone.visibleRange;
-        let startBp = startRange.middle;
-        let endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+        const startRange = this.backbone.visibleRange;
+        const startBp = startRange.middle;
+        const endBp = new CGV.CGRange(this.sequence, start, stop).middle;
         let startEndLength = Math.abs(endBp - startBp);
         let middleBp;
         if ( startEndLength < (this.sequence.length / 2) ) {
-          middleBp = Math.min(startBp, endBp) + startEndLength / 2;
+          middleBp = Math.min(startBp, endBp) + (startEndLength / 2);
         } else {
           startEndLength = this.sequence.length - startEndLength;
           middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
         }
         this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
           this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
-        })
+        });
       } else {
         this.moveTo(start, stop, duration, ease);
       }
@@ -505,12 +503,12 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     moveTo(start, stop, duration = 1000, ease) {
       if (stop) {
-        let bpLength = this.sequence.lengthOfRange(start, stop);
-        let bp = this.sequence.addBp(start, bpLength / 2);
+        const bpLength = this.sequence.lengthOfRange(start, stop);
+        const bp = this.sequence.addBp(start, bpLength / 2);
         // Use viewer width as estimation arc length
-        let arcLength = this.width;
-        let zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
-        let zoomFactor = zoomedRadius / this.backbone.radius;
+        const arcLength = this.width;
+        const zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
+        const zoomFactor = zoomedRadius / this.backbone.radius;
         this.zoomTo(bp, zoomFactor, duration, ease);
       } else {
         this._moveTo(start, duration, ease);
@@ -518,32 +516,34 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     _moveTo(bp, duration = 1000, ease) {
-      let self = this;
+      const self = this;
       ease = ease || d3.easeCubic;
-      let domainX = this.scale.x.domain();
-      let domainY = this.scale.y.domain();
-      let halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
-      let halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
+      const domainX = this.scale.x.domain();
+      const domainY = this.scale.y.domain();
+      const halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
+      const halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
 
-      let radius = CGV.pixel(this.backbone.zoomedRadius);
-      let radians = this.scale.bp(bp);
-      let x = radius * Math.cos(radians);
-      let y = -radius * Math.sin(radians);
+      const radius = CGV.pixel(this.backbone.zoomedRadius);
+      const radians = this.scale.bp(bp);
+      const x = radius * Math.cos(radians);
+      const y = -radius * Math.sin(radians);
 
-      let startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      let endDomains = [ x - halfWidth, x + halfWidth, y + halfHeight, y - halfHeight];
+      const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+      const endDomains = [ x - halfWidth, x + halfWidth, y + halfHeight, y - halfHeight];
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
         .ease(ease)
         .tween('move', function() {
-          let intermDomains = d3.interpolateArray(startDomains, endDomains)
+          const intermDomains = d3.interpolateArray(startDomains, endDomains);
           return function(t) {
             self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
             self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
             self.drawFast();
-          }
-        }).on('end', function() { self.drawFull(); });
+          };
+        }).on('end', function() {
+          self.drawFull();
+        });
     }
 
 
@@ -555,34 +555,34 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} zoomFactor - The zoome level
      */
     zoomTo(bp, zoomFactor, duration = 1000, ease, callback) {
-      let self = this;
+      const self = this;
       ease = ease || d3.easeCubic;
 
-      let zoomExtent = self._zoom.scaleExtent();
+      const zoomExtent = self._zoom.scaleExtent();
       zoomFactor = CGV.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
 
       // Current Domains
-      let domainX = this.scale.x.domain();
-      let domainY = this.scale.y.domain();
+      const domainX = this.scale.x.domain();
+      const domainY = this.scale.y.domain();
 
       // Get range
-      let halfRangeWidth = this.scale.x.range()[1] / 2
-      let halfRangeHeight = this.scale.y.range()[1] / 2
+      const halfRangeWidth = this.scale.x.range()[1] / 2;
+      const halfRangeHeight = this.scale.y.range()[1] / 2;
 
-      let radius = CGV.pixel(this.backbone.radius * zoomFactor);
-      let radians = this.scale.bp(bp);
-      let x = bp ? (radius * Math.cos(radians) ) : 0;
-      let y = bp ? (-radius * Math.sin(radians) ) : 0;
+      const radius = CGV.pixel(this.backbone.radius * zoomFactor);
+      const radians = this.scale.bp(bp);
+      const x = bp ? (radius * Math.cos(radians) ) : 0;
+      const y = bp ? (-radius * Math.sin(radians) ) : 0;
 
-      let startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      let endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
+      const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+      const endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
         .ease(ease)
         .tween('move', function() {
-          let intermDomains = d3.interpolateArray(startDomains, endDomains);
-          let intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
+          const intermDomains = d3.interpolateArray(startDomains, endDomains);
+          const intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
           return function(t) {
             self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
             self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
@@ -590,7 +590,7 @@ if (window.CGV === undefined) window.CGV = CGView;
             d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
             self.trigger('zoom');
             self.drawFast();
-          }
+          };
         }).on('start', function() {
           self.trigger('zoom-start');
         }).on('end', function() {
@@ -602,15 +602,15 @@ if (window.CGV === undefined) window.CGV = CGView;
     /*
      * Set zoom level to 1 and centers map
      */
-    reset(duration=1000, ease) {
+    reset(duration = 1000, ease) {
       this.zoomTo(0, 1, duration, ease);
     }
 
     getCurrentBp() {
-      let domainX = this.scale.x.domain();
-      let domainY = this.scale.y.domain();
-      let centerX = (domainX[1] - domainX[0]) / 2 + domainX[0];
-      let centerY = (domainY[1] - domainY[0]) / 2 + domainY[0];
+      const domainX = this.scale.x.domain();
+      const domainY = this.scale.y.domain();
+      const centerX = ((domainX[1] - domainX[0]) / 2) + domainX[0];
+      const centerY = ((domainY[1] - domainY[0]) / 2) + domainY[0];
       return this.canvas.bpForPoint( {x: centerX, y: centerY} );
     }
 
@@ -630,7 +630,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     trigger(event, object) {
       this.events.trigger(event, object);
     }
-
 
   }
 

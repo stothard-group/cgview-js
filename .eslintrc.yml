@@ -8,6 +8,8 @@ extends: 'eslint:recommended'
 parserOptions:
   ecmaVersion: 2015
 rules:
+  no-console: warn
+  # valid-jsdoc: warn
   indent:
     - error
     - 2
@@ -20,7 +22,6 @@ rules:
   semi:
     - error
     - always
-  valid-jsdoc: warn
   prefer-const: error
   prefer-rest-params: error
   prefer-spread: error
@@ -36,7 +37,11 @@ rules:
   no-mixed-operators: error
   nonblock-statement-body-position: error
   brace-style: warn
-  spaced-comment: warn
+  spaced-comment:
+    - warn
+    - always
+    - exceptions:
+      - '/'
   space-before-blocks: error
   keyword-spacing: error
   space-infix-ops: error
@@ -45,7 +50,8 @@ rules:
   no-whitespace-before-property: error
   padded-blocks:
     - warn
-    - never
+    - blocks: never
+      classes: always
   comma-spacing: warn
   comma-style: warn
   comma-dangle: warn
