@@ -302,7 +302,7 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
         return array;
       } else {
-        return new CGArray();
+        return new CGV.CGArray();
       }
     }
 

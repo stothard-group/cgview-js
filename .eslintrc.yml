@@ -1,0 +1,56 @@
+env:
+  browser: true
+  es6: true
+globals:
+  d3: false
+  CGAray: false
+extends: 'eslint:recommended'
+parserOptions:
+  ecmaVersion: 2015
+rules:
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  valid-jsdoc: warn
+  prefer-const: error
+  prefer-rest-params: error
+  prefer-spread: error
+  no-var: error
+  prefer-numeric-literals: error
+  prefer-template: error
+  template-curly-spacing: error
+  dot-notation: error
+  no-multi-assign: error
+  eqeqeq: error
+  no-nested-ternary: error
+  no-unneeded-ternary: error
+  no-mixed-operators: error
+  nonblock-statement-body-position: error
+  brace-style: warn
+  spaced-comment: warn
+  space-before-blocks: error
+  keyword-spacing: error
+  space-infix-ops: error
+  eol-last: warn
+  no-trailing-spaces: warn
+  no-whitespace-before-property: error
+  padded-blocks:
+    - warn
+    - never
+  comma-spacing: warn
+  comma-style: warn
+  comma-dangle: warn
+  key-spacing: warn
+  camelcase: error
+  new-cap: error
+
+
