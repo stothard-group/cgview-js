@@ -26,6 +26,8 @@ class CGVPerformance {
       for (const zoomLevel of this.zoomLevels) {
         let bp = (zoomLevel == 1) ? 0 : 1;
         cgv.zoomTo(bp, zoomLevel, 0, undefined, function(){
+          // Visible Range
+          results[zoomLevel].visibleRange = `${d3.format(',')(cgv.backbone.visibleRange.length)}`;
           // Fast
           p.startInterval();
           cgv.drawFast();
@@ -46,6 +48,21 @@ class CGVPerformance {
     const cgv = this.cgv;
     const results = this.results;
     let text = `<pre><strong>${this.name} [${d3.format(',')(cgv.features().length)} features]</strong>\n`;
+    const padding = Array(7).join(' ');
+    const bpPadding = Array(22).join(' ');
+    text += this.pad(padding, 'Zoom');
+    text += this.pad(padding, 'Fast');
+    text += this.pad(padding, 'Full');
+    text += this.pad(bpPadding, 'Visible Range (bp)');
+    text += '\n';
+    for (const zoomLevel of this.zoomLevels) {
+      text += this.pad(padding, `${zoomLevel}x`);
+      text += this.pad(padding, this.mean(zoomLevel, 'drawFast'));
+      text += this.pad(padding, this.mean(zoomLevel, 'drawFull'));
+      text += this.pad(bpPadding, results[zoomLevel].visibleRange);
+      text += '\n';
+    }
+    text += '--------------------------------\nDetails:\n';
     text += 'Fast Draw (ms):\n';
     for (const zoomLevel of this.zoomLevels) {
       text += ` - Zoom ${zoomLevel}x: ${results[zoomLevel].drawFast.join(', ')}\n`;
@@ -57,8 +74,18 @@ class CGVPerformance {
     return text;
   }
 
-  average(zoomLevel, key) {
-    return d3.mean(this.results[zoomLevel][key]);
+  mean(zoomLevel, key) {
+    return Math.round(d3.mean(this.results[zoomLevel][key]));
+  }
+
+  pad(pad, str, padRight) {
+    if (typeof str === 'undefined')
+      return pad;
+    if (padRight) {
+      return (str + pad).substring(0, pad.length);
+    } else {
+      return (pad + str).slice(-pad.length);
+    }
   }
 
 }

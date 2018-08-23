@@ -1,6 +1,6 @@
 let CGView = {};
 
-CGView.version = '0.1';
+CGView.version = '0.2';
 console.log(`CGView Version: ${CGView.version}`)
 
 if (window.CGV === undefined) window.CGV = CGView;
@@ -291,7 +291,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {CGArray|or|CGObject}
      */
     objects(term) {
-      // return this._objects[term]
       if (term === undefined) {
         return this._objects;
       } else if (typeof term === 'string') {
