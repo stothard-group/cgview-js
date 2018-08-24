@@ -2,7 +2,6 @@
 // Font
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The *Font* class stores the font internally as a CSS font string but makes it
@@ -42,7 +41,7 @@
       if (typeof font === 'string' || font instanceof String) {
         this.string = font;
       } else {
-        let keys = Object.keys(font);
+        const keys = Object.keys(font);
         if (keys.includes('family') && keys.includes('style') && keys.includes('size')) {
           this._family = font.family;
           this._style = font.style;
@@ -58,18 +57,18 @@
      * @member {String} - Get or set the font using a simple string format: family,style,size (e.g. 'serif,plain,12').
      */
     get string() {
-      return this.family + ',' + this.style + ',' + this.size
+      return `${this.family},${this.style},${this.size}`;
     }
 
     set string(value) {
       value = value.replace(/ +/g, '');
-      let parts = value.split(',');
+      const parts = value.split(',');
       if (parts.length === 3) {
         this._family = parts[0];
         this._style = parts[1];
         this._size = Number(parts[2]);
       } else {
-        console.log('Font must have 3 parts')
+        console.log('Font must have 3 parts');
       }
       this._generateFont();
     }
@@ -78,7 +77,7 @@
      * @member {String} - Return the font as CSS usable string. This is also how the font is stored internally for quick access.
      */
     get css() {
-      return this._font
+      return this._font;
     }
 
     /**
@@ -88,9 +87,9 @@
      */
     cssScaled(scale) {
       if (scale && scale !== 1) {
-        return this._styleAsCss() + ' ' + CGV.pixel(this.size * scale) + 'px ' + this.family;
+        return `${this._styleAsCss()} ${CGV.pixel(this.size * scale)}px ${this.family}`;
       } else {
-        return this.css
+        return this.css;
       }
     }
 
@@ -99,7 +98,7 @@
      * @member {String} - Get or set the font family. Defaults to *sans-serif*.
      */
     get family() {
-      return this._family || 'sans-serif'
+      return this._family || 'sans-serif';
     }
 
     set family(value) {
@@ -114,7 +113,7 @@
      */
     get size() {
       // return this._size || CGV.pixel(12)
-      return this._size || 12
+      return this._size || 12;
     }
 
     set size(value) {
@@ -128,7 +127,7 @@
      * *bold-italic*. Defaults to *plain*.
      */
     get style() {
-      return this._style || 'plain'
+      return this._style || 'plain';
     }
 
     set style(value) {
@@ -140,7 +139,7 @@
      * @member {Boolean} - Get or set the font boldness.
      */
     get bold() {
-      return ( this.style === 'bold' || this.style === 'bold-italic')
+      return ( this.style === 'bold' || this.style === 'bold-italic');
     }
 
     set bold(value) {
@@ -163,7 +162,7 @@
      * @member {Boolean} - Get or set the font italics.
      */
     get italic() {
-      return ( this.style === 'italic' || this.style === 'bold-italic')
+      return ( this.style === 'italic' || this.style === 'bold-italic');
     }
 
     set italic(value) {
@@ -186,7 +185,7 @@
      * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
      */
     get height() {
-      return CGV.pixel(this.size)
+      return CGV.pixel(this.size);
     }
 
 
@@ -199,29 +198,29 @@
      */
     width(ctx, text) {
       ctx.font = this.css;
-      return ctx.measureText(text).width
+      return ctx.measureText(text).width;
     }
 
     copy() {
-      return new CGV.Font(this.string)
+      return new CGV.Font(this.string);
     }
 
     _styleAsCss() {
       if (this.style === 'plain') {
-        return 'normal'
+        return 'normal';
       } else if (this.style === 'bold') {
-        return 'bold'
+        return 'bold';
       } else if (this.style === 'italic') {
-        return 'italic'
+        return 'italic';
       } else if (this.style === 'bold-italic') {
-        return 'italic bold'
+        return 'italic bold';
       } else {
-        return ''
+        return '';
       }
     }
 
     _generateFont() {
-      this._font = this._styleAsCss() + ' ' + CGV.pixel(this.size) + 'px ' + this.family;
+      this._font = `${this._styleAsCss()} ${CGV.pixel(this.size)}px ${this.family}`;
       this.trigger('change', this);
     }
 
@@ -241,8 +240,8 @@
    */
   Font.calculateWidths = function(ctx, fonts, strings) {
     ctx.save();
-    let widths = [];
-    let map = [];
+    const widths = [];
+    const map = [];
 
     for (let i = 0, len = fonts.length; i < len; i++) {
       map.push({
@@ -252,12 +251,12 @@
       });
     }
 
-    map.sort( (a,b) => {
+    map.sort( (a, b) => {
       return a.font > b.font ? 1 : -1;
     });
 
-    let currentFont = ''
-    let font;
+    let currentFont = '';
+    let font, text;
     for (let i = 0, len = map.length; i < len; i++) {
       font = map[i].font;
       text = map[i].text;
@@ -269,9 +268,8 @@
       widths[map[i].index] = ctx.measureText(text).width;
     }
     ctx.restore();
-    return widths
-  }
+    return widths;
+  };
 
   CGV.Font = Font;
-
 })(CGView);

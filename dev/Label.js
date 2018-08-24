@@ -2,7 +2,6 @@
 // Label
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   class Label {
 
     constructor(feature, options = {}) {
@@ -17,7 +16,7 @@
      * @member {String} - Get or set the label name.
      */
     get name() {
-      return this._name
+      return this._name;
     }
 
     set name(value) {
@@ -42,7 +41,7 @@
      * @member {Rect} - Get or set the label bounding rect.
      */
     get rect() {
-      return this._rect
+      return this._rect;
     }
 
     set rect(value) {
@@ -53,7 +52,7 @@
      * @member {Number} - Get or set the label width.
      */
     get width() {
-      return this._width
+      return this._width;
     }
 
     set width(value) {
@@ -65,7 +64,7 @@
      * @member {Number} - Get the label height which is based on the font size.
      */
     get height() {
-      return this.font.height
+      return this.font.height;
     }
 
     /**
@@ -84,7 +83,7 @@
      *                    the label lines attaches in term of a hand on a clock. (e.g. 12 would be top middle of label)
      */
     get lineAttachment() {
-      return this._lineAttachment
+      return this._lineAttachment;
     }
 
     set lineAttachment(value) {
@@ -112,42 +111,41 @@
      * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this.feature.viewer
+      return this.feature.viewer;
     }
 
     /**
      * @member {Annotation} - Get the *Annotation*
      */
     get annotation() {
-      return this.viewer.annotation
+      return this.viewer.annotation;
     }
 
     /**
      * @member {Feature} - Get the Feature
      */
     get feature() {
-      return this._feature
+      return this._feature;
     }
 
     /**
      * @member {Number} - Get the start position of the feature
      */
     get start() {
-      return this.feature.start
+      return this.feature.start;
     }
 
     /**
      * @member {Number} - Get the stop position of the feature
      */
     get stop() {
-      return this.feature.stop
+      return this.feature.stop;
     }
 
 
   }
 
   CGV.Label = Label;
-
 })(CGView);
 
 

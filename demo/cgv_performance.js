@@ -1,6 +1,6 @@
 class CGVPerformance {
 
-  constructor(cgv, name='My Test', iterations=3) {
+  constructor(cgv, name = 'My Test', iterations = 3) {
     this.cgv = cgv;
     this.name = name;
     this.iterations = iterations;
@@ -11,21 +11,21 @@ class CGVPerformance {
         visibleRange: undefined,
         numFeatures: undefined,
         drawFast: [],
-        drawFull: [],
-      }
+        drawFull: []
+      };
     }
     this.run();
   }
 
   run() {
-    let cgv = this.cgv;
-    let layout = cgv.layout;
-    let results = this.results;
+    const cgv = this.cgv;
+    const layout = cgv.layout;
+    const results = this.results;
     for (let iteration = 1; iteration <= this.iterations; iteration++) {
-      let p = new Progress();
+      const p = new Progress();
       for (const zoomLevel of this.zoomLevels) {
-        let bp = (zoomLevel == 1) ? 0 : 1;
-        cgv.zoomTo(bp, zoomLevel, 0, undefined, function(){
+        const bp = (zoomLevel === 1) ? 0 : 1;
+        cgv.zoomTo(bp, zoomLevel, 0, undefined, function() {
           // Visible Range
           results[zoomLevel].visibleRange = `${d3.format(',')(cgv.backbone.visibleRange.length)}`;
           // Fast
@@ -79,8 +79,7 @@ class CGVPerformance {
   }
 
   pad(pad, str, padRight) {
-    if (typeof str === 'undefined')
-      return pad;
+    if (typeof str === 'undefined') return pad;
     if (padRight) {
       return (str + pad).substring(0, pad.length);
     } else {
@@ -111,7 +110,7 @@ class Progress {
   }
 
   currentTime() {
-    return new Date().getTime()
+    return new Date().getTime();
   }
 
   totalTime() {

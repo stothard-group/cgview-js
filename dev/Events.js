@@ -2,7 +2,6 @@
 // Events
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * Events is a system to plug in callbacks to specific events in CGV.
@@ -54,16 +53,16 @@
      * @param {Function} callback Function to call when event is triggered
      */
     on(event, callback) {
-      let handlers = this._handlers;
+      const handlers = this._handlers;
       checkType(event);
-      let type = parseEvent(event)
+      const type = parseEvent(event);
       if ( !handlers[type] ) handlers[type] = [];
       handlers[type].push( new Handler(event, callback) );
     }
 
     /**
      * Remove a callback function from a specific JSV event. If no __callback__ is provided,
-     * then all callbacks for the event will be removed. Namespaced events can and should be used 
+     * then all callbacks for the event will be removed. Namespaced events can and should be used
      * to avoid unintentionally removing callbacks attached by other plugins.
      * ```js
      * // Remove all callbacks attached to the 'drag-start' event.
@@ -80,18 +79,18 @@
      * @param {Function} callback Specfic function to remove
      */
     off(event, callback) {
-      let handlers = this._handlers;
+      const handlers = this._handlers;
       checkType(event);
-      let type = parseEvent(event);
-      let namespace = parseNamespace(event);
+      const type = parseEvent(event);
+      const namespace = parseNamespace(event);
       // If no callback is supplied remove all of them
       if (callback === undefined) {
         if (namespace) {
           if (type) {
-            handlers[type] = handlers[type].filter(function(h) { return h.namespace !== namespace; });
+            handlers[type] = handlers[type].filter( h => h.namespace !== namespace );
           } else {
             Object.keys(handlers).forEach(function(key) {
-              handlers[key] = handlers[key].filter(function(h) { return h.namespace !== namespace; });
+              handlers[key] = handlers[key].filter( h => h.namespace !== namespace );
             });
           }
         } else {
@@ -99,7 +98,7 @@
         }
       } else {
         // Remove specific callback
-        handlers[type] = handlers[type].filter(function(h) { return h.callback !== callback; });
+        handlers[type] = handlers[type].filter( h => h.callback !== callback );
       }
       this._handlers = handlers;
     }
@@ -117,10 +116,10 @@
      * @param {Object} object Object to be passed back to 'on'.
      */
     trigger(event, object) {
-      let handlers = this._handlers;
+      const handlers = this._handlers;
       checkType(event);
-      let type = parseEvent(event);
-      let namespace = parseNamespace(event);
+      const type = parseEvent(event);
+      const namespace = parseNamespace(event);
       if (Array.isArray(handlers[type])) {
         handlers[type].forEach(function(handler) {
           if (namespace) {
@@ -136,29 +135,28 @@
 
   /** @ignore */
 
-  let checkType = function(type) {
+  const checkType = function(type) {
     if (typeof type !== 'string') {
       throw new Error('Type must be a string');
     }
-  }
+  };
 
-  let Handler = function(event, callback) {
+  const Handler = function(event, callback) {
     this.callback = callback;
-    this.event_type = parseEvent(event);
+    this.eventType = parseEvent(event);
     this.namespace = parseNamespace(event);
-  }
+  };
 
-  let parseEvent = function(event) {
+  const parseEvent = function(event) {
     return event.replace(/\..*/, '');
-  }
+  };
 
-  let parseNamespace = function(event) {
-    result = event.match(/\.(.*)/);
-    return result ? result[1] : undefined
-  }
+  const parseNamespace = function(event) {
+    const result = event.match(/\.(.*)/);
+    return result ? result[1] : undefined;
+  };
 
   CGV.Events = Events;
-
 })(CGView);
 
 

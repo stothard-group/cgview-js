@@ -2,7 +2,6 @@
 // Annotation
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * Annotation controls the drawing and layout of features labels
@@ -37,7 +36,7 @@
      * @member {Color} - Get or set the label color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
-      return this._color
+      return this._color;
     }
 
     set color(value) {
@@ -52,7 +51,7 @@
      * @member {Number} - Get or set the label line length.
      */
     get labelLineLength() {
-      return this._labelLineLength
+      return this._labelLineLength;
     }
 
     set labelLineLength(value) {
@@ -67,7 +66,7 @@
      *    features. The favorites will be drawn and then the 40 largest features will be drawn.
      */
     get priorityMax() {
-      return this._priorityMax
+      return this._priorityMax;
     }
 
     set priorityMax(value) {
@@ -78,7 +77,7 @@
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font
+      return this._font;
     }
 
     set font(value) {
@@ -88,14 +87,14 @@
         this._font = new CGV.Font(value);
       }
       this.refreshLabelWidths();
-      this._font.on('change', () => { this.refreshLabelWidths() });
+      this._font.on('change', () => this.refreshLabelWidths());
     }
 
     /**
      * @member {Number} - The number of labels in the set.
      */
     get length() {
-      return this._labels.length
+      return this._labels.length;
     }
 
     /**
@@ -104,7 +103,7 @@
      * @return {CGArray}
      */
     labels(term) {
-      return this._labels.get(term)
+      return this._labels.get(term);
     }
 
     /**
@@ -145,9 +144,9 @@
     }
 
     refreshLabelWidths() {
-      let labelFonts = this._labels.map( i => i.font.css );
-      let labelTexts = this._labels.map( i => i.name );
-      let labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
+      const labelFonts = this._labels.map( i => i.font.css );
+      const labelTexts = this._labels.map( i => i.name );
+      const labelWidths = CGV.Font.calculateWidths(this.canvas.context('map'), labelFonts, labelTexts);
       for (let i = 0, len = this._labels.length; i < len; i++) {
         this._labels[i].width = labelWidths[i];
       }
@@ -158,17 +157,16 @@
     // unless the the whole feature is not visible.
     _calculatePositions(labels) {
       labels = labels || this._labels;
-      let visibleRange = this._visibleRange;
+      const visibleRange = this._visibleRange;
       let label, feature, containsStart, containsStop, radians;
       let featureLengthDownStream, featureLengthUpStream;
-      let sequence = this.sequence;
-      let scale = this.canvas.scale;
+      const sequence = this.sequence;
+      const scale = this.canvas.scale;
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
         containsStart = visibleRange.contains(feature.start);
         containsStop = visibleRange.contains(feature.stop);
-        let testType;
         if (containsStart && containsStop) {
           label.bp = label.bpDefault;
           label.lineAttachment = label.lineAttachmentDefault;
@@ -180,12 +178,12 @@
           } else {
             featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
             featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
-            let halfVisibleRangeLength = visibleRange.length / 2;
-            let center = visibleRange.start + halfVisibleRangeLength;
+            const halfVisibleRangeLength = visibleRange.length / 2;
+            const center = visibleRange.start + halfVisibleRangeLength;
             if (featureLengthUpStream > featureLengthDownStream) {
-              label.bp = center + halfVisibleRangeLength * featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream);
+              label.bp = center + (halfVisibleRangeLength * featureLengthDownStream / (featureLengthDownStream + featureLengthUpStream));
             } else {
-              label.bp = center + halfVisibleRangeLength * featureLengthUpStream / (featureLengthDownStream + featureLengthUpStream);
+              label.bp = center + (halfVisibleRangeLength * featureLengthUpStream / (featureLengthDownStream + featureLengthUpStream));
             }
           }
           // Calculate where the label line should attach to Label.
@@ -200,18 +198,17 @@
     // Calculates non overlapping rects for priority labels
     _calculatePriorityLabelRects(labels) {
       labels = labels || this._labels;
-      let canvas = this.canvas;
-      let scale = canvas.scale;
-      let label, bp, x, y, lineLength, overlappingRect, overlappingLabel;
-      let radius = this._outerRadius + this._labelLineMarginInner;
-      let placedRects = new CGV.CGArray();
+      const canvas = this.canvas;
+      let label, bp, lineLength, overlappingRect;
+      const radius = this._outerRadius + this._labelLineMarginInner;
+      const placedRects = new CGV.CGArray();
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         lineLength = this.labelLineLength;
         do {
-          let outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
-          let rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+          const outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
+          const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
           lineLength += label.height;
@@ -228,25 +225,23 @@
     //  - Zoom level changes
     _calculateLabelRects(labels) {
       labels = labels || this._labels;
-      let canvas = this.canvas;
-      let scale = canvas.scale;
-      let label, bp, x, y;
-      let radius = this._outerRadius + this._labelLineMarginInner;
+      const canvas = this.canvas;
+      let label, bp;
+      const radius = this._outerRadius + this._labelLineMarginInner;
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         // let innerPt = canvas.pointFor(bp, radius);
-        let outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
-        let rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+        const outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
+        const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
     }
 
-    visibleLabels(radius) {
+    visibleLabels() {
       let labelArray = new CGV.CGArray();
-      // let visibleRange = this._canvas.visibleRangeForRadius(radius);
-      let visibleRange = this._visibleRange;
+      const visibleRange = this._visibleRange;
       if (visibleRange) {
         if (visibleRange.start === 1 && visibleRange.stop === this.sequence.length) {
           labelArray = this._labels;
@@ -254,31 +249,31 @@
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
         }
       }
-      return labelArray
+      return labelArray;
     }
 
 
     // Labels must already be sorted so favorite are first
     _onlyFavoriteLabels(labels) {
       labels = labels || this._labels;
-      let nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite )
+      const nonFavoriteIndex = labels.findIndex( (label) => !label.feature.favorite );
       if (nonFavoriteIndex !== -1) {
         return labels.slice(0, nonFavoriteIndex);
       } else {
-        return labels
+        return labels;
       }
     }
 
     _sortByPriority(labels) {
       labels = labels || this._labels;
-      labels.sort( (a,b) => {
+      labels.sort( (a, b) => {
         if (b.feature.favorite === a.feature.favorite) {
-          return b.feature.length - a.feature.length
+          return b.feature.length - a.feature.length;
         } else {
-          return a.feature.favorite ? -1 : 1
+          return a.feature.favorite ? -1 : 1;
         }
       });
-      return labels
+      return labels;
     }
 
     draw(reverseRadius, directRadius) {
@@ -300,17 +295,17 @@
       }
       this._calculatePositions(possibleLabels);
 
-      let priorityLabels = possibleLabels.slice(0, this.priorityMax);
-      let remainingLabels = possibleLabels.slice(this.priorityMax);
+      const priorityLabels = possibleLabels.slice(0, this.priorityMax);
+      const remainingLabels = possibleLabels.slice(this.priorityMax);
 
       this._calculatePriorityLabelRects(priorityLabels);
       this._calculateLabelRects(remainingLabels);
 
       // Remove overlapping labels
-      let labelRects = priorityLabels.map( (p) => {return p.rect});
+      const labelRects = priorityLabels.map( p => p.rect);
       this._visibleLabels = priorityLabels;
       for (let i = 0, len = remainingLabels.length; i < len; i++) {
-        let label = remainingLabels[i];
+        const label = remainingLabels[i];
         if (!label.rect.overlap(labelRects)) {
           this._visibleLabels.push(label);
           labelRects.push(label.rect);
@@ -318,8 +313,8 @@
       }
 
       // Draw nonoverlapping labels
-      let canvas = this.canvas;
-      let ctx = canvas.context('map');
+      const canvas = this.canvas;
+      const ctx = canvas.context('map');
       let label, rect;
       ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
       ctx.textAlign = 'left';
@@ -327,14 +322,14 @@
       // Draw label lines first so that label text will draw over them
       for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
-        let color = this.color || label.feature.color;
+        const color = this.color || label.feature.color;
 
         // canvas.radiantLine('map', label.bp,
         //   directRadius + this._labelLineMarginInner,
         //   this.labelLineLength + this._labelLineMarginOuter,
-          // this._labelLineWidth, color.rgbaString, this.lineCap);
-        let innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
-        let outerPt = label.attachementPt;
+        // this._labelLineWidth, color.rgbaString, this.lineCap);
+        const innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
+        const outerPt = label.attachementPt;
         ctx.beginPath();
         ctx.moveTo(innerPt.x, innerPt.y);
         ctx.lineTo(outerPt.x, outerPt.y);
@@ -345,11 +340,11 @@
       }
 
       // Draw label text
-      let backgroundColor = this.viewer.settings.backgroundColor.copy();
+      const backgroundColor = this.viewer.settings.backgroundColor.copy();
       backgroundColor.opacity = 0.75;
       for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
-        let color = this.color || label.feature.color;
+        const color = this.color || label.feature.color;
 
         ctx.fillStyle = backgroundColor.rgbaString;
         rect = label.rect;
@@ -360,7 +355,7 @@
       }
 
       if (this.viewer.debug && this.viewer.debug.data.n) {
-        this.viewer.debug.data.n['labels'] = this._visibleLabels.length;
+        this.viewer.debug.data.n.labels = this._visibleLabels.length;
       }
     }
 
@@ -369,13 +364,12 @@
         font: this.font.string,
         color: this.color && this.color.rgbaString,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Annotation = Annotation;
-
 })(CGView);
 
 

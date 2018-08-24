@@ -1,8 +1,6 @@
-
 // ColorPicker
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   class ColorPicker {
 
 
@@ -14,7 +12,7 @@
     constructor(containerId, options = {}) {
       this.containerId = containerId;
       this._object = options.object;
-      this.container = d3.select('#' + containerId).node();
+      this.container = d3.select(`#${containerId}`).node();
       this._width = CGV.defaultFor(options.width, 100);
       this._height = CGV.defaultFor(options.height, 100);
 
@@ -67,14 +65,14 @@
     }
 
     get color() {
-      return this._color
+      return this._color;
     }
 
     /**
      * Get or set the object currently associated with the color picker
      */
     get object() {
-      return this._object
+      return this._object;
     }
 
     set object(value) {
@@ -85,7 +83,7 @@
       this._color.hsv = this.hsv;
       this._color.opacity = this.opacity;
       this.updateIndicators();
-      let pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
+      const pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
       this.pickerElement.style.backgroundColor = pickerRgbString;
       this.pickerIndicatorRect1.style.backgroundColor = this.color.rgbString;
       d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
@@ -102,69 +100,69 @@
     }
 
     updateIndicators() {
-      let hsv = this.hsv;
-      let slideY = hsv.h * this.slideElement.offsetHeight / 360;
-      let pickerHeight = this.pickerElement.offsetHeight;
-      let pickerX = hsv.s * this.pickerElement.offsetWidth;
-      let pickerY = pickerHeight - (hsv.v * pickerHeight);
-      let alphaX = this.alphaElement.offsetWidth * this.opacity;
+      const hsv = this.hsv;
+      const slideY = hsv.h * this.slideElement.offsetHeight / 360;
+      const pickerHeight = this.pickerElement.offsetHeight;
+      const pickerX = hsv.s * this.pickerElement.offsetWidth;
+      const pickerY = pickerHeight - (hsv.v * pickerHeight);
+      const alphaX = this.alphaElement.offsetWidth * this.opacity;
 
-      let pickerIndicator = this.pickerIndicator;
-      let slideIndicator = this.slideIndicator;
-      let alphaIndicator = this.alphaIndicator;
-      slideIndicator.style.top = (slideY - slideIndicator.offsetHeight/2) + 'px';
-      pickerIndicator.style.top = (pickerY - pickerIndicator.offsetHeight/2) + 'px';
-      pickerIndicator.style.left = (pickerX - pickerIndicator.offsetWidth/2) + 'px';
-      alphaIndicator.style.left = (alphaX - alphaIndicator.offsetWidth/2) + 'px';
+      const pickerIndicator = this.pickerIndicator;
+      const slideIndicator = this.slideIndicator;
+      const alphaIndicator = this.alphaIndicator;
+      slideIndicator.style.top = `${slideY - (slideIndicator.offsetHeight / 2)}px`;
+      pickerIndicator.style.top = `${pickerY - (pickerIndicator.offsetHeight / 2)}px`;
+      pickerIndicator.style.left = `${pickerX - (pickerIndicator.offsetWidth / 2)}px`;
+      alphaIndicator.style.left = `${alphaX - (alphaIndicator.offsetWidth / 2)}px`;
     }
 
     setPosition(pos) {
-      this.container.style.left = pos.x + 'px';
-      this.container.style.top = pos.y + 'px';
+      this.container.style.left = `${pos.x}px`;
+      this.container.style.top = `${pos.y}px`;
     }
 
     get width() {
-      return this.container.offsetWidth
+      return this.container.offsetWidth;
     }
 
     get height() {
-      return this.container.offsetHeight
+      return this.container.offsetHeight;
     }
 
     _colorpickerHTMLSnippet() {
       return [
         '<div class="cp-color-picker-wrapper">',
-              '<div class="cp-color-picker"></div>',
-              // '<div class="cp-color-picker-indicator"></div>',
-              '<div class="cp-color-picker-indicator">',
-                 '<div class="cp-picker-indicator-rect-1"></div>',
-                 '<div class="cp-picker-indicator-rect-2"></div>',
-              '</div>',
+        '<div class="cp-color-picker"></div>',
+        // '<div class="cp-color-picker-indicator"></div>',
+        '<div class="cp-color-picker-indicator">',
+        '<div class="cp-picker-indicator-rect-1"></div>',
+        '<div class="cp-picker-indicator-rect-2"></div>',
+        '</div>',
         '</div>',
         '<div class="cp-color-slider-wrapper">',
-              '<div class="cp-color-slider"></div>',
-              // '<div class="cp-color-slider-indicator"></div>',
-              '<div class="cp-color-slider-indicator">',
-                 '<div class="cp-color-indicator-rect-1"></div>',
-                 '<div class="cp-color-indicator-rect-2"></div>',
-              '</div>',
+        '<div class="cp-color-slider"></div>',
+        // '<div class="cp-color-slider-indicator"></div>',
+        '<div class="cp-color-slider-indicator">',
+        '<div class="cp-color-indicator-rect-1"></div>',
+        '<div class="cp-color-indicator-rect-2"></div>',
+        '</div>',
         '</div>',
         '<div class="cp-alpha-slider-wrapper">',
-              '<div class="cp-alpha-slider"></div>',
-              // '<div class="cp-alpha-slider-indicator"></div>',
-              '<div class="cp-alpha-slider-indicator">',
-                 '<div class="cp-alpha-indicator-rect-1"></div>',
-                 '<div class="cp-alpha-indicator-rect-2"></div>',
-              '</div>',
+        '<div class="cp-alpha-slider"></div>',
+        // '<div class="cp-alpha-slider-indicator"></div>',
+        '<div class="cp-alpha-slider-indicator">',
+        '<div class="cp-alpha-indicator-rect-1"></div>',
+        '<div class="cp-alpha-indicator-rect-2"></div>',
+        '</div>',
         '</div>',
         '<div class="cp-dialog-footer">',
-              '<div class="cp-footer-color-section">',
-                  '<div class="cp-color-original"></div>',
-                  '<div class="cp-color-current"></div>',
-              '</div>',
-              '<div class="cp-footer-button-section">',
-                  '<button class="cp-done-button">Done</button>',
-              '</div>',
+        '<div class="cp-footer-color-section">',
+        '<div class="cp-color-original"></div>',
+        '<div class="cp-color-current"></div>',
+        '</div>',
+        '<div class="cp-footer-button-section">',
+        '<button class="cp-done-button">Done</button>',
+        '</div>',
         '</div>'
 
       ].join('');
@@ -175,75 +173,74 @@
      * The container ID is used to make unique ids for the SVG defs
      */
     _configureView() {
-      let slide, picker, alpha;
-      let containerId = this.containerId;
-      slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '20px', height: '100px' },
-                [
-                  $el('defs', {},
-                    $el('linearGradient', { id: containerId + '-gradient-hsv', x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
-                      [
-                        $el('stop', { offset: '0%', 'stop-color': '#FF0000', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '13%', 'stop-color': '#FF00FF', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '25%', 'stop-color': '#8000FF', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '38%', 'stop-color': '#0040FF', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '50%', 'stop-color': '#00FFFF', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '63%', 'stop-color': '#00FF40', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '75%', 'stop-color': '#0BED00', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '88%', 'stop-color': '#FFFF00', 'stop-opacity': '1' }),
-                        $el('stop', { offset: '100%', 'stop-color': '#FF0000', 'stop-opacity': '1' })
-                      ]
-                     )
-                   ),
-                  $el('rect', { x: '0', y: '0', width: '20px', height: '100px', fill: 'url(#' + containerId + '-gradient-hsv)'})
-                ]
-               );
+      const containerId = this.containerId;
+      const slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '20px', height: '100px' },
+        [
+          $el('defs', {},
+            $el('linearGradient', { id: `${containerId}-gradient-hsv`, x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
+              [
+                $el('stop', { offset: '0%', 'stop-color': '#FF0000', 'stop-opacity': '1' }),
+                $el('stop', { offset: '13%', 'stop-color': '#FF00FF', 'stop-opacity': '1' }),
+                $el('stop', { offset: '25%', 'stop-color': '#8000FF', 'stop-opacity': '1' }),
+                $el('stop', { offset: '38%', 'stop-color': '#0040FF', 'stop-opacity': '1' }),
+                $el('stop', { offset: '50%', 'stop-color': '#00FFFF', 'stop-opacity': '1' }),
+                $el('stop', { offset: '63%', 'stop-color': '#00FF40', 'stop-opacity': '1' }),
+                $el('stop', { offset: '75%', 'stop-color': '#0BED00', 'stop-opacity': '1' }),
+                $el('stop', { offset: '88%', 'stop-color': '#FFFF00', 'stop-opacity': '1' }),
+                $el('stop', { offset: '100%', 'stop-color': '#FF0000', 'stop-opacity': '1' })
+              ]
+            )
+          ),
+          $el('rect', { x: '0', y: '0', width: '20px', height: '100px', fill: `url(#${containerId}-gradient-hsv)`})
+        ]
+      );
 
-      picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '100px' },
-                 [
-                   $el('defs', {},
-                     [
-                       $el('linearGradient', { id: containerId + '-gradient-black', x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
-                         [
-                           $el('stop', { offset: '0%', 'stop-color': '#000000', 'stop-opacity': '1' }),
-                           $el('stop', { offset: '100%', 'stop-color': '#CC9A81', 'stop-opacity': '0' })
-                         ]
-                        ),
-                       $el('linearGradient', { id: containerId + '-gradient-white', x1: '0%', y1: '100%', x2: '100%', y2: '100%'},
-                         [
-                           $el('stop', { offset: '0%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' }),
-                           $el('stop', { offset: '100%', 'stop-color': '#CC9A81', 'stop-opacity': '0' })
-                         ]
-                        )
-                     ]
-                    ),
-                   $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: 'url(#' + containerId + '-gradient-white)'}),
-                   $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: 'url(#' + containerId + '-gradient-black)'})
-                 ]
-                );
-
-      alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '127px', height: '10px', style: 'position: absolute;' },
+      const picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '100px' },
+        [
+          $el('defs', {},
+            [
+              $el('linearGradient', { id: `${containerId}-gradient-black`, x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
                 [
-                  $el('defs', {}, 
-                    [
-                      $el('linearGradient', { id: containerId + '-alpha-gradient' },
-                        [
-                          $el('stop', { offset: '0%', 'stop-color': '#FFFFFF', 'stop-opacity': '0' }),
-                          $el('stop', { offset: '100%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' })
-                        ]
-                       ),
-                      $el('pattern', { id: containerId + '-alpha-squares', x: '0', y: '0', width: '10px', height: '10px', patternUnits: 'userSpaceOnUse' },
-                        [
-                          $el('rect', { x: '0', y: '0', width: '10px', height: '10px', fill: 'white'}),
-                          $el('rect', { x: '0', y: '0', width: '5px', height: '5px', fill: 'lightgray'}),
-                          $el('rect', { x: '5px', y: '5px', width: '5px', height: '5px', fill: 'lightgray'})
-                        ]
-                      )
-                    ]
-                  ),
-                  $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: 'url(#' + containerId + '-alpha-squares)'}),
-                  $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: 'url(#' + containerId + '-alpha-gradient)'})
+                  $el('stop', { offset: '0%', 'stop-color': '#000000', 'stop-opacity': '1' }),
+                  $el('stop', { offset: '100%', 'stop-color': '#CC9A81', 'stop-opacity': '0' })
                 ]
-               );
+              ),
+              $el('linearGradient', { id: `${containerId}-gradient-white`, x1: '0%', y1: '100%', x2: '100%', y2: '100%'},
+                [
+                  $el('stop', { offset: '0%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' }),
+                  $el('stop', { offset: '100%', 'stop-color': '#CC9A81', 'stop-opacity': '0' })
+                ]
+              )
+            ]
+          ),
+          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: `url(#${containerId}-gradient-white)`}),
+          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: `url(#${containerId}-gradient-black)`})
+        ]
+      );
+
+      const alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '127px', height: '10px', style: 'position: absolute;' },
+        [
+          $el('defs', {},
+            [
+              $el('linearGradient', { id: `${containerId}-alpha-gradient` },
+                [
+                  $el('stop', { offset: '0%', 'stop-color': '#FFFFFF', 'stop-opacity': '0' }),
+                  $el('stop', { offset: '100%', 'stop-color': '#FFFFFF', 'stop-opacity': '1' })
+                ]
+              ),
+              $el('pattern', { id: `${containerId}-alpha-squares`, x: '0', y: '0', width: '10px', height: '10px', patternUnits: 'userSpaceOnUse' },
+                [
+                  $el('rect', { x: '0', y: '0', width: '10px', height: '10px', fill: 'white'}),
+                  $el('rect', { x: '0', y: '0', width: '5px', height: '5px', fill: 'lightgray'}),
+                  $el('rect', { x: '5px', y: '5px', width: '5px', height: '5px', fill: 'lightgray'})
+                ]
+              )
+            ]
+          ),
+          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: `url(#${containerId}-alpha-squares)`}),
+          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: `url(#${containerId}-alpha-gradient)`})
+        ]
+      );
 
       this.slideElement.appendChild(slide);
       this.pickerElement.appendChild(picker);
@@ -252,7 +249,7 @@
 
 
 
-   /**
+    /**
     * Enable drag&drop color selection.
     * @param {object} ctx ColorPicker instance.
     * @param {DOMElement} element HSV slide element or HSV picker element.
@@ -262,12 +259,12 @@
       d3.select(element).on('mousedown', function() {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        let mouseStart = mousePosition(element);
+        const mouseStart = mousePosition(element);
         d3.select(document).on('mousemove.colordrag', function() {
           if (document.selection) {
-            document.selection.empty()
+            document.selection.empty();
           } else {
-            window.getSelection().removeAllRanges()
+            window.getSelection().removeAllRanges();
           }
           listener(mouseStart);
         });
@@ -280,87 +277,87 @@
     /**
      * Return click event handler for the slider.
      * Sets picker background color and calls ctx.callback if provided.
-     */  
+     */
     slideListener() {
-      let cp = this;
-      let slideElement = cp.slideElement;
+      const cp = this;
+      const slideElement = cp.slideElement;
       return function() {
-        let mouse = mousePosition(slideElement);
-        cp.hsv.h = mouse.y / slideElement.offsetHeight * 360// + cp.hueOffset;
+        const mouse = mousePosition(slideElement);
+        cp.hsv.h = mouse.y / slideElement.offsetHeight * 360;// + cp.hueOffset;
         // Hack to fix indicator bug
-        if (cp.hsv.h >= 359) { cp.hsv.h = 359}
+        if (cp.hsv.h >= 359) { cp.hsv.h = 359;}
         cp.updateColor();
-      }
-    };
+      };
+    }
 
     /**
      * Return click event handler for the picker.
      * Calls ctx.callback if provided.
      */
     pickerListener() {
-      let cp = this;
-      let pickerElement = cp.pickerElement;
+      const cp = this;
+      const pickerElement = cp.pickerElement;
       return function() {
-        let width = pickerElement.offsetWidth;
-        let height = pickerElement.offsetHeight;
-        let mouse = mousePosition(pickerElement);
+        const width = pickerElement.offsetWidth;
+        const height = pickerElement.offsetHeight;
+        const mouse = mousePosition(pickerElement);
         cp.hsv.s = mouse.x / width;
         cp.hsv.v = (height - mouse.y) / height;
         cp.updateColor();
-      }
+      };
     }
 
     /**
      * Return click event handler for the alpha.
      * Sets alpha background color and calls ctx.callback if provided.
-     */  
+     */
     alphaListener() {
-      let cp = this;
-      let alphaElement = cp.alphaElement;
+      const cp = this;
+      const alphaElement = cp.alphaElement;
       return function() {
-        let mouse = mousePosition(alphaElement);
-        let opacity =  mouse.x / alphaElement.offsetWidth;
+        const mouse = mousePosition(alphaElement);
+        const opacity =  mouse.x / alphaElement.offsetWidth;
         cp.opacity = Number(opacity.toFixed(2));
         cp.updateColor();
-      }
-    };
+      };
+    }
 
     /**
      * Return click event handler for the dialog.
-     */  
+     */
     dialogListener() {
-      let cp = this;
-      let container = cp.container;
+      const cp = this;
+      const container = cp.container;
       return function(mouseStart) {
-        let parentOffset = CGV.getOffset(container.offsetParent);
-        let offsetX = parentOffset.left;
-        let offsetY = parentOffset.top;
-        container.style.left = (d3.event.pageX - offsetX - mouseStart.x) + 'px';
-        container.style.top = (d3.event.pageY - offsetY - mouseStart.y) + 'px';
-      }
-    };
+        const parentOffset = CGV.getOffset(container.offsetParent);
+        const offsetX = parentOffset.left;
+        const offsetY = parentOffset.top;
+        container.style.left = `${d3.event.pageX - offsetX - mouseStart.x}px`;
+        container.style.top = `${d3.event.pageY - offsetY - mouseStart.y}px`;
+      };
+    }
 
 
     /**
      * Return click event handler for the original color.
-     */  
+     */
     originalColorListener() {
-      let cp = this;
+      const cp = this;
       return function() {
         cp.setColor(cp.originalColorIndicator.style.backgroundColor);
-      }
-    };
+      };
+    }
 
     /**
      * Return click event handler for the done button.
-     */  
+     */
     doneListener() {
-      let cp = this;
+      const cp = this;
       return function() {
         cp.onChange = undefined;
-        cp.close()
-      }
-    };
+        cp.close();
+      };
+    }
 
     get visible() {
       return d3.select(this.container).style('visibility') === 'visible';
@@ -372,7 +369,7 @@
 
     open(object) {
       if (object) { this.object = object; }
-      let box = d3.select(this.container);
+      const box = d3.select(this.container);
       box.style('visibility', 'visible');
       box.transition().duration(200)
         .style('opacity', 1);
@@ -397,12 +394,10 @@
    */
   function $el(el, attrs, children) {
     el = document.createElementNS('http://www.w3.org/2000/svg', el);
-    for (let key in attrs)
-      el.setAttribute(key, attrs[key]);
+    for (const key in attrs) el.setAttribute(key, attrs[key]);
     if (Object.prototype.toString.call(children) !== '[object Array]') children = [children];
-    let i = 0, len = (children[0] && children.length) || 0;
-    for (; i < len; i++)
-      el.appendChild(children[i]);
+    const len = (children[0] && children.length) || 0;
+    for (let i = 0; i < len; i++) el.appendChild(children[i]);
     return el;
   }
 
@@ -410,11 +405,11 @@
    * Return mouse position relative to the element el.
    */
   function mousePosition(element) {
-    let width = element.offsetWidth;
-    let height = element.offsetHeight;
+    const width = element.offsetWidth;
+    const height = element.offsetHeight;
 
-    let pos = d3.mouse(element);
-    let mouse = {x: pos[0], y: pos[1]}
+    const pos = d3.mouse(element);
+    const mouse = {x: pos[0], y: pos[1]};
     if (mouse.x > width) {
       mouse.x = width;
     } else if (mouse.x < 0) {
@@ -425,9 +420,8 @@
     } else if (mouse.y < 0) {
       mouse.y = 0;
     }
-    return mouse
+    return mouse;
   }
 
   CGV.ColorPicker = ColorPicker;
-
 })(CGView);

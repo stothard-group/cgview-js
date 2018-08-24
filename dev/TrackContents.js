@@ -2,7 +2,6 @@
 // Track Contents
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * Track  Contents describes what features/plot make up the track.
@@ -11,7 +10,7 @@
   class TrackContents extends CGV.CGObject {
 
     /**
-     * Create a new track content. 
+     * Create a new track content.
      */
     constructor(track, data = {}, meta = {}) {
       super(track.viewer, data, meta);
@@ -34,14 +33,14 @@
      * @member {String} - Get the *track*.
      */
     get track() {
-      return this._track
+      return this._track;
     }
 
     /**
      * @member {String} - Get or set the *type*. Must be one of 'feature' or 'plot' [Default: 'feature']
      */
     get type() {
-      return this._type
+      return this._type;
     }
 
     set type(value) {
@@ -55,7 +54,7 @@
      *    Options are 'source', 'type', or 'sequence' [Default: 'source']
      */
     get from() {
-      return this._from
+      return this._from;
     }
 
     set from(value) {
@@ -70,7 +69,7 @@
      *    For *from* of 'sequence', the following values are possible for *extract*: 'orfs', 'start-stop-codons', 'gc-content', 'gc-skew'.
      */
     get extract() {
-      return this._extract
+      return this._extract;
     }
 
     set extract(value) {
@@ -81,7 +80,7 @@
     /** * @member {Object} - Get or set the *Options*. The *options* are passed to the SequenceExtractor.
      */
     get options() {
-      return this._options
+      return this._options;
     }
 
     set options(value) {
@@ -90,26 +89,25 @@
 
 
     toJSON() {
-      let json = {
+      const json = {
         type: this.type,
         from: this.from
-      }
+      };
       // Extract
       if (this.extract.length === 1) {
         json.extract = this.extract[0];
       } else {
         json.extract = [];
-        this.extract.each( (i, item) => { json.extract.push(item) });
+        this.extract.each( (i, item) => { json.extract.push(item); });
       }
       // Options
       if (this.options && Object.keys(this.options).length > 0) {
-        json.options = this.options
+        json.options = this.options;
       }
-      return json
+      return json;
     }
 
   }
 
   CGV.TrackContents = TrackContents;
-
 })(CGView);

@@ -2,7 +2,6 @@
 // CaptionItem
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * A *captionItem* is used to add text to a map *legend*. Individual
@@ -31,7 +30,7 @@
       this.parent = parent;
       this.meta = CGV.merge(data.meta, meta);
       this._name = CGV.defaultFor(data.name, '');
-      this.font = data.font
+      this.font = data.font;
       this.fontColor = data.fontColor;
       this._initializationComplete = true;
       this.refresh();
@@ -49,32 +48,25 @@
      * @member {String} - Alias for getting the text. Useful for querying CGArrays.
      */
     get id() {
-      return this.name
+      return this.name;
     }
 
     /**
      * @member {Caption} - Get the *Caption*
      */
     get caption() {
-      return this._parent
+      return this._parent;
     }
 
     /**
      * @member {Caption|Legend} - Get or set the *Parent*
      */
     get parent() {
-      return this._parent
-    }
-
-    /**
-     * @member {Caption|Legend} - Get or set the *Parent*
-     */
-    get parent() {
-      return this._parent
+      return this._parent;
     }
 
     set parent(newParent) {
-      let oldParent = this.parent;
+      const oldParent = this.parent;
       this._parent = newParent;
       newParent._items.push(this);
       if (oldParent) {
@@ -86,7 +78,7 @@
     }
 
     get visible() {
-      return this._visible
+      return this._visible;
     }
 
     set visible(value) {
@@ -112,7 +104,7 @@
      * @member {String} - Alias for text
      */
     get name() {
-      return this._name
+      return this._name;
     }
 
     set name(value) {
@@ -124,32 +116,32 @@
      * @member {String} - Get the text alignment of the parent *Caption* text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
-      return this.parent.textAlignment
+      return this.parent.textAlignment;
     }
 
     /**
      * @member {Number} - Get the width in pixels.
      */
     get width() {
-      return this._width
+      return this._width;
     }
 
     /**
      * @member {Number} - Get the height in pixels. This will be the same as the font size.
      */
     get height() {
-      return this.font.height
+      return this.font.height;
     }
 
     get swatchWidth() {
-      return this.height
+      return this.height;
     }
 
     /**
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font
+      return this._font;
     }
 
     set font(value) {
@@ -167,7 +159,7 @@
      * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get fontColor() {
-      return this._fontColor
+      return this._fontColor;
     }
 
     set fontColor(color) {
@@ -188,7 +180,7 @@
     }
 
     textX() {
-      let parent = this.parent;
+      const parent = this.parent;
       if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment === 'center') {
@@ -199,31 +191,31 @@
     }
 
     textY() {
-      let parent = this.parent;
+      const parent = this.parent;
       let y = parent.originY + parent.padding;
-      let visibleItems = this.parent.visibleItems();
+      const visibleItems = this.parent.visibleItems();
       for (let i = 0, len = visibleItems.length; i < len; i++) {
-        let item = visibleItems[i];
-        if (item === this) { break }
+        const item = visibleItems[i];
+        if (item === this) { break; }
         y += (item.height * 1.5);
       }
-      return y
+      return y;
     }
 
     _textContainsPoint(pt) {
-      let textX = this.textX();
-      let textY = this.textY();
+      const textX = this.textX();
+      const textY = this.textY();
       if (pt.x >= textX && pt.x <= textX + this.width && pt.y >= textY && pt.y <= textY + this.height) {
-        return true
+        return true;
       }
     }
 
     highlight(color = '#FFB') {
-      if (!this.visible || !this.parent.visible) { return }
+      if (!this.visible || !this.parent.visible) { return; }
       // let ctx = this.canvas.context('background');
       // ctx.fillStyle = color;
       // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
-      let ctx = this.canvas.context('ui');
+      const ctx = this.canvas.context('ui');
       let x = this.textX();
       if (this.textAlignment === 'center') {
         x -= (this.width / 2);
@@ -236,11 +228,11 @@
     }
 
     remove() {
-      let parent = this.parent;
+      const parent = this.parent;
       parent._items = parent._items.remove(this);
       this.viewer.clear('captions');
       this.viewer.refreshCaptions();
-      this.viewer.trigger( parent.toString().toLowerCase() + '-update');
+      this.viewer.trigger( `${parent.toString().toLowerCase()}-update`);
     }
 
     toJSON() {
@@ -249,11 +241,10 @@
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.CaptionItem = CaptionItem;
-
 })(CGView);

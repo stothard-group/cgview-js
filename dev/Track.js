@@ -2,7 +2,6 @@
 // Track
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The Track is used for layout information
@@ -24,7 +23,7 @@
       this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
       this.strand = CGV.defaultFor(data.strand, 'separated');
       this.position = CGV.defaultFor(data.position, 'both');
-      this._thicknessRatio = CGV.defaultFor(data.thicknessRatio, 1)
+      this._thicknessRatio = CGV.defaultFor(data.thicknessRatio, 1);
       this._loadProgress = 0;
       this.refresh();
     }
@@ -47,21 +46,21 @@
 
     get visible() {
       // return super.visible
-      return this._visible
+      return this._visible;
     }
 
     /**
      * @member {String} - Alias for getting the name. Useful for querying CGArrays.
      */
     get id() {
-      return this.name
+      return this.name;
     }
 
     /**
      * @member {String} - Get or set the *name*.
      */
     get name() {
-      return this._name
+      return this._name;
     }
 
     set name(value) {
@@ -71,7 +70,7 @@
     /** * @member {Viewer} - Get or set the *Layout*
      */
     get layout() {
-      return this._layout
+      return this._layout;
     }
 
     set layout(layout) {
@@ -85,13 +84,13 @@
     /** * @member {Object} - Get the *Contents*.
      */
     get contents() {
-      return this._contents
+      return this._contents;
     }
 
     /** * @member {String} - Get the *Content Type*.
      */
     get type() {
-      return this.contents.type
+      return this.contents.type;
     }
 
     /**
@@ -140,7 +139,7 @@
      * @member {Plot} - Get the plot associated with this track
      */
     get plot() {
-      return this._plot
+      return this._plot;
     }
 
     /**
@@ -161,9 +160,11 @@
      */
     get count() {
       if (this.type === 'plot') {
-        return (this.plot) ? this.plot.length : 0
+        return (this.plot) ? this.plot.length : 0;
       } else if (this.type === 'feature') {
-        return this.features().length
+        return this.features().length;
+      } else {
+        return 0;
       }
     }
 
@@ -171,7 +172,7 @@
      * @member {Viewer} - Get or set the track size as a ratio to all other tracks
      */
     get thicknessRatio() {
-      return this._thicknessRatio
+      return this._thicknessRatio;
     }
 
     set thicknessRatio(value) {
@@ -185,11 +186,11 @@
      * @return {CGArray}
      */
     features(term) {
-      return this._features.get(term)
+      return this._features.get(term);
     }
 
     slots(term) {
-      return this._slots.get(term)
+      return this._slots.get(term);
     }
 
     /**
@@ -199,13 +200,13 @@
      * @return {CGArray}
      */
     uniqueFeatures(term) {
-      let features = new CGV.CGArray();
-      for (let i=0, len=this._features.length; i < len; i++) {
+      const features = new CGV.CGArray();
+      for (let i = 0, len = this._features.length; i < len; i++) {
         if (this._features[i].tracks().length === 1) {
           features.push(this._features[i]);
         }
       }
-      return features.get(term)
+      return features.get(term);
     }
 
     /**
@@ -218,7 +219,7 @@
       // this._features = new CGV.CGArray(
       //   this._features.filter( (f) => { return !features.includes(f) })
       // );
-      this._features = this._features.filter( (f) => { return !features.includes(f) });
+      this._features = this._features.filter( f => !features.includes(f) );
       this.slots().each( (i, slot) => {
         slot.removeFeatures(features);
       });
@@ -250,7 +251,7 @@
     }
 
     extractFromSequence() {
-      let sequenceExtractor = this.viewer.sequence.sequenceExtractor;
+      const sequenceExtractor = this.viewer.sequence.sequenceExtractor;
       if (sequenceExtractor) {
         sequenceExtractor.extractTrackData(this, this.contents.extract[0], this.contents.options);
       } else {
@@ -292,37 +293,36 @@
     updateFeatureSlots() {
       this._slots = new CGV.CGArray();
       if (this.readingFrame === 'separated') {
-        let features = this.sequence.featuresByReadingFrame(this.features());
+        const features = this.sequence.featuresByReadingFrame(this.features());
         // Direct Reading Frames
-        for (let rf of [1, 2, 3]) {
-          let slot = new CGV.Slot(this, {strand: 'direct'});
-          slot.replaceFeatures(features['rf_plus_' + rf]);
+        for (const rf of [1, 2, 3]) {
+          const slot = new CGV.Slot(this, {strand: 'direct'});
+          slot.replaceFeatures(features[`rfPlus${rf}`]);
         }
         // Revers Reading Frames
-        for (let rf of [1, 2, 3]) {
-          let slot = new CGV.Slot(this, {strand: 'reverse'});
-          slot.replaceFeatures(features['rf_minus_' + rf]);
+        for (const rf of [1, 2, 3]) {
+          const slot = new CGV.Slot(this, {strand: 'reverse'});
+          slot.replaceFeatures(features[`rfMinus${rf}`]);
         }
       } else {
         if (this.strand === 'separated') {
-          let features = this.featuresByStrand();
+          const features = this.featuresByStrand();
           // Direct Slot
           let slot = new CGV.Slot(this, {strand: 'direct'});
-          slot.replaceFeatures(features.direct)
+          slot.replaceFeatures(features.direct);
           // Reverse Slot
           slot = new CGV.Slot(this, {strand: 'reverse'});
-          slot.replaceFeatures(features.reverse)
+          slot.replaceFeatures(features.reverse);
         } else if (this.strand === 'combined') {
           // Combined Slot
-          let slot = new CGV.Slot(this, {strand: 'direct'});
+          const slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(this.features());
-
         }
       }
     }
 
     featuresByStrand() {
-      let features = {};
+      const features = {};
       features.direct = new CGV.CGArray();
       features.reverse = new CGV.CGArray();
       this.features().each( (i, feature) => {
@@ -332,16 +332,16 @@
           features.direct.push(feature);
         }
       });
-      return features
+      return features;
     }
 
     updatePlotSlot() {
       this._slots = new CGV.CGArray();
-      let slot = new CGV.Slot(this, {type: 'plot'});
+      const slot = new CGV.Slot(this, {type: 'plot'});
       slot._plot = this._plot;
     }
 
-    highlight(color='#FFB') {
+    highlight(color = '#FFB') {
       if (this.visible) {
         this.slots().each( (i, slot) => {
           slot.highlight(color);
@@ -362,11 +362,10 @@
         thicknessRatio: this.thicknessRatio,
         contents: this.contents,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Track = Track;
-
 })(CGView);

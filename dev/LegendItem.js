@@ -2,7 +2,6 @@
 // LegendItem
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * A *legendItem* is used to add text to a map *legend*. Individual
@@ -30,7 +29,7 @@
      * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
      */
     constructor(parent, data = {}, meta = {}) {
-      super(parent, data, meta)
+      super(parent, data, meta);
       this._drawSwatch = CGV.defaultFor(data.drawSwatch, true);
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
@@ -50,7 +49,7 @@
      * @member {Legend} - Get the *Legend*
      */
     get legend() {
-      return this._parent
+      return this._parent;
     }
 
     /**
@@ -58,7 +57,7 @@
      * drawn beside the legendItem text.
      */
     get drawSwatch() {
-      return this._drawSwatch
+      return this._drawSwatch;
     }
 
     set drawSwatch(value) {
@@ -67,14 +66,14 @@
     }
 
     get swatchWidth() {
-      return this.height
+      return this.height;
     }
 
     /**
      * @member {Color} - Get or set the swatchColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get swatchColor() {
-      return this._swatchColor
+      return this._swatchColor;
     }
 
     set swatchColor(color) {
@@ -90,7 +89,7 @@
      * @member {String} - Get or set the decoration. Choices are *arc* [Default], *arrow*, *score*, *none*.
      */
     get decoration() {
-      return this._decoration || 'arc'
+      return this._decoration || 'arc';
     }
 
     set decoration(value) {
@@ -103,18 +102,18 @@
      * @member {Color} - Alias for  [swatchColor](LegendItem.html#swatchColor).
      */
     get color() {
-      return this.swatchColor
+      return this.swatchColor;
     }
 
     set color(color) {
-      this.swatchColor = color
+      this.swatchColor = color;
     }
 
     /**
      * @member {Boolean} - Get or set whether this item is selected
      */
     get swatchSelected() {
-      return this.legend.selectedSwatchedItem === this
+      return this.legend.selectedSwatchedItem === this;
     }
 
     set swatchSelected(value) {
@@ -131,7 +130,7 @@
      * @member {Boolean} - Get or set whether this item is highlighted
      */
     get swatchHighlighted() {
-      return this.legend.highlightedSwatchedItem === this
+      return this.legend.highlightedSwatchedItem === this;
     }
 
     set swatchHighlighted(value) {
@@ -147,7 +146,7 @@
 
     textX() {
       if (this.drawSwatch) {
-        let parent = this.parent;
+        const parent = this.parent;
         if (this.textAlignment === 'left') {
           return this.swatchX() + this.swatchWidth + parent.swatchPadding;
         } else if (this.textAlignment === 'center') {
@@ -161,7 +160,7 @@
     }
 
     swatchX() {
-      let parent = this.parent;
+      const parent = this.parent;
       if (this.textAlignment === 'left') {
         return parent.originX + parent.padding;
       } else if (this.textAlignment === 'center') {
@@ -176,10 +175,10 @@
     }
 
     _swatchContainsPoint(pt) {
-      let x = this.swatchX();
-      let y = this.swatchY();
+      const x = this.swatchX();
+      const y = this.swatchY();
       if (pt.x >= x && pt.x <= x + this.height && pt.y >= y && pt.y <= y + this.height) {
-        return true
+        return true;
       }
     }
 
@@ -200,14 +199,13 @@
     }
 
     toJSON() {
-      let json = super.toJSON();
+      const json = super.toJSON();
       json.swatchColor = this.swatchColor.rgbaString;
       json.decoration = this.decoration;
-      return json
+      return json;
     }
 
   }
 
   CGV.LegendItem = LegendItem;
-
 })(CGView);

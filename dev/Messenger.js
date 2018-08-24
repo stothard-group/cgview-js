@@ -2,7 +2,6 @@
 // Messenger
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    *
@@ -26,21 +25,21 @@
         // .attr('class', 'cgv-dialog');
         .attr('class', 'cgv-messenger')
         .style('width', this.height)
-        .style('height', this.width)
-        // .style('line-height', this.height);
-        // .style('border', '1px solid black')
-        // .style('position', 'absolute')
-        // .style('top', '0')
-        // .style('bottom', '0')
-        // .style('right', '0')
-        // .style('left', '0')
-        // .style('text-align', 'center')
-        // .style('margin', 'auto auto');
+        .style('height', this.width);
+      // .style('line-height', this.height);
+      // .style('border', '1px solid black')
+      // .style('position', 'absolute')
+      // .style('top', '0')
+      // .style('bottom', '0')
+      // .style('right', '0')
+      // .style('left', '0')
+      // .style('text-align', 'center')
+      // .style('margin', 'auto auto');
 
       this.contents = this.box.append('div')
         .attr('class', 'cgv-messenger-contents');
 
-      this._adjust_size();
+      this._adjustSize();
 
       return this;
     }
@@ -61,7 +60,7 @@
      * @member {Viewer} - Get the viewer.
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     /**
@@ -86,13 +85,14 @@
     // METHODS
     //////////////////////////////////////////////////////////////////////////
 
-  /**
+    /**
    * Opens the messenger
    * @param {Number} duration - The duration of the open animation in milliseconds. Defaults to fadeTime [Messenger.fadeTime](Messenger.html#fadeTime).
    */
-    open(duration) {
-      duration = CGV.defaultFor(duration, this.fadeTime)
-      this._adjust_size();
+    // open(duration) {
+    //   duration = CGV.defaultFor(duration, this.fadeTime);
+    open() {
+      this._adjustSize();
       this.box.style('display', 'block');
       // this.box.transition().duration(duration)
       //   .style('opacity', 1);
@@ -100,12 +100,12 @@
       return this;
     }
 
-  /**
+    /**
    * Closes the messenger
    * @param {Number} duration - The duration of the close animation in milliseconds. Defaults to fadeTime [Messenger.fadeTime](Messenger.html#fadeTime).
    */
     close(duration) {
-      duration = CGV.defaultFor(duration, this.fadeTime)
+      duration = CGV.defaultFor(duration, this.fadeTime);
       this.box.transition().duration(duration)
         .style('opacity', 0)
         .on('end', function() {
@@ -115,27 +115,27 @@
     }
 
 
-    _adjust_size() {
+    _adjustSize() {
       // Minimum buffer between dialog and edges of container (times 2)
-      let buffer = 50;
-      let wrapper_width = this._wrapper.offsetWidth;
-      let wrapper_height = this._wrapper.offsetHeight;
+      const buffer = 50;
+      const wrapperWidth = this._wrapper.offsetWidth;
+      const wrapperHeight = this._wrapper.offsetHeight;
       let width = this.width;
       let height = this.height;
 
-      if (this.height > wrapper_height - buffer) height = wrapper_height - buffer;
-      if (this.width > wrapper_width - buffer) width = wrapper_width - buffer;
+      if (this.height > wrapperHeight - buffer) height = wrapperHeight - buffer;
+      if (this.width > wrapperWidth - buffer) width = wrapperWidth - buffer;
 
-      let header_height = 20;
-      let footer_height = 20
-      let content_height = height - header_height - footer_height;
+      // const headerHeight = 20;
+      // const footerHeight = 20;
+      // const contentHeight = height - headerHeight - footerHeight;
 
       this.box
-        .style('width', width + 'px')
-        .style('height', height + 'px')
+        .style('width', `${width}px`)
+        .style('height', `${height}px`);
 
       // this.contents
-      //   .style('height', content_height + 'px');
+      //   .style('height', contentHeight + 'px');
     }
 
 
@@ -147,5 +147,4 @@
   }
 
   CGV.Messenger = Messenger;
-
 })(CGView);

@@ -3,7 +3,7 @@ env:
   es6: true
 globals:
   d3: false
-  CGAray: false
+  CGView: false
 extends: 'eslint:recommended'
 parserOptions:
   ecmaVersion: 2015
@@ -36,7 +36,13 @@ rules:
   no-unneeded-ternary: error
   no-mixed-operators: error
   nonblock-statement-body-position: error
-  brace-style: warn
+  brace-style:
+    - warn
+    - 1tbs
+    - allowSingleLine: true
+  implicit-arrow-linebreak:
+    - error
+    - beside
   spaced-comment:
     - warn
     - always

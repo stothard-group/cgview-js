@@ -2,7 +2,6 @@
 // Backbone
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The CGView Backbone is the ring that separates the direct and reverse slots
@@ -19,7 +18,7 @@
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
-      let defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
+      const defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
       this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 5);
@@ -36,7 +35,7 @@
 
 
     get visible() {
-      return this._visible
+      return this._visible;
     }
 
     set visible(value) {
@@ -49,7 +48,7 @@
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
-      return this._color
+      return this._color;
     }
 
     set color(value) {
@@ -71,14 +70,14 @@
     }
 
     get radius() {
-      return this._radius
+      return this._radius;
     }
 
     /**
      * @member {Number} - Get the zoomed backbone radius. This is the radius * zoomFacter
      */
     get zoomedRadius() {
-      return this.radius * this.viewer._zoomFactor
+      return this.radius * this.viewer._zoomFactor;
     }
 
     /**
@@ -92,14 +91,14 @@
     }
 
     get thickness() {
-      return this.visible ? this._thickness : 0
+      return this.visible ? this._thickness : 0;
     }
 
     /**
      * @member {Number} - Get the zoomed backbone thickness.
      */
     get zoomedThickness() {
-      return Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius) + (this.bpThicknessAddition / CGV.pixel(1));
+      return (Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius)) + (this.bpThicknessAddition / CGV.pixel(1));
     }
 
     /**
@@ -107,7 +106,7 @@
      */
     get maxThickness() {
       // return Math.max(this.thickness, this.sequence.thickness)
-      return Math.max(this.zoomedThickness, this.sequence.thickness)
+      return Math.max(this.zoomedThickness, this.sequence.thickness);
     }
 
     /**
@@ -115,7 +114,7 @@
      * @member {number}
      */
     get bpThicknessAddition() {
-      return this._bpThicknessAddition
+      return this._bpThicknessAddition;
     }
 
     /**
@@ -123,7 +122,7 @@
      * @member {Range}
      */
     get visibleRange() {
-      return this._visibleRange
+      return this._visibleRange;
     }
 
     /**
@@ -156,16 +155,15 @@
 
     refreshThickness() {
       if (this.pixelsPerBp() > 1 && this.visible) {
-        let zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
-        let zoomedThickness = this.zoomedThickness;
-        let addition = this.pixelsPerBp() * 2;
+        const zoomedThicknessWithoutAddition = Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius);
+        const addition = this.pixelsPerBp() * 2;
         if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
           this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
         } else {
           this._bpThicknessAddition = addition;
         }
       } else {
-        this._bpThicknessAddition = 0
+        this._bpThicknessAddition = 0;
       }
     }
 
@@ -174,13 +172,12 @@
         color: this.color.rgbaString,
         thickness: this._thickness,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Backbone = Backbone;
-
 })(CGView);
 
 

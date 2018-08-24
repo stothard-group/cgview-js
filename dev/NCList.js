@@ -2,7 +2,6 @@
 // NCList
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The NCList is a container for intervals that allows fast searching of overlaping regions.
@@ -17,11 +16,12 @@
    * https://searchcode.com/codesearch/view/17093141
    */
   class NCList {
+
     /**
      * Each interval should have a start and stop property.
      *
      * @param {Array} intervals - Array of Intervals used to create the NCList.
-     * @param {Object} options - 
+     * @param {Object} options -
      * @return {NCList}
      */
     constructor(intervals = [], options = {}) {
@@ -34,7 +34,7 @@
      * @member {Number} - The number of intervals in the NCList
      */
     get length() {
-      return this._length
+      return this._length;
     }
 
 
@@ -43,7 +43,7 @@
      */
     _normalize(intervals) {
       let interval;
-      let nomalizedIntervals = []
+      const nomalizedIntervals = [];
       for (let i = 0, len = intervals.length; i < len; i++) {
         interval = intervals[i];
         if (interval.start <= interval.stop) {
@@ -65,7 +65,7 @@
           });
         }
       }
-      return nomalizedIntervals
+      return nomalizedIntervals;
     }
 
     /**
@@ -75,57 +75,55 @@
     fill(intervals) {
       this._length = intervals.length;
       if (intervals.length === 0) {
-          this.topList = [];
-          return;
+        this.topList = [];
+        return;
       }
-      let start = this.start;
-      let end = this.end;
-      let sublist = this.sublist;
+      const start = this.start;
+      const end = this.end;
+      const sublist = this.sublist;
 
       intervals = this._normalize(intervals);
       this.intervals = intervals;
 
       // Sort by overlap
       intervals.sort(function(a, b) {
-          if (start(a) !== start(b))
-              return start(a) - start(b);
-          else
-              return end(b) - end(a);
+        if (start(a) !== start(b)) return start(a) - start(b);
+        else return end(b) - end(a);
       });
-      let sublistStack = [];
+      const sublistStack = [];
       let curList = [];
       this.topList = curList;
       curList.push(intervals[0]);
       if (intervals.length === 1) return;
       let curInterval, topSublist;
       for (let i = 1, len = intervals.length; i < len; i++) {
-          curInterval = intervals[i];
-          //if this interval is contained in the previous interval,
-          if (end(curInterval) < end(intervals[i - 1])) {
-              //create a new sublist starting with this interval
-              sublistStack.push(curList);
-              curList = new Array(curInterval);
-              sublist(intervals[i - 1], curList);
-          } else {
-              //find the right sublist for this interval
-              while (true) {
-                  if (0 === sublistStack.length) {
-                      curList.push(curInterval);
-                      break;
-                  } else {
-                      topSublist = sublistStack[sublistStack.length - 1];
-                      if (end(topSublist[topSublist.length - 1])
+        curInterval = intervals[i];
+        // if this interval is contained in the previous interval,
+        if (end(curInterval) < end(intervals[i - 1])) {
+          // create a new sublist starting with this interval
+          sublistStack.push(curList);
+          curList = new Array(curInterval);
+          sublist(intervals[i - 1], curList);
+        } else {
+          // find the right sublist for this interval
+          while (true) {
+            if (0 === sublistStack.length) {
+              curList.push(curInterval);
+              break;
+            } else {
+              topSublist = sublistStack[sublistStack.length - 1];
+              if (end(topSublist[topSublist.length - 1])
                           > end(curInterval)) {
-                          //curList is the first (deepest) sublist that
-                          //curInterval fits into
-                          curList.push(curInterval);
-                          break;
-                      } else {
-                          curList = sublistStack.pop();
-                      }
-                  }
+                // curList is the first (deepest) sublist that
+                // curInterval fits into
+                curList.push(curInterval);
+                break;
+              } else {
+                curList = sublistStack.pop();
               }
+            }
           }
+        }
       }
     }
 
@@ -133,14 +131,14 @@
      * Method to retrieve the stop coordinate of the interval
      */
     end(interval) {
-      return interval.stop || interval.interval.stop
+      return interval.stop || interval.interval.stop;
     }
 
     /**
      * Method to retrieve the start coordinate of the interval
      */
     start(interval) {
-      return interval.start || interval.interval.start
+      return interval.start || interval.interval.start;
     }
 
     /**
@@ -152,18 +150,18 @@
 
     _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
       let skip;
-      let len = list.length;
+      const len = list.length;
       let i, direction;
       if (step > 0) {
         direction = 1;
-        i = this._binarySearch(list, start, true, 'end')
+        i = this._binarySearch(list, start, true, 'end');
       } else if (step < 0) {
         direction = -1;
-        i = this._binarySearch(list, stop, false, 'start')
+        i = this._binarySearch(list, stop, false, 'start');
       }
       while (i >= 0 && i < len &&
         ( (direction === 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
-        skip = false
+        skip = false;
         if (list[i].crossesOrigin) {
           if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) !== -1) {
             skip = true;
@@ -188,7 +186,7 @@
      * @param {Number} stop - Stop position of the range [Default: same as start]
      * @param {Number} step - Skip intervals by increasing the step [Default: 1]
      */
-    run(start, stop=start, step=1, callback = function() {}) {
+    run(start, stop = start, step = 1, callback = function() {}) {
       this._runIntervalsCrossingOrigin = [];
       if (this.circularLength && stop < start) {
         this._run(start, this.circularLength, step,  callback);
@@ -207,10 +205,10 @@
      */
     count(start, stop, step) {
       let count = 0;
-      this.run(start, stop, step, (i) => {
-        count++
+      this.run(start, stop, step, () => {
+        count++;
       });
-      return count
+      return count;
     }
 
     /*
@@ -221,31 +219,31 @@
      * @return {Array}
      */
     find(start, stop, step) {
-      let overlaps = [];
+      const overlaps = [];
       this.run(start, stop, step, (i) => {
         overlaps.push(i);
       });
-      return overlaps
+      return overlaps;
     }
 
 
-    _binarySearch(data, search_value, upper, getter) {
-      let min_index = -1;
-      let max_index = data.length;
-      let current_index, current_value;
+    _binarySearch(data, searchValue, upper, getter) {
+      let minIndex = -1;
+      let maxIndex = data.length;
+      let currentIndex, currentValue;
 
-      while (max_index - min_index > 1) {
-        current_index = (min_index + max_index) / 2 | 0;
-        current_value = this[getter](data[current_index]);
-        if (current_value < search_value) {
-          min_index = current_index;
-        } else if (current_value > search_value){
-          max_index = current_index;
+      while (maxIndex - minIndex > 1) {
+        currentIndex = (minIndex + maxIndex) / 2 | 0;
+        currentValue = this[getter](data[currentIndex]);
+        if (currentValue < searchValue) {
+          minIndex = currentIndex;
+        } else if (currentValue > searchValue) {
+          maxIndex = currentIndex;
         } else {
-          return current_index;
+          return currentIndex;
         }
       }
-      return (upper ? max_index : min_index);
+      return (upper ? maxIndex : minIndex);
     }
 
 
@@ -254,14 +252,14 @@
      */
     static test() {
       function testInterval(nc, start, stop, expected) {
-        let result = nc.find(start, stop).map( (n) => {return n.name}).sort().join(', ')
-        var expected = expected.sort().join(', ');
-        let testOut = '' + start + '..' + stop + ': ' + expected + ' - ';
-        testOut += (result === expected) ? 'Pass' : 'FAIL' + ' - ' + result;
+        const result = nc.find(start, stop).map( n => n.name ).sort().join(', ');
+        expected = expected.sort().join(', ');
+        let testOut = `${start}..${stop}: ${expected} - `;
+        testOut += (result === expected) ? 'Pass' : `${'FAIL' + ' - '}${result}`;
         console.log(testOut);
       }
 
-      let intervals = [
+      const intervals = [
         {name: 'A', start: 1, stop: 20},
         {name: 'B', start: 10, stop: 15},
         {name: 'C', start: 10, stop: 20},
@@ -274,20 +272,19 @@
         {name: 'J', start: 95, stop: 15},
         {name: 'K', start: 95, stop: 2},
         {name: 'L', start: 92, stop: 50}
-      ]
-      let nc = new CGV.NCList(intervals, { circularLength: 100 });
+      ];
+      const nc = new CGV.NCList(intervals, { circularLength: 100 });
 
       testInterval(nc, 10, 20, ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'L']);
       testInterval(nc, 40, 85, ['F', 'G', 'L']);
       testInterval(nc, 40, 95, ['F', 'G', 'H', 'I', 'J', 'K', 'L']);
       testInterval(nc, 95, 10, ['A', 'B', 'C', 'G', 'H', 'I', 'J', 'K', 'L']);
 
-      return nc
+      return nc;
     }
 
   }
 
   CGV.NCList = NCList;
-
 })(CGView);
 

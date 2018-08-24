@@ -2,7 +2,6 @@
 // Settings
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The CGView Settings contain general settings for the viewer.
@@ -33,7 +32,7 @@
      * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get backgroundColor() {
-      return this._backgroundColor
+      return this._backgroundColor;
     }
 
     set backgroundColor(color) {
@@ -57,14 +56,14 @@
     }
 
     get arrowHeadLength() {
-      return this._arrowHeadLength
+      return this._arrowHeadLength;
     }
 
     /**
      * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
      */
     get showShading() {
-      return this._showShading
+      return this._showShading;
     }
 
     set showShading(value) {
@@ -77,13 +76,12 @@
         backgroundColor: this.backgroundColor.rgbaString,
         showShading: this.showShading,
         arrowHeadLength: this.arrowHeadLength
-      }
+      };
     }
 
   }
 
   CGV.Settings = Settings;
-
 })(CGView);
 
 

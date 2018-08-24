@@ -2,7 +2,6 @@
 // Color
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The Color class is meant to represent a color and opacity in a consistant manner
@@ -59,7 +58,7 @@
       if (typeof color === 'string' || color instanceof String) {
         this._string = color;
       } else {
-        let keys = Object.keys(color);
+        const keys = Object.keys(color);
         if (keys.includes('h') && keys.includes('s') && keys.includes('v')) {
           this.hsv = color;
         } else if (keys.includes('r') && keys.includes('g') && keys.includes('b') && keys.includes('a')) {
@@ -75,7 +74,7 @@
      * @private
      */
     set _string(value) {
-      let rgba = Color.string2rgba(value, this.opacity);
+      const rgba = Color.string2rgba(value, this.opacity);
       this._rgbaString = Color.rgba2String(rgba);
       this._updateOpacityFromRgba();
     }
@@ -111,8 +110,8 @@
      * @member {Object} - Get or set the color using a RGB object.
      */
     get rgb() {
-      let result = /^rgba\((\d+),(\d+),(\d+)/.exec(this.rgbaString);
-      return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]) } : undefined
+      const result = /^rgba\((\d+),(\d+),(\d+)/.exec(this.rgbaString);
+      return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]) } : undefined;
     }
 
     set rgb(value) {
@@ -124,8 +123,8 @@
      * @member {Object} - Get or set the color using a RGBA object.
      */
     get rgba() {
-      let result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)/.exec(this.rgbaString);
-      return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
+      const result = /^rgba\((\d+),(\d+),(\d+),([\d.]+)/.exec(this.rgbaString);
+      return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined;
     }
 
     set rgba(value) {
@@ -137,11 +136,11 @@
      * @member {Object} - Get or set the color using a HSV object.
      */
     get hsv() {
-      return Color.rgb2hsv(this.rgb)
+      return Color.rgb2hsv(this.rgb);
     }
 
     set hsv(value) {
-      let rgba = Color.hsv2rgb(value); 
+      const rgba = Color.hsv2rgb(value);
       rgba.a = this.opacity;
       this.rgba = rgba;
     }
@@ -150,60 +149,60 @@
     }
 
     get hsl() {
-      return Color.rgb2hsl(this.rgb)
+      return Color.rgb2hsl(this.rgb);
     }
 
     set hsl(value) {
-      let rgba = Color.hsl2rgb(value); 
+      const rgba = Color.hsl2rgb(value);
       rgba.a = this.opacity;
       this.rgba = rgba;
     }
 
     copy() {
-      return new CGV.Color(this.rgbaString)
+      return new CGV.Color(this.rgbaString);
     }
 
-    equals(color, ignoreAlpha=false) {
-      let rgb1 = this.rgba;
-      let rgb2 = color.rgba;
+    equals(color, ignoreAlpha = false) {
+      const rgb1 = this.rgba;
+      const rgb2 = color.rgba;
       if (ignoreAlpha) {
-        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b)
+        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b);
       } else {
-        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b) && (rgb1.a === rgb2.a)
+        return (rgb1.r === rgb2.r) && (rgb1.g === rgb2.g) && (rgb1.b === rgb2.b) && (rgb1.a === rgb2.a);
       }
     }
 
     inArray(colors, ignoreAlpha) {
       let present = false;
-      for (let color of colors) {
+      for (const color of colors) {
         if (this.equals(color, ignoreAlpha)) {
           present = true;
           break;
         }
       }
-      return present
+      return present;
     }
 
     highlight(colorAdjustment = 0.25) {
-      let hsv = this.hsv;
+      const hsv = this.hsv;
       hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
       this.hsv = hsv;
     }
 
     lighten(fraction) {
-      let hsl = this.hsl;
+      const hsl = this.hsl;
       hsl.l += CGV.constrain(fraction, 0, 1);
       hsl.l = Math.min(hsl.l, 1);
-      this.hsl = hsl
-      return this
+      this.hsl = hsl;
+      return this;
     }
 
     darken(fraction) {
-      let hsl = this.hsl;
+      const hsl = this.hsl;
       hsl.l -= CGV.constrain(fraction, 0, 1);
       hsl.l = Math.max(hsl.l, 0);
-      this.hsl = hsl
-      return this
+      this.hsl = hsl;
+      return this;
     }
 
     /**
@@ -211,7 +210,7 @@
      * @private
      */
     _updateRgbaOpacity() {
-      this._rgbaString = this._rgbaString.replace(/^(rgba\(.*,)([\d\.]+?)(\))/, (m, left, opacity, right) => {
+      this._rgbaString = this._rgbaString.replace(/^(rgba\(.*,)([\d.]+?)(\))/, (m, left, opacity, right) => {
         return left + this.opacity + right;
       });
     }
@@ -221,7 +220,7 @@
      * @private
      */
     _updateOpacityFromRgba() {
-      let result = /^rgba.*,([\d\.]+?)\)$/.exec(this.rgbaString);
+      const result = /^rgba.*,([\d.]+?)\)$/.exec(this.rgbaString);
       if (result) {
         this._opacity = Color._validateOpacity(result[1]);
       }
@@ -241,34 +240,34 @@
    */
   Color.string2rgba = function(value, opacity = 1) {
     if ( /^#/.test(value) ) {
-      return Color.hexString2rgba(value, opacity)
+      return Color.hexString2rgba(value, opacity);
     } else if ( /^rgb\(/.test(value) ) {
-      return Color.rgbString2rgba(value, opacity)
+      return Color.rgbString2rgba(value, opacity);
     } else if ( /^rgba\(/.test(value) ) {
-      return Color.rgbaString2rgba(value, opacity)
+      return Color.rgbaString2rgba(value, opacity);
     } else if ( /^hsl\(/.test(value) ) {
-      return Color.hslStringToRgba(value, opacity)
+      return Color.hslStringToRgba(value, opacity);
     } else {
-      let hex = Color.name2HexString(value);
-      return Color.hexString2rgba(hex, opacity)
+      const hex = Color.name2HexString(value);
+      return Color.hexString2rgba(hex, opacity);
     }
-  }
+  };
 
   /**
    * Validate that the opacity is between 0 and 1.
    * @private
    */
   Color._validateOpacity = function(value) {
-    value = Number(value)
+    value = Number(value);
     if (isNaN(value)) {
-      value = 1
+      value = 1;
     } else if (value > 1) {
-      value = 1
+      value = 1;
     } else if (value < 0) {
-      value = 0
+      value = 0;
     }
-    return value
-  }
+    return value;
+  };
 
   /**
    * Validate that the RGBA color components are between 0 and 255. Also validate the opacity.
@@ -280,24 +279,24 @@
       g: Color._validateRgbNumber(value.g),
       b: Color._validateRgbNumber(value.b),
       a: Color._validateOpacity(value.a)
-    }
-  }
+    };
+  };
 
   /**
    * Validate that the number is between 0 and 255.
    * @private
    */
   Color._validateRgbNumber = function(value) {
-    value = Number(value)
-    if (value === NaN) {
-      value = 0
+    value = Number(value);
+    if (isNaN(value)) {
+      value = 0;
     } else if (value > 255) {
-      value = 255
+      value = 255;
     } else if (value < 0) {
-      value =  0
+      value =  0;
     }
-    return value
-  }
+    return value;
+  };
 
   /**
    * Convert an RGB string to an RGBA object
@@ -311,9 +310,9 @@
    */
   Color.rgbString2rgba = function(rgbString, opacity = 1) {
     rgbString = rgbString.replace(/ +/g, '');
-    let result = /^rgb\((\d+),(\d+),(\d+)\)/.exec(rgbString);
-    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: opacity } : undefined
-  }
+    const result = /^rgb\((\d+),(\d+),(\d+)\)/.exec(rgbString);
+    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: opacity } : undefined;
+  };
 
   /**
    * Convert an RGBA String color to RGBA.
@@ -326,9 +325,9 @@
    */
   Color.rgbaString2rgba = function(rgbaString) {
     rgbaString = rgbaString.replace(/ +/g, '');
-    let result = /^rgba\((\d+),(\d+),(\d+),([\d\.]+)\)/.exec(rgbaString);
-    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined
-  }
+    const result = /^rgba\((\d+),(\d+),(\d+),([\d.]+)\)/.exec(rgbaString);
+    return result ? { r: Number(result[1]), g: Number(result[2]), b: Number(result[3]), a: Number(result[4]) } : undefined;
+  };
 
   /**
    * Convert an HSL color to RGBA.
@@ -341,8 +340,8 @@
    * @private
    */
   Color.hslStringToRgba = function(hsl) {
-    console.log('NOT IMPLEMENTED')
-  }
+    console.log('NOT IMPLEMENTED');
+  };
 
   /**
    * Convert a RGB object to an HSV object.
@@ -351,7 +350,6 @@
    * @private
    */
   Color.rgb2hsv = function(rgb) {
-
     let r = rgb.r;
     let g = rgb.g;
     let b = rgb.b;
@@ -366,13 +364,13 @@
     V = Math.max(r, g, b);
     C = V - Math.min(r, g, b);
     H = (C === 0 ? null :
-         V === r ? (g - b) / C + (g < b ? 6 : 0) :
-         V === g ? (b - r) / C + 2 :
-                  (r - g) / C + 4);
+      V === r ? (g - b) / C + (g < b ? 6 : 0) :
+        V === g ? (b - r) / C + 2 :
+          (r - g) / C + 4);
     H = (H % 6) * 60;
     S = C === 0 ? 0 : C / V;
     return { h: H, s: S, v: V };
-  }
+  };
 
   /**
    * Convert an HSV object to RGB HEX string.
@@ -392,11 +390,11 @@
     G += [X, C, C, X, 0, 0][h];
     B += [0, 0, X, C, C, X][h];
 
-    let r = Math.floor(R * 255);
-    let g = Math.floor(G * 255);
-    let b = Math.floor(B * 255);
+    const r = Math.floor(R * 255);
+    const g = Math.floor(G * 255);
+    const b = Math.floor(B * 255);
     return { r: r, g: g, b: b };
-  }
+  };
 
   /**
    * Convert a Hexidecimal color string to an RGBA object.
@@ -410,7 +408,7 @@
    * @private
    */
   Color.hexString2rgba = function(hex, opacity = 1) {
-    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function(m, r, g, b) {
       return r + r + g + g + b + b;
     });
@@ -418,14 +416,14 @@
     let red = 0;
     let green = 0;
     let blue = 0;
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (result) {
       red = parseInt(result[1], 16);
       green = parseInt(result[2], 16);
       blue = parseInt(result[3], 16);
     }
-    return { r: red, g: green, b: blue, a: opacity }
-  }
+    return { r: red, g: green, b: blue, a: opacity };
+  };
 
   /**
    * Credited: https://gist.github.com/mjackson/5311256
@@ -440,34 +438,33 @@
    * @return  Array           The HSL representation
    */
   Color.rgb2hsl = function(rgb) {
+    const r = rgb.r / 255;
+    const g = rgb.g / 255;
+    const b = rgb.b / 255;
 
-    let r = rgb.r / 255;
-    let g = rgb.g / 255;
-    let b = rgb.b / 255;
-
-    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
     let h, s, l = (max + min) / 2;
 
     if (max === min) {
       h = s = 0; // achromatic
     } else {
-      let d = max - min;
+      const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
       switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
       }
 
       h /= 6;
     }
 
     // return [ h, s, l ];
-    return { h: h, s: s, l: l }
-  }
+    return { h: h, s: s, l: l };
+  };
 
-	/**
+  /**
    * Credited: https://gist.github.com/mjackson/5311256
 	 * Converts an HSL color value to RGB. Conversion formula
 	 * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
@@ -479,38 +476,38 @@
 	 * @param   Number  l       The lightness
 	 * @return  Array           The RGB representation
 	 */
-	Color.hsl2rgb = function(hsl) {
-    let h = hsl.h;
-    let s = hsl.s;
-    let l = hsl.l;
-		let r, g, b;
+  Color.hsl2rgb = function(hsl) {
+    const h = hsl.h;
+    const s = hsl.s;
+    const l = hsl.l;
+    let r, g, b;
 
-		if (s === 0) {
-			r = g = b = l; // achromatic
-		} else {
-			function hue2rgb(p, q, t) {
-				if (t < 0) t += 1;
-				if (t > 1) t -= 1;
-				if (t < 1/6) return p + (q - p) * 6 * t;
-				if (t < 1/2) return q;
-				if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-				return p;
-			}
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      function hue2rgb(p, q, t) {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      }
 
-			let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			let p = 2 * l - q;
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
 
-			r = hue2rgb(p, q, h + 1/3);
-			g = hue2rgb(p, q, h);
-			b = hue2rgb(p, q, h - 1/3);
-		}
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
 
     r = Math.floor(r * 255);
     g = Math.floor(g * 255);
     b = Math.floor(b * 255);
 
-		return { r: r, g: g, b: b };
-	}
+    return { r: r, g: g, b: b };
+  };
 
   /**
    * Convert a RGBA object to a RGBA string
@@ -523,8 +520,8 @@
    */
   Color.rgba2String = function(rgba) {
     rgba = Color._validateRgba(rgba);
-    return 'rgba(' + rgba.r + ','+ rgba.g + ','  + rgba.b + ',' + rgba.a + ')'
-  }
+    return `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`;
+  };
 
   /**
    * Convert a RGB object to a RGB string
@@ -536,8 +533,8 @@
    * @private
    */
   Color.rgb2String = function(rgb) {
-    return 'rgb(' + rgb.r + ','+ rgb.g + ','  + rgb.b + ')'
-  }
+    return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+  };
 
 
   /**
@@ -551,14 +548,14 @@
    */
   Color.name2HexString = function(name) {
     name = name.toLowerCase();
-    let hex = Color.names()[name];
+    const hex = Color.names()[name];
     if (hex) {
-      return hex
+      return hex;
     } else {
-      console.log('Name not found! Defaulting to Black')
-      return '#000000'
+      console.log('Name not found! Defaulting to Black');
+      return '#000000';
     }
-  }
+  };
 
 
   // Returns a color with RGB values centered around *center* and upto *width* away from the center.
@@ -567,34 +564,34 @@
   // the color from array starting at the index of *notColors* length (ie if *colors* is an array of 4,
   // the methods creates an array of 9 colors and starts at color number 5). This prevents always returning
   // the first few colors, if they are being changed by the user.
-  Color.getColor = function(notColors=[], center=128, width=127, alpha=1) {
-    let colors = [];
-    let len = (notColors.length * 2) + 1;
-    let freq1  = 2.4;
-    let freq2  = 2.4;
-    let freq3  = 2.4;
-    let phase1 = 0;
-    let phase2 = 2;
-    let phase3 = 4;
+  Color.getColor = function(notColors = [], center = 128, width = 127, alpha = 1) {
+    const colors = [];
+    const len = (notColors.length * 2) + 1;
+    const freq1  = 2.4;
+    const freq2  = 2.4;
+    const freq3  = 2.4;
+    const phase1 = 0;
+    const phase2 = 2;
+    const phase3 = 4;
     // Generate Colors
     for (let i = 0; i < len; ++i) {
-      let red   = Math.round(Math.sin(freq1*i + phase1) * width + center);
-      let green = Math.round(Math.sin(freq2*i + phase2) * width + center);
-      let blue  = Math.round(Math.sin(freq3*i + phase3) * width + center);
+      const red   = Math.round(Math.sin(freq1 * i + phase1) * width + center);
+      const green = Math.round(Math.sin(freq2 * i + phase2) * width + center);
+      const blue  = Math.round(Math.sin(freq3 * i + phase3) * width + center);
       colors.push(new Color(`rgba(${red}, ${green}, ${blue}, ${alpha})`));
     }
     // Check that is color has not been used before
     let colorIndex = notColors.length;
     if (colorIndex > 0) {
       for (; colorIndex < colors.length; colorIndex++) {
-        let color = colors[colorIndex];
+        const color = colors[colorIndex];
         if (!color.inArray(notColors)) {
-          break
+          break;
         }
       }
     }
-    return colors[colorIndex]
-  }
+    return colors[colorIndex];
+  };
 
   Color.names = function() {
     return {
@@ -657,8 +654,8 @@
       greenyellow: '#adff2f',
       honeydew: '#f0fff0',
       hotpink: '#ff69b4',
-      indianred : '#cd5c5c',
-      indigo : '#4b0082',
+      indianred: '#cd5c5c',
+      indigo: '#4b0082',
       ivory: '#fffff0',
       khaki: '#f0e68c',
       lavender: '#e6e6fa',
@@ -746,9 +743,8 @@
       whitesmoke: '#f5f5f5',
       yellow: '#ffff00',
       yellowgreen: '#9acd32'
-    }
-  }
+    };
+  };
 
   CGV.Color = Color;
-
 })(CGView);

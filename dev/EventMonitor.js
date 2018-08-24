@@ -2,7 +2,6 @@
 // EventMonitor
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * EventMonitor monitor events on the CGView Canvas and triggers events.
@@ -18,7 +17,7 @@
       this._initializeMousemove();
       this._initializeClick();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
-      this.events.on('click', (e) => {console.log(e)})
+      this.events.on('click', (e) => {console.log(e);});
       // MoveTo On click
       // this.events.on('click', (e) => {
       //   if (e.feature) {
@@ -30,10 +29,10 @@
         // console.log(e.bp);
         // console.log([e.mapX, e.mapY]);
         if (this.viewer.debug && this.viewer.debug.data.position) {
-          this.viewer.debug.data.position['xy'] = Math.round(e.mapX) + ', ' + Math.round(e.mapY);
-          this.viewer.debug.data.position['bp'] = e.bp;
-          this.viewer.debug.data.position['feature'] = e.feature && e.feature.label.name;
-          this.viewer.debug.data.position['score'] = e.score;
+          this.viewer.debug.data.position.xy = `${Math.round(e.mapX)}, ${Math.round(e.mapY)}`;
+          this.viewer.debug.data.position.bp = e.bp;
+          this.viewer.debug.data.position.feature = e.feature && e.feature.label.name;
+          this.viewer.debug.data.position.score = e.score;
           this.canvas.clear('ui');
           this.viewer.debug.draw(this.canvas.context('ui'));
         }
@@ -48,18 +47,18 @@
      * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     /**
      * @member {Canvas} - Get the *Canvas*
      */
     get canvas() {
-      return this.viewer.canvas
+      return this.viewer.canvas;
     }
 
     _initializeMousemove() {
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
         viewer.clear('ui');
         this.events.trigger('mousemove', this._createEvent(d3.event));
@@ -72,18 +71,18 @@
       });
     }
 
-    _createEvent(d3_event) {
-      let scale = this.canvas.scale;
-      let canvasX = CGV.pixel(d3_event.offsetX);
-      let canvasY = CGV.pixel(d3_event.offsetY);
-      let mapX = scale.x.invert(canvasX);
-      let mapY = scale.y.invert(canvasY);
-      let radius = Math.sqrt( mapX*mapX + mapY*mapY);
-      let slot = this.viewer.layout.slotForRadius(radius);
-      let bp = this.canvas.bpForPoint({x: mapX, y: mapY});
-      let feature = slot && slot.findFeaturesForBp(bp)[0];
-      let plot = slot && slot._plot;
-      let score = plot && plot.scoreForPosition(bp).toFixed(2);
+    _createEvent(d3Event) {
+      const scale = this.canvas.scale;
+      const canvasX = CGV.pixel(d3Event.offsetX);
+      const canvasY = CGV.pixel(d3Event.offsetY);
+      const mapX = scale.x.invert(canvasX);
+      const mapY = scale.y.invert(canvasY);
+      const radius = Math.sqrt( (mapX * mapX) + (mapY * mapY) );
+      const slot = this.viewer.layout.slotForRadius(radius);
+      const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      const feature = slot && slot.findFeaturesForBp(bp)[0];
+      const plot = slot && slot._plot;
+      const score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {
         bp: bp,
         radius: radius,
@@ -96,30 +95,30 @@
         mapX: mapX,
         mapY: mapY,
         d3: d3.event
-      }
+      };
     }
 
     _legendSwatchClick() {
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       this.events.on('click.swatch', (e) => {
-        let legend = viewer.legend;
-        let swatchedLegendItems = legend.visibleItems();
+        const legend = viewer.legend;
+        const swatchedLegendItems = legend.visibleItems();
         for (let i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
-            let legendItem = swatchedLegendItems[i];
-            legendItem.swatchSelected = true
-            let cp = viewer.colorPicker;
+            const legendItem = swatchedLegendItems[i];
+            legendItem.swatchSelected = true;
+            const cp = viewer.colorPicker;
             if (!cp.visible) {
               legend.setColorPickerPosition(cp);
             }
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
-              cgv.drawFast();
-              cgv.trigger('legend-swatch-change', legendItem);
+              viewer.drawFast();
+              viewer.trigger('legend-swatch-change', legendItem);
             };
             cp.onClose = function() {
               legendItem.swatchSelected = false;
-              cgv.drawFull();
+              viewer.drawFull();
               legend.draw();
             };
             cp.setColor(legendItem._swatchColor.rgba);
@@ -131,16 +130,16 @@
     }
 
     _legendSwatchMouseOver() {
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       this.events.on('mousemove.swatch', (e) => {
-        let legend = viewer.legend;
-        let swatchedLegendItems = legend.visibleItems();
-        let oldHighlightedItem = legend.highlightedSwatchedItem;
+        const legend = viewer.legend;
+        const swatchedLegendItems = legend.visibleItems();
+        const oldHighlightedItem = legend.highlightedSwatchedItem;
         legend.highlightedSwatchedItem = undefined;
         for (let i = 0, len = swatchedLegendItems.length; i < len; i++) {
           if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
-            let legendItem = swatchedLegendItems[i];
-            legendItem.swatchHighlighted = true
+            const legendItem = swatchedLegendItems[i];
+            legendItem.swatchHighlighted = true;
             this.canvas.cursor = 'pointer';
             legend.draw();
             break;
@@ -157,7 +156,6 @@
   }
 
   CGV.EventMonitor = EventMonitor;
-
 })(CGView);
 
 

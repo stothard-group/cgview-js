@@ -2,7 +2,6 @@
 // Legend
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
@@ -28,7 +27,7 @@
      */
     constructor(viewer, data = {}, meta = {}) {
       super(viewer, data, meta);
-      this.name = 'Legend'
+      this.name = 'Legend';
     }
 
     /**
@@ -43,7 +42,7 @@
      * @member {Viewer} - Get or set the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     set viewer(viewer) {
@@ -54,7 +53,7 @@
      * @member {LegendItem} - Get or set the selected swatch legendItem
      */
     get selectedSwatchedItem() {
-      return this._selectedSwatchedItem
+      return this._selectedSwatchedItem;
     }
 
     set selectedSwatchedItem(value) {
@@ -65,7 +64,7 @@
      * @member {LegendItem} - Get or set the highlighted swatch legendItem
      */
     get highlightedSwatchedItem() {
-      return this._highlightedSwatchedItem
+      return this._highlightedSwatchedItem;
     }
 
     set highlightedSwatchedItem(value) {
@@ -74,37 +73,37 @@
 
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
-      let margin = 5;
+      const margin = 5;
       let pos;
       let viewerRect = {top: 0, left: 0};
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      let originX = this.originX / CGV.pixel(1) + viewerRect.left + window.pageXOffset;
-      let originY = this.originY / CGV.pixel(1) + viewerRect.top + window.pageYOffset;
-      let legendWidth = this.width / CGV.pixel(1);
+      const originX = (this.originX / CGV.pixel(1)) + viewerRect.left + window.pageXOffset;
+      const originY = (this.originY / CGV.pixel(1)) + viewerRect.top + window.pageYOffset;
+      const legendWidth = this.width / CGV.pixel(1);
       if (/-left$/.exec(this.position)) {
-        pos = {x: originX + legendWidth + margin, y: originY}
+        pos = {x: originX + legendWidth + margin, y: originY};
       } else {
-        pos = {x: originX - cp.width - margin, y: originY}
+        pos = {x: originX - cp.width - margin, y: originY};
       }
       cp.setPosition(pos);
     }
 
     get swatchPadding() {
-      return this.padding / 2
+      return this.padding / 2;
     }
 
     findLegendItemByName(name) {
-      if (!name) { return }
-      return this._items.find( (i) => { return name.toLowerCase() === i.name.toLowerCase() });
+      if (!name) { return; }
+      return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );
     }
 
     findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
       let item = this.findLegendItemByName(name);
       if (!item) {
         if (!color) {
-          let currentColors = this._items.map( (i) => { return i.swatchColor });
+          const currentColors = this._items.map( i => i.swatchColor );
           // color = CGV.Color.getColor(currentColors);
           color = CGV.Color.getColor(currentColors).rgbaString;
         }
@@ -114,16 +113,16 @@
           decoration: decoration
         });
       }
-      return item
+      return item;
     }
 
     // Returns a CGArray of LegendItems that only occur for the supplied features.
     // (i.e. the returned LegendItems are not being used for any features (or plots) not provided.
     // This is useful for determining of LegendItems should be deleted after deleting features.
-    uniqueLegendsItemsFor(options={}) {
-      let selectedFeatures = new Set(options.features || []);
-      let selectedPlots = new Set(options.plots || []);
-      let uniqueItems = new Set();
+    uniqueLegendsItemsFor(options = {}) {
+      const selectedFeatures = new Set(options.features || []);
+      const selectedPlots = new Set(options.plots || []);
+      const uniqueItems = new Set();
 
       selectedFeatures.forEach( (f) => {
         uniqueItems.add(f.legend);
@@ -133,13 +132,13 @@
         uniqueItems.add(p.legendItemNegative);
       });
 
-      let nonSelectedFeatures = new Set();
+      const nonSelectedFeatures = new Set();
       this.viewer.features().each( (i, f) => {
         if (!selectedFeatures.has(f)) {
           nonSelectedFeatures.add(f);
         }
       });
-      let nonSelectedPlots = new Set();
+      const nonSelectedPlots = new Set();
       this.viewer.plots().each( (i, p) => {
         if (!selectedPlots.has(p)) {
           nonSelectedPlots.add(p);
@@ -150,7 +149,7 @@
         if (uniqueItems.has(f.legend)) {
           uniqueItems.delete(f.legend);
         }
-      })
+      });
       nonSelectedPlots.forEach( (p) => {
         if (uniqueItems.has(p.legendItemPositive)) {
           uniqueItems.delete(p.legendItemPositive);
@@ -158,24 +157,23 @@
         if (uniqueItems.has(p.legendItemNegative)) {
           uniqueItems.delete(p.legendItemNegative);
         }
-      })
-      return Array.from(uniqueItems)
+      });
+      return Array.from(uniqueItems);
     }
 
     draw() {
-      if (!this.visible) { return }
-      let ctx = this.ctx;
+      if (!this.visible) { return; }
+      const ctx = this.ctx;
       this.fillBackground();
-      let textX, swatchX;
+      let swatchX;
       ctx.lineWidth = 1;
       ctx.textBaseline = 'top';
       for (let i = 0, len = this._items.length; i < len; i++) {
-        let legendItem = this._items[i];
-        if (!legendItem.visible) { continue }
-        let y = legendItem.textY();
-        let legendItemHeight = legendItem.height;
-        let drawSwatch = legendItem.drawSwatch;
-        let swatchWidth = legendItem.swatchWidth;
+        const legendItem = this._items[i];
+        if (!legendItem.visible) { continue; }
+        const y = legendItem.textY();
+        const drawSwatch = legendItem.drawSwatch;
+        const swatchWidth = legendItem.swatchWidth;
         ctx.font = legendItem.font.css;
         ctx.textAlign = legendItem.textAlignment;
         if (drawSwatch) {
@@ -186,9 +184,9 @@
             ctx.strokeStyle = 'grey';
           }
           // Draw box around Swatch depending on state
-          let swatchX = legendItem.swatchX();
+          swatchX = legendItem.swatchX();
           if (legendItem.swatchSelected || legendItem.swatchHighlighted) {
-            let border = CGV.pixel(2)
+            const border = CGV.pixel(2);
             ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
           }
           // Draw Swatch
@@ -204,5 +202,4 @@
   }
 
   CGV.Legend = Legend;
-
 })(CGView);

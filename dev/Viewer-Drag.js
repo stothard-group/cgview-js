@@ -2,13 +2,12 @@
 // Initializing Dragging
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * Initialize Spectra Viewer Dragging.
    */
   CGV.Viewer.prototype.initializeDragging = function() {
-    let self = this;
+    const self = this;
     self._drag = d3.drag()
       .on('start', dragstart)
       .on('drag',  dragging)
@@ -24,19 +23,19 @@
     }
 
     function dragging() {
-      let start_time = new Date().getTime();
+      const startTime = new Date().getTime();
       // // Restore selected peaks
       // // if (self.selection.empty()) self.selection._elements = current_selected_elements;
       // self.translate_axis('x', d3.event.dx);
       // self.translate_axis('y', d3.event.dy);
-      domain_x = self.scale.x.domain();
-      domain_y = self.scale.y.domain();
-      let dx = CGV.pixel(d3.event.dx);
-      let dy = CGV.pixel(d3.event.dy);
+      const domainX = self.scale.x.domain();
+      const domainY = self.scale.y.domain();
+      const dx = CGV.pixel(d3.event.dx);
+      const dy = CGV.pixel(d3.event.dy);
 
 
-      self.scale.x.domain([domain_x[0] - dx, domain_x[1] - dx])
-      self.scale.y.domain([domain_y[0] + dy, domain_y[1] + dy])
+      self.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
+      self.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
       self.drawFast();
       // self.draw(true);
       // self.trigger('drag');
@@ -44,7 +43,7 @@
       //
       // DEBUG INFO
       if (self.debug) {
-        self.debug.data.time['drag'] = CGV.elapsedTime(start_time);
+        self.debug.data.time.drag = CGV.elapsedTime(startTime);
         // self.debug_data.drag['dX'] = CGV.round(d3.event.dx);
         // self.debug_data.drag['dY'] = CGV.round(d3.event.dy);
         // self.debug_data.drag['zX'] = CGV.round(self.zoom_x);
@@ -56,10 +55,9 @@
       // self.trigger('drag-end');
       // self.full_draw();
       // self.draw()
-      self.drawFull()
+      self.drawFull();
     }
-  }
-
+  };
 })(CGView);
 
 

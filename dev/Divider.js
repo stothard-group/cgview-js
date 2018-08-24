@@ -2,7 +2,6 @@
 // Divider
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The CGView Divider is a line that separates tracks or slots.
@@ -32,7 +31,7 @@
     }
 
     get visible() {
-      return this._visible
+      return this._visible;
     }
 
     set visible(value) {
@@ -44,7 +43,7 @@
      * @member {Color} - Get or set the divider color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
-      return this._color
+      return this._color;
     }
 
     set color(value) {
@@ -66,7 +65,7 @@
     }
 
     get thickness() {
-      return this._thickness
+      return this._thickness;
     }
 
     /**
@@ -80,7 +79,7 @@
     }
 
     get spacing() {
-      return this._spacing
+      return this._spacing;
     }
 
     /**
@@ -93,7 +92,7 @@
     }
 
     get radii() {
-      return this._radii
+      return this._radii;
     }
 
     /**
@@ -101,7 +100,7 @@
      * @member {Range}
      */
     get visibleRange() {
-      return this._visibleRange
+      return this._visibleRange;
     }
 
     clearRadii() {
@@ -109,13 +108,13 @@
     }
 
     addRadius(radius) {
-      this._radii.push(radius)
+      this._radii.push(radius);
     }
 
     draw() {
-      if (!this.visible || this.thickness === 0) { return }
+      if (!this.visible || this.thickness === 0) { return; }
       for (let i = 0, len = this._radii.length; i < len; i++) {
-        let radius = this._radii[i]
+        const radius = this._radii[i];
         this._visibleRange = this.canvas.visibleRangeForRadius(radius, 100);
         if (this.visibleRange) {
           this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
@@ -129,13 +128,12 @@
         color: this.color.rgbaString,
         thickness: this.thickness,
         spacing: this.spacing
-      }
+      };
     }
 
   }
 
   CGV.Divider = Divider;
-
 })(CGView);
 
 

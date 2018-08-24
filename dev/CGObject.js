@@ -2,8 +2,7 @@
 // CGObject
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
-  cgvID = 0;
+  let cgvID = 0;
 
   /**
    * <br />
@@ -16,13 +15,13 @@
 
     /**
      * @param {Viewer} viewer - The viewer object.
-     * @param {Object} options - 
+     * @param {Object} options -
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
      *  visible               | true             | Whether to draw the object or not.
      *
-     * @param {Obejct} meta - 
+     * @param {Obejct} meta -
      */
     constructor(viewer, options = {}, meta = {}) {
       super();
@@ -42,7 +41,7 @@
     }
 
     get cgvID() {
-      return this._cgvID
+      return this._cgvID;
     }
 
 
@@ -50,28 +49,28 @@
      * @member {Viewer} - Get the viewer.
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     /**
      * @member {Canvas} - Get the canvas.
      */
     get canvas() {
-      return this.viewer.canvas
+      return this.viewer.canvas;
     }
 
     /**
      * @member {Sequence} - Get the sequence.
      */
     get sequence() {
-      return this.viewer.sequence
+      return this.viewer.sequence;
     }
 
     /**
      * @member {Boolean} - Get or Set the visibility of this object.
      */
     get visible() {
-      return this._visible
+      return this._visible;
     }
 
     set visible(value) {
@@ -82,7 +81,7 @@
      * @member {Boolean} - Get or Set the meta data of this object.
      */
     get meta() {
-      return this._meta
+      return this._meta;
     }
 
     set meta(value) {
@@ -91,10 +90,9 @@
 
   }
 
-  let generateID = function() {
-    return 'cgv-id-' + cgvID++;
-  }
+  const generateID = function() {
+    return `cgv-id-${cgvID++}`;
+  };
 
   CGV.CGObject = CGObject;
-
 })(CGView);

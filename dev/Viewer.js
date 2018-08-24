@@ -634,5 +634,4 @@ if (window.CGV === undefined) window.CGV = CGView;
   }
 
   CGV.Viewer = Viewer;
-
 })(CGView);

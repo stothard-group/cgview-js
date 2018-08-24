@@ -2,7 +2,6 @@
 // CGview Rect
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * A Rect consists of an x and y point (the upper-left corner) and
@@ -29,7 +28,7 @@
      * @member {Number} - Get or set the width.
      */
     get width() {
-      return this._width
+      return this._width;
     }
 
     set width(value) {
@@ -40,7 +39,7 @@
      * @member {Number} - Get or set the height.
      */
     get height() {
-      return this._height
+      return this._height;
     }
 
     set height(value) {
@@ -51,7 +50,7 @@
      * @member {Number} - Get or set the x position of the origin.
      */
     get x() {
-      return this._x
+      return this._x;
     }
 
     set x(value) {
@@ -62,7 +61,7 @@
      * @member {Number} - Get or set the y position of the origin.
      */
     get y() {
-      return this._y
+      return this._y;
     }
 
     set y(value) {
@@ -106,15 +105,15 @@
      */
     overlap(rectArray) {
       // Gap between labels
-      let widthGap = CGV.pixel(4);
-      let r1 = this;
+      const widthGap = CGV.pixel(4);
+      const r1 = this;
       let overlap = false;
-      for (let i=0, len=rectArray.length; i < len; i++){
-        let r2 = rectArray[i];
+      for (let i = 0, len = rectArray.length; i < len; i++) {
+        const r2 = rectArray[i];
         if (r1.x <= r2.right && r2.x <= (r1.right + widthGap) && r1.y <= r2.bottom && r2.y <= r1.bottom) {
           overlap = r2;
           break;
-        }else{
+        } else {
           overlap = false;
         }
       }
@@ -129,55 +128,54 @@
      * @return {Boolean}
      */
     containsPt(x, y) {
-      return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) )
+      return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) );
     }
 
     ptForClockPosition(clockPosition) {
       let x, y;
       switch (clockPosition) {
-        case 1:
-        case 2:
-          x = this.x + this.width;
-          y = this.y;
-          break;
-        case 3:
-          x = this.x + this.width;
-          y = this.y + (this.height / 2);
-          break;
-        case 4:
-        case 5:
-          x = this.x + this.width;
-          y = this.y + this.height;
-          break;
-        case 6:
-          x = this.x + (this.width / 2);
-          y = this.y + this.height;
-          break;
-        case 7:
-        case 8:
-          x = this.x;
-          y = this.y + this.height;
-          break;
-        case 9:
-          x = this.x;
-          y = this.y + (this.height / 2);
-          break;
-        case 10:
-        case 11:
-          x = this.x;
-          y = this.y;
-          break;
-        case 12:
-          x = this.x + (this.width / 2);
-          y = this.y;
+      case 1:
+      case 2:
+        x = this.x + this.width;
+        y = this.y;
+        break;
+      case 3:
+        x = this.x + this.width;
+        y = this.y + (this.height / 2);
+        break;
+      case 4:
+      case 5:
+        x = this.x + this.width;
+        y = this.y + this.height;
+        break;
+      case 6:
+        x = this.x + (this.width / 2);
+        y = this.y + this.height;
+        break;
+      case 7:
+      case 8:
+        x = this.x;
+        y = this.y + this.height;
+        break;
+      case 9:
+        x = this.x;
+        y = this.y + (this.height / 2);
+        break;
+      case 10:
+      case 11:
+        x = this.x;
+        y = this.y;
+        break;
+      case 12:
+        x = this.x + (this.width / 2);
+        y = this.y;
       }
-      return {x: x, y: y}
+      return {x: x, y: y};
     }
 
   }
 
   CGV.Rect = Rect;
-
 })(CGView);
 
 

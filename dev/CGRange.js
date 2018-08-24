@@ -2,7 +2,6 @@
 // CGRange
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * A CGRange contains a start, stop and sequence length. Because the genomes
@@ -29,21 +28,21 @@
      * @member {Sequence} - Get the sequence.
      */
     get sequence() {
-      return this._sequence
+      return this._sequence;
     }
 
     /**
      * @member {Number} - Get the sequence length
      */
     get sequenceLength() {
-      return this.sequence.length
+      return this.sequence.length;
     }
 
     /**
      * @member {Number} - Get or set the range start.
      */
     get start() {
-      return this._start
+      return this._start;
     }
 
     set start(value) {
@@ -54,7 +53,7 @@
      * @member {Number} - Get or set the range stop.
      */
     get stop() {
-      return this._stop
+      return this._stop;
     }
 
     set stop(value) {
@@ -66,21 +65,21 @@
      */
     get length() {
       if (this.stop >= this.start) {
-        return this.stop - this.start + 1
+        return this.stop - this.start + 1;
       } else {
-        return this.sequenceLength + (this.stop - this.start) + 1
-      } 
+        return this.sequenceLength + (this.stop - this.start) + 1;
+      }
     }
 
     /**
      * @member {Number} - Get the middle of the range.
      */
     get middle() {
-      let _middle = this.start + (this.length / 2);
+      const _middle = this.start + (this.length / 2);
       if (_middle > this.sequenceLength) {
-        return (_middle - this.sequenceLength)
+        return (_middle - this.sequenceLength);
       } else {
-        return _middle
+        return _middle;
       }
     }
 
@@ -90,7 +89,7 @@
      * @return {Boolean}
      */
     overHalfCircle() {
-      return this.length > (this.sequenceLength / 2)
+      return this.length > (this.sequenceLength / 2);
     }
 
     /**
@@ -102,12 +101,12 @@
       let rotations;
       if (value > this.sequenceLength) {
         rotations = Math.floor(value / this.sequenceLength);
-        return (value - (this.sequenceLength * rotations) )
+        return (value - (this.sequenceLength * rotations) );
       } else if (value < 1) {
         rotations = Math.ceil(Math.abs(value / this.sequenceLength));
-        return (this.sequenceLength * rotations) + value
+        return (this.sequenceLength * rotations) + value;
       } else {
-        return value
+        return value;
       }
     }
 
@@ -116,8 +115,8 @@
      * @param {Number} - Number to add.
      * @return {Number}
      */
-     getStartPlus(value) {
-       return this.normalize(this.start + value)
+    getStartPlus(value) {
+      return this.normalize(this.start + value);
     }
 
     /**
@@ -125,8 +124,8 @@
      * @param {Number} - Number to add.
      * @return {Number}
      */
-     getStopPlus(value) {
-       return this.normalize(this.stop + value)
+    getStopPlus(value) {
+      return this.normalize(this.stop + value);
     }
 
     /**
@@ -134,7 +133,7 @@
      * @return {Boolean}
      */
     isFullCircle() {
-      return (this.length === this.sequenceLength)
+      return (this.length === this.sequenceLength);
     }
 
     /**
@@ -142,7 +141,7 @@
      * @return {Boolean}
      */
     spansOrigin() {
-      return (this.stop < this.start)
+      return (this.stop < this.start);
     }
 
     /**
@@ -153,10 +152,10 @@
     contains(position) {
       if (this.stop >= this.start) {
         // Typical Range
-        return (position >= this.start && position <= this.stop)
+        return (position >= this.start && position <= this.stop);
       } else {
         // Range spans origin
-        return (position >= this.start || position <= this.stop)
+        return (position >= this.start || position <= this.stop);
       }
     }
 
@@ -165,7 +164,7 @@
      * @return {Range}
      */
     copy() {
-      return new CGV.CGRange(this.sequence, this.start, this.stop)
+      return new CGV.CGRange(this.sequence, this.start, this.stop);
     }
 
     /**
@@ -174,7 +173,7 @@
      * @return {Boolwan}
      */
     overlapsRange(range2) {
-      return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start))
+      return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start));
     }
 
     /**
@@ -184,10 +183,10 @@
      * @return {Range}
      */
     mergeWithRange(range2) {
-      let range1 = this;
-      let range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
-      let range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
-      let ranges = [range1, range2, range3, range4];
+      const range1 = this;
+      const range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
+      const range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
+      const ranges = [range1, range2, range3, range4];
       let greatestLength = 0;
       let rangeLength, longestRange;
       for (let i = 0, len = ranges.length; i < len; i++) {
@@ -197,13 +196,12 @@
           longestRange = ranges[i];
         }
       }
-      return longestRange
+      return longestRange;
     }
 
   }
 
   CGV.CGRange = CGRange;
-
 })(CGView);
 
 

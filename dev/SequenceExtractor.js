@@ -2,7 +2,6 @@
 // SequenceExtractor
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The Extractor creates features or plots based on the sequence
@@ -18,7 +17,7 @@
     constructor(sequence, options = {}) {
       this.sequence = sequence;
       if (!sequence.seq) {
-        throw('Sequence invalid. The sequence must be provided.')
+        throw ('Sequence invalid. The sequence must be provided.');
       }
     }
 
@@ -31,7 +30,7 @@
      */
 
     get sequence() {
-      return this._sequence
+      return this._sequence;
     }
 
     set sequence(value) {
@@ -44,21 +43,21 @@
      * @member {String} - Get the seqeunce as a string
      */
     get seqString() {
-      return this.sequence.seq
+      return this.sequence.seq;
     }
 
     /**
      * @member {String} - Get the viewer
      */
     get viewer() {
-      return this.sequence.viewer
+      return this.sequence.viewer;
     }
 
     /**
      * @member {Number} - Get the seqeunce length.
      */
     get length() {
-      return this.sequence.length
+      return this.sequence.length;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -66,120 +65,118 @@
     //////////////////////////////////////////////////////////////////////////
 
     fn2workerURL(fn) {
-      let blob = new Blob(['('+fn.toString()+')()'], {type: 'application/javascript'})
-      return URL.createObjectURL(blob)
+      const blob = new Blob([`(${fn.toString()})()`], {type: 'application/javascript'});
+      return URL.createObjectURL(blob);
     }
 
     extractTrackData(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs', 'gc-skew', 'gc-content'])) { return }
+      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs', 'gc-skew', 'gc-content'])) { return; }
       switch (extractType) {
-        case 'start-stop-codons':
-        case 'orfs':
-          track.contents.type = 'feature';
-          this.generateFeatures(track, extractType, options);
-          break;
-        case 'gc-skew':
-        case 'gc-content':
-          track.contents.type = 'plot';
-          this.generatePlot(track, extractType, options);
-          break;
+      case 'start-stop-codons':
+      case 'orfs':
+        track.contents.type = 'feature';
+        this.generateFeatures(track, extractType, options);
+        break;
+      case 'gc-skew':
+      case 'gc-content':
+        track.contents.type = 'plot';
+        this.generatePlot(track, extractType, options);
+        break;
       }
     }
 
     generateFeatures(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs'])) { return }
+      if (!CGV.validate(extractType, ['start-stop-codons', 'orfs'])) { return; }
       let startTime = new Date().getTime();
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       // Start worker
-      let url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
-      let worker = new Worker(url);
+      const url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
+      const worker = new Worker(url);
       // Prepare message
-      let message = {
-        type:         extractType,
+      const message = {
+        type: extractType,
         startPattern: CGV.defaultFor(options.start, 'ATG'),
-        stopPattern:  CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
-        seqString:    this.seqString,
+        stopPattern: CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
+        seqString: this.seqString,
         minORFLength: CGV.defaultFor(options.minORFLength, 100)
-      }
+      };
       worker.postMessage(message);
       worker.onmessage = (e) => {
-        let messageType = e.data.messageType;
+        const messageType = e.data.messageType;
         if (messageType === 'progress') {
           track.loadProgress = e.data.progress;
           viewer.layout.drawProgress();
         }
         if (messageType === 'complete') {
           track.loadProgress = 100;
-          let featureDataArray = e.data.featureDataArray;
-          console.log("Features '" + extractType + "' Worker Time: " + CGV.elapsedTime(startTime) );
-          let features = new CGV.CGArray();
+          const featureDataArray = e.data.featureDataArray;
+          console.log(`Features '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );
+          const features = new CGV.CGArray();
           startTime = new Date().getTime();
           let featureData;
-          let legends = this.createLegendItems(extractType);
-          console.log(extractType)
+          const legends = this.createLegendItems(extractType);
+          console.log(extractType);
           for (let i = 0, len = featureDataArray.length; i < len; i++) {
             featureData = featureDataArray[i];
             featureData.legend = legends[featureData.type];
             features.push( new CGV.Feature(viewer, featureData) );
           }
-          console.log("Features '" + extractType + "' Creation Time: " + CGV.elapsedTime(startTime) );
+          console.log(`Features '${extractType}' Creation Time: ${CGV.elapsedTime(startTime)}` );
           startTime = new Date().getTime();
           track._features = features;
           track.updateSlots();
-          console.log("Features '" + extractType + "' Update Time: " + CGV.elapsedTime(startTime) );
+          console.log(`Features '${extractType}' Update Time: ${CGV.elapsedTime(startTime)}` );
           viewer.drawFull();
         }
-      }
+      };
 
       worker.onerror = (e) => {
         // do stuff
-      }
-
+      };
     }
 
 
     generatePlot(track, extractType, options = {}) {
-      if (!CGV.validate(extractType, ['gc-content', 'gc-skew'])) { return }
-      let startTime = new Date().getTime();
+      if (!CGV.validate(extractType, ['gc-content', 'gc-skew'])) { return; }
+      const startTime = new Date().getTime();
       // let extractType = options.sequence;
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       // Start worker
-      let url = this.fn2workerURL(CGV.WorkerBaseContent);
-      let worker = new Worker(url);
+      const url = this.fn2workerURL(CGV.WorkerBaseContent);
+      const worker = new Worker(url);
       // Prepare message
-      let message = {
-        type:      extractType,
-        window:    CGV.defaultFor(options.window, this.getWindowStep().window),
-        step:      CGV.defaultFor(options.step, this.getWindowStep().step),
+      const message = {
+        type: extractType,
+        window: CGV.defaultFor(options.window, this.getWindowStep().window),
+        step: CGV.defaultFor(options.step, this.getWindowStep().step),
         deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
         seqString: this.seqString
       };
       worker.postMessage(message);
       worker.onmessage = (e) => {
-        let messageType = e.data.messageType;
+        const messageType = e.data.messageType;
         if (messageType === 'progress') {
           track.loadProgress = e.data.progress;
           viewer.layout.drawProgress();
         }
         if (messageType === 'complete') {
           track.loadProgress = 100;
-          let baseContent = e.data.baseContent;
-          let data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
+          const baseContent = e.data.baseContent;
+          const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
           data.legendPositive = this.getLegendItem(extractType, '+').name;
           data.legendNegative = this.getLegendItem(extractType, '-').name;
 
-          let plot = new CGV.Plot(viewer, data);
+          const plot = new CGV.Plot(viewer, data);
           track._plot = plot;
           track.updateSlots();
-          console.log("Plot '" + extractType + "' Worker Time: " + CGV.elapsedTime(startTime) );
+          console.log(`Plot '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );
           viewer.drawFull();
         }
-      }
+      };
 
       worker.onerror = (e) => {
         // do stuff
-      }
-
+      };
     }
 
     createLegendItems(extractType) {
@@ -187,46 +184,47 @@
       if (extractType === 'orfs') {
         legends = {
           'ORF': this.getLegendItem('ORF')
-        }
+        };
       } else if (extractType === 'start-stop-codons') {
         legends = {
           'start-codon': this.getLegendItem('start-codon'),
           'stop-codon': this.getLegendItem('stop-codon')
-        }
+        };
       }
-      return legends
+      return legends;
     }
 
     getLegendItem(extractType, sign) {
-      let legend = this.viewer.legend;
+      const legend = this.viewer.legend;
       let item;
       switch (extractType) {
-        case 'start-codon':
-          item = legend.findLegendItemOrCreate('Start', 'blue', 'arc');
-          break;
-        case 'stop-codon':
-          item = legend.findLegendItemOrCreate('Stop', 'red', 'arc');
-          break;
-        case 'ORF':
-          item = legend.findLegendItemOrCreate('ORF', 'green', 'arc');
-          break;
-        case 'gc-content':
-          item = legend.findLegendItemOrCreate('GC Content', 'black');
-          break;
-        case 'gc-skew':
-          let color = (sign === '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
-          let name = (sign === '+') ? 'GC Skew+' : 'GC Skew-';
-          item = legend.findLegendItemOrCreate(name, color);
-          break;
-        default:
-          item = legend.findLegendItemOrCreate('Unknown', 'grey');
+      case 'start-codon':
+        item = legend.findLegendItemOrCreate('Start', 'blue', 'arc');
+        break;
+      case 'stop-codon':
+        item = legend.findLegendItemOrCreate('Stop', 'red', 'arc');
+        break;
+      case 'ORF':
+        item = legend.findLegendItemOrCreate('ORF', 'green', 'arc');
+        break;
+      case 'gc-content':
+        item = legend.findLegendItemOrCreate('GC Content', 'black');
+        break;
+      case 'gc-skew': {
+        const color = (sign === '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
+        const name = (sign === '+') ? 'GC Skew+' : 'GC Skew-';
+        item = legend.findLegendItemOrCreate(name, color);
+        break;
       }
-      return item 
+      default:
+        item = legend.findLegendItemOrCreate('Unknown', 'grey');
+      }
+      return item;
     }
 
     getWindowStep() {
       let windowSize, step;
-      let length = this.length;
+      const length = this.length;
       if (length < 1e3 ) {
         windowSize = 10;
         step = 1;
@@ -243,243 +241,242 @@
         windowSize = 10000;
         step = 100;
       }
-      return { step: step, window: windowSize }
+      return { step: step, window: windowSize };
     }
 
   }
 
   CGV.SequenceExtractor = SequenceExtractor;
-
 })(CGView);
 
 
-    // extractFeatures(options = {}) {
-    //   let features = new CGV.CGArray();
-    //   if (options.sequence === 'start-stop-codons') {
-    //     features = this.extractStartStops(options);
-    //   } else if (options.sequence === 'orfs') {
-    //     features = this.extractORFs(options);
-    //   }
-    //   return features
-    // }
+// extractFeatures(options = {}) {
+//   let features = new CGV.CGArray();
+//   if (options.sequence === 'start-stop-codons') {
+//     features = this.extractStartStops(options);
+//   } else if (options.sequence === 'orfs') {
+//     features = this.extractORFs(options);
+//   }
+//   return features
+// }
 
-    // generateFeatures(track, options) {
-    //   if (options.sequence === 'start-stop-codons') {
-    //     features = this.generateStartStops(options);
-    //   } else if (options.sequence === 'orfs') {
-    //     features = this.extractORFs(options);
-    //   }
-    // }
-    //
-    //
-    // extractPlot(options = {}) {
-    //   if (options.sequence === 'gc-content') {
-    //     return this.extractBaseContentPlot('gc-content', options);
-    //   } else if (options.sequence === 'gc-skew') {
-    //     return this.extractBaseContentPlot('gc-skew', options);
-    //   }
-    // }
-    //
-    // // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
-    // // score must be between 0 and 1
-    // extractBaseContentPlot(type, options = {}) {
-    //   let startTime = new Date().getTime();
-    //   if (!CGV.validate(type, ['gc-content', 'gc-skew'])) { return }
-    //   this.viewer.flash("Creating '" + type + "' Plot...");
-    //
-    //
-    //   options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
-    //   options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
-    //   let step = options.step
-    //   let deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-    //   // let deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
-    //
-    //   let baseContent = this.calculateBaseContent(type, options);
-    //   let positions = [];
-    //   let position;
-    //
-    //   // The current position marks the middle of the calculated window.
-    //   // Adjust the bp position to mark where the plot changes,
-    //   // NOT the center point of the window.
-    //   // i.e. half way between the current position and the last
-    //   for (let i = 0, len = baseContent.positions.length; i < len; i++) {
-    //     position = baseContent.positions[i];
-    //     if (i === 0) {
-    //       positions.push(1);
-    //     } else {
-    //       positions.push(position - step/2);
-    //     }
-    //   }
-    //   let data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
-    //   data.legendPositive = this.getLegendItem(type, '+').text;
-    //   data.legendNegative = this.getLegendItem(type, '-').text;
-    //
-    //   let plot = new CGV.Plot(this.viewer, data);
-    //   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsedTime(startTime) );
-    //   return plot
-    // }
+// generateFeatures(track, options) {
+//   if (options.sequence === 'start-stop-codons') {
+//     features = this.generateStartStops(options);
+//   } else if (options.sequence === 'orfs') {
+//     features = this.extractORFs(options);
+//   }
+// }
+//
+//
+// extractPlot(options = {}) {
+//   if (options.sequence === 'gc-content') {
+//     return this.extractBaseContentPlot('gc-content', options);
+//   } else if (options.sequence === 'gc-skew') {
+//     return this.extractBaseContentPlot('gc-skew', options);
+//   }
+// }
+//
+// // PLOTS should be bp: [1,23,30,45], score: [0, 0.4, 1]
+// // score must be between 0 and 1
+// extractBaseContentPlot(type, options = {}) {
+//   let startTime = new Date().getTime();
+//   if (!CGV.validate(type, ['gc-content', 'gc-skew'])) { return }
+//   this.viewer.flash("Creating '" + type + "' Plot...");
+//
+//
+//   options.window = CGV.defaultFor(options.window, this.getWindowStep().window);
+//   options.step = CGV.defaultFor(options.step, this.getWindowStep().step);
+//   let step = options.step
+//   let deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+//   // let deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
+//
+//   let baseContent = this.calculateBaseContent(type, options);
+//   let positions = [];
+//   let position;
+//
+//   // The current position marks the middle of the calculated window.
+//   // Adjust the bp position to mark where the plot changes,
+//   // NOT the center point of the window.
+//   // i.e. half way between the current position and the last
+//   for (let i = 0, len = baseContent.positions.length; i < len; i++) {
+//     position = baseContent.positions[i];
+//     if (i === 0) {
+//       positions.push(1);
+//     } else {
+//       positions.push(position - step/2);
+//     }
+//   }
+//   let data = { positions: positions, scores: baseContent.scores, baseline: baseContent.average };
+//   data.legendPositive = this.getLegendItem(type, '+').text;
+//   data.legendNegative = this.getLegendItem(type, '-').text;
+//
+//   let plot = new CGV.Plot(this.viewer, data);
+//   console.log("Plot '" + type + "' Extraction Time: " + CGV.elapsedTime(startTime) );
+//   return plot
+// }
 
 
-    // calculateBaseContent(type, options) {
-    //   let windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
-    //   let step = CGV.defaultFor(options.step, this.getWindowStep().step);
-    //   let deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
-    //   // let deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
-    //
-    //   let positions = [];
-    //   let scores = [];
-    //   let average =  CGV.Sequence.baseCalculation(type, this.seqString);
-    //   // Starting points for min and max
-    //   let min = 1;
-    //   let max = 0;
-    //   let halfWindowSize = windowSize / 2;
-    //   let start, stop;
-    //
-    //   // FIXME: not set up for linear sequences
-    //   // position marks the middle of the calculated window
-    //   for (let position = 1, len = this.length; position < len; position += step) {
-    //     // Extract DNA for window and calculate score
-    //     start = this.sequence.subtractBp(position, halfWindowSize);
-    //     stop = this.sequence.addBp(position, halfWindowSize);
-    //     let range = new CGV.CGRange(this.sequence, start, stop);
-    //     let seq = this.sequence.forRange(range);
-    //     let score = CGV.Sequence.baseCalculation(type, seq);
-    //
-    //     if (score > max) {
-    //       max = score;
-    //     }
-    //     if (score < min) {
-    //       min = score;
-    //     }
-    //
-    //     positions.push(position);
-    //     scores.push(score);
-    //   }
-    //
-    //   // Adjust scores if scaled
-    //   // Min value becomes 0
-    //   // Max value becomes 1
-    //   // Average becomes 0.5
-    //   if (deviation === 'scale') {
-    //     scores = scores.map( (score) => {
-    //       if (score >= average) {
-    //         return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
-    //       } else {
-    //         return CGV.scaleValue(score, {min: min, max: average}, {min: 0, max: 0.5});
-    //       }
-    //     });
-    //     min = 0;
-    //     max = 1;
-    //     average = 0.5;
-    //   }
-    //   return { positions: positions, scores: scores, min: min, max: max, average: average }
-    // }
-    // extractORFs(options = {}) {
-    //   this.viewer.flash('Finding ORFs...');
-    //   let startTime = new Date().getTime();
-    //   let features = new CGV.CGArray();
-    //   let type = 'ORF'
-    //   let source = 'orfs'
-    //   let minORFLength = CGV.defaultFor(options.minORFLength, 100)
-    //   // Get start features by reading frame
-    //   let startPattern = CGV.defaultFor(options.start, 'ATG')
-    //   let startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-    //   let startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
-    //   // Get stop features by reading frame
-    //   let stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-    //   let stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
-    //   let stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
-    //   // Get forward ORFs
-    //   let position,  orfLength, range, readingFrames;
-    //   readingFrames = ['rf_plus_1', 'rf_plus_2', 'rf_plus_3'];
-    //   let start, stop, stopIndex;
-    //   for (let rf of readingFrames) {
-    //     position = 1;
-    //     stopIndex = 0;
-    //     for (let i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-    //       start = startsByRF[rf][i];
-    //       if (start.start < position) {
-    //         continue;
-    //       }
-    //       for (let j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-    //         stop = stopsByRF[rf][j];
-    //         orfLength = stop.stop - start.start;
-    //         if (orfLength >= minORFLength) {
-    //           position = stop.stop;
-    //           range = new CGV.CGRange(this.sequence, start.start, stop.stop);
-    //           features.push( this.createFeature(range, type, 1, source ) );
-    //           stopIndex = j;
-    //           break;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // Get reverse ORFs
-    //   readingFrames = ['rf_minus_1', 'rf_minus_2', 'rf_minus_3'];
-    //   for (let rf of readingFrames) {
-    //     stopIndex = 0;
-    //     position = this.sequence.length;
-    //     let startsByRFSorted = startsByRF[rf].order_by('start', true);
-    //     let stopsByRFSorted = stopsByRF[rf].order_by('start', true);
-    //     for (let i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
-    //       start = startsByRF[rf][i];
-    //       if (start.start > position) {
-    //         continue;
-    //       }
-    //       for (let j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
-    //         stop = stopsByRF[rf][j];
-    //         orfLength = start.stop - stop.start;
-    //         if (orfLength >= minORFLength) {
-    //           position = stop.start;
-    //           range = new CGV.CGRange(this.sequence, stop.start, start.stop);
-    //           features.push( this.createFeature(range, type, -1, source ) );
-    //           stopIndex = j;
-    //           break;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   console.log('ORF Extraction Time: ' + CGV.elapsedTime(startTime) );
-    //   return features
-    // }
-    // extractStartStops(options = {}) {
-    //   this.viewer.flash('Finding Start/Stop Codons...');
-    //   let startTime = new Date().getTime();
-    //   // Forward and Reverse Starts
-    //   let startPattern = CGV.defaultFor(options.start, 'ATG')
-    //   let features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
-    //   // Forward and Reverse Stops
-    //   let stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
-    //   features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
-    //   console.log('Start/Stop Extraction Time: ' + CGV.elapsedTime(startTime) );
-    //   return features
-    // }
-    //
-    // createFeaturesFromPattern(pattern, type, source) {
-    //   let features = new CGV.CGArray();
-    //   pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
-    //   for (let strand of [1, -1]) {
-    //     // let startTime = new Date().getTime();
-    //     let ranges = this.sequence.findPattern(pattern, strand)
-    //     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
-    //     // let startTime = new Date().getTime();
-    //     for (let i = 0, len = ranges.length; i < len; i++) {
-    //       features.push( this.createFeature(ranges[i], type, strand, source ) );
-    //     }
-    //     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
-    //   }
-    //   return features.order_by('start')
-    // }
-    // createFeature(range, type, strand, source) {
-    //   let featureData = {
-    //     type: type,
-    //     start: range.start,
-    //     stop: range.stop,
-    //     strand: strand,
-    //     source: source,
-    //     extractedFromSequence: true
-    //   }
-    //   featureData.legend = this.getLegendItem(type).text;
-    //   return new CGV.Feature(this.viewer, featureData)
-    // }
+// calculateBaseContent(type, options) {
+//   let windowSize = CGV.defaultFor(options.window, this.getWindowStep().window);
+//   let step = CGV.defaultFor(options.step, this.getWindowStep().step);
+//   let deviation = CGV.defaultFor(options.deviation, 'scale'); // 'scale' or 'average'
+//   // let deviation = CGV.defaultFor(options.deviation, 'average'); // 'scale' or 'average'
+//
+//   let positions = [];
+//   let scores = [];
+//   let average =  CGV.Sequence.baseCalculation(type, this.seqString);
+//   // Starting points for min and max
+//   let min = 1;
+//   let max = 0;
+//   let halfWindowSize = windowSize / 2;
+//   let start, stop;
+//
+//   // FIXME: not set up for linear sequences
+//   // position marks the middle of the calculated window
+//   for (let position = 1, len = this.length; position < len; position += step) {
+//     // Extract DNA for window and calculate score
+//     start = this.sequence.subtractBp(position, halfWindowSize);
+//     stop = this.sequence.addBp(position, halfWindowSize);
+//     let range = new CGV.CGRange(this.sequence, start, stop);
+//     let seq = this.sequence.forRange(range);
+//     let score = CGV.Sequence.baseCalculation(type, seq);
+//
+//     if (score > max) {
+//       max = score;
+//     }
+//     if (score < min) {
+//       min = score;
+//     }
+//
+//     positions.push(position);
+//     scores.push(score);
+//   }
+//
+//   // Adjust scores if scaled
+//   // Min value becomes 0
+//   // Max value becomes 1
+//   // Average becomes 0.5
+//   if (deviation === 'scale') {
+//     scores = scores.map( (score) => {
+//       if (score >= average) {
+//         return CGV.scaleValue(score, {min: average, max: max}, {min: 0.5, max: 1});
+//       } else {
+//         return CGV.scaleValue(score, {min: min, max: average}, {min: 0, max: 0.5});
+//       }
+//     });
+//     min = 0;
+//     max = 1;
+//     average = 0.5;
+//   }
+//   return { positions: positions, scores: scores, min: min, max: max, average: average }
+// }
+// extractORFs(options = {}) {
+//   this.viewer.flash('Finding ORFs...');
+//   let startTime = new Date().getTime();
+//   let features = new CGV.CGArray();
+//   let type = 'ORF'
+//   let source = 'orfs'
+//   let minORFLength = CGV.defaultFor(options.minORFLength, 100)
+//   // Get start features by reading frame
+//   let startPattern = CGV.defaultFor(options.start, 'ATG')
+//   let startFeatures = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+//   let startsByRF = this.sequence.featuresByReadingFrame(startFeatures);
+//   // Get stop features by reading frame
+//   let stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+//   let stopFeatures = this.createFeaturesFromPattern(stopPattern, 'start-codon', 'start-stop-codons');
+//   let stopsByRF = this.sequence.featuresByReadingFrame(stopFeatures);
+//   // Get forward ORFs
+//   let position,  orfLength, range, readingFrames;
+//   readingFrames = ['rfPlus1', 'rfPlus2', 'rfPlus3'];
+//   let start, stop, stopIndex;
+//   for (let rf of readingFrames) {
+//     position = 1;
+//     stopIndex = 0;
+//     for (let i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+//       start = startsByRF[rf][i];
+//       if (start.start < position) {
+//         continue;
+//       }
+//       for (let j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
+//         stop = stopsByRF[rf][j];
+//         orfLength = stop.stop - start.start;
+//         if (orfLength >= minORFLength) {
+//           position = stop.stop;
+//           range = new CGV.CGRange(this.sequence, start.start, stop.stop);
+//           features.push( this.createFeature(range, type, 1, source ) );
+//           stopIndex = j;
+//           break;
+//         }
+//       }
+//     }
+//   }
+//   // Get reverse ORFs
+//   readingFrames = ['rfMinus1', 'rfMinus2', 'rfMinus3'];
+//   for (let rf of readingFrames) {
+//     stopIndex = 0;
+//     position = this.sequence.length;
+//     let startsByRFSorted = startsByRF[rf].order_by('start', true);
+//     let stopsByRFSorted = stopsByRF[rf].order_by('start', true);
+//     for (let i = 0, len_i = startsByRF[rf].length; i < len_i; i++) {
+//       start = startsByRF[rf][i];
+//       if (start.start > position) {
+//         continue;
+//       }
+//       for (let j = stopIndex, len_j = stopsByRF[rf].length; j < len_j; j++) {
+//         stop = stopsByRF[rf][j];
+//         orfLength = start.stop - stop.start;
+//         if (orfLength >= minORFLength) {
+//           position = stop.start;
+//           range = new CGV.CGRange(this.sequence, stop.start, start.stop);
+//           features.push( this.createFeature(range, type, -1, source ) );
+//           stopIndex = j;
+//           break;
+//         }
+//       }
+//     }
+//   }
+//   console.log('ORF Extraction Time: ' + CGV.elapsedTime(startTime) );
+//   return features
+// }
+// extractStartStops(options = {}) {
+//   this.viewer.flash('Finding Start/Stop Codons...');
+//   let startTime = new Date().getTime();
+//   // Forward and Reverse Starts
+//   let startPattern = CGV.defaultFor(options.start, 'ATG')
+//   let features = this.createFeaturesFromPattern(startPattern, 'start-codon', 'start-stop-codons');
+//   // Forward and Reverse Stops
+//   let stopPattern = CGV.defaultFor(options.stop, 'TAA,TAG,TGA');
+//   features.merge( this.createFeaturesFromPattern(stopPattern, 'stop-codon', 'start-stop-codons'))
+//   console.log('Start/Stop Extraction Time: ' + CGV.elapsedTime(startTime) );
+//   return features
+// }
+//
+// createFeaturesFromPattern(pattern, type, source) {
+//   let features = new CGV.CGArray();
+//   pattern = pattern.toUpperCase().split(',').map( (s) => { return s.trim() }).join('|')
+//   for (let strand of [1, -1]) {
+//     // let startTime = new Date().getTime();
+//     let ranges = this.sequence.findPattern(pattern, strand)
+//     // console.log("Find Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
+//     // let startTime = new Date().getTime();
+//     for (let i = 0, len = ranges.length; i < len; i++) {
+//       features.push( this.createFeature(ranges[i], type, strand, source ) );
+//     }
+//     // console.log("Features for Pattern '" + pattern + "' Strand " + strand + " Time: " + CGV.elapsedTime(startTime) );
+//   }
+//   return features.order_by('start')
+// }
+// createFeature(range, type, strand, source) {
+//   let featureData = {
+//     type: type,
+//     start: range.start,
+//     stop: range.stop,
+//     strand: strand,
+//     source: source,
+//     extractedFromSequence: true
+//   }
+//   featureData.legend = this.getLegendItem(type).text;
+//   return new CGV.Feature(this.viewer, featureData)
+// }
 

@@ -1,4 +1,4 @@
-cgv = new CGV.Viewer('#cgview', {
+const cgv = new CGV.Viewer('#cgview', {
   height: 500,
   width: 500,
   debug: {sections: ['time', 'position']},
@@ -27,21 +27,21 @@ new CGV.Feature(cgv, {
   legend: 'CDS'
 });
 
-var positions = [];
-var scores = [];
-var currentScore = 0.5;
-for (var i = 1, len = 1000; i < len; i++) {
+let positions = [];
+let scores = [];
+let currentScore = 0.5;
+for (let i = 1, len = 1000; i < len; i++) {
   positions.push(i);
   currentScore += (currentScore > Math.random()) ? -0.01 : 0.01;
   scores.push( currentScore );
 }
 
-positions = [50, 200, 400, 500, 600, 800]
-scores = [0.4, 0.75, 0.25, 0.5, 0.6, 0.1]
+positions = [50, 200, 400, 500, 600, 800];
+scores = [0.4, 0.75, 0.25, 0.5, 0.6, 0.1];
 // positions = [1, 50, 200, 400, 500, 600, 800]
 // scores = [0.6, 0.4, 0.75, 0.25, 0.5, 0.6, 0.1]
 
-var p = new CGV.Plot(cgv, {
+let p = new CGV.Plot(cgv, {
   positions: positions,
   scores: scores,
   baseline: 0.5,
@@ -60,7 +60,7 @@ new CGV.Track(cgv.layout, {
   contents: {
     type: 'feature',
     form: 'source',
-    extract: 'genome-features',
+    extract: 'genome-features'
   }
 });
 
@@ -70,7 +70,7 @@ new CGV.Track(cgv.layout, {
   contents: {
     type: 'plot',
     form: 'source',
-    extract: 'genome-plot',
+    extract: 'genome-plot'
   }
 });
 

@@ -2,14 +2,13 @@
 // Feature
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   class Feature extends CGV.CGObject {
 
     /**
      * A Feature
      */
     constructor(viewer, data = {}, meta = {}) {
-      super(viewer, data, meta)
+      super(viewer, data, meta);
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
@@ -37,7 +36,7 @@
      * @member {type} - Get or set the *type*
      */
     get type() {
-      return this._type
+      return this._type;
     }
 
     set type(value) {
@@ -48,7 +47,7 @@
      * @member {String} - Get or set the name via the [Label](Label.html).
      */
     get name() {
-      return this.label && this.label.name
+      return this.label && this.label.name;
     }
 
     set name(value) {
@@ -64,7 +63,7 @@
      * generated directly from the sequence and do not have to be saved when exported JSON.
      */
     get extractedFromSequence() {
-      return this._extractedFromSequence
+      return this._extractedFromSequence;
     }
 
     set extractedFromSequence(value) {
@@ -75,7 +74,7 @@
      * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     set viewer(viewer) {
@@ -102,20 +101,20 @@
      * @member {Number} - Get the *Score*
      */
     get score() {
-      return this._score
+      return this._score;
     }
 
     set score(value) {
-      if (Number.isNaN(Number(value))) { return }
+      if (Number.isNaN(Number(value))) { return; }
       this._score = CGV.constrain(Number(value), 0, 1);
     }
 
     isDirect() {
-      return this.strand === 1
+      return this.strand === 1;
     }
 
     isReverse() {
-      return this.strand === -1
+      return this.strand === -1;
     }
 
     /**
@@ -123,7 +122,7 @@
      *   are assumed to be going in a clockwise direction.
      */
     get range() {
-      return this._range
+      return this._range;
     }
 
     set range(value) {
@@ -135,7 +134,7 @@
      */
     get start() {
       // return this._start
-      return this.range.start
+      return this.range.start;
     }
 
     set start(value) {
@@ -149,7 +148,7 @@
      */
     get stop() {
       // return this._stop
-      return this.range.stop
+      return this.range.stop;
     }
 
     set stop(value) {
@@ -158,14 +157,14 @@
     }
 
     get length() {
-      return this.range.length
+      return this.range.length;
     }
 
     /**
      * @member {String} - Get or set the feature label.
      */
     get label() {
-      return this._label
+      return this._label;
     }
 
     set label(value) {
@@ -176,7 +175,7 @@
      * @member {String} - Get or set the feature as a favorite.
      */
     get favorite() {
-      return this._favorite ? true : false
+      return Boolean(this._favorite);
     }
 
     set favorite(value) {
@@ -188,7 +187,7 @@
      */
     get color() {
       // return (this.legendItem) ? this.legendItem.swatchColor : this._color;
-      return this.legendItem.swatchColor
+      return this.legendItem.swatchColor;
     }
 
     /**
@@ -196,16 +195,16 @@
      */
     get decoration() {
       // return (this.legendItem && this.legendItem.decoration || 'arc')
-      return (this.legendItem.decoration || 'arc')
+      return (this.legendItem.decoration || 'arc');
     }
 
     get directionalDecoration() {
       if (this.decoration === 'arrow') {
-        return this.strand === 1 ? 'clockwise-arrow' : 'counterclockwise-arrow'
+        return this.strand === 1 ? 'clockwise-arrow' : 'counterclockwise-arrow';
       } else if (this.decoration === 'score') {
-        return 'arc'
+        return 'arc';
       } else {
-        return this.decoration
+        return this.decoration;
       }
     }
 
@@ -218,9 +217,9 @@
     }
 
     set legendItem(value) {
-      if (this.legendItem && value === undefined) { return }
+      if (this.legendItem && value === undefined) { return; }
       if (value && value.toString() === 'LegendItem') {
-        this._legendItem  = value
+        this._legendItem  = value;
       } else {
         this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
       }
@@ -239,15 +238,15 @@
 
 
     draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
-      if (!this.visible) { return }
+      if (!this.visible) { return; }
       if (this.range.overlapsRange(visibleRange)) {
-        let canvas = this.canvas;
+        const canvas = this.canvas;
         let start = this.start;
         let stop = this.stop;
-        let containsStart = visibleRange.contains(start);
-        let containsStop = visibleRange.contains(stop);
-        let color = options.color || this.color;
-        let showShading = options.showShading;
+        const containsStart = visibleRange.contains(start);
+        const containsStop = visibleRange.contains(stop);
+        const color = options.color || this.color;
+        const showShading = options.showShading;
         if (!containsStart) {
           start = visibleRange.start - 100;
         }
@@ -259,7 +258,6 @@
         if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
-
           canvas.drawArc(layer, visibleRange.start - 100, stop,
             this.adjustedRadius(slotRadius, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
@@ -280,9 +278,9 @@
      * @param {Slot} slot - Only highlight the feature on this slot.
      */
     highlight(slot) {
-      if (!this.visible) { return }
+      if (!this.visible) { return; }
       this.canvas.clear('ui');
-      let color = this.color.copy();
+      const color = this.color.copy();
       color.highlight();
       if (slot && slot.features().includes(this)) {
         this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
@@ -301,15 +299,15 @@
     // TODO: Not using _radiusAdjustment yet
     adjustedRadius(radius, slotThickness) {
       if (this.legendItem.decoration === 'score') {
-        //FIXME: does not take into account proportionOfThickness and radiusAdjustment for now
-        return radius - (slotThickness / 2) + (this.score * slotThickness / 2)
+        // FIXME: does not take into account proportionOfThickness and radiusAdjustment for now
+        return radius - (slotThickness / 2) + (this.score * slotThickness / 2);
       } else {
         if (this._radiusAdjustment === 0 && this._proportionOfThickness === 1) {
-          return radius
+          return radius;
         } else if (this._radiusAdjustment === 0) {
-          return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2)
+          return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2);
         } else {
-          return radius
+          return radius;
         }
       }
     }
@@ -328,7 +326,7 @@
      *        - is this a problem??
      */
     tracks(term) {
-      let tracks = new CGV.CGArray();
+      const tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.type === 'feature') {
           if ( (track.contents.from === 'source' && track.contents.extract.includes(this.source)) ||
@@ -338,7 +336,7 @@
           }
         }
       });
-      return tracks.get(term)
+      return tracks.get(term);
     }
     // OLD SLOW WAY
     // tracks(term) {
@@ -354,8 +352,8 @@
     /**
      * Return an array of the slots that contain this feature
      */
-   slots(term) {
-      let slots = new CGV.CGArray();
+    slots(term) {
+      const slots = new CGV.CGArray();
       this.tracks().each( (i, track) => {
         track.slots().each( (j, slot) => {
           if (slot.features().includes(this)) {
@@ -363,7 +361,7 @@
           }
         });
       });
-      return slots.get(term)
+      return slots.get(term);
     }
 
     /**
@@ -375,7 +373,6 @@
       this.tracks().each( (i, track) => {
         track.removeFeatures(this);
       });
-
     }
 
     /**
@@ -385,9 +382,9 @@
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
     moveTo(duration, ease) {
-      let buffer = Math.ceil(this.length * 0.05);
-      let start = this.sequence.subtractBp(this.start, buffer);
-      let stop = this.sequence.addBp(this.stop, buffer);
+      const buffer = Math.ceil(this.length * 0.05);
+      const start = this.sequence.subtractBp(this.start, buffer);
+      const stop = this.sequence.addBp(this.stop, buffer);
       this.viewer.moveTo(start, stop, duration, ease);
     }
 
@@ -419,11 +416,10 @@
         legend: this.legend.name,
         score: this.score,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Feature = Feature;
-
 })(CGView);

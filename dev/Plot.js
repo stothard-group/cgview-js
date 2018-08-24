@@ -2,13 +2,12 @@
 // Plot
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   class Plot {
 
     /**
      * Draw a plot consisting of arcs
      */
-    constructor(viewer, data = {}, display = {}, meta = {}) {
+    constructor(viewer, data = {}, meta = {}) {
       this.viewer = viewer;
       this.positions = data.positions;
       this.scores = data.scores;
@@ -24,22 +23,21 @@
       if (data.legendNegative) {
         this.legendItemNegative  = data.legendNegative;
       }
-      let plotID = viewer.plots().indexOf(this) + 1;
+      const plotID = viewer.plots().indexOf(this) + 1;
       if (!this.legendItemPositive && !this.legendItemNegative) {
-        this.legendItem  = 'Plot-' + plotID;
+        this.legendItem  = `Plot-${plotID}`;
       } else if (!this.legendItemPositive) {
         this.legendItemPositive  = this.legendItemNegative;
       } else if (!this.legendItemNegative) {
         this.legendItemNegative  = this.legendItemPositive;
       }
-
     }
 
     /**
      * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     set viewer(viewer) {
@@ -54,7 +52,7 @@
      * @member {CGArray} - Get or set the positions (bp) of the plot.
      */
     get positions() {
-      return this._positions || new CGV.CGArray()
+      return this._positions || new CGV.CGArray();
     }
 
     set positions(value) {
@@ -67,7 +65,7 @@
      * @member {CGArray} - Get or set the scores of the plot. Value should be between 0 and 1.
      */
     get score() {
-      return this._score || new CGV.CGArray()
+      return this._score || new CGV.CGArray();
     }
 
     set score(value) {
@@ -80,22 +78,22 @@
      * @member {Number} - Get the number of points in the plot
      */
     get length() {
-      return this.positions.length
+      return this.positions.length;
     }
 
     /**
      * @member {Array|Color} - Return an array of the positive and negativ colors [PositiveColor, NegativeColor].
      */
     get color() {
-      return [this.colorPositive, this.colorNegative]
+      return [this.colorPositive, this.colorNegative];
     }
 
     get colorPositive() {
-      return this.legendItemPositive.color
+      return this.legendItemPositive.color;
     }
 
     get colorNegative() {
-      return this.legendItemNegative.color
+      return this.legendItemNegative.color;
     }
 
     /**
@@ -103,7 +101,7 @@
      * legendItemNegative to this legendItem. Get an CGArray of the legendItems: [legendItemPositive, legendItemNegative].
      */
     get legendItem() {
-      return new CGV.CGArray([this.legendItemPositive, this.legendItemNegative])
+      return new CGV.CGArray([this.legendItemPositive, this.legendItemNegative]);
     }
 
     set legendItem(value) {
@@ -115,7 +113,7 @@
      * @member {LegendItem} - Alias for [legendItem](plot.html#legendItem)
      */
     get legend() {
-      return this.legendItem
+      return this.legendItem;
     }
 
     set legend(value) {
@@ -131,9 +129,9 @@
     }
 
     set legendItemPositive(value) {
-      if (this.legendItemPositive && value === undefined) { return }
+      if (this.legendItemPositive && value === undefined) { return; }
       if (value && value.toString() === 'LegendItem') {
-        this._legendItemPositive  = value
+        this._legendItemPositive  = value;
       } else {
         this._legendItemPositive  = this.viewer.legend.findLegendItemOrCreate(value);
       }
@@ -148,9 +146,9 @@
     }
 
     set legendItemNegative(value) {
-      if (this.legendItemNegative && value === undefined) { return }
+      if (this.legendItemNegative && value === undefined) { return; }
       if (value && value.toString() === 'LegendItem') {
-        this._legendItemNegative  = value
+        this._legendItemNegative  = value;
       } else {
         this._legendItemNegative  = this.viewer.legend.findLegendItemOrCreate(value);
       }
@@ -187,7 +185,7 @@
     }
 
     set baseline(value) {
-      value = Number(baseline);
+      value = Number(value);
       if (value > 1) {
         this._baseline = 1;
       } else if (value < 0) {
@@ -198,13 +196,13 @@
     }
 
     tracks(term) {
-      let tracks = new CGV.CGArray();
+      const tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.plot === this) {
           tracks.push(track);
         }
       });
-      return tracks.get(term)
+      return tracks.get(term);
     }
 
     /**
@@ -215,15 +213,14 @@
       this.tracks().each( (i, track) => {
         track.removePlot();
       });
-
     }
 
     scoreForPosition(bp) {
-      let index = CGV.indexOfValue(this.positions, bp);
+      const index = CGV.indexOfValue(this.positions, bp);
       if (index === 0 && bp < this.positions[index]) {
-        return undefined
+        return undefined;
       } else {
-        return this.scores[index]
+        return this.scores[index];
       }
     }
 
@@ -240,23 +237,22 @@
 
     // To add a fast mode use a step when creating the indices
     _drawPath(canvas, slotRadius, slotThickness, fast, range, color, orientation) {
-      let ctx = canvas.context('map');
-      let scale = canvas.scale;
-      let positions = this.positions;
-      let scores = this.scores;
+      const ctx = canvas.context('map');
+      const positions = this.positions;
+      const scores = this.scores;
       // This is the difference in radial pixels required before a new arc is draw
-      let radialDiff = fast ? 1 : 0.5;
+      // const radialDiff = fast ? 1 : 0.5;
       // let radialDiff = 0.5;
 
-      let sequenceLength = this.viewer.sequence.length;
+      const sequenceLength = this.viewer.sequence.length;
 
-      let startIndex = CGV.indexOfValue(positions, range.start, false);
+      const startIndex = CGV.indexOfValue(positions, range.start, false);
       let stopIndex = CGV.indexOfValue(positions, range.stop, false);
       // Change stopIndex to last position if stop is between 1 and first position
       if (stopIndex === 0 && range.stop < positions[stopIndex]) {
         stopIndex = positions.length - 1;
       }
-      let startPosition = startIndex === 0 ? positions[startIndex] : range.start;
+      const startPosition = startIndex === 0 ? positions[startIndex] : range.start;
       let stopPosition = range.stop;
       // console.log(startPosition + '..' + stopPosition)
 
@@ -268,25 +264,24 @@
       ctx.beginPath();
 
       // Calculate baseline Radius
-      let baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+      const baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
 
       // Move to the first point
-      let startPoint = canvas.pointFor(startPosition, baselineRadius);
+      const startPoint = canvas.pointFor(startPosition, baselineRadius);
       ctx.moveTo(startPoint.x, startPoint.y);
 
-      let savedR = baselineRadius + (startScore - this.baseline) * slotThickness;
+      let savedR = baselineRadius + ((startScore - this.baseline) * slotThickness);
       let savedPosition = startPosition;
-      let lastScore = startScore;
 
-      let currentR, score, currentPosition;
-      let crossingBaseline = false;
-      let drawNow = false;
+      let score, currentPosition;
+      // const crossingBaseline = false;
+      // const drawNow = false;
       let step = 1;
       if (fast) {
         // When drawing fast, use a step value scaled to base-2
-        let positionsLength = this.countPositionsFromRange(startPosition, stopPosition);
-        let maxPositions = 4000;
-        let initialStep = positionsLength / maxPositions;
+        const positionsLength = this.countPositionsFromRange(startPosition, stopPosition);
+        const maxPositions = 4000;
+        const initialStep = positionsLength / maxPositions;
         if (initialStep > 1) {
           step = CGV.base2(initialStep);
         }
@@ -304,8 +299,8 @@
         score = scores[i];
         currentPosition = positions[i];
         canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
-        if ( this._keepPoint(score, orientation) ){
-          savedR = baselineRadius + (score - this.baseline) * slotThickness;
+        if ( this._keepPoint(score, orientation) ) {
+          savedR = baselineRadius + ((score - this.baseline) * slotThickness);
         } else {
           savedR = baselineRadius;
         }
@@ -318,7 +313,7 @@
       }
       // Finish drawing plot to stop position
       canvas.arcPath('map', savedR, savedPosition, stopPosition, false, 'lineTo');
-      let endPoint = canvas.pointFor(stopPosition, baselineRadius);
+      const endPoint = canvas.pointFor(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       // Draw plot anticlockwise back to start along baseline
       canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');
@@ -330,26 +325,25 @@
       // ctx.lineWidth = 0.05;
       // ctx.strokeStyle = color.rgbaString;
       // ctx.stroke();
-
     }
 
 
     _keepPoint(score, orientation) {
       if (orientation === undefined) {
-        return true
+        return true;
       } else if (orientation === 'positive' && score > this.baseline) {
-        return true
+        return true;
       } else if (orientation === 'negative' && score < this.baseline ) {
-        return true
+        return true;
       }
-      return false
+      return false;
     }
 
     positionsFromRange(startValue, stopValue, step, callback) {
-      let positions = this.positions;
+      const positions = this.positions;
       let startIndex = CGV.indexOfValue(positions, startValue, true);
-      let stopIndex = CGV.indexOfValue(positions, stopValue, false);
-      // This helps reduce the jumpiness of feature drawing with a step 
+      const stopIndex = CGV.indexOfValue(positions, stopValue, false);
+      // This helps reduce the jumpiness of feature drawing with a step
       // The idea is to alter the start index based on the step so the same
       // indices should be returned. i.e. the indices should be divisible by the step.
       if (startIndex > 0 && step > 1) {
@@ -357,7 +351,7 @@
       }
       if (stopValue >= startValue) {
         // Return if both start and stop are between values in array
-        if (positions[startIndex] > stopValue || positions[stopIndex] < startValue) { return }
+        if (positions[startIndex] > stopValue || positions[stopIndex] < startValue) { return; }
         for (let i = startIndex; i <= stopIndex; i += step) {
           callback.call(positions[i], i, positions[i]);
         }
@@ -378,8 +372,8 @@
       return positions;
     }
 
-    countPositionsFromRange(startValue, stopValue, step) {
-      let positions = this.positions;
+    countPositionsFromRange(startValue, stopValue) {
+      const positions = this.positions;
       let startIndex = CGV.indexOfValue(positions, startValue, true);
       let stopIndex = CGV.indexOfValue(positions, stopValue, false);
 
@@ -390,9 +384,9 @@
         stopIndex--;
       }
       if (stopValue >= startValue) {
-        return stopIndex - startIndex + 1
+        return stopIndex - startIndex + 1;
       } else {
-        return (positions.length - startIndex) + stopIndex + 1
+        return (positions.length - startIndex) + stopIndex + 1;
       }
     }
 
@@ -400,79 +394,78 @@
 
 
   CGV.Plot = Plot;
-
 })(CGView);
 
 // NOTE: radialDiff
-        // score = scores[i];
-        // currentPosition = positions[i];
-        // currentR = baselineRadius + (score - this.baseline) * slotThickness;
-        //
-        // if (drawNow || crossingBaseline) {
-        //   canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
-        //   savedPosition = currentPosition;
-        //   drawNow = false;
-        //   crossingBaseline = false;
-        //   if ( this._keepPoint(score, orientation) ) {
-        //     savedR = currentR;
-        //   } else {
-        //     savedR = baselineRadius;
-        //   }
-        // if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
-        //   crossingBaseline = true;
-        // }
-        //
-        // if ( Math.abs(currentR - savedR) >= radialDiff ){
-        //   drawNow = true;
-        // }
-        // lastScore = score;
+// score = scores[i];
+// currentPosition = positions[i];
+// currentR = baselineRadius + (score - this.baseline) * slotThickness;
+//
+// if (drawNow || crossingBaseline) {
+//   canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+//   savedPosition = currentPosition;
+//   drawNow = false;
+//   crossingBaseline = false;
+//   if ( this._keepPoint(score, orientation) ) {
+//     savedR = currentR;
+//   } else {
+//     savedR = baselineRadius;
+//   }
+// if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
+//   crossingBaseline = true;
+// }
+//
+// if ( Math.abs(currentR - savedR) >= radialDiff ){
+//   drawNow = true;
+// }
+// lastScore = score;
 // END RadialDiff
 
 
-        // score = scores[i];
-        // currentPosition = positions[i];
-        // canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
-        // if ( this._keepPoint(score, orientation) ){
-        //   savedR = baselineRadius + (score - this.baseline) * slotThickness;
-        // } else {
-        //   savedR = baselineRadius;
-        // }
-        // savedPosition = currentPosition;
+// score = scores[i];
+// currentPosition = positions[i];
+// canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+// if ( this._keepPoint(score, orientation) ){
+//   savedR = baselineRadius + (score - this.baseline) * slotThickness;
+// } else {
+//   savedR = baselineRadius;
+// }
+// savedPosition = currentPosition;
 
 
-    //
-        // score = scores[i];
-        // currentPosition = positions[i];
-        // canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
-        // currentR = baselineRadius + (score - this.baseline) * slotThickness;
-        // savedR = currentR;
-        // savedPosition = currentPosition;
-    //
-    //
-      // positions.eachFromRange(startPosition, stopPosition, step, (i) => {
-        // if (i === 0) {
-        //   lastScore = this.baseline;
-        //   savedPosition = 1;
-        //   savedR = baselineRadius;
-        // }
-      //   lastScore = score;
-      //   score = scores[i];
-      //   currentPosition = positions[i];
-      //   currentR = baselineRadius + (score - this.baseline) * slotThickness;
-      //   // If going from positive to negative need to save currentR as 0 (baselineRadius)
-      //   // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
-      //   if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
-      //     currentR = baselineRadius;
-      //     canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
-      //     savedR = currentR;
-      //     savedPosition = currentPosition;
-      //   } else if ( this._keepPoint(score, orientation) ){
-      //     if ( Math.abs(currentR - savedR) >= radialDiff ){
-      //       canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
-      //       savedR = currentR;
-      //       savedPosition = currentPosition
-      //     }
-      //   } else {
-      //     savedR = baselineRadius;
-      //   }
-      // });
+//
+// score = scores[i];
+// currentPosition = positions[i];
+// canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+// currentR = baselineRadius + (score - this.baseline) * slotThickness;
+// savedR = currentR;
+// savedPosition = currentPosition;
+//
+//
+// positions.eachFromRange(startPosition, stopPosition, step, (i) => {
+// if (i === 0) {
+//   lastScore = this.baseline;
+//   savedPosition = 1;
+//   savedR = baselineRadius;
+// }
+//   lastScore = score;
+//   score = scores[i];
+//   currentPosition = positions[i];
+//   currentR = baselineRadius + (score - this.baseline) * slotThickness;
+//   // If going from positive to negative need to save currentR as 0 (baselineRadius)
+//   // Easiest way is to check if the sign changes (i.e. multipling last and current score is negative)
+//   if (orientation && ( (lastScore - this.baseline) * (score - this.baseline) < 0)) {
+//     currentR = baselineRadius;
+//     canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
+//     savedR = currentR;
+//     savedPosition = currentPosition;
+//   } else if ( this._keepPoint(score, orientation) ){
+//     if ( Math.abs(currentR - savedR) >= radialDiff ){
+//       canvas.arcPath('map', currentR, savedPosition, currentPosition, false, true);
+//       savedR = currentR;
+//       savedPosition = currentPosition
+//     }
+//   } else {
+//     savedR = baselineRadius;
+//   }
+// });

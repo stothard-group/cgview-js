@@ -2,7 +2,6 @@
 // Sequence
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The CGView Sequence class holds the sequence of the map.
@@ -45,60 +44,60 @@
     //////////////////////////////////////////////////////////////////////////
     // TODO: Take into account lower case letters
     static complement(seq) {
-      let compSeq = ''
+      let compSeq = '';
       let char, compChar;
       for (let i = 0, len = seq.length; i < len; i++) {
         char = seq.charAt(i);
         switch (char) {
-          case 'A':
-            compChar = 'T';
-            break;
-          case 'T':
-            compChar = 'A';
-            break;
-          case 'G':
-            compChar = 'C';
-            break;
-          case 'C':
-            compChar = 'G';
-            break;
-          case 'U':
-            compChar = 'A';
-            break;
-          case 'Y':
-            compChar = 'R';
-            break;
-          case 'S':
-            compChar = 'S';
-            break;
-          case 'W':
-            compChar = 'W';
-            break;
-          case 'K':
-            compChar = 'M';
-            break;
-          case 'M':
-            compChar = 'K';
-            break;
-          case 'B':
-            compChar = 'V';
-            break;
-          case 'D':
-            compChar = 'H';
-            break;
-          case 'H':
-            compChar = 'D';
-            break;
-          case 'V':
-            compChar = 'B';
-            break;
-          case 'N':
-            compChar = 'N';
-            break;
+        case 'A':
+          compChar = 'T';
+          break;
+        case 'T':
+          compChar = 'A';
+          break;
+        case 'G':
+          compChar = 'C';
+          break;
+        case 'C':
+          compChar = 'G';
+          break;
+        case 'U':
+          compChar = 'A';
+          break;
+        case 'Y':
+          compChar = 'R';
+          break;
+        case 'S':
+          compChar = 'S';
+          break;
+        case 'W':
+          compChar = 'W';
+          break;
+        case 'K':
+          compChar = 'M';
+          break;
+        case 'M':
+          compChar = 'K';
+          break;
+        case 'B':
+          compChar = 'V';
+          break;
+        case 'D':
+          compChar = 'H';
+          break;
+        case 'H':
+          compChar = 'D';
+          break;
+        case 'V':
+          compChar = 'B';
+          break;
+        case 'N':
+          compChar = 'N';
+          break;
         }
         compSeq = compSeq + compChar;
       }
-      return compSeq
+      return compSeq;
     }
 
     static baseCalculation(type, seq) {
@@ -110,18 +109,18 @@
     }
 
     static calcGCContent(seq) {
-      if (seq.length === 0) { return  0.5 }
-      let g = CGV.Sequence.count(seq, 'g');
-      let c = CGV.Sequence.count(seq, 'c');
-      return ( (g + c) / seq.length )
+      if (seq.length === 0) { return  0.5; }
+      const g = CGV.Sequence.count(seq, 'g');
+      const c = CGV.Sequence.count(seq, 'c');
+      return ( (g + c) / seq.length );
     }
 
     static calcGCSkew(seq) {
-      let g = CGV.Sequence.count(seq, 'g');
-      let c = CGV.Sequence.count(seq, 'c');
-      if ( (g + c) === 0 ) { return 0.5 }
+      const g = CGV.Sequence.count(seq, 'g');
+      const c = CGV.Sequence.count(seq, 'c');
+      if ( (g + c) === 0 ) { return 0.5; }
       // Gives value between -1 and 1
-      let value = (g - c) / (g + c);
+      const value = (g - c) / (g + c);
       // Scale to a value between 0 and 1
       return  0.5 + (value / 2);
     }
@@ -131,7 +130,7 @@
     }
 
     static count(seq, pattern) {
-      return (seq.match(new RegExp(pattern, 'gi')) || []).length
+      return (seq.match(new RegExp(pattern, 'gi')) || []).length;
     }
 
     /**
@@ -143,30 +142,30 @@
       let seq = '';
       let num;
       for (let i = 0; i < length; i++) {
-        num = Math.floor(Math.random() * 4)
+        num = Math.floor(Math.random() * 4);
         switch (num % 4) {
-          case 0:
-            seq += 'A';
-            break;
-          case 1:
-            seq += 'T';
-            break;
-          case 2:
-            seq += 'G';
-            break;
-          case 3:
-            seq += 'C';
+        case 0:
+          seq += 'A';
+          break;
+        case 1:
+          seq += 'T';
+          break;
+        case 2:
+          seq += 'G';
+          break;
+        case 3:
+          seq += 'C';
         }
       }
-      return seq
+      return seq;
     }
 
     reverseComplement() {
-      return Sequence.reverseComplement(this.seq)
+      return Sequence.reverseComplement(this.seq);
     }
 
     count(pattern) {
-      return Sequence.count(this.seq, pattern)
+      return Sequence.count(this.seq, pattern);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -177,7 +176,7 @@
      * @member {String} - Get or set the seqeunce.
      */
     get seq() {
-      return this._seq
+      return this._seq;
     }
 
     set seq(value) {
@@ -196,14 +195,14 @@
      * @member {Number} - Get the SeqeunceExtractor. Only available if the *seq* property is set.
      */
     get sequenceExtractor() {
-      return this._sequenceExtractor
+      return this._sequenceExtractor;
     }
 
     /**
      * @member {Number} - Get or set the seqeunce length. If the *seq* property is set, the length can not be adjusted.
      */
     get length() {
-      return this._length
+      return this._length;
     }
 
     set length(value) {
@@ -220,7 +219,7 @@
     _updateScale() {
       this.canvas.scale.bp = d3.scaleLinear()
         .domain([1, this.length])
-        .range([-1/2*Math.PI, 3/2*Math.PI]);
+        .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       this.viewer._updateZoomMax();
     }
 
@@ -228,7 +227,7 @@
      * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get color() {
-      return this._color
+      return this._color;
     }
 
     set color(value) {
@@ -243,7 +242,7 @@
      * @member {Font} - Get or set sequence font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font
+      return this._font;
     }
 
     set font(value) {
@@ -259,7 +258,7 @@
      * @member {Number} - Get or set the basepair spacing.
      */
     get bpSpacing() {
-      return this._bpSpacing
+      return this._bpSpacing;
     }
 
     set bpSpacing(value) {
@@ -271,7 +270,7 @@
      * @member {Number} - Get or set the margin around sequence letters.
      */
     get bpMargin() {
-      return this._bpMargin
+      return this._bpMargin;
     }
 
     set bpMargin(value) {
@@ -282,26 +281,26 @@
      * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
      */
     get thickness() {
-      return CGV.pixel(this.bpSpacing * 2 + (this.bpMargin * 4));
+      return CGV.pixel((this.bpSpacing * 2) + (this.bpMargin * 4));
     }
 
     get isLinear() {
-      return false
+      return false;
     }
 
     get isCircular() {
-      return true
+      return true;
     }
 
-    asFasta(id='sequence') {
-      return `>${id}\n${this.seq}`
+    asFasta(id = 'sequence') {
+      return `>${id}\n${this.seq}`;
     }
 
     lengthOfRange(start, stop) {
       if (stop >= start) {
-        return stop - start
+        return stop - start;
       } else {
-        return this.length + (stop - start)
+        return this.length + (stop - start);
       }
     }
 
@@ -312,9 +311,9 @@
      */
     subtractBp(position, bpToSubtract) {
       if (bpToSubtract < position) {
-        return position - bpToSubtract
+        return position - bpToSubtract;
       } else {
-        return this.length + position - bpToSubtract
+        return this.length + position - bpToSubtract;
       }
     }
 
@@ -325,15 +324,15 @@
      */
     addBp(position, bpToAdd) {
       if (this.length >= (bpToAdd + position)) {
-        return bpToAdd + position
+        return bpToAdd + position;
       } else {
-        return position - this.length + bpToAdd
+        return position - this.length + bpToAdd;
       }
     }
 
     /**
      * Return the sequence for the *range*
-     * 
+     *
      * @param {Range} range - the range for which to return the sequence
      * @param {Boolean} complement - If true return the complement sequence
      * @return {String}
@@ -350,7 +349,7 @@
         // FIXME: For now return fake sequence
         seq = this._fakeSequenceForRange(range);
       }
-      return seq
+      return seq;
     }
 
     // FAKE method to get sequence
@@ -359,21 +358,21 @@
       let bp = range.start;
       for (let i = 0, len = range.length; i < len; i++) {
         switch (bp % 4) {
-          case 0:
-            seq += 'A';
-            break;
-          case 1:
-            seq += 'T';
-            break;
-          case 2:
-            seq += 'G';
-            break;
-          case 3:
-            seq += 'C';
+        case 0:
+          seq += 'A';
+          break;
+        case 1:
+          seq += 'T';
+          break;
+        case 2:
+          seq += 'G';
+          break;
+        case 3:
+          seq += 'C';
         }
         bp++;
       }
-      return seq
+      return seq;
     }
 
     /**
@@ -383,68 +382,67 @@
      * @return {Array)
      */
     findPattern(pattern, strand = 1) {
-      let re = new RegExp(pattern, 'g');
-      let ranges = [];
+      const re = new RegExp(pattern, 'g');
+      const ranges = [];
       let match, start;
-      let seq = (strand === 1) ? this.seq : this.reverseComplement();
+      const seq = (strand === 1) ? this.seq : this.reverseComplement();
       while ( (match = re.exec(seq)) !== null) {
         start = (strand === 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
         ranges.push( new CGV.CGRange(this, start, start + match[0].length - 1 ) );
         re.lastIndex = match.index + 1;
       }
-      return ranges
+      return ranges;
     }
 
 
     featuresByReadingFrame(features) {
-      let featuresByRF = {
-        rf_plus_1: [],
-        rf_plus_2: [],
-        rf_plus_3: [],
-        rf_minus_1: [],
-        rf_minus_2: [],
-        rf_minus_3: [],
-        // rf_plus_1: new CGV.CGArray(),
-        // rf_plus_2: new CGV.CGArray(),
-        // rf_plus_3: new CGV.CGArray(),
-        // rf_minus_1: new CGV.CGArray(),
-        // rf_minus_2: new CGV.CGArray(),
-        // rf_minus_3: new CGV.CGArray()
+      const featuresByRF = {
+        rfPlus1: [],
+        rfPlus2: [],
+        rfPlus3: [],
+        rfMinus1: [],
+        rfMinus2: [],
+        rfMinus3: []
+        // rfPlus1: new CGV.CGArray(),
+        // rfPlus2: new CGV.CGArray(),
+        // rfPlus3: new CGV.CGArray(),
+        // rfMinus1: new CGV.CGArray(),
+        // rfMinus2: new CGV.CGArray(),
+        // rfMinus3: new CGV.CGArray()
       };
       let rf;
       features.each( (i, feature) => {
         if (feature.strand === -1) {
           rf = (this.length - feature.stop + 1) % 3;
           if (rf === 0) { rf = 3; }
-          featuresByRF[`rf_minus_${rf}`].push(feature);
+          featuresByRF[`rfMinus${rf}`].push(feature);
         } else {
           rf = feature.start % 3;
           if (rf === 0) { rf = 3; }
-          featuresByRF[`rf_plus_${rf}`].push(feature);
+          featuresByRF[`rfPlus${rf}`].push(feature);
         }
       });
-      return featuresByRF
+      return featuresByRF;
     }
 
     _emptySequence(length) {
       // ES6
       // return '•'.repeat(length);
-      return Array(length + 1).join('•')
+      return Array(length + 1).join('•');
     }
 
     draw() {
-      if (!this.visible) { return }
-      let ctx = this.canvas.context('map');
-      let scale = this.canvas.scale;
-      let backbone = this.viewer.backbone;
-      let pixelsPerBp = backbone.pixelsPerBp();
-      let seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
-      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return }
+      if (!this.visible) { return; }
+      const ctx = this.canvas.context('map');
+      const backbone = this.viewer.backbone;
+      const pixelsPerBp = backbone.pixelsPerBp();
+      const seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
+      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return; }
 
-      let scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
+      const scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
 
-      let radius = CGV.pixel(backbone.zoomedRadius);
-      let range = backbone.visibleRange;
+      const radius = CGV.pixel(backbone.zoomedRadius);
+      const range = backbone.visibleRange;
       let seq, complement;
       if (range) {
         if (this.seq) {
@@ -460,7 +458,7 @@
         ctx.font = this.font.cssScaled(scaleFactor);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        let radiusDiff = CGV.pixel(this.bpSpacing / 2 + this.bpMargin) * scaleFactor;
+        const radiusDiff = CGV.pixel((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
           let origin = this.canvas.pointFor(bp, radius + radiusDiff);
           ctx.fillText(seq[i], origin.x, origin.y);
@@ -478,42 +476,41 @@
         color: this.color.rgbString,
         seq: this.seq,
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Sequence = Sequence;
-
 })(CGView);
 
 
-    // testRF(features) {
-    //   let startTime, rf;
-    //   startTime = new Date().getTime();
-    //   let rf1 = this.featuresByReadingFrame(features);
-    //   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
-    //   // SETUP
-    //   features.each( (i, feature) => {
-    //     if (feature.strand === -1) {
-    //       rf = (this.length - feature.stop + 1) % 3;
-    //       if (rf === 0) { rf = 3; }
-    //       feature.rf = rf;
-    //     } else {
-    //       rf = feature.start % 3;
-    //       if (rf === 0) { rf = 3; }
-    //       feature.rf = rf;
-    //     }
-    //   });
-    //   startTime = new Date().getTime();
-    //   let rf2 = {
-    //     rf_plus_1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === 1})),
-    //     rf_plus_2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === 1})),
-    //     rf_plus_3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === 1})),
-    //     rf_minus_1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === -1})),
-    //     rf_minus_2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === -1})),
-    //     rf_minus_3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === -1}))
-    //   };
-    //   console.log("READING FRAME NEW Creation Time: " + CGV.elapsedTime(startTime) );
-    //   return rf2;
-    // }
+// testRF(features) {
+//   let startTime, rf;
+//   startTime = new Date().getTime();
+//   let rf1 = this.featuresByReadingFrame(features);
+//   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
+//   // SETUP
+//   features.each( (i, feature) => {
+//     if (feature.strand === -1) {
+//       rf = (this.length - feature.stop + 1) % 3;
+//       if (rf === 0) { rf = 3; }
+//       feature.rf = rf;
+//     } else {
+//       rf = feature.start % 3;
+//       if (rf === 0) { rf = 3; }
+//       feature.rf = rf;
+//     }
+//   });
+//   startTime = new Date().getTime();
+//   let rf2 = {
+//     rfPlus1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === 1})),
+//     rfPlus2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === 1})),
+//     rfPlus3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === 1})),
+//     rfMinus1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  && f.strand === -1})),
+//     rfMinus2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  && f.strand === -1})),
+//     rfMinus3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  && f.strand === -1}))
+//   };
+//   console.log("READING FRAME NEW Creation Time: " + CGV.elapsedTime(startTime) );
+//   return rf2;
+// }

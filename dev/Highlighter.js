@@ -2,13 +2,13 @@
 // Highlighter
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The Highlighter object controls highlighting and popovers of features and
    * plots on the Viewer when the mouse hovers over them.
    */
   class Highlighter extends CGV.CGObject {
+
     /**
      * Create a Highligher
      *
@@ -27,7 +27,7 @@
      * @return {Highlighter}
      */
     constructor(viewer, options = {}, meta = {}) {
-      super(viewer, options, meta)
+      super(viewer, options, meta);
       this._viewer = viewer;
       this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
       this.featureHighlighting = CGV.defaultFor(options.featureHighlighting, true);
@@ -40,7 +40,7 @@
 
       // Set up position constants
       this._ratio = CGV.pixel(1);
-      this._offsetLeft = parseInt(this.viewer._container.style('padding-left')) +10;
+      this._offsetLeft = parseInt(this.viewer._container.style('padding-left')) + 10;
       this._offsetTop = parseInt(this.viewer._container.style('padding-top')) - 20;
     }
 
@@ -48,7 +48,7 @@
      * @member {Viewer} - Get the viewer.
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     position(e) {
@@ -57,9 +57,9 @@
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
       // let viewerRect = this.viewer._container.node().getBoundingClientRect();
-      let originX = e.canvasX / this._ratio + viewerRect.left + window.pageXOffset;
-      let originY = e.canvasY / this._ratio + viewerRect.top + window.pageYOffset;
-      return { x: originX + this._offsetLeft, y: originY + this._offsetTop }
+      const originX = (e.canvasX / this._ratio) + viewerRect.left + window.pageXOffset;
+      const originY = (e.canvasY / this._ratio) + viewerRect.top + window.pageYOffset;
+      return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
     }
 
     initializeEvents() {
@@ -76,12 +76,12 @@
     }
 
     featurePopoverContentsDefault(feature) {
-      return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`
+      return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
     }
 
     plotPopoverContentsDefault(plot, bp) {
-      let score = plot.scoreForPosition(bp);
-      return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`
+      const score = plot.scoreForPosition(bp);
+      return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`;
     }
 
     mouseOverFeature(e) {
@@ -89,8 +89,8 @@
         e.feature.highlight(e.slot);
       }
       if (this.featurePopovers && this.visible) {
-        let position = this.position(e);
-        let html = this.featurePopoverContents && this.featurePopoverContents(e.feature) || this.featurePopoverContentsDefault(e.feature);
+        const position = this.position(e);
+        const html = (this.featurePopoverContents && this.featurePopoverContents(e.feature)) || this.featurePopoverContentsDefault(e.feature);
         this.showPopoverBox({position: position, html: html});
       }
     }
@@ -100,24 +100,24 @@
         this.highlightPlot(e);
       }
       if (this.plotPopovers && this.visible) {
-        let position = this.position(e);
-        let html = this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp) || this.plotPopoverContentsDefault(e.plot, e.bp);
+        const position = this.position(e);
+        const html = (this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp)) || this.plotPopoverContentsDefault(e.plot, e.bp);
         this.showPopoverBox({position: position, html: html});
       }
     }
 
     highlightPlot(e) {
-      let viewer = this.viewer;
-      let score = e.plot.scoreForPosition(e.bp);
+      const viewer = this.viewer;
+      const score = e.plot.scoreForPosition(e.bp);
       if (score) {
-        let startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
-        let start = e.plot.positions[startIndex];
-        let stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
-        let baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
-        let scoredRadius = baselineRadius + (score - e.plot.baseline) * e.slot.thickness;
-        let thickness = Math.abs(baselineRadius - scoredRadius);
-        let radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
-        let color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+        const startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
+        const start = e.plot.positions[startIndex];
+        const stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
+        const baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+        const scoredRadius = baselineRadius + ((score - e.plot.baseline) * e.slot.thickness);
+        const thickness = Math.abs(baselineRadius - scoredRadius);
+        const radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+        const color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
         color.highlight();
 
         viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
@@ -128,7 +128,7 @@
       this.popoverBox.style('visibility', 'hidden');
     }
 
-    showPopoverBox(options={}) {
+    showPopoverBox(options = {}) {
       if (options.html) {
         this.popoverBox.html(options.html);
       }
@@ -143,13 +143,12 @@
     toJSON() {
       return {
         visible: this.visible
-      }
+      };
     }
 
   }
 
   CGV.Highlighter = Highlighter;
-
 })(CGView);
 
 

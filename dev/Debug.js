@@ -2,15 +2,14 @@
 // Debug
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   class Debug {
 
     constructor(options = {}) {
       this._data = {};
       this._sections = CGV.defaultFor(options.sections, []);
       // Create object for each section
-      for (let section of this.sections) {
-        this.data[section] = {}
+      for (const section of this.sections) {
+        this.data[section] = {};
       }
     }
 
@@ -37,31 +36,30 @@
     //   this.debug_data.time['draw'] = JSV.elapsedTime(start_time);
     //   this.draw_debug(this.legend.bottom());
     // }
-    // 
+    //
     // Draws any information in 'data' onto the left side of the viewer
     draw(ctx, x = 10, y = 20) {
       x = CGV.pixel(x);
       y = CGV.pixel(y);
-      let data = this._data;
-      let sections = this._sections;
+      const data = this._data;
+      const sections = this._sections;
 
-      ctx.font = CGV.pixel(10) + 'pt Sans-Serif';
+      ctx.font = `${CGV.pixel(10)}pt Sans-Serif`;
       ctx.fillStyle = 'black';
-      let line_height = CGV.pixel(18);
+      const lineHeight = CGV.pixel(18);
       ctx.textAlign = 'left';
-      let section_keys = this.debug === true ? Object.keys(data) : this.debug;
+      // const section_keys = this.debug === true ? Object.keys(data) : this.debug;
       let i = 0;
-      sections.forEach(function(section_key) {
-        let data_keys = Object.keys(data[section_key]);
-        data_keys.forEach(function(data_key) {
-          ctx.fillText((section_key + '|' + data_key + ': ' + data[section_key][data_key]), x, y + (line_height * i));
+      sections.forEach(function(sectionKey) {
+        const dataKeys = Object.keys(data[sectionKey]);
+        dataKeys.forEach(function(dataKey) {
+          ctx.fillText((`${sectionKey}|${dataKey}: ${data[sectionKey][dataKey]}`), x, y + (lineHeight * i));
           i += 1;
         });
-      })
+      });
     }
 
   }
 
   CGV.Debug = Debug;
-
 })(CGView);

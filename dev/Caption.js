@@ -2,7 +2,6 @@
 // Caption
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-
   /**
    * <br />
    * The *Caption* object can be used to add additional annotation to
@@ -39,7 +38,7 @@
 
       if (data.items) {
         data.items.forEach((itemData) => {
-          new CGV[this.toString() + 'Item'](this, itemData);
+          new CGV[`${this.toString()}Item`](this, itemData);
         });
       }
       // FIXME: should be done whenever an item is added
@@ -58,7 +57,7 @@
      * @member {Viewer} - Get or set the *Viewer*
      */
     get viewer() {
-      return this._viewer
+      return this._viewer;
     }
 
     set viewer(viewer) {
@@ -70,7 +69,7 @@
     }
 
     get visible() {
-      return this._visible
+      return this._visible;
     }
 
     set visible(value) {
@@ -83,21 +82,21 @@
      * @member {Context} - Get the *Context* for drawing.
      */
     get ctx() {
-      return this.canvas.context('captions')
+      return this.canvas.context('captions');
     }
 
     /**
      * @member {String} - Alias for getting the position. Useful for querying CGArrays.
      */
     get id() {
-      return this.position
+      return this.position;
     }
 
     /**
      * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
      */
     get position() {
-      return this._position
+      return this._position;
     }
 
     set position(value) {
@@ -109,7 +108,7 @@
      * @member {String} - Get or set the caption name.
      */
     get name() {
-      return this._name
+      return this._name;
     }
 
     set name(value) {
@@ -121,7 +120,7 @@
      */
     get backgroundColor() {
       // TODO set to cgview background color if not defined
-      return this._backgroundColor
+      return this._backgroundColor;
     }
 
     set backgroundColor(color) {
@@ -140,11 +139,11 @@
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
     get font() {
-      return this._font
+      return this._font;
     }
 
     set font(value) {
-      if (value.toString() === 'Font'){
+      if (value.toString() === 'Font') {
         this._font = value;
       } else {
         this._font = new CGV.Font(value);
@@ -156,11 +155,11 @@
      * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get fontColor() {
-      return this._fontColor.rgbaString
+      return this._fontColor.rgbaString;
     }
 
     set fontColor(value) {
-      if (value.toString() === 'Color'){
+      if (value.toString() === 'Color') {
         this._fontColor = value;
       } else {
         this._fontColor = new CGV.Color(value);
@@ -172,7 +171,7 @@
      * @member {String} - Get or set the text alignment. Possible values are *left*, *center*, or *right*.
      */
     get textAlignment() {
-      return this._textAlignment
+      return this._textAlignment;
     }
 
     set textAlignment(value) {
@@ -186,15 +185,13 @@
      * @member {CGArray} - Get the *CaptionItems*
      */
     items(term) {
-      return this._items.get(term)
+      return this._items.get(term);
     }
 
     /**
      * @member {CGArray} - Get the *CaptionItems*
      */
     visibleItems(term) {
-      // let filtered = this._items.filter( (i) => { return i.visible });
-      // return new CGV.CGArray(filtered).get(term)
       return this._items.filter( i => i.visible ).get(term);
     }
 
@@ -208,12 +205,12 @@
       this.clear();
       this.height = 0;
       let maxHeight = 0;
-      if (!this._items) { return }
-      let visibleItems = this.visibleItems();
+      if (!this._items) { return; }
+      const visibleItems = this.visibleItems();
       // for (let i = 0, len = this._items.length; i < len; i++) {
       for (let i = 0, len = visibleItems.length; i < len; i++) {
-        let captionItem = visibleItems[i];
-        let captionItemHeight = captionItem.height;
+        const captionItem = visibleItems[i];
+        const captionItemHeight = captionItem.height;
         this.height += captionItemHeight;
         if (i < len - 1) {
           // Add spacing
@@ -228,11 +225,11 @@
 
       // Calculate Caption Width
       this.width = 0;
-      let itemFonts = visibleItems.map( (i) => { return i.font.css });
-      let itemNames = visibleItems.map( (i) => { return i.name });
-      let itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
+      const itemFonts = visibleItems.map( i => i.font.css );
+      const itemNames = visibleItems.map( i => i.name );
+      const itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
       for (let i = 0, len = itemWidths.length; i < len; i++) {
-        let item = visibleItems[i];
+        const item = visibleItems[i];
         // This should only be used for legends
         if (item.drawSwatch) {
           itemWidths[i] += item.height + (this.padding / 2);
@@ -246,13 +243,13 @@
     }
 
     _updateOrigin() {
-      let margin = CGV.pixel(0);
-      let canvasWidth = this.canvas.width;
-      let canvasHeight = this.canvas.height;
-      let captionWidth = this.width;
-      let captionHeight = this.height;
+      const margin = CGV.pixel(0);
+      const canvasWidth = this.canvas.width;
+      const canvasHeight = this.canvas.height;
+      const captionWidth = this.width;
+      const captionHeight = this.height;
 
-      let position = this.position;
+      const position = this.position;
       if (position === 'upper-left') {
         this.originX = margin;
         this.originY = margin;
@@ -299,33 +296,32 @@
     }
 
     containsPoint(pt) {
-      let x = this.originX;
-      let y = this.originY;
+      const x = this.originX;
+      const y = this.originY;
       if (pt.x >= x && pt.x <= x + this.width && pt.y >= y && pt.y <= y + this.height) {
-        return true
+        return true;
       }
     }
 
     highlight(color = '#FFB') {
-      if (!this.visible) { return }
+      if (!this.visible) { return; }
       // let ctx = this.canvas.context('background');
       // ctx.fillStyle = color;
       // ctx.fillRect(this.originX, this.originY, this.width, this.height);
-      let ctx = this.canvas.context('ui');
+      const ctx = this.canvas.context('ui');
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'black';
       ctx.strokeRect(this.originX, this.originY, this.width, this.height);
     }
 
     draw() {
-      if (!this.visible) { return }
-      let ctx = this.ctx;
+      if (!this.visible) { return; }
+      const ctx = this.ctx;
       this.fillBackground();
       ctx.textBaseline = 'top';
       for (let i = 0, len = this._items.length; i < len; i++) {
-        let captionItem = this._items[i];
-        if (!captionItem.visible) { continue }
-        let captionItemHeight = captionItem.height;
+        const captionItem = this._items[i];
+        if (!captionItem.visible) { continue; }
         ctx.font = captionItem.font.css;
         ctx.textAlign = captionItem.textAlignment;
         // Draw Text Label
@@ -335,14 +331,14 @@
     }
 
     remove() {
-      let viewer = this.viewer;
+      const viewer = this.viewer;
       viewer._captions = viewer._captions.remove(this);
       viewer.clear('captions');
       viewer.refreshCaptions();
     }
 
     toJSON() {
-      let json = {
+      const json = {
         name: this.name,
         position: this.position,
         textAlignment: this.textAlignment,
@@ -351,15 +347,14 @@
         backgroundColor: this.backgroundColor.rgbaString,
         visible: this.visible,
         items: []
-      }
+      };
       this.items().each( (i, item) => {
         json.items.push(item.toJSON());
       });
-      return json
+      return json;
     }
 
   }
 
   CGV.Caption = Caption;
-
 })(CGView);

@@ -1,32 +1,30 @@
 (function(CGV) {
-
   CGV.WorkerBaseContent = function() {
     onmessage = function(e) {
-      console.log('Starting ' + e.data.type);
+      console.log(`Starting ${e.data.type}`);
       calculateBaseContent(e.data);
-      console.log('Done ' + e.data.type);
-
-    }
+      console.log(`Done ${e.data.type}`);
+    };
     onerror = function(e) {
-      console.error('Oops. Problem with ' + e.data.type);
-    }
+      console.error(`Oops. Problem with ${e.data.type}`);
+    };
 
-    calculateBaseContent = function(options) {
+    const calculateBaseContent = function(options) {
       let progress = 0;
       let savedProgress = 0;
-      let progressIncrement = 1;
-      let positions = [];
+      const progressIncrement = 1;
+      const positions = [];
       let scores = [];
-      let type = options.type;
-      let seq = options.seqString;
-      let windowSize = options.window;
-      let step = options.step;
-      let deviation = options.deviation;
+      const type = options.type;
+      const seq = options.seqString;
+      const windowSize = options.window;
+      const step = options.step;
+      const deviation = options.deviation;
       let average = baseCalculation(type, seq);
       // Starting points for min and max
       let min = 1;
       let max = 0;
-      let halfWindowSize = windowSize / 2;
+      const halfWindowSize = windowSize / 2;
       let start, stop;
 
       // Position marks the middle of the calculated window
@@ -34,8 +32,8 @@
         // Extract DNA for window and calculate score
         start = subtractBp(seq, position, halfWindowSize);
         stop = addBp(seq, position, halfWindowSize);
-        let subSeq = subSequence(seq, start, stop);
-        let score = baseCalculation(type, subSeq);
+        const subSeq = subSequence(seq, start, stop);
+        const score = baseCalculation(type, subSeq);
 
         if (score > max) {
           max = score;
@@ -51,7 +49,7 @@
         if (position === 1) {
           positions.push(1);
         } else {
-          positions.push(position - step/2);
+          positions.push(position - (step / 2));
         }
         // positions.push(position);
 
@@ -79,74 +77,74 @@
         max = 1;
         average = 0.5;
       }
-      let baseContent = { positions: positions, scores: scores, min: min, max: max, average: average }
+      const baseContent = { positions: positions, scores: scores, min: min, max: max, average: average };
       postMessage({ messageType: 'complete', baseContent: baseContent });
-    }
+    };
 
-    baseCalculation = function(type, seq) {
+    const baseCalculation = function(type, seq) {
       if (type === 'gc-content') {
         return calcGCContent(seq);
       } else if (type === 'gc-skew') {
         return calcGCSkew(seq);
       }
-    }
+    };
 
-    calcGCContent = function(seq) {
-      if (seq.length === 0) { return  0.5 }
-      let g = count(seq, 'g');
-      let c = count(seq, 'c');
-      return ( (g + c) / seq.length )
-    }
+    const calcGCContent = function(seq) {
+      if (seq.length === 0) { return  0.5; }
+      const g = count(seq, 'g');
+      const c = count(seq, 'c');
+      return ( (g + c) / seq.length );
+    };
 
-    calcGCSkew = function(seq) {
-      let g = count(seq, 'g');
-      let c = count(seq, 'c');
-      if ( (g + c) === 0 ) { return 0.5 }
+    const calcGCSkew = function(seq) {
+      const g = count(seq, 'g');
+      const c = count(seq, 'c');
+      if ( (g + c) === 0 ) { return 0.5; }
       // Gives value between -1 and 1
-      let value = (g - c) / (g + c);
+      const value = (g - c) / (g + c);
       // Scale to a value between 0 and 1
       return  0.5 + (value / 2);
-    }
+    };
 
-    count = function(seq, pattern) {
-      return (seq.match(new RegExp(pattern, 'gi')) || []).length
-    }
+    const count = function(seq, pattern) {
+      return (seq.match(new RegExp(pattern, 'gi')) || []).length;
+    };
 
     /**
      * Subtract *bpToSubtract* from *position*, taking into account the sequence length
      * @param {Number} position - position (in bp) to subtract from
      * @param {Number} bpToSubtract - number of bp to subtract
      */
-    subtractBp = function(seq, position, bpToSubtract) {
+    const subtractBp = function(seq, position, bpToSubtract) {
       if (bpToSubtract < position) {
-        return position - bpToSubtract
+        return position - bpToSubtract;
       } else {
-        return seq.length + position - bpToSubtract
+        return seq.length + position - bpToSubtract;
       }
-    }
+    };
 
     /**
      * Add *bpToAdd* to *position*, taking into account the sequence length
      * @param {Number} position - position (in bp) to add to
      * @param {Number} bpToAdd - number of bp to add
      */
-    addBp = function(seq, position, bpToAdd) {
+    const addBp = function(seq, position, bpToAdd) {
       if (seq.length >= (bpToAdd + position)) {
-        return bpToAdd + position
+        return bpToAdd + position;
       } else {
-        return position - seq.length + bpToAdd
+        return position - seq.length + bpToAdd;
       }
-    }
+    };
 
-    subSequence = function(seq, start, stop) {
+    const subSequence = function(seq, start, stop) {
       let subSeq;
       if (stop < start) {
         subSeq = seq.substr(start - 1) + seq.substr(0, stop);
       } else {
         subSeq = seq.substr(start - 1, (stop - start));
       }
-      return subSeq
-    }
+      return subSeq;
+    };
 
     /**
      * This function scales a value from the *from* range to the *to* range.
@@ -156,10 +154,9 @@
      *          f(x) = --------------  + a
      *                   max - min
      */
-    scaleValue = function(value, from={min: 0, max: 1}, to={min: 0, max: 1}) {
-      return (to.max - to.min) * (value - from.min) / (from.max - from.min) + to.min;
-    }
-
-  }
+    const scaleValue = function(value, from = {min: 0, max: 1}, to = {min: 0, max: 1}) {
+      return ((to.max - to.min) * (value - from.min) / (from.max - from.min)) + to.min;
+    };
+  };
 })(CGView);
 
