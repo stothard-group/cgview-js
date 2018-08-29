@@ -139,6 +139,7 @@
      * @return {Number}
      */
     pixelsPerBp() {
+      // TODO: use pixelsPerBp from canvas/layout
       return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
     }
 

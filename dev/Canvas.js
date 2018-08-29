@@ -134,7 +134,6 @@
       return this.viewer.sequence;
     }
 
-    // TODO: move to setter for width and height
     refreshScales() {
       let x1, x2, y1, y2;
       // Save scale domains to keep tract of translation
