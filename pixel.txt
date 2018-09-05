@@ -1,0 +1,65 @@
+dev/IO.js|152| width = width / CGV.pixelRatio;
+dev/IO.js|153| height = height / CGV.pixelRatio;
+dev/Ruler.js|62| this._tickWidth = CGV.pixel(width);
+dev/Ruler.js|70| this._tickLength = CGV.pixel(length);
+dev/Ruler.js|78| this._rulerPadding = CGV.pixel(padding);
+dev/Ruler.js|247| innerRadius -= CGV.pixel(this.spacing);
+dev/Ruler.js|248| outerRadius += CGV.pixel(this.spacing);
+dev/Divider.js|120| this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
+dev/Layout.js|311| const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
+dev/Layout.js|409| const backboneThickness = CGV.pixel(backbone.zoomedThickness);
+dev/Layout.js|410| let slotRadius = CGV.pixel(backbone.zoomedRadius);
+dev/Layout.js|413| const spacing = CGV.pixel(slotDivider.spacing);
+dev/Layout.js|483| return CGV.pixel(proportionOfRadius * backboneRadius);
+dev/Backbone.js|101| return (Math.min(this.zoomedRadius, this.viewer.maxZoomedRadius()) * (this.thickness / this.radius)) + (this.bpThicknessAddition / CGV.pixel(1));
+dev/Backbone.js|143| return CGV.pixel( (this.zoomedRadius * 2 * Math.PI) / this.sequence.length );
+dev/Backbone.js|147| this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.zoomedRadius), 100);
+dev/Backbone.js|150| this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.zoomedRadius), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
+dev/Sequence.js|284| return CGV.pixel((this.bpSpacing * 2) + (this.bpMargin * 4));
+dev/Sequence.js|440| if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return; }
+dev/Sequence.js|442| const scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
+dev/Sequence.js|444| const radius = CGV.pixel(backbone.zoomedRadius);
+dev/Sequence.js|461| const radiusDiff = CGV.pixel((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
+dev/Rect.js|108| const widthGap = CGV.pixel(4);
+dev/Font.js|90| return `${this._styleAsCss()} ${CGV.pixel(this.size * scale)}px ${this.family}`;
+dev/Font.js|115| // return this._size || CGV.pixel(12)
+dev/Font.js|120| // this._size = CGV.pixel(Number(value));
+dev/Font.js|188| return CGV.pixel(this.size);
+dev/Font.js|223| this._font = `${this._styleAsCss()} ${CGV.pixel(this.size)}px ${this.family}`;
+dev/Legend.js|82| const originX = (this.originX / CGV.pixel(1)) + viewerRect.left + window.pageXOffset;
+dev/Legend.js|83| const originY = (this.originY / CGV.pixel(1)) + viewerRect.top + window.pageYOffset;
+dev/Legend.js|84| const legendWidth = this.width / CGV.pixel(1);
+dev/Legend.js|189| const border = CGV.pixel(2);
+dev/Annotation.js|17| this._labelLineMarginInner = CGV.pixel(10);
+dev/Annotation.js|18| this._labelLineMarginOuter = CGV.pixel(5); // NOT REALLY IMPLEMENTED YET
+dev/Annotation.js|19| this._labelLineWidth = CGV.pixel(1);
+dev/Annotation.js|58| this._labelLineLength = CGV.pixel(value);
+dev/EventMonitor.js|76| const canvasX = CGV.pixel(d3Event.offsetX);
+dev/EventMonitor.js|77| const canvasY = CGV.pixel(d3Event.offsetY);
+dev/Viewer.js|526| const radius = CGV.pixel(this.backbone.zoomedRadius);
+dev/Viewer.js|572| const radius = CGV.pixel(this.backbone.radius * zoomFactor);
+dev/Viewer-Zoom.js|30| const mx = self.scale.x.invert(CGV.pixel(pos[0]));
+dev/Viewer-Zoom.js|31| const my = self.scale.y.invert(CGV.pixel(pos[1]));
+dev/Viewer-Zoom.js|40| const dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
+dev/Viewer-Zoom.js|41| const dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
+dev/Canvas.js|12| *       and should use the CGV.pixel() method.
+dev/Canvas.js|41| CGV.pixelRatio = CGV.getPixelRatio(testNode);
+dev/Canvas.js|61| CGV.scaleResolution(node, CGV.pixelRatio);
+dev/Canvas.js|167| return CGV.pixel(this._width);
+dev/Canvas.js|175| return CGV.pixel(this._height);
+dev/Canvas.js|200| ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+dev/Canvas.js|202| ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+dev/Canvas.js|204| this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+dev/Canvas.js|208| //   this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+dev/Canvas.js|210| //   // this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+dev/Utils.js|74| CGV.pixelRatio = 1;
+dev/Utils.js|87| CGV.pixel = function(px) {
+dev/Utils.js|88| return px * CGV.pixelRatio;
+dev/Caption.js|246| const margin = CGV.pixel(0);
+dev/Viewer-Drag.js|33| const dx = CGV.pixel(d3.event.dx);
+dev/Viewer-Drag.js|34| const dy = CGV.pixel(d3.event.dy);
+dev/Highlighter.js|42| this._ratio = CGV.pixel(1);
+dev/Debug.js|42| x = CGV.pixel(x);
+dev/Debug.js|43| y = CGV.pixel(y);
+dev/Debug.js|47| ctx.font = `${CGV.pixel(10)}pt Sans-Serif`;
+dev/Debug.js|49| const lineHeight = CGV.pixel(18);

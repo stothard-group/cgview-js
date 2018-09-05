@@ -74,14 +74,15 @@
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
       const margin = 5;
+      const pixelRatio = CGV.pixelRatio;
       let pos;
       let viewerRect = {top: 0, left: 0};
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      const originX = (this.originX / CGV.pixel(1)) + viewerRect.left + window.pageXOffset;
-      const originY = (this.originY / CGV.pixel(1)) + viewerRect.top + window.pageYOffset;
-      const legendWidth = this.width / CGV.pixel(1);
+      const originX = (this.originX / pixelRatio) + viewerRect.left + window.pageXOffset;
+      const originY = (this.originY / pixelRatio) + viewerRect.top + window.pageYOffset;
+      const legendWidth = this.width / pixelRatio;
       if (/-left$/.exec(this.position)) {
         pos = {x: originX + legendWidth + margin, y: originY};
       } else {

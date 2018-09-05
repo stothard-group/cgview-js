@@ -243,7 +243,8 @@
     }
 
     _updateOrigin() {
-      const margin = CGV.pixel(0);
+      // const margin = CGV.pixel(0);
+      const margin = 0;
       const canvasWidth = this.canvas.width;
       const canvasHeight = this.canvas.height;
       const captionWidth = this.width;

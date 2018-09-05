@@ -197,11 +197,14 @@
         }
       } else if (layerName === 'background') {
         const ctx = this.context('background');
-        ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        // ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        ctx.clearRect(0, 0, this.width, this.height);
         ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
-        ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        // ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        ctx.fillRect(0, 0, this.width, this.height);
       } else {
-        this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        // this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
+        this.context(layerName).clearRect(0, 0, this.width, this.height);
       }
     }
     // clear(color = 'white') {
