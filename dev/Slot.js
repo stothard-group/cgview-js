@@ -18,7 +18,7 @@
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._plot;
-      this.proportionOfRadius = CGV.defaultFor(data.proportionOfRadius, 0.1);
+      // this.proportionOfMap = CGV.defaultFor(data.proportionOfRadius, 0.1);
       this.refresh();
     }
 
@@ -84,12 +84,12 @@
     /**
      * @member {Viewer} - Get or set the track size as a proportion of the backbone radius.
      */
-    get proportionOfRadius() {
-      return this._proportionOfRadius;
+    get proportionOfMap() {
+      return this._proportionOfMap;
     }
 
-    set proportionOfRadius(value) {
-      this._proportionOfRadius = value;
+    set proportionOfMap(value) {
+      this._proportionOfMap = value;
     }
 
     /**

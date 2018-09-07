@@ -1,52 +1,36 @@
 //////////////////////////////////////////////////////////////////////////////
-// Layout for Circular Maps
+// Layout
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
   /**
    * <br />
    * The Layout is in control of creating slots from tracks and drawing the map.
    */
-  class Layout {
+  class LayoutOLD {
 
     /**
      * Create a Layout
      */
-    constructor(viewer) {
+    constructor(viewer, data = {}, meta = {}) {
       this._viewer = viewer;
-
       this._tracks = new CGV.CGArray();
       this._fastMaxFeatures = 1000;
-      // TODO: move to settings
-      // this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
-      // this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
-      this._minSlotThickness = 1;
-      this._maxSlotThickness = 50;
+      this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
+      this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
 
-      // // Create tracks
-      // if (data.tracks) {
-      //   data.tracks.forEach((trackData) => {
-      //     new CGV.Track(this, trackData);
-      //   });
-      // }
-      // this._adjustProportions();
+      // Create tracks
+      if (data.tracks) {
+        data.tracks.forEach((trackData) => {
+          new CGV.Track(this, trackData);
+        });
+      }
+      this._adjustProportions();
     }
 
-    toString() {
-      return 'Layout';
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
+    /** * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
       return this._viewer;
-    }
-
-    /**
-     * @member {String} - Get the layout type
-     */
-    get type() {
-      return 'NOT SET';
     }
 
     /** * @member {Canvas} - Get the *Canvas*
@@ -54,60 +38,43 @@
     get canvas() {
       return this.viewer.canvas;
     }
-    //
-    // #<{(|* * @member {Canvas} - Get or set the layout type: linear or circular.
-    //  |)}>#
-    // get type() {
-    //   return this._type;
-    // }
-    //
-    // set type(value) {
-    //   this._type = value;
-    //   if (value === 'linear') {
-    //     this._delegate = new CGV.LayoutLinear(this);
-    //   } else if (value === 'circular') {
-    //     this._delegate = new CGV.LayoutCircular(this);
-    //   } else {
-    //     throw 'Layout type must be one of the following: linear, circular';
-    //   }
-    // }
 
-    /** * @member {Number} - Get the distance from the backbone to the inner/bottom edge of the map.
+    /** * @member {Number} - Get the inside radius
      */
-    get bbInsideOffset() {
-      return this._bbInsideOffset;
+    get insideRadius() {
+      return this._insideRadius;
     }
 
-    /** * @member {Number} - Get the distance from the backbone to the outer/top edge of the map.
+    /** * @member {Number} - Get the outside radius
      */
-    get bbOutsideOffset() {
-      return this._bbOutsideOffset;
+    get outsideRadius() {
+      return this._outsideRadius;
     }
 
-    /** * @member {Number} - Get an object with stats about slot thickness ratios.
+    /** * @member {Number} - Get an object with stats about slot thickness ratios
      */
-    get slotThicknessRatioStats() {
-      return this._slotThicknessRatioStats;
+    get slotThicknessRatios() {
+      return this._slotThicknessRatios;
     }
 
-    /** * @member {Number} - Get an object with stats about slot proportion of map thickness.
+    /** * @member {Number} - Get an object with stats about slot proportion of radii
      */
-    get slotProportionStats() {
-      return this._slotProportionStats;
+    get slotProportionOfRadii() {
+      return this._slotProportionOfRadii;
     }
 
-    _updateSlotThicknessRatioStats(slots = this.visibleSlots()) {
+    _updateSlotThicknessRatios(slots) {
       const thicknessRatios = slots.map( s => s.thicknessRatio );
-      this._slotThicknessRatioStats = {
+      this._slotThicknessRatios = {
         min: d3.min(thicknessRatios),
         max: d3.max(thicknessRatios),
         sum: d3.sum(thicknessRatios)
       };
     }
 
-    _updateSlotProportionStats(slots = this.visibleSlots()) {
-      const proportions = slots.map( s => s.proportionOfMap );
-      this._slotProportionStats = {
+    _updateSlotProportionOfRadii(slots) {
+      const proportions = slots.map( s => s.proportionOfRadius );
+      this._slotProportionOfRadii = {
         min: d3.min(proportions),
         max: d3.max(proportions),
         sum: d3.sum(proportions)
@@ -116,13 +83,13 @@
 
     // Returns the space (in pixels) of everything but the slots
     // i.e. dividers, spacing, and backbone
-    // Note: the backbone is only included if position is 'both'
-    _nonSlotSpace(slots = this.visibleSlots(), position = 'both') {
+    // Note: the bockbone is only included if position is 'both'
+    _nonSlotSpace(visibleSlots, position = 'both') {
+      let slots = visibleSlots || this.visibleSlots();
       const viewer = this.viewer;
       const backbone = viewer.backbone;
       const slotDivider = viewer.slotDivider;
-      // const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-      const dividerThickness = slotDivider.adjustedThickness;
+      const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
       if (position === 'inside') {
         slots = slots.filter( slot => slot.inside );
       } else if (position === 'outside') {
@@ -132,10 +99,9 @@
       const nSpaces = slots.length + nDividers;
       let space = 0;
       if (position === 'both') {
-        // space += backbone.visible ? backbone.thickness : 0;
-        space += backbone.adjustedThickness;
+        space += backbone.visible ? backbone.thickness : 0;
       }
-      space += (nDividers * dividerThickness) + (nSpaces * slotDivider.adjustedSpacing);
+      space += (nDividers * dividerThickness) + (nSpaces * slotDivider.spacing);
       // console.log({
       //   nDividers: nDividers,
       //   nSpaces: nSpaces,
@@ -151,8 +117,8 @@
       const findMinSpace = (spaceType === 'min');
       const minSlotThickness = this.minSlotThickness;
       const maxSlotThickness = this.maxSlotThickness;
-      const minThicknessRatio = this.slotThicknessRatioStats.min;
-      const maxThicknessRatio = this.slotThicknessRatioStats.max;
+      const minThicknessRatio = this.slotThicknessRatios.min;
+      const maxThicknessRatio = this.slotThicknessRatios.max;
       let space = this._nonSlotSpace(visibleSlots);
       // If the min and max slot thickness range is too small for the min/max thickness ratio,
       // we have to scale the ratios
@@ -191,7 +157,7 @@
       const viewer = this.viewer;
       const backbone = viewer.backbone;
       const visibleSlots = this.visibleSlots();
-      this._updateSlotThicknessRatioStats(visibleSlots);
+      this._updateSlotThicknessRatios(visibleSlots);
       // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
       const maxOuterProportion = 0.35;
       const maxOuterRadius = maxOuterProportion * viewer.minDimension;
@@ -200,7 +166,7 @@
       const minInnerRadius = minInnerProportion * viewer.minDimension;
       // The maximum amount of space for drawing slots, backbone, dividers, etc
       const workingSpace = maxOuterRadius - minInnerRadius;
-      // Minimum Space required (based on minSlotThickness)
+      // Minium Space required (based on minSlotThickness)
       const minSpace = this._minSpace(visibleSlots);
       // Maximum Space possible (based on maxSlotThickness)
       // let maxSpace = this._maxSpace(visibleSlots);
@@ -211,17 +177,18 @@
       const slotSpace = (workingSpace * thicknessScaleFactor) - nonSlotSpace;
 
       // The sum of the thickness ratios
-      const thicknessRatioSum = this.slotThicknessRatioStats.sum;
+      const thicknessRatioSum = this.slotThicknessRatios.sum;
 
       // console.log({
       //   workingSpace: workingSpace,
       //   minSpace: minSpace,
+      //   maxSpace: maxSpace,
       //   thicknessScaleFactor: thicknessScaleFactor,
       //   nonSlotSpace: nonSlotSpace,
       //   slotSpace: slotSpace,
-      //   // thicknessRatios: thicknessRatios,
+      //   thicknessRatios: thicknessRatios,
       //   thicknessRatioSum: thicknessRatioSum
-      // });
+      // })
 
       const outsideSlots = this.visibleSlots().filter( (t) => { return t.outside; });
       let outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
@@ -231,15 +198,13 @@
       });
       // Set backbone radius
       const backboneRadius = maxOuterRadius - outsideThickness - (backbone.thickness / 2);
-      // viewer.backbone.radius = backboneRadius;
-      // viewer.backbone.centerOffset = backboneRadius;
-      this.updateBackboneOffset(workingSpace, outsideThickness);
+      viewer.backbone.radius = backboneRadius;
       // Update slot thick proportions
       this.visibleSlots().each( (i, slot) => {
         const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
         slot.proportionOfRadius = slotThickness / backboneRadius;
       });
-      this._updateSlotProportionStats(visibleSlots);
+      this._updateSlotProportionOfRadii(visibleSlots);
 
       // NOTE:
       // - Also calculate the maxSpace
@@ -254,17 +219,15 @@
     }
 
     tracks(term) {
-      // return this._tracks.get(term);
-      return this.viewer.tracks(term);
+      return this._tracks.get(term);
     }
 
     slots(term) {
-      return this.viewer.slots(term);
-      // let slots = new CGV.CGArray();
-      // for (let i = 0, len = this._tracks.length; i < len; i++) {
-      //   slots = slots.concat(this._tracks[i]._slots);
-      // }
-      // return slots.get(term);
+      let slots = new CGV.CGArray();
+      for (let i = 0, len = this._tracks.length; i < len; i++) {
+        slots = slots.concat(this._tracks[i]._slots);
+      }
+      return slots.get(term);
     }
 
     visibleSlots(term) {
@@ -339,31 +302,31 @@
       // Draw Backbone
       backbone.draw();
 
-      // // Recalculate the slot radius and thickness if the zoom level has changed
-      // this.updateLayout();
-      //
-      // // Divider rings
-      // viewer.slotDivider.draw();
-      // // Ruler
-      // const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
-      // viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
-      // // Labels
-      // if (viewer.annotation.visible) {
-      //   viewer.annotation.draw(this.bbInsideOffset, this.bbOutsideOffset);
+      // Recalculate the slot radius and thickness if the zoom level has changed
+      this.updateLayout();
+
+      // Divider rings
+      viewer.slotDivider.draw();
+      // Ruler
+      const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
+      viewer.ruler.draw(this.insideRadius - radiusAdjustment, this.outsideRadius + radiusAdjustment);
+      // Labels
+      if (viewer.annotation.visible) {
+        viewer.annotation.draw(this.insideRadius, this.outsideRadius);
+      }
+      // Progess
+      this.drawProgress();
+      // Debug
+      // if (viewer.debug) {
+      //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
+      //   viewer.debug.draw(canvas.context('ui'));
       // }
-      // // Progess
-      // this.drawProgress();
-      // // Debug
-      // // if (viewer.debug) {
-      // //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
-      // //   viewer.debug.draw(canvas.context('ui'));
-      // // }
-      // if (canvas._testDrawRange) {
-      //   const ctx = canvas.context('captions');
-      //   ctx.strokeStyle = 'grey';
-      //   ctx.rect(0, 0, canvas.width, canvas.height);
-      //   ctx.stroke();
-      // }
+      if (canvas._testDrawRange) {
+        const ctx = canvas.context('captions');
+        ctx.strokeStyle = 'grey';
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.stroke();
+      }
       // Slots timout
       this._slotIndex = 0;
       if (this._slotTimeoutID) {
@@ -375,7 +338,7 @@
     drawFast() {
       const startTime = new Date().getTime();
       this.drawMapWithoutSlots();
-      // this.drawAllSlots(true);
+      this.drawAllSlots(true);
       // Debug
       if (this.viewer.debug) {
         this.viewer.debug.data.time.fastDraw = CGV.elapsedTime(startTime);
@@ -385,9 +348,9 @@
 
     drawFull() {
       this.drawMapWithoutSlots();
-      // this.drawAllSlots(true);
-      // this._drawFullStartTime = new Date().getTime();
-      // this.drawSlotWithTimeOut(this);
+      this.drawAllSlots(true);
+      this._drawFullStartTime = new Date().getTime();
+      this.drawSlotWithTimeOut(this);
     }
 
     drawExport() {
@@ -444,7 +407,7 @@
       const backbone = viewer.backbone;
       const slotDivider = viewer.slotDivider;
       const backboneThickness = CGV.pixel(backbone.zoomedThickness);
-      let slotRadius = CGV.pixel(backbone.adjustedCenterOffset);
+      let slotRadius = CGV.pixel(backbone.zoomedRadius);
       let directRadius = slotRadius + (backboneThickness / 2);
       let reverseRadius = slotRadius - (backboneThickness / 2);
       const spacing = CGV.pixel(slotDivider.spacing);
@@ -486,8 +449,8 @@
         residualSlotThickness = dividerThickness / 2;
       }
       this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;
-      this._bbInsideOffset = reverseRadius;
-      this._bbOutsideOffset = directRadius;
+      this._insideRadius = reverseRadius;
+      this._outsideRadius = directRadius;
     }
 
     /**
@@ -499,65 +462,64 @@
      */
     _calculateSlotThickness(proportionOfRadius) {
       const viewer = this.viewer;
-      const backboneRadius = Math.min(viewer.backbone.adjustedCenterOffset, viewer.maxZoomedRadius());
+      const backboneRadius = Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius());
       const maxAllowedProportion = this.maxSlotThickness / backboneRadius;
-      const slotProportionStats = this.slotProportionStats;
-      if (slotProportionStats.max > maxAllowedProportion) {
-        if (slotProportionStats.min === slotProportionStats.max) {
+      const slotProportionOfRadii = this.slotProportionOfRadii;
+      if (slotProportionOfRadii.max > maxAllowedProportion) {
+        if (slotProportionOfRadii.min === slotProportionOfRadii.max) {
           proportionOfRadius = maxAllowedProportion;
         } else {
           // SCALE
           // Based on the min and max allowed proportionOf Radii allowed
           const minAllowedProportion = this.minSlotThickness / backboneRadius;
-          const minMaxRatio = slotProportionStats.max / slotProportionStats.min;
+          const minMaxRatio = slotProportionOfRadii.max / slotProportionOfRadii.min;
           const minProportionOfRadius = maxAllowedProportion / minMaxRatio;
           const minTo = (minProportionOfRadius < minAllowedProportion) ? minAllowedProportion : minProportionOfRadius;
           proportionOfRadius = CGV.scaleValue(proportionOfRadius,
-            {min: slotProportionStats.min, max: slotProportionStats.max},
+            {min: slotProportionOfRadii.min, max: slotProportionOfRadii.max},
             {min: minTo, max: maxAllowedProportion});
         }
       }
       return CGV.pixel(proportionOfRadius * backboneRadius);
     }
 
-    // drawProgress() {
-    //   this.canvas.clear('background');
-    //   let track, slot, progress;
-    //   for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-    //     track = this._tracks[i];
-    //     progress = track.loadProgress;
-    //     for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
-    //       slot = track._slots[j];
-    //       slot.drawProgress(progress);
-    //     }
-    //   }
-    // }
-    //
-    // moveTrack(oldIndex, newIndex) {
-    //   this._tracks.move(oldIndex, newIndex);
-    //   this._adjustProportions();
-    // }
-    //
-    // removeTrack(track) {
-    //   this._tracks = this._tracks.remove(track);
-    //   this._adjustProportions();
-    // }
-    //
-    // toJSON() {
-    //   const json = {
-    //     minSlotThickness: this.minSlotThickness,
-    //     maxSlotThickness: this.maxSlotThickness,
-    //     tracks: []
-    //   };
-    //   this.tracks().each( (i, track) => {
-    //     json.tracks.push(track.toJSON());
-    //   });
-    //   return json;
-    // }
+    drawProgress() {
+      this.canvas.clear('background');
+      let track, slot, progress;
+      for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+        track = this._tracks[i];
+        progress = track.loadProgress;
+        for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          slot = track._slots[j];
+          slot.drawProgress(progress);
+        }
+      }
+    }
+
+    moveTrack(oldIndex, newIndex) {
+      this._tracks.move(oldIndex, newIndex);
+      this._adjustProportions();
+    }
+
+    removeTrack(track) {
+      this._tracks = this._tracks.remove(track);
+      this._adjustProportions();
+    }
+
+    toJSON() {
+      const json = {
+        minSlotThickness: this.minSlotThickness,
+        maxSlotThickness: this.maxSlotThickness,
+        tracks: []
+      };
+      this.tracks().each( (i, track) => {
+        json.tracks.push(track.toJSON());
+      });
+      return json;
+    }
 
 
   }
 
-  // CGV.LayoutCircular = LayoutCircular;
   CGV.Layout = Layout;
 })(CGView);

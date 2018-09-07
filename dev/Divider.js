@@ -65,7 +65,15 @@
     }
 
     get thickness() {
-      // return this._thickness;
+      return this._thickness;
+      // return (this.viewer.zoomFactor < 1) ? (this._thickness * this.viewer.zoomFactor) : this._thickness;
+    }
+
+    /**
+     * @member {Number} - Get the divider thickness adjusted for visibility and zoom level.
+     */
+    get adjustedThickness() {
+      if (!this.visible) { return 0; }
       return (this.viewer.zoomFactor < 1) ? (this._thickness * this.viewer.zoomFactor) : this._thickness;
     }
 
@@ -82,6 +90,14 @@
     get spacing() {
       return this._spacing;
       // return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
+    }
+
+    /**
+     * @member {Number} - Get the divider spacing adjusted for zoom level. Even the divider
+     * is not visible, there can still be spacing between the slots/tracks.
+     */
+    get adjustedSpacing() {
+      return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
     }
 
     /**

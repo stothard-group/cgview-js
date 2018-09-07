@@ -50,7 +50,7 @@
           sequence: v.sequence.toJSON(),
           features: [],
           plots: [],
-          layout: v.layout.toJSON()
+          // layout: v.layout.toJSON()
         }
       };
       v.captions().each( (i, caption) => {
@@ -129,14 +129,23 @@
         });
       }
 
+      // Create features
       if (data.plots) {
         data.plots.forEach((plotData) => {
           new CGV.Plot(viewer, plotData);
         });
       }
 
+      // Create tracks
+      if (data.tracks) {
+        data.tracks.forEach((trackData) => {
+          new CGV.Track(viewer, trackData);
+        });
+      }
+
       // Load Layout
-      viewer.layout = new CGV.Layout(viewer, data.layout);
+      // viewer.layout = new CGV.Layout(viewer, data.layout);
+      viewer.format = CGV.defaultFor(data.format, 'circular');
     }
 
     // downloadImage(size, filename = 'image.png') {

@@ -64,6 +64,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._minZoomFactor = 0.5;
 
       this._features = new CGV.CGArray();
+      this._tracks = new CGV.CGArray();
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
 
@@ -88,8 +89,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Slot Divider
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
-      // Initialize Layout
-      this.layout = new CGV.Layout(this, options.layout);
+      // // Initialize Layout
+      // this.layout = new CGV.Layout(this, options.layout);
+      // Set the map format which will also initialize the Layout
+      this.format = CGV.defaultFor(options.format, 'circular');
       // Initialize Annotation
       this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
@@ -118,6 +121,30 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get id() {
       return this._id;
+    }
+
+    /**
+     * @member {String} - Get or set the map format: circular, linear
+     */
+    get format() {
+      return this.layout.type;
+    }
+
+    set format(value) {
+      if (value === 'linear') {
+        this._layout = new CGV.LayoutLinear(this);
+      } else if (value === 'circular') {
+        this._layout = new CGV.LayoutCircular(this);
+      } else {
+        throw 'Format must be one of the following: linear, circular';
+      }
+    }
+
+    /**
+     * @member {Number} - Get the map layout object.
+     */
+    get layout() {
+      return this._layout;
     }
 
     /**
@@ -309,8 +336,15 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
+    // slots(term) {
+    //   return this.layout.slots(term);
+    // }
     slots(term) {
-      return this.layout.slots(term);
+      let slots = new CGV.CGArray();
+      for (let i = 0, len = this._tracks.length; i < len; i++) {
+        slots = slots.concat(this._tracks[i]._slots);
+      }
+      return slots.get(term);
     }
 
     /**
@@ -328,7 +362,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {CGArray}
      */
     tracks(term) {
-      return this.layout.tracks(term);
+      // return this.layout.tracks(term);
+      return this._tracks.get(term);
+    }
+
+    removeTrack(track) {
+      this._tracks = this._tracks.remove(track);
+      this.layout._adjustProportions();
     }
 
     /**

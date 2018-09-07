@@ -6,47 +6,32 @@
    * <br />
    * The Layout is in control of creating slots from tracks and drawing the map.
    */
+  // class LayoutCircular {
   class Layout {
 
     /**
      * Create a Layout
      */
-    constructor(viewer) {
+    constructor(viewer, data = {}, meta = {}) {
       this._viewer = viewer;
-
       this._tracks = new CGV.CGArray();
       this._fastMaxFeatures = 1000;
-      // TODO: move to settings
-      // this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
-      // this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
-      this._minSlotThickness = 1;
-      this._maxSlotThickness = 50;
+      this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
+      this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
 
-      // // Create tracks
-      // if (data.tracks) {
-      //   data.tracks.forEach((trackData) => {
-      //     new CGV.Track(this, trackData);
-      //   });
-      // }
-      // this._adjustProportions();
+      // Create tracks
+      if (data.tracks) {
+        data.tracks.forEach((trackData) => {
+          new CGV.Track(this, trackData);
+        });
+      }
+      this._adjustProportions();
     }
 
-    toString() {
-      return 'Layout';
-    }
-
-    /**
-     * @member {Viewer} - Get the *Viewer*
+    /** * @member {Viewer} - Get the *Viewer*
      */
     get viewer() {
       return this._viewer;
-    }
-
-    /**
-     * @member {String} - Get the layout type
-     */
-    get type() {
-      return 'NOT SET';
     }
 
     /** * @member {Canvas} - Get the *Canvas*
@@ -54,23 +39,6 @@
     get canvas() {
       return this.viewer.canvas;
     }
-    //
-    // #<{(|* * @member {Canvas} - Get or set the layout type: linear or circular.
-    //  |)}>#
-    // get type() {
-    //   return this._type;
-    // }
-    //
-    // set type(value) {
-    //   this._type = value;
-    //   if (value === 'linear') {
-    //     this._delegate = new CGV.LayoutLinear(this);
-    //   } else if (value === 'circular') {
-    //     this._delegate = new CGV.LayoutCircular(this);
-    //   } else {
-    //     throw 'Layout type must be one of the following: linear, circular';
-    //   }
-    // }
 
     /** * @member {Number} - Get the distance from the backbone to the inner/bottom edge of the map.
      */
@@ -216,12 +184,13 @@
       // console.log({
       //   workingSpace: workingSpace,
       //   minSpace: minSpace,
+      //   maxSpace: maxSpace,
       //   thicknessScaleFactor: thicknessScaleFactor,
       //   nonSlotSpace: nonSlotSpace,
       //   slotSpace: slotSpace,
-      //   // thicknessRatios: thicknessRatios,
+      //   thicknessRatios: thicknessRatios,
       //   thicknessRatioSum: thicknessRatioSum
-      // });
+      // })
 
       const outsideSlots = this.visibleSlots().filter( (t) => { return t.outside; });
       let outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
@@ -232,8 +201,7 @@
       // Set backbone radius
       const backboneRadius = maxOuterRadius - outsideThickness - (backbone.thickness / 2);
       // viewer.backbone.radius = backboneRadius;
-      // viewer.backbone.centerOffset = backboneRadius;
-      this.updateBackboneOffset(workingSpace, outsideThickness);
+      viewer.backbone.centerOffset = backboneRadius;
       // Update slot thick proportions
       this.visibleSlots().each( (i, slot) => {
         const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
@@ -254,17 +222,15 @@
     }
 
     tracks(term) {
-      // return this._tracks.get(term);
-      return this.viewer.tracks(term);
+      return this._tracks.get(term);
     }
 
     slots(term) {
-      return this.viewer.slots(term);
-      // let slots = new CGV.CGArray();
-      // for (let i = 0, len = this._tracks.length; i < len; i++) {
-      //   slots = slots.concat(this._tracks[i]._slots);
-      // }
-      // return slots.get(term);
+      let slots = new CGV.CGArray();
+      for (let i = 0, len = this._tracks.length; i < len; i++) {
+        slots = slots.concat(this._tracks[i]._slots);
+      }
+      return slots.get(term);
     }
 
     visibleSlots(term) {
@@ -444,7 +410,7 @@
       const backbone = viewer.backbone;
       const slotDivider = viewer.slotDivider;
       const backboneThickness = CGV.pixel(backbone.zoomedThickness);
-      let slotRadius = CGV.pixel(backbone.adjustedCenterOffset);
+      let slotRadius = CGV.pixel(backbone.zoomedRadius);
       let directRadius = slotRadius + (backboneThickness / 2);
       let reverseRadius = slotRadius - (backboneThickness / 2);
       const spacing = CGV.pixel(slotDivider.spacing);
@@ -499,7 +465,7 @@
      */
     _calculateSlotThickness(proportionOfRadius) {
       const viewer = this.viewer;
-      const backboneRadius = Math.min(viewer.backbone.adjustedCenterOffset, viewer.maxZoomedRadius());
+      const backboneRadius = Math.min(viewer.backbone.zoomedRadius, viewer.maxZoomedRadius());
       const maxAllowedProportion = this.maxSlotThickness / backboneRadius;
       const slotProportionStats = this.slotProportionStats;
       if (slotProportionStats.max > maxAllowedProportion) {
@@ -520,40 +486,40 @@
       return CGV.pixel(proportionOfRadius * backboneRadius);
     }
 
-    // drawProgress() {
-    //   this.canvas.clear('background');
-    //   let track, slot, progress;
-    //   for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-    //     track = this._tracks[i];
-    //     progress = track.loadProgress;
-    //     for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
-    //       slot = track._slots[j];
-    //       slot.drawProgress(progress);
-    //     }
-    //   }
-    // }
-    //
-    // moveTrack(oldIndex, newIndex) {
-    //   this._tracks.move(oldIndex, newIndex);
-    //   this._adjustProportions();
-    // }
-    //
-    // removeTrack(track) {
-    //   this._tracks = this._tracks.remove(track);
-    //   this._adjustProportions();
-    // }
-    //
-    // toJSON() {
-    //   const json = {
-    //     minSlotThickness: this.minSlotThickness,
-    //     maxSlotThickness: this.maxSlotThickness,
-    //     tracks: []
-    //   };
-    //   this.tracks().each( (i, track) => {
-    //     json.tracks.push(track.toJSON());
-    //   });
-    //   return json;
-    // }
+    drawProgress() {
+      this.canvas.clear('background');
+      let track, slot, progress;
+      for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+        track = this._tracks[i];
+        progress = track.loadProgress;
+        for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          slot = track._slots[j];
+          slot.drawProgress(progress);
+        }
+      }
+    }
+
+    moveTrack(oldIndex, newIndex) {
+      this._tracks.move(oldIndex, newIndex);
+      this._adjustProportions();
+    }
+
+    removeTrack(track) {
+      this._tracks = this._tracks.remove(track);
+      this._adjustProportions();
+    }
+
+    toJSON() {
+      const json = {
+        minSlotThickness: this.minSlotThickness,
+        maxSlotThickness: this.maxSlotThickness,
+        tracks: []
+      };
+      this.tracks().each( (i, track) => {
+        json.tracks.push(track.toJSON());
+      });
+      return json;
+    }
 
 
   }

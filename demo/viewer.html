@@ -24,6 +24,7 @@
   <script src='dev/Ruler.js'></script>
   <script src='dev/IO.js'></script>
   <script src='dev/Layout.js'></script>
+  <script src='dev/LayoutCircular.js'></script>
   <script src='dev/CGArray.js'></script>
   <script src='dev/CGRange.js'></script>
   <script src='dev/NCList.js'></script>
@@ -109,6 +110,7 @@
         <option value='3' selected>3</option>
         <option value='5'>5</option>
       </select>
+      <button id='toggle-layout'>Linear</button>
     </div>
 
 		<div id='cgview' style='clear:both;'></div>
@@ -207,6 +209,18 @@
       };
       request.send();
     }
+
+    $('#toggle-layout').on('click', function() {
+      if ($(this).html() == 'Linear') {
+        $(this).html('Circular');
+        cgv.format = 'circular';
+      } else {
+        $(this).html('Linear');
+        cgv.format = 'linear';
+      }
+      cgv.canvas._testDrawRange = $(this).is(':checked');
+      cgv.drawFull();
+    });
 
     // $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
     // $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });

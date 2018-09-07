@@ -217,6 +217,7 @@
     }
 
     _updateScale() {
+      // this.viewer.layout.updateScale();
       this.canvas.scale.bp = d3.scaleLinear()
         .domain([1, this.length])
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
@@ -441,7 +442,7 @@
 
       const scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
 
-      const radius = CGV.pixel(backbone.zoomedRadius);
+      const radius = CGV.pixel(backbone.adjustedCenterOffset);
       const range = backbone.visibleRange;
       let seq, complement;
       if (range) {

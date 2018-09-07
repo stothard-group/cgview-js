@@ -12,9 +12,9 @@
     /**
      * Create a new track.
      */
-    constructor(layout, data = {}, meta = {}) {
-      super(layout.viewer, data, meta);
-      this.layout = layout;
+    constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta);
+      this.viewer = viewer;
       this._plot;
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
@@ -35,6 +35,22 @@
     toString() {
       return 'Track';
     }
+
+    /**
+     * @member {Viewer} - Get the *Viewer*
+     */
+    get viewer() {
+      return this._viewer;
+    }
+
+    set viewer(viewer) {
+      if (this.viewer) {
+        // TODO: Remove if already attached to Viewer
+      }
+      this._viewer = viewer;
+      viewer._tracks.push(this);
+    }
+
 
     set visible(value) {
       // super.visible = value;
@@ -67,19 +83,19 @@
       this._name = value;
     }
 
-    /** * @member {Viewer} - Get or set the *Layout*
+    /** * @member {Viewer} - Get the *Layout*
      */
     get layout() {
-      return this._layout;
+      return this.viewer.layout;
     }
 
-    set layout(layout) {
-      if (this.layout) {
-        // TODO: Remove if already attached to layout
-      }
-      this._layout = layout;
-      layout._tracks.push(this);
-    }
+    // set layout(layout) {
+    //   if (this.layout) {
+    //     // TODO: Remove if already attached to layout
+    //   }
+    //   this._layout = layout;
+    //   layout._tracks.push(this);
+    // }
 
     /** * @member {Object} - Get the *Contents*.
      */
