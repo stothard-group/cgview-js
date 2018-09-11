@@ -25,6 +25,7 @@
   <script src='dev/IO.js'></script>
   <script src='dev/Layout.js'></script>
   <script src='dev/LayoutCircular.js'></script>
+  <script src='dev/LayoutLinear.js'></script>
   <script src='dev/CGArray.js'></script>
   <script src='dev/CGRange.js'></script>
   <script src='dev/NCList.js'></script>
@@ -205,7 +206,8 @@
         const json = JSON.parse(request.responseText);
         cgv.io.loadJSON(json.cgview);
         cgv.name = maps[id].name;
-        cgv.zoomTo(0,1);
+        // cgv.zoomTo(0,1);
+        cgv.drawFull();
       };
       request.send();
     }
@@ -213,12 +215,13 @@
     $('#toggle-layout').on('click', function() {
       if ($(this).html() == 'Linear') {
         $(this).html('Circular');
-        cgv.format = 'circular';
+        cgv.format = 'linear';
       } else {
         $(this).html('Linear');
-        cgv.format = 'linear';
+        cgv.format = 'circular';
       }
-      cgv.canvas._testDrawRange = $(this).is(':checked');
+      // cgv.canvas._testDrawRange = $(this).is(':checked');
+      console.log(`Changed to ${cgv.format}`)
       cgv.drawFull();
     });
 

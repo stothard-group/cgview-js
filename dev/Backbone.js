@@ -41,6 +41,7 @@
     set visible(value) {
       this._visible = value;
       this.refreshThickness();
+      // FIXME:
       this.viewer.layout && this.viewer.layout._adjustProportions();
     }
 
@@ -64,7 +65,7 @@
      */
     // set radius(value) {
     set centerOffset(value) {
-      if (value) {
+      if (CGV.isNumeric(value)) {
         this._centerOffset = value;
         this.viewer._updateZoomMax();
       }
@@ -87,6 +88,7 @@
     set thickness(value) {
       if (value !== undefined) {
         this._thickness = Number(value);
+        // FIXME:
         this.viewer.layout && this.viewer.layout._adjustProportions();
       }
     }
@@ -107,6 +109,7 @@
      */
     get adjustedThickness() {
       if (!this.visible) { return 0; }
+      // FIXME: Can not divide by centerOffset
       return (Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset)) + (this.bpThicknessAddition / CGV.pixel(1));
     }
 

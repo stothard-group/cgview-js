@@ -22,13 +22,17 @@
       this._minSlotThickness = 1;
       this._maxSlotThickness = 50;
 
+      // Setup scales
+      // this._scale = {};
+      // this.updateCartesianScales();
+
       // // Create tracks
       // if (data.tracks) {
       //   data.tracks.forEach((trackData) => {
       //     new CGV.Track(this, trackData);
       //   });
       // }
-      // this._adjustProportions();
+      this._adjustProportions();
     }
 
     toString() {
@@ -54,6 +58,14 @@
     get canvas() {
       return this.viewer.canvas;
     }
+
+    /** * @member {Object} - Return the scales...
+     */
+    get scale() {
+      return this.canvas.scale;
+      // return this._scale;
+    }
+
     //
     // #<{(|* * @member {Canvas} - Get or set the layout type: linear or circular.
     //  |)}>#
@@ -94,6 +106,10 @@
      */
     get slotProportionStats() {
       return this._slotProportionStats;
+    }
+
+    updateCartesianScales() {
+      throw 'Must be overriden in subclass';
     }
 
     _updateSlotThicknessRatioStats(slots = this.visibleSlots()) {
@@ -189,6 +205,7 @@
      */
     _adjustProportions() { // NEW
       const viewer = this.viewer;
+      if (!viewer._initialized) { return; }
       const backbone = viewer.backbone;
       const visibleSlots = this.visibleSlots();
       this._updateSlotThicknessRatioStats(visibleSlots);

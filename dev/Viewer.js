@@ -56,17 +56,23 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Create object to contain all CGObjects
       this._objects = {};
 
-      // Initialize Canvas
-      this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
-
-      // this.backgroundColor = options.backgroundColor;
-      this._zoomFactor = 1;
-      this._minZoomFactor = 0.5;
-
+      // Initialize containers
       this._features = new CGV.CGArray();
       this._tracks = new CGV.CGArray();
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
+
+      this._initialized = false;
+
+      // Initialize Canvas
+      this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
+
+      // Set the map format which will also initialize the Layout
+      this.format = CGV.defaultFor(options.format, 'circular');
+
+      // this.backgroundColor = options.backgroundColor;
+      this._zoomFactor = 1;
+      this._minZoomFactor = 0.5;
 
       // Initialize IO
       this.io = new CGV.IO(this);
@@ -91,8 +97,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       // // Initialize Layout
       // this.layout = new CGV.Layout(this, options.layout);
-      // Set the map format which will also initialize the Layout
-      this.format = CGV.defaultFor(options.format, 'circular');
       // Initialize Annotation
       this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
@@ -101,6 +105,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.highlighter = new CGV.Highlighter(this, options.highlighter);
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
+
+      this._initialized = true;
 
       // this.drawFull();
     }
@@ -138,6 +144,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         throw 'Format must be one of the following: linear, circular';
       }
+      this.layout.updateCartesianScales();
+      // FIXME
+      this.layout.updateBPScale(this.sequence && this.sequence.length || 1000);
     }
 
     /**

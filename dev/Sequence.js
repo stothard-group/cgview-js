@@ -217,11 +217,12 @@
     }
 
     _updateScale() {
-      // this.viewer.layout.updateScale();
-      this.canvas.scale.bp = d3.scaleLinear()
-        .domain([1, this.length])
-        .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
-      this.viewer._updateZoomMax();
+      this.viewer.layout.updateBPScale(this.length);
+      // this.canvas.scale.bp = d3.scaleLinear()
+      //   .domain([1, this.length])
+      //   .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
+      // this.viewer._updateZoomMax();
+      // console.log(this.canvas.scale)
     }
 
     /**

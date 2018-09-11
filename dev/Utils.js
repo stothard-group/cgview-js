@@ -530,6 +530,16 @@
     return { top: _y, left: _x };
   };
 
+  /**
+   * Convience function to determine if an object is a number.
+   * @param {Object} n The object to check
+   * @return {Boolean}
+   */
+  CGV.isNumeric = function (n) {
+    return isFinite(n) && parseFloat(n) === n;
+  };
+
+
   //
   //
   // /**

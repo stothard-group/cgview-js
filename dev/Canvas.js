@@ -24,7 +24,7 @@
 
       // Setup scales
       this._scale = {};
-      this.refreshScales();
+      // this.refreshScales();
     }
 
     determinePixelRatio(container) {
@@ -79,7 +79,8 @@
         layerNode.style.width = `${width}px`;
         layerNode.style.height = `${height}px`;
       }
-      this.refreshScales();
+      // this.refreshScales();
+      this.layout.updateCartesianScales();
     }
 
     /**
@@ -87,6 +88,13 @@
      */
     get viewer() {
       return this._viewer;
+    }
+
+    /**
+     * @member {Layout} - Get the layout.
+     */
+    get layout() {
+      return this.viewer.layout;
     }
 
     /**
@@ -118,6 +126,7 @@
      */
     get scale() {
       return this._scale;
+      // return this.layout.scale;
     }
 
     /**
@@ -134,34 +143,34 @@
       return this.viewer.sequence;
     }
 
-    refreshScales() {
-      let x1, x2, y1, y2;
-      // Save scale domains to keep tract of translation
-      if (this.scale.x) {
-        const origXDomain = this.scale.x.domain();
-        const origWidth = origXDomain[1] - origXDomain[0];
-        x1 = origXDomain[0] / origWidth;
-        x2 = origXDomain[1] / origWidth;
-      } else {
-        x1 = -0.5;
-        x2 = 0.5;
-      }
-      if (this.scale.y) {
-        const origYDomain = this.scale.y.domain();
-        const origHeight = origYDomain[0] - origYDomain[1];
-        y1 = origYDomain[0] / origHeight;
-        y2 = origYDomain[1] / origHeight;
-      } else {
-        y1 = 0.5;
-        y2 = -0.5;
-      }
-      this.scale.x = d3.scaleLinear()
-        .domain([this.width * x1, this.width * x2])
-        .range([0, this.width]);
-      this.scale.y = d3.scaleLinear()
-        .domain([this.height * y1, this.height * y2])
-        .range([0, this.height]);
-    }
+    // refreshScales() {
+    //   let x1, x2, y1, y2;
+    //   // Save scale domains to keep tract of translation
+    //   if (this.scale.x) {
+    //     const origXDomain = this.scale.x.domain();
+    //     const origWidth = origXDomain[1] - origXDomain[0];
+    //     x1 = origXDomain[0] / origWidth;
+    //     x2 = origXDomain[1] / origWidth;
+    //   } else {
+    //     x1 = -0.5;
+    //     x2 = 0.5;
+    //   }
+    //   if (this.scale.y) {
+    //     const origYDomain = this.scale.y.domain();
+    //     const origHeight = origYDomain[0] - origYDomain[1];
+    //     y1 = origYDomain[0] / origHeight;
+    //     y2 = origYDomain[1] / origHeight;
+    //   } else {
+    //     y1 = 0.5;
+    //     y2 = -0.5;
+    //   }
+    //   this.scale.x = d3.scaleLinear()
+    //     .domain([this.width * x1, this.width * x2])
+    //     .range([0, this.width]);
+    //   this.scale.y = d3.scaleLinear()
+    //     .domain([this.height * y1, this.height * y2])
+    //     .range([0, this.height]);
+    // }
 
     get width() {
       return CGV.pixel(this._width);
@@ -378,28 +387,31 @@
      * The method add an arc to the path. However, if the zoomFactor is very large,
      * the arc is added as a straight line.
      */
+    // FIXME: try calling layouy.path woth object parameters and compare speed
+    // e.g. path({layer: 'map', offset = radius, etc})
     arcPath(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      const ctx = this.context(layer);
-      const scale = this.scale;
-
-      // Features less than 1000th the length of the sequence are drawn as straight lines
-      const rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
-      if ( rangeLength < (this.sequence.length / 1000)) {
-        const p2 = this.pointFor(stopBp, radius);
-        if (startType === 'lineTo') {
-          const p1 = this.pointFor(startBp, radius);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'moveTo') {
-          const p1 = this.pointFor(startBp, radius);
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'noMoveTo') {
-          ctx.lineTo(p2.x, p2.y);
-        }
-      } else {
-        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      }
+      this.layout.path(layer, radius, startBp, stopBp, anticlockwise, startType);
+      // const ctx = this.context(layer);
+      // const scale = this.scale;
+      //
+      // // Features less than 1000th the length of the sequence are drawn as straight lines
+      // const rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
+      // if ( rangeLength < (this.sequence.length / 1000)) {
+      //   const p2 = this.pointFor(stopBp, radius);
+      //   if (startType === 'lineTo') {
+      //     const p1 = this.pointFor(startBp, radius);
+      //     ctx.lineTo(p1.x, p1.y);
+      //     ctx.lineTo(p2.x, p2.y);
+      //   } else if (startType === 'moveTo') {
+      //     const p1 = this.pointFor(startBp, radius);
+      //     ctx.moveTo(p1.x, p1.y);
+      //     ctx.lineTo(p2.x, p2.y);
+      //   } else if (startType === 'noMoveTo') {
+      //     ctx.lineTo(p2.x, p2.y);
+      //   }
+      // } else {
+      //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      // }
     }
 
     // drawArc(start, stop, radius, color = '#000000', width = 1) {
@@ -430,10 +442,11 @@
 
 
     pointFor(bp, radius) {
-      const radians = this.scale.bp(bp);
-      const x = this.scale.x(0) + (radius * Math.cos(radians));
-      const y = this.scale.y(0) + (radius * Math.sin(radians));
-      return {x: x, y: y};
+      return this.layout.pointFor(bp, radius);
+      // const radians = this.scale.bp(bp);
+      // const x = this.scale.x(0) + (radius * Math.cos(radians));
+      // const y = this.scale.y(0) + (radius * Math.sin(radians));
+      // return {x: x, y: y};
     }
 
     bpForPoint(point) {
