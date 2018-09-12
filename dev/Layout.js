@@ -46,17 +46,29 @@
       return this._viewer;
     }
 
-    /**
-     * @member {String} - Get the layout type
-     */
-    get type() {
-      return 'NOT SET';
-    }
 
     /** * @member {Canvas} - Get the *Canvas*
      */
     get canvas() {
       return this.viewer.canvas;
+    }
+
+    /** * @member {Number} - Get the canvas width
+     */
+    get width() {
+      return this.canvas.width;
+    }
+
+    /** * @member {Number} - Get the canvas height
+     */
+    get height() {
+      return this.canvas.height;
+    }
+
+    /** * @member {Sequence} - Get the *Sequence*
+     */
+    get sequence() {
+      return this.viewer.sequence;
     }
 
     /** * @member {Object} - Return the scales...
@@ -107,10 +119,62 @@
     get slotProportionStats() {
       return this._slotProportionStats;
     }
+    //////////////////////////////////////////////////////////////////////////
+    // Methods that must be present in sub classes
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @member {String} - Get the layout type
+     */
+    get type() {
+      throw 'Error: "type" must be overridden in subclass';
+    }
 
     updateCartesianScales() {
-      throw 'Must be overriden in subclass';
+      throw 'Error: "updateCartesianScales" must be overridden in subclass';
     }
+
+    updateBPScale(length) {
+      throw 'Error: "updateBPScale" must be overridden in subclass';
+    }
+
+    zoomDomains() {
+      throw 'Error: "zoomDomains" must be overridden in subclass';
+    }
+
+    pointFor(bp, centerOffset) {
+      throw 'Error: "pointFor" must be overridden in subclass';
+    }
+
+    // FIXME: update arguments
+    path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+      throw 'Error: "path" must be overridden in subclass';
+    }
+
+    visibleRangeForCenterOffset(offset, margin = 0) {
+      throw 'Error: "visibleRangeForCenterOffset" must be overridden in subclass';
+    }
+
+    /**
+     * Return the maximum radius to use for calculating slot thickness when zoomed
+     * @return {Number}
+     */
+    maxMapThickness() {
+      throw 'Error: "maxMapThickness" must be overridden in subclass';
+    }
+
+    /**
+     * The number of pixels per basepair along the backbone.
+     * @return {Number}
+     */
+    pixelsPerBp() {
+      throw 'Error: "pixelsPerBp" must be overridden in subclass';
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Methods for determining offsets and Drawing
+    // FIXME: Organized better
+    //////////////////////////////////////////////////////////////////////////
 
     _updateSlotThicknessRatioStats(slots = this.visibleSlots()) {
       const thicknessRatios = slots.map( s => s.thicknessRatio );
@@ -460,7 +524,7 @@
       }
       const backbone = viewer.backbone;
       const slotDivider = viewer.slotDivider;
-      const backboneThickness = CGV.pixel(backbone.zoomedThickness);
+      const backboneThickness = CGV.pixel(backbone.adjustedThickness);
       let slotRadius = CGV.pixel(backbone.adjustedCenterOffset);
       let directRadius = slotRadius + (backboneThickness / 2);
       let reverseRadius = slotRadius - (backboneThickness / 2);
@@ -508,6 +572,7 @@
     }
 
     /**
+     * FIXME: update description
      * Slot thickness is based on a proportion of the backbone radius.
      * As the viewer is zoomed the slot radius increases until
      *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
@@ -516,8 +581,10 @@
      */
     _calculateSlotThickness(proportionOfRadius) {
       const viewer = this.viewer;
-      const backboneRadius = Math.min(viewer.backbone.adjustedCenterOffset, viewer.maxZoomedRadius());
-      const maxAllowedProportion = this.maxSlotThickness / backboneRadius;
+      // FIXME: should not be based on adjustedCenterOffset
+      const mapThickness = Math.min(viewer.backbone.adjustedCenterOffset, this.maxMapThickness());
+
+      const maxAllowedProportion = this.maxSlotThickness / mapThickness;
       const slotProportionStats = this.slotProportionStats;
       if (slotProportionStats.max > maxAllowedProportion) {
         if (slotProportionStats.min === slotProportionStats.max) {
@@ -525,7 +592,7 @@
         } else {
           // SCALE
           // Based on the min and max allowed proportionOf Radii allowed
-          const minAllowedProportion = this.minSlotThickness / backboneRadius;
+          const minAllowedProportion = this.minSlotThickness / mapThickness;
           const minMaxRatio = slotProportionStats.max / slotProportionStats.min;
           const minProportionOfRadius = maxAllowedProportion / minMaxRatio;
           const minTo = (minProportionOfRadius < minAllowedProportion) ? minAllowedProportion : minProportionOfRadius;
@@ -534,7 +601,7 @@
             {min: minTo, max: maxAllowedProportion});
         }
       }
-      return CGV.pixel(proportionOfRadius * backboneRadius);
+      return CGV.pixel(proportionOfRadius * mapThickness);
     }
 
     // drawProgress() {

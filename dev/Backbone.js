@@ -40,7 +40,7 @@
 
     set visible(value) {
       this._visible = value;
-      this.refreshThickness();
+      this.viewer._initialized && this.refreshThickness();
       // FIXME:
       this.viewer.layout && this.viewer.layout._adjustProportions();
     }
@@ -67,6 +67,7 @@
     set centerOffset(value) {
       if (CGV.isNumeric(value)) {
         this._centerOffset = value;
+        // FIXME: zoommax will be based on map thickness, insteat of bacbone radius
         this.viewer._updateZoomMax();
       }
     }
@@ -86,7 +87,7 @@
      * @member {Number} - Set or get the backbone thickness. This is the unzoomed thickness.
      */
     set thickness(value) {
-      if (value !== undefined) {
+      if (CGV.isNumeric(value)) {
         this._thickness = Number(value);
         // FIXME:
         this.viewer.layout && this.viewer.layout._adjustProportions();
@@ -100,17 +101,20 @@
     /**
      * @member {Number} - Get the zoomed backbone thickness.
      */
-    get zoomedThickness() {
-      return (Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset)) + (this.bpThicknessAddition / CGV.pixel(1));
-    }
+    // get zoomedThickness() {
+      // NOTE: Can not divide by centerOffset
+    //   return (Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset)) + (this.bpThicknessAddition / CGV.pixel(1));
+    // }
 
     /**
      * @member {Number} - Get the backbone thickness adjusted for visibility, zoom level and space for the sequence.
      */
     get adjustedThickness() {
       if (!this.visible) { return 0; }
-      // FIXME: Can not divide by centerOffset
-      return (Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset)) + (this.bpThicknessAddition / CGV.pixel(1));
+      // FIXME: need to calculate the max zoom level for changing backbone thickness
+      //        - should depend on the zoomFactor to at which pont the map thickness is at the maximum?
+      //        - for now set to 4
+      return (Math.min(this.viewer.zoomFactor, 4) * this.thickness) + this.bpThicknessAddition;
     }
 
     /**
@@ -118,7 +122,7 @@
      */
     get maxThickness() {
       // return Math.max(this.thickness, this.sequence.thickness)
-      return Math.max(this.zoomedThickness, this.sequence.thickness);
+      return Math.max(this.adjustedThickness, this.sequence.thickness);
     }
 
     /**
@@ -126,7 +130,8 @@
      * @member {number}
      */
     get bpThicknessAddition() {
-      return this._bpThicknessAddition;
+      // FIXME: see about getting rid of CGV.pixel
+      return this._bpThicknessAddition / CGV.pixel(1);
     }
 
     /**
@@ -151,15 +156,16 @@
      * @return {Number}
      */
     pixelsPerBp() {
+      return this.layout.pixelsPerBp();
       // TODO: use pixelsPerBp from canvas/layout
-      return CGV.pixel( (this.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
+      // return CGV.pixel( (this.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
     }
 
     draw() {
       this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.adjustedCenterOffset), 100);
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
-        this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
+        this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.adjustedThickness));
         // console.log('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
         if (this.pixelsPerBp() > 1) {
           this.sequence.draw();
@@ -168,9 +174,12 @@
     }
 
     refreshThickness() {
-      if (this.pixelsPerBp() > 1 && this.visible) {
-        const zoomedThicknessWithoutAddition = Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset);
-        const addition = this.pixelsPerBp() * 2;
+      const pixelsPerBp = this.pixelsPerBp();
+      if (pixelsPerBp > 1 && this.visible) {
+        // const zoomedThicknessWithoutAddition = Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset);
+        // FIXME: see adjustedThickness for note. Use 4 for now.
+        const zoomedThicknessWithoutAddition = Math.min(this.viewer.zoomFactor, 4) * (this.thickness / this.centerOffset);
+        const addition = pixelsPerBp * 2;
         if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
           this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;
         } else {

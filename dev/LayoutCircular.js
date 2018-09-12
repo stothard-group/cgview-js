@@ -55,7 +55,6 @@
     }
 
     updateBPScale(length) {
-      console.log(this.viewer.sequence)
       this.scale.bp = d3.scaleLinear()
         .domain([1, length])
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
@@ -92,6 +91,88 @@
       const x = this.scale.x(0) + (radius * Math.cos(radians));
       const y = this.scale.y(0) + (radius * Math.sin(radians));
       return {x: x, y: y};
+    }
+
+    pixelsPerBp() {
+      return CGV.pixel( (this.viewer.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
+    }
+
+    maxMapThickness() {
+      // FIXME: this will become 1/2 of minDimension
+      return this.viewer.minDimension;
+    }
+
+    _centerVisible() {
+      const x = this.scale.x(0);
+      const y = this.scale.y(0);
+      return (x >= 0 &&
+              x <= this.width &&
+              y >= 0 &&
+              y <= this.height);
+    }
+
+    /**
+     * Return the distance between the circle center and the farthest corner of the canvas
+     */
+    _maximumVisibleRadius() {
+      // Maximum distance on x axis between circle center and the canvas 0 or width
+      const maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+      // Maximum distance on y axis between circle center and the canvas 0 or height
+      const maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+      // Return the hypotenuse
+      return Math.sqrt( (maxX * maxX) + (maxY * maxY) );
+    }
+
+    _minimumVisibleRadius() {
+      if (this._centerVisible()) {
+        // Center is visible so the minimum radius has to be 0
+        return 0;
+      } else if ( CGV.oppositeSigns(this.scale.x.invert(0), this.scale.x.invert(this.width)) ) {
+        // The canvas straddles 0 on the x axis, so the minimum radius is the distance to the closest horizontal line
+        return Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)));
+      } else if ( CGV.oppositeSigns(this.scale.y.invert(0), this.scale.y.invert(this.height)) ) {
+        // The canvas straddles 0 on the y axis, so the minimum radius is the distance to the closest vertical line
+        return Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)));
+      } else {
+        // Closest corner of the canvas
+        // Minimum distance on x axis between circle center and the canvas 0 or width
+        const minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
+        // Minimum distance on y axis between circle center and the canvas 0 or height
+        const minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
+        // Return the hypotenuse
+        return Math.sqrt( (minX * minX) + (minY * minY) );
+      }
+    }
+
+    _visibleRangesForRadius(radius, margin = 0) {
+      const angles = CGV.circleAnglesFromIntersectingRect(radius,
+        this.scale.x.invert(0 - margin),
+        this.scale.y.invert(0 - margin),
+        this.width + (margin * 2),
+        this.height + (margin * 2)
+      );
+      return angles.map( a => Math.round(this.scale.bp.invert(a)) );
+    }
+
+    // TODO if undefined, see if radius is visible
+    visibleRangeForCenterOffset(radius, margin = 0) {
+      const ranges = this._visibleRangesForRadius(radius, margin);
+      if (ranges.length === 2) {
+        // return ranges
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
+      } else if (ranges.length > 2) {
+        // return [ ranges[0], ranges[ranges.length -1] ]
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
+      } else if ( (radius - margin) > this._maximumVisibleRadius() ) {
+        return undefined;
+      } else if ( (radius + margin) < this._minimumVisibleRadius() ) {
+        return undefined;
+      } else {
+        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
+      }
+      // } else {
+      //   return undefined
+      // }
     }
 
     path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {

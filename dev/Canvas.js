@@ -387,8 +387,9 @@
      * The method add an arc to the path. However, if the zoomFactor is very large,
      * the arc is added as a straight line.
      */
-    // FIXME: try calling layouy.path woth object parameters and compare speed
+    // FIXME: try calling layout.path with object parameters and compare speed
     // e.g. path({layer: 'map', offset = radius, etc})
+    // FIXME: change name
     arcPath(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       this.layout.path(layer, radius, startBp, stopBp, anticlockwise, startType);
       // const ctx = this.context(layer);
@@ -413,16 +414,6 @@
       //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
       // }
     }
-
-    // drawArc(start, stop, radius, color = '#000000', width = 1) {
-    //   let scale = this.scale;
-    //   let ctx = this.ctx;
-    //   ctx.beginPath();
-    //   ctx.strokeStyle = color;
-    //   ctx.lineWidth = width;
-    //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(start), scale.bp(stop), false);
-    //   ctx.stroke();
-    // }
 
     radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black', cap = 'butt') {
       const innerPt = this.pointFor(bp, radius);
@@ -453,81 +444,11 @@
       return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
     }
 
-    visibleRangesForRadius(radius, margin = 0) {
-      const angles = CGV.circleAnglesFromIntersectingRect(radius,
-        this.scale.x.invert(0 - margin),
-        this.scale.y.invert(0 - margin),
-        this.width + (margin * 2),
-        this.height + (margin * 2)
-      );
-      return angles.map( a => Math.round(this.scale.bp.invert(a)) );
-    }
 
     // TODO if undefined, see if radius is visible
+    // FIXME: change name
     visibleRangeForRadius(radius, margin = 0) {
-      const ranges = this.visibleRangesForRadius(radius, margin);
-      if (ranges.length === 2) {
-        // return ranges
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
-      } else if (ranges.length > 2) {
-        // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
-      } else if ( (radius - margin) > this.maximumVisibleRadius() ) {
-        return undefined;
-      } else if ( (radius + margin) < this.minimumVisibleRadius() ) {
-        return undefined;
-      } else {
-        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
-      }
-      // } else {
-      //   return undefined
-      // }
-    }
-
-    centerVisible() {
-      const x = this.scale.x(0);
-      const y = this.scale.y(0);
-      return (x >= 0 &&
-              x <= this.width &&
-              y >= 0 &&
-              y <= this.height);
-    }
-
-    /**
-     * Return the distance between the circle center and the farthest corner of the canvas
-     */
-    maximumVisibleRadius() {
-      // Maximum distance on x axis between circle center and the canvas 0 or width
-      const maxX = Math.max( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
-      // Maximum distance on y axis between circle center and the canvas 0 or height
-      const maxY = Math.max( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
-      // Return the hypotenuse
-      return Math.sqrt( (maxX * maxX) + (maxY * maxY) );
-    }
-
-    minimumVisibleRadius() {
-      if (this.centerVisible()) {
-        // Center is visible so the minimum radius has to be 0
-        return 0;
-      } else if ( CGV.oppositeSigns(this.scale.x.invert(0), this.scale.x.invert(this.width)) ) {
-        // The canvas straddles 0 on the x axis, so the minimum radius is the distance to the closest horizontal line
-        return Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)));
-      } else if ( CGV.oppositeSigns(this.scale.y.invert(0), this.scale.y.invert(this.height)) ) {
-        // The canvas straddles 0 on the y axis, so the minimum radius is the distance to the closest vertical line
-        return Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)));
-      } else {
-        // Closest corner of the canvas
-        // Minimum distance on x axis between circle center and the canvas 0 or width
-        const minX = Math.min( Math.abs(this.scale.x.invert(0)), Math.abs(this.scale.x.invert(this.width)) );
-        // Minimum distance on y axis between circle center and the canvas 0 or height
-        const minY = Math.min( Math.abs(this.scale.y.invert(0)), Math.abs(this.scale.y.invert(this.height)) );
-        // Return the hypotenuse
-        return Math.sqrt( (minX * minX) + (minY * minY) );
-      }
-    }
-
-    visibleRadii() {
-      return {min: this.minimumVisibleRadius(), max: this.maximumVisibleRadius()};
+      return this.layout.visibleRangeForCenterOffset(radius, margin);
     }
 
     pixelsPerBp(radius) {

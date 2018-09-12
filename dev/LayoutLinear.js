@@ -64,6 +64,7 @@
       this.scale.bp = d3.scaleLinear()
         .domain([1, length])
         .range(this.scale.x.domain());
+      // this.scale.x = this.scale.bp;
       this.viewer._updateZoomMax();
     }
 
@@ -97,6 +98,22 @@
       const x = this.scale.x(bp);
       const y = this.scale.y(centerOffset);
       return {x: x, y: y};
+    }
+
+    pixelsPerBp() {
+      const domain = this.scale.x.domain();
+      return CGV.pixel( (domain[1] - domain[0]) / this.sequence.length );
+    }
+
+    maxMapThickness() {
+      return this.viewer.height;
+    }
+
+    // TODO if undefined, see if radius is visible
+    // FIXME: check if offset is visible 
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      const domain = this.scale.bp.domain();
+      return new CGV.CGRange(this.sequence, domain[0], domain[1]);
     }
 
     path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {

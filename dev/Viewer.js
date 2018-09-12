@@ -449,13 +449,13 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.messenger.flash(msg);
     }
 
-    /**
-     * Return the maximum radius to use for calculating slot thickness when zoomed
-     * @return {Number}
-     */
-    maxZoomedRadius() {
-      return this.minDimension;
-    }
+    // #<{(|*
+    //  * Return the maximum radius to use for calculating slot thickness when zoomed
+    //  * @return {Number}
+    //  |)}>#
+    // maxZoomedRadius() {
+    //   return this.minDimension;
+    // }
 
     fillBackground() {
       this.clear('background');

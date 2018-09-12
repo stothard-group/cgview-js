@@ -60,6 +60,13 @@
     }
 
     /**
+     * @member {Layout} - Get the layout.
+     */
+    get layout() {
+      return this.viewer.layout;
+    }
+
+    /**
      * @member {Sequence} - Get the sequence.
      */
     get sequence() {
