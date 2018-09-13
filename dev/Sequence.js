@@ -217,7 +217,8 @@
     }
 
     _updateScale() {
-      this.viewer.layout.updateBPScale(this.length);
+      // this.viewer.layout.updateBPScale(this.length);
+      this.viewer.layout.updateScales();
       // this.canvas.scale.bp = d3.scaleLinear()
       //   .domain([1, this.length])
       //   .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);

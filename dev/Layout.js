@@ -1,3 +1,6 @@
+// FIXME: Use delegate for layout format
+//   - move scales to layout
+//   - move zoomFactor to layout
 //////////////////////////////////////////////////////////////////////////////
 // Layout for Circular Maps
 //////////////////////////////////////////////////////////////////////////////
@@ -21,6 +24,8 @@
       // this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
       this._minSlotThickness = 1;
       this._maxSlotThickness = 50;
+
+      this.updateScales();
 
       // Setup scales
       // this._scale = {};
@@ -69,6 +74,12 @@
      */
     get sequence() {
       return this.viewer.sequence;
+    }
+
+    /** * @member {Backbone} - Get the *Backbone*
+     */
+    get backbone() {
+      return this.viewer.backbone;
     }
 
     /** * @member {Object} - Return the scales...
@@ -130,20 +141,24 @@
       throw 'Error: "type" must be overridden in subclass';
     }
 
-    updateCartesianScales() {
-      throw 'Error: "updateCartesianScales" must be overridden in subclass';
+    updateScales() {
+      throw 'Error: "updateScales" must be overridden in subclass';
     }
 
-    updateBPScale(length) {
-      throw 'Error: "updateBPScale" must be overridden in subclass';
+    zoom(zoomFactor, bp) {
+      throw 'Error: "zoom" must be overridden in subclass';
     }
 
-    zoomDomains() {
-      throw 'Error: "zoomDomains" must be overridden in subclass';
+    translate(dx, dy) {
+      throw 'Error: "translate" must be overridden in subclass';
     }
 
     pointFor(bp, centerOffset) {
       throw 'Error: "pointFor" must be overridden in subclass';
+    }
+
+    bpForPoint(point) {
+      throw 'Error: "bpForPoint" must be overridden in subclass';
     }
 
     // FIXME: update arguments

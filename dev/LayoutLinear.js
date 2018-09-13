@@ -23,39 +23,48 @@
       return 'linear';
     }
 
+    updateScales() {
+      if (!this.sequence) { return; }
+      const canvas = this.canvas;
+      const scale = this.scale;
+
+      // FIXME find center BP
+      // const bp =  /
+
+      scale.x = d3.scaleLinear()
+        .domain([1, this.sequence.length])
+        .range([0, canvas.width]);
+        // .range([0, canvas.width * this.viewer.zoomFactor]);
+        // .domain([canvas.width * x1, canvas.width * x2])
+        // .range([0, canvas.width]);
+      scale.y = d3.scaleLinear()
+        .domain([canvas.height * 0.5, canvas.height * -0.5])
+        .range([0, canvas.height]);
+
+      this.scale.bp = this.scale.x;
+      console.log(scale.x.domain())
+
+    }
+
     // Called when width/height changes
     updateCartesianScales() {
       const canvas = this.canvas;
       const scale = this.scale;
       let x1, x2, y1, y2;
-      // Save scale domains to keep tract of translation
-      if (scale.x) {
-        const origXDomain = scale.x.domain();
-        const origWidth = origXDomain[1] - origXDomain[0];
-        x1 = origXDomain[0] / origWidth;
-        x2 = origXDomain[1] / origWidth;
-      } else {
-        // x1 = -0.5;
-        // x2 = 0.5;
-        x1 = 0;
-        x2 = 1;
-      }
-      // if (scale.y) {
-      //   const origYDomain = scale.y.domain();
-      //   const origHeight = origYDomain[0] - origYDomain[1];
-      //   y1 = origYDomain[0] / origHeight;
-      //   y2 = origYDomain[1] / origHeight;
-      // } else {
-      //   y1 = 0.5;
-      //   y2 = -0.5;
-      // }
+
+      // FIXME find center BP
+
+      // const bp =  /
+
       scale.x = d3.scaleLinear()
-        .domain([canvas.width * x1, canvas.width * x2])
-        .range([0, canvas.width]);
+        .domain([1, this.sequence.length])
+        .range([0, canvas.width * this.viewer.zoomFactor]);
+        // .domain([canvas.width * x1, canvas.width * x2])
+        // .range([0, canvas.width]);
       scale.y = d3.scaleLinear()
-        // .domain([canvas.height * y1, canvas.height * y2])
         .domain([canvas.height * 0.5, canvas.height * -0.5])
         .range([0, canvas.height]);
+
       console.log(scale.x.domain())
     }
 
@@ -68,41 +77,61 @@
       this.viewer._updateZoomMax();
     }
 
-    zoomDomains() {
-      const pos = d3.mouse(this.canvas.node('ui'));
-      const mx = this.scale.x.invert(CGV.pixel(pos[0]));
-      const my = this.scale.y.invert(CGV.pixel(pos[1]));
+    // The center of the zoom will be the supplied bp position on the backbone.
+    // FIXME: constrain zoomFactor
+    // FIXME: when not set bp should be center of map or 1.
+    zoom(zoomFactor, bp = 1) {
 
-      const centerOffset = this.viewer.backbone.centerOffset;
-      const angle = CGV.angleFromPosition(mx, my);
+      // Center of zoom before zooming
+      // const centerX = this.pointFor(bp, this.backbone.adjustedCenterOffset).x;
+      const centerX = this.scale.x(bp);
 
-      const oldZoomFactor = this.viewer._zoomFactor;
-      const newZoomFactor = d3.event.transform.k;
+      // Update the d3.zoom transform.
+      // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
+      // automatically when zooming via d3 (ie. in Viewer-Zoom.js)
+      d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
 
-      const radiusDiff = centerOffset * (oldZoomFactor - newZoomFactor);
+      const oldZoomFactor = this.viewer.zoomFactor;
+      const zoomRatio = zoomFactor  / oldZoomFactor;
 
-      const dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
-      const dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
+      // Update zoom factor
+      this.viewer._zoomFactor = zoomFactor;
 
+      // Zoom and translate the domains
+      const domainX = this.scale.x.domain();
+      const d0 = bp - ((bp - domainX[0]) / zoomRatio);
+      const d1 = bp + ((domainX[1] - bp) / zoomRatio);
+
+      this.scale.x.domain([d0, d1]);
+      console.log(this.scale.x.domain())
+    }
+
+    translate(dx, dy) {
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
-
+      dy = CGV.pixel(d3.event.dy) / this.viewer.zoomFactor;
+      dx = CGV.pixel(Math.round(d3.event.dx / this.backbone.pixelsPerBp())) / this.viewer.zoomFactor;
       this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-      // this.scale.y.domain([domainY[0] - dy, domainY[1] - dy]);
+      this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
     }
 
     pointFor(bp, centerOffset) {
-      // const radians = this.scale.bp(bp);
-      // const x = this.scale.x(0) + (radius * Math.cos(radians));
-      // const y = this.scale.y(0) + (radius * Math.sin(radians));
       const x = this.scale.x(bp);
       const y = this.scale.y(centerOffset);
       return {x: x, y: y};
     }
 
+    bpForPoint(point) {
+      // return Math.round( this.scale.bp.invert(point.x) );
+      return Math.round( point.x );
+    }
+
     pixelsPerBp() {
-      const domain = this.scale.x.domain();
-      return CGV.pixel( (domain[1] - domain[0]) / this.sequence.length );
+      // const domain = this.scale.x.domain();
+      // return CGV.pixel( (domain[1] - domain[0]) / this.sequence.length );
+      const range = this.scale.x.range();
+      // return CGV.pixel( (range[1] - range[0]) / this.sequence.length );
+      return  (range[1] - range[0]) / this.sequence.length;
     }
 
     maxMapThickness() {
@@ -112,8 +141,10 @@
     // TODO if undefined, see if radius is visible
     // FIXME: check if offset is visible 
     visibleRangeForCenterOffset(centerOffset, margin = 0) {
-      const domain = this.scale.bp.domain();
-      return new CGV.CGRange(this.sequence, domain[0], domain[1]);
+      const range = this.scale.bp.range();
+      return new CGV.CGRange(this.sequence,
+        Math.max(this.scale.bp.invert(range[0]), 1),
+        Math.min(this.scale.bp.invert(range[1]), this.sequence.length));
     }
 
     path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {

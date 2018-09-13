@@ -144,9 +144,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         throw 'Format must be one of the following: linear, circular';
       }
-      this.layout.updateCartesianScales();
+      // this.layout.updateCartesianScales();
       // FIXME
-      this.layout.updateBPScale(this.sequence && this.sequence.length || 1000);
+      // this.layout.updateBPScale(this.sequence && this.sequence.length || 1000);
     }
 
     /**
@@ -203,8 +203,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._zoomFactor;
     }
 
+    // FIXME: this should be done by layout?? OR not allowed
     set zoomFactor(value) {
-      this._zoomFactor = value;
+      // this._zoomFactor = value;
+      this.layout.zoom(value);
     }
 
     /**

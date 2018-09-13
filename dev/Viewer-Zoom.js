@@ -27,8 +27,16 @@
     function zooming() {
       const startTime = new Date().getTime();
 
-      self.layout.zoomDomains();
-      self._zoomFactor = d3.event.transform.k;
+      const bp = self.canvas.bpForMouse();
+
+      self.layout.zoom(d3.event.transform.k, bp);
+
+      // self.layout.zoomDomains();
+      // self._zoomFactor = d3.event.transform.k;
+
+      // NOTE: to get/set d3 zoom level:
+      // d3.zoomTransform(cgv.canvas.node('ui')).k
+
 
       // const pos = d3.mouse(self.canvas.node('ui'));
       // const mx = self.scale.x.invert(CGV.pixel(pos[0]));

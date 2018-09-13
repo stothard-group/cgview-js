@@ -80,7 +80,8 @@
         layerNode.style.height = `${height}px`;
       }
       // this.refreshScales();
-      this.layout.updateCartesianScales();
+      // this.layout.updateCartesianScales();
+      this.layout.updateScales();
     }
 
     /**
@@ -440,8 +441,17 @@
       // return {x: x, y: y};
     }
 
+    // Return the bp for the mouse position on the canvas
+    bpForMouse() {
+      const pos = d3.mouse(this.node('ui'));
+      const mx = this.scale.x.invert(CGV.pixel(pos[0]));
+      const my = this.scale.y.invert(CGV.pixel(pos[1]));
+      return this.bpForPoint({x: mx, y: my});
+    }
+
     bpForPoint(point) {
-      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
+      // return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
+      return this.layout.bpForPoint(point);
     }
 
 

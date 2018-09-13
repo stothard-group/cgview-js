@@ -23,6 +23,12 @@
       return 'circular';
     }
 
+    updateScales() {
+      if (!this.sequence) { return; }
+      this.updateCartesianScales();
+      this.updateBPScale();
+    }
+
     updateCartesianScales() {
       const canvas = this.canvas;
       const scale = this.scale;
@@ -54,29 +60,36 @@
         .range([0, canvas.height]);
     }
 
-    updateBPScale(length) {
+    updateBPScale() {
       this.scale.bp = d3.scaleLinear()
-        .domain([1, length])
+        .domain([1, this.sequence.length])
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       this.viewer._updateZoomMax();
     }
 
+    // The center of the zoom will be the supplied bp position on the backbone.
+    // FIXME: constrain zoomFactor
+    // FIXME: when not set bp should be center of map or 1.
+    zoom(zoomFactor, bp = 1) {
 
-    zoomDomains() {
-      const pos = d3.mouse(this.canvas.node('ui'));
-      const mx = this.scale.x.invert(CGV.pixel(pos[0]));
-      const my = this.scale.y.invert(CGV.pixel(pos[1]));
+      // Center of zoom before zooming
+      const {x: centerX1, y: centerY1} = this.pointFor(bp, this.backbone.adjustedCenterOffset);
 
-      const centerOffset = this.viewer.backbone.centerOffset;
-      const angle = CGV.angleFromPosition(mx, my);
+      // Update the d3.zoom transform.
+      // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
+      // automatically when zooming via d3 (ie. in Viewer-Zoom.js)
+      d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
 
-      const oldZoomFactor = this.viewer._zoomFactor;
-      const newZoomFactor = d3.event.transform.k;
+      // Update zoom factor
+      this.viewer._zoomFactor = zoomFactor;
 
-      const radiusDiff = centerOffset * (oldZoomFactor - newZoomFactor);
+      // Center of zoom after zooming
+      // Backbone adjustedCenterOffset is based on the zoomFactor
+      const {x: centerX2, y: centerY2} = this.pointFor(bp, this.backbone.adjustedCenterOffset);
 
-      const dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
-      const dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
+      // Find differerence in x/y and translate the domains
+      const dx = CGV.pixel(centerX1 - centerX2);
+      const dy = CGV.pixel(centerY2 - centerY1);
 
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
@@ -84,6 +97,38 @@
       this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
       this.scale.y.domain([domainY[0] - dy, domainY[1] - dy]);
     }
+
+    translate(dx, dy) {
+      const domainX = this.scale.x.domain();
+      const domainY = this.scale.y.domain();
+      dx = CGV.pixel(dx);
+      dy = CGV.pixel(dy);
+      this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
+      this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
+    }
+
+    // zoomDomains() {
+    //   const pos = d3.mouse(this.canvas.node('ui'));
+    //   const mx = this.scale.x.invert(CGV.pixel(pos[0]));
+    //   const my = this.scale.y.invert(CGV.pixel(pos[1]));
+    //
+    //   const centerOffset = this.backbone.centerOffset;
+    //   const angle = CGV.angleFromPosition(mx, my);
+    //
+    //   const oldZoomFactor = this.viewer._zoomFactor;
+    //   const newZoomFactor = d3.event.transform.k;
+    //
+    //   const radiusDiff = centerOffset * (oldZoomFactor - newZoomFactor);
+    //
+    //   const dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
+    //   const dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
+    //
+    //   const domainX = this.scale.x.domain();
+    //   const domainY = this.scale.y.domain();
+    //
+    //   this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
+    //   this.scale.y.domain([domainY[0] - dy, domainY[1] - dy]);
+    // }
 
 
     pointFor(bp, radius) {
@@ -93,8 +138,12 @@
       return {x: x, y: y};
     }
 
+    bpForPoint(point) {
+      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
+    }
+
     pixelsPerBp() {
-      return CGV.pixel( (this.viewer.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
+      return CGV.pixel( (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
     }
 
     maxMapThickness() {
@@ -205,7 +254,7 @@
     updateBackboneOffset(workingSpace, outsideThickness) {
       const minInnerProportion = 0.15
       const minInnerRadius = minInnerProportion * this.viewer.minDimension;
-      this.viewer.backbone.centerOffset = minInnerRadius + workingSpace - outsideThickness - (this.viewer.backbone.thickness / 2);
+      this.backbone.centerOffset = minInnerRadius + workingSpace - outsideThickness - (this.backbone.thickness / 2);
     }
 
 
