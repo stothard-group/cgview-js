@@ -142,13 +142,19 @@
       return this._visibleRange;
     }
 
+    get pixelLength() {
+      return this.layout.backbonePixelLength();
+    }
+
     /**
      * The maximum zoom factor to get the correct spacing between basepairs.
      * @return {Number}
      */
     maxZoomFactor() {
       // return (this.sequence.length * this.sequence.bpSpacing) / (2 * Math.PI * this.radius);
-      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.centerOffset);
+      // FIXME: 
+      // return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.centerOffset);
+      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / this.pixelLength * CGV.pixelRatio;
     }
 
     /**
@@ -178,7 +184,7 @@
       if (pixelsPerBp > 1 && this.visible) {
         // const zoomedThicknessWithoutAddition = Math.min(this.adjustedCenterOffset, this.viewer.maxZoomedRadius()) * (this.thickness / this.centerOffset);
         // FIXME: see adjustedThickness for note. Use 4 for now.
-        const zoomedThicknessWithoutAddition = Math.min(this.viewer.zoomFactor, 4) * (this.thickness / this.centerOffset);
+        const zoomedThicknessWithoutAddition = Math.min(this.viewer.zoomFactor, 4) * this.thickness;
         const addition = pixelsPerBp * 2;
         if ( (zoomedThicknessWithoutAddition + addition ) >= this.maxThickness) {
           this._bpThicknessAddition = this.maxThickness - zoomedThicknessWithoutAddition;

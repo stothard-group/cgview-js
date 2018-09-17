@@ -25,7 +25,7 @@
       this._minSlotThickness = 1;
       this._maxSlotThickness = 50;
 
-      this.updateScales();
+      // this.updateScales();
 
       // Setup scales
       // this._scale = {};
@@ -617,6 +617,27 @@
         }
       }
       return CGV.pixel(proportionOfRadius * mapThickness);
+    }
+
+    // When updating scales because the canvas has been resized, we want to
+    // keep the map at the same position in the canvas.
+    // Axis must be 'x' or 'y'
+    // Used to initialize or resize the circle x/y or linear y scale
+    _updateScaleForAxis(axis, dimension) {
+      const scale = this.scale;
+      // Default Fractions to center the map when the scales have not been defined yet
+      let f1 = (axis === 'x') ? -0.5 : 0.5;
+      let f2 = (axis === 'x') ? 0.5 : -0.5;
+      // Save scale domains to keep tract of translation
+      if (scale[axis]) {
+        const origDomain = scale[axis].domain();
+        const origDimension = Math.abs(origDomain[1] - origDomain[0]);
+        f1 = origDomain[0] / origDimension;
+        f2 = origDomain[1] / origDimension;
+      }
+      scale[axis] = d3.scaleLinear()
+        .domain([dimension * f1, dimension * f2])
+        .range([0, dimension]);
     }
 
     // drawProgress() {

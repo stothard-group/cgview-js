@@ -23,55 +23,59 @@
       return 'circular';
     }
 
-    updateScales() {
-      if (!this.sequence) { return; }
-      this.updateCartesianScales();
-      this.updateBPScale();
+    backbonePixelLength() {
+      return Math.PI * 2 * CGV.pixel(this.backbone.centerOffset);
     }
 
-    updateCartesianScales() {
+    // NOTES:
+    //  - 3 scenarios
+    //    - scales have not been initialized so simple center the map
+    //    - scales already initialed and layout has not changed
+    //      - keep the map centered as the scales change
+    //    - layout changed
+    //      - based on zoom will the whole map be in the canvas (determine from radius for the zoom)
+    //        - if so: center the map
+    //        - if not: center the map on the backbone at the bp that was the linear center
+    updateScales(layoutChanged, bp) {
+      if (!this.sequence) { return; }
       const canvas = this.canvas;
       const scale = this.scale;
-      let x1, x2, y1, y2;
-      // Save scale domains to keep tract of translation
-      if (scale.x) {
-        const origXDomain = scale.x.domain();
-        const origWidth = origXDomain[1] - origXDomain[0];
-        x1 = origXDomain[0] / origWidth;
-        x2 = origXDomain[1] / origWidth;
-      } else {
-        x1 = -0.5;
-        x2 = 0.5;
-      }
-      if (scale.y) {
-        const origYDomain = scale.y.domain();
-        const origHeight = origYDomain[0] - origYDomain[1];
-        y1 = origYDomain[0] / origHeight;
-        y2 = origYDomain[1] / origHeight;
-      } else {
-        y1 = 0.5;
-        y2 = -0.5;
-      }
-      scale.x = d3.scaleLinear()
-        .domain([canvas.width * x1, canvas.width * x2])
-        .range([0, canvas.width]);
-      scale.y = d3.scaleLinear()
-        .domain([canvas.height * y1, canvas.height * y2])
-        .range([0, canvas.height]);
-    }
 
-    updateBPScale() {
-      this.scale.bp = d3.scaleLinear()
+      // BP Scale
+      scale.bp = d3.scaleLinear()
         .domain([1, this.sequence.length])
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       this.viewer._updateZoomMax();
+
+      // X/Y Scales
+      if (layoutChanged) {
+        // Deleting the current scales will cause the map to be centered
+        scale.x = undefined;
+        scale.y = undefined;
+        this._updateScaleForAxis('x', canvas.width);
+        this._updateScaleForAxis('y', canvas.height);
+        // At larger zoom levels and when a bp was given, center the map on that bp
+        const zoomFactorCutoff = 1.25;
+        if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
+          // Get point for bp and backbone radius
+          // FIXME: remove backbone offset as this will be the default
+          const point = this.pointFor(bp, this.backbone.adjustedCenterOffset);
+          const dx = scale.x.invert(point.x);
+          const dy = scale.y.invert(point.y);
+          this.translate(-dx, dy);
+        }
+      } else {
+        // The canvas is being resized or initialized
+        this._updateScaleForAxis('x', canvas.width);
+        this._updateScaleForAxis('y', canvas.height);
+      }
     }
 
-    // The center of the zoom will be the supplied bp position on the backbone.
-    // FIXME: constrain zoomFactor
-    // FIXME: when not set bp should be center of map or 1.
-    zoom(zoomFactor, bp = 1) {
 
+    // The center of the zoom will be the supplied bp position on the backbone.
+    // The default bp will be based on the center of the canvas.
+    // FIXME: constrain zoomFactor
+    zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
       // Center of zoom before zooming
       const {x: centerX1, y: centerY1} = this.pointFor(bp, this.backbone.adjustedCenterOffset);
 
@@ -131,6 +135,9 @@
     // }
 
 
+    // Return point on Canvas.
+    // FIXME: radius should be mapCenterOffset.
+    //  -  With the default: this.backbone.adjustedCenterOffset
     pointFor(bp, radius) {
       const radians = this.scale.bp(bp);
       const x = this.scale.x(0) + (radius * Math.cos(radians));
@@ -145,6 +152,7 @@
     pixelsPerBp() {
       return CGV.pixel( (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
     }
+
 
     maxMapThickness() {
       // FIXME: this will become 1/2 of minDimension

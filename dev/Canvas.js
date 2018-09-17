@@ -449,6 +449,13 @@
       return this.bpForPoint({x: mx, y: my});
     }
 
+    // Return the bp for the center of the canvas.
+    bpForCanvasCenter() {
+      const mx = this.scale.x.invert( this.width / 2 );
+      const my = this.scale.y.invert( this.height / 2 );
+      return this.bpForPoint({x: mx, y: my});
+    }
+
     bpForPoint(point) {
       // return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
       return this.layout.bpForPoint(point);

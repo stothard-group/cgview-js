@@ -221,20 +221,22 @@
         cgv.format = 'circular';
       }
       // cgv.canvas._testDrawRange = $(this).is(':checked');
-      console.log(`Changed to ${cgv.format}`)
+      // console.log(`Changed to ${cgv.format}`)
       cgv.drawFull();
     });
 
     // $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
     // $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });
     // $('#save-3000').on('click', function() { cgv.io.exportImage(3000,3000); return false });
+
     // Resizing
-    // $(window).resize(function() {
-    //   var width = window.innerWidth - 20;
-    //   var height = window.innerHeight - 100;
-    //   var dimension = Math.min(width, height);
-    //   cgv.resize(dimension, dimension);
-    // });
+    // TURN OFF RESIZE FOR PERFORMANCE TESTS
+     $(window).resize(function() {
+       var width = window.innerWidth - 20;
+       var height = window.innerHeight - 100;
+       var dimension = Math.min(width, height);
+       cgv.resize(dimension, dimension);
+     });
 
   </script>
 </body>

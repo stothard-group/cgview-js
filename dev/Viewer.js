@@ -137,6 +137,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set format(value) {
+      // Determine map center bp before changing layout
+      const centerBp = this._layout && this.canvas.bpForCanvasCenter();
+      const layoutChanged = Boolean(this._layout && this._layout.type !== value);
+      // const oldLayout = this._layout;
       if (value === 'linear') {
         this._layout = new CGV.LayoutLinear(this);
       } else if (value === 'circular') {
@@ -144,9 +148,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       } else {
         throw 'Format must be one of the following: linear, circular';
       }
-      // this.layout.updateCartesianScales();
       // FIXME
-      // this.layout.updateBPScale(this.sequence && this.sequence.length || 1000);
+      this.layout.updateScales(layoutChanged, centerBp);
     }
 
     /**
