@@ -346,7 +346,7 @@
         if (range.spansOrigin()) {
           seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
         } else {
-          seq = this.seq.substr(range.start - 1, range.length);
+          seq = this.seq.substr(range.start - 1, range.length + 1);
         }
       } else {
         // FIXME: For now return fake sequence
@@ -464,6 +464,7 @@
         const radiusDiff = CGV.pixel((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
           let origin = this.canvas.pointFor(bp, radius + radiusDiff);
+          if (i == 0) { console.log(bp, origin)}
           ctx.fillText(seq[i], origin.x, origin.y);
           origin = this.canvas.pointFor(bp, radius - radiusDiff);
           ctx.fillText(complement[i], origin.x, origin.y);

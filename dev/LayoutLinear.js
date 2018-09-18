@@ -76,9 +76,10 @@
 
       // BP Scale
 
-      const rangeHalfWidth = Math.round(canvas.width * this.viewer.zoomFactor / 2);
+      // const rangeHalfWidth = Math.round(canvas.width * this.viewer.zoomFactor / 2);
+      const rangeHalfWidth = canvas.width * this.viewer.zoomFactor / 2;
       scale.bp = d3.scaleLinear()
-        .domain([0, this.sequence.length])
+        .domain([1, this.sequence.length])
         .range([-rangeHalfWidth, rangeHalfWidth]);
         // .range([0, 2*rangeHalfWidth]);
       this.viewer._updateZoomMax();
@@ -113,7 +114,6 @@
     // FIXME: constrain zoomFactor
     zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
 
-      console.log(bp)
 
       // Center of zoom before zooming
       const {x: centerX1, y: centerY1} = this.pointFor(bp);
@@ -127,13 +127,14 @@
       this.viewer._zoomFactor = zoomFactor;
 
       // Update the BP scale
-      const rangeHalfWidth = Math.round(this.canvas.width * this.viewer.zoomFactor / 2);
+      // const rangeHalfWidth = Math.round(this.canvas.width * this.viewer.zoomFactor / 2);
+      const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
 
       // Center of zoom after zooming
       // pointFor is on the backbone by default
       const {x: centerX2, y: centerY2} = this.pointFor(bp);
-      console.log(bp, centerX1, centerX2)
+      // console.log(bp, centerX1, centerX2)
 
 
       // Find differerence in x/y and translate the domains
@@ -238,8 +239,10 @@
       //   Math.max(this.scale.bp.invert(range[0]), 1),
       //   Math.min(this.scale.bp.invert(range[1]), this.sequence.length));
       const domainX = this.scale.x.domain();
-      const start = this.scale.bp.invert(domainX[0]);
-      const end = this.scale.bp.invert(domainX[1]);
+      // const start = this.scale.bp.invert(domainX[0]);
+      // const end = this.scale.bp.invert(domainX[1]);
+      const start = Math.floor(this.scale.bp.invert(domainX[0]));
+      const end = Math.ceil(this.scale.bp.invert(domainX[1]));
       return new CGV.CGRange(this.sequence,
         Math.max(start, 1),
         Math.min(end, this.sequence.length));
