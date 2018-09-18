@@ -57,9 +57,8 @@
         // At larger zoom levels and when a bp was given, center the map on that bp
         const zoomFactorCutoff = 1.25;
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
-          // Get point for bp and backbone radius
-          // FIXME: remove backbone offset as this will be the default
-          const point = this.pointFor(bp, this.backbone.adjustedCenterOffset);
+          // Get point for bp and backbone radius (NOTE: bp scale must be set first)
+          const point = this.pointFor(bp);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
@@ -77,7 +76,7 @@
     // FIXME: constrain zoomFactor
     zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
       // Center of zoom before zooming
-      const {x: centerX1, y: centerY1} = this.pointFor(bp, this.backbone.adjustedCenterOffset);
+      const {x: centerX1, y: centerY1} = this.pointFor(bp);
 
       // Update the d3.zoom transform.
       // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
@@ -88,8 +87,8 @@
       this.viewer._zoomFactor = zoomFactor;
 
       // Center of zoom after zooming
-      // Backbone adjustedCenterOffset is based on the zoomFactor
-      const {x: centerX2, y: centerY2} = this.pointFor(bp, this.backbone.adjustedCenterOffset);
+      // pointFor is on the backbone by default
+      const {x: centerX2, y: centerY2} = this.pointFor(bp);
 
       // Find differerence in x/y and translate the domains
       const dx = CGV.pixel(centerX1 - centerX2);
@@ -136,12 +135,11 @@
 
 
     // Return point on Canvas.
-    // FIXME: radius should be mapCenterOffset.
-    //  -  With the default: this.backbone.adjustedCenterOffset
-    pointFor(bp, radius) {
+    // mapCenterOffset is the radius for circular maps
+    pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
       const radians = this.scale.bp(bp);
-      const x = this.scale.x(0) + (radius * Math.cos(radians));
-      const y = this.scale.y(0) + (radius * Math.sin(radians));
+      const x = this.scale.x(0) + (mapCenterOffset * Math.cos(radians));
+      const y = this.scale.y(0) + (mapCenterOffset * Math.sin(radians));
       return {x: x, y: y};
     }
 

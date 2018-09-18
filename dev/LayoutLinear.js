@@ -29,6 +29,46 @@
       return this.canvas.width;
     }
 
+    // // SEE Circular for notes
+    // updateScales(layoutChanged, bp) {
+    //   if (!this.sequence) { return; }
+    //   const canvas = this.canvas;
+    //   const scale = this.scale;
+    //   const zoomFactorCutoff = 1.25;
+    //   let newDomain;
+    //
+    //   // X/Y Scale
+    //   if (layoutChanged) {
+    //     // When the zoom factor is low or no bp was specified, center the map
+    //     if (this.viewer.zoomFactor <= zoomFactorCutoff || bp === undefined) {
+    //       bp = Math.round(this.sequence.length / 2);
+    //     }
+    //     const canvasHalfWidthBp = Math.round(this.sequence.length / 2 / this.viewer.zoomFactor);
+    //     newDomain = [bp - canvasHalfWidthBp, bp + canvasHalfWidthBp];
+    //     // Recenter the Y scale
+    //     scale.y = undefined;
+    //   } else {
+    //     if (scale.x) {
+    //       // Keep same domain. Range will change.
+    //       newDomain = scale.x.domain();
+    //     } else {
+    //       // Initializing. Set domain for full sequence.
+    //       newDomain = [1, this.sequence.length];
+    //     }
+    //   }
+    //
+    //   scale.x = d3.scaleLinear()
+    //     .range([0, canvas.width])
+    //     .domain(newDomain);
+    //
+    //   // Y Scale
+    //   this._updateScaleForAxis('y', canvas.height);
+    //
+    //   // BP Scale
+    //   this.scale.bp = this.scale.x;
+    //   this.viewer._updateZoomMax();
+    // }
+
     // SEE Circular for notes
     updateScales(layoutChanged, bp) {
       if (!this.sequence) { return; }
@@ -97,15 +137,16 @@
     translate(dx, dy) {
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
-      dy = CGV.pixel(d3.event.dy)
+      dy = CGV.pixel(d3.event.dy);
       dx = CGV.pixel(Math.round(d3.event.dx / this.backbone.pixelsPerBp()));
+      // dx = CGV.pixel(d3.event.dx / this.backbone.pixelsPerBp());
       this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
       this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
     }
 
-    pointFor(bp, centerOffset) {
-      const x = this.scale.x(bp);
-      const y = this.scale.y(centerOffset);
+    pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const x = this.scale.bp(bp);
+      const y = this.scale.y(mapCenterOffset);
       return {x: x, y: y};
     }
 
@@ -114,21 +155,11 @@
       return Math.round( point.x );
     }
 
-    // FIXME: this is not correct. Do not use range!
     pixelsPerBp() {
       const scaleX = this.scale.x;
-      // const domain = this.scale.x.domain();
-      // return CGV.pixel( (domain[1] - domain[0]) / this.sequence.length );
       const range = scaleX.range();
-      // return CGV.pixel( (range[1] - range[0]) / this.sequence.length );
-      // return  (range[1] - range[0]) / this.sequence.length;
       return  (range[1] - range[0]) / (scaleX.invert(range[1]) - scaleX.invert(range[0]));
     }
-
-    // backbonePixelLength() {
-    //   return this.scale.x(this.sequence.length) - this.scale.x(1);
-    // }
-
 
     maxMapThickness() {
       return this.viewer.height;
