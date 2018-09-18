@@ -91,14 +91,9 @@
       const {x: centerX2, y: centerY2} = this.pointFor(bp);
 
       // Find differerence in x/y and translate the domains
-      const dx = CGV.pixel(centerX1 - centerX2);
-      const dy = CGV.pixel(centerY2 - centerY1);
-
-      const domainX = this.scale.x.domain();
-      const domainY = this.scale.y.domain();
-
-      this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-      this.scale.y.domain([domainY[0] - dy, domainY[1] - dy]);
+      const dx = centerX1 - centerX2;
+      const dy = centerY2 - centerY1;
+      this.translate(dx, -dy);
     }
 
     translate(dx, dy) {
@@ -143,6 +138,7 @@
       return {x: x, y: y};
     }
 
+    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
     bpForPoint(point) {
       return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
     }

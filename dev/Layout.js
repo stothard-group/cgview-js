@@ -638,6 +638,7 @@
       scale[axis] = d3.scaleLinear()
         .domain([dimension * f1, dimension * f2])
         .range([0, dimension]);
+      // console.log(scale[axis].domain())
     }
 
     // drawProgress() {
