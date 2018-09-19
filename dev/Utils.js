@@ -68,26 +68,28 @@
     }
   };
 
-  /**
-   * Return the pixel ratio. The default is 1.
-   */
-  CGV.pixelRatio = 1;
+  // #<{(|*
+  //  * Return the pixel ratio. The default is 1.
+  //  |)}>#
+  // CGV.pixelRatio = 1;
+  //
+  // #<{(|*
+  //  * Converts provided number of pixels based on pixel ratio which depends on
+  //  * the screen resolution. Typical displays will have a pixel ratio of 1,
+  //  * while retina displays will have a pixel ration of 2.
+  //  *
+  //  * **Important**: Whenever drawing on the canvas, convert the pixels first
+  //  * using this method.
+  //  *
+  //  * @param {Integer} value Number of pixels
+  //  * @return {Intger}
+  //  |)}>#
+  // CGV.pixel = function(px) {
+  //   return px * CGV.pixelRatio;
+  // };
 
-  /**
-   * Converts provided number of pixels based on pixel ratio which depends on
-   * the screen resolution. Typical displays will have a pixel ration of 1,
-   * while retina displays will have a pixel ration of 2.
-   *
-   * **Important**: Whenever drawing on the canvas, convert the pixels first
-   * using this method.
-   *
-   * @param {Integer} value Number of pixels
-   * @return {Intger}
-   */
-  CGV.pixel = function(px) {
-    return px * CGV.pixelRatio;
-  };
-
+  // Returns the pixel ratio of the canvas. Typical displays will have a pixel
+  // ratio of 1, while retina displays will have a pixel ration of 2.
   CGV.getPixelRatio = function(canvas) {
     const context = canvas.getContext('2d');
     //  query the various pixel ratios
@@ -113,6 +115,9 @@
 
       canvas.style.width  = `${oldWidth}px`;
       canvas.style.height = `${oldHeight}px`;
+
+      // Scale/Normalize the canvas coordinate system
+      canvas.getContext('2d').scale(ratio, ratio);
     }
   };
 

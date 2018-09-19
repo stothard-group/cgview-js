@@ -577,7 +577,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
       const halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
 
-      const radius = CGV.pixel(this.backbone.zoomedRadius);
+      const radius = this.backbone.zoomedRadius;
       const radians = this.scale.bp(bp);
       const x = radius * Math.cos(radians);
       const y = -radius * Math.sin(radians);
@@ -623,7 +623,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
-      const radius = CGV.pixel(this.backbone.radius * zoomFactor);
+      const radius = this.backbone.radius * zoomFactor;
       const radians = this.scale.bp(bp);
       const x = bp ? (radius * Math.cos(radians) ) : 0;
       const y = bp ? (-radius * Math.sin(radians) ) : 0;

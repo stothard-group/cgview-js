@@ -135,7 +135,7 @@
         const radius = this._radii[i];
         this._visibleRange = this.canvas.visibleRangeForCenterOffset(radius, 100);
         if (this.visibleRange) {
-          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, CGV.pixel(this.thickness));
+          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, this.thickness);
         }
       }
     }

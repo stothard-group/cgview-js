@@ -105,7 +105,7 @@
      */
     overlap(rectArray) {
       // Gap between labels
-      const widthGap = CGV.pixel(4);
+      const widthGap = 4;
       const r1 = this;
       let overlap = false;
       for (let i = 0, len = rectArray.length; i < len; i++) {

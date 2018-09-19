@@ -448,7 +448,7 @@
       // Divider rings
       viewer.slotDivider.draw();
       // Ruler
-      const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
+      const radiusAdjustment = viewer.slotDivider.visible ? viewer.slotDivider.thickness : 0;
       viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
@@ -549,11 +549,11 @@
       }
       const backbone = viewer.backbone;
       const slotDivider = viewer.slotDivider;
-      const backboneThickness = CGV.pixel(backbone.adjustedThickness);
-      let slotRadius = CGV.pixel(backbone.adjustedCenterOffset);
+      const backboneThickness = backbone.adjustedThickness;
+      let slotRadius = backbone.adjustedCenterOffset;
       let directRadius = slotRadius + (backboneThickness / 2);
       let reverseRadius = slotRadius - (backboneThickness / 2);
-      const spacing = CGV.pixel(slotDivider.spacing);
+      const spacing = slotDivider.spacing;
       let residualSlotThickness = 0;
       let slot;
       slotDivider.clearRadii();
@@ -626,7 +626,7 @@
             {min: minTo, max: maxAllowedProportion});
         }
       }
-      return CGV.pixel(proportionOfRadius * mapThickness);
+      return proportionOfRadius * mapThickness;
     }
 
     // When updating scales because the canvas has been resized, we want to

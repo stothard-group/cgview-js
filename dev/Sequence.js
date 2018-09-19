@@ -442,11 +442,11 @@
       const backbone = this.viewer.backbone;
       const pixelsPerBp = backbone.pixelsPerBp();
       const seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
-      if (pixelsPerBp < CGV.pixel(this.bpSpacing - this.bpMargin) * seqZoomFactor) { return; }
+      if (pixelsPerBp < (this.bpSpacing - this.bpMargin) * seqZoomFactor) { return; }
 
-      const scaleFactor = Math.min(1, pixelsPerBp / CGV.pixel(this.bpSpacing - this.bpMargin));
+      const scaleFactor = Math.min(1, pixelsPerBp / (this.bpSpacing - this.bpMargin));
 
-      const radius = CGV.pixel(backbone.adjustedCenterOffset);
+      const radius = backbone.adjustedCenterOffset;
       const range = backbone.visibleRange;
       let seq, complement;
       if (range) {
@@ -463,7 +463,7 @@
         ctx.font = this.font.cssScaled(scaleFactor);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const radiusDiff = CGV.pixel((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
+        const radiusDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
           let origin = this.canvas.pointFor(bp, radius + radiusDiff);
           if (i == 0) { console.log(bp, origin)}

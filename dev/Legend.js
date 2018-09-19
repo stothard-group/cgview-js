@@ -74,15 +74,14 @@
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
       const margin = 5;
-      const pixelRatio = CGV.pixelRatio;
       let pos;
       let viewerRect = {top: 0, left: 0};
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      const originX = (this.originX / pixelRatio) + viewerRect.left + window.pageXOffset;
-      const originY = (this.originY / pixelRatio) + viewerRect.top + window.pageYOffset;
-      const legendWidth = this.width / pixelRatio;
+      const originX = this.originX + viewerRect.left + window.pageXOffset;
+      const originY = this.originY + viewerRect.top + window.pageYOffset;
+      const legendWidth = this.width;
       if (/-left$/.exec(this.position)) {
         pos = {x: originX + legendWidth + margin, y: originY};
       } else {
@@ -187,7 +186,7 @@
           // Draw box around Swatch depending on state
           swatchX = legendItem.swatchX();
           if (legendItem.swatchSelected || legendItem.swatchHighlighted) {
-            const border = CGV.pixel(2);
+            const border = 2;
             ctx.strokeRect(swatchX - border, y - border, swatchWidth + (border * 2), swatchWidth + (border * 2));
           }
           // Draw Swatch

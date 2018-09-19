@@ -130,8 +130,7 @@
      * @member {number}
      */
     get bpThicknessAddition() {
-      // FIXME: see about getting rid of CGV.pixel
-      return this._bpThicknessAddition / CGV.pixel(1);
+      return this._bpThicknessAddition;
     }
 
     /**
@@ -154,7 +153,7 @@
       // return (this.sequence.length * this.sequence.bpSpacing) / (2 * Math.PI * this.radius);
       // FIXME: 
       // return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.centerOffset);
-      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / this.pixelLength * CGV.pixelRatio;
+      return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / this.pixelLength;
     }
 
     /**
@@ -168,11 +167,11 @@
     }
 
     draw() {
-      this._visibleRange = this.canvas.visibleRangeForCenterOffset( CGV.pixel(this.adjustedCenterOffset), 100);
+      this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
-        this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.adjustedThickness));
-        // console.log('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.zoomedThickness));
+        this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
+        // console.log('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.zoomedThickness);
         if (this.pixelsPerBp() > 1) {
           this.sequence.draw();
         }

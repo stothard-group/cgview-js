@@ -152,14 +152,8 @@
     downloadImage(width, height, filename = 'image.png') {
       const viewer = this._viewer;
       const canvas = viewer.canvas;
-      // width = size || viewer.width;
-      // height = size || viewer.height;
       width = width || viewer.width;
       height = height || viewer.height;
-
-      // Adjust size based on pixel Ratio
-      width = width / CGV.pixelRatio;
-      height = height / CGV.pixelRatio;
 
       // Save current settings
       // let origContext = canvas.ctx;
@@ -169,7 +163,7 @@
 
       // Create new layers and add export layer
       const layerNames = canvas.layerNames.concat(['export']);
-      const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height);
+      const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height, false);
 
       // Calculate scaling factor
       const minNewDimension = d3.min([width, height]);

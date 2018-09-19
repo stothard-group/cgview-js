@@ -98,7 +98,7 @@
           const point = this.pointFor(bp);
           // FIXME: I HATE PIXEL RATIO
           // const dx = scale.x.invert(point.x);
-          const dx = scale.x.invert(point.x) / CGV.pixelRatio;
+          const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
         }
@@ -139,7 +139,7 @@
 
       // Find differerence in x/y and translate the domains
       // FIXME: I HATE PIXEL RATIO
-      const dx = (centerX1 - centerX2) / CGV.pixelRatio;
+      const dx = centerX1 - centerX2;
       const dy = centerY2 - centerY1;
       // console.log(dx, dy)
       this.translate(dx, -dy);
@@ -179,8 +179,6 @@
     translate(dx, dy) {
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
-      dy = CGV.pixel(dy);
-      dx = CGV.pixel(dx);
       // dx = CGV.pixel(Math.round(d3.event.dx / this.backbone.pixelsPerBp()));
       // dx = CGV.pixel(d3.event.dx / this.backbone.pixelsPerBp());
       this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);

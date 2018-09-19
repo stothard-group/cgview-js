@@ -14,9 +14,9 @@
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 12');
       this.labelLineLength = CGV.defaultFor(options.labelLineLength, 20);
       this.priorityMax = CGV.defaultFor(options.priorityMax, 50);
-      this._labelLineMarginInner = CGV.pixel(10);
-      this._labelLineMarginOuter = CGV.pixel(5); // NOT REALLY IMPLEMENTED YET
-      this._labelLineWidth = CGV.pixel(1);
+      this._labelLineMarginInner = 10;
+      this._labelLineMarginOuter = 5; // NOT REALLY IMPLEMENTED YET
+      this._labelLineWidth = 1;
       this.refresh();
       this._visibleLabels = new CGV.CGArray();
       this.color = options.color;
@@ -55,7 +55,7 @@
     }
 
     set labelLineLength(value) {
-      this._labelLineLength = CGV.pixel(value);
+      this._labelLineLength = value;
     }
 
     /**

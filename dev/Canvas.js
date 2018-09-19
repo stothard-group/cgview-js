@@ -27,6 +27,10 @@
       // this.refreshScales();
     }
 
+    get pixelRatio() {
+      return this._pixelRatio;
+    }
+
     determinePixelRatio(container) {
       const testNode = container.append('canvas')
         .style('position',  'absolute')
@@ -38,14 +42,15 @@
       if (testNode.getContext) {
         // Get pixel ratio and upscale canvas depending on screen resolution
         // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-        CGV.pixelRatio = CGV.getPixelRatio(testNode);
+        // CGV.pixelRatio = CGV.getPixelRatio(testNode);
+        this._pixelRatio = CGV.getPixelRatio(testNode);
       } else {
         container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
       }
       d3.select(testNode).remove();
     }
 
-    createLayers(container, layerNames, width, height) {
+    createLayers(container, layerNames, width, height, scaleLayers = true) {
       const layers = {};
 
       for (let i = 0, len = layerNames.length; i < len; i++) {
@@ -58,13 +63,12 @@
           .attr('width', width)
           .attr('height', height).node();
 
-        CGV.scaleResolution(node, CGV.pixelRatio);
+        if (scaleLayers) {
+          CGV.scaleResolution(node, this.pixelRatio);
+        }
 
         // Set viewer context
         const ctx = node.getContext('2d');
-
-        // FIXME: Clean this up
-        // ctx.scale(CGV.pixelRatio, CGV.pixelRatio);
 
         layers[layerName] = { ctx: ctx, node: node };
       }
@@ -178,7 +182,7 @@
     // }
 
     get width() {
-      return CGV.pixel(this._width);
+      return this._width;
     }
 
     set width(width) {
@@ -186,7 +190,7 @@
     }
 
     get height() {
-      return CGV.pixel(this._height);
+      return this._height;
     }
 
     set height(height) {
@@ -448,8 +452,8 @@
     // Return the bp for the mouse position on the canvas
     bpForMouse() {
       const pos = d3.mouse(this.node('ui'));
-      const mx = this.scale.x.invert(CGV.pixel(pos[0]));
-      const my = this.scale.y.invert(CGV.pixel(pos[1]));
+      const mx = this.scale.x.invert(pos[0]);
+      const my = this.scale.y.invert(pos[1]);
       return this.bpForPoint({x: mx, y: my});
     }
 

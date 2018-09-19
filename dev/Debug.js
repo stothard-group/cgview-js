@@ -39,14 +39,12 @@
     //
     // Draws any information in 'data' onto the left side of the viewer
     draw(ctx, x = 10, y = 20) {
-      x = CGV.pixel(x);
-      y = CGV.pixel(y);
       const data = this._data;
       const sections = this._sections;
 
-      ctx.font = `${CGV.pixel(10)}pt Sans-Serif`;
+      ctx.font = '10pt Sans-Serif';
       ctx.fillStyle = 'black';
-      const lineHeight = CGV.pixel(18);
+      const lineHeight = 18;
       ctx.textAlign = 'left';
       // const section_keys = this.debug === true ? Object.keys(data) : this.debug;
       let i = 0;

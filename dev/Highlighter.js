@@ -39,7 +39,6 @@
       this.initializeEvents();
 
       // Set up position constants
-      this._ratio = CGV.pixel(1);
       this._offsetLeft = parseInt(this.viewer._container.style('padding-left')) + 10;
       this._offsetTop = parseInt(this.viewer._container.style('padding-top')) - 20;
     }
@@ -57,8 +56,8 @@
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
       // let viewerRect = this.viewer._container.node().getBoundingClientRect();
-      const originX = (e.canvasX / this._ratio) + viewerRect.left + window.pageXOffset;
-      const originY = (e.canvasY / this._ratio) + viewerRect.top + window.pageYOffset;
+      const originX = e.canvasX + viewerRect.left + window.pageXOffset;
+      const originY = e.canvasY + viewerRect.top + window.pageYOffset;
       return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
     }
 

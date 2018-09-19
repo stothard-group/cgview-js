@@ -87,7 +87,7 @@
      */
     cssScaled(scale) {
       if (scale && scale !== 1) {
-        return `${this._styleAsCss()} ${CGV.pixel(this.size * scale)}px ${this.family}`;
+        return `${this._styleAsCss()} ${this.size * scale}px ${this.family}`;
       } else {
         return this.css;
       }
@@ -185,7 +185,7 @@
      * @member {Number} - Get the font height. This will be the same as the font [size]{@link Font#size}.
      */
     get height() {
-      return CGV.pixel(this.size);
+      return this.size;
     }
 
 
@@ -220,7 +220,7 @@
     }
 
     _generateFont() {
-      this._font = `${this._styleAsCss()} ${CGV.pixel(this.size)}px ${this.family}`;
+      this._font = `${this._styleAsCss()} ${this.size}px ${this.family}`;
       this.trigger('change', this);
     }
 

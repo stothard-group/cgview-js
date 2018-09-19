@@ -73,8 +73,8 @@
 
     _createEvent(d3Event) {
       const scale = this.canvas.scale;
-      const canvasX = CGV.pixel(d3Event.offsetX);
-      const canvasY = CGV.pixel(d3Event.offsetY);
+      const canvasX = d3Event.offsetX;
+      const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);
       const mapY = scale.y.invert(canvasY);
       const radius = Math.sqrt( (mapX * mapX) + (mapY * mapY) );

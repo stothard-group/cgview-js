@@ -24,7 +24,7 @@
     }
 
     backbonePixelLength() {
-      return Math.PI * 2 * CGV.pixel(this.backbone.centerOffset);
+      return Math.PI * 2 * this.backbone.centerOffset;
     }
 
     // NOTES:
@@ -99,8 +99,6 @@
     translate(dx, dy) {
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
-      dx = CGV.pixel(dx);
-      dy = CGV.pixel(dy);
       this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
       this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
     }
@@ -144,7 +142,7 @@
     }
 
     pixelsPerBp() {
-      return CGV.pixel( (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
+      return (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length;
     }
 
     clockPositionForBp(bp, inverse=false) {

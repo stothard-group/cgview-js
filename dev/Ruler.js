@@ -59,7 +59,7 @@
     }
 
     set tickWidth(width) {
-      this._tickWidth = CGV.pixel(width);
+      this._tickWidth = width;
     }
 
     get tickLength() {
@@ -67,7 +67,7 @@
     }
 
     set tickLength(length) {
-      this._tickLength = CGV.pixel(length);
+      this._tickLength = length;
     }
 
     get rulerPadding() {
@@ -75,7 +75,7 @@
     }
 
     set rulerPadding(padding) {
-      this._rulerPadding = CGV.pixel(padding);
+      this._rulerPadding = padding;
     }
 
     // Distance between divider and tick marks
@@ -244,8 +244,8 @@
 
     draw(innerCenterOffset, outerCenterOffset) {
       if (this.visible) {
-        innerCenterOffset -= CGV.pixel(this.spacing);
-        outerCenterOffset += CGV.pixel(this.spacing);
+        innerCenterOffset -= this.spacing;
+        outerCenterOffset += this.spacing;
         this._updateTicks(innerCenterOffset, outerCenterOffset);
         this.drawForCenterOffset(innerCenterOffset, 'inner');
         this.drawForCenterOffset(outerCenterOffset, 'outer', false);
