@@ -220,7 +220,7 @@
     draw(canvas, fast) {
       const slotRadius = this.radius;
       const slotThickness = this.thickness;
-      const range = canvas.visibleRangeForRadius(slotRadius, slotThickness);
+      const range = canvas.visibleRangeForCenterOffset(slotRadius, slotThickness);
       this._visibleRange = range;
       if (range) {
         const start = range.start;

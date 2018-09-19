@@ -168,7 +168,7 @@
     }
 
     draw() {
-      this._visibleRange = this.canvas.visibleRangeForRadius( CGV.pixel(this.adjustedCenterOffset), 100);
+      this._visibleRange = this.canvas.visibleRangeForCenterOffset( CGV.pixel(this.adjustedCenterOffset), 100);
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
         this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, CGV.pixel(this.adjustedCenterOffset), this.color.rgbaString, CGV.pixel(this.adjustedThickness));

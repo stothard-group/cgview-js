@@ -344,9 +344,11 @@
       let seq;
       if (this.seq) {
         if (range.spansOrigin()) {
-          seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
+          // seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
+          seq = this.seq.substring(range.start - 1) + this.seq.substring(0, range.stop);
         } else {
-          seq = this.seq.substr(range.start - 1, range.length + 1);
+          // seq = this.seq.substr(range.start - 1, range.length + 1);
+          seq = this.seq.substring(range.start - 1, range.stop);
         }
       } else {
         // FIXME: For now return fake sequence

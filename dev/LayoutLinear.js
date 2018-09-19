@@ -220,12 +220,17 @@
     }
 
     pixelsPerBp() {
-      const scaleBp = this.scale.bp
+      const scaleBp = this.scale.bp;
       const range = scaleBp.range();
       return  (range[1] - range[0]) / (scaleBp.invert(range[1]) - scaleBp.invert(range[0]));
 
       // return this.scale.bp(1);
     }
+
+    clockPositionForBp(bp, inverse = false) {
+      return inverse ? 6 : 12;
+    }
+
 
     maxMapThickness() {
       return this.viewer.height;

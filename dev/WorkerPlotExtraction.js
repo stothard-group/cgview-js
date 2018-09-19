@@ -139,9 +139,11 @@
     const subSequence = function(seq, start, stop) {
       let subSeq;
       if (stop < start) {
-        subSeq = seq.substr(start - 1) + seq.substr(0, stop);
+        // subSeq = seq.substr(start - 1) + seq.substr(0, stop);
+        subSeq = seq.substring(start - 1) + seq.substring(0, stop);
       } else {
-        subSeq = seq.substr(start - 1, (stop - start));
+        // subSeq = seq.substr(start - 1, (stop - start));
+        subSeq = seq.substring(start - 1, stop);
       }
       return subSeq;
     };

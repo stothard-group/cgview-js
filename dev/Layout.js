@@ -17,7 +17,7 @@
     constructor(viewer) {
       this._viewer = viewer;
 
-      this._tracks = new CGV.CGArray();
+      // this._tracks = new CGV.CGArray();
       this._fastMaxFeatures = 1000;
       // TODO: move to settings
       // this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
@@ -184,6 +184,13 @@
      */
     pixelsPerBp() {
       throw 'Error: "pixelsPerBp" must be overridden in subclass';
+    }
+
+    // Returns the clock position (1-12) for the supplied bp.
+    // For example, the top of the map would be 12, the bottom would be 6 and 
+    // the right side of a circular map will be 3. 
+    clockPositionForBp(bp, inverse=false) {
+      throw 'Error: "clockPositionForBp" must be overridden in subclass';
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -435,31 +442,31 @@
       // Draw Backbone
       backbone.draw();
 
-      // // Recalculate the slot radius and thickness if the zoom level has changed
-      // this.updateLayout();
-      //
-      // // Divider rings
-      // viewer.slotDivider.draw();
-      // // Ruler
-      // const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
-      // viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
-      // // Labels
-      // if (viewer.annotation.visible) {
-      //   viewer.annotation.draw(this.bbInsideOffset, this.bbOutsideOffset);
+      // Recalculate the slot radius and thickness if the zoom level has changed
+      this.updateLayout();
+
+      // Divider rings
+      viewer.slotDivider.draw();
+      // Ruler
+      const radiusAdjustment = viewer.slotDivider.visible ? CGV.pixel(viewer.slotDivider.thickness) : 0;
+      viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
+      // Labels
+      if (viewer.annotation.visible) {
+        viewer.annotation.draw(this.bbInsideOffset, this.bbOutsideOffset);
+      }
+      // Progess
+      this.drawProgress();
+      // Debug
+      // if (viewer.debug) {
+      //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
+      //   viewer.debug.draw(canvas.context('ui'));
       // }
-      // // Progess
-      // this.drawProgress();
-      // // Debug
-      // // if (viewer.debug) {
-      // //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
-      // //   viewer.debug.draw(canvas.context('ui'));
-      // // }
-      // if (canvas._testDrawRange) {
-      //   const ctx = canvas.context('captions');
-      //   ctx.strokeStyle = 'grey';
-      //   ctx.rect(0, 0, canvas.width, canvas.height);
-      //   ctx.stroke();
-      // }
+      if (canvas._testDrawRange) {
+        const ctx = canvas.context('captions');
+        ctx.strokeStyle = 'grey';
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.stroke();
+      }
       // Slots timout
       this._slotIndex = 0;
       if (this._slotTimeoutID) {
@@ -471,7 +478,7 @@
     drawFast() {
       const startTime = new Date().getTime();
       this.drawMapWithoutSlots();
-      // this.drawAllSlots(true);
+      this.drawAllSlots(true);
       // Debug
       if (this.viewer.debug) {
         this.viewer.debug.data.time.fastDraw = CGV.elapsedTime(startTime);
@@ -481,9 +488,9 @@
 
     drawFull() {
       this.drawMapWithoutSlots();
-      // this.drawAllSlots(true);
-      // this._drawFullStartTime = new Date().getTime();
-      // this.drawSlotWithTimeOut(this);
+      this.drawAllSlots(true);
+      this._drawFullStartTime = new Date().getTime();
+      this.drawSlotWithTimeOut(this);
     }
 
     drawExport() {
@@ -497,8 +504,11 @@
 
     drawAllSlots(fast) {
       let track, slot;
-      for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-        track = this._tracks[i];
+      // for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+      //   track = this._tracks[i];
+      const tracks = this.tracks();
+      for (let i = 0, trackLen = tracks.length; i < trackLen; i++) {
+        track = tracks[i];
         if (!track.visible) { continue; }
         for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];
@@ -641,18 +651,21 @@
       // console.log(scale[axis].domain())
     }
 
-    // drawProgress() {
-    //   this.canvas.clear('background');
-    //   let track, slot, progress;
-    //   for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-    //     track = this._tracks[i];
-    //     progress = track.loadProgress;
-    //     for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
-    //       slot = track._slots[j];
-    //       slot.drawProgress(progress);
-    //     }
-    //   }
-    // }
+    drawProgress() {
+      this.canvas.clear('background');
+      let track, slot, progress;
+      // for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
+      //   track = this._tracks[i];
+      const tracks = this.tracks();
+      for (let i = 0, trackLen = tracks.length; i < trackLen; i++) {
+        track = tracks[i];
+        progress = track.loadProgress;
+        for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
+          slot = track._slots[j];
+          slot.drawProgress(progress);
+        }
+      }
+    }
     //
     // moveTrack(oldIndex, newIndex) {
     //   this._tracks.move(oldIndex, newIndex);

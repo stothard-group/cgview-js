@@ -143,7 +143,7 @@
 
     // Below the zoomFactorCutoff, all ticks are calculated for the entire map
     // Above the zoomFactorCutoff, ticks are created for the visible range
-    _updateTicks(innerRadius, outerRadius) {
+    _updateTicks(innerCenterOffset, outerCenterOffset) {
       const zoomFactorCutoff = 5;
       const sequenceLength = this.sequence.length;
       let start = 0;
@@ -160,8 +160,8 @@
         stop = sequenceLength;
       } else {
         tickCount = Math.ceil(tickCount / 2);
-        const innerRange = this.canvas.visibleRangeForRadius(innerRadius);
-        const outerRange = this.canvas.visibleRangeForRadius(outerRadius);
+        const innerRange = this.canvas.visibleRangeForCenterOffset(innerCenterOffset);
+        const outerRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset);
         if (innerRange && outerRange) {
           const mergedRange = innerRange.mergeWithRange(outerRange);
           start = mergedRange.start;
@@ -242,18 +242,18 @@
       this._tickFormater = this._createTickFormatter(majorTickStep);
     }
 
-    draw(innerRadius, outerRadius) {
+    draw(innerCenterOffset, outerCenterOffset) {
       if (this.visible) {
-        innerRadius -= CGV.pixel(this.spacing);
-        outerRadius += CGV.pixel(this.spacing);
-        this._updateTicks(innerRadius, outerRadius);
-        this.drawForRadius(innerRadius, 'inner');
-        this.drawForRadius(outerRadius, 'outer', false);
+        innerCenterOffset -= CGV.pixel(this.spacing);
+        outerCenterOffset += CGV.pixel(this.spacing);
+        this._updateTicks(innerCenterOffset, outerCenterOffset);
+        this.drawForCenterOffset(innerCenterOffset, 'inner');
+        this.drawForCenterOffset(outerCenterOffset, 'outer', false);
       }
     }
 
 
-    drawForRadius(radius, position = 'inner', drawLabels = true) {
+    drawForCenterOffset(centerOffset, position = 'inner', drawLabels = true) {
       const ctx = this.canvas.context('map');
       const tickLength = (position === 'inner') ? -this.tickLength : this.tickLength;
       // ctx.fillStyle = 'black'; // Label Color
@@ -262,31 +262,29 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       // Draw Tick for first bp (Origin)
-      this.canvas.radiantLine('map', 1, radius, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
+      this.canvas.radiantLine('map', 1, centerOffset, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
       // Draw Major ticks
       this.majorTicks.forEach( (bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength, this.tickWidth, this.color.rgbaString, this.lineCap);
+        this.canvas.radiantLine('map', bp, centerOffset, tickLength, this.tickWidth, this.color.rgbaString, this.lineCap);
         if (drawLabels) {
           const label = this.tickFormater(bp);
-          this.drawLabel(bp, label, radius, position);
+          this.drawLabel(bp, label, centerOffset, position);
         }
       });
       // Draw Minor ticks
-      this.minorTicks.forEach( (bp) => {
-        this.canvas.radiantLine('map', bp, radius, tickLength / 2, this.tickWidth, this.color.rgbaString, this.lineCap);
-      });
+      for (const bp of this.minorTicks) {
+        if (bp > this.sequence.length) { break; }
+        this.canvas.radiantLine('map', bp, centerOffset, tickLength / 2, this.tickWidth, this.color.rgbaString, this.lineCap);
+      }
     }
 
-    drawLabel(bp, label, radius, position = 'inner') {
-      const scale = this.canvas.scale;
+    drawLabel(bp, label, centerOffset, position = 'inner') {
       const ctx = this.canvas.context('map');
       // Put space between number and units
-      // let label = label.replace(/([^\d\.]+)/, ' $1bp');
       label = label.replace(/([kM])?$/, ' $1bp');
       // INNER
-      const innerPt = this.canvas.pointFor(bp, radius - this.rulerPadding);
-      const radians = scale.bp(bp);
-      const attachmentPosition = CGV.clockPositionForAngle(radians);
+      const innerPt = this.canvas.pointFor(bp, centerOffset - this.rulerPadding);
+      const attachmentPosition = this.layout.clockPositionForBp(bp);
       const labelWidth = this.font.width(ctx, label);
       const labelPt = CGV.rectOriginForAttachementPoint(innerPt, attachmentPosition, labelWidth, this.font.height);
       ctx.fillText(label, labelPt.x, labelPt.y);

@@ -281,7 +281,7 @@
         this.refresh();
       }
 
-      this._visibleRange = this.canvas.visibleRangeForRadius(directRadius);
+      this._visibleRange = this.canvas.visibleRangeForCenterOffset(directRadius);
 
       this._innerRadius = reverseRadius;
       this._outerRadius = directRadius;

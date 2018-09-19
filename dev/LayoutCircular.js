@@ -147,6 +147,10 @@
       return CGV.pixel( (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
     }
 
+    clockPositionForBp(bp, inverse=false) {
+      const radians = this.scale.bp(bp);
+      return  CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
+    }
 
     maxMapThickness() {
       // FIXME: this will become 1/2 of minDimension

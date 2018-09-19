@@ -62,6 +62,10 @@
 
         // Set viewer context
         const ctx = node.getContext('2d');
+
+        // FIXME: Clean this up
+        // ctx.scale(CGV.pixelRatio, CGV.pixelRatio);
+
         layers[layerName] = { ctx: ctx, node: node };
       }
       return layers;
@@ -463,9 +467,8 @@
 
 
     // TODO if undefined, see if radius is visible
-    // FIXME: change name
-    visibleRangeForRadius(radius, margin = 0) {
-      return this.layout.visibleRangeForCenterOffset(radius, margin);
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
     }
 
     pixelsPerBp(radius) {
