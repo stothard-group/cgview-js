@@ -141,8 +141,8 @@
       return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
     }
 
-    pixelsPerBp() {
-      return (this.backbone.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length;
+    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      return (mapCenterOffset * 2 * Math.PI) / this.sequence.length;
     }
 
     clockPositionForBp(bp, inverse=false) {
@@ -151,8 +151,7 @@
     }
 
     maxMapThickness() {
-      // FIXME: this will become 1/2 of minDimension
-      return this.viewer.minDimension;
+      return this.viewer.minDimension / 2;
     }
 
     _centerVisible() {

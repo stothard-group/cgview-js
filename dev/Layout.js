@@ -182,7 +182,7 @@
      * The number of pixels per basepair along the backbone.
      * @return {Number}
      */
-    pixelsPerBp() {
+    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
       throw 'Error: "pixelsPerBp" must be overridden in subclass';
     }
 
@@ -606,8 +606,12 @@
      */
     _calculateSlotThickness(proportionOfRadius) {
       const viewer = this.viewer;
+
       // FIXME: should not be based on adjustedCenterOffset
-      const mapThickness = Math.min(viewer.backbone.adjustedCenterOffset, this.maxMapThickness());
+      // const mapThickness = Math.min(viewer.backbone.adjustedCenterOffset, this.maxMapThickness());
+      // TEMP
+      const minSize = this.maxMapThickness() / 6 * viewer.zoomFactor;
+      const mapThickness = Math.min(minSize, this.maxMapThickness());
 
       const maxAllowedProportion = this.maxSlotThickness / mapThickness;
       const slotProportionStats = this.slotProportionStats;

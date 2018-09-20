@@ -284,7 +284,7 @@
      * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
      */
     get thickness() {
-      return CGV.pixel((this.bpSpacing * 2) + (this.bpMargin * 4));
+      return (this.bpSpacing * 2) + (this.bpMargin * 8);
     }
 
     get isLinear() {

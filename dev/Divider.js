@@ -59,7 +59,8 @@
      */
     set thickness(value) {
       if (value !== undefined) {
-        this._thickness = Math.round(value);
+        // this._thickness = Math.round(value);
+        this._thickness = value;
         this.viewer.layout._adjustProportions();
       }
     }
@@ -135,7 +136,7 @@
         const radius = this._radii[i];
         this._visibleRange = this.canvas.visibleRangeForCenterOffset(radius, 100);
         if (this.visibleRange) {
-          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, this.thickness);
+          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, this.adjustedThickness);
         }
       }
     }

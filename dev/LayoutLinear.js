@@ -217,7 +217,7 @@
       // return Math.round( point.x );
     }
 
-    pixelsPerBp() {
+    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
       const scaleBp = this.scale.bp;
       const range = scaleBp.range();
       return  (range[1] - range[0]) / (scaleBp.invert(range[1]) - scaleBp.invert(range[0]));
@@ -231,7 +231,7 @@
 
 
     maxMapThickness() {
-      return this.viewer.height;
+      return this.viewer.height / 2;
     }
 
     // TODO if undefined, see if radius is visible
@@ -255,36 +255,37 @@
     }
 
     path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      // FIXME: change canvas to this where appropriate
       const canvas = this.canvas;
       const ctx = canvas.context(layer);
-      // const scale = this.scale;
 
-      // ctx.moveTo(scale.bp(startBp), scale.y(radius));
-      // ctx.lineTo(scale.bp(stopBp), scale.y(radius));
-
-      const p1 = this.pointFor(startBp, radius);
+      // FIXME: have option to round points (could use for divider lines)
       const p2 = this.pointFor(stopBp, radius);
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
+      if (startType === 'lineTo') {
+        const p1 = this.pointFor(startBp, radius);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+      } else if (startType === 'moveTo') {
+        const p1 = this.pointFor(startBp, radius);
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+      } else if (startType === 'noMoveTo') {
+        ctx.lineTo(p2.x, p2.y);
+      }
 
-      // Features less than 1000th the length of the sequence are drawn as straight lines
-      // const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
-      // if ( rangeLength < (canvas.sequence.length / 1000)) {
-      //   const p2 = this.pointFor(stopBp, radius);
-      //   if (startType === 'lineTo') {
-      //     const p1 = this.pointFor(startBp, radius);
-      //     ctx.lineTo(p1.x, p1.y);
-      //     ctx.lineTo(p2.x, p2.y);
-      //   } else if (startType === 'moveTo') {
-      //     const p1 = this.pointFor(startBp, radius);
-      //     ctx.moveTo(p1.x, p1.y);
-      //     ctx.lineTo(p2.x, p2.y);
-      //   } else if (startType === 'noMoveTo') {
-      //     ctx.lineTo(p2.x, p2.y);
-      //   }
-      // } else {
-      //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      // const p2 = this.pointFor(stopBp, radius);
+      // p2.y = Math.round(p2.y);
+      // if (startType === 'lineTo') {
+      //   const p1 = this.pointFor(startBp, radius);
+      //   p1.y = Math.round(p1.y);
+      //   ctx.lineTo(p1.x, p1.y);
+      //   ctx.lineTo(p2.x, p2.y);
+      // } else if (startType === 'moveTo') {
+      //   const p1 = this.pointFor(startBp, radius);
+      //   p1.y = Math.round(p1.y);
+      //   ctx.moveTo(p1.x, p1.y);
+      //   ctx.lineTo(p2.x, p2.y);
+      // } else if (startType === 'noMoveTo') {
+      //   ctx.lineTo(p2.x, p2.y);
       // }
     }
 

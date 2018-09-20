@@ -8,8 +8,6 @@
      * - Adds several layers (canvases) for drawing
      * - Contains the x, y, bp scales
      * - has methods for for determining visible regions of the circle at a particular radius
-     * NOTE: anything drawn to the canvas must take the pixel ratio into account
-     *       and should use the CGV.pixel() method.
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
     constructor(viewer, container, options = {}) {
@@ -69,6 +67,9 @@
 
         // Set viewer context
         const ctx = node.getContext('2d');
+
+        // Consider this to help make linear horizontal lines cleaner
+        ctx.translate(0.5, 0.5);
 
         layers[layerName] = { ctx: ctx, node: node };
       }
@@ -475,8 +476,9 @@
       return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
     }
 
-    pixelsPerBp(radius) {
-      return ( (radius * 2 * Math.PI) / this.sequence.length );
+    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      return this.layout.pixelsPerBp(mapCenterOffset)
+      // return ( (radius * 2 * Math.PI) / this.sequence.length );
     }
 
     /**
