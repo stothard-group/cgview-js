@@ -9,7 +9,9 @@
       this.name = options.name;
       this.bp = this.feature.start + (this.feature.length / 2);
       this.bpDefault = this.bp;
-      this.lineAttachmentDefault = CGV.clockPositionForAngle(this.feature.canvas.scale.bp(this.bp) + Math.PI);
+      // this.lineAttachmentDefault = CGV.clockPositionForAngle(this.feature.canvas.scale.bp(this.bp) + Math.PI);
+      
+      // this.lineAttachmentDefault = this.viewer.layout.clockPositionForBp(this.bp);
     }
 
     /**
@@ -79,11 +81,19 @@
     // }
 
     /**
+     * @member {Number} - Get the default attachment point
+     */
+    get lineAttachmentDefault() {
+      // FIXME: This may be slow. Consider calculating when ever the scales change???
+      return this.viewer.layout.clockPositionForBp(this.bp, true);
+    }
+
+    /**
      * @member {Number} - Get or set the label attachment point. This number represents where on the label
      *                    the label lines attaches in term of a hand on a clock. (e.g. 12 would be top middle of label)
      */
     get lineAttachment() {
-      return this._lineAttachment;
+      return this._lineAttachment || this.lineAttachmentDefault;
     }
 
     set lineAttachment(value) {

@@ -170,6 +170,7 @@
         if (containsStart && containsStop) {
           label.bp = label.bpDefault;
           label.lineAttachment = label.lineAttachmentDefault;
+          // console.log(label.lineAttachment)
         } else {
           if (containsStart) {
             label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
@@ -189,8 +190,10 @@
           // Calculate where the label line should attach to Label.
           // The attachemnt point should be the opposite clock position of the feature.
           // This might need to be recalculated of the label has moved alot
-          radians = scale.bp(label.bp);
-          label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
+          // radians = scale.bp(label.bp);
+          // label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
+          label.lineAttachment = this.viewer.layout.clockPositionForBp(label.bp, true);
+          console.log(label.lineAttachment)
         }
       }
     }
@@ -329,6 +332,7 @@
         //   this.labelLineLength + this._labelLineMarginOuter,
         // this._labelLineWidth, color.rgbaString, this.lineCap);
         const innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
+        // console.log(label.attachementPt)
         const outerPt = label.attachementPt;
         ctx.beginPath();
         ctx.moveTo(innerPt.x, innerPt.y);

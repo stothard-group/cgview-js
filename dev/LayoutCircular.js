@@ -147,7 +147,7 @@
 
     clockPositionForBp(bp, inverse=false) {
       const radians = this.scale.bp(bp);
-      return  CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
+      return CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
     }
 
     maxMapThickness() {
