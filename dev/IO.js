@@ -92,6 +92,7 @@
 
       // Reset arrays
       viewer._features = new CGV.CGArray();
+      viewer._tracks = new CGV.CGArray();
       viewer._plots = new CGV.CGArray();
       viewer._captions = new CGV.CGArray();
 

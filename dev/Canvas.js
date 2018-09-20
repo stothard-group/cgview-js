@@ -69,7 +69,7 @@
         const ctx = node.getContext('2d');
 
         // Consider this to help make linear horizontal lines cleaner
-        ctx.translate(0.5, 0.5);
+        // ctx.translate(0.5, 0.5);
 
         layers[layerName] = { ctx: ctx, node: node };
       }
@@ -477,7 +477,7 @@
     }
 
     pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      return this.layout.pixelsPerBp(mapCenterOffset)
+      return this.layout.pixelsPerBp(mapCenterOffset);
       // return ( (radius * 2 * Math.PI) / this.sequence.length );
     }
 

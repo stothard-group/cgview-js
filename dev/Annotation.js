@@ -193,7 +193,6 @@
           // radians = scale.bp(label.bp);
           // label.lineAttachment = CGV.clockPositionForAngle(radians + Math.PI);
           label.lineAttachment = this.viewer.layout.clockPositionForBp(label.bp, true);
-          console.log(label.lineAttachment)
         }
       }
     }

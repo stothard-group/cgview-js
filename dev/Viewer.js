@@ -555,6 +555,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} duration - The animation duration in milliseconds [Default: 1000]
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
+    // FIXME: add callback like zoomTo
     moveTo(start, stop, duration = 1000, ease) {
       if (stop) {
         const bpLength = this.sequence.lengthOfRange(start, stop);
@@ -623,7 +624,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
-      const radius = this.backbone.radius * zoomFactor;
+      const radius = this.backbone.centerOffset * zoomFactor;
       const radians = this.scale.bp(bp);
       const x = bp ? (radius * Math.cos(radians) ) : 0;
       const y = bp ? (-radius * Math.sin(radians) ) : 0;
