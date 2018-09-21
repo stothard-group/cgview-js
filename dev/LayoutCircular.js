@@ -136,6 +136,34 @@
       return {x: x, y: y};
     }
 
+    // Return point on Circle Coordinates.
+    // mapCenterOffset is the radius for circular maps
+    // FIXME: needs better names
+    pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const radians = this.scale.bp(bp);
+      const x = mapCenterOffset * Math.cos(radians);
+      const y = -mapCenterOffset * Math.sin(radians);
+      return {x: x, y: y};
+    }
+
+    // Return the X and Y domains for a bp and zoomFactor
+    domainsFor(bp, zoomFactor) {
+      const halfRangeWidth = this.scale.x.range()[1] / 2;
+      const halfRangeHeight = this.scale.y.range()[1] / 2;
+
+      const centerOffset = this.backbone.centerOffset * zoomFactor;
+      const centerPt = this.pointFor2(bp, centerOffset);
+
+      const x = bp ? centerPt.x : 0;
+      const y = bp ? centerPt.y : 0;
+
+      return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
+    }
+
+    // Zoom Factor does not affect circular bp scale
+    adjustBpScale(zoomFactor) {
+    }
+
     // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
     bpForPoint(point) {
       return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );

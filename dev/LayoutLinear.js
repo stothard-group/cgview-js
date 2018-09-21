@@ -77,10 +77,11 @@
       // BP Scale
 
       // const rangeHalfWidth = Math.round(canvas.width * this.viewer.zoomFactor / 2);
-      const rangeHalfWidth = canvas.width * this.viewer.zoomFactor / 2;
+      // const rangeHalfWidth = canvas.width * this.viewer.zoomFactor / 2;
       scale.bp = d3.scaleLinear()
-        .domain([1, this.sequence.length])
-        .range([-rangeHalfWidth, rangeHalfWidth]);
+        .domain([1, this.sequence.length]);
+      this.adjustBpScale();
+        // .range([-rangeHalfWidth, rangeHalfWidth]);
         // .range([0, 2*rangeHalfWidth]);
       this.viewer._updateZoomMax();
 
@@ -96,8 +97,6 @@
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
           // Get point for bp and backbone radius (NOTE: bp scale must be set first)
           const point = this.pointFor(bp);
-          // FIXME: I HATE PIXEL RATIO
-          // const dx = scale.x.invert(point.x);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
@@ -113,8 +112,6 @@
     // The default bp will be based on the center of the canvas.
     // FIXME: constrain zoomFactor
     zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
-
-
       // Center of zoom before zooming
       const {x: centerX1, y: centerY1} = this.pointFor(bp);
 
@@ -128,8 +125,9 @@
 
       // Update the BP scale
       // const rangeHalfWidth = Math.round(this.canvas.width * this.viewer.zoomFactor / 2);
-      const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
-      this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
+      // const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
+      // this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
+      this.adjustBpScale();
 
       // Center of zoom after zooming
       // pointFor is on the backbone by default
@@ -138,7 +136,6 @@
 
 
       // Find differerence in x/y and translate the domains
-      // FIXME: I HATE PIXEL RATIO
       const dx = centerX1 - centerX2;
       const dy = centerY2 - centerY1;
       // console.log(dx, dy)
@@ -202,6 +199,41 @@
       // const x = this.scale.x(pixelOffset);
       // const y = this.scale.y(mapCenterOffset);
       // return {x: x, y: y};
+    }
+
+    // Return point on Circle Coordinates.
+    // mapCenterOffset is the radius for circular maps
+    // FIXME: needs better names
+    pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const x = this.scale.bp(bp);
+      const y = mapCenterOffset;
+      return {x: x, y: y};
+    }
+
+    // Return the X and Y domains for a bp and zoomFactor
+    domainsFor(bp, zoomFactor) {
+      const halfRangeWidth = this.scale.x.range()[1] / 2;
+      const halfRangeHeight = this.scale.y.range()[1] / 2;
+
+
+      // The correct pointFor2 requies the bp scale be first altered for the zoom level
+      const origScaleBp = this.scale.bp.copy();
+
+      const rangeHalfWidth2 = this.canvas.width * zoomFactor / 2;
+      this.scale.bp.range([-rangeHalfWidth2, rangeHalfWidth2]);
+
+      const centerPt = this.pointFor2(bp);
+      // Return to the original scale
+      this.scale.bp = origScaleBp;
+      const x = bp ? centerPt.x : 0;
+      const y = bp ? centerPt.y : 0;
+
+      return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
+    }
+
+    adjustBpScale(zoomFactor = this.viewer.zoomFactor) {
+      const rangeHalfWidth = this.canvas.width * zoomFactor / 2;
+      this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
     }
 
     // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
