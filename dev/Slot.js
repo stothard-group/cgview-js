@@ -148,6 +148,7 @@
      * @return {Number}
      */
     pixelsPerBp() {
+      // FIXME: use layout.pixelsPerBp
       return (this.radius * 2 * Math.PI) / this.sequence.length;
     }
 
