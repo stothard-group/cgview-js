@@ -454,14 +454,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.messenger.flash(msg);
     }
 
-    // #<{(|*
-    //  * Return the maximum radius to use for calculating slot thickness when zoomed
-    //  * @return {Number}
-    //  |)}>#
-    // maxZoomedRadius() {
-    //   return this.minDimension;
-    // }
-
     fillBackground() {
       this.clear('background');
     }
@@ -555,36 +547,27 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Number} duration - The animation duration in milliseconds [Default: 1000]
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
-    // FIXME: add callback like zoomTo
-    moveTo(start, stop, duration = 1000, ease) {
+    moveTo(start, stop, duration = 1000, ease, callback) {
       if (stop) {
         const bpLength = this.sequence.lengthOfRange(start, stop);
         const bp = this.sequence.addBp(start, bpLength / 2);
-        // Use viewer width as estimation arc length
-        const arcLength = this.width;
-        const zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
-        const zoomFactor = zoomedRadius / this.backbone.radius;
-        this.zoomTo(bp, zoomFactor, duration, ease);
+
+        const zoomFactor = this.layout.zoomFactorForLength(bpLength);
+
+        this.zoomTo(bp, zoomFactor, duration, ease, callback);
       } else {
-        this._moveTo(start, duration, ease);
+        this._moveTo(start, duration, ease, callback);
       }
     }
 
-    _moveTo(bp, duration = 1000, ease) {
+    _moveTo(bp, duration = 1000, ease = d3.easeCubic, callback) {
       const self = this;
-      ease = ease || d3.easeCubic;
+
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
-      const halfWidth = Math.abs(domainX[1] - domainX[0]) / 2;
-      const halfHeight = Math.abs(domainY[1] - domainY[0]) / 2;
-
-      const radius = this.backbone.zoomedRadius;
-      const radians = this.scale.bp(bp);
-      const x = radius * Math.cos(radians);
-      const y = -radius * Math.sin(radians);
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = [ x - halfWidth, x + halfWidth, y + halfHeight, y - halfHeight];
+      const endDomains = this.layout.domainsFor(bp);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
@@ -597,7 +580,7 @@ if (window.CGV === undefined) window.CGV = CGView;
             self.drawFast();
           };
         }).on('end', function() {
-          self.drawFull();
+          callback ? callback.call() : self.drawFull();
         });
     }
 
@@ -632,10 +615,10 @@ if (window.CGV === undefined) window.CGV = CGView;
             self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
             self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
             self._zoomFactor = intermZoomFactors(t);
+            d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
 
             self.layout.adjustBpScale();
 
-            d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
             self.trigger('zoom');
             self.drawFast();
           };
@@ -646,58 +629,6 @@ if (window.CGV === undefined) window.CGV = CGView;
           callback ? callback.call() : self.drawFull();
         });
     }
-    // zoomTo(bp, zoomFactor, duration = 1000, ease = d3.easeCubic, callback) {
-    //   const self = this;
-    //
-    //   const zoomExtent = self._zoom.scaleExtent();
-    //   zoomFactor = CGV.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
-    //
-    //   // Current Domains
-    //   const domainX = this.scale.x.domain();
-    //   const domainY = this.scale.y.domain();
-    //
-    //   // Get range
-    //   const halfRangeWidth = this.scale.x.range()[1] / 2;
-    //   const halfRangeHeight = this.scale.y.range()[1] / 2;
-    //
-    //   // const radius = this.backbone.centerOffset * zoomFactor;
-    //   // const radians = this.scale.bp(bp);
-    //   // const x = bp ? (radius * Math.cos(radians) ) : 0;
-    //   // const y = bp ? (-radius * Math.sin(radians) ) : 0;
-    //
-    //   const centerOffset = this.backbone.centerOffset * zoomFactor;
-    //   // const centerOffset = (this.layout.type === 'circular') ?
-    //   //   this.backbone.centerOffset * zoomFactor :
-    //   //   this.backbone.centerOffset;
-    //   //
-    //   const centerPt = this.layout.pointFor2(bp, centerOffset)
-    //   const x = bp ? centerPt.x : 0;
-    //   const y = bp ? centerPt.y : 0;
-    //
-    //   const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-    //   const endDomains = [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
-    //
-    //   d3.select(this.canvas.node('ui')).transition()
-    //     .duration(duration)
-    //     .ease(ease)
-    //     .tween('move', function() {
-    //       const intermDomains = d3.interpolateArray(startDomains, endDomains);
-    //       const intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
-    //       return function(t) {
-    //         self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
-    //         self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
-    //         self._zoomFactor = intermZoomFactors(t);
-    //         d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
-    //         self.trigger('zoom');
-    //         self.drawFast();
-    //       };
-    //     }).on('start', function() {
-    //       self.trigger('zoom-start');
-    //     }).on('end', function() {
-    //       self.trigger('zoom-end');
-    //       callback ? callback.call() : self.drawFull();
-    //     });
-    // }
 
     /*
      * Set zoom level to 1 and centers map

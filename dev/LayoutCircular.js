@@ -147,7 +147,7 @@
     }
 
     // Return the X and Y domains for a bp and zoomFactor
-    domainsFor(bp, zoomFactor) {
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
@@ -171,6 +171,13 @@
 
     pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
       return (mapCenterOffset * 2 * Math.PI) / this.sequence.length;
+    }
+
+    zoomFactorForLength(bpLength) {
+      // Use viewer width as estimation arc length
+      const arcLength = this.viewer.width;
+      const zoomedRadius = arcLength / (bpLength / this.sequence.length * Math.PI * 2);
+      return zoomedRadius / this.backbone.centerOffset;
     }
 
     clockPositionForBp(bp, inverse=false) {

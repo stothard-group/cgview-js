@@ -211,7 +211,7 @@
     }
 
     // Return the X and Y domains for a bp and zoomFactor
-    domainsFor(bp, zoomFactor) {
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
@@ -253,8 +253,10 @@
       const scaleBp = this.scale.bp;
       const range = scaleBp.range();
       return  (range[1] - range[0]) / (scaleBp.invert(range[1]) - scaleBp.invert(range[0]));
+    }
 
-      // return this.scale.bp(1);
+    zoomFactorForLength(bpLength) {
+      return this.sequence.length / bpLength;
     }
 
     clockPositionForBp(bp, inverse = false) {
