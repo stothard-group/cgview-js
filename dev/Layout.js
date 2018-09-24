@@ -556,7 +556,7 @@
       const spacing = slotDivider.spacing;
       let residualSlotThickness = 0;
       let slot;
-      slotDivider.clearRadii();
+      slotDivider.clearBbOffsets();
       const visibleSlots = this.visibleSlots();
       this._slotLength = visibleSlots.length;
       for (let i = 0, len = visibleSlots.length; i < len; i++) {
@@ -588,7 +588,7 @@
           reverseRadius -= residualSlotThickness + spacingAndDividerThickness;
           slotRadius = reverseRadius;
         }
-        slotDivider.addRadius(slotRadius);
+        slotDivider.addBbOffset(slotRadius);
         residualSlotThickness = dividerThickness / 2;
       }
       this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;

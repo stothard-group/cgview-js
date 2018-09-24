@@ -19,7 +19,7 @@
       this.color = CGV.defaultFor(options.color, 'grey');
       this._thickness = CGV.defaultFor(options.thickness, 1);
       this._spacing = CGV.defaultFor(options.spacing, 1);
-      this.radii = new CGV.CGArray();
+      this._bbOffsets = new CGV.CGArray();
     }
 
     /**
@@ -102,16 +102,16 @@
     }
 
     /**
-     * @member {Number} - Set or get the array of divider radii.
+     * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
      */
-    set radii(value) {
+    set bbOffsets(value) {
       if (value && value.toString() === 'CGArray') {
-        this._radii = value;
+        this._bbOffsets = value;
       }
     }
 
-    get radii() {
-      return this._radii;
+    get bbOffsets() {
+      return this._bbOffsets;
     }
 
     /**
@@ -122,21 +122,21 @@
       return this._visibleRange;
     }
 
-    clearRadii() {
-      this.radii = new CGV.CGArray();
+    clearBbOffsets() {
+      this.bbOffsets = new CGV.CGArray();
     }
 
-    addRadius(radius) {
-      this._radii.push(radius);
+    addBbOffset(bbOffset) {
+      this._bbOffsets.push(bbOffset);
     }
 
     draw() {
       if (!this.visible || this.thickness === 0) { return; }
-      for (let i = 0, len = this._radii.length; i < len; i++) {
-        const radius = this._radii[i];
-        this._visibleRange = this.canvas.visibleRangeForCenterOffset(radius, 100);
+      for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
+        const bbOffset = this._bbOffsets[i];
+        this._visibleRange = this.canvas.visibleRangeForCenterOffset(bbOffset, 100);
         if (this.visibleRange) {
-          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, radius, this.color.rgbaString, this.adjustedThickness);
+          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
         }
       }
     }

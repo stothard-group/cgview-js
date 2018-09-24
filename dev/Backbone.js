@@ -113,6 +113,7 @@
       if (!this.visible) { return 0; }
       // FIXME: need to calculate the max zoom level for changing backbone thickness
       //        - should depend on the zoomFactor to at which pont the map thickness is at the maximum?
+      //        - Used to depend on the maxZoomedRadius which was set to minDimension
       //        - for now set to 4
       return (Math.min(this.viewer.zoomFactor, 4) * this.thickness) + this.bpThicknessAddition;
     }
