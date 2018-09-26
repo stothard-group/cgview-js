@@ -18,7 +18,6 @@
       this._strand = CGV.defaultFor(data.strand, 'direct');
       this._features = new CGV.CGArray();
       this._plot;
-      // this.proportionOfMap = CGV.defaultFor(data.proportionOfRadius, 0.1);
       this.refresh();
     }
 
@@ -82,7 +81,7 @@
     }
 
     /**
-     * @member {Viewer} - Get or set the track size as a proportion of the backbone radius.
+     * @member {Viewer} - Get or set the track size as a proportion of the map thickness 
      */
     get proportionOfMap() {
       return this._proportionOfMap;
@@ -100,10 +99,17 @@
     }
 
     /**
-     * @member {Number} - Get the current radius of the slot.
+     * @member {Number} - Get the current offset of the center of the slot from the backbone.
      */
-    get radius() {
-      return this._radius;
+    get bbOffset() {
+      return this._bbOffset;
+    }
+
+    /**
+     * @member {Number} - Get the current center offset of the center of the slot.
+     */
+    get centerOffset() {
+      return this.bbOffset + this.viewer.backbone.adjustedCenterOffset;
     }
 
     /**
@@ -149,7 +155,7 @@
      */
     pixelsPerBp() {
       // FIXME: use layout.pixelsPerBp
-      return (this.radius * 2 * Math.PI) / this.sequence.length;
+      return (this.centerOffset * 2 * Math.PI) / this.sequence.length;
     }
 
     // Refresh needs to be called when new features are added, etc
@@ -170,9 +176,9 @@
      * @param {Number} radius - The radius.
      * @return {Boolean}
      */
-    containsRadius(radius) {
+    containsCenterOffset(offset) {
       const halfthickness = this.thickness / 2;
-      return (radius >= (this.radius - halfthickness)) && (radius <= (this.radius + halfthickness));
+      return (offset >= (this.centerOffset - halfthickness)) && (offset <= (this.centerOffset + halfthickness));
     }
 
     /**
@@ -199,11 +205,11 @@
     clear() {
       const range = this._visibleRange;
       if (range) {
-        const slotRadius = this.radius;
+        const centerOffset = this.centerOffset;
         const slotThickness = this.thickness;
         const ctx = this.canvas.context('map');
         ctx.globalCompositeOperation = 'destination-out'; // The existing content is kept where it doesn't overlap the new shape.
-        this.canvas.drawArc('map', range.start, range.stop, slotRadius, 'white', slotThickness);
+        this.canvas.drawArc('map', range.start, range.stop, centerOffset, 'white', slotThickness);
         ctx.globalCompositeOperation = 'source-over'; // Default
       }
     }
@@ -211,17 +217,17 @@
     highlight(color = '#FFB') {
       const range = this._visibleRange;
       if (range && this.visible) {
-        const slotRadius = this.radius;
+        const centerOffset = this.centerOffset;
         const slotThickness = this.thickness;
-        this.canvas.drawArc('background', range.start, range.stop, slotRadius, color, slotThickness);
+        this.canvas.drawArc('background', range.start, range.stop, centerOffset, color, slotThickness);
       }
     }
 
     // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
-      const slotRadius = this.radius;
+      const slotCenterOffset = this.centerOffset;
       const slotThickness = this.thickness;
-      const range = canvas.visibleRangeForCenterOffset(slotRadius, slotThickness);
+      const range = canvas.visibleRangeForCenterOffset(slotCenterOffset, slotThickness);
       this._visibleRange = range;
       if (range) {
         const start = range.start;
@@ -247,7 +253,7 @@
           if (this.viewer.settings.showShading && this.isDirect()) { step *= -1; }
           // Draw Features
           this._featureNCList.run(start, stop, step, (feature) => {
-            feature.draw('map', slotRadius, slotThickness, range, {showShading: showShading});
+            feature.draw('map', slotCenterOffset, slotThickness, range, {showShading: showShading});
           });
 
           // Debug
@@ -256,20 +262,20 @@
             this.viewer.debug.data.n[`slot_${index}`] = featureCount;
           }
         } else if (this.hasPlot) {
-          this._plot.draw(canvas, slotRadius, slotThickness, fast, range);
+          this._plot.draw(canvas, slotCenterOffset, slotThickness, fast, range);
         }
       }
     }
 
     drawProgress(progress) {
       const canvas = this.canvas;
-      const slotRadius = this.radius;
+      const centerOffset = this.centerOffset;
       const slotThickness = this.thickness;
       const range = this._visibleRange;
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
         const thickness = slotThickness * progress / 100;
-        canvas.drawArc('background', range.start, range.stop, slotRadius, '#EAEAEE', thickness, 'arc', false);
+        canvas.drawArc('background', range.start, range.stop, centerOffset, '#EAEAEE', thickness, 'arc', false);
       }
     }
 

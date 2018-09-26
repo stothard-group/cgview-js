@@ -78,7 +78,7 @@
       const mapX = scale.x.invert(canvasX);
       const mapY = scale.y.invert(canvasY);
       const radius = Math.sqrt( (mapX * mapX) + (mapY * mapY) );
-      const slot = this.viewer.layout.slotForRadius(radius);
+      const slot = this.viewer.layout.slotForCenterOffset(radius);
       const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
       const feature = slot && slot.findFeaturesForBp(bp)[0];
       const plot = slot && slot._plot;

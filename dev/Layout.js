@@ -119,6 +119,18 @@
       return this._bbOutsideOffset;
     }
 
+    /** * @member {Number} - Get the distance from the center of the map to the inner/bottom edge of the map.
+     */
+    get centerInsideOffset() {
+      return this._bbInsideOffset + this.backbone.adjustedCenterOffset;
+    }
+
+    /** * @member {Number} - Get the distance from the center of the map to the outer/top edge of the map.
+     */
+    get centerOutsideOffset() {
+      return this._bbOutsideOffset + this.backbone.adjustedCenterOffset;
+    }
+
     /** * @member {Number} - Get an object with stats about slot thickness ratios.
      */
     get slotThicknessRatioStats() {
@@ -338,10 +350,10 @@
     }
 
     /**
-     * Calculate the backbone radius and slot proportions based on the Viewer size and
+     * Calculate the backbone centerOffset and slot proportions based on the Viewer size and
      * the number of slots.
      */
-    _adjustProportions() { // NEW
+    _adjustProportions() {
       const viewer = this.viewer;
       if (!viewer._initialized) { return; }
       const backbone = viewer.backbone;
@@ -368,16 +380,6 @@
       // The sum of the thickness ratios
       const thicknessRatioSum = this.slotThicknessRatioStats.sum;
 
-      // console.log({
-      //   workingSpace: workingSpace,
-      //   minSpace: minSpace,
-      //   thicknessScaleFactor: thicknessScaleFactor,
-      //   nonSlotSpace: nonSlotSpace,
-      //   slotSpace: slotSpace,
-      //   // thicknessRatios: thicknessRatios,
-      //   thicknessRatioSum: thicknessRatioSum
-      // });
-
       const outsideSlots = this.visibleSlots().filter( (t) => { return t.outside; });
       let outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
       outsideSlots.forEach( (slot) => {
@@ -388,49 +390,63 @@
       const backboneRadius = maxOuterRadius - outsideThickness - (backbone.thickness / 2);
       // viewer.backbone.radius = backboneRadius;
       // viewer.backbone.centerOffset = backboneRadius;
-      this.updateBackboneOffset(workingSpace, outsideThickness);
+      // this.updateBackboneOffset(workingSpace, outsideThickness);
+
+      const insideSlots = this.visibleSlots().filter( (t) => { return t.inside; });
+      let insideThickness = this._nonSlotSpace(visibleSlots, 'inside');
+      insideSlots.forEach( (slot) => {
+        const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
+        insideThickness += slotThickness;
+      });
+
+      this.updateInitialBackboneCenterOffset(insideThickness, outsideThickness);
+
       // Update slot thick proportions
       this.visibleSlots().each( (i, slot) => {
         const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
-        slot.proportionOfRadius = slotThickness / backboneRadius;
+        // slot.proportionOfMap = slotThickness / backboneRadius;
+        slot.proportionOfMap = slotThickness / slotSpace;
       });
       this._updateSlotProportionStats(visibleSlots);
 
-      // NOTE:
-      // - Also calculate the maxSpace
-      //   - then convert to proportion of radius [maxSpaceProportion]
-      //   - then use the min(maxSpaceProportion and calculated proportion [slot.thicknessRation / sum slot.thicknessRatio ]
-      //   - then assign proportionOfRadius to each slot
-      //     - calculated proportion / the min (from above)
-      //     - could use scaler here
-      // - or drawing slots, dividers, etc should use layout.scaleFactor when drawing
 
       this.updateLayout(true);
     }
+    // NOTE:
+    // - Also calculate the maxSpace
+    //   - then convert to proportion of radius [maxSpaceProportion]
+    //   - then use the min(maxSpaceProportion and calculated proportion [slot.thicknessRation / sum slot.thicknessRatio ]
+    //   - then assign proportionOfRadius to each slot
+    //     - calculated proportion / the min (from above)
+    //     - could use scaler here
+    // - or drawing slots, dividers, etc should use layout.scaleFactor when drawing
+    // console.log({
+    //   workingSpace: workingSpace,
+    //   minSpace: minSpace,
+    //   thicknessScaleFactor: thicknessScaleFactor,
+    //   nonSlotSpace: nonSlotSpace,
+    //   slotSpace: slotSpace,
+    //   // thicknessRatios: thicknessRatios,
+    //   thicknessRatioSum: thicknessRatioSum
+    // });
 
     tracks(term) {
-      // return this._tracks.get(term);
       return this.viewer.tracks(term);
     }
 
     slots(term) {
       return this.viewer.slots(term);
-      // let slots = new CGV.CGArray();
-      // for (let i = 0, len = this._tracks.length; i < len; i++) {
-      //   slots = slots.concat(this._tracks[i]._slots);
-      // }
-      // return slots.get(term);
     }
 
     visibleSlots(term) {
       return this.slots().filter( s => s.visible && s.track.visible ).get(term);
     }
 
-    slotForRadius(radius) {
+    slotForCenterOffset(offset) {
       const slots = this.visibleSlots();
       let slot;
       for (let i = 0, len = slots.length; i < len; i++) {
-        if (slots[i].containsRadius(radius)) {
+        if (slots[i].containsCenterOffset(offset)) {
           slot = slots[i];
           break;
         }
@@ -474,6 +490,8 @@
       this._adjustProportions();
     }
 
+    // Draw everyting but the slots and thier features.
+    // e.g. draws backbone, dividers, ruler, labels, progress
     drawMapWithoutSlots() {
       const viewer = this.viewer;
       const backbone = viewer.backbone;
@@ -494,33 +512,28 @@
       // Draw Backbone
       backbone.draw();
 
-      // Recalculate the slot radius and thickness if the zoom level has changed
+      // Recalculate the slot offsets and thickness if the zoom level has changed
       this.updateLayout();
 
       // Divider rings
-      // viewer.slotDivider.draw();
       viewer.dividers.draw();
       // Ruler
-      // const radiusAdjustment = viewer.slotDivider.visible ? viewer.slotDivider.thickness : 0;
-      const radiusAdjustment = viewer.dividers.track.adjustedThickness;
-      viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
+      const rulerOffsetAdjustment = viewer.dividers.track.adjustedThickness;
+      viewer.ruler.draw(this.centerInsideOffset - rulerOffsetAdjustment, this.centerOutsideOffset + rulerOffsetAdjustment);
       // Labels
       if (viewer.annotation.visible) {
-        viewer.annotation.draw(this.bbInsideOffset, this.bbOutsideOffset);
+        viewer.annotation.draw(this.centerInsideOffset, this.centerOutsideOffset);
       }
       // Progess
       this.drawProgress();
-      // Debug
-      // if (viewer.debug) {
-      //   viewer.debug.data.time['fastDraw'] = CGV.elapsedTime(startTime);
-      //   viewer.debug.draw(canvas.context('ui'));
-      // }
+
       if (canvas._testDrawRange) {
         const ctx = canvas.context('captions');
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.stroke();
       }
+
       // Slots timout
       this._slotIndex = 0;
       if (this._slotTimeoutID) {
@@ -620,7 +633,7 @@
     //     // Slots and Dividers
     //     // Calculate Slot dimensions
     //     // The slotRadius is the radius at the center of the slot
-    //     const slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+    //     const slotThickness = this._calculateSlotThickness(slot.proportionOfMap);
     //     slot._thickness = slotThickness;
     //     if (slot.outside) {
     //       directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
@@ -657,8 +670,8 @@
     _updateLayoutFor(position = 'inside') {
       const viewer = this.viewer;
       const dividers = viewer.dividers;
-      // let bbOffset = this.backbone.adjustedThickness / 2;
-      let bbOffset = this.backbone.adjustedCenterOffset + this.backbone.adjustedThickness / 2;
+      const direction = (position === 'outside') ? 1 : -1;
+      let bbOffset = this.backbone.adjustedThickness / 2;
       // Distance between slots
       const slotGap = (dividers.slot.adjustedSpacing * 2) + dividers.slot.adjustedThickness;
       const visibleTracks = this.tracks().filter( t =>  t.visible );
@@ -669,26 +682,25 @@
           bbOffset += dividers.track.adjustedSpacing;
           for (let j = 0, slotsLength = slots.length; j < slotsLength; j++) {
             const slot = slots[j];
-            const slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+            const slotThickness = this._calculateSlotThickness(slot.proportionOfMap);
             slot._thickness = slotThickness;
             bbOffset += (slotThickness / 2);
-            slot._radius = bbOffset;
+            slot._bbOffset = direction * bbOffset;
             bbOffset += (slotThickness / 2);
             if (j === (slotsLength - 1)) {
               // Last slot for track - Use track divider
               bbOffset += dividers.track.adjustedSpacing;
-              dividers.addBbOffset(bbOffset + (dividers.track.adjustedThickness / 2), 'track');
+              dividers.addBbOffset(direction * (bbOffset + (dividers.track.adjustedThickness / 2)), 'track');
               bbOffset += dividers.track.adjustedThickness;
             } else {
               // More slots for track - Use slot divider
-              dividers.addBbOffset(bbOffset + (slotGap / 2), 'slot');
+              dividers.addBbOffset(direction * (bbOffset + (slotGap / 2)), 'slot');
               bbOffset += slotGap;
             }
           }
         }
       }
-      // console.log(bbOffset)
-      return position === 'outside' ? bbOffset : -bbOffset;
+      return direction * bbOffset;
     }
 
     /**
@@ -716,12 +728,14 @@
      *    Therefore we should always be able to see all the slots in the viewer
      *  - The slot thickness is greater than the maximum allowed slot thickness
      */
-    _calculateSlotThickness(proportionOfRadius) {
+    _calculateSlotThickness(proportionOfMap) {
       const viewer = this.viewer;
 
       // FIXME: should not be based on adjustedCenterOffset
       // const mapThickness = Math.min(viewer.backbone.adjustedCenterOffset, this.maxMapThickness());
       // TEMP
+      // Maybe this should be based on slotSpace from adjust proportions.
+      // Should slot space be saved
       const minSize = this.maxMapThickness() / 6 * viewer.zoomFactor;
       const mapThickness = Math.min(minSize, this.maxMapThickness());
 
@@ -729,7 +743,7 @@
       const slotProportionStats = this.slotProportionStats;
       if (slotProportionStats.max > maxAllowedProportion) {
         if (slotProportionStats.min === slotProportionStats.max) {
-          proportionOfRadius = maxAllowedProportion;
+          proportionOfMap = maxAllowedProportion;
         } else {
           // SCALE
           // Based on the min and max allowed proportionOf Radii allowed
@@ -737,12 +751,12 @@
           const minMaxRatio = slotProportionStats.max / slotProportionStats.min;
           const minProportionOfRadius = maxAllowedProportion / minMaxRatio;
           const minTo = (minProportionOfRadius < minAllowedProportion) ? minAllowedProportion : minProportionOfRadius;
-          proportionOfRadius = CGV.scaleValue(proportionOfRadius,
+          proportionOfMap = CGV.scaleValue(proportionOfMap,
             {min: slotProportionStats.min, max: slotProportionStats.max},
             {min: minTo, max: maxAllowedProportion});
         }
       }
-      return proportionOfRadius * mapThickness;
+      return proportionOfMap * mapThickness;
     }
 
     // When updating scales because the canvas has been resized, we want to

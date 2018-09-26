@@ -15,7 +15,7 @@
      * @param {Object} options - Options and stuff
      */
     constructor(viewer, options = {}, meta = {}) {
-      this.viewer = viewer
+      this.viewer = viewer;
 
       this._slot = new CGV.Divider(viewer, options.slot);
       this._track = new CGV.Divider(viewer, options.track);
@@ -23,7 +23,6 @@
       if (options.slotMirrorsTrack) {
         this.slot = this.track;
       }
-      
       this.clearBbOffsets();
     }
 
@@ -83,14 +82,16 @@
 
     draw() {
       const canvas = this.viewer.canvas;
+      const backboneOffset = this.viewer.backbone.adjustedCenterOffset;
       // if (!this.visible || this.thickness === 0) { return; }
       for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
         const bbOffset = this._bbOffsets[i];
-        const visibleRange = canvas.visibleRangeForCenterOffset(bbOffset.distance, 100);
+        const centerOffset = backboneOffset + bbOffset.distance;
+        const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, 100);
           console.log(visibleRange)
         if (visibleRange) {
           // this.viewer.canvas.drawArc('map', visibleRange.start, visibleRange.stop, bbOffset.distance, this.color.rgbaString, this.adjustedThickness);
-          canvas.drawArc('map', visibleRange.start, visibleRange.stop, bbOffset.distance, this[bbOffset.type].color.rgbaString, this[bbOffset.type].adjustedThickness);
+          canvas.drawArc('map', visibleRange.start, visibleRange.stop, centerOffset, this[bbOffset.type].color.rgbaString, this[bbOffset.type].adjustedThickness);
         }
       }
     }

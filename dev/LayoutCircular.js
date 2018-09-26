@@ -295,6 +295,19 @@
       this.backbone.centerOffset = minInnerRadius + workingSpace - outsideThickness - (this.backbone.thickness / 2);
     }
 
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
+    }
+
+    // Calculate the backbone radius so that the map is centered between the
+    // circle center and the edge of the canvas (minDimension)
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      // midRadius is the point between the circle center and the edge of the canvas
+      // on the minDimension.
+      const midRadius = this.viewer.minDimension * 0.25;
+      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2)
+    }
+
 
   }
 

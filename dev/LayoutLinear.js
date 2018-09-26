@@ -306,21 +306,6 @@
         ctx.lineTo(p2.x, p2.y);
       }
 
-      // const p2 = this.pointFor(stopBp, radius);
-      // p2.y = Math.round(p2.y);
-      // if (startType === 'lineTo') {
-      //   const p1 = this.pointFor(startBp, radius);
-      //   p1.y = Math.round(p1.y);
-      //   ctx.lineTo(p1.x, p1.y);
-      //   ctx.lineTo(p2.x, p2.y);
-      // } else if (startType === 'moveTo') {
-      //   const p1 = this.pointFor(startBp, radius);
-      //   p1.y = Math.round(p1.y);
-      //   ctx.moveTo(p1.x, p1.y);
-      //   ctx.lineTo(p2.x, p2.y);
-      // } else if (startType === 'noMoveTo') {
-      //   ctx.lineTo(p2.x, p2.y);
-      // }
     }
 
     // TEMP
