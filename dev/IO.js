@@ -109,7 +109,8 @@
       // Annotation
       viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
       // Slot Dividers
-      viewer.slotDivider = new CGV.Divider(viewer, settings.dividers.slot);
+      // viewer.slotDivider = new CGV.Divider(viewer, settings.dividers.slot);
+      viewer.dividers = new CGV.Dividers(viewer, settings.dividers);
       // Highlighter
       viewer.highlighter = new CGV.Highlighter(viewer, settings.highlighter);
 

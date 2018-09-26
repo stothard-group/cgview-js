@@ -219,32 +219,84 @@
     // Returns the space (in pixels) of everything but the slots
     // i.e. dividers, spacing, and backbone
     // Note: the backbone is only included if position is 'both'
-    _nonSlotSpace(slots = this.visibleSlots(), position = 'both') {
-      const viewer = this.viewer;
-      const backbone = viewer.backbone;
-      const slotDivider = viewer.slotDivider;
-      // const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-      const dividerThickness = slotDivider.adjustedThickness;
-      if (position === 'inside') {
-        slots = slots.filter( slot => slot.inside );
-      } else if (position === 'outside') {
-        slots = slots.filter( slot => slot.outside );
-      }
-      const nDividers = (dividerThickness === 0) ? 0 : slots.length;
-      const nSpaces = slots.length + nDividers;
+    // _nonSlotSpace(slots = this.visibleSlots(), position = 'both') {
+    //   const viewer = this.viewer;
+    //   const backbone = viewer.backbone;
+    //   const slotDivider = viewer.slotDivider;
+    //   // const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
+    //   const dividerThickness = slotDivider.adjustedThickness;
+    //   if (position === 'inside') {
+    //     slots = slots.filter( slot => slot.inside );
+    //   } else if (position === 'outside') {
+    //     slots = slots.filter( slot => slot.outside );
+    //   }
+    //   const nDividers = (dividerThickness === 0) ? 0 : slots.length;
+    //   const nSpaces = slots.length + nDividers;
+    //   let space = 0;
+    //   if (position === 'both') {
+    //     // space += backbone.visible ? backbone.thickness : 0;
+    //     space += backbone.adjustedThickness;
+    //   }
+    //   space += (nDividers * dividerThickness) + (nSpaces * slotDivider.adjustedSpacing);
+    //   // console.log({
+    //   //   nDividers: nDividers,
+    //   //   nSpaces: nSpaces,
+    //   //   bt: backbone.thickness,
+    //   //   dt: dividerThickness,
+    //   //   sds: slotDivider.spacing
+    //   // })
+    //   return space;
+    // }
+
+    // position: 'inside', 'outside'
+    _trackNonSlotSpace(track, position = 'inside') {
+      const dividers = this.viewer.dividers;
+
+      // let slots = track.slots().filter( s =>  s.visible );
+      // if (position === 'inside') {
+      //   slots = slots.filter( slot => slot.inside );
+      // } else if (position === 'outside') {
+      //   slots = slots.filter( slot => slot.outside );
+      // }
+      let slots = track.slots().filter( s =>  s.visible && s[position] );
+
       let space = 0;
-      if (position === 'both') {
-        // space += backbone.visible ? backbone.thickness : 0;
-        space += backbone.adjustedThickness;
+      if (slots.length > 0) {
+      // for (let j = 0, slotsLength = slots.length; j < slotsLength; j++) {
+        // Add track start and end divider spacing
+        space += dividers.track.adjustedSpacing * 2;
+        // Add track divider thickness
+        space += dividers.track.adjustedThickness;
+        // Add slot divider spacing and thickness
+        const slotDividerCount = slots.length - 1;
+        space += slotDividerCount * ((dividers.slot.adjustedSpacing * 2) + dividers.slot.adjustedThickness);
       }
-      space += (nDividers * dividerThickness) + (nSpaces * slotDivider.adjustedSpacing);
-      // console.log({
-      //   nDividers: nDividers,
-      //   nSpaces: nSpaces,
-      //   bt: backbone.thickness,
-      //   dt: dividerThickness,
-      //   sds: slotDivider.spacing
-      // })
+      return space;
+    }
+
+    // Returns the space (in pixels) of everything but the slots
+    // i.e. dividers, spacing, and backbone
+    // position: 'inside', 'outside', 'both'
+    // Note: the backbone is only included if position is 'both'
+    _nonSlotSpace(position = 'both') {
+      const viewer = this.viewer;
+
+      let space = 0;
+      const visibleTracks = this.tracks().filter( t =>  t.visible );
+      for (let i = 0, len = visibleTracks.length; i < len; i++) {
+        // const track = visibleTracks[i].dividerSpace(position);
+        const track = visibleTracks[i];
+        if (position === 'both') {
+          space += this._trackNonSlotSpace(track, 'inside');
+          space += this._trackNonSlotSpace(track, 'outside');
+        } else {
+          space += this._trackNonSlotSpace(track, position);
+        }
+      }
+      if (position === 'both') {
+        space += this.backbone.adjustedThickness;
+      }
+
       return space;
     }
 
@@ -446,9 +498,11 @@
       this.updateLayout();
 
       // Divider rings
-      viewer.slotDivider.draw();
+      // viewer.slotDivider.draw();
+      viewer.dividers.draw();
       // Ruler
-      const radiusAdjustment = viewer.slotDivider.visible ? viewer.slotDivider.thickness : 0;
+      // const radiusAdjustment = viewer.slotDivider.visible ? viewer.slotDivider.thickness : 0;
+      const radiusAdjustment = viewer.dividers.track.adjustedThickness;
       viewer.ruler.draw(this.bbInsideOffset - radiusAdjustment, this.bbOutsideOffset + radiusAdjustment);
       // Labels
       if (viewer.annotation.visible) {
@@ -537,6 +591,106 @@
       }
     }
 
+    // #<{(|*
+    //  * Updates the radius and thickness of every slot, divider and ruler, only if the zoom level has changed
+    //  |)}>#
+    // updateLayout(force) {
+    //   const viewer = this.viewer;
+    //   if (!force && this._savedZoomFactor === viewer._zoomFactor) {
+    //     return;
+    //   } else {
+    //     this._savedZoomFactor = viewer._zoomFactor;
+    //   }
+    //   const backbone = viewer.backbone;
+    //   // const slotDivider = viewer.slotDivider;
+    //   const dividers = viewer.dividers;
+    //   const backboneThickness = backbone.adjustedThickness;
+    //   let slotRadius = backbone.adjustedCenterOffset;
+    //   let directRadius = slotRadius + (backboneThickness / 2);
+    //   let reverseRadius = slotRadius - (backboneThickness / 2);
+    //   const spacing = slotDivider.spacing;
+    //   let residualSlotThickness = 0;
+    //   let slot;
+    //   // slotDivider.clearBbOffsets();
+    //   dividers.clearBbOffsets();
+    //   const visibleSlots = this.visibleSlots();
+    //   this._slotLength = visibleSlots.length;
+    //   for (let i = 0, len = visibleSlots.length; i < len; i++) {
+    //     slot = visibleSlots[i];
+    //     // Slots and Dividers
+    //     // Calculate Slot dimensions
+    //     // The slotRadius is the radius at the center of the slot
+    //     const slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+    //     slot._thickness = slotThickness;
+    //     if (slot.outside) {
+    //       directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
+    //       slotRadius = directRadius;
+    //     } else {
+    //       reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
+    //       slotRadius = reverseRadius;
+    //     }
+    //
+    //     slot._radius = slotRadius;
+    //
+    //     residualSlotThickness = slotThickness / 2;
+    //
+    //     // Calculate Divider dimensions
+    //     const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
+    //     const spacingAndDividerThickness = (dividerThickness === 0) ? 0 : (dividerThickness + spacing);
+    //     if (slot.outside) {
+    //       directRadius += residualSlotThickness + spacingAndDividerThickness;
+    //       slotRadius = directRadius;
+    //     } else {
+    //       reverseRadius -= residualSlotThickness + spacingAndDividerThickness;
+    //       slotRadius = reverseRadius;
+    //     }
+    //     // slotDivider.addBbOffset(slotRadius);
+    //     dividers.addBbOffset(slotRadius);
+    //     residualSlotThickness = dividerThickness / 2;
+    //   }
+    //   this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;
+    //   this._bbInsideOffset = reverseRadius;
+    //   this._bbOutsideOffset = directRadius;
+    // }
+
+    // position must be: 'inside' or 'outside'
+    _updateLayoutFor(position = 'inside') {
+      const viewer = this.viewer;
+      const dividers = viewer.dividers;
+      // let bbOffset = this.backbone.adjustedThickness / 2;
+      let bbOffset = this.backbone.adjustedCenterOffset + this.backbone.adjustedThickness / 2;
+      // Distance between slots
+      const slotGap = (dividers.slot.adjustedSpacing * 2) + dividers.slot.adjustedThickness;
+      const visibleTracks = this.tracks().filter( t =>  t.visible );
+      for (let i = 0, tracksLength = visibleTracks.length; i < tracksLength; i++) {
+        const track = visibleTracks[i];
+        const slots = track.slots().filter( s => s.visible && s[position] );
+        if (slots.length > 0) {
+          bbOffset += dividers.track.adjustedSpacing;
+          for (let j = 0, slotsLength = slots.length; j < slotsLength; j++) {
+            const slot = slots[j];
+            const slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
+            slot._thickness = slotThickness;
+            bbOffset += (slotThickness / 2);
+            slot._radius = bbOffset;
+            bbOffset += (slotThickness / 2);
+            if (j === (slotsLength - 1)) {
+              // Last slot for track - Use track divider
+              bbOffset += dividers.track.adjustedSpacing;
+              dividers.addBbOffset(bbOffset + (dividers.track.adjustedThickness / 2), 'track');
+              bbOffset += dividers.track.adjustedThickness;
+            } else {
+              // More slots for track - Use slot divider
+              dividers.addBbOffset(bbOffset + (slotGap / 2), 'slot');
+              bbOffset += slotGap;
+            }
+          }
+        }
+      }
+      // console.log(bbOffset)
+      return position === 'outside' ? bbOffset : -bbOffset;
+    }
+
     /**
      * Updates the radius and thickness of every slot, divider and ruler, only if the zoom level has changed
      */
@@ -547,53 +701,11 @@
       } else {
         this._savedZoomFactor = viewer._zoomFactor;
       }
-      const backbone = viewer.backbone;
-      const slotDivider = viewer.slotDivider;
-      const backboneThickness = backbone.adjustedThickness;
-      let slotRadius = backbone.adjustedCenterOffset;
-      let directRadius = slotRadius + (backboneThickness / 2);
-      let reverseRadius = slotRadius - (backboneThickness / 2);
-      const spacing = slotDivider.spacing;
-      let residualSlotThickness = 0;
-      let slot;
-      slotDivider.clearBbOffsets();
-      const visibleSlots = this.visibleSlots();
-      this._slotLength = visibleSlots.length;
-      for (let i = 0, len = visibleSlots.length; i < len; i++) {
-        slot = visibleSlots[i];
-        // Slots and Dividers
-        // Calculate Slot dimensions
-        // The slotRadius is the radius at the center of the slot
-        const slotThickness = this._calculateSlotThickness(slot.proportionOfRadius);
-        slot._thickness = slotThickness;
-        if (slot.outside) {
-          directRadius += ( (slotThickness / 2) + spacing + residualSlotThickness);
-          slotRadius = directRadius;
-        } else {
-          reverseRadius -= ( (slotThickness / 2) + spacing + residualSlotThickness);
-          slotRadius = reverseRadius;
-        }
+      viewer.dividers.clearBbOffsets();
 
-        slot._radius = slotRadius;
-
-        residualSlotThickness = slotThickness / 2;
-
-        // Calculate Divider dimensions
-        const dividerThickness = slotDivider.visible ? slotDivider.thickness : 0;
-        const spacingAndDividerThickness = (dividerThickness === 0) ? 0 : (dividerThickness + spacing);
-        if (slot.outside) {
-          directRadius += residualSlotThickness + spacingAndDividerThickness;
-          slotRadius = directRadius;
-        } else {
-          reverseRadius -= residualSlotThickness + spacingAndDividerThickness;
-          slotRadius = reverseRadius;
-        }
-        slotDivider.addBbOffset(slotRadius);
-        residualSlotThickness = dividerThickness / 2;
-      }
-      this._fastFeaturesPerSlot = this._fastMaxFeatures / this.slotLength;
-      this._bbInsideOffset = reverseRadius;
-      this._bbOutsideOffset = directRadius;
+      this._fastFeaturesPerSlot = this._fastMaxFeatures / this.visibleSlots().length;
+      this._bbInsideOffset = this._updateLayoutFor('inside');
+      this._bbOutsideOffset = this._updateLayoutFor('outside');
     }
 
     /**

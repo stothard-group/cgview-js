@@ -62,8 +62,41 @@
       return this.filter( i => i !== element );
     }
 
-    filter(...rest) {
-      return (this.length === 0) ? this : super.filter(...rest);
+    // FIXME: return an CGArray with a single element of 0 when it should be empty
+    // FIXME: Using Polyfill for now
+    // filter(selector) {
+      // return new CGV.CGArray(Array.prototype.filter(selector));
+    // }
+
+    filter(func, thisArg) {
+      if ( ! ((typeof func === 'Function' || typeof func === 'function') && this) )
+        throw new TypeError();
+
+      let len = this.length >>> 0,
+          res = new Array(len), // preallocate array
+          t = this, c = 0, i = -1;
+      if (thisArg === undefined){
+        while (++i !== len){
+          // checks to see if the key was set
+          if (i in this){
+            if (func(t[i], i, t)){
+              res[c++] = t[i];
+            }
+          }
+        }
+      } else {
+        while (++i !== len){
+          // checks to see if the key was set
+          if (i in this){
+            if (func.call(thisArg, t[i], i, t)){
+              res[c++] = t[i];
+            }
+          }
+        }
+      }
+
+      res.length = c; // shrink down array to proper size
+      return new CGV.CGArray(res);
     }
 
     map(...rest) {

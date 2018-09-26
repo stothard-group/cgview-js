@@ -94,7 +94,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Slot Divider
-      this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
+      // this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
+      this.dividers = new CGV.Dividers(this, options.dividers);
       // // Initialize Layout
       // this.layout = new CGV.Layout(this, options.layout);
       // Initialize Annotation

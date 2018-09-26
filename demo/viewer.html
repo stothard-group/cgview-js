@@ -33,6 +33,7 @@
   <script src='dev/Track.js'></script>
   <script src='dev/TrackContents.js'></script>
   <script src='dev/Settings.js'></script>
+  <script src='dev/Dividers.js'></script>
   <script src='dev/Divider.js'></script>
   <script src='dev/Feature.js'></script>
   <script src='dev/Messenger.js'></script>
@@ -205,7 +206,7 @@
       request.onload = function() {
         const json = JSON.parse(request.responseText);
         cgv.io.loadJSON(json.cgview);
-        console.log(json)
+        // console.log(json)
         cgv.name = maps[id].name;
         // cgv.zoomTo(0,1);
         cgv.drawFull();
