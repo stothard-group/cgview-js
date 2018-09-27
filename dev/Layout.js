@@ -173,6 +173,10 @@
       throw 'Error: "bpForPoint" must be overridden in subclass';
     }
 
+    centerOffsetForPoint(point) {
+      throw 'Error: "centerOffsetForPoint" must be overridden in subclass';
+    }
+
     // FIXME: update arguments
     path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       throw 'Error: "path" must be overridden in subclass';
@@ -203,6 +207,17 @@
     // the right side of a circular map will be 3. 
     clockPositionForBp(bp, inverse=false) {
       throw 'Error: "clockPositionForBp" must be overridden in subclass';
+    }
+
+    // Return the initial maximum space/thickness to draw the map around the backbone
+    initialWorkingSpace() {
+      throw 'Error: "initialWorkingSpace" must be overridden in subclass';
+    }
+
+    // Set the backbone centerOffset based on the approximate inside and outside
+    // thickness of the map.
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      throw 'Error: "updateInitialBackboneCenterOffset" must be overridden in subclass';
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -359,14 +374,8 @@
       const backbone = viewer.backbone;
       const visibleSlots = this.visibleSlots();
       this._updateSlotThicknessRatioStats(visibleSlots);
-      // Maximum ring radius (i.e. the radius of the outermost ring) as a proportion of Viewer size
-      const maxOuterProportion = 0.35;
-      const maxOuterRadius = maxOuterProportion * viewer.minDimension;
-      // Minimum space required at center of map as a proportion of Viewer size
-      const minInnerProportion = 0.15;
-      const minInnerRadius = minInnerProportion * viewer.minDimension;
-      // The maximum amount of space for drawing slots, backbone, dividers, etc
-      const workingSpace = maxOuterRadius - minInnerRadius;
+      // The initial maximum amount of space for drawing slots, backbone, dividers, etc
+      const workingSpace = this.initialWorkingSpace();
       // Minimum Space required (based on minSlotThickness)
       const minSpace = this._minSpace(visibleSlots);
       // Maximum Space possible (based on maxSlotThickness)
@@ -380,35 +389,22 @@
       // The sum of the thickness ratios
       const thicknessRatioSum = this.slotThicknessRatioStats.sum;
 
-      const outsideSlots = this.visibleSlots().filter( (t) => { return t.outside; });
       let outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
-      outsideSlots.forEach( (slot) => {
-        const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
-        outsideThickness += slotThickness;
-      });
-      // Set backbone radius
-      const backboneRadius = maxOuterRadius - outsideThickness - (backbone.thickness / 2);
-      // viewer.backbone.radius = backboneRadius;
-      // viewer.backbone.centerOffset = backboneRadius;
-      // this.updateBackboneOffset(workingSpace, outsideThickness);
-
-      const insideSlots = this.visibleSlots().filter( (t) => { return t.inside; });
       let insideThickness = this._nonSlotSpace(visibleSlots, 'inside');
-      insideSlots.forEach( (slot) => {
-        const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
-        insideThickness += slotThickness;
-      });
-
-      this.updateInitialBackboneCenterOffset(insideThickness, outsideThickness);
 
       // Update slot thick proportions
       this.visibleSlots().each( (i, slot) => {
-        const slotThickness = slotSpace * slot.thicknessRatio / thicknessRatioSum;
-        // slot.proportionOfMap = slotThickness / backboneRadius;
-        slot.proportionOfMap = slotThickness / slotSpace;
+        slot.proportionOfMap = slot.thicknessRatio / thicknessRatioSum;
+        const slotThickness = slotSpace * slot.proportionOfMap;
+        if (slot.inside) {
+          insideThickness += slotThickness;
+        } else {
+          outsideThickness += slotThickness;
+        }
       });
       this._updateSlotProportionStats(visibleSlots);
 
+      this.updateInitialBackboneCenterOffset(insideThickness, outsideThickness);
 
       this.updateLayout(true);
     }
@@ -749,8 +745,8 @@
           // Based on the min and max allowed proportionOf Radii allowed
           const minAllowedProportion = this.minSlotThickness / mapThickness;
           const minMaxRatio = slotProportionStats.max / slotProportionStats.min;
-          const minProportionOfRadius = maxAllowedProportion / minMaxRatio;
-          const minTo = (minProportionOfRadius < minAllowedProportion) ? minAllowedProportion : minProportionOfRadius;
+          const minProportionOfMap = maxAllowedProportion / minMaxRatio;
+          const minTo = (minProportionOfMap < minAllowedProportion) ? minAllowedProportion : minProportionOfMap;
           proportionOfMap = CGV.scaleValue(proportionOfMap,
             {min: slotProportionStats.min, max: slotProportionStats.max},
             {min: minTo, max: maxAllowedProportion});

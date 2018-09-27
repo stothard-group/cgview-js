@@ -446,7 +446,7 @@
 
       const scaleFactor = Math.min(1, pixelsPerBp / (this.bpSpacing - this.bpMargin));
 
-      const radius = backbone.adjustedCenterOffset;
+      const centerOffset = backbone.adjustedCenterOffset;
       const range = backbone.visibleRange;
       let seq, complement;
       if (range) {
@@ -463,12 +463,13 @@
         ctx.font = this.font.cssScaled(scaleFactor);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const radiusDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
+        // Distance from the center of the backbone to place sequence text
+        const centerOffsetDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
-          let origin = this.canvas.pointFor(bp, radius + radiusDiff);
+          let origin = this.canvas.pointFor(bp, centerOffset + centerOffsetDiff);
           if (i == 0) { console.log(bp, origin)}
           ctx.fillText(seq[i], origin.x, origin.y);
-          origin = this.canvas.pointFor(bp, radius - radiusDiff);
+          origin = this.canvas.pointFor(bp, centerOffset - centerOffsetDiff);
           ctx.fillText(complement[i], origin.x, origin.y);
           bp++;
         }

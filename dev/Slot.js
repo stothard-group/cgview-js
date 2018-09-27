@@ -172,8 +172,8 @@
     }
 
     /**
-     * Does the slot contain the given *radius*.
-     * @param {Number} radius - The radius.
+     * Does the slot contain the given *centerOffset*.
+     * @param {Number} offset - The centerOffset.
      * @return {Boolean}
      */
     containsCenterOffset(offset) {
@@ -223,7 +223,6 @@
       }
     }
 
-    // draw(canvas, fast, slotRadius, slotThickness) {
     draw(canvas, fast) {
       const slotCenterOffset = this.centerOffset;
       const slotThickness = this.thickness;

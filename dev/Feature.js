@@ -16,7 +16,7 @@
       this.strand = CGV.defaultFor(data.strand, 1);
       this.score = CGV.defaultFor(data.score, 1);
       this.label = new CGV.Label(this, {name: data.name} );
-      this._radiusAdjustment = Number(data.radiusAdjustment) || 0;
+      this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
@@ -237,7 +237,7 @@
     }
 
 
-    draw(layer, slotRadius, slotThickness, visibleRange, options = {}) {
+    draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
       if (!this.visible) { return; }
       if (this.range.overlapsRange(visibleRange)) {
         const canvas = this.canvas;
@@ -259,14 +259,14 @@
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
           canvas.drawArc(layer, visibleRange.start - 100, stop,
-            this.adjustedRadius(slotRadius, slotThickness),
+            this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
           canvas.drawArc(layer, start, visibleRange.stop + 100,
-            this.adjustedRadius(slotRadius, slotThickness),
+            this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         } else {
           canvas.drawArc(layer, start, stop,
-            this.adjustedRadius(slotRadius, slotThickness),
+            this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         }
       }
@@ -283,31 +283,32 @@
       const color = this.color.copy();
       color.highlight();
       if (slot && slot.features().includes(this)) {
-        this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
+        this.draw('ui', slot.centerOffset, slot.thickness, slot.visibleRange, {color: color});
       } else {
         this.viewer.slots().each( (i, slot) => {
           if (slot.features().includes(this)) {
-            this.draw('ui', slot.radius, slot.thickness, slot.visibleRange, {color: color});
+            this.draw('ui', slot.centerOffset, slot.thickness, slot.visibleRange, {color: color});
           }
         });
       }
     }
 
-    // radius by default would be the center of the slot as provided unless:
-    // - _radiusAdjustment is not 0
+    // TODO: Not using _centerOffsetAdjustment yet
+    // centerOffset by default would be the center of the slot as provided unless:
+    // - _centerOffsetAdjustment is not 0
     // - _proportionOfThickness is not 1
-    // TODO: Not using _radiusAdjustment yet
-    adjustedRadius(radius, slotThickness) {
+    // - legend decoration is score
+    adjustedCenterOffset(centerOffset, slotThickness) {
       if (this.legendItem.decoration === 'score') {
-        // FIXME: does not take into account proportionOfThickness and radiusAdjustment for now
-        return radius - (slotThickness / 2) + (this.score * slotThickness / 2);
+        // FIXME: does not take into account proportionOfThickness and centerOffsetAdjustment for now
+        return centerOffset - (slotThickness / 2) + (this.score * slotThickness / 2);
       } else {
-        if (this._radiusAdjustment === 0 && this._proportionOfThickness === 1) {
-          return radius;
-        } else if (this._radiusAdjustment === 0) {
-          return radius - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2);
+        if (this._centerOffsetAdjustment === 0 && this._proportionOfThickness === 1) {
+          return centerOffset;
+        } else if (this._centerOffsetAdjustment === 0) {
+          return centerOffset - (slotThickness / 2) + (this._proportionOfThickness * slotThickness / 2);
         } else {
-          return radius;
+          return centerOffset;
         }
       }
     }

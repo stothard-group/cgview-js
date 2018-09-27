@@ -7,7 +7,7 @@
     /**
      * - Adds several layers (canvases) for drawing
      * - Contains the x, y, bp scales
-     * - has methods for for determining visible regions of the circle at a particular radius
+     * - has methods for for determining visible regions of the circle at a particular centerOffset
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
      */
     constructor(viewer, container, options = {}) {
@@ -274,7 +274,7 @@
     // If the zoomFactor gets too large, the arc drawing becomes unstable.
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
-    drawArc(layer, start, stop, radius, color = '#000000', width = 1, decoration = 'arc', showShading) {
+    drawArc(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
       if (decoration === 'none') { return; }
       const ctx = this.context(layer);
       const settings = this.viewer.settings;
@@ -293,27 +293,27 @@
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = mainWidth;
-          this.arcPath(layer, radius, start, stop);
+          this.arcPath(layer, centerOffset, start, stop);
           ctx.stroke();
 
-          const shadowRadiusDiff = (mainWidth / 2) + (shadowWidth / 2);
+          const shadowOffsetDiff = (mainWidth / 2) + (shadowWidth / 2);
           ctx.lineWidth = shadowWidth;
           // Highlight
           ctx.beginPath();
           ctx.strokeStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius + shadowRadiusDiff, start, stop);
+          this.arcPath(layer, centerOffset + shadowOffsetDiff, start, stop);
           ctx.stroke();
 
           // Shadow
           ctx.beginPath();
           ctx.strokeStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius - shadowRadiusDiff, start, stop);
+          this.arcPath(layer, centerOffset - shadowOffsetDiff, start, stop);
           ctx.stroke();
         } else {
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = width;
-          this.arcPath(layer, radius, start, stop);
+          this.arcPath(layer, centerOffset, start, stop);
           ctx.stroke();
         }
       }
@@ -324,7 +324,7 @@
         // Using width which changes according zoom factor upto a point
         // let arrowHeadLengthPixels = width / 3;
         const arrowHeadLengthPixels = width * settings.arrowHeadLength;
-        const arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(radius);
+        const arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(centerOffset);
 
         // If arrow head length is longer than feature length, adjust start and stop
         const featureLength = this.sequence.lengthOfRange(start, stop);
@@ -342,51 +342,51 @@
         // Calculate important points
         const halfWidth = width / 2;
         const arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
-        const arrowTipPt = this.pointFor(arrowTipBp, radius);
-        const innerArcStartPt = this.pointFor(arcStopBp, radius - halfWidth);
+        const arrowTipPt = this.pointFor(arrowTipBp, centerOffset);
+        const innerArcStartPt = this.pointFor(arcStopBp, centerOffset - halfWidth);
 
         if (showShading) {
           const halfMainWidth =  width * (0.5 - shadowFraction);
-          const shadowPt = this.pointFor(arcStopBp, radius - halfMainWidth);
+          const shadowPt = this.pointFor(arcStopBp, centerOffset - halfMainWidth);
 
           // Main Arrow
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, radius + halfMainWidth, arcStartBp, arcStopBp, direction === -1);
+          this.arcPath(layer, centerOffset + halfMainWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.arcPath(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
           // Highlight
-          const highlightPt = this.pointFor(arcStopBp, radius + halfMainWidth);
+          const highlightPt = this.pointFor(arcStopBp, centerOffset + halfMainWidth);
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.arcPath(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(highlightPt.x, highlightPt.y);
-          this.arcPath(layer, radius + halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.arcPath(layer, centerOffset + halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
           // Shadow
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
-          this.arcPath(layer, radius - halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.arcPath(layer, centerOffset - halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, radius - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.arcPath(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
         } else {
           // Draw arc with arrow head
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, radius + halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.arcPath(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-          this.arcPath(layer, radius - halfWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.arcPath(layer, centerOffset - halfWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
         }
@@ -400,8 +400,8 @@
     // FIXME: try calling layout.path with object parameters and compare speed
     // e.g. path({layer: 'map', offset = radius, etc})
     // FIXME: change name
-    arcPath(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      this.layout.path(layer, radius, startBp, stopBp, anticlockwise, startType);
+    arcPath(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+      this.layout.path(layer, centerOffset, startBp, stopBp, anticlockwise, startType);
       // const ctx = this.context(layer);
       // const scale = this.scale;
       //
@@ -425,9 +425,9 @@
       // }
     }
 
-    radiantLine(layer, bp, radius, length, lineWidth = 1, color = 'black', cap = 'butt') {
-      const innerPt = this.pointFor(bp, radius);
-      const outerPt = this.pointFor(bp, radius + length);
+    radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt') {
+      const innerPt = this.pointFor(bp, centerOffset);
+      const outerPt = this.pointFor(bp, centerOffset + length);
       const ctx = this.context(layer);
 
       ctx.beginPath();
@@ -442,11 +442,11 @@
     }
 
 
-    pointFor(bp, radius) {
-      return this.layout.pointFor(bp, radius);
+    pointFor(bp, centerOffset) {
+      return this.layout.pointFor(bp, centerOffset);
       // const radians = this.scale.bp(bp);
-      // const x = this.scale.x(0) + (radius * Math.cos(radians));
-      // const y = this.scale.y(0) + (radius * Math.sin(radians));
+      // const x = this.scale.x(0) + (centerOffset * Math.cos(radians));
+      // const y = this.scale.y(0) + (centerOffset * Math.sin(radians));
       // return {x: x, y: y};
     }
 
@@ -471,14 +471,14 @@
     }
 
 
-    // TODO if undefined, see if radius is visible
+    // TODO if undefined, see if centerOffset is visible
     visibleRangeForCenterOffset(centerOffset, margin = 0) {
       return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
     }
 
     pixelsPerBp(mapCenterOffset = this.viewer.backbone.adjustedCenterOffset) {
       return this.layout.pixelsPerBp(mapCenterOffset);
-      // return ( (radius * 2 * Math.PI) / this.sequence.length );
+      // return ( (centerOffset * 2 * Math.PI) / this.sequence.length );
     }
 
     /**

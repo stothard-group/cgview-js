@@ -95,7 +95,7 @@
         // At larger zoom levels and when a bp was given, center the map on that bp
         const zoomFactorCutoff = 1.25;
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
-          // Get point for bp and backbone radius (NOTE: bp scale must be set first)
+          // Get point for bp and backbone centerOffset (NOTE: bp scale must be set first)
           const point = this.pointFor(bp);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
@@ -202,12 +202,16 @@
     }
 
     // Return point on Circle Coordinates.
-    // mapCenterOffset is the radius for circular maps
     // FIXME: needs better names
     pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
       const x = this.scale.bp(bp);
       const y = mapCenterOffset;
       return {x: x, y: y};
+    }
+
+    // MAP POINT
+    centerOffsetForPoint(point) {
+      return point.y;
     }
 
     // Return the X and Y domains for a bp and zoomFactor
@@ -268,7 +272,7 @@
       return this.viewer.height / 2;
     }
 
-    // TODO if undefined, see if radius is visible
+    // TODO if undefined, see if centerOffset is visible
     // FIXME: check if offset is visible 
     visibleRangeForCenterOffset(centerOffset, margin = 0) {
       // const range = this.scale.bp.range();
@@ -288,18 +292,18 @@
       //   Math.min(this.bpForPoint({x: range[0], y: 0}), this.sequence.length));
     }
 
-    path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       const canvas = this.canvas;
       const ctx = canvas.context(layer);
 
       // FIXME: have option to round points (could use for divider lines)
-      const p2 = this.pointFor(stopBp, radius);
+      const p2 = this.pointFor(stopBp, centerOffset);
       if (startType === 'lineTo') {
-        const p1 = this.pointFor(startBp, radius);
+        const p1 = this.pointFor(startBp, centerOffset);
         ctx.lineTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
       } else if (startType === 'moveTo') {
-        const p1 = this.pointFor(startBp, radius);
+        const p1 = this.pointFor(startBp, centerOffset);
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
       } else if (startType === 'noMoveTo') {
@@ -308,13 +312,13 @@
 
     }
 
-    // TEMP
-    updateBackboneOffset(workingSpace, outsideThickness) {
-      // const minInnerProportion = 0.15
-      // const minInnerRadius = minInnerProportion * this.viewer.minDimension;
-      // this.viewer.backbone.centerOffset = minInnerRadius + workingSpace - outsideThickness - (this.viewer.backbone.thickness / 2);
-      // FIXME: this will be set to center of map thickness
-      this.viewer.backbone.centerOffset = 0
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
+    }
+
+    // The backbone will be the center of the map
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      this.backbone.centerOffset = 0;
     }
 
 

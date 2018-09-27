@@ -77,15 +77,15 @@
       const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);
       const mapY = scale.y.invert(canvasY);
-      const radius = Math.sqrt( (mapX * mapX) + (mapY * mapY) );
-      const slot = this.viewer.layout.slotForCenterOffset(radius);
+      const centerOffset = this.viewer.layout.centerOffsetForPoint({x: mapX, y: mapY});
+      const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
       const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
       const feature = slot && slot.findFeaturesForBp(bp)[0];
       const plot = slot && slot._plot;
       const score = plot && plot.scoreForPosition(bp).toFixed(2);
       return {
         bp: bp,
-        radius: radius,
+        centerOffset: centerOffset,
         slot: slot,
         feature: feature,
         plot: plot,

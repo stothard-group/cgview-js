@@ -129,10 +129,10 @@
 
     // Return point on Canvas.
     // mapCenterOffset is the radius for circular maps
-    pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+    pointFor(bp, centerOffset = this.backbone.adjustedCenterOffset) {
       const radians = this.scale.bp(bp);
-      const x = this.scale.x(0) + (mapCenterOffset * Math.cos(radians));
-      const y = this.scale.y(0) + (mapCenterOffset * Math.sin(radians));
+      const x = this.scale.x(0) + (centerOffset * Math.cos(radians));
+      const y = this.scale.y(0) + (centerOffset * Math.sin(radians));
       return {x: x, y: y};
     }
 
@@ -144,6 +144,11 @@
       const x = mapCenterOffset * Math.cos(radians);
       const y = -mapCenterOffset * Math.sin(radians);
       return {x: x, y: y};
+    }
+
+    // MAP POINT
+    centerOffsetForPoint(point) {
+      return Math.sqrt( (point.x * point.x) + (point.y * point.y) );
     }
 
     // Return the X and Y domains for a bp and zoomFactor
@@ -241,18 +246,18 @@
       return angles.map( a => Math.round(this.scale.bp.invert(a)) );
     }
 
-    // TODO if undefined, see if radius is visible
-    visibleRangeForCenterOffset(radius, margin = 0) {
-      const ranges = this._visibleRangesForRadius(radius, margin);
+    // TODO if undefined, see if centerOffset is visible
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      const ranges = this._visibleRangesForRadius(centerOffset, margin);
       if (ranges.length === 2) {
         // return ranges
         return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
       } else if (ranges.length > 2) {
         // return [ ranges[0], ranges[ranges.length -1] ]
         return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
-      } else if ( (radius - margin) > this._maximumVisibleRadius() ) {
+      } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
         return undefined;
-      } else if ( (radius + margin) < this._minimumVisibleRadius() ) {
+      } else if ( (centerOffset + margin) < this._minimumVisibleRadius() ) {
         return undefined;
       } else {
         return new CGV.CGRange(this.sequence, 1, this.sequence.length);
@@ -262,7 +267,7 @@
       // }
     }
 
-    path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       // FIXME: change canvas to this where appropriate
       const canvas = this.canvas;
       const ctx = canvas.context(layer);
@@ -271,41 +276,34 @@
       // Features less than 1000th the length of the sequence are drawn as straight lines
       const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (canvas.sequence.length / 1000)) {
-        const p2 = this.pointFor(stopBp, radius);
+        const p2 = this.pointFor(stopBp, centerOffset);
         if (startType === 'lineTo') {
-          const p1 = this.pointFor(startBp, radius);
+          const p1 = this.pointFor(startBp, centerOffset);
           ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'moveTo') {
-          const p1 = this.pointFor(startBp, radius);
+          const p1 = this.pointFor(startBp, centerOffset);
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'noMoveTo') {
           ctx.lineTo(p2.x, p2.y);
         }
       } else {
-        ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
       }
-    }
-
-    // TEMP
-    updateBackboneOffset(workingSpace, outsideThickness) {
-      const minInnerProportion = 0.15
-      const minInnerRadius = minInnerProportion * this.viewer.minDimension;
-      this.backbone.centerOffset = minInnerRadius + workingSpace - outsideThickness - (this.backbone.thickness / 2);
     }
 
     initialWorkingSpace() {
       return 0.25 * this.viewer.minDimension;
     }
 
-    // Calculate the backbone radius so that the map is centered between the
+    // Calculate the backbone centerOffset (radius) so that the map is centered between the
     // circle center and the edge of the canvas (minDimension)
     updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
       // midRadius is the point between the circle center and the edge of the canvas
       // on the minDimension.
       const midRadius = this.viewer.minDimension * 0.25;
-      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2)
+      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
     }
 
 

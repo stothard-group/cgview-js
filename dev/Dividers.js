@@ -88,9 +88,7 @@
         const bbOffset = this._bbOffsets[i];
         const centerOffset = backboneOffset + bbOffset.distance;
         const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, 100);
-          console.log(visibleRange)
         if (visibleRange) {
-          // this.viewer.canvas.drawArc('map', visibleRange.start, visibleRange.stop, bbOffset.distance, this.color.rgbaString, this.adjustedThickness);
           canvas.drawArc('map', visibleRange.start, visibleRange.stop, centerOffset, this[bbOffset.type].color.rgbaString, this[bbOffset.type].adjustedThickness);
         }
       }

@@ -202,14 +202,14 @@
       labels = labels || this._labels;
       const canvas = this.canvas;
       let label, bp, lineLength, overlappingRect;
-      const radius = this._outerRadius + this._labelLineMarginInner;
+      const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
       const placedRects = new CGV.CGArray();
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
         lineLength = this.labelLineLength;
         do {
-          const outerPt = canvas.pointFor(bp, radius + lineLength + this._labelLineMarginOuter);
+          const outerPt = canvas.pointFor(bp, centerOffset + lineLength + this._labelLineMarginOuter);
           const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
@@ -229,12 +229,12 @@
       labels = labels || this._labels;
       const canvas = this.canvas;
       let label, bp;
-      const radius = this._outerRadius + this._labelLineMarginInner;
+      const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
-        // let innerPt = canvas.pointFor(bp, radius);
-        const outerPt = canvas.pointFor(bp, radius + this.labelLineLength + this._labelLineMarginOuter);
+        // let innerPt = canvas.pointFor(bp, centerOffset);
+        const outerPt = canvas.pointFor(bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
         const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
@@ -278,18 +278,18 @@
       return labels;
     }
 
-    draw(reverseRadius, directRadius) {
+    draw(innerCenterOffset, outerCenterOffset) {
       if (this._labels.length !== this._labelsNCList.length) {
         this.refresh();
       }
 
-      this._visibleRange = this.canvas.visibleRangeForCenterOffset(directRadius);
+      this._visibleRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset);
 
-      this._innerRadius = reverseRadius;
-      this._outerRadius = directRadius;
+      this._innerCenterOffset = innerCenterOffset;
+      this._outerCenterOffset = outerCenterOffset;
 
       // Find Labels that are within the visible range and calculate bounds
-      let possibleLabels = this.visibleLabels(directRadius);
+      let possibleLabels = this.visibleLabels(outerCenterOffset);
 
       possibleLabels = this._sortByPriority(possibleLabels);
       if (this.onlyDrawFavorites) {
@@ -327,10 +327,10 @@
         const color = this.color || label.feature.color;
 
         // canvas.radiantLine('map', label.bp,
-        //   directRadius + this._labelLineMarginInner,
+        //   outerCenterOffset + this._labelLineMarginInner,
         //   this.labelLineLength + this._labelLineMarginOuter,
         // this._labelLineWidth, color.rgbaString, this.lineCap);
-        const innerPt = canvas.pointFor(label.bp, directRadius + this._labelLineMarginInner);
+        const innerPt = canvas.pointFor(label.bp, outerCenterOffset + this._labelLineMarginInner);
         // console.log(label.attachementPt)
         const outerPt = label.attachementPt;
         ctx.beginPath();

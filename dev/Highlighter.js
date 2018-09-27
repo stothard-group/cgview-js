@@ -112,14 +112,14 @@
         const startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
         const start = e.plot.positions[startIndex];
         const stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
-        const baselineRadius = e.slot.radius - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
-        const scoredRadius = baselineRadius + ((score - e.plot.baseline) * e.slot.thickness);
-        const thickness = Math.abs(baselineRadius - scoredRadius);
-        const radius = Math.min(baselineRadius, scoredRadius) + (thickness / 2);
+        const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
+        const scoredCenterOffset = baselineCenterOffset + ((score - e.plot.baseline) * e.slot.thickness);
+        const thickness = Math.abs(baselineCenterOffset - scoredCenterOffset);
+        const centerOffset = Math.min(baselineCenterOffset, scoredCenterOffset) + (thickness / 2);
         const color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
         color.highlight();
 
-        viewer.canvas.drawArc('ui', start, stop, radius, color.rgbaString, thickness);
+        viewer.canvas.drawArc('ui', start, stop, centerOffset, color.rgbaString, thickness);
       }
     }
 
