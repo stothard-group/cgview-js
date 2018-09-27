@@ -44,6 +44,8 @@
       return 'Layout';
     }
 
+    // FIXME: make all these convience properties like in the delegates
+    //  - this will clear up the documentation and reduce the lines of unexciting code
     /**
      * @member {Viewer} - Get the *Viewer*
      */
@@ -89,23 +91,31 @@
       // return this._scale;
     }
 
-    //
-    // #<{(|* * @member {Canvas} - Get or set the layout type: linear or circular.
-    //  |)}>#
-    // get type() {
-    //   return this._type;
-    // }
-    //
-    // set type(value) {
-    //   this._type = value;
-    //   if (value === 'linear') {
-    //     this._delegate = new CGV.LayoutLinear(this);
-    //   } else if (value === 'circular') {
-    //     this._delegate = new CGV.LayoutCircular(this);
-    //   } else {
-    //     throw 'Layout type must be one of the following: linear, circular';
-    //   }
-    // }
+    get delegate() {
+      return this._delegate;
+    }
+
+    /**
+     * @member {Canvas} - Get or set the layout type: linear or circular.
+     */
+    get type() {
+      return this.delegate && this.delegate.type;
+    }
+
+    set type(value) {
+      // Determine map center bp before changing layout
+      const centerBp = this.delegate && this.canvas.bpForCanvasCenter();
+      const layoutChanged = Boolean(this.delegate && this.type !== value);
+      if (value === 'linear') {
+        this._delegate = new CGV.LayoutLinear(this);
+      } else if (value === 'circular') {
+        this._delegate = new CGV.LayoutCircular(this);
+      } else {
+        throw 'Layout type must be one of the following: linear, circular';
+      }
+      this.updateScales(layoutChanged, centerBp);
+      this._adjustProportions();
+    }
 
     /** * @member {Number} - Get the distance from the backbone to the inner/bottom edge of the map.
      */
@@ -143,47 +153,56 @@
       return this._slotProportionStats;
     }
     //////////////////////////////////////////////////////////////////////////
+    // FIXME: update
     // Methods that must be present in sub classes
     //////////////////////////////////////////////////////////////////////////
 
-    /**
-     * @member {String} - Get the layout type
-     */
-    get type() {
-      throw 'Error: "type" must be overridden in subclass';
+    updateScales(...args) {
+      this.delegate.updateScales(...args);
     }
 
-    updateScales() {
-      throw 'Error: "updateScales" must be overridden in subclass';
+    // zoom(zoomFactor, bp) {
+    zoom(...args) {
+      this.delegate.zoom(...args);
     }
 
-    zoom(zoomFactor, bp) {
-      throw 'Error: "zoom" must be overridden in subclass';
+    // translate(dx, dy) {
+    translate(...args) {
+      this.delegate.translate(...args);
     }
 
-    translate(dx, dy) {
-      throw 'Error: "translate" must be overridden in subclass';
+    // pointFor(bp, centerOffset) {
+    pointFor(...args) {
+      return this.delegate.pointFor(...args);
     }
 
-    pointFor(bp, centerOffset) {
-      throw 'Error: "pointFor" must be overridden in subclass';
+    // bpForPoint(point) {
+    bpForPoint(...args) {
+      return this.delegate.bpForPoint(...args);
     }
 
-    bpForPoint(point) {
-      throw 'Error: "bpForPoint" must be overridden in subclass';
+    // centerOffsetForPoint(point) {
+    centerOffsetForPoint(...args) {
+      return this.delegate.centerOffsetForPoint(...args);
     }
 
-    centerOffsetForPoint(point) {
-      throw 'Error: "centerOffsetForPoint" must be overridden in subclass';
+    domainsFor(...args) {
+      return this.delegate.domainsFor(...args);
+    }
+
+    adjustBpScale(...args) {
+      return this.delegate.adjustBpScale(...args);
     }
 
     // FIXME: update arguments
-    path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      throw 'Error: "path" must be overridden in subclass';
+    // path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+    path(...args) {
+      this.delegate.path(...args);
     }
 
-    visibleRangeForCenterOffset(offset, margin = 0) {
-      throw 'Error: "visibleRangeForCenterOffset" must be overridden in subclass';
+    // visibleRangeForCenterOffset(offset, margin = 0) {
+    visibleRangeForCenterOffset(...args) {
+      return this.delegate.visibleRangeForCenterOffset(...args);
     }
 
     /**
@@ -191,33 +210,41 @@
      * @return {Number}
      */
     maxMapThickness() {
-      throw 'Error: "maxMapThickness" must be overridden in subclass';
+      return this.delegate.maxMapThickness();
     }
 
     /**
      * The number of pixels per basepair along the backbone.
      * @return {Number}
      */
-    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      throw 'Error: "pixelsPerBp" must be overridden in subclass';
+    // pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
+    pixelsPerBp(...args) {
+      return this.delegate.pixelsPerBp(...args);
     }
 
     // Returns the clock position (1-12) for the supplied bp.
     // For example, the top of the map would be 12, the bottom would be 6 and 
     // the right side of a circular map will be 3. 
-    clockPositionForBp(bp, inverse=false) {
-      throw 'Error: "clockPositionForBp" must be overridden in subclass';
+    // clockPositionForBp(bp, inverse=false) {
+    clockPositionForBp(...args) {
+      return this.delegate.clockPositionForBp(...args);
     }
 
     // Return the initial maximum space/thickness to draw the map around the backbone
+    // initialWorkingSpace() {
     initialWorkingSpace() {
-      throw 'Error: "initialWorkingSpace" must be overridden in subclass';
+      return this.delegate.initialWorkingSpace();
     }
 
     // Set the backbone centerOffset based on the approximate inside and outside
     // thickness of the map.
-    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
-      throw 'Error: "updateInitialBackboneCenterOffset" must be overridden in subclass';
+    // updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+    updateInitialBackboneCenterOffset(...args) {
+      this.delegate.updateInitialBackboneCenterOffset(...args);
+    }
+
+    backbonePixelLength() {
+      return this.delegate.backbonePixelLength();
     }
 
     //////////////////////////////////////////////////////////////////////////

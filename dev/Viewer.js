@@ -68,6 +68,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
       // Set the map format which will also initialize the Layout
+      this._layout = new CGV.Layout(this, options.layout);
       this.format = CGV.defaultFor(options.format, 'circular');
 
       // this.backgroundColor = options.backgroundColor;
@@ -138,19 +139,20 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set format(value) {
-      // Determine map center bp before changing layout
-      const centerBp = this._layout && this.canvas.bpForCanvasCenter();
-      const layoutChanged = Boolean(this._layout && this._layout.type !== value);
-      // const oldLayout = this._layout;
-      if (value === 'linear') {
-        this._layout = new CGV.LayoutLinear(this);
-      } else if (value === 'circular') {
-        this._layout = new CGV.LayoutCircular(this);
-      } else {
-        throw 'Format must be one of the following: linear, circular';
-      }
-      // FIXME
-      this.layout.updateScales(layoutChanged, centerBp);
+      this.layout.type = value;
+      // // Determine map center bp before changing layout
+      // const centerBp = this._layout && this.canvas.bpForCanvasCenter();
+      // const layoutChanged = Boolean(this._layout && this._layout.type !== value);
+      // // const oldLayout = this._layout;
+      // if (value === 'linear') {
+      //   this._layout = new CGV.LayoutLinear(this);
+      // } else if (value === 'circular') {
+      //   this._layout = new CGV.LayoutCircular(this);
+      // } else {
+      //   throw 'Format must be one of the following: linear, circular';
+      // }
+      // // FIXME
+      // this.layout.updateScales(layoutChanged, centerBp);
     }
 
     /**
@@ -638,6 +640,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.zoomTo(0, 1, duration, ease);
     }
 
+    // FIXME: is this useful
     getCurrentBp() {
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();

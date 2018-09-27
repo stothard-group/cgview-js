@@ -6,18 +6,28 @@
    * <br />
    * This Layout is in control of handling and drawing the map as a line
    */
-  class LayoutLinear extends CGV.Layout {
+  class LayoutLinear {
 
     /**
      * Create a Layout
      */
-    // constructor(viewer) {
-    //   super(viewer)
-    // }
+    constructor(layout) {
+      this._layout = layout;
+    }
 
     toString() {
       return 'LayoutLinear';
     }
+
+    // Convenience properties
+    get layout() { return this._layout; }
+    get viewer() { return this.layout.viewer; }
+    get canvas() { return this.layout.canvas; }
+    get backbone() { return this.layout.backbone; }
+    get sequence() { return this.layout.sequence; }
+    get scale() { return this.layout.scale; }
+    get width() { return this.layout.width; }
+    get height() { return this.layout.height; }
 
     get type() {
       return 'linear';
@@ -69,8 +79,10 @@
     //   this.viewer._updateZoomMax();
     // }
 
+    // see circular for notes
     updateScales(layoutChanged, bp) {
       if (!this.sequence) { return; }
+      const layout = this.layout;
       const canvas = this.canvas;
       const scale = this.scale;
 
@@ -84,14 +96,16 @@
         // .range([-rangeHalfWidth, rangeHalfWidth]);
         // .range([0, 2*rangeHalfWidth]);
       this.viewer._updateZoomMax();
+          console.log(this.type, layoutChanged, bp)
 
       // X/Y Scales
       if (layoutChanged) {
+          console.log('A')
         // Deleting the current scales will cause the map to be centered
         scale.x = undefined;
         scale.y = undefined;
-        this._updateScaleForAxis('x', canvas.width);
-        this._updateScaleForAxis('y', canvas.height);
+        layout._updateScaleForAxis('x', canvas.width);
+        layout._updateScaleForAxis('y', canvas.height);
         // At larger zoom levels and when a bp was given, center the map on that bp
         const zoomFactorCutoff = 1.25;
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
@@ -100,11 +114,13 @@
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
+          console.log('B', point, dx, dy)
         }
       } else {
+          console.log('C')
         // The canvas is being resized or initialized
-        this._updateScaleForAxis('x', canvas.width);
-        this._updateScaleForAxis('y', canvas.height);
+        layout._updateScaleForAxis('x', canvas.width);
+        layout._updateScaleForAxis('y', canvas.height);
       }
     }
 
@@ -309,7 +325,6 @@
       } else if (startType === 'noMoveTo') {
         ctx.lineTo(p2.x, p2.y);
       }
-
     }
 
     initialWorkingSpace() {

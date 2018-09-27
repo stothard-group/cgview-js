@@ -6,18 +6,28 @@
    * <br />
    * This Layout is in control of handling and drawing the map as a circle
    */
-  class LayoutCircular extends CGV.Layout {
+  class LayoutCircular {
 
     /**
      * Create a Layout
      */
-    // constructor(viewer) {
-    //   super(viewer)
-    // }
+    constructor(layout) {
+      this._layout = layout;
+    }
 
     toString() {
       return 'LayoutCircular';
     }
+
+    // Convenience properties
+    get layout() { return this._layout; }
+    get viewer() { return this.layout.viewer; }
+    get canvas() { return this.layout.canvas; }
+    get backbone() { return this.layout.backbone; }
+    get sequence() { return this.layout.sequence; }
+    get scale() { return this.layout.scale; }
+    get width() { return this.layout.width; }
+    get height() { return this.layout.height; }
 
     get type() {
       return 'circular';
@@ -30,7 +40,7 @@
     // NOTES:
     //  - 3 scenarios
     //    - scales have not been initialized so simple center the map
-    //    - scales already initialed and layout has not changed
+    //    - scales already initialized and layout has not changed
     //      - keep the map centered as the scales change
     //    - layout changed
     //      - based on zoom will the whole map be in the canvas (determine from radius for the zoom)
@@ -38,6 +48,7 @@
     //        - if not: center the map on the backbone at the bp that was the linear center
     updateScales(layoutChanged, bp) {
       if (!this.sequence) { return; }
+      const layout = this.layout
       const canvas = this.canvas;
       const scale = this.scale;
 
@@ -47,13 +58,15 @@
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       this.viewer._updateZoomMax();
 
+          console.log(this.type, layoutChanged, bp)
       // X/Y Scales
       if (layoutChanged) {
+          console.log('A')
         // Deleting the current scales will cause the map to be centered
         scale.x = undefined;
         scale.y = undefined;
-        this._updateScaleForAxis('x', canvas.width);
-        this._updateScaleForAxis('y', canvas.height);
+        layout._updateScaleForAxis('x', canvas.width);
+        layout._updateScaleForAxis('y', canvas.height);
         // At larger zoom levels and when a bp was given, center the map on that bp
         const zoomFactorCutoff = 1.25;
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
@@ -62,11 +75,13 @@
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
+          console.log('B', point, dx, dy)
         }
       } else {
+          console.log('C')
         // The canvas is being resized or initialized
-        this._updateScaleForAxis('x', canvas.width);
-        this._updateScaleForAxis('y', canvas.height);
+        layout._updateScaleForAxis('x', canvas.width);
+        layout._updateScaleForAxis('y', canvas.height);
       }
     }
 
