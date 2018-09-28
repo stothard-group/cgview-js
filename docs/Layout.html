@@ -865,6 +865,10 @@
             
                 <li data-name="Layout#bpForPoint"><a href="Layout.html#bpForPoint">bpForPoint</a></li>
             
+                <li data-name="Layout#centerOffsetForPoint"><a href="Layout.html#centerOffsetForPoint">centerOffsetForPoint</a></li>
+            
+                <li data-name="Layout#domainsFor"><a href="Layout.html#domainsFor">domainsFor</a></li>
+            
                 <li data-name="Layout#maxMapThickness"><a href="Layout.html#maxMapThickness">maxMapThickness</a></li>
             
                 <li data-name="Layout#pixelsPerBp"><a href="Layout.html#pixelsPerBp">pixelsPerBp</a></li>
@@ -2486,7 +2490,7 @@ The Layout is in control of creating slots from tracks and drawing the map.</p><
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line485">line 485</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line500">line 500</a>
         </div>
         
     </div>
@@ -2558,7 +2562,7 @@ the number of slots.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line841">line 841</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line856">line 856</a>
         </div>
         
     </div>
@@ -2636,7 +2640,7 @@ Therefore we should always be able to see all the slots in the viewer</li>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line183">line 183</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line184">line 184</a>
         </div>
         
     </div>
@@ -2776,6 +2780,349 @@ Therefore we should always be able to see all the slots in the viewer</li>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="centerOffsetForPoint">
+            
+            centerOffsetForPoint<span class="signature">(point)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line196">line 196</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns the Center Offset for the given <em>point</em> on the canvas.
+Center offset is the distance from the center of the map.
+For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>point</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Point">Point</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Point on the canvas.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>Center Offset</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="domainsFor">
+            
+            domainsFor<span class="signature">(bp, <span class="optional">zoomFactor</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line207">line 207</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns the X and Y scale domains for the given <em>bp</em> and <em>zoomFactor</em>.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>bp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>Basepair</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>zoomFactor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    Current viewer zoom factor
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>The zoom factor used to calculate the domains</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Array
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>The X and Y scale domains in the form of [[X1, X2], [Y1, Y2]].</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="maxMapThickness">
             
             maxMapThickness<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
@@ -2783,7 +3130,7 @@ Therefore we should always be able to see all the slots in the viewer</li>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line215">line 215</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line230">line 230</a>
         </div>
         
     </div>
@@ -2883,7 +3230,7 @@ Therefore we should always be able to see all the slots in the viewer</li>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line224">line 224</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line239">line 239</a>
         </div>
         
     </div>
@@ -2978,12 +3325,12 @@ Therefore we should always be able to see all the slots in the viewer</li>
     <div class="nameContainer">
         <h4 class="name" id="pointFor">
             
-            pointFor<span class="signature">(bp, centerOffset)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="global.html#Point">Point</a>}</span>
+            pointFor<span class="signature">(bp, <span class="optional">centerOffset</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="global.html#Point">Point</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line173">line 173</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line174">line 174</a>
         </div>
         
     </div>
@@ -3015,6 +3362,8 @@ Therefore we should always be able to see all the slots in the viewer</li>
 		<th>Type</th>
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -3038,8 +3387,17 @@ Therefore we should always be able to see all the slots in the viewer</li>
             </td>
             
             
+                <td class="default">
+                
+                </td>
+            
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 <p>Basepair</p></td>
         </tr>
@@ -3061,10 +3419,23 @@ Therefore we should always be able to see all the slots in the viewer</li>
             </td>
             
             
+                <td class="default">
+                
+                    <a href="Backbone.html#adjustedCenterOffset"><code>Backbone.adjustedCenterOffset</code></a>
+                
+                </td>
+            
             
             <td class="description last">
                 
-                <p>Distance from the center of the map. For a circulare map, this is the radius, while for a linear map, it's the distance from the backbone.</p></td>
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.</p></td>
         </tr>
 	
 	
@@ -3153,7 +3524,7 @@ Therefore we should always be able to see all the slots in the viewer</li>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line819">line 819</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line834">line 834</a>
         </div>
         
     </div>
@@ -3230,7 +3601,7 @@ Therefore we should always be able to see all the slots in the viewer</li>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 13:50:44 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 15:44:34 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

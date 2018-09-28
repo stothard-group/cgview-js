@@ -166,7 +166,7 @@
     /**
      * Returns the point on the canvas for the given *bp* and *centerOffset*.
      * @param {Number} bp - Basepair
-     * @param {Number} [centerOffset=Current zoomed backbone center offset] - Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
+     * @param {Number} [centerOffset={@link Backbone#adjustedCenterOffset Backbone.adjustedCenterOffset}] - Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
      *
      * @returns {Point} - The point on the canvas.
      */
@@ -200,14 +200,20 @@
     /**
      * Returns the X and Y scale domains for the given *bp* and *zoomFactor*.
      * @param {Number} bp - Basepair
-     * @param {Number} [zoomFactor=Current Viewer Zoom Factor] - The zoom factor used to calculate the domains
+     * @param {Number} [zoomFactor=Current viewer zoom factor] - The zoom factor used to calculate the domains
      *
-     * @returns {Point} - The point on the canvas.
+     * @returns {Array} - The X and Y scale domains in the form of [[X1, X2], [Y1, Y2]].
      */
     domainsFor(...args) {
       return this.delegate.domainsFor(...args);
     }
 
+    /**
+     * Adjust the scale.bp.range. This methods is mainly required for Linear maps and is called
+     * when ever the zoomFactor is changed. For circular maps, it only needs to be called when
+     * initializing the bp scale.
+     * @param {Boolean} initialize - Only used by Circular maps.
+     */
     adjustBpScaleRange(...args) {
       return this.delegate.adjustBpScaleRange(...args);
     }
