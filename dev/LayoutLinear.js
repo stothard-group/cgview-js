@@ -81,7 +81,9 @@
 
     // see circular for notes
     updateScales(layoutChanged, bp) {
+
       if (!this.sequence) { return; }
+      bp = bp && this.sequence.constrain(bp);
       const layout = this.layout;
       const canvas = this.canvas;
       const scale = this.scale;
@@ -96,11 +98,9 @@
         // .range([-rangeHalfWidth, rangeHalfWidth]);
         // .range([0, 2*rangeHalfWidth]);
       this.viewer._updateZoomMax();
-          console.log(this.type, layoutChanged, bp)
 
       // X/Y Scales
       if (layoutChanged) {
-          console.log('A')
         // Deleting the current scales will cause the map to be centered
         scale.x = undefined;
         scale.y = undefined;
@@ -113,89 +113,13 @@
           const point = this.pointFor(bp);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
-          this.translate(-dx, dy);
-          console.log('B', point, dx, dy)
+          layout.translate(-dx, dy);
         }
       } else {
-          console.log('C')
         // The canvas is being resized or initialized
         layout._updateScaleForAxis('x', canvas.width);
         layout._updateScaleForAxis('y', canvas.height);
       }
-    }
-
-    // The center of the zoom will be the supplied bp position on the backbone.
-    // The default bp will be based on the center of the canvas.
-    // FIXME: constrain zoomFactor
-    zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
-      // Center of zoom before zooming
-      const {x: centerX1, y: centerY1} = this.pointFor(bp);
-
-      // Update the d3.zoom transform.
-      // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
-      // automatically when zooming via d3 (ie. in Viewer-Zoom.js)
-      d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
-
-      // Update zoom factor
-      this.viewer._zoomFactor = zoomFactor;
-
-      // Update the BP scale
-      // const rangeHalfWidth = Math.round(this.canvas.width * this.viewer.zoomFactor / 2);
-      // const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
-      // this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
-      this.adjustBpScale();
-
-      // Center of zoom after zooming
-      // pointFor is on the backbone by default
-      const {x: centerX2, y: centerY2} = this.pointFor(bp);
-      // console.log(bp, centerX1, centerX2)
-
-
-      // Find differerence in x/y and translate the domains
-      const dx = centerX1 - centerX2;
-      const dy = centerY2 - centerY1;
-      // console.log(dx, dy)
-      this.translate(dx, -dy);
-
-
-      // Update the BP scale
-      // const rangeHalfWidth = Math.round(this.canvas.width * this.viewer.zoomFactor / 2);
-      // this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
-      // this.scale.bp.range([0, 2*rangeHalfWidth]);
-      // console.log(this.scale.bp.range(), this.scale.bp.domain())
-
-    }
-    // The center of the zoom will be the supplied bp position on the backbone.
-    // The default bp will be based on the center of the canvas.
-    // FIXME: constrain zoomFactor
-    // zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
-    //   // Update the d3.zoom transform.
-    //   // The zoom transform is set automatically when zooming via d3 (ie. in Viewer-Zoom.js).
-    //   // However, if zoom is called from Viewer.zoomFactor the transrform won't be changed,
-    //   // so we set it here to make sure it's updated.
-    //   d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
-    //
-    //   const oldZoomFactor = this.viewer.zoomFactor;
-    //   const zoomRatio = zoomFactor  / oldZoomFactor;
-    //
-    //   // Update zoom factor
-    //   this.viewer._zoomFactor = zoomFactor;
-    //
-    //   // Zoom and translate the domains
-    //   const domainX = this.scale.x.domain();
-    //   const d0 = bp - ((bp - domainX[0]) / zoomRatio);
-    //   const d1 = bp + ((domainX[1] - bp) / zoomRatio);
-    //
-    //   this.scale.x.domain([d0, d1]);
-    // }
-
-    translate(dx, dy) {
-      const domainX = this.scale.x.domain();
-      const domainY = this.scale.y.domain();
-      // dx = CGV.pixel(Math.round(d3.event.dx / this.backbone.pixelsPerBp()));
-      // dx = CGV.pixel(d3.event.dx / this.backbone.pixelsPerBp());
-      this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-      this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
     }
 
     pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {

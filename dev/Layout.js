@@ -113,8 +113,8 @@
       } else {
         throw 'Layout type must be one of the following: linear, circular';
       }
-      this.updateScales(layoutChanged, centerBp);
       this._adjustProportions();
+      this.updateScales(layoutChanged, centerBp);
     }
 
     /** * @member {Number} - Get the distance from the backbone to the inner/bottom edge of the map.
@@ -161,15 +161,15 @@
       this.delegate.updateScales(...args);
     }
 
-    // zoom(zoomFactor, bp) {
-    zoom(...args) {
-      this.delegate.zoom(...args);
-    }
+    // // zoom(zoomFactor, bp) {
+    // zoom(...args) {
+    //   this.delegate.zoom(...args);
+    // }
 
-    // translate(dx, dy) {
-    translate(...args) {
-      this.delegate.translate(...args);
-    }
+    // // translate(dx, dy) {
+    // translate(...args) {
+    //   this.delegate.translate(...args);
+    // }
 
     // pointFor(bp, centerOffset) {
     pointFor(...args) {
@@ -246,6 +246,49 @@
     backbonePixelLength() {
       return this.delegate.backbonePixelLength();
     }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // Common methods for current layouts: linear, circular
+    //  - This method may have to be altered if additional layouts are added
+    //////////////////////////////////////////////////////////////////////////
+
+    // The center of the zoom will be the supplied bp position on the backbone.
+    // The default bp will be based on the center of the canvas.
+    zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
+      // Center of zoom before zooming
+      const {x: centerX1, y: centerY1} = this.pointFor(bp);
+
+      zoomFactor = CGV.constrain(zoomFactor, this.viewer.minZoomFactor, this.viewer.maxZoomFactor);
+
+      // Update the d3.zoom transform.
+      // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
+      // automatically when zooming via d3 (ie. in Viewer-Zoom.js)
+      d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
+
+      // Update zoom factor
+      this.viewer._zoomFactor = zoomFactor;
+
+      // Update the BP scale, currently this is only needed for the linear layout
+      this.adjustBpScale();
+
+      // Center of zoom after zooming
+      // pointFor is on the backbone by default
+      const {x: centerX2, y: centerY2} = this.pointFor(bp);
+
+      // Find differerence in x/y and translate the domains
+      const dx = centerX1 - centerX2;
+      const dy = centerY2 - centerY1;
+      this.translate(dx, -dy);
+    }
+
+    translate(dx, dy) {
+      const domainX = this.scale.x.domain();
+      const domainY = this.scale.y.domain();
+      this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
+      this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
+    }
+
 
     //////////////////////////////////////////////////////////////////////////
     // Methods for determining offsets and Drawing

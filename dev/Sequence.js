@@ -334,6 +334,17 @@
     }
 
     /**
+     * Constrains the supplied *bp* to be between 1 and the sequence length.
+     *  - If the bp is less than 1: 1 is returned.
+     *  - If greater than the sequence length: sequence length is returned.
+     *  - Otherwise the supplied bp is returned.
+     * @param {Number} bp - position (in bp)
+     */
+    constrain(bp) {
+      return CGV.constrain(bp, 1, this.length);
+    }
+
+    /**
      * Return the sequence for the *range*
      *
      * @param {Range} range - the range for which to return the sequence

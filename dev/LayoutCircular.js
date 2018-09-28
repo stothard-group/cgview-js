@@ -48,7 +48,8 @@
     //        - if not: center the map on the backbone at the bp that was the linear center
     updateScales(layoutChanged, bp) {
       if (!this.sequence) { return; }
-      const layout = this.layout
+      bp = bp && this.sequence.constrain(bp);
+      const layout = this.layout;
       const canvas = this.canvas;
       const scale = this.scale;
 
@@ -58,10 +59,8 @@
         .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       this.viewer._updateZoomMax();
 
-          console.log(this.type, layoutChanged, bp)
       // X/Y Scales
       if (layoutChanged) {
-          console.log('A')
         // Deleting the current scales will cause the map to be centered
         scale.x = undefined;
         scale.y = undefined;
@@ -74,73 +73,14 @@
           const point = this.pointFor(bp);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
-          this.translate(-dx, dy);
-          console.log('B', point, dx, dy)
+          layout.translate(-dx, dy);
         }
       } else {
-          console.log('C')
         // The canvas is being resized or initialized
         layout._updateScaleForAxis('x', canvas.width);
         layout._updateScaleForAxis('y', canvas.height);
       }
     }
-
-
-    // The center of the zoom will be the supplied bp position on the backbone.
-    // The default bp will be based on the center of the canvas.
-    // FIXME: constrain zoomFactor
-    zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
-      // Center of zoom before zooming
-      const {x: centerX1, y: centerY1} = this.pointFor(bp);
-
-      // Update the d3.zoom transform.
-      // Only need to do this if setting Viewer.zoomFactor. The zoom transform is set
-      // automatically when zooming via d3 (ie. in Viewer-Zoom.js)
-      d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
-
-      // Update zoom factor
-      this.viewer._zoomFactor = zoomFactor;
-
-      // Center of zoom after zooming
-      // pointFor is on the backbone by default
-      const {x: centerX2, y: centerY2} = this.pointFor(bp);
-
-      // Find differerence in x/y and translate the domains
-      const dx = centerX1 - centerX2;
-      const dy = centerY2 - centerY1;
-      this.translate(dx, -dy);
-    }
-
-    translate(dx, dy) {
-      const domainX = this.scale.x.domain();
-      const domainY = this.scale.y.domain();
-      this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-      this.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
-    }
-
-    // zoomDomains() {
-    //   const pos = d3.mouse(this.canvas.node('ui'));
-    //   const mx = this.scale.x.invert(CGV.pixel(pos[0]));
-    //   const my = this.scale.y.invert(CGV.pixel(pos[1]));
-    //
-    //   const centerOffset = this.backbone.centerOffset;
-    //   const angle = CGV.angleFromPosition(mx, my);
-    //
-    //   const oldZoomFactor = this.viewer._zoomFactor;
-    //   const newZoomFactor = d3.event.transform.k;
-    //
-    //   const radiusDiff = centerOffset * (oldZoomFactor - newZoomFactor);
-    //
-    //   const dx = CGV.pixel(Math.cos(-angle) * radiusDiff);
-    //   const dy = CGV.pixel(Math.sin(-angle) * radiusDiff);
-    //
-    //   const domainX = this.scale.x.domain();
-    //   const domainY = this.scale.y.domain();
-    //
-    //   this.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-    //   this.scale.y.domain([domainY[0] - dy, domainY[1] - dy]);
-    // }
-
 
     // Return point on Canvas.
     // mapCenterOffset is the radius for circular maps
