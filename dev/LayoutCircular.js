@@ -33,54 +33,9 @@
       return 'circular';
     }
 
-    backbonePixelLength() {
-      return Math.PI * 2 * this.backbone.centerOffset;
-    }
-
-    // NOTES:
-    //  - 3 scenarios
-    //    - scales have not been initialized so simple center the map
-    //    - scales already initialized and layout has not changed
-    //      - keep the map centered as the scales change
-    //    - layout changed
-    //      - based on zoom will the whole map be in the canvas (determine from radius for the zoom)
-    //        - if so: center the map
-    //        - if not: center the map on the backbone at the bp that was the linear center
-    updateScales(layoutChanged, bp) {
-      if (!this.sequence) { return; }
-      bp = bp && this.sequence.constrain(bp);
-      const layout = this.layout;
-      const canvas = this.canvas;
-      const scale = this.scale;
-
-      // BP Scale
-      scale.bp = d3.scaleLinear()
-        .domain([1, this.sequence.length])
-        .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
-      this.viewer._updateZoomMax();
-
-      // X/Y Scales
-      if (layoutChanged) {
-        // Deleting the current scales will cause the map to be centered
-        scale.x = undefined;
-        scale.y = undefined;
-        layout._updateScaleForAxis('x', canvas.width);
-        layout._updateScaleForAxis('y', canvas.height);
-        // At larger zoom levels and when a bp was given, center the map on that bp
-        const zoomFactorCutoff = 1.25;
-        if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
-          // Get point for bp and backbone radius (NOTE: bp scale must be set first)
-          const point = this.pointFor(bp);
-          const dx = scale.x.invert(point.x);
-          const dy = scale.y.invert(point.y);
-          layout.translate(-dx, dy);
-        }
-      } else {
-        // The canvas is being resized or initialized
-        layout._updateScaleForAxis('x', canvas.width);
-        layout._updateScaleForAxis('y', canvas.height);
-      }
-    }
+    //////////////////////////////////////////////////////////////////////////
+    // Required Delegate Methods
+    //////////////////////////////////////////////////////////////////////////
 
     // Return point on Canvas.
     // mapCenterOffset is the radius for circular maps
@@ -121,7 +76,10 @@
     }
 
     // Zoom Factor does not affect circular bp scale
-    adjustBpScale(zoomFactor) {
+    adjustBpScaleRange(initialize = false) {
+      if (initialize) {
+        this.scale.bp.range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
+      }
     }
 
     // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??

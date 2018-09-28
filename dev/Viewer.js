@@ -620,7 +620,7 @@ if (window.CGV === undefined) window.CGV = CGView;
             self._zoomFactor = intermZoomFactors(t);
             d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
 
-            self.layout.adjustBpScale();
+            self.layout.adjustBpScaleRange();
 
             self.trigger('zoom');
             self.drawFast();

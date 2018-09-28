@@ -33,112 +33,14 @@
       return 'linear';
     }
 
-    // Returns the non-zoomed backbone length.
-    // For linear this is the width of the canvas
-    backbonePixelLength() {
-      return this.canvas.width;
-    }
-
-    // // SEE Circular for notes
-    // updateScales(layoutChanged, bp) {
-    //   if (!this.sequence) { return; }
-    //   const canvas = this.canvas;
-    //   const scale = this.scale;
-    //   const zoomFactorCutoff = 1.25;
-    //   let newDomain;
-    //
-    //   // X/Y Scale
-    //   if (layoutChanged) {
-    //     // When the zoom factor is low or no bp was specified, center the map
-    //     if (this.viewer.zoomFactor <= zoomFactorCutoff || bp === undefined) {
-    //       bp = Math.round(this.sequence.length / 2);
-    //     }
-    //     const canvasHalfWidthBp = Math.round(this.sequence.length / 2 / this.viewer.zoomFactor);
-    //     newDomain = [bp - canvasHalfWidthBp, bp + canvasHalfWidthBp];
-    //     // Recenter the Y scale
-    //     scale.y = undefined;
-    //   } else {
-    //     if (scale.x) {
-    //       // Keep same domain. Range will change.
-    //       newDomain = scale.x.domain();
-    //     } else {
-    //       // Initializing. Set domain for full sequence.
-    //       newDomain = [1, this.sequence.length];
-    //     }
-    //   }
-    //
-    //   scale.x = d3.scaleLinear()
-    //     .range([0, canvas.width])
-    //     .domain(newDomain);
-    //
-    //   // Y Scale
-    //   this._updateScaleForAxis('y', canvas.height);
-    //
-    //   // BP Scale
-    //   this.scale.bp = this.scale.x;
-    //   this.viewer._updateZoomMax();
-    // }
-
-    // see circular for notes
-    updateScales(layoutChanged, bp) {
-
-      if (!this.sequence) { return; }
-      bp = bp && this.sequence.constrain(bp);
-      const layout = this.layout;
-      const canvas = this.canvas;
-      const scale = this.scale;
-
-      // BP Scale
-
-      // const rangeHalfWidth = Math.round(canvas.width * this.viewer.zoomFactor / 2);
-      // const rangeHalfWidth = canvas.width * this.viewer.zoomFactor / 2;
-      scale.bp = d3.scaleLinear()
-        .domain([1, this.sequence.length]);
-      this.adjustBpScale();
-        // .range([-rangeHalfWidth, rangeHalfWidth]);
-        // .range([0, 2*rangeHalfWidth]);
-      this.viewer._updateZoomMax();
-
-      // X/Y Scales
-      if (layoutChanged) {
-        // Deleting the current scales will cause the map to be centered
-        scale.x = undefined;
-        scale.y = undefined;
-        layout._updateScaleForAxis('x', canvas.width);
-        layout._updateScaleForAxis('y', canvas.height);
-        // At larger zoom levels and when a bp was given, center the map on that bp
-        const zoomFactorCutoff = 1.25;
-        if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
-          // Get point for bp and backbone centerOffset (NOTE: bp scale must be set first)
-          const point = this.pointFor(bp);
-          const dx = scale.x.invert(point.x);
-          const dy = scale.y.invert(point.y);
-          layout.translate(-dx, dy);
-        }
-      } else {
-        // The canvas is being resized or initialized
-        layout._updateScaleForAxis('x', canvas.width);
-        layout._updateScaleForAxis('y', canvas.height);
-      }
-    }
+    //////////////////////////////////////////////////////////////////////////
+    // Required Delegate Methods
+    //////////////////////////////////////////////////////////////////////////
 
     pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      // const x = this.scale.bp(bp);
-      // const y = this.scale.y(mapCenterOffset);
-      // return {x: x, y: y};
-
-      // console.log(bp)
       const x = this.scale.x(this.scale.bp(bp));
       const y = this.scale.y(mapCenterOffset);
-      // console.log( {x: x, y: y});
       return {x: x, y: y};
-
-      // const pixels = this.scale.bp(bp);
-      // const pixelOffset = Math.abs((1/2 * this.sequence.length * this.scale.bp(1)) - pixels);
-      //
-      // const x = this.scale.x(pixelOffset);
-      // const y = this.scale.y(mapCenterOffset);
-      // return {x: x, y: y};
     }
 
     // Return point on Circle Coordinates.
@@ -175,8 +77,9 @@
       return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
     }
 
-    adjustBpScale(zoomFactor = this.viewer.zoomFactor) {
-      const rangeHalfWidth = this.canvas.width * zoomFactor / 2;
+    // Does not need the initial argument
+    adjustBpScaleRange() {
+      const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
     }
 

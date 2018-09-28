@@ -142,8 +142,11 @@
       return this._visibleRange;
     }
 
+    // Return the pixelLength of the backbone at a zoom level of 1
     get pixelLength() {
-      return this.layout.backbonePixelLength();
+      // return this.layout.backbonePixelLength();
+      // return this.layout.pixelsPerBp(this.centerOffset) * this.sequence.length;
+      return this.layout.pixelsPerBp(this.adjustedCenterOffset) / this.viewer.zoomFactor * this.sequence.length;
     }
 
     /**

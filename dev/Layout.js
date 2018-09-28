@@ -153,23 +153,9 @@
       return this._slotProportionStats;
     }
     //////////////////////////////////////////////////////////////////////////
-    // FIXME: update
-    // Methods that must be present in sub classes
+    // FIXME: Add Documentation
+    // Required Delegate Methods
     //////////////////////////////////////////////////////////////////////////
-
-    updateScales(...args) {
-      this.delegate.updateScales(...args);
-    }
-
-    // // zoom(zoomFactor, bp) {
-    // zoom(...args) {
-    //   this.delegate.zoom(...args);
-    // }
-
-    // // translate(dx, dy) {
-    // translate(...args) {
-    //   this.delegate.translate(...args);
-    // }
 
     // pointFor(bp, centerOffset) {
     pointFor(...args) {
@@ -190,8 +176,8 @@
       return this.delegate.domainsFor(...args);
     }
 
-    adjustBpScale(...args) {
-      return this.delegate.adjustBpScale(...args);
+    adjustBpScaleRange(...args) {
+      return this.delegate.adjustBpScaleRange(...args);
     }
 
     // FIXME: update arguments
@@ -243,15 +229,56 @@
       this.delegate.updateInitialBackboneCenterOffset(...args);
     }
 
-    backbonePixelLength() {
-      return this.delegate.backbonePixelLength();
-    }
-
 
     //////////////////////////////////////////////////////////////////////////
     // Common methods for current layouts: linear, circular
     //  - This method may have to be altered if additional layouts are added
     //////////////////////////////////////////////////////////////////////////
+
+    // NOTES:
+    //  - 3 scenarios
+    //    - scales have not been initialized so simple center the map
+    //    - scales already initialized and layout has not changed
+    //      - keep the map centered as the scales change
+    //    - layout changed
+    //      - based on zoom will the whole map be in the canvas (determine from radius for the zoom)
+    //        - if so: center the map
+    //        - if not: center the map on the backbone at the bp that was the linear center
+    updateScales(layoutChanged, bp) {
+      if (!this.sequence) { return; }
+      bp = bp && this.sequence.constrain(bp);
+      const canvas = this.canvas;
+      const scale = this.scale;
+
+      // BP Scale
+      scale.bp = d3.scaleLinear()
+        .domain([1, this.sequence.length]);
+      // The argument 'true' only affects the circular version of this method
+      this.adjustBpScaleRange(true);
+      this.viewer._updateZoomMax();
+
+      // X/Y Scales
+      if (layoutChanged) {
+        // Deleting the current scales will cause the map to be centered
+        scale.x = undefined;
+        scale.y = undefined;
+        this._updateScaleForAxis('x', canvas.width);
+        this._updateScaleForAxis('y', canvas.height);
+        // At larger zoom levels and when a bp was given, center the map on that bp
+        const zoomFactorCutoff = 1.25;
+        if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
+          // Get point for bp and backbone centerOffset (NOTE: bp scale must be set first)
+          const point = this.pointFor(bp);
+          const dx = scale.x.invert(point.x);
+          const dy = scale.y.invert(point.y);
+          this.translate(-dx, dy);
+        }
+      } else {
+        // The canvas is being resized or initialized
+        this._updateScaleForAxis('x', canvas.width);
+        this._updateScaleForAxis('y', canvas.height);
+      }
+    }
 
     // The center of the zoom will be the supplied bp position on the backbone.
     // The default bp will be based on the center of the canvas.
@@ -270,7 +297,7 @@
       this.viewer._zoomFactor = zoomFactor;
 
       // Update the BP scale, currently this is only needed for the linear layout
-      this.adjustBpScale();
+      this.adjustBpScaleRange();
 
       // Center of zoom after zooming
       // pointFor is on the backbone by default
