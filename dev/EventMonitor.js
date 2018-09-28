@@ -79,7 +79,8 @@
       const mapY = scale.y.invert(canvasY);
       const centerOffset = this.viewer.layout.centerOffsetForPoint({x: mapX, y: mapY});
       const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
-      const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      // const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
+      const bp = this.canvas.bpForPoint({x: canvasX, y: canvasY});
       const feature = slot && slot.findFeaturesForBp(bp)[0];
       const plot = slot && slot._plot;
       const score = plot && plot.scoreForPosition(bp).toFixed(2);

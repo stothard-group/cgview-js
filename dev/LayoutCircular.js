@@ -57,9 +57,10 @@
       return {x: x, y: y};
     }
 
-    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
     bpForPoint(point) {
-      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
+      const mapX = this.scale.x.invert(point.x);
+      const mapY = this.scale.y.invert(point.y);
+      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(mapX, mapY) ) );
     }
 
 

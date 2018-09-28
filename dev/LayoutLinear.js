@@ -51,9 +51,10 @@
       return {x: x, y: y};
     }
 
-    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
+    // NOTE: only the X coordinate of the point is required
     bpForPoint(point) {
-      return Math.round( this.scale.bp.invert( point.x ) );
+      const mapX = this.scale.x.invert(point.x);
+      return Math.round( this.scale.bp.invert( mapX) );
     }
 
     // MAP POINT
