@@ -1641,7 +1641,7 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Events.js.html">Source: Events.js</h1>
+        <h1 class="page-title" data-filename="LayoutLinear.js.html">Source: LayoutLinear.js</h1>
         
 
 
@@ -1649,167 +1649,175 @@
     <section>
         <article>
             <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Events
+// Layout for Linear Maps
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
   /**
    * &lt;br />
-   * Events is a system to plug in callbacks to specific events in CGV.
-   * Use [on](#on) to add a callback and [off](#off) to remove it.
-   * Here are a list of events supported in CGV:
-   *
-   *  Event               | Description
-   *  --------------------|-------------
-   *  legend-update       | Called after legend items removed or added
-   *  caption-update      | Called after caption items removed or added
-   *  track-update        | Called when track is updated
-   *  resize              | Called when the Viewer size is changed
-   *  font-update         | Called when the font is changed (e.g. size, family, etc)
-   *  zoom-start          | Called once before viewer starts zoom animation
-   *  zoom                | Called every frame of the zoom animation
-   *  zoom-end            | Called after zooming is complete
-   *
-   *
-   *  mousemove           | Called when the mouse moves on the map
-   *  drag-start          | Called once before viewer starts drag animation
-   *  drag                | Called every frame of the drag animation
-   *  drag-end            | Called after dragging is complete
-   *  domain-change       | Called after the viewer domains have changed
-   *  selection-add       | Called when an element is added to the selection
-   *  selection-remove    | Called after an element is removed from the selection
-   *  selection-clear     | Called before the selection is cleared
-   *  selection-empty     | Called after the selection becomes empty
-   *  highlight-start     | Called when an element is highlighted
-   *  highlight-end       | Called when an element is unhighlighted
-   *  label-click         | Called when a annotation label is clicked
+   * This Layout is in control of handling and drawing the map as a line
    */
-  class Events {
+  class LayoutLinear {
 
-    constructor() {
-      this._handlers = {};
+    /**
+     * Create a Layout
+     */
+    constructor(layout) {
+      this._layout = layout;
+    }
+
+    toString() {
+      return 'LayoutLinear';
+    }
+
+    // Convenience properties
+    get layout() { return this._layout; }
+    get viewer() { return this.layout.viewer; }
+    get canvas() { return this.layout.canvas; }
+    get backbone() { return this.layout.backbone; }
+    get sequence() { return this.layout.sequence; }
+    get scale() { return this.layout.scale; }
+    get width() { return this.layout.width; }
+    get height() { return this.layout.height; }
+
+    get type() {
+      return 'linear';
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Required Delegate Methods
+    //////////////////////////////////////////////////////////////////////////
+
+    pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const x = this.scale.x(this.scale.bp(bp));
+      const y = this.scale.y(mapCenterOffset);
+      return {x: x, y: y};
+    }
+
+    // Return point on Circle Coordinates.
+    // FIXME: needs better names
+    pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const x = this.scale.bp(bp);
+      const y = mapCenterOffset;
+      return {x: x, y: y};
+    }
+
+    // MAP POINT
+    centerOffsetForPoint(point) {
+      return point.y;
+    }
+
+    // Return the X and Y domains for a bp and zoomFactor
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor) {
+      const halfRangeWidth = this.scale.x.range()[1] / 2;
+      const halfRangeHeight = this.scale.y.range()[1] / 2;
+
+
+      // The correct pointFor2 requies the bp scale be first altered for the zoom level
+      const origScaleBp = this.scale.bp.copy();
+
+      const rangeHalfWidth2 = this.canvas.width * zoomFactor / 2;
+      this.scale.bp.range([-rangeHalfWidth2, rangeHalfWidth2]);
+
+      const centerPt = this.pointFor2(bp);
+      // Return to the original scale
+      this.scale.bp = origScaleBp;
+      const x = bp ? centerPt.x : 0;
+      const y = bp ? centerPt.y : 0;
+
+      return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
+    }
+
+    // Does not need the initial argument
+    adjustBpScaleRange() {
+      const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
+      this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
+    }
+
+    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
+    bpForPoint(point) {
+      // const pixels = this.scale.x.invert(point.x) + (1/2 * this.sequence.length * this.scale.bp(1));
+      // return Math.round( this.scale.bp.invert(pixels));
+
+      // return Math.round( this.scale.bp.invert( this.scale.x.invert( point.x ) ) );
+      return Math.round( this.scale.bp.invert( point.x ) );
+
+      // return Math.round( this.scale.bp.invert(point.x) );
+
+      // return Math.round( point.x );
+    }
+
+    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
+      const scaleBp = this.scale.bp;
+      const range = scaleBp.range();
+      return  (range[1] - range[0]) / (scaleBp.invert(range[1]) - scaleBp.invert(range[0]));
+    }
+
+    zoomFactorForLength(bpLength) {
+      return this.sequence.length / bpLength;
+    }
+
+    clockPositionForBp(bp, inverse = false) {
+      return inverse ? 6 : 12;
     }
 
 
-    /**
-     * Attach a callback function to a specific JSV event.
-     * ```js
-     * sv = new JSV.SpectraViewer('#my-spectra');
-     * sv.on('drag-start', function() { console.log('Dragging has begun!') };
-     *
-     * // The event can be namespaced for easier removal later
-     * sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Function} callback Function to call when event is triggered
-     */
-    on(event, callback) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      if ( !handlers[type] ) handlers[type] = [];
-      handlers[type].push( new Handler(event, callback) );
+    maxMapThickness() {
+      return this.viewer.height / 2;
     }
 
-    /**
-     * Remove a callback function from a specific JSV event. If no __callback__ is provided,
-     * then all callbacks for the event will be removed. Namespaced events can and should be used
-     * to avoid unintentionally removing callbacks attached by other plugins.
-     * ```js
-     * // Remove all callbacks attached to the 'drag-start' event.
-     * // This includes any namespaced events.
-     * sv.off('drag-start');
-     *
-     * // Remove all callbacks attached to the 'drag-start' event namespaced to 'my_plugin'
-     * sv.off('drag-start.my_plugin');
-     *
-     * // Remove all callbacks attached to any events namespaced to 'my_plugin'
-     * sv.off('.my_plugin');
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Function} callback Specfic function to remove
-     */
-    off(event, callback) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      const namespace = parseNamespace(event);
-      // If no callback is supplied remove all of them
-      if (callback === undefined) {
-        if (namespace) {
-          if (type) {
-            handlers[type] = handlers[type].filter( h => h.namespace !== namespace );
-          } else {
-            Object.keys(handlers).forEach(function(key) {
-              handlers[key] = handlers[key].filter( h => h.namespace !== namespace );
-            });
-          }
-        } else {
-          handlers[type] = undefined;
-        }
-      } else {
-        // Remove specific callback
-        handlers[type] = handlers[type].filter( h => h.callback !== callback );
+    // TODO if undefined, see if centerOffset is visible
+    // FIXME: check if offset is visible 
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      // const range = this.scale.bp.range();
+      // return new CGV.CGRange(this.sequence,
+      //   Math.max(this.scale.bp.invert(range[0]), 1),
+      //   Math.min(this.scale.bp.invert(range[1]), this.sequence.length));
+      const domainX = this.scale.x.domain();
+      // const start = this.scale.bp.invert(domainX[0]);
+      // const end = this.scale.bp.invert(domainX[1]);
+      const start = Math.floor(this.scale.bp.invert(domainX[0]));
+      const end = Math.ceil(this.scale.bp.invert(domainX[1]));
+      return new CGV.CGRange(this.sequence,
+        Math.max(start, 1),
+        Math.min(end, this.sequence.length));
+      // return new CGV.CGRange(this.sequence,
+      //   Math.max(this.bpForPoint({x: range[0], y: 0}), 1),
+      //   Math.min(this.bpForPoint({x: range[0], y: 0}), this.sequence.length));
+    }
+
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+      const canvas = this.canvas;
+      const ctx = canvas.context(layer);
+
+      // FIXME: have option to round points (could use for divider lines)
+      const p2 = this.pointFor(stopBp, centerOffset);
+      if (startType === 'lineTo') {
+        const p1 = this.pointFor(startBp, centerOffset);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+      } else if (startType === 'moveTo') {
+        const p1 = this.pointFor(startBp, centerOffset);
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+      } else if (startType === 'noMoveTo') {
+        ctx.lineTo(p2.x, p2.y);
       }
-      this._handlers = handlers;
     }
 
-    /**
-     * Trigger a callback function for a specific event.
-     * ```js
-     * // Triggers all callback functions associated with drag-start
-     * sv.trigger('drag-start');
-     *
-     * // Triggers can also be namespaced
-     * sv.trigger('drag-start.my_plugin');
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Object} object Object to be passed back to 'on'.
-     */
-    trigger(event, object) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      const namespace = parseNamespace(event);
-      if (Array.isArray(handlers[type])) {
-        handlers[type].forEach(function(handler) {
-          if (namespace) {
-            if (handler.namespace === namespace) handler.callback.call(null, object);
-          } else {
-            handler.callback.call(null, object);
-          }
-        });
-      }
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
     }
+
+    // The backbone will be the center of the map
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      this.backbone.centerOffset = 0;
+    }
+
 
   }
 
-  /** @ignore */
-
-  const checkType = function(type) {
-    if (typeof type !== 'string') {
-      throw new Error('Type must be a string');
-    }
-  };
-
-  const Handler = function(event, callback) {
-    this.callback = callback;
-    this.eventType = parseEvent(event);
-    this.namespace = parseNamespace(event);
-  };
-
-  const parseEvent = function(event) {
-    return event.replace(/\..*/, '');
-  };
-
-  const parseNamespace = function(event) {
-    const result = event.match(/\.(.*)/);
-    return result ? result[1] : undefined;
-  };
-
-  CGV.Events = Events;
+  CGV.LayoutLinear = LayoutLinear;
 })(CGView);
-
-
 </code></pre>
         </article>
     </section>

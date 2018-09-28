@@ -1641,179 +1641,2636 @@
     </ul>
 </div>
     <div class="main">
-        <h1 class="page-title" data-filename="Events.js.html">Source: Events.js</h1>
+        <h1 class="page-title" data-filename="CGArray.html">Class: CGArray</h1>
         
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// Events
-//////////////////////////////////////////////////////////////////////////////
-(function(CGV) {
-  /**
-   * &lt;br />
-   * Events is a system to plug in callbacks to specific events in CGV.
-   * Use [on](#on) to add a callback and [off](#off) to remove it.
-   * Here are a list of events supported in CGV:
-   *
-   *  Event               | Description
-   *  --------------------|-------------
-   *  legend-update       | Called after legend items removed or added
-   *  caption-update      | Called after caption items removed or added
-   *  track-update        | Called when track is updated
-   *  resize              | Called when the Viewer size is changed
-   *  font-update         | Called when the font is changed (e.g. size, family, etc)
-   *  zoom-start          | Called once before viewer starts zoom animation
-   *  zoom                | Called every frame of the zoom animation
-   *  zoom-end            | Called after zooming is complete
-   *
-   *
-   *  mousemove           | Called when the mouse moves on the map
-   *  drag-start          | Called once before viewer starts drag animation
-   *  drag                | Called every frame of the drag animation
-   *  drag-end            | Called after dragging is complete
-   *  domain-change       | Called after the viewer domains have changed
-   *  selection-add       | Called when an element is added to the selection
-   *  selection-remove    | Called after an element is removed from the selection
-   *  selection-clear     | Called before the selection is cleared
-   *  selection-empty     | Called after the selection becomes empty
-   *  highlight-start     | Called when an element is highlighted
-   *  highlight-end       | Called when an element is unhighlighted
-   *  label-click         | Called when a annotation label is clicked
-   */
-  class Events {
+<header>
+    <h2>
+    CGArray
+    </h2>
+    
+        <div class="class-description"><p><br />
+CGArray is essentially an array for holding CGV Objects. Any method
+that works on an Array will also work on a CGArray.</p>
+<p>If a single array is provided it will be converted to an CGArray.
+If mulitple elements are provided, they will be added to the new CGArray.</p></div>
+    
+</header>  
 
-    constructor() {
-      this._handlers = {};
-    }
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="CGArray">
+            
+            new CGArray<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line13">line 13</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="attr">
+            
+            attr<span class="signature">(attributes, attributes)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line55">line 55</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Change one or more properties of each element of the CGArray.</p>
+<pre class="prettyprint source lang-javascript"><code>my_cgarray.attr(property, value)
+my_cgarray.attr( {property1: value1, property2: value2} )</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Property</span>
+|
+
+<span class="param-type">Value</span>
 
 
-    /**
-     * Attach a callback function to a specific JSV event.
-     * ```js
-     * sv = new JSV.SpectraViewer('#my-spectra');
-     * sv.on('drag-start', function() { console.log('Dragging has begun!') };
-     *
-     * // The event can be namespaced for easier removal later
-     * sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Function} callback Function to call when event is triggered
-     */
-    on(event, callback) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      if ( !handlers[type] ) handlers[type] = [];
-      handlers[type].push( new Handler(event, callback) );
-    }
-
-    /**
-     * Remove a callback function from a specific JSV event. If no __callback__ is provided,
-     * then all callbacks for the event will be removed. Namespaced events can and should be used
-     * to avoid unintentionally removing callbacks attached by other plugins.
-     * ```js
-     * // Remove all callbacks attached to the 'drag-start' event.
-     * // This includes any namespaced events.
-     * sv.off('drag-start');
-     *
-     * // Remove all callbacks attached to the 'drag-start' event namespaced to 'my_plugin'
-     * sv.off('drag-start.my_plugin');
-     *
-     * // Remove all callbacks attached to any events namespaced to 'my_plugin'
-     * sv.off('.my_plugin');
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Function} callback Specfic function to remove
-     */
-    off(event, callback) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      const namespace = parseNamespace(event);
-      // If no callback is supplied remove all of them
-      if (callback === undefined) {
-        if (namespace) {
-          if (type) {
-            handlers[type] = handlers[type].filter( h => h.namespace !== namespace );
-          } else {
-            Object.keys(handlers).forEach(function(key) {
-              handlers[key] = handlers[key].filter( h => h.namespace !== namespace );
-            });
-          }
-        } else {
-          handlers[type] = undefined;
-        }
-      } else {
-        // Remove specific callback
-        handlers[type] = handlers[type].filter( h => h.callback !== callback );
-      }
-      this._handlers = handlers;
-    }
-
-    /**
-     * Trigger a callback function for a specific event.
-     * ```js
-     * // Triggers all callback functions associated with drag-start
-     * sv.trigger('drag-start');
-     *
-     * // Triggers can also be namespaced
-     * sv.trigger('drag-start.my_plugin');
-     * ```
-     * @param {String} event Name of event. Events can be namespaced.
-     * @param {Object} object Object to be passed back to 'on'.
-     */
-    trigger(event, object) {
-      const handlers = this._handlers;
-      checkType(event);
-      const type = parseEvent(event);
-      const namespace = parseNamespace(event);
-      if (Array.isArray(handlers[type])) {
-        handlers[type].forEach(function(handler) {
-          if (namespace) {
-            if (handler.namespace === namespace) handler.callback.call(null, object);
-          } else {
-            handler.callback.call(null, object);
-          }
-        });
-      }
-    }
-
-  }
-
-  /** @ignore */
-
-  const checkType = function(type) {
-    if (typeof type !== 'string') {
-      throw new Error('Type must be a string');
-    }
-  };
-
-  const Handler = function(event, callback) {
-    this.callback = callback;
-    this.eventType = parseEvent(event);
-    this.namespace = parseNamespace(event);
-  };
-
-  const parseEvent = function(event) {
-    return event.replace(/\..*/, '');
-  };
-
-  const parseNamespace = function(event) {
-    const result = event.match(/\.(.*)/);
-    return result ? result[1] : undefined;
-  };
-
-  CGV.Events = Events;
-})(CGView);
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>A property name and the new value.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
-</code></pre>
-        </article>
-    </section>
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>An object properties and their new values.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="attr">
+            
+            attr<span class="signature">(attributes, attributes)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line165">line 165</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Change one or more properties of each element of the CGArray.</p>
+<pre class="prettyprint source lang-javascript"><code>my_cgarray.attr(property, value)
+my_cgarray.attr( {property1: value1, property2: value2} )</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Property</span>
+|
+
+<span class="param-type">Value</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>A property name and the new value.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>An object properties and their new values.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="each">
+            
+            each<span class="signature">(callback)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line197">line 197</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Iterates through each element of the CGArray and run the callback.
+In the callback <em>this</em> will refer to the element.</p>
+<pre class="prettyprint source lang-javascript"><code>.each(function(index, element))</code></pre><p>Note: This is slower then a <em>forEach</em> or a <em>for loop</em> directly on the set.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Callback run on each element of CGArray.
+  The callback will be called with 2 parameters: the index of the element
+  and the element itself.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="each">
+            
+            each<span class="signature">(callback)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line104">line 104</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Iterates through each element of the CGArray and run the callback.
+In the callback <em>this</em> will refer to the element.</p>
+<pre class="prettyprint source lang-javascript"><code>.each(function(index, element))</code></pre><p>Note: This is slower then a <em>forEach</em> or a <em>for loop</em> directly on the set.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Callback run on each element of CGArray.
+  The callback will be called with 2 parameters: the index of the element
+  and the element itself.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="empty">
+            
+            empty<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line53">line 53</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return true if the CGArray is empty.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="empty">
+            
+            empty<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line184">line 184</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return true if the CGArray is empty.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="get">
+            
+            get<span class="signature">(term, term, term, term)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>|or|Element}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line131">line 131</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Retrieve subset of CGArray or an individual element from CGArray depending on term provided.
+To find elements by cgvID use <a href="Viewer.js.html#objects">Viewer.objects</a> instead.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return full CGArray</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return element at that index (base-1)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return first element with an id property same as string.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return CGArray with elements with matching ids</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                         | 
+                    
+                        or
+                         | 
+                    
+                        Element
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="get">
+            
+            get<span class="signature">(term, term, term, term)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>|or|Element}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line267">line 267</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Retrieve subset of CGArray or an individual element from CGArray depending on term provided.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Undefined</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return full CGArray</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return element at that index (base-1)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return first element with id same as string. If the id starts
+  with 'path-id-', the first element with that path-id will be returned.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Return CGArray with elements with matching ids</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                         | 
+                    
+                        or
+                         | 
+                    
+                        Element
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="merge">
+            
+            merge<span class="signature">(cgarray)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line37">line 37</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Push the elements of the supplied CGArray/Array on to the CGArray.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>cgarray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CGArray.html">CGArray</a></span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>CGArray or Array to add</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            
+            move<span class="signature">(oldIndex, newIndex)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line111">line 111</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Move the an item from oldIndex to newIndex.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>oldIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>index of element to move</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>newIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>move element to this index</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            
+            move<span class="signature">(oldIndex, newIndex)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line201">line 201</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Move the an item from oldIndex to newIndex.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>oldIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>index of element to move</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>newIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>move element to this index</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="present">
+            
+            present<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line45">line 45</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns true if the CGArray is not empty.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="present">
+            
+            present<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line192">line 192</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns true if the CGArray is not empty.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="remove">
+            
+            remove<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line174">line 174</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns new CGArray with element removed</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="remove">
+            
+            remove<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line61">line 61</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns new CGArray with element removed</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="toString">
+            
+            toString<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line37">line 37</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return the string 'CGArray'</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="toString">
+            
+            toString<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{String}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line30">line 30</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return the string 'CGArray'</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        String
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="unique">
+            
+            unique<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArray.js.html">CGArray.js</a>, <a href="CGArray.js.html#line149">line 149</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return new CGArray with no duplicated values.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="unique">
+            
+            unique<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CGArrayOLD.js.html">CGArrayOLD.js</a>, <a href="CGArrayOLD.js.html#line318">line 318</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return new CGArray with no duplicated values.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
@@ -1822,7 +4279,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 13:50:44 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 13:50:44 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

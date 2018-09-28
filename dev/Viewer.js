@@ -640,15 +640,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.zoomTo(0, 1, duration, ease);
     }
 
-    // FIXME: is this useful
-    getCurrentBp() {
-      const domainX = this.scale.x.domain();
-      const domainY = this.scale.y.domain();
-      const centerX = ((domainX[1] - domainX[0]) / 2) + domainX[0];
-      const centerY = ((domainY[1] - domainY[0]) / 2) + domainY[0];
-      return this.canvas.bpForPoint( {x: centerX, y: centerY} );
-    }
-
     moveCaption(oldIndex, newIndex) {
       this._captions.move(oldIndex, newIndex);
       this.refreshCaptions();

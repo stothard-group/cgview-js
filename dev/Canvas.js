@@ -451,6 +451,7 @@
     }
 
     // Return the bp for the mouse position on the canvas
+    // FIXME: use canvas point instead
     bpForMouse() {
       const pos = d3.mouse(this.node('ui'));
       const mx = this.scale.x.invert(pos[0]);
@@ -459,12 +460,14 @@
     }
 
     // Return the bp for the center of the canvas.
+    // FIXME: use canvas point instead
     bpForCanvasCenter() {
       const mx = this.scale.x.invert( this.width / 2 );
       const my = this.scale.y.invert( this.height / 2 );
       return this.bpForPoint({x: mx, y: my});
     }
 
+    // FIXME: this should be removed and everywhere should call layout method
     bpForPoint(point) {
       // return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
       return this.layout.bpForPoint(point);

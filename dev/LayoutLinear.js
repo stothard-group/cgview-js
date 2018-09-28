@@ -51,6 +51,11 @@
       return {x: x, y: y};
     }
 
+    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
+    bpForPoint(point) {
+      return Math.round( this.scale.bp.invert( point.x ) );
+    }
+
     // MAP POINT
     centerOffsetForPoint(point) {
       return point.y;
@@ -81,19 +86,6 @@
     adjustBpScaleRange() {
       const rangeHalfWidth = this.canvas.width * this.viewer.zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
-    }
-
-    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
-    bpForPoint(point) {
-      // const pixels = this.scale.x.invert(point.x) + (1/2 * this.sequence.length * this.scale.bp(1));
-      // return Math.round( this.scale.bp.invert(pixels));
-
-      // return Math.round( this.scale.bp.invert( this.scale.x.invert( point.x ) ) );
-      return Math.round( this.scale.bp.invert( point.x ) );
-
-      // return Math.round( this.scale.bp.invert(point.x) );
-
-      // return Math.round( point.x );
     }
 
     pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {

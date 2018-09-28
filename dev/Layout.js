@@ -157,12 +157,30 @@
     // Required Delegate Methods
     //////////////////////////////////////////////////////////////////////////
 
-    // pointFor(bp, centerOffset) {
+    /**
+     * @typedef {Object} Point
+     * @property {number} x The X Coordinate
+     * @property {number} y The Y Coordinate
+     */
+
+    /**
+     * Returns the point on the canvas for the given *bp* and *centerOffset*.
+     * @param {Number} bp - Basepair
+     * @param {Number} centerOffset - Distance from the center of the map. For a circulare map, this is the radius, while for a linear map, it's the distance from the backbone.
+     *
+     * @returns {Point} - The point on the canvas.
+     */
+    // FIXME: change to pointForBp???
     pointFor(...args) {
       return this.delegate.pointFor(...args);
     }
 
-    // bpForPoint(point) {
+    /**
+     * Returns the basepair corresponding to the given *point* on the canvas.
+     * @param {Point} point - Point on the canvas.
+     *
+     * @returns {Number} - The basepair.
+     */
     bpForPoint(...args) {
       return this.delegate.bpForPoint(...args);
     }

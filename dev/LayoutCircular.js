@@ -49,12 +49,19 @@
     // Return point on Circle Coordinates.
     // mapCenterOffset is the radius for circular maps
     // FIXME: needs better names
+    // FIXME: OR change to local method: _mapPointForBp
     pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
       const radians = this.scale.bp(bp);
       const x = mapCenterOffset * Math.cos(radians);
       const y = -mapCenterOffset * Math.sin(radians);
       return {x: x, y: y};
     }
+
+    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
+    bpForPoint(point) {
+      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
+    }
+
 
     // MAP POINT
     centerOffsetForPoint(point) {
@@ -80,11 +87,6 @@
       if (initialize) {
         this.scale.bp.range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
       }
-    }
-
-    // FIXME: THE POINT IS ON THE X/Y SCALE NOT THE CANVAS. SHOULD IT BE??
-    bpForPoint(point) {
-      return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
     }
 
     pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
