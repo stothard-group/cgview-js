@@ -46,17 +46,6 @@
       return {x: x, y: y};
     }
 
-    // Return point on Circle Coordinates.
-    // mapCenterOffset is the radius for circular maps
-    // FIXME: needs better names
-    // FIXME: OR change to local method: _mapPointForBp
-    pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      const radians = this.scale.bp(bp);
-      const x = mapCenterOffset * Math.cos(radians);
-      const y = -mapCenterOffset * Math.sin(radians);
-      return {x: x, y: y};
-    }
-
     bpForPoint(point) {
       const mapX = this.scale.x.invert(point.x);
       const mapY = this.scale.y.invert(point.y);
@@ -64,9 +53,11 @@
     }
 
 
-    // MAP POINT
     centerOffsetForPoint(point) {
-      return Math.sqrt( (point.x * point.x) + (point.y * point.y) );
+      // return Math.sqrt( (point.x * point.x) + (point.y * point.y) );
+      const mapX = this.scale.x.invert(point.x);
+      const mapY = this.scale.y.invert(point.y);
+      return Math.sqrt( (mapX * mapX) + (mapY * mapY) );
     }
 
     // Return the X and Y domains for a bp and zoomFactor
@@ -75,7 +66,7 @@
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
       const centerOffset = this.backbone.centerOffset * zoomFactor;
-      const centerPt = this.pointFor2(bp, centerOffset);
+      const centerPt = this._mapPointForBp(bp, centerOffset);
 
       const x = bp ? centerPt.x : 0;
       const y = bp ? centerPt.y : 0;
@@ -220,6 +211,19 @@
       // on the minDimension.
       const midRadius = this.viewer.minDimension * 0.25;
       this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    //////////////////////////////////////////////////////////////////////////
+
+    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
+    // centerOffset is the radius for circular maps
+    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
+      const radians = this.scale.bp(bp);
+      const x = centerOffset * Math.cos(radians);
+      const y = -centerOffset * Math.sin(radians);
+      return {x: x, y: y};
     }
 
 

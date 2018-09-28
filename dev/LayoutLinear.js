@@ -43,23 +43,15 @@
       return {x: x, y: y};
     }
 
-    // Return point on Circle Coordinates.
-    // FIXME: needs better names
-    pointFor2(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      const x = this.scale.bp(bp);
-      const y = mapCenterOffset;
-      return {x: x, y: y};
-    }
-
     // NOTE: only the X coordinate of the point is required
     bpForPoint(point) {
       const mapX = this.scale.x.invert(point.x);
       return Math.round( this.scale.bp.invert( mapX) );
     }
 
-    // MAP POINT
     centerOffsetForPoint(point) {
-      return point.y;
+      // return point.y;
+      return this.scale.y.invert(point.y);
     }
 
     // Return the X and Y domains for a bp and zoomFactor
@@ -68,13 +60,13 @@
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
 
-      // The correct pointFor2 requies the bp scale be first altered for the zoom level
+      // _mapPointForBp requires the bp scale be first altered for the zoom level
       const origScaleBp = this.scale.bp.copy();
 
       const rangeHalfWidth2 = this.canvas.width * zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth2, rangeHalfWidth2]);
 
-      const centerPt = this.pointFor2(bp);
+      const centerPt = this._mapPointForBp(bp);
       // Return to the original scale
       this.scale.bp = origScaleBp;
       const x = bp ? centerPt.x : 0;
@@ -154,6 +146,18 @@
     // The backbone will be the center of the map
     updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
       this.backbone.centerOffset = 0;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    //////////////////////////////////////////////////////////////////////////
+
+    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
+    // centerOffset is the distance from the backbone.
+    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
+      const x = this.scale.bp(bp);
+      const y = centerOffset;
+      return {x: x, y: y};
     }
 
 

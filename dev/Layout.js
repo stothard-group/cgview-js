@@ -166,7 +166,7 @@
     /**
      * Returns the point on the canvas for the given *bp* and *centerOffset*.
      * @param {Number} bp - Basepair
-     * @param {Number} centerOffset - Distance from the center of the map. For a circulare map, this is the radius, while for a linear map, it's the distance from the backbone.
+     * @param {Number} [centerOffset=Current zoomed backbone center offset] - Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
      *
      * @returns {Point} - The point on the canvas.
      */
@@ -185,11 +185,25 @@
       return this.delegate.bpForPoint(...args);
     }
 
-    // centerOffsetForPoint(point) {
+    /**
+     * Returns the Center Offset for the given *point* on the canvas.
+     * Center offset is the distance from the center of the map.
+     * For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
+     * @param {Point} point - Point on the canvas.
+     *
+     * @returns {Number} - Center Offset
+     */
     centerOffsetForPoint(...args) {
       return this.delegate.centerOffsetForPoint(...args);
     }
 
+    /**
+     * Returns the X and Y scale domains for the given *bp* and *zoomFactor*.
+     * @param {Number} bp - Basepair
+     * @param {Number} [zoomFactor=Current Viewer Zoom Factor] - The zoom factor used to calculate the domains
+     *
+     * @returns {Point} - The point on the canvas.
+     */
     domainsFor(...args) {
       return this.delegate.domainsFor(...args);
     }

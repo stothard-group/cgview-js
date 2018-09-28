@@ -77,7 +77,8 @@
       const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);
       const mapY = scale.y.invert(canvasY);
-      const centerOffset = this.viewer.layout.centerOffsetForPoint({x: mapX, y: mapY});
+      // const centerOffset = this.viewer.layout.centerOffsetForPoint({x: mapX, y: mapY});
+      const centerOffset = this.viewer.layout.centerOffsetForPoint({x: canvasX, y: canvasY});
       const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
       // const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
       const bp = this.canvas.bpForPoint({x: canvasX, y: canvasY});
