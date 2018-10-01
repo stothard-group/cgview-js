@@ -38,7 +38,7 @@
     //////////////////////////////////////////////////////////////////////////
 
     // Return point on Canvas.
-    // mapCenterOffset is the radius for circular maps
+    // centerOffset is the radius for circular maps
     pointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
       const radians = this.scale.bp(bp);
       const x = this.scale.x(0) + (centerOffset * Math.cos(radians));

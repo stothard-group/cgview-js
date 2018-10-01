@@ -37,9 +37,9 @@
     // Required Delegate Methods
     //////////////////////////////////////////////////////////////////////////
 
-    pointForBp(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+    pointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
       const x = this.scale.x(this.scale.bp(bp));
-      const y = this.scale.y(mapCenterOffset);
+      const y = this.scale.y(centerOffset);
       return {x: x, y: y};
     }
 

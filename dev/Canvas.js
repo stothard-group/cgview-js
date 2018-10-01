@@ -451,8 +451,8 @@
       return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
     }
 
-    pixelsPerBp(mapCenterOffset = this.viewer.backbone.adjustedCenterOffset) {
-      return this.layout.pixelsPerBp(mapCenterOffset);
+    pixelsPerBp(centerOffset = this.viewer.backbone.adjustedCenterOffset) {
+      return this.layout.pixelsPerBp(centerOffset);
       // return ( (centerOffset * 2 * Math.PI) / this.sequence.length );
     }
 
