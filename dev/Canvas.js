@@ -19,10 +19,6 @@
       this.determinePixelRatio(container);
       this._layerNames = ['background', 'map', 'captions', 'ui'];
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
-
-      // Setup scales
-      // this._scale = {};
-      // this.refreshScales();
     }
 
     get pixelRatio() {
@@ -40,7 +36,6 @@
       if (testNode.getContext) {
         // Get pixel ratio and upscale canvas depending on screen resolution
         // http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-        // CGV.pixelRatio = CGV.getPixelRatio(testNode);
         this._pixelRatio = CGV.getPixelRatio(testNode);
       } else {
         container.html('<h3>CGView requires Canvas, which is not supported by this browser.</h3>');
@@ -88,8 +83,6 @@
         layerNode.style.width = `${width}px`;
         layerNode.style.height = `${height}px`;
       }
-      // this.refreshScales();
-      // this.layout.updateCartesianScales();
       this.layout.updateScales();
     }
 
@@ -153,35 +146,6 @@
       return this.viewer.sequence;
     }
 
-    // refreshScales() {
-    //   let x1, x2, y1, y2;
-    //   // Save scale domains to keep tract of translation
-    //   if (this.scale.x) {
-    //     const origXDomain = this.scale.x.domain();
-    //     const origWidth = origXDomain[1] - origXDomain[0];
-    //     x1 = origXDomain[0] / origWidth;
-    //     x2 = origXDomain[1] / origWidth;
-    //   } else {
-    //     x1 = -0.5;
-    //     x2 = 0.5;
-    //   }
-    //   if (this.scale.y) {
-    //     const origYDomain = this.scale.y.domain();
-    //     const origHeight = origYDomain[0] - origYDomain[1];
-    //     y1 = origYDomain[0] / origHeight;
-    //     y2 = origYDomain[1] / origHeight;
-    //   } else {
-    //     y1 = 0.5;
-    //     y2 = -0.5;
-    //   }
-    //   this.scale.x = d3.scaleLinear()
-    //     .domain([this.width * x1, this.width * x2])
-    //     .range([0, this.width]);
-    //   this.scale.y = d3.scaleLinear()
-    //     .domain([this.height * y1, this.height * y2])
-    //     .range([0, this.height]);
-    // }
-
     get width() {
       return this._width;
     }
@@ -226,24 +190,6 @@
         this.context(layerName).clearRect(0, 0, this.width, this.height);
       }
     }
-    // clear(color = 'white') {
-    //   this.ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-    //   // this.ctx.fillStyle = color;
-    //   // this.ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-    // }
-
-    /**
-    * Flash a message on the center of the viewer.
-    */
-    // flash(msg) {
-    //   let ctx = this.ctx;
-    //   // this.ctx.font = this.adjust_font(1.5);
-    //   ctx.textAlign = 'center';
-    //   ctx.textBaseline = 'center';
-    //   let x = this.width / 2
-    //   let y = this.height / 2
-    //   ctx.fillText(msg, x, y);
-    // }
 
     // Decoration: arc, clockwise-arrow, counterclockwise-arrow, none
     //
@@ -322,7 +268,6 @@
       if (decoration === 'clockwise-arrow' || decoration === 'counterclockwise-arrow') {
         // Determine Arrowhead length
         // Using width which changes according zoom factor upto a point
-        // let arrowHeadLengthPixels = width / 3;
         const arrowHeadLengthPixels = width * settings.arrowHeadLength;
         const arrowHeadLengthBp = arrowHeadLengthPixels / this.pixelsPerBp(centerOffset);
 
@@ -422,10 +367,6 @@
 
     pointForBp(bp, centerOffset) {
       return this.layout.pointForBp(bp, centerOffset);
-      // const radians = this.scale.bp(bp);
-      // const x = this.scale.x(0) + (centerOffset * Math.cos(radians));
-      // const y = this.scale.y(0) + (centerOffset * Math.sin(radians));
-      // return {x: x, y: y};
     }
 
     // Return the bp for the mouse position on the canvas
@@ -441,7 +382,6 @@
 
     // FIXME: this should be removed and everywhere should call layout method
     bpForPoint(point) {
-      // return Math.round( this.scale.bp.invert( CGV.angleFromPosition(point.x, point.y) ) );
       return this.layout.bpForPoint(point);
     }
 
@@ -453,7 +393,6 @@
 
     pixelsPerBp(centerOffset = this.viewer.backbone.adjustedCenterOffset) {
       return this.layout.pixelsPerBp(centerOffset);
-      // return ( (centerOffset * 2 * Math.PI) / this.sequence.length );
     }
 
     /**

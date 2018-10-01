@@ -140,8 +140,6 @@
 
     // Return the pixelLength of the backbone at a zoom level of 1
     get pixelLength() {
-      // return this.layout.backbonePixelLength();
-      // return this.layout.pixelsPerBp(this.centerOffset) * this.sequence.length;
       return this.layout.pixelsPerBp(this.adjustedCenterOffset) / this.viewer.zoomFactor * this.sequence.length;
     }
 
@@ -150,9 +148,6 @@
      * @return {Number}
      */
     maxZoomFactor() {
-      // return (this.sequence.length * this.sequence.bpSpacing) / (2 * Math.PI * this.radius);
-      // FIXME: 
-      // return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / (2 * Math.PI * this.centerOffset);
       return (this.sequence.length * (this.sequence.bpSpacing + (this.sequence.bpMargin * 2))) / this.pixelLength;
     }
 
@@ -162,8 +157,6 @@
      */
     pixelsPerBp() {
       return this.layout.pixelsPerBp();
-      // TODO: use pixelsPerBp from canvas/layout
-      // return CGV.pixel( (this.adjustedCenterOffset * 2 * Math.PI) / this.sequence.length );
     }
 
     draw() {
@@ -171,7 +164,6 @@
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
         this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
-        // console.log('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.zoomedThickness);
         if (this.pixelsPerBp() > 1) {
           this.sequence.draw();
         }

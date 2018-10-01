@@ -53,15 +53,6 @@
     }
 
     /**
-     * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
-     */
-    // set bbOffsets(value) {
-    //   if (value && value.toString() === 'CGArray') {
-    //     this._bbOffsets = value;
-    //   }
-    // }
-
-    /**
      * @member {Number} - Returns a CGArray where each element is an object with 2 properties: distance, type. The 'distance' is the divider distance from the backbone. The 'type' is the divider type (e.g. 'slot' or 'track').
      */
     get bbOffsets() {

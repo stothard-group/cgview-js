@@ -26,8 +26,6 @@
       // })
 
       this.events.on('mousemove', (e) => {
-        // console.log(e.bp);
-        // console.log([e.mapX, e.mapY]);
         if (this.viewer.debug && this.viewer.debug.data.position) {
           this.viewer.debug.data.position.xy = `${Math.round(e.mapX)}, ${Math.round(e.mapY)}`;
           this.viewer.debug.data.position.bp = e.bp;
@@ -77,10 +75,8 @@
       const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);
       const mapY = scale.y.invert(canvasY);
-      // const centerOffset = this.viewer.layout.centerOffsetForPoint({x: mapX, y: mapY});
       const centerOffset = this.viewer.layout.centerOffsetForPoint({x: canvasX, y: canvasY});
       const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
-      // const bp = this.canvas.bpForPoint({x: mapX, y: mapY});
       const bp = this.canvas.bpForPoint({x: canvasX, y: canvasY});
       const feature = slot && slot.findFeaturesForBp(bp)[0];
       const plot = slot && slot._plot;

@@ -285,9 +285,6 @@
      */
     removeFeatures(features) {
       features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
-      // this._features = new CGV.CGArray(
-      //   this._features.filter( (f) => { return !features.includes(f) })
-      // );
       this._features = this._features.filter( f => !features.includes(f) );
       this.refresh();
     }

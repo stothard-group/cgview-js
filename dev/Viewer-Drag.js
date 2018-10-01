@@ -24,18 +24,6 @@
 
     function dragging() {
       const startTime = new Date().getTime();
-      // self.translate_axis('x', d3.event.dx);
-      // self.translate_axis('y', d3.event.dy);
-      // const domainX = self.scale.x.domain();
-      // const domainY = self.scale.y.domain();
-      // // const dx = CGV.pixel(d3.event.dx);
-      // const dy = CGV.pixel(d3.event.dy);
-      //
-      // const dx = CGV.pixel(Math.round(d3.event.dx / self.backbone.pixelsPerBp()));
-      //
-      // self.scale.x.domain([domainX[0] - dx, domainX[1] - dx]);
-      // self.scale.y.domain([domainY[0] + dy, domainY[1] + dy]);
-
       self.layout.translate(d3.event.dx, d3.event.dy);
       self.drawFast();
       // self.draw(true);

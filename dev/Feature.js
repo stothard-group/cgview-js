@@ -339,16 +339,6 @@
       });
       return tracks.get(term);
     }
-    // OLD SLOW WAY
-    // tracks(term) {
-    //   let tracks = new CGV.CGArray();
-    //   this.viewer.tracks().each( (i, track) => {
-    //     if (track.features().includes(this)) {
-    //       tracks.push(track);
-    //     }
-    //   });
-    //   return tracks.get(term)
-    // }
 
     /**
      * Return an array of the slots that contain this feature

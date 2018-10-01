@@ -67,11 +67,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-      // Set the map format which will also initialize the Layout
+      // Initialize Layout and set the default map format.
       this._layout = new CGV.Layout(this, options.layout);
       this.format = CGV.defaultFor(options.format, 'circular');
 
-      // this.backgroundColor = options.backgroundColor;
       this._zoomFactor = 1;
       this._minZoomFactor = 0.5;
 
@@ -95,10 +94,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initial Legend
       this.legend = new CGV.Legend(this, options.legend);
       // Initialize Slot Divider
-      // this.slotDivider = new CGV.Divider(this, ( options.dividers && options.dividers.slot ) );
       this.dividers = new CGV.Dividers(this, options.dividers);
-      // // Initialize Layout
-      // this.layout = new CGV.Layout(this, options.layout);
       // Initialize Annotation
       this.annotation = new CGV.Annotation(this, options.annotation);
       // Initialize Ruler
@@ -109,8 +105,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.debug = CGV.defaultFor(options.debug, false);
 
       this._initialized = true;
-
-      // this.drawFull();
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -140,19 +134,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     set format(value) {
       this.layout.type = value;
-      // // Determine map center bp before changing layout
-      // const centerBp = this._layout && this.canvas.bpForCanvasCenter();
-      // const layoutChanged = Boolean(this._layout && this._layout.type !== value);
-      // // const oldLayout = this._layout;
-      // if (value === 'linear') {
-      //   this._layout = new CGV.LayoutLinear(this);
-      // } else if (value === 'circular') {
-      //   this._layout = new CGV.LayoutCircular(this);
-      // } else {
-      //   throw 'Format must be one of the following: linear, circular';
-      // }
-      // // FIXME
-      // this.layout.updateScales(layoutChanged, centerBp);
     }
 
     /**
@@ -211,7 +192,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     // FIXME: this should be done by layout?? OR not allowed
     set zoomFactor(value) {
-      // this._zoomFactor = value;
       this.layout.zoom(value);
     }
 
@@ -407,8 +387,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     visibleCaptions(term) {
-      // let filtered = this._captions.filter( (i) => { return i.visible });
-      // return new CGV.CGArray(filtered).get(term)
       return this._captions.filter( i => i.visible ).get(term);
     }
 
@@ -426,9 +404,6 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     removeFeatures(features) {
       features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
-      // this._features = new CGV.CGArray(
-      //   this._features.filter( (f) => { return !features.includes(f) })
-      // );
       this._features = this._features.filter( f => !features.includes(f) );
       const labels = features.map( f => f.label );
       this.annotation.removeLabels(labels);

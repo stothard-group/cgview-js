@@ -67,7 +67,6 @@
 
     get thickness() {
       return this._thickness;
-      // return (this.viewer.zoomFactor < 1) ? (this._thickness * this.viewer.zoomFactor) : this._thickness;
     }
 
     /**
@@ -90,7 +89,6 @@
 
     get spacing() {
       return this._spacing;
-      // return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
     }
 
     /**
