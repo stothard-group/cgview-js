@@ -145,10 +145,9 @@
     _calculatePositions(labels) {
       labels = labels || this._labels;
       const visibleRange = this._visibleRange;
-      let label, feature, containsStart, containsStop, radians;
+      let label, feature, containsStart, containsStop;
       let featureLengthDownStream, featureLengthUpStream;
       const sequence = this.sequence;
-      const scale = this.layout.scale;
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;

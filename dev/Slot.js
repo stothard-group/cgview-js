@@ -154,8 +154,7 @@
      * @return {Number}
      */
     pixelsPerBp() {
-      // FIXME: use layout.pixelsPerBp
-      return (this.centerOffset * 2 * Math.PI) / this.sequence.length;
+      return this.layout.pixelsPerBp(this.centerOffset);
     }
 
     // Refresh needs to be called when new features are added, etc

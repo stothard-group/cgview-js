@@ -1,5 +1,4 @@
 // FIXME: Use delegate for layout format
-//   - move scales to layout
 //   - move zoomFactor to layout
 //////////////////////////////////////////////////////////////////////////////
 // Layout for Circular Maps
@@ -17,7 +16,7 @@
     constructor(viewer) {
       this._viewer = viewer;
 
-      // this._tracks = new CGV.CGArray();
+      // _fastMaxFeatures is the maximum number of features allowed to be drawn in fast mode.
       this._fastMaxFeatures = 1000;
       // FIXME: move to settings
       // this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
@@ -144,7 +143,6 @@
       return this._slotProportionStats;
     }
     //////////////////////////////////////////////////////////////////////////
-    // FIXME: Add Documentation
     // Required Delegate Methods
     //////////////////////////////////////////////////////////////////////////
 
@@ -515,7 +513,7 @@
      */
     _adjustProportions() {
       const viewer = this.viewer;
-      if (!viewer._initialized) { return; }
+      if (viewer.loading) { return; }
       const backbone = viewer.backbone;
       const visibleSlots = this.visibleSlots();
       this._updateSlotThicknessRatioStats(visibleSlots);

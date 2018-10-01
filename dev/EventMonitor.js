@@ -70,7 +70,8 @@
     }
 
     _createEvent(d3Event) {
-      const scale = this.layout.scale;
+      if (this.viewer.loading) { return {}; }
+      const scale = this.viewer.layout.scale;
       const canvasX = d3Event.offsetX;
       const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);

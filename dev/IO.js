@@ -73,6 +73,7 @@
      */
     loadJSON(data) {
       const viewer = this._viewer;
+      viewer.clear('all');
 
       // Reset objects
       viewer._objects = {};
@@ -95,6 +96,8 @@
       viewer._tracks = new CGV.CGArray();
       viewer._plots = new CGV.CGArray();
       viewer._captions = new CGV.CGArray();
+
+      viewer._loading = true;
 
       // Load Sequence
       viewer._sequence = new CGV.Sequence(viewer, data.sequence);
@@ -144,10 +147,12 @@
           new CGV.Track(viewer, trackData);
         });
       }
+      viewer._loading = false;
 
       // Load Layout
-      // viewer.layout = new CGV.Layout(viewer, data.layout);
+      // viewer._layout = new CGV.Layout(viewer, data.layout);
       viewer.format = CGV.defaultFor(data.format, 'circular');
+      viewer.zoomTo(0, 1, 0);
     }
 
     // downloadImage(size, filename = 'image.png') {

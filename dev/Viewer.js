@@ -62,7 +62,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
 
-      this._initialized = false;
+      this._loading = true;
 
       // Initialize Canvas
       this.canvas = new CGV.Canvas(this, this._wrapper, {width: this.width, height: this.height});
@@ -104,7 +104,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
 
-      this._initialized = true;
+      this._loading = false;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -270,6 +270,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       }
     }
 
+    /**
+     * Return true if viewer is being initialized or loading new data.
+     */
+    get loading() {
+      return this._loading;
+    }
 
 
     ///////////////////////////////////////////////////////////////////////////
