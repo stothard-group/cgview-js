@@ -303,32 +303,3 @@
   CGV.Ruler = Ruler;
 })(CGView);
 
-// drawForRadius_ORIG(radius, position = 'inner', drawLabels = true) {
-//   let ctx = this.canvas.ctx;
-//   let scale = this.canvas.scale;
-//   let ranges = this.canvas.visibleRangeForRadius(radius);
-//   let start = ranges ? ranges[0] : 1;
-//   let stop = ranges ? ranges[1] : this.viewer.sequenceLength;
-//   let tickLength = (position === 'inner') ? -this.tickLength : this.tickLength;
-//   ctx.fillStyle = 'black'; // Label Color
-//   ctx.font = this.font.css;
-//   ctx.textAlign = 'left';
-//   // Tick format for labels
-//   let tickFormat = scale.bp.tickFormat(this.tickCount * this.viewer.zoomFactor, 's');
-//   // Draw Tick for 1 bp
-//   this.canvas.radiantLine(1, radius, tickLength, this.tickWidth);
-//   // Draw Major ticks
-//   let majorTicks = new CGV.CGArray(scale.bp.ticks(this.tickCount * this.viewer.zoomFactor))
-//   majorTicks.eachFromRange(start, stop, 1, (i, bp) => {
-//     this.canvas.radiantLine(bp, radius, tickLength, this.tickWidth);
-//     if (drawLabels) {
-//       let label = tickFormat(bp);
-//       this.drawLabel(bp, label, radius, position);
-//     }
-//   });
-//   // Draw Minor ticks
-//   let minorTicks = new CGV.CGArray(scale.bp.ticks(majorTicks.length * 5))
-//   minorTicks.eachFromRange(start, stop, 1, (i, bp) => {
-//     this.canvas.radiantLine(bp, radius, tickLength / 2, this.tickWidth);
-//   });
-// }
