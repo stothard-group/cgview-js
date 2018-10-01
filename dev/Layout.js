@@ -218,53 +218,104 @@
       return this.delegate.adjustBpScaleRange(...args);
     }
 
-    // FIXME: update arguments
-    // path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-    path(...args) {
-      this.delegate.path(...args);
-    }
-
+    /**
+     * Return the CGRange for the sequence visisible at the given *centerOffset*.
+     * The *margin* is a distance in pixels added on to the Canvas size when
+     * calculating the CGRange.
+     * @param {Number} centerOffset - The distance from the center of them map.
+     * @param {Number} margin - An amount (in pixels) added to the Canvas in all dimensions.
+     *
+     * @returns {CGRange} - the visible range.
+     */
     // visibleRangeForCenterOffset(offset, margin = 0) {
     visibleRangeForCenterOffset(...args) {
       return this.delegate.visibleRangeForCenterOffset(...args);
     }
 
     /**
-     * Return the maximum radius to use for calculating slot thickness when zoomed
-     * @return {Number}
+     * Return the maximum thickness of the map. Depends on the dimensions of the Canvas.
+     * @returns {Number}
      */
     maxMapThickness() {
       return this.delegate.maxMapThickness();
     }
 
     /**
-     * The number of pixels per basepair along the backbone.
-     * @return {Number}
+     * The number of pixels per basepair along the given *centerOffset*.
+     * @param {Number} [centerOffset={@link Backbone#adjustedCenterOffset Backbone.adjustedCenterOffset}] - Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
+     * @return {Number} - Pixels per basepair.
      */
-    // pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
     pixelsPerBp(...args) {
       return this.delegate.pixelsPerBp(...args);
     }
 
-    // Returns the clock position (1-12) for the supplied bp.
-    // For example, the top of the map would be 12, the bottom would be 6 and 
-    // the right side of a circular map will be 3. 
-    // clockPositionForBp(bp, inverse=false) {
+    /**
+     * Returns the clock position (1-12) for the supplied bp.
+     * For example, the top of the map would be 12, the bottom would be 6 and
+     * the right side of a circular map will be 3.
+     * @param {Number} bp - Basepair position on the map.
+     * @param {Boolean} invers - When true, give the opposite clock position (e.g. 6 instead of 12).
+     *
+     * @returns {Number} - An integer between 1 and 12.
+     */
     clockPositionForBp(...args) {
       return this.delegate.clockPositionForBp(...args);
     }
 
-    // Return the initial maximum space/thickness to draw the map around the backbone
-    // initialWorkingSpace() {
+    /**
+     * Estimate of the zoom factor, if the viewer was only showing the given *bpLength*
+     * as a portion of the total length.
+     * @param {Number} bpLength - Length in basepairs.
+     *
+     * @returns {Number} - Zoom Factor
+     */
+    zoomFactorForLength(...args) {
+      return this.delegate.zoomFactorForLength(...args);
+    }
+
+    /**
+     * Return the initial maximum space/thickness to draw the map around the backbone.
+     * This is usually some fraction of the viewer dimensions.
+     *
+     * @returns {Number}
+     */
     initialWorkingSpace() {
       return this.delegate.initialWorkingSpace();
     }
 
-    // Set the backbone centerOffset based on the approximate inside and outside
-    // thickness of the map.
-    // updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+    /**
+     * Set the backbone centerOffset based on the approximate inside and outside
+     * thickness of the map.
+     * @param {Number} insideThickness - The thickness of the inside of the map. From
+     *   the backbone down (linear) or towards the center (circular).
+     * @param {Number} outsideThickness - The thickness of the outside of the map. From
+     *   the backbone up (linear) or towards the outside (circular).
+     */
     updateInitialBackboneCenterOffset(...args) {
       this.delegate.updateInitialBackboneCenterOffset(...args);
+    }
+
+    // FIXME: update arguments
+    // path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+    /**
+     * Adds a lineTo path to the given *layer*. Path does not draw. It only adds lineTo and optionally moveTo
+     * commands to the context for the given *layer*.
+     * @param {String} layer - The name of the canvas layer to add the path.
+     * @param {Number} centerOffset - This distance from the center of the Map.
+     * @param {Number} startBp - The start position in basepairs.
+     * @param {Number} stopBp - The stop position in basepairs.
+     * @param {Boolean} [anticlockwise=false] - For circular maps the default direction is clockwise. Set this to true to draw arcs, anticlockwise.
+     * @param {String} [startType='moveTo'] - How the path should be started.
+     * <br />
+     *
+     * Value     | Description
+     * ----------|-------------
+     * moveTo    | *moveTo* start; *lineTo* stop
+     * lineTo    | *lineTo* start; *lineTo* stop
+     * noMoveTo  | ingore start; *lineTo* stop
+     */
+    path(...args) {
+      this.delegate.path(...args);
     }
 
 

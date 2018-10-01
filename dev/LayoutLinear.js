@@ -81,43 +81,42 @@
       this.scale.bp.range([-rangeHalfWidth, rangeHalfWidth]);
     }
 
-    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
+    // TODO if undefined, see if centerOffset is visible
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      const domainX = this.scale.x.domain();
+      const start = Math.floor(this.scale.bp.invert(domainX[0] - margin));
+      const end = Math.ceil(this.scale.bp.invert(domainX[1] + margin));
+      return new CGV.CGRange(this.sequence,
+        Math.max(start, 1),
+        Math.min(end, this.sequence.length));
+    }
+
+    maxMapThickness() {
+      return this.viewer.height / 2;
+    }
+
+    // For linear maps the pixels per bp is independent of the centerOffset
+    pixelsPerBp(centerOffset = this.backbone.adjustedCenterOffset) {
       const scaleBp = this.scale.bp;
       const range = scaleBp.range();
       return  (range[1] - range[0]) / (scaleBp.invert(range[1]) - scaleBp.invert(range[0]));
-    }
-
-    zoomFactorForLength(bpLength) {
-      return this.sequence.length / bpLength;
     }
 
     clockPositionForBp(bp, inverse = false) {
       return inverse ? 6 : 12;
     }
 
-
-    maxMapThickness() {
-      return this.viewer.height / 2;
+    zoomFactorForLength(bpLength) {
+      return this.sequence.length / bpLength;
     }
 
-    // TODO if undefined, see if centerOffset is visible
-    // FIXME: check if offset is visible 
-    visibleRangeForCenterOffset(centerOffset, margin = 0) {
-      // const range = this.scale.bp.range();
-      // return new CGV.CGRange(this.sequence,
-      //   Math.max(this.scale.bp.invert(range[0]), 1),
-      //   Math.min(this.scale.bp.invert(range[1]), this.sequence.length));
-      const domainX = this.scale.x.domain();
-      // const start = this.scale.bp.invert(domainX[0]);
-      // const end = this.scale.bp.invert(domainX[1]);
-      const start = Math.floor(this.scale.bp.invert(domainX[0]));
-      const end = Math.ceil(this.scale.bp.invert(domainX[1]));
-      return new CGV.CGRange(this.sequence,
-        Math.max(start, 1),
-        Math.min(end, this.sequence.length));
-      // return new CGV.CGRange(this.sequence,
-      //   Math.max(this.bpForPoint({x: range[0], y: 0}), 1),
-      //   Math.min(this.bpForPoint({x: range[0], y: 0}), this.sequence.length));
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
+    }
+
+    // The backbone will be the center of the map
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      this.backbone.centerOffset = 0;
     }
 
     path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
@@ -139,14 +138,6 @@
       }
     }
 
-    initialWorkingSpace() {
-      return 0.25 * this.viewer.minDimension;
-    }
-
-    // The backbone will be the center of the map
-    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
-      this.backbone.centerOffset = 0;
-    }
 
     //////////////////////////////////////////////////////////////////////////
     // Helper Methods

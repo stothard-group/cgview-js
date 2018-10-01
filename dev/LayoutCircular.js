@@ -81,8 +81,37 @@
       }
     }
 
-    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      return (mapCenterOffset * 2 * Math.PI) / this.sequence.length;
+
+    // TODO if undefined, see if centerOffset is visible
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      const ranges = this._visibleRangesForRadius(centerOffset, margin);
+      if (ranges.length === 2) {
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
+      } else if (ranges.length > 2) {
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
+      } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
+        return undefined;
+      } else if ( (centerOffset + margin) < this._minimumVisibleRadius() ) {
+        return undefined;
+      } else {
+        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
+      }
+      // } else {
+      //   return undefined
+      // }
+    }
+
+    maxMapThickness() {
+      return this.viewer.minDimension / 2;
+    }
+
+    pixelsPerBp(centerOffset = this.backbone.adjustedCenterOffset) {
+      return (centerOffset * 2 * Math.PI) / this.sequence.length;
+    }
+
+    clockPositionForBp(bp, inverse = false) {
+      const radians = this.scale.bp(bp);
+      return CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
     }
 
     zoomFactorForLength(bpLength) {
@@ -92,13 +121,56 @@
       return zoomedRadius / this.backbone.centerOffset;
     }
 
-    clockPositionForBp(bp, inverse=false) {
-      const radians = this.scale.bp(bp);
-      return CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
     }
 
-    maxMapThickness() {
-      return this.viewer.minDimension / 2;
+    // Calculate the backbone centerOffset (radius) so that the map is centered between the
+    // circle center and the edge of the canvas (minDimension)
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      // midRadius is the point between the circle center and the edge of the canvas
+      // on the minDimension.
+      const midRadius = this.viewer.minDimension * 0.25;
+      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
+    }
+
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+      // FIXME: change canvas to this where appropriate
+      const canvas = this.canvas;
+      const ctx = canvas.context(layer);
+      const scale = this.scale;
+
+      // Features less than 1000th the length of the sequence are drawn as straight lines
+      const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
+      if ( rangeLength < (canvas.sequence.length / 1000)) {
+        const p2 = this.pointFor(stopBp, centerOffset);
+        if (startType === 'lineTo') {
+          const p1 = this.pointFor(startBp, centerOffset);
+          ctx.lineTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType === 'moveTo') {
+          const p1 = this.pointFor(startBp, centerOffset);
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType === 'noMoveTo') {
+          ctx.lineTo(p2.x, p2.y);
+        }
+      } else {
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    //////////////////////////////////////////////////////////////////////////
+
+    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
+    // centerOffset is the radius for circular maps
+    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
+      const radians = this.scale.bp(bp);
+      const x = centerOffset * Math.cos(radians);
+      const y = -centerOffset * Math.sin(radians);
+      return {x: x, y: y};
     }
 
     _centerVisible() {
@@ -152,80 +224,6 @@
       );
       return angles.map( a => Math.round(this.scale.bp.invert(a)) );
     }
-
-    // TODO if undefined, see if centerOffset is visible
-    visibleRangeForCenterOffset(centerOffset, margin = 0) {
-      const ranges = this._visibleRangesForRadius(centerOffset, margin);
-      if (ranges.length === 2) {
-        // return ranges
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
-      } else if (ranges.length > 2) {
-        // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
-      } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
-        return undefined;
-      } else if ( (centerOffset + margin) < this._minimumVisibleRadius() ) {
-        return undefined;
-      } else {
-        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
-      }
-      // } else {
-      //   return undefined
-      // }
-    }
-
-    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      // FIXME: change canvas to this where appropriate
-      const canvas = this.canvas;
-      const ctx = canvas.context(layer);
-      const scale = this.scale;
-
-      // Features less than 1000th the length of the sequence are drawn as straight lines
-      const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
-      if ( rangeLength < (canvas.sequence.length / 1000)) {
-        const p2 = this.pointFor(stopBp, centerOffset);
-        if (startType === 'lineTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'moveTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'noMoveTo') {
-          ctx.lineTo(p2.x, p2.y);
-        }
-      } else {
-        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      }
-    }
-
-    initialWorkingSpace() {
-      return 0.25 * this.viewer.minDimension;
-    }
-
-    // Calculate the backbone centerOffset (radius) so that the map is centered between the
-    // circle center and the edge of the canvas (minDimension)
-    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
-      // midRadius is the point between the circle center and the edge of the canvas
-      // on the minDimension.
-      const midRadius = this.viewer.minDimension * 0.25;
-      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Helper Methods
-    //////////////////////////////////////////////////////////////////////////
-
-    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
-    // centerOffset is the radius for circular maps
-    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
-      const radians = this.scale.bp(bp);
-      const x = centerOffset * Math.cos(radians);
-      const y = -centerOffset * Math.sin(radians);
-      return {x: x, y: y};
-    }
-
 
   }
 

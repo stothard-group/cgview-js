@@ -402,27 +402,6 @@
     // FIXME: change name
     arcPath(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       this.layout.path(layer, centerOffset, startBp, stopBp, anticlockwise, startType);
-      // const ctx = this.context(layer);
-      // const scale = this.scale;
-      //
-      // // Features less than 1000th the length of the sequence are drawn as straight lines
-      // const rangeLength = anticlockwise ? this.sequence.lengthOfRange(stopBp, startBp) : this.sequence.lengthOfRange(startBp, stopBp);
-      // if ( rangeLength < (this.sequence.length / 1000)) {
-      //   const p2 = this.pointFor(stopBp, radius);
-      //   if (startType === 'lineTo') {
-      //     const p1 = this.pointFor(startBp, radius);
-      //     ctx.lineTo(p1.x, p1.y);
-      //     ctx.lineTo(p2.x, p2.y);
-      //   } else if (startType === 'moveTo') {
-      //     const p1 = this.pointFor(startBp, radius);
-      //     ctx.moveTo(p1.x, p1.y);
-      //     ctx.lineTo(p2.x, p2.y);
-      //   } else if (startType === 'noMoveTo') {
-      //     ctx.lineTo(p2.x, p2.y);
-      //   }
-      // } else {
-      //   ctx.arc(scale.x(0), scale.y(0), radius, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      // }
     }
 
     radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt') {

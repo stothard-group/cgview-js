@@ -863,19 +863,33 @@
             
                 <li data-name="Layout#_calculateSlotThickness"><a href="Layout.html#_calculateSlotThickness">_calculateSlotThickness</a></li>
             
+                <li data-name="Layout#adjustBpScaleRange"><a href="Layout.html#adjustBpScaleRange">adjustBpScaleRange</a></li>
+            
                 <li data-name="Layout#bpForPoint"><a href="Layout.html#bpForPoint">bpForPoint</a></li>
             
                 <li data-name="Layout#centerOffsetForPoint"><a href="Layout.html#centerOffsetForPoint">centerOffsetForPoint</a></li>
             
+                <li data-name="Layout#clockPositionForBp"><a href="Layout.html#clockPositionForBp">clockPositionForBp</a></li>
+            
                 <li data-name="Layout#domainsFor"><a href="Layout.html#domainsFor">domainsFor</a></li>
             
+                <li data-name="Layout#initialWorkingSpace"><a href="Layout.html#initialWorkingSpace">initialWorkingSpace</a></li>
+            
                 <li data-name="Layout#maxMapThickness"><a href="Layout.html#maxMapThickness">maxMapThickness</a></li>
+            
+                <li data-name="Layout#path"><a href="Layout.html#path">path</a></li>
             
                 <li data-name="Layout#pixelsPerBp"><a href="Layout.html#pixelsPerBp">pixelsPerBp</a></li>
             
                 <li data-name="Layout#pointFor"><a href="Layout.html#pointFor">pointFor</a></li>
             
+                <li data-name="Layout#updateInitialBackboneCenterOffset"><a href="Layout.html#updateInitialBackboneCenterOffset">updateInitialBackboneCenterOffset</a></li>
+            
                 <li data-name="Layout#updateLayout"><a href="Layout.html#updateLayout">updateLayout</a></li>
+            
+                <li data-name="Layout#visibleRangeForCenterOffset"><a href="Layout.html#visibleRangeForCenterOffset">visibleRangeForCenterOffset</a></li>
+            
+                <li data-name="Layout#zoomFactorForLength"><a href="Layout.html#zoomFactorForLength">zoomFactorForLength</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1735,8 +1749,37 @@
       }
     }
 
-    pixelsPerBp(mapCenterOffset = this.backbone.adjustedCenterOffset) {
-      return (mapCenterOffset * 2 * Math.PI) / this.sequence.length;
+
+    // TODO if undefined, see if centerOffset is visible
+    visibleRangeForCenterOffset(centerOffset, margin = 0) {
+      const ranges = this._visibleRangesForRadius(centerOffset, margin);
+      if (ranges.length === 2) {
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
+      } else if (ranges.length > 2) {
+        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
+      } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
+        return undefined;
+      } else if ( (centerOffset + margin) &lt; this._minimumVisibleRadius() ) {
+        return undefined;
+      } else {
+        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
+      }
+      // } else {
+      //   return undefined
+      // }
+    }
+
+    maxMapThickness() {
+      return this.viewer.minDimension / 2;
+    }
+
+    pixelsPerBp(centerOffset = this.backbone.adjustedCenterOffset) {
+      return (centerOffset * 2 * Math.PI) / this.sequence.length;
+    }
+
+    clockPositionForBp(bp, inverse = false) {
+      const radians = this.scale.bp(bp);
+      return CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
     }
 
     zoomFactorForLength(bpLength) {
@@ -1746,13 +1789,56 @@
       return zoomedRadius / this.backbone.centerOffset;
     }
 
-    clockPositionForBp(bp, inverse=false) {
-      const radians = this.scale.bp(bp);
-      return CGV.clockPositionForAngle( inverse ? (radians + Math.PI) : radians );
+    initialWorkingSpace() {
+      return 0.25 * this.viewer.minDimension;
     }
 
-    maxMapThickness() {
-      return this.viewer.minDimension / 2;
+    // Calculate the backbone centerOffset (radius) so that the map is centered between the
+    // circle center and the edge of the canvas (minDimension)
+    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
+      // midRadius is the point between the circle center and the edge of the canvas
+      // on the minDimension.
+      const midRadius = this.viewer.minDimension * 0.25;
+      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
+    }
+
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+      // FIXME: change canvas to this where appropriate
+      const canvas = this.canvas;
+      const ctx = canvas.context(layer);
+      const scale = this.scale;
+
+      // Features less than 1000th the length of the sequence are drawn as straight lines
+      const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
+      if ( rangeLength &lt; (canvas.sequence.length / 1000)) {
+        const p2 = this.pointFor(stopBp, centerOffset);
+        if (startType === 'lineTo') {
+          const p1 = this.pointFor(startBp, centerOffset);
+          ctx.lineTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType === 'moveTo') {
+          const p1 = this.pointFor(startBp, centerOffset);
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        } else if (startType === 'noMoveTo') {
+          ctx.lineTo(p2.x, p2.y);
+        }
+      } else {
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Helper Methods
+    //////////////////////////////////////////////////////////////////////////
+
+    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
+    // centerOffset is the radius for circular maps
+    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
+      const radians = this.scale.bp(bp);
+      const x = centerOffset * Math.cos(radians);
+      const y = -centerOffset * Math.sin(radians);
+      return {x: x, y: y};
     }
 
     _centerVisible() {
@@ -1807,80 +1893,6 @@
       return angles.map( a => Math.round(this.scale.bp.invert(a)) );
     }
 
-    // TODO if undefined, see if centerOffset is visible
-    visibleRangeForCenterOffset(centerOffset, margin = 0) {
-      const ranges = this._visibleRangesForRadius(centerOffset, margin);
-      if (ranges.length === 2) {
-        // return ranges
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
-      } else if (ranges.length > 2) {
-        // return [ ranges[0], ranges[ranges.length -1] ]
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
-      } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
-        return undefined;
-      } else if ( (centerOffset + margin) &lt; this._minimumVisibleRadius() ) {
-        return undefined;
-      } else {
-        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
-      }
-      // } else {
-      //   return undefined
-      // }
-    }
-
-    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
-      // FIXME: change canvas to this where appropriate
-      const canvas = this.canvas;
-      const ctx = canvas.context(layer);
-      const scale = this.scale;
-
-      // Features less than 1000th the length of the sequence are drawn as straight lines
-      const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
-      if ( rangeLength &lt; (canvas.sequence.length / 1000)) {
-        const p2 = this.pointFor(stopBp, centerOffset);
-        if (startType === 'lineTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
-          ctx.lineTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'moveTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        } else if (startType === 'noMoveTo') {
-          ctx.lineTo(p2.x, p2.y);
-        }
-      } else {
-        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
-      }
-    }
-
-    initialWorkingSpace() {
-      return 0.25 * this.viewer.minDimension;
-    }
-
-    // Calculate the backbone centerOffset (radius) so that the map is centered between the
-    // circle center and the edge of the canvas (minDimension)
-    updateInitialBackboneCenterOffset(insideThickness, outsideThickness) {
-      // midRadius is the point between the circle center and the edge of the canvas
-      // on the minDimension.
-      const midRadius = this.viewer.minDimension * 0.25;
-      this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Helper Methods
-    //////////////////////////////////////////////////////////////////////////
-
-    // Return map point (map NOT canvas coordinates) for given bp and centerOffset.
-    // centerOffset is the radius for circular maps
-    _mapPointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
-      const radians = this.scale.bp(bp);
-      const x = centerOffset * Math.cos(radians);
-      const y = -centerOffset * Math.sin(radians);
-      return {x: x, y: y};
-    }
-
-
   }
 
   CGV.LayoutCircular = LayoutCircular;
@@ -1897,7 +1909,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 15:44:34 GMT-0600 (MDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 01 2018 10:55:12 GMT-0600 (MDT)
         </footer>
     </div>
 </div>

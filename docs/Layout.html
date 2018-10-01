@@ -863,19 +863,33 @@
             
                 <li data-name="Layout#_calculateSlotThickness"><a href="Layout.html#_calculateSlotThickness">_calculateSlotThickness</a></li>
             
+                <li data-name="Layout#adjustBpScaleRange"><a href="Layout.html#adjustBpScaleRange">adjustBpScaleRange</a></li>
+            
                 <li data-name="Layout#bpForPoint"><a href="Layout.html#bpForPoint">bpForPoint</a></li>
             
                 <li data-name="Layout#centerOffsetForPoint"><a href="Layout.html#centerOffsetForPoint">centerOffsetForPoint</a></li>
             
+                <li data-name="Layout#clockPositionForBp"><a href="Layout.html#clockPositionForBp">clockPositionForBp</a></li>
+            
                 <li data-name="Layout#domainsFor"><a href="Layout.html#domainsFor">domainsFor</a></li>
             
+                <li data-name="Layout#initialWorkingSpace"><a href="Layout.html#initialWorkingSpace">initialWorkingSpace</a></li>
+            
                 <li data-name="Layout#maxMapThickness"><a href="Layout.html#maxMapThickness">maxMapThickness</a></li>
+            
+                <li data-name="Layout#path"><a href="Layout.html#path">path</a></li>
             
                 <li data-name="Layout#pixelsPerBp"><a href="Layout.html#pixelsPerBp">pixelsPerBp</a></li>
             
                 <li data-name="Layout#pointFor"><a href="Layout.html#pointFor">pointFor</a></li>
             
+                <li data-name="Layout#updateInitialBackboneCenterOffset"><a href="Layout.html#updateInitialBackboneCenterOffset">updateInitialBackboneCenterOffset</a></li>
+            
                 <li data-name="Layout#updateLayout"><a href="Layout.html#updateLayout">updateLayout</a></li>
+            
+                <li data-name="Layout#visibleRangeForCenterOffset"><a href="Layout.html#visibleRangeForCenterOffset">visibleRangeForCenterOffset</a></li>
+            
+                <li data-name="Layout#zoomFactorForLength"><a href="Layout.html#zoomFactorForLength">zoomFactorForLength</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -2490,7 +2504,7 @@ The Layout is in control of creating slots from tracks and drawing the map.</p><
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line500">line 500</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line557">line 557</a>
         </div>
         
     </div>
@@ -2562,7 +2576,7 @@ the number of slots.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line856">line 856</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line913">line 913</a>
         </div>
         
     </div>
@@ -2588,6 +2602,124 @@ Therefore we should always be able to see all the slots in the viewer</li>
     
     
     
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="adjustBpScaleRange">
+            
+            adjustBpScaleRange<span class="signature">(initialize)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line217">line 217</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Adjust the scale.bp.range. This methods is mainly required for Linear maps and is called
+when ever the zoomFactor is changed. For circular maps, it only needs to be called when
+initializing the bp scale.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>initialize</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Only used by Circular maps.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2929,6 +3061,178 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="clockPositionForBp">
+            
+            clockPositionForBp<span class="signature">(bp, invers)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line261">line 261</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns the clock position (1-12) for the supplied bp.
+For example, the top of the map would be 12, the bottom would be 6 and
+the right side of a circular map will be 3.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>bp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Basepair position on the map.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>invers</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>When true, give the opposite clock position (e.g. 6 instead of 12).</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>An integer between 1 and 12.</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="domainsFor">
             
             domainsFor<span class="signature">(bp, <span class="optional">zoomFactor</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array}</span>
@@ -3123,14 +3427,14 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="maxMapThickness">
+        <h4 class="name" id="initialWorkingSpace">
             
-            maxMapThickness<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+            initialWorkingSpace<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line230">line 230</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line282">line 282</a>
         </div>
         
     </div>
@@ -3141,7 +3445,8 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
     
     
     <div class="description">
-        <p>Return the maximum radius to use for calculating slot thickness when zoomed</p>
+        <p>Return the initial maximum space/thickness to draw the map around the backbone.
+This is usually some fraction of the viewer dimensions.</p>
     </div>
     
 
@@ -3223,9 +3528,9 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="pixelsPerBp">
+        <h4 class="name" id="maxMapThickness">
             
-            pixelsPerBp<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+            maxMapThickness<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
         </h4>
     
         
@@ -3241,7 +3546,7 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
     
     
     <div class="description">
-        <p>The number of pixels per basepair along the backbone.</p>
+        <p>Return the maximum thickness of the map. Depends on the dimensions of the Canvas.</p>
     </div>
     
 
@@ -3309,6 +3614,487 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
                     
             </td>
             <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="path">
+            
+            path<span class="signature">(layer, centerOffset, startBp, stopBp, <span class="optional">anticlockwise</span>, <span class="optional">startType</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line317">line 317</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Adds a lineTo path to the given <em>layer</em>. Path does not draw. It only adds lineTo and optionally moveTo
+commands to the context for the given <em>layer</em>.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>The name of the canvas layer to add the path.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>centerOffset</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>This distance from the center of the Map.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>startBp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>The start position in basepairs.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>stopBp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>The stop position in basepairs.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>anticlockwise</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>For circular maps the default direction is clockwise. Set this to true to draw arcs, anticlockwise.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>startType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    'moveTo'
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>How the path should be started.
+<br /></p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>moveTo</td>
+<td><em>moveTo</em> start; <em>lineTo</em> stop</td>
+</tr>
+<tr>
+<td>lineTo</td>
+<td><em>lineTo</em> start; <em>lineTo</em> stop</td>
+</tr>
+<tr>
+<td>noMoveTo</td>
+<td>ingore start; <em>lineTo</em> stop</td>
+</tr>
+</tbody>
+</table></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pixelsPerBp">
+            
+            pixelsPerBp<span class="signature">(<span class="optional">centerOffset</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line248">line 248</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The number of pixels per basepair along the given <em>centerOffset</em>.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>centerOffset</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    <a href="Backbone.html#adjustedCenterOffset"><code>Backbone.adjustedCenterOffset</code></a>
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>Distance from the center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>Pixels per basepair.</li>
+</ul></td>
         </tr>
     
     </tbody>
@@ -3517,6 +4303,148 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="updateInitialBackboneCenterOffset">
+            
+            updateInitialBackboneCenterOffset<span class="signature">(insideThickness, outsideThickness)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line294">line 294</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Set the backbone centerOffset based on the approximate inside and outside
+thickness of the map.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>insideThickness</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The thickness of the inside of the map. From
+  the backbone down (linear) or towards the center (circular).</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>outsideThickness</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The thickness of the outside of the map. From
+  the backbone up (linear) or towards the outside (circular).</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="updateLayout">
             
             updateLayout<span class="signature">()</span>
@@ -3524,7 +4452,7 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line834">line 834</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line891">line 891</a>
         </div>
         
     </div>
@@ -3584,6 +4512,326 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="visibleRangeForCenterOffset">
+            
+            visibleRangeForCenterOffset<span class="signature">(centerOffset, margin)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="CGRange.html">CGRange</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line231">line 231</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return the CGRange for the sequence visisible at the given <em>centerOffset</em>.
+The <em>margin</em> is a distance in pixels added on to the Canvas size when
+calculating the CGRange.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>centerOffset</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The distance from the center of them map.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>margin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>An amount (in pixels) added to the Canvas in all dimensions.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGRange.html">CGRange</a>
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>the visible range.</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="zoomFactorForLength">
+            
+            zoomFactorForLength<span class="signature">(bpLength)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Number}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line272">line 272</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Estimate of the zoom factor, if the viewer was only showing the given <em>bpLength</em>
+as a portion of the total length.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>bpLength</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Length in basepairs.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Number
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>Zoom Factor</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3601,7 +4849,7 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 28 2018 15:44:34 GMT-0600 (MDT)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Oct 01 2018 10:55:12 GMT-0600 (MDT)
         </footer>
     </div>
 </div>
