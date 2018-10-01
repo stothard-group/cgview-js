@@ -273,7 +273,7 @@
     //
     // If the zoomFactor gets too large, the arc drawing becomes unstable.
     // (ie the arc wiggle in the map as zooming)
-    // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
+    // So when the zoomFactor is large, switch to drawing lines (path handles this).
     drawElement(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
       if (decoration === 'none') { return; }
       const ctx = this.context(layer);
@@ -293,7 +293,7 @@
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = mainWidth;
-          this.arcPath(layer, centerOffset, start, stop);
+          this.path(layer, centerOffset, start, stop);
           ctx.stroke();
 
           const shadowOffsetDiff = (mainWidth / 2) + (shadowWidth / 2);
@@ -301,19 +301,19 @@
           // Highlight
           ctx.beginPath();
           ctx.strokeStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
-          this.arcPath(layer, centerOffset + shadowOffsetDiff, start, stop);
+          this.path(layer, centerOffset + shadowOffsetDiff, start, stop);
           ctx.stroke();
 
           // Shadow
           ctx.beginPath();
           ctx.strokeStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
-          this.arcPath(layer, centerOffset - shadowOffsetDiff, start, stop);
+          this.path(layer, centerOffset - shadowOffsetDiff, start, stop);
           ctx.stroke();
         } else {
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = width;
-          this.arcPath(layer, centerOffset, start, stop);
+          this.path(layer, centerOffset, start, stop);
           ctx.stroke();
         }
       }
@@ -352,10 +352,10 @@
           // Main Arrow
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, centerOffset + halfMainWidth, arcStartBp, arcStopBp, direction === -1);
+          this.path(layer, centerOffset + halfMainWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.path(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
@@ -363,30 +363,30 @@
           const highlightPt = this.pointForBp(arcStopBp, centerOffset + halfMainWidth);
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
-          this.arcPath(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.path(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(highlightPt.x, highlightPt.y);
-          this.arcPath(layer, centerOffset + halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.path(layer, centerOffset + halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
 
           // Shadow
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).darken(shadowColorDiff).rgbaString;
-          this.arcPath(layer, centerOffset - halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.path(layer, centerOffset - halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(shadowPt.x, shadowPt.y);
-          this.arcPath(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.path(layer, centerOffset - halfMainWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
         } else {
           // Draw arc with arrow head
           ctx.beginPath();
           ctx.fillStyle = color;
-          this.arcPath(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
+          this.path(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
           ctx.lineTo(arrowTipPt.x, arrowTipPt.y);
           ctx.lineTo(innerArcStartPt.x, innerArcStartPt.y);
-          this.arcPath(layer, centerOffset - halfWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
+          this.path(layer, centerOffset - halfWidth, arcStopBp, arcStartBp, direction === 1, 'noMoveTo');
           ctx.closePath();
           ctx.fill();
         }
@@ -400,7 +400,7 @@
     // FIXME: try calling layout.path with object parameters and compare speed
     // e.g. path({layer: 'map', offset = radius, etc})
     // FIXME: change name
-    arcPath(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
+    path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       this.layout.path(layer, centerOffset, startBp, stopBp, anticlockwise, startType);
     }
 

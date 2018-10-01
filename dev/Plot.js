@@ -289,7 +289,7 @@
       this.positionsFromRange(startPosition, stopPosition, step, (i) => {
         // Handle Origin in middle of range
         if (i === 0 && startIndex !== 0) {
-          canvas.arcPath('map', savedR, savedPosition, sequenceLength, false, 'lineTo');
+          canvas.path('map', savedR, savedPosition, sequenceLength, false, 'lineTo');
           savedPosition = 1;
           savedR = baselineRadius;
         }
@@ -298,7 +298,7 @@
         // drawing. However, there are a few bugs that need to be worked out
         score = scores[i];
         currentPosition = positions[i];
-        canvas.arcPath('map', savedR, savedPosition, currentPosition, false, 'lineTo');
+        canvas.path('map', savedR, savedPosition, currentPosition, false, 'lineTo');
         if ( this._keepPoint(score, orientation) ) {
           savedR = baselineRadius + ((score - this.baseline) * slotThickness);
         } else {
@@ -312,11 +312,11 @@
         stopPosition = sequenceLength;
       }
       // Finish drawing plot to stop position
-      canvas.arcPath('map', savedR, savedPosition, stopPosition, false, 'lineTo');
+      canvas.path('map', savedR, savedPosition, stopPosition, false, 'lineTo');
       const endPoint = canvas.pointForBp(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       // Draw plot anticlockwise back to start along baseline
-      canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');
+      canvas.path('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');
       ctx.fillStyle = color.rgbaString;
       ctx.fill();
 
