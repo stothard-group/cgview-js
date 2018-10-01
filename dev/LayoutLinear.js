@@ -119,6 +119,10 @@
       this.backbone.centerOffset = 0;
     }
 
+    adjustedBackboneCenterOffset(centerOffset) {
+      return centerOffset;
+    }
+
     path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       const canvas = this.canvas;
       const ctx = canvas.context(layer);

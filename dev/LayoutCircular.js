@@ -134,6 +134,10 @@
       this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
     }
 
+    adjustedBackboneCenterOffset(centerOffset) {
+      return centerOffset * this.viewer._zoomFactor;
+    }
+
     path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       // FIXME: change canvas to this where appropriate
       const canvas = this.canvas;

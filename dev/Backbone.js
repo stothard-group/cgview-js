@@ -5,8 +5,7 @@
   /**
    * <br />
    * The CGView Backbone is the ring that separates the direct and reverse slots
-   * of the map. All the slot thicknesses are measures in relation to the backbone
-   * radius.
+   * of the map.
    */
   class Backbone extends CGV.CGObject {
 
@@ -18,8 +17,6 @@
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
-      // const defaultRadius = d3.min([this.viewer.width, this.viewer.height]) * 0.4;
-      // this.radius = CGV.defaultFor(options.radius, defaultRadius);
       this.color = CGV.defaultFor(options.color, 'grey');
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
@@ -61,9 +58,8 @@
     }
 
     /**
-     * @member {Number} - Set or get the backbone radius. This is the unzoomed radius.
+     * @member {Number} - Set or get the backbone centerOffset. This is the unzoomed centerOffset.
      */
-    // set radius(value) {
     set centerOffset(value) {
       if (CGV.isNumeric(value)) {
         this._centerOffset = value;
@@ -80,7 +76,7 @@
      * @member {Number} - Get the zoomed backbone radius. This is the radius * zoomFacter
      */
     get adjustedCenterOffset() {
-      return this.centerOffset * this.viewer._zoomFactor;
+      return this.layout.adjustedBackboneCenterOffset(this.centerOffset);
     }
 
     /**

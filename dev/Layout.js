@@ -294,8 +294,17 @@
       this.delegate.updateInitialBackboneCenterOffset(...args);
     }
 
+    /**
+     * Return an the backbone center offset adjusted for the zoom level.
+     * @param {Number} centerOffset - The backbone initial centerOffset.
+     *
+     * @returns {Number} adjustedCenterOffset
+     */
+    adjustedBackboneCenterOffset(...args) {
+      return this.delegate.adjustedBackboneCenterOffset(...args);
+    }
+
     // FIXME: update arguments
-    // path(layer, radius, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
     /**
      * Adds a lineTo path to the given *layer*. Path does not draw. It only adds lineTo and optionally moveTo
      * commands to the context for the given *layer*.
@@ -885,7 +894,7 @@
     }
 
     /**
-     * Updates the radius and thickness of every slot, divider and ruler, only if the zoom level has changed
+     * Updates the bbOffset and thickness of every slot, divider and ruler, only if the zoom level has changed
      */
     updateLayout(force) {
       const viewer = this.viewer;
@@ -902,11 +911,9 @@
     }
 
     /**
-     * FIXME: update description
-     * Slot thickness is based on a proportion of the backbone radius.
-     * As the viewer is zoomed the slot radius increases until
-     *  - The zoomed radius > the max zoomed radius (~ minimum dimension of the viewer).
-     *    Therefore we should always be able to see all the slots in the viewer
+     * Slot thickness is based on a proportion of the Map thickness.
+     * As the viewer is zoomed the slot thickness increases until
+     *  - The max map thickness is reached, or
      *  - The slot thickness is greater than the maximum allowed slot thickness
      */
     _calculateSlotThickness(proportionOfMap) {
