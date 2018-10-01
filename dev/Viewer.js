@@ -234,7 +234,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @member {Object} - Return the canvas [scales](Canvas.html#scale)
      */
     get scale() {
-      return this.canvas.scale;
+      return this.layout.scale;
     }
 
     get colorPicker() {

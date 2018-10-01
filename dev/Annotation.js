@@ -161,7 +161,7 @@
       let label, feature, containsStart, containsStop, radians;
       let featureLengthDownStream, featureLengthUpStream;
       const sequence = this.sequence;
-      const scale = this.canvas.scale;
+      const scale = this.layout.scale;
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;

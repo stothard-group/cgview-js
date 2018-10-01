@@ -72,7 +72,7 @@
     }
 
     _createEvent(d3Event) {
-      const scale = this.canvas.scale;
+      const scale = this.layout.scale;
       const canvasX = d3Event.offsetX;
       const canvasY = d3Event.offsetY;
       const mapX = scale.x.invert(canvasX);

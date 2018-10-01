@@ -19,24 +19,15 @@
 
       // this._tracks = new CGV.CGArray();
       this._fastMaxFeatures = 1000;
-      // TODO: move to settings
+      // FIXME: move to settings
       // this._minSlotThickness = CGV.defaultFor(data.minSlotThickness, 1);
       // this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
       this._minSlotThickness = 1;
       this._maxSlotThickness = 50;
 
-      // this.updateScales();
-
       // Setup scales
-      // this._scale = {};
-      // this.updateCartesianScales();
+      this._scale = {};
 
-      // // Create tracks
-      // if (data.tracks) {
-      //   data.tracks.forEach((trackData) => {
-      //     new CGV.Track(this, trackData);
-      //   });
-      // }
       this._adjustProportions();
     }
 
@@ -87,8 +78,8 @@
     /** * @member {Object} - Return the scales...
      */
     get scale() {
-      return this.canvas.scale;
-      // return this._scale;
+      // return this.canvas.scale;
+      return this._scale;
     }
 
     get delegate() {

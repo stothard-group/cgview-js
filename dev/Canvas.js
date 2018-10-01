@@ -21,7 +21,7 @@
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
       // Setup scales
-      this._scale = {};
+      // this._scale = {};
       // this.refreshScales();
     }
 
@@ -134,10 +134,10 @@
      * ```
      *
      */
-    get scale() {
-      return this._scale;
-      // return this.layout.scale;
-    }
+    // get scale() {
+    //   return this._scale;
+    //   // return this.layout.scale;
+    // }
 
     /**
      * @member {Array} - Get the names of the layers.
@@ -399,7 +399,6 @@
      */
     // FIXME: try calling layout.path with object parameters and compare speed
     // e.g. path({layer: 'map', offset = radius, etc})
-    // FIXME: change name
     path(layer, centerOffset, startBp, stopBp, anticlockwise = false, startType = 'moveTo') {
       this.layout.path(layer, centerOffset, startBp, stopBp, anticlockwise, startType);
     }
