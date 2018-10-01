@@ -283,7 +283,7 @@
       // Put space between number and units
       label = label.replace(/([kM])?$/, ' $1bp');
       // INNER
-      const innerPt = this.canvas.pointFor(bp, centerOffset - this.rulerPadding);
+      const innerPt = this.canvas.pointForBp(bp, centerOffset - this.rulerPadding);
       const attachmentPosition = this.layout.clockPositionForBp(bp);
       const labelWidth = this.font.width(ctx, label);
       const labelPt = CGV.rectOriginForAttachementPoint(innerPt, attachmentPosition, labelWidth, this.font.height);

@@ -39,7 +39,7 @@
 
     // Return point on Canvas.
     // mapCenterOffset is the radius for circular maps
-    pointFor(bp, centerOffset = this.backbone.adjustedCenterOffset) {
+    pointForBp(bp, centerOffset = this.backbone.adjustedCenterOffset) {
       const radians = this.scale.bp(bp);
       const x = this.scale.x(0) + (centerOffset * Math.cos(radians));
       const y = this.scale.y(0) + (centerOffset * Math.sin(radians));
@@ -143,13 +143,13 @@
       // Features less than 1000th the length of the sequence are drawn as straight lines
       const rangeLength = anticlockwise ? canvas.sequence.lengthOfRange(stopBp, startBp) : canvas.sequence.lengthOfRange(startBp, stopBp);
       if ( rangeLength < (canvas.sequence.length / 1000)) {
-        const p2 = this.pointFor(stopBp, centerOffset);
+        const p2 = this.pointForBp(stopBp, centerOffset);
         if (startType === 'lineTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
+          const p1 = this.pointForBp(startBp, centerOffset);
           ctx.lineTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'moveTo') {
-          const p1 = this.pointFor(startBp, centerOffset);
+          const p1 = this.pointForBp(startBp, centerOffset);
           ctx.moveTo(p1.x, p1.y);
           ctx.lineTo(p2.x, p2.y);
         } else if (startType === 'noMoveTo') {

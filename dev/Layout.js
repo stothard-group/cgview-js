@@ -170,9 +170,8 @@
      *
      * @returns {Point} - The point on the canvas.
      */
-    // FIXME: change to pointForBp???
-    pointFor(...args) {
-      return this.delegate.pointFor(...args);
+    pointForBp(...args) {
+      return this.delegate.pointForBp(...args);
     }
 
     /**
@@ -357,7 +356,7 @@
         const zoomFactorCutoff = 1.25;
         if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
           // Get point for bp and backbone centerOffset (NOTE: bp scale must be set first)
-          const point = this.pointFor(bp);
+          const point = this.pointForBp(bp);
           const dx = scale.x.invert(point.x);
           const dy = scale.y.invert(point.y);
           this.translate(-dx, dy);
@@ -373,7 +372,7 @@
     // The default bp will be based on the center of the canvas.
     zoom(zoomFactor, bp = this.canvas.bpForCanvasCenter()) {
       // Center of zoom before zooming
-      const {x: centerX1, y: centerY1} = this.pointFor(bp);
+      const {x: centerX1, y: centerY1} = this.pointForBp(bp);
 
       zoomFactor = CGV.constrain(zoomFactor, this.viewer.minZoomFactor, this.viewer.maxZoomFactor);
 
@@ -389,8 +388,8 @@
       this.adjustBpScaleRange();
 
       // Center of zoom after zooming
-      // pointFor is on the backbone by default
-      const {x: centerX2, y: centerY2} = this.pointFor(bp);
+      // pointForBp is on the backbone by default
+      const {x: centerX2, y: centerY2} = this.pointForBp(bp);
 
       // Find differerence in x/y and translate the domains
       const dx = centerX1 - centerX2;

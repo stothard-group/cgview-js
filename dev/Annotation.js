@@ -209,7 +209,7 @@
         bp = label.bp;
         lineLength = this.labelLineLength;
         do {
-          const outerPt = canvas.pointFor(bp, centerOffset + lineLength + this._labelLineMarginOuter);
+          const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
           const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
           label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
           overlappingRect = label.rect.overlap(placedRects);
@@ -233,8 +233,8 @@
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         bp = label.bp;
-        // let innerPt = canvas.pointFor(bp, centerOffset);
-        const outerPt = canvas.pointFor(bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
+        // let innerPt = canvas.pointForBp(bp, centerOffset);
+        const outerPt = canvas.pointForBp(bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
         const rectOrigin = CGV.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
         label.rect = new CGV.Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
@@ -330,7 +330,7 @@
         //   outerCenterOffset + this._labelLineMarginInner,
         //   this.labelLineLength + this._labelLineMarginOuter,
         // this._labelLineWidth, color.rgbaString, this.lineCap);
-        const innerPt = canvas.pointFor(label.bp, outerCenterOffset + this._labelLineMarginInner);
+        const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
         // console.log(label.attachementPt)
         const outerPt = label.attachementPt;
         ctx.beginPath();

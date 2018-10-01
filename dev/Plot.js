@@ -267,7 +267,7 @@
       const baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
 
       // Move to the first point
-      const startPoint = canvas.pointFor(startPosition, baselineRadius);
+      const startPoint = canvas.pointForBp(startPosition, baselineRadius);
       ctx.moveTo(startPoint.x, startPoint.y);
 
       let savedR = baselineRadius + ((startScore - this.baseline) * slotThickness);
@@ -313,7 +313,7 @@
       }
       // Finish drawing plot to stop position
       canvas.arcPath('map', savedR, savedPosition, stopPosition, false, 'lineTo');
-      const endPoint = canvas.pointFor(stopPosition, baselineRadius);
+      const endPoint = canvas.pointForBp(stopPosition, baselineRadius);
       ctx.lineTo(endPoint.x, endPoint.y);
       // Draw plot anticlockwise back to start along baseline
       canvas.arcPath('map', baselineRadius, stopPosition, startPosition, true, 'noMoveTo');

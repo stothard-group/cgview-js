@@ -37,7 +37,7 @@
     // Required Delegate Methods
     //////////////////////////////////////////////////////////////////////////
 
-    pointFor(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
+    pointForBp(bp, mapCenterOffset = this.backbone.adjustedCenterOffset) {
       const x = this.scale.x(this.scale.bp(bp));
       const y = this.scale.y(mapCenterOffset);
       return {x: x, y: y};
@@ -124,13 +124,13 @@
       const ctx = canvas.context(layer);
 
       // FIXME: have option to round points (could use for divider lines)
-      const p2 = this.pointFor(stopBp, centerOffset);
+      const p2 = this.pointForBp(stopBp, centerOffset);
       if (startType === 'lineTo') {
-        const p1 = this.pointFor(startBp, centerOffset);
+        const p1 = this.pointForBp(startBp, centerOffset);
         ctx.lineTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
       } else if (startType === 'moveTo') {
-        const p1 = this.pointFor(startBp, centerOffset);
+        const p1 = this.pointForBp(startBp, centerOffset);
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
       } else if (startType === 'noMoveTo') {

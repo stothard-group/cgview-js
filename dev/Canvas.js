@@ -342,12 +342,12 @@
         // Calculate important points
         const halfWidth = width / 2;
         const arcStopBp = arrowTipBp - (direction * arrowHeadLengthBp);
-        const arrowTipPt = this.pointFor(arrowTipBp, centerOffset);
-        const innerArcStartPt = this.pointFor(arcStopBp, centerOffset - halfWidth);
+        const arrowTipPt = this.pointForBp(arrowTipBp, centerOffset);
+        const innerArcStartPt = this.pointForBp(arcStopBp, centerOffset - halfWidth);
 
         if (showShading) {
           const halfMainWidth =  width * (0.5 - shadowFraction);
-          const shadowPt = this.pointFor(arcStopBp, centerOffset - halfMainWidth);
+          const shadowPt = this.pointForBp(arcStopBp, centerOffset - halfMainWidth);
 
           // Main Arrow
           ctx.beginPath();
@@ -360,7 +360,7 @@
           ctx.fill();
 
           // Highlight
-          const highlightPt = this.pointFor(arcStopBp, centerOffset + halfMainWidth);
+          const highlightPt = this.pointForBp(arcStopBp, centerOffset + halfMainWidth);
           ctx.beginPath();
           ctx.fillStyle = new CGV.Color(color).lighten(shadowColorDiff).rgbaString;
           this.arcPath(layer, centerOffset + halfWidth, arcStartBp, arcStopBp, direction === -1);
@@ -405,8 +405,8 @@
     }
 
     radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt') {
-      const innerPt = this.pointFor(bp, centerOffset);
-      const outerPt = this.pointFor(bp, centerOffset + length);
+      const innerPt = this.pointForBp(bp, centerOffset);
+      const outerPt = this.pointForBp(bp, centerOffset + length);
       const ctx = this.context(layer);
 
       ctx.beginPath();
@@ -421,8 +421,8 @@
     }
 
 
-    pointFor(bp, centerOffset) {
-      return this.layout.pointFor(bp, centerOffset);
+    pointForBp(bp, centerOffset) {
+      return this.layout.pointForBp(bp, centerOffset);
       // const radians = this.scale.bp(bp);
       // const x = this.scale.x(0) + (centerOffset * Math.cos(radians));
       // const y = this.scale.y(0) + (centerOffset * Math.sin(radians));

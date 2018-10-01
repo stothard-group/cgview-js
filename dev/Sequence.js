@@ -477,10 +477,10 @@
         // Distance from the center of the backbone to place sequence text
         const centerOffsetDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
-          let origin = this.canvas.pointFor(bp, centerOffset + centerOffsetDiff);
+          let origin = this.canvas.pointForBp(bp, centerOffset + centerOffsetDiff);
           if (i == 0) { console.log(bp, origin)}
           ctx.fillText(seq[i], origin.x, origin.y);
-          origin = this.canvas.pointFor(bp, centerOffset - centerOffsetDiff);
+          origin = this.canvas.pointForBp(bp, centerOffset - centerOffsetDiff);
           ctx.fillText(complement[i], origin.x, origin.y);
           bp++;
         }
