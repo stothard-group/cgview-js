@@ -136,7 +136,7 @@
         const bbOffset = this._bbOffsets[i];
         this._visibleRange = this.canvas.visibleRangeForCenterOffset(bbOffset, 100);
         if (this.visibleRange) {
-          this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
+          this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
         }
       }
     }

@@ -274,7 +274,7 @@
     // If the zoomFactor gets too large, the arc drawing becomes unstable.
     // (ie the arc wiggle in the map as zooming)
     // So when the zoomFactor is large, switch to drawing lines (arcPath handles this).
-    drawArc(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
+    drawElement(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
       if (decoration === 'none') { return; }
       const ctx = this.context(layer);
       const settings = this.viewer.settings;

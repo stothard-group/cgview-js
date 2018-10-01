@@ -209,7 +209,7 @@
         const slotThickness = this.thickness;
         const ctx = this.canvas.context('map');
         ctx.globalCompositeOperation = 'destination-out'; // The existing content is kept where it doesn't overlap the new shape.
-        this.canvas.drawArc('map', range.start, range.stop, centerOffset, 'white', slotThickness);
+        this.canvas.drawElement('map', range.start, range.stop, centerOffset, 'white', slotThickness);
         ctx.globalCompositeOperation = 'source-over'; // Default
       }
     }
@@ -219,7 +219,7 @@
       if (range && this.visible) {
         const centerOffset = this.centerOffset;
         const slotThickness = this.thickness;
-        this.canvas.drawArc('background', range.start, range.stop, centerOffset, color, slotThickness);
+        this.canvas.drawElement('background', range.start, range.stop, centerOffset, color, slotThickness);
       }
     }
 
@@ -274,7 +274,7 @@
       // Draw progress like thickening circle
       if (progress > 0 && progress < 100 && range) {
         const thickness = slotThickness * progress / 100;
-        canvas.drawArc('background', range.start, range.stop, centerOffset, '#EAEAEE', thickness, 'arc', false);
+        canvas.drawElement('background', range.start, range.stop, centerOffset, '#EAEAEE', thickness, 'arc', false);
       }
     }
 

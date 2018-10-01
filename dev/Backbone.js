@@ -170,7 +170,7 @@
       this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
-        this.viewer.canvas.drawArc('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
+        this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
         // console.log('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.zoomedThickness);
         if (this.pixelsPerBp() > 1) {
           this.sequence.draw();

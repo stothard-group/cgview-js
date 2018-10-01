@@ -119,7 +119,7 @@
         const color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
         color.highlight();
 
-        viewer.canvas.drawArc('ui', start, stop, centerOffset, color.rgbaString, thickness);
+        viewer.canvas.drawElement('ui', start, stop, centerOffset, color.rgbaString, thickness);
       }
     }
 

@@ -258,14 +258,14 @@
         if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
              (this.range.overHalfCircle()) ) {
-          canvas.drawArc(layer, visibleRange.start - 100, stop,
+          canvas.drawElement(layer, visibleRange.start - 100, stop,
             this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
-          canvas.drawArc(layer, start, visibleRange.stop + 100,
+          canvas.drawElement(layer, start, visibleRange.stop + 100,
             this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         } else {
-          canvas.drawArc(layer, start, stop,
+          canvas.drawElement(layer, start, stop,
             this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
         }
