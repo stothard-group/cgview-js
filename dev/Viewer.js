@@ -374,6 +374,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.layout._adjustProportions();
     }
 
+    moveTrack(oldIndex, newIndex) {
+      this._tracks.move(oldIndex, newIndex);
+      this.layout._adjustProportions();
+    }
+
     /**
      * Returns an [CGArray](CGArray.js.html) of Plots or a single Plot from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
