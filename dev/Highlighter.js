@@ -10,19 +10,15 @@
   class Highlighter extends CGV.CGObject {
 
     /**
-     * Create a Highligher
+     * Create a Highlighter
      *
      * @param {Viewer} viewer - The parent *Viewer* for the *Highligher*.
      * @param {Object} options - Options for how highlighting should work. Described below.
      *
-     *  Option                  | Default     | Description
-     *  ------------------------|-------------------------------------------------
-     *  featureHighlighting    | true        | Highlight a feature when the mouse is over it
-     *  featurePopovers        | true        | Show a popover for the feature when the mouse is over it
-     *  featurePopoverContents | undefined   | Function to create html for the popover
-     *  plotHighlighting       | true        | Highlight a plot when the mouse is over it
-     *  plotPopovers           | true        | Show a popover for the plot when the mouse is over it
-     *  plotPopoverContents    | undefined   | Function to create html for the popover
+     *  Option     | Default              | Description
+     *  -----------|----------------------|--------------------------
+     *  feature    | HighlighterElement   | Describes the highlightling options for features.
+     *  plot       | HighlighterElement   | Describes the highlightling options for plots.
      *
      * @return {Highlighter}
      */
@@ -30,12 +26,8 @@
       super(viewer, options, meta);
       this._viewer = viewer;
       this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
-      this.featureHighlighting = CGV.defaultFor(options.featureHighlighting, true);
-      this.featurePopovers = CGV.defaultFor(options.featurePopovers, true);
-      this.featurePopoverContents = options.featurePopoverContents;
-      this.plotHighlighting = CGV.defaultFor(options.plotHighlighting, true);
-      this.plotPopovers = CGV.defaultFor(options.plotPopovers, true);
-      this.plotPopoverContents = options.plotPopoverContents;
+      this.feature = new CGV.HighlighterElement('feature', options.feature);
+      this.plot = new CGV.HighlighterElement('plot', options.plot);
       this.initializeEvents();
 
       // Set up position constants
@@ -55,7 +47,6 @@
       if (this.viewer._container.style('position') !== 'fixed') {
         viewerRect = this.viewer._container.node().getBoundingClientRect();
       }
-      // let viewerRect = this.viewer._container.node().getBoundingClientRect();
       const originX = e.canvasX + viewerRect.left + window.pageXOffset;
       const originY = e.canvasY + viewerRect.top + window.pageYOffset;
       return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
@@ -65,44 +56,37 @@
       this.viewer.off('.cgv-highlighter');
       this.viewer.on('mousemove.cgv-highlighter', (e) => {
         if (e.feature) {
-          this.mouseOverFeature(e);
+          this.mouseOver('feature', e);
         } else if (e.plot) {
-          this.mouseOverPlot(e);
+          this.mouseOver('plot', e);
         } else {
           this.hidePopoverBox();
         }
       });
     }
 
-    featurePopoverContentsDefault(feature) {
-      return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
+    mouseOver(type, e) {
+      if (this[type].highlighting) {
+        this[`highlight${CGV.capitalize(type)}`](e);
+      }
+      if (this[type].popovers && this.visible) {
+        const position = this.position(e);
+        const html = (this[type].popoverContents && this[type].popoverContents(e)) || this[`${type}PopoverContentsDefault`](e);
+        this.showPopoverBox({position: position, html: html});
+      }
     }
 
-    plotPopoverContentsDefault(plot, bp) {
-      const score = plot.scoreForPosition(bp);
+    featurePopoverContentsDefault(e) {
+      return `<div style='margin: 0 5px; font-size: 14px'>${e.feature.type}: ${e.feature.name}</div>`;
+    }
+
+    plotPopoverContentsDefault(e) {
+      const score = e.plot.scoreForPosition(e.bp);
       return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`;
     }
 
-    mouseOverFeature(e) {
-      if (this.featureHighlighting) {
-        e.feature.highlight(e.slot);
-      }
-      if (this.featurePopovers && this.visible) {
-        const position = this.position(e);
-        const html = (this.featurePopoverContents && this.featurePopoverContents(e.feature)) || this.featurePopoverContentsDefault(e.feature);
-        this.showPopoverBox({position: position, html: html});
-      }
-    }
-
-    mouseOverPlot(e) {
-      if (this.plotHighlighting) {
-        this.highlightPlot(e);
-      }
-      if (this.plotPopovers && this.visible) {
-        const position = this.position(e);
-        const html = (this.plotPopoverContents && this.plotPopoverContents(e.plot, e.bp)) || this.plotPopoverContentsDefault(e.plot, e.bp);
-        this.showPopoverBox({position: position, html: html});
-      }
+    highlightFeature(e) {
+      e.feature.highlight(e.slot);
     }
 
     highlightPlot(e) {
@@ -148,6 +132,70 @@
   }
 
   CGV.Highlighter = Highlighter;
+})(CGView);
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Highlighter Element
+//////////////////////////////////////////////////////////////////////////////
+(function(CGV) {
+  /**
+   * Create a Highlighter element.
+   *
+   * @param {String} type - The element type: 'feature' or 'plot'.
+   * @param {Object} options - Options for how highlighting should work. Described below.
+   *
+   *  Option          | Default     | Description
+   *  ----------------|-------------------------------------------------
+   *  highlighting    | true        | Highlight a element when the mouse is over it
+   *  popovers        | true        | Show a popover for the element when the mouse is over it
+   *  popoverContents | undefined   | Function to create html for the popover
+   *
+   * @return {Highlighter}
+   */
+  class HighlighterElement {
+    constructor(type, options = {}) {
+      this.type = type;
+      this.highlighting = CGV.defaultFor(options.highlighting, true);
+      this.popovers = CGV.defaultFor(options.popovers, true);
+      this.popoverContents = options.popoverContents;
+    }
+
+    get type() {
+      return this._type;
+    }
+
+    set type(value) {
+      this._type = value;
+    }
+
+    get highlighting() {
+      return this._highlighting;
+    }
+
+    set highlighting(value) {
+      this._highlighting = value;
+    }
+
+    get popover() {
+      return this._popover;
+    }
+
+    set popover(value) {
+      this._popover = value;
+    }
+
+    get popoverContents() {
+      return this._popoverContents;
+    }
+
+    set popoverContents(value) {
+      this._popoverContents = value;
+    }
+
+  }
+
+  CGV.HighlighterElement = HighlighterElement;
 })(CGView);
 
 

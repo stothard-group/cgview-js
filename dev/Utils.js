@@ -68,6 +68,10 @@
     }
   };
 
+  CGV.capitalize = function(string) {
+    return string.replace(/^\w/, c => c.toUpperCase());
+  }
+
   // #<{(|*
   //  * Return the pixel ratio. The default is 1.
   //  |)}>#
