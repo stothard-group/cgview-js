@@ -34,6 +34,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * backbone        | Object | [Backbone](Backbone.html) options
      * layout          | Object | [Layout](Layout.html) options
      * ruler           | Object | [Ruler](Ruler.html) options
+     * dividers        | Object | [Dividers](Dividers.html) options
      * annotation      | Object | [Annotation](Annotation.html) options
      * highlighter     | Object | [Highlighter](Highlighter.html) options
      *
@@ -104,6 +105,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
 
+      this.layout.updateScales();
+
       this._loading = false;
     }
 
@@ -137,14 +140,14 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Number} - Get the map layout object.
+     * @member {Layout} - Get the map layout object.
      */
     get layout() {
       return this._layout;
     }
 
     /**
-     * @member {Number} - Get or set the map name
+     * @member {String} - Get or set the map name
      */
     get name() {
       return this._name;
@@ -184,7 +187,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Number} - Get or set the zoom level of the image
+     * @member {Number} - Get or set the zoom level of the map. A value of 1 is the intial zoom level.
+     *   Increasing the zoom level to 2 will double the length of the backbone, and so on.
      */
     get zoomFactor() {
       return this._zoomFactor;
@@ -203,7 +207,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * @member {Number} - Get the maximum allowed zoom level
+     * @member {Number} - Get the maximum allowed zoom level. The maximum zoom level is set so
+     * that at the maximum, the sequence can be clearly seen.
      */
     get maxZoomFactor() {
       return this.backbone.maxZoomFactor();
@@ -251,23 +256,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get sequence() {
       return this._sequence;
-    }
-
-    /**
-     * @member {Number} - Get or set the ability to drag-n-drop JSON files on to viewer
-     */
-    get allowDragAndDrop() {
-      return this._allowDragAndDrop;
-    }
-
-    set allowDragAndDrop(value) {
-      this._allowDragAndDrop = value;
-      if (value) {
-        this.io.initializeDragAndDrop();
-      } else {
-        // console.log('COMONE')
-        // d3.select(this.canvas.node('ui')).on('.dragndrop', null);
-      }
     }
 
     /**
@@ -339,9 +327,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
      * @return {CGArray}
      */
-    // slots(term) {
-    //   return this.layout.slots(term);
-    // }
     slots(term) {
       let slots = new CGV.CGArray();
       for (let i = 0, len = this._tracks.length; i < len; i++) {
@@ -365,7 +350,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @return {CGArray}
      */
     tracks(term) {
-      // return this.layout.tracks(term);
       return this._tracks.get(term);
     }
 

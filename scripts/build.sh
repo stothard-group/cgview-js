@@ -28,18 +28,20 @@ find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js ! -name Events.js !
 # - I added the filename line (line 500)
 echo "Building Documentation..."
 # jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
-jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
+jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs/html --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
 
-# TESTING FOR JSV
-# JSV_DIR=~/workspace/wishartlab/jsv
-# echo $JSV_DIR
-# jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ~/Desktop/jsv-docs --readme ${JSV_DIR}/README.md ${JSV_DIR}/dev/*
+# BUILD DASH DOCSET
+# Note: use --private to display private symbols
+# Location of original template: /usr/local/lib/node_modules/jsdoc-dash-template
+# jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
+# jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
 
 echo "Copying Tutorials"
-ln -s ../tutorials/basic_map.html docs/basic_map.html
-ln -s ../tutorials/sequence_map.html docs/sequence_map.html
-ln -s ../tutorials/json_map.html docs/json_map.html
-ln -s ../tutorials/json_format.html docs/json_format.html
+ln -s ${CGVIEW_DIR}/tutorials/basic_map.html ${CGVIEW_DIR}/docs/html/basic_map.html
+ln -s ${CGVIEW_DIR}/tutorials/sequence_map.html ${CGVIEW_DIR}/docs/html/sequence_map.html
+ln -s ${CGVIEW_DIR}/tutorials/json_map.html ${CGVIEW_DIR}/docs/html/json_map.html
+ln -s ${CGVIEW_DIR}/tutorials/mindmap.html ${CGVIEW_DIR}/docs/html/mindmap.html
+ln -s ${CGVIEW_DIR}/tutorials/json_format.html ${CGVIEW_DIR}/docs/html/json_format.html
 
 
 echo "Done!"

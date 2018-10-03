@@ -18,6 +18,23 @@
       return this._viewer;
     }
 
+    /**
+     * @member {Number} - Get or set the ability to drag-n-drop JSON files on to viewer
+     */
+    get allowDragAndDrop() {
+      return this._allowDragAndDrop;
+    }
+
+    set allowDragAndDrop(value) {
+      this._allowDragAndDrop = value;
+      if (value) {
+        this.io.initializeDragAndDrop();
+      } else {
+        // console.log('COMONE')
+        // d3.select(this.canvas.node('ui')).on('.dragndrop', null);
+      }
+    }
+
     formatDate(d) {
       // return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
       const timeformat = d3.timeFormat('%Y-%m-%d %H:%M:%S');

@@ -74,42 +74,46 @@
 # CGView Data Format #
 
 Data can be loaded from a JavaScript object literal or a JSON string using [IO.loadJSON](IO.html#loadJSON).
-The two formats are very similar and can be converted using the JSON.parse and JSON.stringify.
-The example below is shown as an object literal and only show some of the possible options for each key.
-Click on a key (e.g. backbone, captions, etc) options and defaults. There are 2 options that are available
+The two formats are very similar and can be converted using JSON.parse and JSON.stringify.
+The example below is shown as an object literal and only shows some of the possible options for each key.
+Click on a key (e.g. backbone, captions, etc) for options and defaults. There are 2 options that are available
 for most sections of the JSON: _visible_ (Default: true) and _meta_ (Default: {}). The _meta_ key is a place
 to store user/app-defined data.
 
 ```js
 {
     "cgview": {
-        "version": "0.1",
+        "version": "0.2",
         "created": "2017-06-21 13:29:07",
         "updated": "2017-06-21 13:29:07",
+        "id": "f078a696a89c4c97d526f588933ddcbafd6ba037",
+        "name": "My Cool Map",
         "settings": {
-            "general": {
-                "backgroundColor": "rgba(255,255,255,1)",
-                "showShading": true,
-                "arrowHeadLength": 0.3
+            "backgroundColor": "rgba(255,255,255,1)",
+            "showShading": true,
+            "arrowHeadLength": 0.3
+        },
+        "backbone": {
+            "color": "rgba(128,128,128,1)",
+            "thickness": 5
+        },
+        "ruler": {
+            "font": "sans-serif,plain,10",
+            "color": "rgba(0,0,0,1)"
+        },
+        "annotation": {
+            "font": "sans-serif,plain,12"
+        },
+        "dividers": {
+            "track": {
+                "color": "rgba(50,50,50,1)",
+                "thickness": 1,
+                "spacing": 1
             },
-            "backbone": {
+            "slot": {
                 "color": "rgba(128,128,128,1)",
-                "thickness": 5
-            },
-            "ruler": {
-                "font": "sans-serif,plain,10",
-                "color": "rgba(0,0,0,1)"
-            },
-            "annotation": {
-                "font": "sans-serif,plain,12"
-            },
-            "dividers": {
-                "slot": {
-                    "visible": true,
-                    "color": "rgba(128,128,128,1)",
-                    "thickness": 1,
-                    "spacing": 1
-                }
+                "thickness": 1,
+                "spacing": 1
             }
         },
         "captions": [
@@ -180,21 +184,19 @@ to store user/app-defined data.
             }
         ],
         "plots": [],
-        "layout": {
-            "tracks": [
-                {
-                    "name": "Features",
-                    "readingFrame": "combined",
-                    "strand": "separated",
-                    "position": "both",
-                    "contents": {
-                        "type": "feature",
-                        "from": "source",
-                        "extract": "sequence-features"
-                    }
+        "tracks": [
+            {
+                "name": "Features",
+                "readingFrame": "combined",
+                "strand": "separated",
+                "position": "both",
+                "contents": {
+                    "type": "feature",
+                    "from": "source",
+                    "extract": "sequence-features"
                 }
-            ]
-        }
+            }
+        ]
     }
 }
 ```
@@ -218,7 +220,7 @@ to store user/app-defined data.
       // text = text.replace(re, "<a href='$2'>$1</a>");
 
       text = text.replace('cgview:', "<a class='json-link' href='Viewer.html'>cgview</a>:");
-      text = text.replace('general:', "<a class='json-link' href='Settings.html'>general</a>:");
+      text = text.replace('settings:', "<a class='json-link' href='Settings.html'>settings</a>:");
       text = text.replace('backbone:', "<a class='json-link' href='Backbone.html'>backbone</a>:");
       text = text.replace('ruler:', "<a class='json-link' href='Ruler.html'>ruler</a>:");
       text = text.replace('annotation:', "<a class='json-link' href='Annotation.html'>annotation</a>:");
@@ -230,8 +232,11 @@ to store user/app-defined data.
       text = text.replace('sequence:', "<a class='json-link' href='Sequence.html'>sequence</a>:");
       text = text.replace('features:', "<a class='json-link' href='Feature.html'>features</a>:");
       text = text.replace('plots:', "<a class='json-link' href='Plot.html'>plots</a>:");
-      text = text.replace('layout:', "<a class='json-link' href='Layout.html'>layout</a>:");
       text = text.replace('tracks:', "<a class='json-link' href='Track.html'>tracks</a>:");
+      text = text.replace(/color:/g, "<a class='json-link' href='Color.html'>color</a>:");
+      text = text.replace(/font:/g, "<a class='json-link' href='Font.html'>font</a>:");
+      text = text.replace(/track:/g, "<a class='json-link' href='Divider.html'>track</a>:");
+      text = text.replace(/slot:/g, "<a class='json-link' href='Divider.html'>slot</a>:");
 
 			return text;
 		};

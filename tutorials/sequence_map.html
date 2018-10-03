@@ -96,7 +96,7 @@ cgv = new CGV.Viewer('#my-viewer', {
 
 ```js
 // The first argument for a track is the viewer layout
-new CGV.Track(cgv.layout, {
+new CGV.Track(cgv, {
   // Name for the track.
   name: 'ORFs',
   // Draw the track using separated or combined slots for each reading frame.
@@ -137,7 +137,7 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with start/stop codons extracted from the seqeunce ##
 
 ```js
-new CGV.Track(cgv.layout, {
+new CGV.Track(cgv, {
   name: 'Start Stop Codons',
   readingFrame: 'separated',
   strand: 'separated',
@@ -159,7 +159,7 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with a GC Skew plot extracted from the seqeunce ##
 
 ```js
-new CGV.Track(cgv.layout, {
+new CGV.Track(cgv, {
   name: 'GC Skew',
   position: 'inside',
   contents: {
@@ -180,7 +180,7 @@ new CGV.Track(cgv.layout, {
 ## Create a [Track](Track.html) with a GC Content plot extracted from the seqeunce ##
 
 ```js
-new CGV.Track(cgv.layout, {
+new CGV.Track(cgv, {
   name: 'GC Content',
   position: 'inside',
   contents: {
@@ -209,7 +209,7 @@ cgv.drawFull();
 ```
 
 The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
-You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
+You can zoom, using your mouse scroll wheel. The Legend colors can be changed by clicking on the swatches in the Legend.
 If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
 </div>
 
@@ -219,6 +219,7 @@ If you want play around with the viewer object, open your browser web inspector.
   //marked.setOptions({
   //  sanitize: true
   //});
+
 	var marked_ = marked;
 	var marked = function(text) {
 			var tok = marked_.lexer(text);

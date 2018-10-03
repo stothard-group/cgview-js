@@ -77,8 +77,9 @@ Component                        | Accessor                                   | 
 [Annotation](Annotation.html)    | [annotation](Viewer.html#annotation)       | Annotation controls how feature labels are drawn.
 [Settings](Settings.html)        | [settings](Viewer.html#settings)           | Settings store general options for the viewer.
 [Messenger](Messenger.html)      | [messenger](Viewer.html#messenger)         | Messenger provides the interface for showing messages.
-[Divider](Divider.html)          | [slotDivider](Viewer.html#slotDivider)     | The slotDivider controls the space and lines between each slot.
+[Divider](Dividers.html)         | [dividers](Viewer.html#dividers)           | Controls the space and lines between each track and slot.
 [Highlighter](Highlighter.html)  | [highlighter](Viewer.html#highlighter)     | Highlighter controls what happens when mousing over features/plots.
+[Track](Track.html)              | [tracks()](Viewer.html#tracks)             | Returns one or more Tracks.
 [Feature](Feature.html)          | [features()](Viewer.html#features)         | Returns one or more Features.
 [Plot](Plot.html)                | [plots()](Viewer.html#plots)               | Returns one or more Plots.
 [Caption](Caption.html)          | [captions()](Viewer.html#captions)         | Returns one or more Captions.
@@ -86,7 +87,8 @@ Component                        | Accessor                                   | 
 
 ### JSON Format ###
 
-[See the CGView JSON format](json_format.html)
+- [See the CGView JSON format](json_format.html)
+- [See the CGView JSON format as a mind map](mindmap.html)
 
 ### Tutorials ###
 

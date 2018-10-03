@@ -413,18 +413,12 @@
 
     featuresByReadingFrame(features) {
       const featuresByRF = {
-        rfPlus1: [],
-        rfPlus2: [],
-        rfPlus3: [],
-        rfMinus1: [],
-        rfMinus2: [],
-        rfMinus3: []
-        // rfPlus1: new CGV.CGArray(),
-        // rfPlus2: new CGV.CGArray(),
-        // rfPlus3: new CGV.CGArray(),
-        // rfMinus1: new CGV.CGArray(),
-        // rfMinus2: new CGV.CGArray(),
-        // rfMinus3: new CGV.CGArray()
+        rfPlus1: new CGV.CGArray(),
+        rfPlus2: new CGV.CGArray(),
+        rfPlus3: new CGV.CGArray(),
+        rfMinus1: new CGV.CGArray(),
+        rfMinus2: new CGV.CGArray(),
+        rfMinus3: new CGV.CGArray()
       };
       let rf;
       features.each( (i, feature) => {
@@ -478,7 +472,7 @@
         const centerOffsetDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
         for (let i = 0, len = range.length; i < len; i++) {
           let origin = this.canvas.pointForBp(bp, centerOffset + centerOffsetDiff);
-          if (i == 0) { console.log(bp, origin)}
+          // if (i == 0) { console.log(bp, origin)}
           ctx.fillText(seq[i], origin.x, origin.y);
           origin = this.canvas.pointForBp(bp, centerOffset - centerOffsetDiff);
           ctx.fillText(complement[i], origin.x, origin.y);
