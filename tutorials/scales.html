@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CGView: Sequence Map</title>
+  <title>CGView: Basic Map</title>
   <meta charset="UTF-8">
   <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
   <!-- <script src="javascript/jquery&#45;1.11.1.min.js"></script> -->
   <!-- Bootstrap 3 -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-	<script src="../javascript/marked.min.js"></script>
+  <script src="../javascript/marked.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>-->
 
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
@@ -26,14 +27,6 @@
   <!-- CGView -->
   <script src='../src/CGView.js'></script>
   <link rel="stylesheet" href="../stylesheets/cgview.css" />
-
-  <style>
-    a.json-link span{
-      color: rgb(100, 100, 250);
-      cursor: pointer;
-    }
-  </style>
-
 </head>
 <body>
 
@@ -51,13 +44,13 @@
 				<ul class="nav navbar-nav">
 					<li><a href="../viewer.html">Demo</a></li>
 					<li><a href="index.html">Docs</a></li>
-					<li class='active'><a href="json_format.html">JSON</a></li>
-          <li class="dropdown">
+					<li><a href="json_format.html">JSON</a></li>
+          <li class="dropdown active">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="basic_map.html">Basic Map</a></li>
               <li><a href="sequence_map.html">Sequence Map</a></li>
-              <li><a href="json_map.html">JSON Map</a></li>
+              <li class='active'><a href="json_map.html">JSON Map</a></li>
               <li><a href="scales.html">Scales</a></li>
             </ul>
           </li>
@@ -67,14 +60,73 @@
 	</div>
 
   <div id='main'>
-    <h2>CGView Data Mind Map</h2>
-    <iframe src="https://my.mindnode.com/eJhbWQKMsqAuQKvirPKEXisC2NyVrB1u4QiDYpA9/em#-327,-37,-6" frameborder="0" marginheight="0" marginwidth="0" style="border: 1px solid rgb(204, 204, 204); width: 600px; height: 600px;" onmousewheel=""></iframe>
+		<div id='markdown-out'></div>
+		<div>
+			<div id='my-viewer'></div>
+		</div>
+    <div id='final-code'>
+		  <h2>Complete Code without Comments:</h2>
+			<pre class='prettyprint'><code class='lang-js final'></code></pre></div>
   </div>
 
+<div id='markdown-in' style='display:none;'>
+
+# CGView Scales #
+
+CGView uses 3 different scales (x, y, bp) to keep track of map coordinates and basepair position.
+The scales are [d3.scaleLinear](https://github.com/d3/d3-scale#linear-scales) objects
+and map a continuous input domain to a continuous output range.
+
+The x and y scales relate the canvas (range) to the map coordindates (domain).
+The canvas origin is in the top left of the viewer and the coordinates move
+in a positive direction towards the bottom-right.
+The map origin in the center of the map (0,0) and the coordinates move
+in a positive direction towards the top-right.
+The bp scale differs depending on the layout:
+   - Circular: the bp scale converts the circle angle to a basepair. This scale is not zoom depedent.
+   - Linear: the bp scale converts basepair to distance on the x axis. This distance is zoom dependent.
+
+The scales are accessed directly through the viewer...
 
 
+## STUFF ##
+
+```js
+```
 
 
-</div>
+<script>
+	// Convert Markdown to HTML
+  // https://github.com/chjj/marked
+  //marked.setOptions({
+  //  sanitize: true
+  //});
+	var marked_ = marked;
+	var marked = function(text) {
+			var tok = marked_.lexer(text);
+			text = marked_.parser(tok);
+			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
+      text = text.replace(/&amp;gt;/g, '>');
+      text = text.replace(/&amp;lt;/g, '<');
+			return text;
+		};
+	$('#markdown-out').html( marked($('#markdown-in').html()) );
+
+  // var code = '';
+  $('code.lang-js:not(.final)').each( function(c) {
+	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
+    code = code.replace('&lt;', '<');
+    code = code.replace('&gt;', '>');
+    // console.log(code);
+    eval( code );
+		$('#final-code code').append( code + "\n" );
+  });
+
+ 
+
+
+</script>
 
 </html>
+
+

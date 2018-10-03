@@ -84,7 +84,7 @@
     }
 
     /**
-     * Load data from object literal or JSON string ([Format details](json_format.html).
+     * Load data from object literal or JSON string ([Format details](json_format.html)).
      * Removes any previous viewer data and overrides options that are already set.
      * @param {Object} data - JSON string or Object Literal
      */
@@ -262,6 +262,7 @@
 
     /**
      * Initialize Viewer Drag-n-Drop.
+     * @private
      */
     initializeDragAndDrop() {
       const viewer = this.viewer;
@@ -275,20 +276,14 @@
       d3.select(canvas.node('ui')).on('dragover.dragndrop', () => {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        // sv.draw();
-        // sv.flash('Drop Bayesil JSON File...');
       });
 
       d3.select(canvas.node('ui')).on('drop.dragndrop', () => {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        // sv.draw();
         viewer.drawFull();
         const file = d3.event.dataTransfer.files[0];
-        // console.log(file.type)
-        // sv.flash('Loading "' + file.name + '"...');
         const reader = new FileReader();
-        // sv.json_file = file;
         reader.onload = function() {
           const jsonObj = reader.result;
           try {

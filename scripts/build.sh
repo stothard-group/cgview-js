@@ -42,6 +42,7 @@ ln -s ${CGVIEW_DIR}/tutorials/sequence_map.html ${CGVIEW_DIR}/docs/html/sequence
 ln -s ${CGVIEW_DIR}/tutorials/json_map.html ${CGVIEW_DIR}/docs/html/json_map.html
 ln -s ${CGVIEW_DIR}/tutorials/mindmap.html ${CGVIEW_DIR}/docs/html/mindmap.html
 ln -s ${CGVIEW_DIR}/tutorials/json_format.html ${CGVIEW_DIR}/docs/html/json_format.html
+ln -s ${CGVIEW_DIR}/tutorials/scales.html ${CGVIEW_DIR}/docs/html/scales.html
 
 
 echo "Done!"
