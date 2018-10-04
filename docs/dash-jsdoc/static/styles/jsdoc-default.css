@@ -87,7 +87,8 @@ section
 {
     display: block;
     background-color: #fff;
-    padding: 12px 24px;
+    /* padding: 12px 24px; - JRG */
+    padding: 0px 24px;
     border-bottom: 1px solid #ccc;
     margin-right: 30px;
 }
@@ -369,4 +370,12 @@ thead tr
 }
 
 
+.cgv-tutorial p {
+  font-size: 14px;
+}
 
+.cgv-tutorial .prettyprint code {
+  font-size: 14px;
+}
+
+}

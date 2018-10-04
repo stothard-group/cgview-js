@@ -13,7 +13,7 @@ li {
 }
 #wrap {
   position: relative;
-  margin-top: 50px;
+  /* margin-top: 50px; */
 }
 ::-webkit-scrollbar {
   width: 8px;
@@ -26,7 +26,8 @@ li {
 .navigation {
   position: fixed;
   float: left;
-  width: 250px;
+  /* width: 250px; - JRG  */
+  width: 200px;
   height: 100%;
   background-color: #1a1a1a;
 }
@@ -101,8 +102,9 @@ li {
   display: none;
 }
 .main {
-  padding: 20px 20px;
-  margin-left: 250px;
+  padding: 0px 20px;
+  /* margin-left: 250px; -JRG */
+  margin-left: 200px;
 }
 .main .page-title {
   display: none;
@@ -356,4 +358,8 @@ footer {
 /* JRG */
 .main table {
   font-size: 12px;
+}
+
+.cgv-tutorial p {
+  font-size: 14px;
 }
