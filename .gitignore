@@ -1,7 +1,6 @@
 .DS_Store
-docs
-/* docs/html */
-/* docs/dash */
+docs/html
+docs/dash
 jsv
 examples
 data
