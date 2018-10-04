@@ -28,13 +28,13 @@ find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js ! -name Events.js !
 # - I added the filename line (line 500)
 echo "Building Documentation..."
 # jsdoc --configure ${CGVIEW_DIR}/scripts/jsdoc_conf.json --template ${CGVIEW_DIR}/scripts/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
-jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs/html --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
+# jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs/html --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
+jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs/html --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
 
 # BUILD DASH DOCSET
 # Note: use --private to display private symbols
 # Location of original template: /usr/local/lib/node_modules/jsdoc-dash-template
-# jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
-# jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md ${CGVIEW_DIR}/dev/*
+jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
 
 echo "Copying Tutorials"
 ln -s ${CGVIEW_DIR}/tutorials/basic_map.html ${CGVIEW_DIR}/docs/html/basic_map.html
@@ -43,6 +43,11 @@ ln -s ${CGVIEW_DIR}/tutorials/json_map.html ${CGVIEW_DIR}/docs/html/json_map.htm
 ln -s ${CGVIEW_DIR}/tutorials/mindmap.html ${CGVIEW_DIR}/docs/html/mindmap.html
 ln -s ${CGVIEW_DIR}/tutorials/json_format.html ${CGVIEW_DIR}/docs/html/json_format.html
 ln -s ${CGVIEW_DIR}/tutorials/scales.html ${CGVIEW_DIR}/docs/html/scales.html
+# ln -s ${CGVIEW_DIR}/tutorials/images ${CGVIEW_DIR}/docs/html/images
+# DASH Images
+# I tried using "templates.default.staticFiles.include" in the conf file but it did not work.
+mkdir ${CGVIEW_DIR}/docs/dash/CGView.docset/Contents/Resources/Documents/images
+cp ${CGVIEW_DIR}/tutorials/images/* ${CGVIEW_DIR}/docs/dash/CGView.docset/Contents/Resources/Documents/images
 
 
 echo "Done!"

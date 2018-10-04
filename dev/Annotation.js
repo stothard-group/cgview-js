@@ -98,8 +98,8 @@
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Labels or a single Label.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Labels or a single Label.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     labels(term) {

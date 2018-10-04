@@ -97,7 +97,7 @@ Component                        | Accessor                                   | 
 - [JSON Map](json_map.html): Learn how to create a map by importing from JSON.
 - Helpful tips: Learch about some useful CGView.js tips.
 
-
+See {@tutorial basic_map}
 
 
 

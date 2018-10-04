@@ -8,8 +8,8 @@
   <!-- Bootstrap 3 -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="../javascript/marked.min.js"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>-->
+  <!-- <script src="../javascript/marked.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
 
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
@@ -88,6 +88,10 @@ The bp scale differs depending on the layout:
 
 The scales are accessed directly through the viewer...
 
+<img src='images/scale_circular.png' width='100%'>
+<img src='images/scale_linear.png' width='100%'>
+
+
 
 ## STUFF ##
 
@@ -112,8 +116,7 @@ The scales are accessed directly through the viewer...
 		};
 	$('#markdown-out').html( marked($('#markdown-in').html()) );
 
-  // var code = '';
-  $('code.lang-js:not(.final)').each( function(c) {
+  $('code.language-js:not(.final)').each( function(c) {
 	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
     code = code.replace('&lt;', '<');
     code = code.replace('&gt;', '>');

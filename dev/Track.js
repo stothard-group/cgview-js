@@ -197,8 +197,8 @@
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the features in this track.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the features in this track.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     features(term) {
@@ -210,9 +210,9 @@
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the unique features in this track.
+     * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the unique features in this track.
      * Unique features are ones that only appear in this track.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     uniqueFeatures(term) {

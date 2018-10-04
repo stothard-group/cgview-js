@@ -9,7 +9,7 @@
    * The CGObject is the base class of many CGV Classes. In particular, any class that
    * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
    * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
-   * Any object can be easily returned using the cgvID and [Viewer.objects](Viewer.js.html#objects).
+   * Any object can be easily returned using the cgvID and [Viewer.objects](Viewer.html#objects).
    */
   class CGObject extends CGV.Events {
 

@@ -300,7 +300,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of CGObjects or a single CGObject from all the CGObejcts in the viewer.
+     * Returns an [CGArray](CGArray.html) of CGObjects or a single CGObject from all the CGObejcts in the viewer.
      * @param {Undefined} term Returns all objects
      * @param {String}    term Returns the CGObject with a cgvID equal to the string.
      * @param {Array}     term Returns an CGArray of CGObjects with with matching cgvIDs.
@@ -323,8 +323,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Slots or a single Slot from all the Slots in the Layout.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Slots or a single Slot from all the Slots in the Layout.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     slots(term) {
@@ -336,8 +336,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Features or a single Feature from all the features in the viewer.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the features in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     features(term) {
@@ -345,8 +345,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Tracks or a single Track from all the Tracks in the viewer.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Tracks or a single Track from all the Tracks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     tracks(term) {
@@ -364,8 +364,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Plots or a single Plot from all the Tracks in the viewer.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Plots or a single Plot from all the Tracks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     plots(term) {
@@ -373,8 +373,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Captions or a single Caption.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Captions or a single Caption.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     captions(term) {
@@ -386,8 +386,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.js.html) of Feature/Plot Source name or a single item.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.js.html#get) for details.
+     * Returns an [CGArray](CGArray.html) of Feature/Plot Source name or a single item.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
     sources(term) {

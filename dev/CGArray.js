@@ -121,7 +121,7 @@
 
     /**
    * Retrieve subset of CGArray or an individual element from CGArray depending on term provided.
-   * To find elements by cgvID use [Viewer.objects](Viewer.js.html#objects) instead.
+   * To find elements by cgvID use [Viewer.objects](Viewer.html#objects) instead.
    * @param {Undefined} term Return full CGArray
    * @param {Integer}   term Return element at that index (base-1)
    * @param {String}    term Return first element with an id property same as string.

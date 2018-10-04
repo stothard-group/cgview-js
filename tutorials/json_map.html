@@ -8,8 +8,8 @@
   <!-- Bootstrap 3 -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="../javascript/marked.min.js"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>-->
+  <!-- <script src="../javascript/marked.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
 
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
@@ -124,8 +124,7 @@ If you want play around with the viewer object, open your browser web inspector.
 		};
 	$('#markdown-out').html( marked($('#markdown-in').html()) );
 
-  // var code = '';
-  $('code.lang-js:not(.final)').each( function(c) {
+  $('code.language-js:not(.final)').each( function(c) {
 	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
     code = code.replace('&lt;', '<');
     code = code.replace('&gt;', '>');
