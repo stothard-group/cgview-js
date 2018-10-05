@@ -28,7 +28,7 @@ html
 {
     overflow: auto;
     background-color: #fff;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 body
@@ -359,23 +359,22 @@ thead tr
     color: #454545;
 }
 
-/* JRG CGV STYLES */
-.jrg-source {
+/* CGV STYLES - JRG */
+.cgv-source {
   float: right;
   font-size: smaller;
 }
 
-.jrg-divider {
+.cgv-divider {
   color: #ddd;
 }
 
 
-.cgv-tutorial p {
-  font-size: 14px;
-}
+/* .cgv-tutorial p { */
+/*   font-size: 14px; */
+/* } */
+/*  */
+/* .cgv-tutorial .prettyprint code { */
+/*   font-size: 14px; */
+/* } */
 
-.cgv-tutorial .prettyprint code {
-  font-size: 14px;
-}
-
-}

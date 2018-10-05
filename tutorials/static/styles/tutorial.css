@@ -1,0 +1,14 @@
+/* Some of the CSS is dependent on the Output template. Check the bottom of */
+/* the following CSS files: */
+/*   - docs/dash-jsdoc/static/styles/jsdoc-default.css */
+/*   - docs/jaguarjs-jsdoc/static/styles/jaguar.css */
+
+.cgv-tutorial p {
+  font-size: 14px;
+}
+
+a.json-link span{
+  color: rgb(100, 100, 250) !important;
+  cursor: pointer;
+}
+

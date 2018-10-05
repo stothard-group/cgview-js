@@ -92,12 +92,14 @@ Component                        | Accessor                                   | 
 
 ### Tutorials ###
 
-- [Basic Map](basic_map.html): Learn how to create a simple map features and a plot
-- [Sequence Map](sequence_map.html): Learn how to create a map with features and plots extracted from the sequence.
-- [JSON Map](json_map.html): Learn how to create a map by importing from JSON.
-- Helpful tips: Learch about some useful CGView.js tips.
+- {@tutorial basic_map}: Learn how to create a simple map features and a plot
+- {@tutorial sequence_map}: Learn how to create a map with features and plots extracted from the sequence.
+- {@tutorial json_map}: Learn how to create a map by importing from JSON.
+- {@tutorial json_format}: Learn about the JSON format.
+- {@tutorial scales}: Learn about the different scales and layouts.
+- {@tutorial mindmap}: See the API as a mind map.
+- Helpful tips: Learn about some useful CGView.js tips.
 
-See {@tutorial basic_map}
 
 
 

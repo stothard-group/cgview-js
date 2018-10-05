@@ -351,23 +351,44 @@ exports.publish = function(taffyData, opts, tutorials) {
     var staticFilePaths;
     var staticFileFilter;
     var staticFileScanner;
-    if (conf['default'].staticFiles) {
-        staticFilePaths = conf['default'].staticFiles.paths || [];
+    // Code adapted from dash verstion
+    var staticFiles = conf['default'].staticFiles;
+    if (staticFiles) {
+        staticFilePaths = staticFiles.include || staticFiles.paths || [];
         staticFileFilter = new (require('jsdoc/src/filter')).Filter(conf['default'].staticFiles);
         staticFileScanner = new (require('jsdoc/src/scanner')).Scanner();
 
         staticFilePaths.forEach(function(filePath) {
+            filePath = path.resolve(env.pwd, filePath);
             var extraStaticFiles = staticFileScanner.scan([filePath], 10, staticFileFilter);
 
             extraStaticFiles.forEach(function(fileName) {
-                var sourcePath = fs.statSync(filePath).isDirectory() ? filePath :
-                    path.dirname(filePath);
+                var sourcePath = fs.toDir(filePath);
                 var toDir = fs.toDir( fileName.replace(sourcePath, outdir) );
                 fs.mkPath(toDir);
                 fs.copyFileSync(fileName, toDir);
             });
         });
     }
+    // ORIGINAL CODE - JRG
+    // if (conf['default'].staticFiles) {
+    //     staticFilePaths = conf['default'].staticFiles.paths || [];
+    //     staticFileFilter = new (require('jsdoc/src/filter')).Filter(conf['default'].staticFiles);
+    //     staticFileScanner = new (require('jsdoc/src/scanner')).Scanner();
+    //
+    //     staticFilePaths.forEach(function(filePath) {
+    //         var extraStaticFiles = staticFileScanner.scan([filePath], 10, staticFileFilter);
+    //
+    //         extraStaticFiles.forEach(function(fileName) {
+    //             var sourcePath = fs.statSync(filePath).isDirectory() ? filePath :
+    //                 path.dirname(filePath);
+    //             var toDir = fs.toDir( fileName.replace(sourcePath, outdir) );
+    //             fs.mkPath(toDir);
+    //             fs.copyFileSync(fileName, toDir);
+    //   console.log(fileName, toDir)
+    //         });
+    //     });
+    // }
     
     if (sourceFilePaths.length) {
         sourceFiles = shortenPaths( sourceFiles, path.commonPrefix(sourceFilePaths) );

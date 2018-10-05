@@ -5,7 +5,7 @@ var self = this;
 <?js= this.dashTOC(data) ?>
 
 <?js if (data.meta && self.outputSourceFiles) {?>
-  <div class='jrg-source'>
+  <div class='cgv-source'>
       <?js= self.linkto(meta.shortpath) ?>, <?js= self.linkto(meta.shortpath, 'line ' + meta.lineno, null, 'line' + meta.lineno) ?>
   </div>
 <?js } ?>
@@ -46,4 +46,4 @@ var self = this;
     <?js= this.partial('examples.tmpl', examples) ?>
 <?js } ?>
 
-<hr class='jrg-divider' />
+<hr class='cgv-divider' />

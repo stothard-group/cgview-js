@@ -17,7 +17,7 @@ var util = require('util');
 
 var templateDefaultOptions = {
   layoutFile: 'layout.tmpl',
-  staticFiles: false,
+  // staticFiles: false, - JRG
   navSections: ['index', 'modules', 'externals', 'classes', 'events', 'namespaces', 'mixins', 'tutorials', 'globals'],
   outputSourceFiles: true,
   homeTitle: 'Home'

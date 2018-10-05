@@ -3,63 +3,21 @@
 <head>
   <title>CGView: Sequence Map</title>
   <meta charset="UTF-8">
-  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-  <!-- <script src="javascript/jquery&#45;1.11.1.min.js"></script> -->
-  <!-- Bootstrap 3 -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <!-- <script src="../javascript/marked.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
-
-	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
-	<link rel="stylesheet" href="styles/prettify-jsdoc.css">
-	<link rel="stylesheet" href="styles/prettify-tomorrow.css">
-	<link rel="stylesheet" href="../stylesheets/tutorial.css">
-	<!-- <link rel="stylesheet" href="docs/styles/jaguar.css"> -->
 
   <!-- Prerequisites -->
   <!-- Local -->
   <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
   <script src="../javascript/d3.v4.min.js"></script>
-  <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
   <!-- CGView -->
   <script src='../src/CGView.js'></script>
   <link rel="stylesheet" href="../stylesheets/cgview.css" />
+  <link rel="stylesheet" href="styles/tutorial.css" />
+  <script src='scripts/tutorial.js'></script>
 </head>
 <body>
 
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">CGView.js</a>
-			</div>
-			<div class="collapse navbar-collapse" id="main-nav">
-				<ul class="nav navbar-nav">
-					<li><a href="../viewer.html">Demo</a></li>
-					<li><a href="index.html">Docs</a></li>
-					<li><a href="json_format.html">JSON</a></li>
-          <li class="dropdown active">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="basic_map.html">Basic Map</a></li>
-              <li class='active'><a href="sequence_map.html">Sequence Map</a></li>
-              <li><a href="json_map.html">JSON Map</a></li>
-              <li><a href="scales.html">Scales</a></li>
-            </ul>
-          </li>
-				</ul>
-			</div>
-		</div>
-	</div>
-
-  <div id='main'>
+  <div id='main' class='cgv-tutorial'>
 		<div id='markdown-out'></div>
 		<div>
 			<div id='my-viewer'></div>
@@ -70,8 +28,6 @@
   </div>
 
 <div id='markdown-in' style='display:none;'>
-
-# Sequence Map #
 
 Maps that have a sequence provided have two main benefits: 1) when zoomed in far enough
 you will be able to see the sequence on the map; and 2) additional tracks can be easily
@@ -194,35 +150,7 @@ If you want play around with the viewer object, open your browser web inspector.
 </div>
 
 <script>
-	// Convert Markdown to HTML
-  // https://github.com/chjj/marked
-  //marked.setOptions({
-  //  sanitize: true
-  //});
-
-	var marked_ = marked;
-	var marked = function(text) {
-			var tok = marked_.lexer(text);
-			text = marked_.parser(tok);
-			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
-      text = text.replace(/&amp;gt;/g, '>');
-      text = text.replace(/&amp;lt;/g, '<');
-			return text;
-		};
-	$('#markdown-out').html( marked($('#markdown-in').html()) );
-
-  $('code.language-js:not(.final)').each( function(c) {
-	  var code = $(this).html().replace(/\s*\/\/.*/g, '');
-    code = code.replace('&lt;', '<');
-    code = code.replace('&gt;', '>');
-    // console.log(code);
-    eval( code );
-		$('#final-code code').append( code + "\n" );
-  });
-
- 
-
-
+  tutorialMarkdown(marked);
 </script>
 
 </html>
