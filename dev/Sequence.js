@@ -20,18 +20,26 @@
      *  color                 | "black"          | A string describing the color. See {@link Color} for details.
      *  seq                   | undefined        | The sequence as a string.
      *  length                | seq length or 1000 | If no sequence is provided, the length can be used to set up the map.
+     *  contigs               | undefined        | An array of ...
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the caption.
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
       this._viewer = viewer;
-      this.seq = options.seq;
       this.bpMargin = 2;
       this.color = CGV.defaultFor(options.color, 'black');
       this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 14');
 
-      if (!this.seq) {
+      this._contigs = new CGV.CGArray();
+
+      if (options.contigs && options.contigs.length > 0) {
+        this.loadContigs(options.contigs);
+      } else {
+        this.seq = options.seq;
+      }
+
+      if (!this.seq && !this.hasContigs) {
         this.length = options.length;
       }
       if (!this.length) {
@@ -173,6 +181,14 @@
     //////////////////////////////////////////////////////////////////////////
 
     /**
+     * Return the class name as a string.
+     * @return {String} - 'Sequence'
+     */
+    toString() {
+      return 'Sequence';
+    }
+
+    /**
      * @member {String} - Get or set the seqeunce.
      */
     get seq() {
@@ -293,6 +309,91 @@
 
     get isCircular() {
       return true;
+    }
+
+    /**
+     * @member {Boolean} - Return true of a sequence is available. Returns false if there is only a length.
+     */
+    get hasSeq() {
+      return typeof this.seq === 'string';
+    }
+
+    get hasContigs() {
+      return this._contigs.length > 0;
+    }
+
+
+    loadContigs(contigs) {
+      // Create contigs
+      for (const contigData of contigs) {
+        const contig = new CGV.Contig(this, contigData);
+        this._contigs.push(contig);
+      }
+      this.updateFromContigs();
+    }
+
+    addContig(contig) {
+      // Check for sequence or length
+      // Can probably just add the sequence or length, instead of calling updateFromContigs
+      // Update Plots
+      // this.updateFromContigs()
+    }
+
+    removeContig(id) {
+      // Remove features for the contig
+      // Remove contig
+      // Update Plots
+      // this.updateFromContigs
+    }
+
+    updateFromContigs() {
+      if (this._contigs.length === 0) {
+        this.seq = '';
+        return
+      }
+      // Check first contig to see if it contains a sequence or length
+      const useSeq = this._contigs[0].hasSeq;
+      let seq = '';
+      let length = 0;
+      for (const contig of this._contigs) {
+        contig._lengthBefore = length;
+        if (useSeq) {
+          if (contig.hasSeq) {
+            seq += contig.seq;
+            length += contig.seq.length;
+          } else {
+            console.error(`Expecting Sequence but Contig ${this.name} [${this.id}] has no sequence !`)
+          }
+        } else {
+          if (contig.length) {
+            length += contig.length;
+          } else {
+            console.error(`Expecting Length but Contig ${this.name} [${this.id}] has no length!`)
+          }
+        }
+      }
+      // Create sequence
+      if (useSeq) {
+        this.seq = seq;
+      } else {
+        this.length = length;
+      }
+    }
+
+    contigs(term) {
+      return this._contigs.get(term);
+    }
+
+    /**
+     * Return the global bp position given a local *bp* on the given *contig*.
+     * @param {Contig} contig - Contig object
+     * @param {Number} bp - bp position on the contig
+     *
+     * @return {Number} Global position.
+     */
+    bpForContig(contig, bp = 1) {
+      // FIXME: contig can be contig or contig ID
+      return contig.lengthBefore + bp;
     }
 
     asFasta(id = 'sequence') {

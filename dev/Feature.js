@@ -19,6 +19,8 @@
       this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
+      this.contig = data.contig;
+
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
       this.legendItem  = data.legend;
@@ -236,6 +238,46 @@
       this.legendItem = value;
     }
 
+    /**
+     * @member {Contig} - Get or set the Contig. The Contig can be set with a Contig object
+     *   or with the name of a Contig.
+     */
+    get contig() {
+      return this._contig;
+    }
+
+    set contig(value) {
+      if (value === undefined) {
+        this._contig = undefined;
+        return;
+      }
+      if (value && value.toString() === 'Contig') {
+        this._contig  = value;
+      } else {
+        const contig = this.viewer.sequence.contigs(value);
+        if (contig) {
+          this._contig  = contig;
+        } else {
+          console.error(`Feature '${this.name}' could not find contig '${value}'`)
+        }
+      }
+    }
+
+    updateRanges(start, stop) {
+      start = Number(start);
+      stop = Number(stop);
+      const sequence = this.sequence;
+      let globalStart = start;
+      let globalStop = stop;
+      if (this.contig) {
+        // Create range as global bp position and
+        // contigRange as given start/stop positions
+        globalStart = sequence.bpForContig(this.contig, start);
+        globalStop = sequence.bpForContig(this.contig, stop);
+        this.contigRange = new CGV.CGRange(sequence, start, stop);
+      }
+      this.range = new CGV.CGRange(sequence, globalStart, globalStop);
+    }
 
     draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
       if (!this.visible) { return; }
