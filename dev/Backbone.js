@@ -18,8 +18,10 @@
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
       this.color = CGV.defaultFor(options.color, 'grey');
+      this.colorAlternate = CGV.defaultFor(options.colorAlternate, 'rgb(200,200,200)');
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
+      this.contigDecoration = CGV.defaultFor(options.contigDecoration, 'arrow');
     }
 
     /**
@@ -55,6 +57,33 @@
       } else {
         this._color = new CGV.Color(value);
       }
+    }
+
+    /**
+     * @member {Color} - Get or set the backbone alternate color. This color is used when contigs are present. 
+     *    The first contigs will be use *color*, the second will use *colorAlternate*, the third will use *color* and so on. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get colorAlternate() {
+      return this._colorAlternate;
+    }
+
+    set colorAlternate(value) {
+      if (value.toString() === 'Color') {
+        this._colorAlternate = value;
+      } else {
+        this._colorAlternate = new CGV.Color(value);
+      }
+    }
+
+    /**
+     * @member {String} - Get or set the contig decoration: 'arrow' or 'arc'
+     */
+    get contigDecoration() {
+      return this._contigDecoration;
+    }
+
+    set contigDecoration(value) {
+      this._contigDecoration = value;
     }
 
     /**
@@ -144,6 +173,17 @@
     }
 
     /**
+     * Does the backbone contain the given *centerOffset*.
+     * @param {Number} offset - The centerOffset.
+     * @return {Boolean}
+     */
+    containsCenterOffset(offset) {
+      const halfthickness = this.adjustedThickness / 2;
+      const adjustedCenterOffset = this.adjustedCenterOffset;
+      return (offset >= (adjustedCenterOffset - halfthickness)) && (offset <= (adjustedCenterOffset + halfthickness));
+    }
+
+    /**
      * The maximum zoom factor to get the correct spacing between basepairs.
      * @return {Number}
      */
@@ -159,11 +199,32 @@
       return this.layout.pixelsPerBp();
     }
 
+    directionalDecorationForContig(contig) {
+      if (this.contigDecoration === 'arrow') {
+        return contig.orientation === '+' ? 'clockwise-arrow' : 'counterclockwise-arrow';
+      } else {
+        return this.contigDecoration;
+      }
+    }
+
     draw() {
       this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
-        this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
+
+        if (this.sequence.hasContigs) {
+          const contigs = this.sequence.contigsForRange(this.visibleRange);
+          for (let i = 0, len = contigs.length; i < len; i++) {
+            const contig = contigs[i];
+            const start = this.sequence.bpForContig(contig);
+            const stop = this.sequence.bpForContig(contig, contig.length);
+            const color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
+            this.viewer.canvas.drawElement('map', start, stop, this.adjustedCenterOffset, color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(contig));
+          }
+        } else {
+          this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
+        }
+
         if (this.pixelsPerBp() > 1) {
           this.sequence.draw();
         }

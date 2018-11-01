@@ -12,14 +12,15 @@
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
-      this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
+      // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
+      this.contig = data.contig;
+      this.updateRanges(data.start, data.stop);
       this.strand = CGV.defaultFor(data.strand, 1);
       this.score = CGV.defaultFor(data.score, 1);
       this.label = new CGV.Label(this, {name: data.name} );
       this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
-      this.contig = data.contig;
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
@@ -130,17 +131,29 @@
     set range(value) {
       this._range = value;
     }
+
+    /**
+     * @member {Range} - Get or set the range of the feature with respect to its contig.
+     *   All ranges are assumed to be going in a clockwise direction.
+     */
+    get contigRange() {
+      return this._contigRange;
+    }
+
+    set contigRange(value) {
+      this._contigRange = value;
+    }
+
     /**
      * @member {Number} - Get or set the start position of the feature in basepair (bp).
      *   All start and stop positions are assumed to be going in a clockwise direction.
      */
     get start() {
-      // return this._start
       return this.range.start;
     }
 
     set start(value) {
-      // this._start = value;
+      // FIXME: check if on a contig. If so update contigRange as well.
       this.range.start = value;
     }
 
@@ -149,12 +162,11 @@
      *   All start and stop positions are assumed to be going in a clockwise direction.
      */
     get stop() {
-      // return this._stop
       return this.range.stop;
     }
 
     set stop(value) {
-      // this._stop = value
+      // FIXME: check if on a contig. If so update contigRange as well.
       this.range.stop = value;
     }
 
@@ -263,6 +275,13 @@
       }
     }
 
+    /**
+     * Updates the feature range using the given *start* and *stop* positions.
+     * If the feature is on a contig, the positions should be in relation to the contig.
+     *
+     * @param {Number} start - Start position (bp).
+     * @param {Number} stop - Stop position (bp).
+     */
     updateRanges(start, stop) {
       start = Number(start);
       stop = Number(stop);

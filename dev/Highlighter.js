@@ -4,8 +4,8 @@
 (function(CGV) {
   /**
    * <br />
-   * The Highlighter object controls highlighting and popovers of features and
-   * plots on the Viewer when the mouse hovers over them.
+   * The Highlighter object controls highlighting and popovers of features,
+   * plots and other elements on the Viewer when the mouse hovers over them.
    */
   class Highlighter extends CGV.CGObject {
 
@@ -28,6 +28,7 @@
       this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
       this.feature = new CGV.HighlighterElement('feature', options.feature);
       this.plot = new CGV.HighlighterElement('plot', options.plot);
+      this.contig = new CGV.HighlighterElement('contig', options.contig);
       this.initializeEvents();
 
       // Set up position constants
@@ -55,17 +56,24 @@
     initializeEvents() {
       this.viewer.off('.cgv-highlighter');
       this.viewer.on('mousemove.cgv-highlighter', (e) => {
-        if (e.feature) {
-          this.mouseOver('feature', e);
-        } else if (e.plot) {
-          this.mouseOver('plot', e);
-        } else {
-          this.hidePopoverBox();
-        }
+        this.mouseOver(e);
+        // if (e.feature) {
+        //   this.mouseOver('feature', e);
+        // } else if (e.plot) {
+        //   this.mouseOver('plot', e);
+        // } else {
+        //   this.hidePopoverBox();
+        // }
       });
     }
 
-    mouseOver(type, e) {
+    // mouseOver(type, e) {
+    mouseOver(e) {
+      const type = e.elementType;
+      if (!type || !this[type]) {
+        this.hidePopoverBox();
+        return;
+      }
       if (this[type].highlighting) {
         this[`highlight${CGV.capitalize(type)}`](e);
       }
@@ -73,38 +81,52 @@
         const position = this.position(e);
         const html = (this[type].popoverContents && this[type].popoverContents(e)) || this[`${type}PopoverContentsDefault`](e);
         this.showPopoverBox({position: position, html: html});
+      } else {
+        this.hidePopoverBox();
       }
     }
 
     featurePopoverContentsDefault(e) {
-      return `<div style='margin: 0 5px; font-size: 14px'>${e.feature.type}: ${e.feature.name}</div>`;
+      const feature = e.element;
+      return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
     }
 
     plotPopoverContentsDefault(e) {
-      const score = e.plot.scoreForPosition(e.bp);
+      const plot = e.element;
+      const score = plot.scoreForPosition(e.bp);
       return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`;
     }
 
+    contigPopoverContentsDefault(e) {
+      const contig = e.element;
+      return `<div style='margin: 0 5px; font-size: 14px'>Contig ${contig.index}/${this.sequence.contigs().length} [${contig.length} bp]: ${contig.name}</div>`;
+    }
+
     highlightFeature(e) {
-      e.feature.highlight(e.slot);
+      e.element.highlight(e.slot);
     }
 
     highlightPlot(e) {
       const viewer = this.viewer;
-      const score = e.plot.scoreForPosition(e.bp);
+      const plot = e.element;
+      const score = plot.scoreForPosition(e.bp);
       if (score) {
-        const startIndex = CGV.indexOfValue(e.plot.positions, e.bp, false);
-        const start = e.plot.positions[startIndex];
-        const stop = e.plot.positions[startIndex + 1] || viewer.sequence.length;
-        const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * e.plot.baseline);
-        const scoredCenterOffset = baselineCenterOffset + ((score - e.plot.baseline) * e.slot.thickness);
+        const startIndex = CGV.indexOfValue(plot.positions, e.bp, false);
+        const start = plot.positions[startIndex];
+        const stop = plot.positions[startIndex + 1] || viewer.sequence.length;
+        const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * plot.baseline);
+        const scoredCenterOffset = baselineCenterOffset + ((score - plot.baseline) * e.slot.thickness);
         const thickness = Math.abs(baselineCenterOffset - scoredCenterOffset);
         const centerOffset = Math.min(baselineCenterOffset, scoredCenterOffset) + (thickness / 2);
-        const color = (score >= e.plot.baseline) ? e.plot.colorPositive.copy() : e.plot.colorNegative.copy();
+        const color = (score >= plot.baseline) ? plot.colorPositive.copy() : plot.colorNegative.copy();
         color.highlight();
 
         viewer.canvas.drawElement('ui', start, stop, centerOffset, color.rgbaString, thickness);
       }
+    }
+
+    highlightContig(e) {
+      // e.element.highlight(e.slot);
     }
 
     hidePopoverBox() {

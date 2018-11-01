@@ -355,8 +355,11 @@
       const useSeq = this._contigs[0].hasSeq;
       let seq = '';
       let length = 0;
-      for (const contig of this._contigs) {
-        contig._lengthBefore = length;
+      for (let i = 0, len = this._contigs.length; i < len; i++) {
+        const contig = this._contigs[i];
+        contig._index = i + 1;
+        contig._updateLengthBefore(length);
+
         if (useSeq) {
           if (contig.hasSeq) {
             seq += contig.seq;
@@ -385,6 +388,23 @@
     }
 
     /**
+     * Returns all the contigs that overlap the given range.
+     * @param {CGRange} range - Range to find overlapping contigs.
+     *
+     * @return {CGArray} CGArray of Contigs
+     */
+    contigsForRange(range) {
+      const contigs = new CGV.CGArray();
+      for (let i = 1, len = this.sequence.contigs().length; i <= len; i++) {
+        const contig = this.sequence.contigs(i);
+        if (range.overlapsRange(contig.globalRange)) {
+          contigs.push(contig);
+        }
+      }
+      return contigs;
+    }
+
+    /**
      * Return the global bp position given a local *bp* on the given *contig*.
      * @param {Contig} contig - Contig object
      * @param {Number} bp - bp position on the contig
@@ -393,7 +413,25 @@
      */
     bpForContig(contig, bp = 1) {
       // FIXME: contig can be contig or contig ID
-      return contig.lengthBefore + bp;
+      return contig.globalStart + bp - 1;
+    }
+
+    /**
+     * Return the contig for the given global bp.
+     *
+     * @return {Contig}
+     */
+    contigForBp(bp) {
+      // FIXME: could be sped up with a binary search
+      if (this.hasContigs) {
+        for (let i = 0, len = this._contigs.length; i < len; i++) {
+          if (bp <= this._contigs[i].lengthBefore) {
+            return this._contigs[i - 1];
+          }
+        }
+        // Must be in last contig
+        return this._contigs[this._contigs.length - 1];
+      }
     }
 
     asFasta(id = 'sequence') {

@@ -29,7 +29,8 @@
         if (this.viewer.debug && this.viewer.debug.data.position) {
           this.viewer.debug.data.position.xy = `${Math.round(e.mapX)}, ${Math.round(e.mapY)}`;
           this.viewer.debug.data.position.bp = e.bp;
-          this.viewer.debug.data.position.feature = e.feature && e.feature.label.name;
+          // this.viewer.debug.data.position.feature = e.feature && e.feature.name;
+          this.viewer.debug.data.position.element = e.element && e.element.name;
           this.viewer.debug.data.position.score = e.score;
           this.canvas.clear('ui');
           this.viewer.debug.draw(this.canvas.context('ui'));
@@ -79,15 +80,22 @@
       const centerOffset = this.viewer.layout.centerOffsetForPoint({x: canvasX, y: canvasY});
       const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
       const bp = this.canvas.bpForPoint({x: canvasX, y: canvasY});
-      const feature = slot && slot.findFeaturesForBp(bp)[0];
-      const plot = slot && slot._plot;
-      const score = plot && plot.scoreForPosition(bp).toFixed(2);
+
+      const {elementType, element} = this._getElement(slot, bp, centerOffset);
+
+      let score;
+      if (elementType === 'plot') {
+        score = element.scoreForPosition(bp).toFixed(2)
+      } else {
+        score = element && element.score;
+      }
+
       return {
         bp: bp,
         centerOffset: centerOffset,
         slot: slot,
-        feature: feature,
-        plot: plot,
+        elementType: elementType,
+        element: element,
         score: score,
         canvasX: canvasX,
         canvasY: canvasY,
@@ -95,6 +103,40 @@
         mapY: mapY,
         d3: d3.event
       };
+    }
+
+    /**
+     * Returns an object with the *element* and *elementType* for the given *slot*, *bp*, and *centerOffset*.
+     * ElementType can be one of the following: 'plot', 'feature', 'label', 'legendItem', 'captionItem', 'contig', 'backbone'
+     * @param {Slot}  slot - the slot for the event.
+     * @param {Number}  bp - the bp for the event.
+     * @param {Number}  centerOffset - the centerOffset for the event.
+     *
+     * @returns {Object} Obejct with properties: element and elementType
+     */
+    _getElement(slot, bp, centerOffset) {
+      let elementType, element;
+      if (slot) {
+        const feature = slot.findFeaturesForBp(bp)[0];
+        if (feature) {
+          elementType = 'feature';
+          element = feature;
+        } else if (slot._plot) {
+          elementType = 'plot';
+          element = slot._plot;
+        }
+      } else if (this.viewer.backbone.containsCenterOffset(centerOffset)) {
+        const backbone = this.viewer.backbone;
+        const sequence = this.viewer.sequence;
+        if (sequence.hasContigs) {
+          elementType = 'contig';
+          element = sequence.contigForBp(bp);
+        } else {
+          elementType = 'backbone';
+          element = backbone;
+        }
+      }
+      return {elementType: elementType, element: element};
     }
 
     _legendSwatchClick() {

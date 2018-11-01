@@ -75,6 +75,13 @@
     }
 
     /**
+     * @member {Number} - Get the contig index (base-1) in relation to all the other contigs.
+     */
+    get index() {
+      return this._index;
+    }
+
+    /**
      * @member {String} - Get or set the contig orientation. Value must be '+' or '-'.
      *   Flipping the orienation will reverse complement the contig sequence and
      *   adjust all the features on this contig.
@@ -132,8 +139,42 @@
       return this._lengthBefore;
     }
 
+    /**
+     * @member {CGRange} - Get the range of the contig in relation to the entire map.
+     *   The range start is the total length of the contigs before this one plus 1.
+     *   The range stop is the total length of the contigs before this one plus this contigs length.
+     */
+    get globalRange() {
+      return this._globalRange;
+    }
+
+    /**
+     * @member {Number} - Get the start position (bp) of the contig in relation to the entire map.
+     *   The start is the total length of the contigs before this one plus 1.
+     */
+    get globalStart() {
+      return this._globalRange.start;
+    }
+
+    /**
+     * @member {Number} - Get the stop position (bp) of the contig in relation to the entire map.
+     *   The stop is the total length of the contigs before this one plus this contigs length.
+     */
+    get globalStop() {
+      return this._globalRange.stop;
+    }
+
+    /**
+     * Updates the lengthBefore for this contig and also update the globalRange.
+     * @param {length} - Total length of all the contigs before this one.
+     */
+    _updateLengthBefore(length) {
+      this._lengthBefore = length;
+      this._globalRange = new CGV.CGRange(this.sequence, length + 1, length + this.length);
+    }
+
     hasSeq() {
-      return typeof this.seq == 'string';
+      return typeof this.seq === 'string';
     }
 
     draw() {
