@@ -245,7 +245,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           options = {};
           options.sections = Viewer.debugSections;
         }
-        this._debug = new CGV.Debug(options);
+        this._debug = new CGV.Debug(this, options);
       } else {
         this._debug = undefined;
       }

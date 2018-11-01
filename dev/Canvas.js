@@ -17,7 +17,7 @@
 
       // Create layers
       this.determinePixelRatio(container);
-      this._layerNames = ['background', 'map', 'captions', 'ui'];
+      this._layerNames = ['background', 'map', 'captions', 'debug', 'ui'];
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
     }
 

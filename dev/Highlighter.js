@@ -29,6 +29,7 @@
       this.feature = new CGV.HighlighterElement('feature', options.feature);
       this.plot = new CGV.HighlighterElement('plot', options.plot);
       this.contig = new CGV.HighlighterElement('contig', options.contig);
+      this.backbone = new CGV.HighlighterElement('backbone', options.contig);
       this.initializeEvents();
 
       // Set up position constants
@@ -97,9 +98,15 @@
       return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`;
     }
 
+    backbonePopoverContentsDefault(e) {
+      const length = CGV.commaNumber(this.sequence.length);
+      return `<div style='margin: 0 5px; font-size: 14px'>Backbone: ${length} bp</div>`;
+    }
+
     contigPopoverContentsDefault(e) {
       const contig = e.element;
-      return `<div style='margin: 0 5px; font-size: 14px'>Contig ${contig.index}/${this.sequence.contigs().length} [${contig.length} bp]: ${contig.name}</div>`;
+      const length = CGV.commaNumber(contig.length);
+      return `<div style='margin: 0 5px; font-size: 14px'>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>`;
     }
 
     highlightFeature(e) {
@@ -123,6 +130,10 @@
 
         viewer.canvas.drawElement('ui', start, stop, centerOffset, color.rgbaString, thickness);
       }
+    }
+
+    highlightBackbone(e) {
+      // e.element.highlight(e.slot);
     }
 
     highlightContig(e) {

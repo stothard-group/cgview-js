@@ -4,7 +4,8 @@
 (function(CGV) {
   class Debug {
 
-    constructor(options = {}) {
+    constructor(viewer, options = {}) {
+      this.viewer = viewer;
       this._data = {};
       this._sections = CGV.defaultFor(options.sections, []);
       // Create object for each section
@@ -38,7 +39,10 @@
     // }
     //
     // Draws any information in 'data' onto the left side of the viewer
-    draw(ctx, x = 10, y = 20) {
+    draw(x = 10, y = 20) {
+      const canvas = this.viewer.canvas;
+      canvas.clear('debug');
+      const ctx = canvas.context('debug');
       const data = this._data;
       const sections = this._sections;
 

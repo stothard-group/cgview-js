@@ -28,12 +28,10 @@
       this.events.on('mousemove', (e) => {
         if (this.viewer.debug && this.viewer.debug.data.position) {
           this.viewer.debug.data.position.xy = `${Math.round(e.mapX)}, ${Math.round(e.mapY)}`;
-          this.viewer.debug.data.position.bp = e.bp;
-          // this.viewer.debug.data.position.feature = e.feature && e.feature.name;
+          this.viewer.debug.data.position.bp = CGV.commaNumber(e.bp);
           this.viewer.debug.data.position.element = e.element && e.element.name;
           this.viewer.debug.data.position.score = e.score;
-          this.canvas.clear('ui');
-          this.viewer.debug.draw(this.canvas.context('ui'));
+          this.viewer.debug.draw();
         }
       });
 

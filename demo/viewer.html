@@ -173,10 +173,10 @@
       loadMapFromID(defaultMap);
     }
 
-    const selectEl = document.getElementById('data-select');
     const $dataSelect = $('#data-select');
     for (const map of Object.keys(maps)) {
-      $dataSelect.append(`<option value='${map}'>${maps[map].name}</option>`)
+      const selected = (map === defaultMap) ? 'selected' : '';
+      $dataSelect.append(`<option value='${map}' ${selected}>${maps[map].name}</option>`)
     }
 
     $dataSelect.on('change', function() {

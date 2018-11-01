@@ -271,6 +271,17 @@
     return Number(value.toFixed(places));
   };
 
+  /**
+   * Format number by grouping thousands with a comma.
+   * @param {Number} value Number to format
+   *
+   * @return {String}
+   */
+  CGV.commaNumber = function(value) {
+    const format = d3.format(',');
+    return format(value);
+  };
+
   // a and b should be arrays of equal length
   CGV.dotProduct = function(a, b) {
     let value = 0;
