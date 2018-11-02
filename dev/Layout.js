@@ -735,7 +735,6 @@
         layout._slotTimeoutID = setTimeout(layout.drawSlotWithTimeOut, 0, layout);
       } else {
         if (layout.viewer.debug) {
-          layout.viewer.clear('ui');
           layout.viewer.debug.data.time.fullDraw = CGV.elapsedTime(layout._drawFullStartTime);
           layout.viewer.debug.draw();
         }

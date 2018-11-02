@@ -42,9 +42,9 @@
     /**
      * @member {String} - Get the seqeunce as a string
      */
-    get seqString() {
-      return this.sequence.seq;
-    }
+    // get seqString() {
+    //   return this.sequence.seq;
+    // }
 
     /**
      * @member {String} - Get the viewer
@@ -67,6 +67,18 @@
     fn2workerURL(fn) {
       const blob = new Blob([`(${fn.toString()})()`], {type: 'application/javascript'});
       return URL.createObjectURL(blob);
+    }
+
+    sequenceInput() {
+      let type, data;
+      if (this.sequence.hasContigs) {
+        type = 'contigs';
+        data = this.sequence.contigs().map( c => c.toJSON() );
+      } else {
+        type = 'sequence';
+        data = [ { seq: this.sequence.seq } ];
+      }
+      return {type: type, data: data};
     }
 
     extractTrackData(track, extractType, options = {}) {
@@ -92,13 +104,20 @@
       // Start worker
       const url = this.fn2workerURL(CGV.WorkerFeatureExtraction);
       const worker = new Worker(url);
+      // Sequence data
+      const seqInput = this.sequenceInput();
       // Prepare message
       const message = {
         type: extractType,
-        startPattern: CGV.defaultFor(options.start, 'ATG'),
-        stopPattern: CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
-        seqString: this.seqString,
-        minORFLength: CGV.defaultFor(options.minORFLength, 100)
+        // seqString: this.seqString,
+        seqType: seqInput.type,
+        seqData: seqInput.data,
+        seqTotalLength: this.sequence.length,
+        options: {
+          startPattern: CGV.defaultFor(options.start, 'ATG'),
+          stopPattern: CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
+          minORFLength: CGV.defaultFor(options.minORFLength, 100)
+        }
       };
       worker.postMessage(message);
       worker.onmessage = (e) => {

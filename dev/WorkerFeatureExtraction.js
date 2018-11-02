@@ -1,36 +1,85 @@
 (function(CGV) {
   CGV.WorkerFeatureExtraction = function() {
     onmessage = function(e) {
-      let progressState;
-      const type = e.data.type;
-      console.log(`Starting ${type}`);
-      let featureDataArray = [];
-      if (type === 'start-stop-codons') {
-        progressState = { start: 0, stop: 50 };
-        featureDataArray = extractStartStopCodons(1, e.data, progressState);
-        progressState = { start: 50, stop: 100 };
-        featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
-      } else if (type === 'orfs') {
-        featureDataArray = extractORFs(e.data);
-      }
-      // Sort the features by start
-      featureDataArray.sort( (a, b) => {
-        return a.start - b.start;
-      });
+      const featureDataArray = processSequence(e.data);
+
+      // let progressState;
+      // const type = e.data.type;
+      // console.log(`Starting ${type}`);
+      // let featureDataArray = [];
+      // if (type === 'start-stop-codons') {
+      //   progressState = { start: 0, stop: 50 };
+      //   featureDataArray = extractStartStopCodons(1, e.data, progressState);
+      //   progressState = { start: 50, stop: 100 };
+      //   featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
+      // } else if (type === 'orfs') {
+      //   featureDataArray = extractORFs(e.data);
+      // }
+      // // Sort the features by start
+      // featureDataArray.sort( (a, b) => {
+      //   return a.start - b.start;
+      // });
       // Return results
       postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
-      console.log(`Done ${type}`);
+      console.log(`Done ${e.data.type}`);
     };
     onerror = function(e) {
       console.error(`Oops. Problem with ${e.data.type}`);
     };
 
+    const processSequence = function(data) {
+      let progressState;
+      const type = data.type;
+      const seqType = data.seqType;
+      const seqData = data.seqData;
+      const seqTotalLength = data.seqTotalLength;
+      const options = data.options;
+      console.log(`Starting ${type}`);
+      let featureDataArray = [];
+      let seqLengthCompleted = 0;
+      let progressStart = 0;
 
-    const extractStartStopCodons = function(strand, options, progressState = {}) {
+      // const testStartTime = new Date().getTime();
+
+      let seq, progressForStep, progressStop
+      for (var i = 0, len = seqData.length; i < len; i++) {
+        seq = seqData[i].seq;
+
+        // Percentage of sequence processed in this iteration.
+        progressForStep = Math.round(seq.length / seqTotalLength);
+        progressStart = seqLengthCompleted / seqTotalLength;
+        progressStop = progressStart + progressForStep;
+
+        if (seqType === 'contigs') {
+          options.contigID = seqData[i].id;
+        }
+        if (type === 'start-stop-codons') {
+          // progressState = { start: 0, stop: 50 };
+          featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, 1, options, progressState) );
+          // progressState = { start: 50, stop: 100 };
+          featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
+        } else if (type === 'orfs') {
+          // progressState = { start: 50, stop: 100 };
+          progressState = { start: progressStart, stop: progressStop};
+          featureDataArray = featureDataArray.concat( extractORFs(seq, options, progressState) );
+        }
+        // console.log( `${i}: ${(new Date().getTime()) - testStartTime} ms`);
+
+        // Sort the features by start
+        // FIXME: this needs to be done contig by contig. Do we need to sort??
+        // featureDataArray.sort( (a, b) => {
+        //   return a.start - b.start;
+        // });
+        seqLengthCompleted += seq.length;
+      }
+      return featureDataArray;
+    }
+
+    const extractStartStopCodons = function(seq, strand, options, progressState = {}) {
       let progress = 0;
       let savedProgress = 0;
       const source = 'start-stop-codons';
-      const seq = (strand === 1) ? options.seqString : reverseComplement(options.seqString);
+      seq = (strand === 1) ? seq : reverseComplement(seq);
       const startPattern = options.startPattern.toUpperCase().split(',').map( s => s.trim() ).join('|');
       const stopPattern = options.stopPattern.toUpperCase().split(',').map( s => s.trim() ).join('|');
       const totalPattern = `${startPattern}|${stopPattern}`;
@@ -56,6 +105,7 @@
           stop: start + match[0].length - 1,
           strand: strand,
           source: source,
+          contig: options.contigID,
           extractedFromSequence: true
         };
         featureDataArray.push(featureData);
@@ -85,17 +135,19 @@
       return savedProgress;
     };
 
-    const extractORFs = function(options) {
+    const extractORFs = function(seq, options, progressState = {}) {
       const minORFLength = options.minORFLength;
-      const seq = options.seqString;
       const seqLength = seq.length;
       let featureDataArray = [];
       let progressState = {start: 0, stop: 25};
 
 
-      let codonDataArray = extractStartStopCodons(1, options, progressState);
+      // const testStartTime = new Date().getTime();
+      // console.log( `${(new Date().getTime()) - testStartTime} ms`);
+
+      let codonDataArray = extractStartStopCodons(seq, 1, options, progressState);
       progressState = {start: 25, stop: 50};
-      codonDataArray = codonDataArray.concat( extractStartStopCodons(-1, options, progressState) );
+      codonDataArray = codonDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
       const startFeatures = codonDataArray.filter( f => f.type === 'start-codon' );
       const stopFeatures = codonDataArray.filter( f => f.type === 'stop-codon' );
 
@@ -103,16 +155,17 @@
       const stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
 
       progressState = {start: 50, stop: 75};
-      featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, minORFLength, seqLength, progressState);
+      featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, seqLength, options, progressState);
       progressState = {start: 75, stop: 100};
-      featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, minORFLength, seqLength, progressState) );
+      featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, seqLength, options, progressState) );
       return featureDataArray;
     };
 
-    const orfsByStrand = function(strand, startsByRF, stopsByRF, minORFLength, seqLength, progressState = {}) {
+    const orfsByStrand = function(strand, startsByRF, stopsByRF, seqLength, options= {}, progressState = {}) {
       let position, orfLength, starts, stops;
       let start, stop, stopIndex, featureData;
       let progress, savedProgress;
+      const minORFLength = options.minORFLength || 100;
       const type = 'ORF';
       const source = 'orfs';
       const featureDataArray = [];
@@ -150,6 +203,7 @@
                 stop: (strand === 1) ? stop.stop : start.stop,
                 strand: strand,
                 source: source,
+                contig: options.contigID,
                 extractedFromSequence: true
               };
               featureDataArray.push(featureData);
