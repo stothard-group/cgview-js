@@ -2,7 +2,6 @@
   CGV.WorkerFeatureExtraction = function() {
     onmessage = function(e) {
       const featureDataArray = processSequence(e.data);
-
       // let progressState;
       // const type = e.data.type;
       // console.log(`Starting ${type}`);
@@ -39,27 +38,26 @@
       let seqLengthCompleted = 0;
       let progressStart = 0;
 
-      // const testStartTime = new Date().getTime();
 
       let seq, progressForStep, progressStop
       for (var i = 0, len = seqData.length; i < len; i++) {
         seq = seqData[i].seq;
 
         // Percentage of sequence processed in this iteration.
-        progressForStep = Math.round(seq.length / seqTotalLength);
-        progressStart = seqLengthCompleted / seqTotalLength;
+        progressForStep = Math.round(seq.length / seqTotalLength * 100);
+        progressStart = Math.round(seqLengthCompleted / seqTotalLength * 100);
         progressStop = progressStart + progressForStep;
+        // console.log(progressForStep)
 
         if (seqType === 'contigs') {
           options.contigID = seqData[i].id;
         }
         if (type === 'start-stop-codons') {
-          // progressState = { start: 0, stop: 50 };
+          progressState = { start: progressStart, stop: progressStart + (progressForStep / 2)};
           featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, 1, options, progressState) );
-          // progressState = { start: 50, stop: 100 };
+          progressState = { start: progressState.stop, stop: progressStop };
           featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
         } else if (type === 'orfs') {
-          // progressState = { start: 50, stop: 100 };
           progressState = { start: progressStart, stop: progressStop};
           featureDataArray = featureDataArray.concat( extractORFs(seq, options, progressState) );
         }
@@ -120,8 +118,8 @@
     };
 
     const postProgress = function(currentProgress, savedProgress, progressState = {}) {
-      const progressStart = progressState.start || 0;
-      const progressStop = progressState.stop || 100;
+      const progressStart = Math.round(progressState.start || 0);
+      const progressStop = Math.round(progressState.stop || 100)
       const progressIncrement = progressState.increment || 1;
       const progressRange = progressStop - progressStart;
       if ( (currentProgress > savedProgress) && (currentProgress % progressIncrement === 0) ) {
@@ -139,14 +137,17 @@
       const minORFLength = options.minORFLength;
       const seqLength = seq.length;
       let featureDataArray = [];
-      let progressState = {start: 0, stop: 25};
 
+      const progressStart = progressState.start || 0;
+      const progressStop = progressState.stop || 100;
+      const progressRange = progressStop - progressStart;
+      const progressPortion = progressRange / 4;
 
-      // const testStartTime = new Date().getTime();
-      // console.log( `${(new Date().getTime()) - testStartTime} ms`);
-
+      // progressState = {start: 0, stop: 25};
+      progressState = {start: progressStart, stop: progressStart + progressPortion};
       let codonDataArray = extractStartStopCodons(seq, 1, options, progressState);
-      progressState = {start: 25, stop: 50};
+      // progressState = {start: 25, stop: 50};
+      progressState = {start: progressState.stop, stop: progressStart + progressPortion * 2};
       codonDataArray = codonDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
       const startFeatures = codonDataArray.filter( f => f.type === 'start-codon' );
       const stopFeatures = codonDataArray.filter( f => f.type === 'stop-codon' );
@@ -154,9 +155,11 @@
       const startsByRF = featuresByReadingFrame(startFeatures, seqLength);
       const stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
 
-      progressState = {start: 50, stop: 75};
+      // progressState = {start: 50, stop: 75};
+      progressState = {start: progressState.stop, stop: progressStart + progressPortion * 3};
       featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, seqLength, options, progressState);
-      progressState = {start: 75, stop: 100};
+      // progressState = {start: 75, stop: 100};
+      progressState = {start: progressState.stop, stop: progressStop};
       featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, seqLength, options, progressState) );
       return featureDataArray;
     };

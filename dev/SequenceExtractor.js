@@ -69,9 +69,9 @@
       return URL.createObjectURL(blob);
     }
 
-    sequenceInput() {
+    sequenceInput(concatenate = false) {
       let type, data;
-      if (this.sequence.hasContigs) {
+      if (this.sequence.hasContigs && !concatenate) {
         type = 'contigs';
         data = this.sequence.contigs().map( c => c.toJSON() );
       } else {
@@ -163,13 +163,21 @@
       // Start worker
       const url = this.fn2workerURL(CGV.WorkerBaseContent);
       const worker = new Worker(url);
+      // Sequence data
+      // FIXME: concatenate set to true; should come from the user
+      const seqInput = this.sequenceInput(true);
       // Prepare message
       const message = {
         type: extractType,
-        window: CGV.defaultFor(options.window, this.getWindowStep().window),
-        step: CGV.defaultFor(options.step, this.getWindowStep().step),
-        deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
-        seqString: this.seqString
+        // seqString: this.seqString
+        seqType: seqInput.type,
+        seqData: seqInput.data,
+        seqTotalLength: this.sequence.length,
+        options: {
+          window: CGV.defaultFor(options.window, this.getWindowStep().window),
+          step: CGV.defaultFor(options.step, this.getWindowStep().step),
+          deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
+        }
       };
       worker.postMessage(message);
       worker.onmessage = (e) => {

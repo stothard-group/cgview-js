@@ -9,14 +9,15 @@
       console.error(`Oops. Problem with ${e.data.type}`);
     };
 
-    const calculateBaseContent = function(options) {
+    const calculateBaseContent = function(data) {
       let progress = 0;
       let savedProgress = 0;
       const progressIncrement = 1;
       const positions = [];
       let scores = [];
-      const type = options.type;
-      const seq = options.seqString;
+      const type = data.type;
+      const seq = data.seqData[0].seq;
+      const options = data.options;
       const windowSize = options.window;
       const step = options.step;
       const deviation = options.deviation;
