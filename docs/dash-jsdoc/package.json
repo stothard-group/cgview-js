@@ -30,7 +30,8 @@
   },
   "bundleDependencies": false,
   "dependencies": {
-    "jsdoc-docset": "^0.2.1"
+    "jsdoc-docset": "^0.2.1",
+    "sqlite3": "^4.0.4"
   },
   "deprecated": false,
   "description": "A docset-ready JSDoc 3.4 template",
