@@ -16,6 +16,7 @@
    *
    */
   class Font extends CGV.Events  {
+  // class Font {
 
     /**
      * Create a new *Font*. The *Font* can be created using a string or an object representing the font.
@@ -221,6 +222,8 @@
 
     _generateFont() {
       this._font = `${this._styleAsCss()} ${this.size}px ${this.family}`;
+      // Is this needed OR can we use the various update events...
+      // Currently used by Annotation to update the font widths if any aspect of the font changes
       this.trigger('change', this);
     }
 

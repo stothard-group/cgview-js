@@ -256,7 +256,7 @@
 
           // Debug
           if (this.viewer.debug && this.viewer.debug.data.n) {
-            const index = this.viewer._slots.indexOf(this);
+            const index = this.viewer.slots().indexOf(this);
             this.viewer.debug.data.n[`slot_${index}`] = featureCount;
           }
         } else if (this.hasPlot) {

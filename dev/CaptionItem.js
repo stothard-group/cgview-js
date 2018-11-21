@@ -228,11 +228,19 @@
     }
 
     remove() {
-      const parent = this.parent;
-      parent._items = parent._items.remove(this);
-      this.viewer.clear('captions');
-      this.viewer.refreshCaptions();
-      this.viewer.trigger( `${parent.toString().toLowerCase()}-update`);
+      // const parent = this.parent;
+      // parent._items = parent._items.remove(this);
+      // this.viewer.clear('captions');
+      // this.viewer.refreshCaptions();
+      // this.viewer.trigger( `${parent.toString().toLowerCase()}-update`);
+      this.parent.removeItems(this);
+    }
+
+    /**
+     * Update item properties.
+     */
+    update(attributes) {
+      this.parent.updateItems(this, attributes);
     }
 
     toJSON() {

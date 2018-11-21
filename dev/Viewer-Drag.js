@@ -27,7 +27,8 @@
       self.layout.translate(d3.event.dx, d3.event.dy);
       self.drawFast();
       // self.draw(true);
-      // self.trigger('drag');
+      // FIXME: drag could be ok, but there should be a general move/translate event
+      self.trigger('drag');
       // self.fast_draw();
       //
       // DEBUG INFO

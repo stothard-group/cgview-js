@@ -94,6 +94,11 @@
       return this.padding / 2;
     }
 
+    updateItems(items, attributes) {
+      const validKeys = ['name', 'drawSwatch', 'font', 'fontColor', 'swatchColor', 'decoration'];
+      return this.updateItemsBase(validKeys, items, attributes);
+    }
+
     findLegendItemByName(name) {
       if (!name) { return; }
       return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );

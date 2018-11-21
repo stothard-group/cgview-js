@@ -201,6 +201,17 @@
       return this;
     }
 
+    /**
+     * Returns the object incased as a CGArray. If it's already a CGArray, it is returned untouched.
+     * Helpfull to handle method parameters that can submit a single object or a CGArray of objects.
+     * @param {Object} object
+     *
+     * @return {CGArray}
+     */
+    static arrayerize (object) {
+      return (object.toString() === 'CGArray') ? object : new CGV.CGArray(object);
+    }
+
     /** @ignore */
 
     /**

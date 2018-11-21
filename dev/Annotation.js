@@ -87,6 +87,7 @@
         this._font = new CGV.Font(value);
       }
       this.refreshLabelWidths();
+      // FIXME: can we use update to do this??
       this._font.on('change', () => this.refreshLabelWidths());
     }
 

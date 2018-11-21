@@ -18,9 +18,13 @@
    *  zoom-start          | Called once before viewer starts zoom animation
    *  zoom                | Called every frame of the zoom animation
    *  zoom-end            | Called after zooming is complete
-   *
-   *
    *  mousemove           | Called when the mouse moves on the map
+   *  click               | Called after the mouse is clicked
+   *
+   *  track-load-progress-changed: needs better name
+   *
+   *
+   *  NOTE: from JSpectraViewer - May use some of these still
    *  drag-start          | Called once before viewer starts drag animation
    *  drag                | Called every frame of the drag animation
    *  drag-end            | Called after dragging is complete

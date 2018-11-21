@@ -37,9 +37,7 @@
       this.textAlignment = CGV.defaultFor(data.textAlignment, 'left');
 
       if (data.items) {
-        data.items.forEach((itemData) => {
-          new CGV[`${this.toString()}Item`](this, itemData);
-        });
+        this.addItems(data.items);
       }
       // FIXME: should be done whenever an item is added
       this.refresh();
@@ -179,6 +177,47 @@
         this._textAlignment = value;
       }
       this.refresh();
+    }
+
+    /**
+     * Adds item to the viewer.
+     */
+    addItems(itemData = []) {
+      itemData = CGV.CGArray.arrayerize(itemData);
+      const items = itemData.map( (data) => new CGV[`${this.toString()}Item`](this, data));
+      const triggerString = `${this.toString().toLowerCase()}Items-add`;
+      this.viewer.trigger(triggerString, items);
+      return items;
+    }
+
+    removeItems(items) {
+      items = CGV.CGArray.arrayerize(items);
+      this._items = parent._items.filter( i => !items.include(i) );
+      this.viewer.clear('captions');
+      this.viewer.refreshCaptions();
+      this.viewer.trigger(`${this.toString().toLowerCase()}Items-update`, items);
+    }
+
+    updateItemsBase(validKeys, items, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      if (!CGV.validate(keys, validKeys)) { return; }
+      items = CGV.CGArray.arrayerize(items);
+      items.attr(attributes);
+      this.viewer.trigger(`${this.toString().toLowerCase()}Items-update`, {items, attributes});
+    }
+
+    updateItems(items, attributes) {
+      const validKeys = ['name', 'font', 'fontColor'];
+      return this.updateItemsBase(validKeys, items, attributes);
+
+      // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'drawSwatch', 'font', 'fontColor', 'swatchColor', 'decoration'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // items = CGV.CGArray.arrayerize(items);
+      // items.attr(attributes);
+      // this.trigger('legendUpdate', { items, attributes });
     }
 
     /**

@@ -34,7 +34,7 @@
       this._swatchColor = new CGV.Color( CGV.defaultFor(data.swatchColor, 'black') );
       this._decoration = CGV.defaultFor(data.decoration, 'arc');
       this.refresh();
-      this.viewer.trigger('legend-update');
+      // this.viewer.trigger('legend-update');
     }
 
     /**
@@ -143,6 +143,14 @@
       }
     }
 
+
+    /**
+     * Update feature properties to the viewer.
+     * FIXME: extract to CaptionItem
+     */
+    // update(attributes) {
+    //   this.parent.updateLegendItems(this, attributes);
+    // }
 
     textX() {
       if (this.drawSwatch) {

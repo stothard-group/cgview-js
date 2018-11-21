@@ -275,6 +275,10 @@
       }
     }
 
+    update(attributes) {
+      this.viewer.updateFeatures(this, attributes);
+    }
+
     /**
      * Updates the feature range using the given *start* and *stop* positions.
      * If the feature is on a contig, the positions should be in relation to the contig.

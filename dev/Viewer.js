@@ -397,14 +397,40 @@ if (window.CGV === undefined) window.CGV = CGView;
       return new CGV.CGArray([...new Set(allSources)]).get(term);
     }
 
+    /**
+     * Adds features to the viewer. See
+     */
+    addFeatures(featureData = []) {
+      featureData = CGV.CGArray.arrayerize(featureData);
+      const features = featureData.map( (data) => new CGV.Feature(this, data));
+      this.trigger('features-add', features);
+      return features;
+      // FIXME: need to update tracks??
+    }
+
     removeFeatures(features) {
-      features = (features.toString() === 'CGArray') ? features : new CGV.CGArray(features);
+      features = CGV.CGArray.arrayerize(features);
       this._features = this._features.filter( f => !features.includes(f) );
       const labels = features.map( f => f.label );
       this.annotation.removeLabels(labels);
       this.tracks().each( (i, track) => {
         track.removeFeatures(features);
       });
+      this.trigger('features-remove', features);
+    }
+
+    /**
+     * Update feature properties to the viewer.
+     */
+    updateFeatures(features, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['label', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      features = CGV.CGArray.arrayerize(features);
+      features.attr(attributes);
+      // TODO: refresh tracks if any attribute is source
+      this.trigger('features-update', { features, attributes });
     }
 
     removePlots(plots) {

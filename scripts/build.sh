@@ -13,6 +13,8 @@ cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/Caption.js >> ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/CaptionItem.js >> ${CGVIEW_DIR}/src/CGView.js
 find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name CGObject.js ! -name Events.js ! -name Caption.js ! -name CaptionItem.js | xargs cat >> ${CGVIEW_DIR}/src/CGView.js
+# NOTE: I've found that by not using CGView as a module, the performance doubles
+# echo "export default CGView;" >> ${CGVIEW_DIR}/src/CGView.js
 
 # Create documentation
 # jsdoc must be installed

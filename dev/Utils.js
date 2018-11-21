@@ -40,17 +40,25 @@
   /**
    * Return true if the value is one of the validOptions.
    *
-   * @param {Object} value - Value to validate
+   * @param {Object} value - Value or an array of values to validate
    * @param {Array} validOptions - Array of valid options
    * @return {Boolean}
    */
-  CGV.validate = function(value, validOptions) {
-    if (validOptions.indexOf(value) !== -1) {
+  CGV.validate = function(values, validOptions) {
+    values = CGV.CGArray.arrayerize(values);
+    const invalidValues = values.filter(function(i) {return validOptions.indexOf(i) < 0;});
+    if (invalidValues.length === 0) {
       return true;
     } else {
-      console.error(`The value '${value}' is not one of the following: ${validOptions.join(', ')}`);
+      console.error(`The value(s) '${invalidValues.join(',')}' is/are not one of the following valid options: ${validOptions.join(', ')}`);
       return false;
     }
+    // if (validOptions.indexOf(value) !== -1) {
+    //   return true;
+    // } else {
+    //   console.error(`The value '${value}' is not one of the following: ${validOptions.join(', ')}`);
+    //   return false;
+    // }
   };
 
   /**

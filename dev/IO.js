@@ -146,9 +146,10 @@
 
       // Create features
       if (data.features) {
-        data.features.forEach((featureData) => {
-          new CGV.Feature(viewer, featureData);
-        });
+        // data.features.forEach((featureData) => {
+        //   new CGV.Feature(viewer, featureData);
+        // });
+        viewer.addFeatures(data.features);
       }
 
       // Create features

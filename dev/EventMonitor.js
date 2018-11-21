@@ -153,7 +153,7 @@
             cp.onChange = function(color) {
               legendItem.swatchColor = color.rgbaString;
               viewer.drawFast();
-              viewer.trigger('legend-swatch-change', legendItem);
+              // viewer.trigger('legend-swatch-change', legendItem);
             };
             cp.onClose = function() {
               legendItem.swatchSelected = false;

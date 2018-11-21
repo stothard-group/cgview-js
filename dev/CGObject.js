@@ -11,7 +11,8 @@
    * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
    * Any object can be easily returned using the cgvID and [Viewer.objects](Viewer.html#objects).
    */
-  class CGObject extends CGV.Events {
+  // class CGObject extends CGV.Events {
+  class CGObject {
 
     /**
      * @param {Viewer} viewer - The viewer object.
@@ -24,7 +25,7 @@
      * @param {Obejct} meta -
      */
     constructor(viewer, options = {}, meta = {}) {
-      super();
+      // super();
       this._viewer = viewer;
       this.meta = CGV.merge(options.meta, meta);
       this.visible = CGV.defaultFor(options.visible, true);
