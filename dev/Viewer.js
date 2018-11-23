@@ -133,10 +133,12 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     get format() {
       return this.layout.type;
+      // return this.settings.format.type;
     }
 
     set format(value) {
       this.layout.type = value;
+      // this.settings.type = value;
     }
 
     /**

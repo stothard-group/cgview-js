@@ -205,6 +205,7 @@
       items = CGV.CGArray.arrayerize(items);
       items.attr(attributes);
       this.viewer.trigger(`${this.toString().toLowerCase()}Items-update`, {items, attributes});
+      return items;
     }
 
     updateItems(items, attributes) {

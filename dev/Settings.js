@@ -29,6 +29,17 @@
     }
 
     /**
+     * @member {String} - Get or set the map format: circular, linear
+     */
+    get format() {
+      return this.viewer.format;
+    }
+
+    set format(value) {
+      this.viewer.format = value;
+    }
+
+    /**
      * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get backgroundColor() {
@@ -69,6 +80,17 @@
     set showShading(value) {
       this._showShading = value;
       this.viewer.drawFull();
+    }
+
+    update(attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['format'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.viewer.trigger('settings-update', { attributes });
     }
 
     toJSON() {
