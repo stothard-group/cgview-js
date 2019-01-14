@@ -355,9 +355,22 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._tracks.get(term);
     }
 
-    removeTrack(track) {
-      this._tracks = this._tracks.remove(track);
+    /**
+     * Adds tracks to the viewer. See
+     */
+    addTracks(trackData = []) {
+      trackData = CGV.CGArray.arrayerize(trackData);
+      const tracks = trackData.map( (data) => new CGV.Track(this, data));
+      this.trigger('tracks-add', tracks);
+      return tracks;
+    }
+
+    removeTracks(tracks) {
+      tracks = CGV.CGArray.arrayerize(tracks);
+      this._tracks = this._tracks.filter( t => !tracks.includes(t) );
+      // this._tracks = this._tracks.remove(track);
       this.layout._adjustProportions();
+      this.trigger('tracks-remove', tracks);
     }
 
     moveTrack(oldIndex, newIndex) {
@@ -578,6 +591,7 @@ if (window.CGV === undefined) window.CGV = CGView;
           return function(t) {
             self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
             self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+            self.trigger('drag');
             self.drawFast();
           };
         }).on('end', function() {

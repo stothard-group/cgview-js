@@ -161,9 +161,10 @@
 
       // Create tracks
       if (data.tracks) {
-        data.tracks.forEach((trackData) => {
-          new CGV.Track(viewer, trackData);
-        });
+        viewer.addTracks(data.tracks);
+        // data.tracks.forEach((trackData) => {
+        //   new CGV.Track(viewer, trackData);
+        // });
       }
       viewer._loading = false;
 

@@ -82,6 +82,8 @@
         // Note, here the width/height will be the same as viewer (no pixel ratio)
         layerNode.style.width = `${width}px`;
         layerNode.style.height = `${height}px`;
+
+        CGV.scaleResolution(layerNode, this.pixelRatio);
       }
       this.layout.updateScales();
     }

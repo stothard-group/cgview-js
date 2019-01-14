@@ -365,7 +365,8 @@
     }
 
     remove() {
-      this.layout.removeTrack(this);
+      // this.layout.removeTrack(this);
+      this.viewer.removeTracks(this);
     }
 
     toJSON() {
