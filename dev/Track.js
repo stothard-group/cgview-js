@@ -173,7 +173,7 @@
     /**
      * @member {Number} - Return the number of features or plot points contained in this track.
      */
-    get count() {
+    get itemCount() {
       if (this.type === 'plot') {
         return (this.plot) ? this.plot.length : 0;
       } else if (this.type === 'feature') {
@@ -302,7 +302,7 @@
         this.updatePlotSlot();
       }
       this.layout._adjustProportions();
-      this.viewer.trigger('track-update', this);
+      // this.viewer.trigger('track-update', this);
     }
 
     updateFeatureSlots() {
@@ -334,6 +334,10 @@
           slot.replaceFeatures(this.features());
         }
       }
+    }
+
+    triggerUpdate() {
+      this.viewer.updateTracks(this);
     }
 
     featuresByStrand() {

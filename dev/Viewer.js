@@ -373,9 +373,25 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.trigger('tracks-remove', tracks);
     }
 
+    /**
+     * Update track properties to the viewer. If no attribtes are given, the trigger event will still be called.
+     */
+    updateTracks(tracks, attributes) {
+      tracks = CGV.CGArray.arrayerize(tracks);
+      if (attributes) {
+        // Validate attribute keys
+        const keys = Object.keys(attributes);
+        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible'];
+        if (!CGV.validate(keys, validKeys)) { return; }
+        tracks.attr(attributes);
+      }
+      this.trigger('tracks-update', { tracks, attributes });
+    }
+
     moveTrack(oldIndex, newIndex) {
       this._tracks.move(oldIndex, newIndex);
       this.layout._adjustProportions();
+      this.trigger('tracks-moved', {oldIndex: oldIndex, newIndex: newIndex});
     }
 
     /**
@@ -405,6 +421,8 @@ if (window.CGV === undefined) window.CGV = CGView;
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
      */
+    // FIXME: need better way to keep track of sources
+    // FIXME: sources should not contain things like orfs???
     sources(term) {
       const featureSources = this._features.map( f => f.source );
       const plotSources = this._plots.map( p => p.source );

@@ -92,6 +92,9 @@
       const viewer = this._viewer;
       viewer.clear('all');
 
+      viewer.trigger('cgv-json-load');
+      // In events this should mention how everything is reset (e.g. tracks, features, etc)
+
       // Reset objects
       viewer._objects = {};
 

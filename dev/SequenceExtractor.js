@@ -144,6 +144,7 @@
           startTime = new Date().getTime();
           track._features = features;
           track.updateSlots();
+          track.triggerUpdate();
           console.log(`Features '${extractType}' Update Time: ${CGV.elapsedTime(startTime)}` );
           viewer.drawFull();
         }
@@ -196,6 +197,7 @@
           const plot = new CGV.Plot(viewer, data);
           track._plot = plot;
           track.updateSlots();
+          track.triggerUpdate();
           console.log(`Plot '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );
           viewer.drawFull();
         }
