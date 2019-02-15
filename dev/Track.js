@@ -195,6 +195,20 @@
       this.layout._adjustProportions();
     }
 
+    update(attributes) {
+      this.viewer.updateTracks(this, attributes);
+    }
+
+    remove() {
+      this.viewer.removeTracks(this);
+    }
+
+    move(newIndex) {
+      const currentIndex = this.viewer.tracks().indexOf(this);
+      this.viewer.moveTrack(currentIndex, newIndex);
+    }
+
+
     /**
      * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the features in this track.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
@@ -372,10 +386,6 @@
       }
     }
 
-    remove() {
-      // this.layout.removeTrack(this);
-      this.viewer.removeTracks(this);
-    }
 
     toJSON() {
       return {

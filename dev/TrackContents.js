@@ -87,6 +87,9 @@
       this._options = value;
     }
 
+    update(attributes) {
+      this.track.update({contents: attributes});
+    }
 
     toJSON() {
       const json = {
