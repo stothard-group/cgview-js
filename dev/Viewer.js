@@ -373,6 +373,25 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.trigger('tracks-remove', tracks);
     }
 
+    // testFunctionExample() {
+    //   this.dividers.slot.update({thickness: 4});
+    //   this.dividers.update({slotMirrorsTrack: true, slot: {thickness: 3}});
+    //   this.tracks(1).update({data: {type: 'features', from: 'type', extract: 'CDS', options: {}}});
+    //   this.tracks(1).update({dataType: 'features', dataFrom: 'type', dataExtract: 'CDS', dataOptions: {}});
+    // }
+
+    // updateObjects({ objects, attributes, validKeys: [], eventName }) {
+    //   objects = CGV.CGArray.arrayerize(objects);
+    //   if (attributes) {
+    //     // Validate attribute keys
+    //     const keys = Object.keys(attributes);
+    //     if (!CGV.validate(keys, validKeys)) { return; }
+    //     // Change
+    //     objects.attr(attributes);
+    //   }
+    //   this.trigger(eventName, { objects, attributes });
+    // }
+
     /**
      * Update track properties to the viewer. If no attribtes are given, the trigger event will still be called.
      */
@@ -381,9 +400,30 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (attributes) {
         // Validate attribute keys
         const keys = Object.keys(attributes);
-        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible'];
-        if (!CGV.validate(keys, validKeys)) { return; }
-        tracks.attr(attributes);
+        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible', 'thicknessRatio', 'contents'];
+        if (!CGV.validate(keys, validKeys)) { return false; }
+        const contents = attributes.contents;
+        if (contents) {
+          // Validate content attribute keys
+          const contentKeys = Object.keys(contents);
+          const validContentKeys = ['type', 'from', 'extract', 'options'];
+          if (!CGV.validate(contentKeys, validContentKeys)) { return false; }
+          for (const track of tracks) {
+            for (const contentKey of contentKeys) {
+              const value = contents[contentKey];
+              track.contents[contentKey] = value;
+            }
+            track.refresh();
+          }
+          // const {contents, ...modifiedAttributes} = attributes;
+          const modifiedAttributes = keys.reduce( (obj, k) => {
+            if (k !== 'contents') { obj[k] = attributes[k]; }
+            return obj;
+          }, {});
+          tracks.attr(modifiedAttributes);
+        } else {
+          tracks.attr(attributes);
+        }
       }
       this.trigger('tracks-update', { tracks, attributes });
     }

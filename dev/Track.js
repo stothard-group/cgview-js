@@ -191,7 +191,7 @@
     }
 
     set thicknessRatio(value) {
-      this._thicknessRatio = value;
+      this._thicknessRatio = Number(value);
       this.layout._adjustProportions();
     }
 
@@ -336,6 +336,10 @@
       }
     }
 
+    // FIXME: this should become simply (update)
+    // update(attributes = {}) {
+    //   this.viewer.updateTracks(this, attributes);
+    // }
     triggerUpdate() {
       this.viewer.updateTracks(this);
     }
@@ -380,7 +384,7 @@
         strand: this.strand,
         position: this.position,
         thicknessRatio: this.thicknessRatio,
-        contents: this.contents,
+        contents: this.contents.toJSON(),
         visible: this.visible
       };
     }

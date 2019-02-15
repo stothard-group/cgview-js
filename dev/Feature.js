@@ -472,7 +472,8 @@
         source: this.source,
         legend: this.legend.name,
         score: this.score,
-        visible: this.visible
+        visible: this.visible,
+        favorite: this.favorite
       };
     }
 
