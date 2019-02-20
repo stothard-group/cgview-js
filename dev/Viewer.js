@@ -498,7 +498,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateFeatures(features, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['label', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
+      const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
       if (!CGV.validate(keys, validKeys)) { return; }
       features = CGV.CGArray.arrayerize(features);
       features.attr(attributes);
