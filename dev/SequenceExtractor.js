@@ -130,16 +130,15 @@
           track.loadProgress = 100;
           const featureDataArray = e.data.featureDataArray;
           console.log(`Features '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );
-          const features = new CGV.CGArray();
           startTime = new Date().getTime();
           let featureData;
           const legends = this.createLegendItems(extractType);
           console.log(extractType);
           for (let i = 0, len = featureDataArray.length; i < len; i++) {
-            featureData = featureDataArray[i];
-            featureData.legend = legends[featureData.type];
-            features.push( new CGV.Feature(viewer, featureData) );
+            featureDataArray[i].legend = legends[featureDataArray[i].type];
           }
+          const features = viewer.addFeatures(featureDataArray);
+
           console.log(`Features '${extractType}' Creation Time: ${CGV.elapsedTime(startTime)}` );
           startTime = new Date().getTime();
           track._features = features;
