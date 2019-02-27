@@ -93,6 +93,7 @@
       this.viewer.trigger('settings-update', { attributes });
     }
 
+
     toJSON() {
       return {
         backgroundColor: this.backgroundColor.rgbaString,

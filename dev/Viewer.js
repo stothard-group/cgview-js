@@ -392,6 +392,17 @@ if (window.CGV === undefined) window.CGV = CGView;
     //   this.trigger(eventName, { objects, attributes });
     // }
 
+    update(attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['name'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.trigger('viewer-update', { attributes });
+    }
+
     /**
      * Update track properties to the viewer. If no attribtes are given, the trigger event will still be called.
      */
