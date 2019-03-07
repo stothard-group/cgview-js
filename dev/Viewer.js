@@ -198,7 +198,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     // FIXME: this should be done by layout?? OR not allowed
     set zoomFactor(value) {
-      this.layout.zoom(value);
+      this.layout.zoom(Number(value));
     }
 
     /**
