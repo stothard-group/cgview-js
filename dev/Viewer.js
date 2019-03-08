@@ -84,7 +84,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
       // Initialize Events
-      this.initializeDragging();
+      // this.initializeDragging();
       this.initializeZooming();
       this.events = new CGV.Events();
       this.eventMonitor = new CGV.EventMonitor(this);

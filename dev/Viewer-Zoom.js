@@ -19,6 +19,10 @@
     d3.select(self.canvas.node('ui')).call(self._zoom)
       .on('dblclick.zoom', null);
 
+    // Keep track of pan/translate changes
+    let panX = 0;
+    let panY = 0;
+
     function zoomstart() {
       self.trigger('zoom-start');
       self.highlighter.hidePopoverBox();
@@ -29,11 +33,19 @@
 
       const bp = self.canvas.bpForMouse();
 
+      const dx = d3.event.transform.x - panX;
+      const dy = d3.event.transform.y - panY;
+      panX = d3.event.transform.x;
+      panY = d3.event.transform.y;
+      // Only translate of not Zooming
+      if (self.zoomFactor === d3.event.transform.k) {
+        self.layout.translate(dx, dy);
+      }
+
       self.layout.zoom(d3.event.transform.k, bp);
 
-      self.trigger('zoom');
-
       self.drawFast();
+      self.trigger('zoom');
 
       // DEBUG INFO
       if (self.debug) {
@@ -47,9 +59,7 @@
     }
 
     function zoomend() {
-      // self.svg.style('cursor', 'all-scroll');
       self.trigger('zoom-end');
-      // self.full_draw();
       self.drawFull();
     }
   };
