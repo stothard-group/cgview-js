@@ -125,7 +125,8 @@
     const cgvExample = false; // Ignores defaultMap
     const colorPickerTest = false;
     // const defaultMap = 'small';
-    const defaultMap = 'builder';
+    // const defaultMap = 'builder';
+    const defaultMap = 'ecoli_pa2_contigs';
 
     const maps = {
       small: {
@@ -143,6 +144,14 @@
       large_noplots: {
         name: 'L. guizhouensis No Plots [9,997,872 bp]',
         url: 'data/tests/lentzea_noplots.json',
+      },
+      small_contigs: {
+        name: 'Contigs: MNHM01000001 [133,342 bp]',
+        url: 'data/tests/small_contigs.json',
+      },
+      ecoli_pa2_contigs: {
+        name: 'Contigs: Ecoli PA2 [5,246,924 bp]',
+        url: 'data/tests/ecoli_pa2_contigs.json',
       },
       builder: {
         name: 'Builder',
@@ -165,7 +174,7 @@
       var cgv = new CGV.Viewer('#cgview', {
         width: 600,
         height: 600,
-        debug: {sections: ['time', 'position']}
+        // debug: {sections: ['time', 'position']}
       });
 
       window.cgv = cgv;
