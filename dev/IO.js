@@ -123,20 +123,20 @@
       // Load Sequence
       viewer._sequence = new CGV.Sequence(viewer, data.sequence);
       // Load Settings
-      const settings = data.settings || {};
+      // const settings = data.settings || {};
       // General Settings
-      viewer.settings = new CGV.Settings(viewer, settings.general);
+      viewer.settings = new CGV.Settings(viewer, data.settings);
       // Ruler
-      viewer.ruler = new CGV.Ruler(viewer, settings.ruler);
+      viewer.ruler = new CGV.Ruler(viewer, data.ruler);
       // Backbone
-      viewer.backbone = new CGV.Backbone(viewer, settings.backbone);
+      viewer.backbone = new CGV.Backbone(viewer, data.backbone);
       // Annotation
-      viewer.annotation = new CGV.Annotation(viewer, settings.annotation);
+      viewer.annotation = new CGV.Annotation(viewer, data.annotation);
       // Slot Dividers
       // viewer.slotDivider = new CGV.Divider(viewer, settings.dividers.slot);
-      viewer.dividers = new CGV.Dividers(viewer, settings.dividers);
+      viewer.dividers = new CGV.Dividers(viewer, data.dividers);
       // Highlighter
-      viewer.highlighter = new CGV.Highlighter(viewer, settings.highlighter);
+      viewer.highlighter = new CGV.Highlighter(viewer, data.highlighter);
 
       // Load Captions
       if (data.captions) {
