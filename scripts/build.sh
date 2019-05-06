@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# FIXME: get directory from the current script location
-CGVIEW_DIR=~/workspace/stothard_group/cgview-js
+# CGVIEW_DIR=~/workspace/stothard_group/cgview-js
+CGVIEW_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/..
 
 # Join src files into one file
 echo "Building CGView.js"
