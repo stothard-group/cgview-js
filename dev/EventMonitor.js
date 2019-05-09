@@ -151,7 +151,8 @@
               legend.setColorPickerPosition(cp);
             }
             cp.onChange = function(color) {
-              legendItem.swatchColor = color.rgbaString;
+              // legendItem.swatchColor = color.rgbaString;
+              legendItem.update({swatchColor: color.rgbaString});
               viewer.drawFast();
               // viewer.trigger('legend-swatch-change', legendItem);
             };

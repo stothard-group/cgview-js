@@ -76,9 +76,10 @@
       const margin = 5;
       let pos;
       let viewerRect = {top: 0, left: 0};
-      if (this.viewer._container.style('position') !== 'fixed') {
-        viewerRect = this.viewer._container.node().getBoundingClientRect();
-      }
+      // FIXME: this needs to be improved (also in Highlighter)
+      // if (this.viewer._container.style('position') !== 'fixed') {
+      //   viewerRect = this.viewer._container.node().getBoundingClientRect();
+      // }
       const originX = this.originX + viewerRect.left + window.pageXOffset;
       const originY = this.originY + viewerRect.top + window.pageYOffset;
       const legendWidth = this.width;

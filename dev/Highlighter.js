@@ -34,7 +34,8 @@
 
       // Set up position constants
       this._offsetLeft = parseInt(this.viewer._container.style('padding-left')) + 10;
-      this._offsetTop = parseInt(this.viewer._container.style('padding-top')) - 20;
+      // this._offsetTop = parseInt(this.viewer._container.style('padding-top')) - 20;
+      this._offsetTop = parseInt(this.viewer._container.style('padding-top'));
     }
 
     /**
@@ -46,9 +47,10 @@
 
     position(e) {
       let viewerRect = {top: 0, left: 0};
-      if (this.viewer._container.style('position') !== 'fixed') {
-        viewerRect = this.viewer._container.node().getBoundingClientRect();
-      }
+      // FIXME: this needs to be improved (also this._offsetTop above and in )
+      // if (this.viewer._container.style('position') !== 'fixed') {
+      //   viewerRect = this.viewer._container.node().getBoundingClientRect();
+      // }
       const originX = e.canvasX + viewerRect.left + window.pageXOffset;
       const originY = e.canvasY + viewerRect.top + window.pageYOffset;
       return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
