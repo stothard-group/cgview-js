@@ -67,6 +67,7 @@
           sequence: v.sequence.toJSON(),
           features: [],
           plots: [],
+          bookmarks: []
           // layout: v.layout.toJSON()
         }
       };
@@ -79,6 +80,9 @@
             feature.tracks().filter( t => t.contents.from !== 'sequence' ).length > 0) {
           json.cgview.features.push(feature.toJSON());
         }
+      });
+      v.bookmarks().each( (i, bookmark) => {
+        json.cgview.bookmarks.push(bookmark.toJSON());
       });
       return json;
     }
@@ -117,6 +121,7 @@
       viewer._tracks = new CGV.CGArray();
       viewer._plots = new CGV.CGArray();
       viewer._captions = new CGV.CGArray();
+      viewer._bookmarks = new CGV.CGArray();
 
       viewer._loading = true;
 
@@ -137,6 +142,13 @@
       viewer.dividers = new CGV.Dividers(viewer, data.dividers);
       // Highlighter
       viewer.highlighter = new CGV.Highlighter(viewer, data.highlighter);
+
+      // Load Bookmarks
+      if (data.bookmarks) {
+        data.bookmarks.forEach((bookmarkData) => {
+          new CGV.Bookmark(viewer, bookmarkData);
+        });
+      }
 
       // Load Captions
       if (data.captions) {

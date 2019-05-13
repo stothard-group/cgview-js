@@ -62,6 +62,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this._tracks = new CGV.CGArray();
       this._plots = new CGV.CGArray();
       this._captions = new CGV.CGArray();
+      this._bookmarks = new CGV.CGArray();
 
       this._loading = true;
 
@@ -347,6 +348,16 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+     * @return {CGArray}
+     */
+    bookmarks(term) {
+      return this._bookmarks.get(term);
+    }
+
+
+    /**
      * Returns an [CGArray](CGArray.html) of Tracks or a single Track from all the Tracks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
@@ -515,6 +526,35 @@ if (window.CGV === undefined) window.CGV = CGView;
       features.attr(attributes);
       // TODO: refresh tracks if any attribute is source
       this.trigger('features-update', { features, attributes });
+    }
+
+    /**
+     * Adds bookmarks to the viewer. See
+     */
+    addBookmarks(bookmarkData = []) {
+      bookmarkData = CGV.CGArray.arrayerize(bookmarkData);
+      const bookmarks = bookmarkData.map( (data) => new CGV.Bookmark(this, data));
+      this.trigger('bookmarks-add', bookmarks);
+      return bookmarks;
+    }
+
+    removeBookmarks(bookmarks) {
+      bookmarks = CGV.CGArray.arrayerize(bookmarks);
+      this._bookmarks = this._bookmarks.filter( b => !bookmarks.includes(b) );
+      this.trigger('bookmarks-remove', bookmarks);
+    }
+
+    /**
+     * Update bookmark properties to the viewer.
+     */
+    updateBookmarks(bookmarks, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['name', 'bp', 'zoom', 'layout', 'favorite', 'shortcut'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      bookmarks = CGV.CGArray.arrayerize(bookmarks);
+      bookmarks.attr(attributes);
+      this.trigger('bookmarks-update', { bookmarks, attributes });
     }
 
     removePlots(plots) {
