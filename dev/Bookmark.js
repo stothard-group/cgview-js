@@ -27,9 +27,9 @@
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
-     *  bp                    | 0                | Base pair at the center of the canvas. A value of 0 indicates the map is centered.
-     *  zoom                  | 1                | The zoom factor.
-     *  layout                | "circular"       | The map format (linear or circular).
+     *  bp                    | Current bp       | Base pair at the center of the canvas. A value of 0 indicates the map is centered.
+     *  zoom                  | Current zoomFactor | The zoom factor.
+     *  layout                | Current Format   | The map format (linear or circular).
      *  name                  | "Bookmark-N"     | Name for the bookmark. By default the name will be "Bookmark-" followed by the number of the bookmark.
      *  offsetX               | 0                | Offset X of the map backbone. DETAILS TO COME
      *  offsetY               | 0                | Offset Y of the map backbone. DETAILS TO COME
@@ -43,9 +43,9 @@
       super(viewer, options, meta);
       this.viewer = viewer;
 
-      this.bp = CGV.defaultFor(options.bp, 0);
-      this.zoom = CGV.defaultFor(options.zoom, 1);
-      this.layout = CGV.defaultFor(options.layout, 'circular');
+      this.bp = CGV.defaultFor(options.bp, viewer.canvas.bpForCanvasCenter());
+      this.zoom = CGV.defaultFor(options.zoom, viewer.zoomFactor);
+      this.layout = CGV.defaultFor(options.layout, viewer.format);
       this.name = CGV.defaultFor(options.name, 'BOOKMARK');
       this.favorite = CGV.defaultFor(options.favorite, false);
       this.shortcut = CGV.defaultFor(options.favorite, '1');
