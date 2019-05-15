@@ -10,11 +10,10 @@
   class Bookmark extends CGV.CGObject {
 
 // - Each bookmark will have the following attributes:
-//    - bp (center), zoom level, layout (circular/linear),
+//    - bp (center), zoom level, format (circular/linear),
 //    - id/name, percentage offset x/y, favorite, shortcut
 // - Hitting the shortcut key will move to that bookmark (like numbers in nmrLib app)
 // - Default shortcut keys will be numbers 1, 2, 3, ...
-// - Bookmarks can be ordered like tracks, etc (that way the user can set the numbers)
 // - Bookmarks will have "center" button beside x/y offsets to center on bp.
 //    - This just sets the offsets to 0
 //    - Offsets of 0 do not need to be saved to json as they will be the default
@@ -29,7 +28,7 @@
      *  ----------------------|-------------------------------------------------
      *  bp                    | Current bp       | Base pair at the center of the canvas. A value of 0 indicates the map is centered.
      *  zoom                  | Current zoomFactor | The zoom factor.
-     *  layout                | Current Format   | The map format (linear or circular).
+     *  format                | Current Format   | The map format (linear or circular).
      *  name                  | "Bookmark-N"     | Name for the bookmark. By default the name will be "Bookmark-" followed by the number of the bookmark.
      *  offsetX               | 0                | Offset X of the map backbone. DETAILS TO COME
      *  offsetY               | 0                | Offset Y of the map backbone. DETAILS TO COME
@@ -45,10 +44,10 @@
 
       this.bp = CGV.defaultFor(options.bp, viewer.canvas.bpForCanvasCenter());
       this.zoom = CGV.defaultFor(options.zoom, viewer.zoomFactor);
-      this.layout = CGV.defaultFor(options.layout, viewer.format);
-      this.name = CGV.defaultFor(options.name, 'BOOKMARK');
+      this.format = CGV.defaultFor(options.format, viewer.format);
+      this.name = CGV.defaultFor(options.name, this.incrementalName());
       this.favorite = CGV.defaultFor(options.favorite, false);
-      this.shortcut = CGV.defaultFor(options.favorite, '1');
+      this.shortcut = CGV.defaultFor(options.favorite, this.incrementalShortcut());
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -112,14 +111,14 @@
     }
 
     /**
-     * @member {String} - Get or set the *layout*
+     * @member {String} - Get or set the *format*
      */
-    get layout() {
-      return this._layout;
+    get format() {
+      return this._format;
     }
 
-    set layout(value) {
-      this._layout = value;
+    set format(value) {
+      this._format = value;
     }
 
     /**
@@ -148,8 +147,21 @@
     /**
      * Move and zoom the map to this Bookmarks position.
      */
-    goto() {
-      this.viewer.zoomTo(this.bp, this.zoom);
+    moveTo(duration = 1000) {
+      this.viewer.format = this.format;
+      this.viewer.zoomTo(this.bp, this.zoom, duration);
+    }
+
+    incrementalName() {
+      const currentNames = this.viewer.bookmarks().map( b => b.name);
+      return CGV.uniqueId('Bookmark-', currentNames.length, currentNames);
+    }
+
+    // TODO: for now shortcuts will only be created automatically up to 9
+    incrementalShortcut() {
+      const currentShortcuts = this.viewer.bookmarks().map( b => b.shorcut);
+      const shortcut = CGV.uniqueId('', currentShortcuts.length, currentShortcuts);
+      if (shortcut < 10 && shortcut > 0) { return shortcut}
     }
 
 
@@ -158,7 +170,7 @@
         name: this.name,
         bp: this.bp,
         zoom: this.zoom,
-        layout: this.layout,
+        format: this.format,
         favorite: this.favorite,
         shortcut: this.shortcut
       };

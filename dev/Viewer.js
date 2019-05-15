@@ -550,7 +550,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateBookmarks(bookmarks, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'bp', 'zoom', 'layout', 'favorite', 'shortcut'];
+      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut'];
       if (!CGV.validate(keys, validKeys)) { return; }
       bookmarks = CGV.CGArray.arrayerize(bookmarks);
       bookmarks.attr(attributes);
