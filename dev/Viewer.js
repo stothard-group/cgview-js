@@ -544,6 +544,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.trigger('bookmarks-remove', bookmarks);
     }
 
+    bookmarkByShortcut(shortcut) {
+      return this.bookmarks().find( b => b.shortcut && b.shortcut === `${shortcut}` );
+    }
+
     /**
      * Update bookmark properties to the viewer.
      */

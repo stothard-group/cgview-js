@@ -567,6 +567,15 @@
     return isFinite(n) && parseFloat(n) === n;
   };
 
+  // /**
+  //  * Returns a number unless _n_ is undefined in which case _undefined_ is returned.
+  //  * @param {Object} n The object to convert to a number
+  //  * @return {Number}
+  //  */
+  // CGV.number = function(n) {
+  //   if (n === undefined) return;
+  //   return Number(n);
+  // };
 
   //
   //
@@ -582,15 +591,6 @@
   // }
   //
   //
-  // /**
-  //  * Returns a number unless _n_ is undefined in which case _undefined_ is returned.
-  //  * @param {Object} n The object to convert to a number
-  //  * @return {Number}
-  //  */
-  // JSV.number = function(n) {
-  //   if (n === undefined) return;
-  //   return Number(n);
-  // }
   //
   // /**
   //  * Convience function to determine if an object is a number.

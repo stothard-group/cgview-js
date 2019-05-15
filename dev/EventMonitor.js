@@ -16,6 +16,7 @@
 
       this._initializeMousemove();
       this._initializeClick();
+      this._initializeBookmarkShortcuts();
       // this.events.on('mousemove', (e) => {console.log(e.bp)})
       this.events.on('click', (e) => {console.log(e);});
       // MoveTo On click
@@ -65,6 +66,18 @@
       d3.select(this.canvas.node('ui')).on('click.cgv', () => {
         // event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
         this.events.trigger('click', this._createEvent(d3.event));
+      });
+    }
+
+    // FIXME: need to be able to turn this off
+    // FIXME: there should be an option to turn this off, if it interferes with other program UI
+    _initializeBookmarkShortcuts() {
+      const ignoredTagsRegex = /^(input|textarea|select|button)$/i;
+      document.addEventListener('keypress', (e) => {
+        if (ignoredTagsRegex.test(e.target.tagName)) { return; }
+        if (e.target.isContentEditable) { return; }
+        const bookmark = this.viewer.bookmarkByShortcut(e.key);
+        bookmark && bookmark.moveTo();
       });
     }
 
