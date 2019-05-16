@@ -140,9 +140,8 @@
     }
 
     set shortcut(value) {
-      this._shortcut = value;
+      this._shortcut = ([undefined, null, ''].includes(value)) ? undefined : String(value).charAt(0);
     }
-
 
     /**
      * Move and zoom the map to this Bookmarks position.
