@@ -187,7 +187,7 @@
       // Load Layout
       // viewer._layout = new CGV.Layout(viewer, data.layout);
       viewer.format = CGV.defaultFor(data.format, 'circular');
-      viewer.zoomTo(0, 1, 0);
+      viewer.zoomTo(0, 1, {duration: 0});
     }
 
     // downloadImage(size, filename = 'image.png') {

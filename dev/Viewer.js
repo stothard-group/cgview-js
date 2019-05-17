@@ -554,7 +554,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateBookmarks(bookmarks, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut'];
+      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'offset'];
       if (!CGV.validate(keys, validKeys)) { return; }
       bookmarks = CGV.CGArray.arrayerize(bookmarks);
       bookmarks.attr(attributes);
@@ -638,31 +638,31 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.testMoveTo(start, stop, {zoomThrough: zoomThrough});
     }
 
-    testMoveTo(start, stop, options = {}) {
-      const duration = options.duration || 1000;
-      const ease = options.ease || d3.easeCubic;
-      const zoomThrough = options.zoomThrough;
-      const zoomFactor = this.zoomFactor;
-
-      if (zoomThrough && zoomThrough <= zoomFactor) {
-        const startRange = this.backbone.visibleRange;
-        const startBp = startRange.middle;
-        const endBp = new CGV.CGRange(this.sequence, start, stop).middle;
-        let startEndLength = Math.abs(endBp - startBp);
-        let middleBp;
-        if ( startEndLength < (this.sequence.length / 2) ) {
-          middleBp = Math.min(startBp, endBp) + (startEndLength / 2);
-        } else {
-          startEndLength = this.sequence.length - startEndLength;
-          middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
-        }
-        this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
-          this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
-        });
-      } else {
-        this.moveTo(start, stop, duration, ease);
-      }
-    }
+    // testMoveTo(start, stop, options = {}) {
+    //   const duration = options.duration || 1000;
+    //   const ease = options.ease || d3.easeCubic;
+    //   const zoomThrough = options.zoomThrough;
+    //   const zoomFactor = this.zoomFactor;
+    //
+    //   if (zoomThrough && zoomThrough <= zoomFactor) {
+    //     const startRange = this.backbone.visibleRange;
+    //     const startBp = startRange.middle;
+    //     const endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+    //     let startEndLength = Math.abs(endBp - startBp);
+    //     let middleBp;
+    //     if ( startEndLength < (this.sequence.length / 2) ) {
+    //       middleBp = Math.min(startBp, endBp) + (startEndLength / 2);
+    //     } else {
+    //       startEndLength = this.sequence.length - startEndLength;
+    //       middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
+    //     }
+    //     this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
+    //       this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
+    //     });
+    //   } else {
+    //     this.moveTo(start, stop, duration, ease);
+    //   }
+    // }
 
     /**
      * Move the viewer to show the map from the *start* to the *stop* position.
@@ -671,30 +671,45 @@ if (window.CGV === undefined) window.CGV = CGView;
      *
      * @param {Number} start - The start position in bp
      * @param {Number} stop - The stop position in bp
-     * @param {Number} duration - The animation duration in milliseconds [Default: 1000]
-     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
+     * @param {Object} options - Options for the move:
+     * <br />
+     * Name         | Type   | Description
+     * -------------|--------|------------
+     * offset       | Number | Distance the map backbone should be moved from center [Default: 0]
+     * duration     | Number | The animation duration in milliseconds [Default: 1000]
+     * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
+     * callback     | Function | Function called after the animation is complete.
      */
-    moveTo(start, stop, duration = 1000, ease, callback) {
+    moveTo(start, stop, options = {}) {
       if (stop) {
         const bpLength = this.sequence.lengthOfRange(start, stop);
         const bp = this.sequence.addBp(start, bpLength / 2);
 
         const zoomFactor = this.layout.zoomFactorForLength(bpLength);
 
-        this.zoomTo(bp, zoomFactor, duration, ease, callback);
+        // this.zoomTo(bp, zoomFactor, duration, ease, callback);
+        this.zoomTo(bp, zoomFactor, options);
       } else {
-        this._moveTo(start, duration, ease, callback);
+        // this._moveTo(start, duration, ease, callback);
+        this._moveTo(start, options);
       }
     }
 
-    _moveTo(bp, duration = 1000, ease = d3.easeCubic, callback) {
+    _moveTo(bp, options = {}) {
       const self = this;
+
+      const {
+        offset = CGV.defaultFor(options.offset, 0),
+        duration = CGV.defaultFor(options.duration, 1000),
+        ease = CGV.defaultFor(options.ease, d3.easeCubic),
+        callback
+      } = options;
 
       const domainX = this.scale.x.domain();
       const domainY = this.scale.y.domain();
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = this.layout.domainsFor(bp);
+      const endDomains = this.layout.domainsFor(bp, null, offset);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
@@ -719,9 +734,24 @@ if (window.CGV === undefined) window.CGV = CGView;
      *
      * @param {Number} bp - The position in bp
      * @param {Number} zoomFactor - The zoome level
+     * @param {Object} options - Options for the zoom:
+     * <br />
+     * Name         | Type   | Description
+     * -------------|--------|------------
+     * offset       | Number | Distance the map backbone should be moved from center [Default: 0]
+     * duration     | Number | The animation duration in milliseconds [Default: 1000]
+     * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
+     * callback     | Function | Function called after the animation is complete.
      */
-    zoomTo(bp, zoomFactor, duration = 1000, ease = d3.easeCubic, callback) {
+    zoomTo(bp, zoomFactor, options = {}) {
       const self = this;
+
+      const {
+        offset = CGV.defaultFor(options.offset, 0),
+        duration = CGV.defaultFor(options.duration, 1000),
+        ease = CGV.defaultFor(options.ease, d3.easeCubic),
+        callback
+      } = options;
 
       const zoomExtent = self._zoom.scaleExtent();
       zoomFactor = CGV.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
@@ -731,7 +761,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const domainY = this.scale.y.domain();
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = this.layout.domainsFor(bp, zoomFactor);
+      const endDomains = this.layout.domainsFor(bp, zoomFactor, offset);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
@@ -762,7 +792,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * Set zoom level to 1 and centers map
      */
     reset(duration = 1000, ease) {
-      this.zoomTo(0, 1, duration, ease);
+      this.zoomTo(0, 1, {duration, ease});
     }
 
     moveCaption(oldIndex, newIndex) {

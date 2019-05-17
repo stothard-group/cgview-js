@@ -55,7 +55,7 @@
     }
 
     // Return the X and Y domains for a bp and zoomFactor
-    domainsFor(bp, zoomFactor = this.viewer.zoomFactor) {
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = this.backbone.centerOffset) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
@@ -66,7 +66,7 @@
       const rangeHalfWidth2 = this.canvas.width * zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth2, rangeHalfWidth2]);
 
-      const centerPt = this._mapPointForBp(bp);
+      const centerPt = this._mapPointForBp(bp, offset);
       // Return to the original scale
       this.scale.bp = origScaleBp;
       const x = bp ? centerPt.x : 0;

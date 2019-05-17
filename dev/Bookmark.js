@@ -48,6 +48,11 @@
       this.name = CGV.defaultFor(options.name, this.incrementalName());
       this.favorite = CGV.defaultFor(options.favorite, false);
       this.shortcut = CGV.defaultFor(options.favorite, this.incrementalShortcut());
+
+      const halfRangeWidth = viewer.scale.x.range()[1] / 2;
+      const halfRangeHeight = viewer.scale.y.range()[1] / 2;
+
+      this.offset = viewer.layout.centerOffsetForPoint({x: halfRangeWidth, y: halfRangeHeight});
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -148,7 +153,9 @@
      */
     moveTo(duration = 1000) {
       this.viewer.format = this.format;
-      this.viewer.zoomTo(this.bp, this.zoom, duration);
+      setTimeout( () => {
+        this.viewer.zoomTo(this.bp, this.zoom, {duration, offset: this.offset});
+      }, 0);
     }
 
     incrementalName() {
