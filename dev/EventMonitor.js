@@ -77,7 +77,10 @@
         if (ignoredTagsRegex.test(e.target.tagName)) { return; }
         if (e.target.isContentEditable) { return; }
         const bookmark = this.viewer.bookmarkByShortcut(e.key);
-        bookmark && bookmark.moveTo();
+        if (bookmark) {
+          bookmark.moveTo();
+          this.viewer.trigger('bookmarks-shortcut', bookmark);
+        }
       });
     }
 
