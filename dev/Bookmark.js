@@ -30,8 +30,7 @@
      *  zoom                  | Current zoomFactor | The zoom factor.
      *  format                | Current Format   | The map format (linear or circular).
      *  name                  | "Bookmark-N"     | Name for the bookmark. By default the name will be "Bookmark-" followed by the number of the bookmark.
-     *  offsetX               | 0                | Offset X of the map backbone. DETAILS TO COME
-     *  offsetY               | 0                | Offset Y of the map backbone. DETAILS TO COME
+     *  offset                | 0                | Distance from center of map to backbone.
      *  favorite              | false            | Is this a favorite bookmark.
      *  shortcut              | N                | Single character shortcut. Pressing this keyboard character will be move the map to this position. Default to N (see Name) up to 9.
      *
@@ -52,7 +51,9 @@
       const halfRangeWidth = viewer.scale.x.range()[1] / 2;
       const halfRangeHeight = viewer.scale.y.range()[1] / 2;
 
-      this.offset = viewer.layout.centerOffsetForPoint({x: halfRangeWidth, y: halfRangeHeight});
+      // Offset is the distance from the backbone to the center of the canvas.
+      const offset = viewer.layout.centerOffsetForPoint({x: halfRangeWidth, y: halfRangeHeight})
+      this.offset = viewer.backbone.adjustedCenterOffset - offset;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -152,7 +153,9 @@
      * Move and zoom the map to this Bookmarks position.
      */
     moveTo(duration = 1000) {
-      this.viewer.format = this.format;
+      if (this.viewer.format !== this.format) {
+        this.viewer.settings.update({ format: this.format });
+      }
       setTimeout( () => {
         this.viewer.zoomTo(this.bp, this.zoom, {duration, offset: this.offset});
       }, 0);
@@ -176,6 +179,7 @@
         name: this.name,
         bp: this.bp,
         zoom: this.zoom,
+        offset: this.offset,
         format: this.format,
         favorite: this.favorite,
         shortcut: this.shortcut

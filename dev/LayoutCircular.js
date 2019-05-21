@@ -61,13 +61,15 @@
     }
 
     // Return the X and Y domains for a bp and zoomFactor
-    // Optional offset (distance of map center from the center of the canvas)
-    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = this.backbone.centerOffset) {
-      console.log(offset)
+    // Offset: Distances of map center from backbone
+    //   0: backbone centered
+    //   Minus: backbone moved down from canvas center
+    //   Positive: backbone move up from canvas center
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = 0) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
-      const centerOffset = offset * zoomFactor;
+      const centerOffset = (this.backbone.centerOffset * zoomFactor) - offset;
       const centerPt = this._mapPointForBp(bp, centerOffset);
 
       const x = bp ? centerPt.x : 0;

@@ -55,10 +55,13 @@
     }
 
     // Return the X and Y domains for a bp and zoomFactor
-    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = this.backbone.centerOffset) {
+    // Offset: Distances of map center from backbone
+    //   0: backbone centered
+    //   Minus: backbone moved down from canvas center
+    //   Positive: backbone move up from canvas center
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = 0) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
-
 
       // _mapPointForBp requires the bp scale be first altered for the zoom level
       const origScaleBp = this.scale.bp.copy();
@@ -66,7 +69,7 @@
       const rangeHalfWidth2 = this.canvas.width * zoomFactor / 2;
       this.scale.bp.range([-rangeHalfWidth2, rangeHalfWidth2]);
 
-      const centerPt = this._mapPointForBp(bp, offset);
+      const centerPt = this._mapPointForBp(bp, (this.backbone.centerOffset - offset));
       // Return to the original scale
       this.scale.bp = origScaleBp;
       const x = bp ? centerPt.x : 0;

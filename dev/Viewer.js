@@ -190,6 +190,13 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Number} - Get the height or the width of the viewer, which ever is largest.
+     */
+    get maxDimension() {
+      return Math.max(this.height, this.width);
+    }
+
+    /**
      * @member {Number} - Get or set the zoom level of the map. A value of 1 is the intial zoom level.
      *   Increasing the zoom level to 2 will double the length of the backbone, and so on.
      */
