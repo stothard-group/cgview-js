@@ -7,6 +7,8 @@ CGVIEW_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/.
 echo "Building CGView.js"
 # ls ${CGVIEW_DIR}/dev/* | sort -r | xargs cat > ${CGVIEW_DIR}/src/CGView.js
 
+mkdir -p ${CGVIEW_DIR}/src
+
 cat ${CGVIEW_DIR}/dev/Viewer.js > ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/Events.js >> ${CGVIEW_DIR}/src/CGView.js
 cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_DIR}/src/CGView.js
