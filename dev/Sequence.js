@@ -34,7 +34,8 @@
       this._contigs = new CGV.CGArray();
 
       if (options.contigs && options.contigs.length > 0) {
-        this.loadContigs(options.contigs);
+        // this.loadContigs(options.contigs;
+        this.addContigs(options.contigs);
       } else {
         this.seq = options.seq;
       }
@@ -333,16 +334,25 @@
     //   this.trigger('sequence-update', { attributes });
     // }
 
-    loadContigs(contigs) {
-      // Create contigs
-      for (const contigData of contigs) {
-        const contig = new CGV.Contig(this, contigData);
-        this._contigs.push(contig);
-      }
-      this.updateFromContigs();
-    }
+    // loadContigs(contigs) {
+    //   // Create contigs
+    //   for (const contigData of contigs) {
+    //     const contig = new CGV.Contig(this, contigData);
+    //     this._contigs.push(contig);
+    //   }
+    //   this.updateFromContigs();
+    // }
 
-    addContig(contig) {
+    addContigs(contigData = []) {
+      contigData = CGV.CGArray.arrayerize(contigData);
+      const contigs = contigData.map( (data) => {
+        const contig = new CGV.Contig(this, data);
+        this._contigs.push(contig);
+        return contig;
+      });
+      this.viewer.trigger('contigs-add', contigs);
+      this.updateFromContigs();
+      return contigs;
       // Check for sequence or length
       // Can probably just add the sequence or length, instead of calling updateFromContigs
       // Update Plots
@@ -356,10 +366,24 @@
       // this.updateFromContigs
     }
 
+    /**
+     * Update contige properties.
+     */
+    updateContigs(contigs, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['name', 'orientation', 'order'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      contigs = CGV.CGArray.arrayerize(contigs);
+      contigs.attr(attributes);
+      // TODO: refresh sequence, features, etc
+      this.viewer.trigger('contigs-update', { contigs, attributes });
+    }
+
     updateFromContigs() {
       if (this._contigs.length === 0) {
         this.seq = '';
-        return
+        return;
       }
       // Check first contig to see if it contains a sequence or length
       const useSeq = this._contigs[0].hasSeq;

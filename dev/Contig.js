@@ -30,6 +30,7 @@
       this.seq = options.seq;
       this._lengthBefore = 0;
 
+
       if (!this.seq) {
         this.length = options.length;
       }
@@ -171,6 +172,10 @@
     _updateLengthBefore(length) {
       this._lengthBefore = length;
       this._globalRange = new CGV.CGRange(this.sequence, length + 1, length + this.length);
+    }
+
+    update(attributes) {
+      this.sequence.updateContigs(this, attributes);
     }
 
     hasSeq() {
