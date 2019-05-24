@@ -113,11 +113,11 @@
           // color = CGV.Color.getColor(currentColors);
           color = CGV.Color.getColor(currentColors).rgbaString;
         }
-        item = new CGV.LegendItem(this, {
+        item = this.addItems({
           name: name,
           swatchColor: color,
           decoration: decoration
-        });
+        })[0];
       }
       return item;
     }
