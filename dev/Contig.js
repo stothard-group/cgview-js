@@ -182,6 +182,19 @@
       return typeof this.seq === 'string';
     }
 
+    /**
+     * Zoom and pan map to show the contig
+     *
+     * @param {Number} duration - Length of animation
+     * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
+     */
+    moveTo(duration, ease) {
+      const buffer = Math.ceil(this.length * 0.05);
+      const start = this.sequence.subtractBp(this.globalStart, buffer);
+      const stop = this.sequence.addBp(this.globalStop, buffer);
+      this.viewer.moveTo(start, stop, {duration, ease});
+    }
+
     draw() {
     }
 
@@ -190,7 +203,8 @@
         id: this.id,
         name: this.name,
         orientation: this.orientation,
-        length: this.length
+        length: this.length,
+        visible: this.visible
       };
       if (this.hasSeq) {
         json.seq = this.seq;
