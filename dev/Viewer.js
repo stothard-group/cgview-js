@@ -716,7 +716,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const domainY = this.scale.y.domain();
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = this.layout.domainsFor(bp, null, offset);
+      const endDomains = this.layout.domainsFor(bp, undefined, offset);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
