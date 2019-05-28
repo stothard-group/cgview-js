@@ -65,11 +65,11 @@
     //   0: backbone centered
     //   Minus: backbone moved down from canvas center
     //   Positive: backbone move up from canvas center
-    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, offset = 0) {
+    domainsFor(bp, zoomFactor = this.viewer.zoomFactor, bbOffset = 0) {
       const halfRangeWidth = this.scale.x.range()[1] / 2;
       const halfRangeHeight = this.scale.y.range()[1] / 2;
 
-      const centerOffset = (this.backbone.centerOffset * zoomFactor) - offset;
+      const centerOffset = (this.backbone.centerOffset * zoomFactor) - bbOffset;
       const centerPt = this._mapPointForBp(bp, centerOffset);
 
       const x = bp ? centerPt.x : 0;

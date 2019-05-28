@@ -210,6 +210,23 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Number} - Get the bp for the center of the canvas. Alias for Canvas.bpForCanvasCenter().
+     */
+    get bp() {
+      return this.canvas.bpForCanvasCenter();
+    }
+
+    /**
+     * @member {Number} - Get the distance from the backbone to the center of the canvas.
+     */
+    get bbOffset() {
+      const halfRangeWidth = this.scale.x.range()[1] / 2;
+      const halfRangeHeight = this.scale.y.range()[1] / 2;
+      const offset = this.layout.centerOffsetForPoint({x: halfRangeWidth, y: halfRangeHeight});
+      return this.backbone.adjustedCenterOffset - offset;
+    }
+
+    /**
      * @member {Number} - Get the minimum allowed zoom level
      */
     get minZoomFactor() {
@@ -561,7 +578,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateBookmarks(bookmarks, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'offset'];
+      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset'];
       if (!CGV.validate(keys, validKeys)) { return; }
       bookmarks = CGV.CGArray.arrayerize(bookmarks);
       bookmarks.attr(attributes);
@@ -682,7 +699,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * <br />
      * Name         | Type   | Description
      * -------------|--------|------------
-     * offset       | Number | Distance the map backbone should be moved from center [Default: 0]
+     * bbOffset       | Number | Distance the map backbone should be moved from center [Default: 0]
      * duration     | Number | The animation duration in milliseconds [Default: 1000]
      * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
      * callback     | Function | Function called after the animation is complete.
@@ -706,7 +723,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const self = this;
 
       const {
-        offset = CGV.defaultFor(options.offset, 0),
+        bbOffset = CGV.defaultFor(options.bbOffset, 0),
         duration = CGV.defaultFor(options.duration, 1000),
         ease = CGV.defaultFor(options.ease, d3.easeCubic),
         callback
@@ -716,7 +733,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const domainY = this.scale.y.domain();
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = this.layout.domainsFor(bp, undefined, offset);
+      const endDomains = this.layout.domainsFor(bp, undefined, bbOffset);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
@@ -745,7 +762,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * <br />
      * Name         | Type   | Description
      * -------------|--------|------------
-     * offset       | Number | Distance the map backbone should be moved from center [Default: 0]
+     * bbOffset     | Number | Distance the map backbone should be moved from center [Default: 0]
      * duration     | Number | The animation duration in milliseconds [Default: 1000]
      * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
      * callback     | Function | Function called after the animation is complete.
@@ -754,7 +771,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const self = this;
 
       const {
-        offset = CGV.defaultFor(options.offset, 0),
+        bbOffset = CGV.defaultFor(options.bbOffset, 0),
         duration = CGV.defaultFor(options.duration, 1000),
         ease = CGV.defaultFor(options.ease, d3.easeCubic),
         callback
@@ -768,7 +785,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       const domainY = this.scale.y.domain();
 
       const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-      const endDomains = this.layout.domainsFor(bp, zoomFactor, offset);
+      const endDomains = this.layout.domainsFor(bp, zoomFactor, bbOffset);
 
       d3.select(this.canvas.node('ui')).transition()
         .duration(duration)
