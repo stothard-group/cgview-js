@@ -19,7 +19,10 @@
 //    - Offsets of 0 do not need to be saved to json as they will be the default
 
     /**
-     * Create a Bookmark
+     * Bookmarks are saved map locations. Bookmarks store the base pair (bp),
+     * the zoomFactor (zoom) and map format (e.g. linear or circular). By default
+     * the map backbone at the provided bp will be centered in the middle of the canvas.
+     * The bbOffset attribute can be used to move the map backbone away from the center.
      *
      * @param {Viewer} viewer - The viewer
      * @param {Object} options - Options used to create the bookmark
