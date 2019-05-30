@@ -28,7 +28,7 @@
      * @param {Object} options - Options used to create the bookmark
      *
      *  Option                | Default          | Description
-     *  ----------------------|-------------------------------------------------
+     *  ----------------------|------------------|------------------------------
      *  bp                    | Current bp       | Base pair at the center of the canvas. A value of 0 indicates the map is centered.
      *  zoom                  | Current zoomFactor | The zoom factor.
      *  format                | Current Format   | The map format (linear or circular).
