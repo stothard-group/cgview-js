@@ -1,3 +1,9 @@
+/**
+ * @author Jason Grant <jason.grant@ualberta.ca>
+ * @version 0.2
+ * @requires D3
+ */
+
 const CGView = {};
 
 CGView.version = '0.2';

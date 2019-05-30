@@ -1,29 +1,48 @@
-
 //////////////////////////////////////////////////////////////////////////////
 // Bookmark
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
   /**
    * <br />
-   * The CGView Bookmark class contains details for a single bookmark.
+   * Bookmarks are saved map locations. Bookmarks store the base pair (bp),
+   * the zoomFactor (zoom) and map format (e.g. linear or circular). By default
+   * the map backbone at the provided bp will be centered in the middle of the canvas.
+   * The bbOffset attribute can be used to move the map backbone away from the center.
+   * Bookmarks can have shortcut key associated with them. If the key is typed, while not
+   * in a input field, the map will move to the bookmark position.
+   *
+   * ```js
+   *
+   * //
+   * let bookmark = new CGV.Bookmark(cgv);
+   *
+   * // Create a new bookmark for the current map postion
+   * let bookmark = cgv.addBookmarks();
+   * // => Bookmark {name: 'Bookmark-1', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
+   * cgv.bookmarks().length;
+   * // => 1
+   *
+   * // Edit the bookmark
+   * bookmark.update({name: 'my gene'});
+   * // => Bookmark {name: 'my gene', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
+   *
+   * // Move to the bookmark position
+   * bookmark.moveTo()
+   *
+   * // Remove the bookmark
+   * bookmark.remove();
+   * cgv.bookmarks().length;
+   * // => 0
+   * ```
    */
   class Bookmark extends CGV.CGObject {
 
-// - Each bookmark will have the following attributes:
-//    - bp (center), zoom level, format (circular/linear),
-//    - id/name, percentage offset x/y, favorite, shortcut
-// - Hitting the shortcut key will move to that bookmark (like numbers in nmrLib app)
-// - Default shortcut keys will be numbers 1, 2, 3, ...
-// - Bookmarks will have "center" button beside x/y offsets to center on bp.
-//    - This just sets the offsets to 0
-//    - Offsets of 0 do not need to be saved to json as they will be the default
+    // TODO:
+    //  - Offsets of 0 do not need to be saved to json as they will be the default
+    //  - Bookmarks need to handle contigs. How?
 
     /**
-     * Bookmarks are saved map locations. Bookmarks store the base pair (bp),
-     * the zoomFactor (zoom) and map format (e.g. linear or circular). By default
-     * the map backbone at the provided bp will be centered in the middle of the canvas.
-     * The bbOffset attribute can be used to move the map backbone away from the center.
-     *
+     * Create a new bookmark. 
      * @param {Viewer} viewer - The viewer
      * @param {Object} options - Options used to create the bookmark
      *
@@ -37,9 +56,8 @@
      *  favorite              | false            | Is this a favorite bookmark.
      *  shortcut              | N                | Single character shortcut. Pressing this keyboard character will be move the map to this position. Default to N (see Name) up to 9.
      *
-     * @param {Object=} meta - User-defined key:value pairs to add to the bookmark.
+     * @param {Object} [meta] - User-defined key:value pairs to add to the bookmark.
      */
-    // FIXME: How do bookmarks handle position related to contigs???
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
       this.viewer = viewer;
@@ -51,15 +69,6 @@
       this.favorite = CGV.defaultFor(options.favorite, false);
       this.shortcut = CGV.defaultFor(options.favorite, this.incrementalShortcut());
       this.bbOffset = CGV.defaultFor(options.bbOffset, viewer.bbOffset);
-
-
-      // const halfRangeWidth = viewer.scale.x.range()[1] / 2;
-      // const halfRangeHeight = viewer.scale.y.range()[1] / 2;
-
-      // Offset is the distance from the backbone to the center of the canvas.
-      // const offset = viewer.layout.centerOffsetForPoint({x: halfRangeWidth, y: halfRangeHeight})
-      // this.offset = viewer.backbone.adjustedCenterOffset - offset;
-      // this.offset = viewer.bbOffset;
     }
 
     //////////////////////////////////////////////////////////////////////////
