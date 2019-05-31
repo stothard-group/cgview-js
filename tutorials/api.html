@@ -18,21 +18,114 @@
 
 <div id='markdown-in' style='display:none;'>
 
-Intro to update, remove, add, reorder, ...
+There are several operations that can be used to manipulate and access
+the different types of records (e.g. features, tracks, etc) in CGView:
+read, add, remove, update, and reorder.
+While it is possible to change record properties directly, see
+[Advantages of Update API](#advantages-of-update-api) to learn why
+it is not recommended. The API operation descriptions below use Features and
+Tracks for the examples. API details by record type are also provided.
+All the examples use a Viewer instance: <em>cgv</em>.
 
-## Updating Object Properties
-CGView object properties, can be changed in two ways, however the <em>update</em> method has several advantages (see below).
+### API Operations
+- [Adding Records](#adding-records)
+- [Removing Records](#removing-records)
+- [Updating Records](#updating-records) ([Advantages of Update API](#advantages-of-update-api))
+- [Reordering Records](#reordering-records)
+- [Reading Records](#reading-records)
 
-1) Change the property directly:
+### API Details by Record Type
+- [Features API](#features-api)
+- [Tracks API](#tracks-api)
+
+
+# API Operations
+
+## Adding Records
+Adding records is done through methods on the Viewer Instance (e.g.
+addFeatures, addTracks, etc). Data can be added as a single object to create
+one record on as an array of objects to create an array of records.
 ```js
-feature.start = 1234;
+// Add a single feature
+featureData = {...};
+cgv.addFeatures(featureData)
+// => Feature
+
+// Add a multiple features
+featureData = [{...},{...}];
+cgv.addFeatures(featureData)
+// => [Feature, Feature]
 ```
-2) Change the property with the update method:
+
+The data object is passed directly to the record constructor. So the following
+are similar, however, creating an object directly with the constructor does not
+trigger events or add the action to the CGView History (see
+[Advantages of Update API](#advantages-of-update-api)).
 ```js
-feature.update({start: 1234});
+featureData = {...};
+// Create Feature with Add API
+cgv.addFeatures(featureData)
+
+// Create Feature directly (Not Recommended)
+new CGV.Feature(cgv, featureData)
+```
+
+## Removing Records
+```js
+// records can be a single record or an array of records
+cgv.removeRecords(record)
+// OR
+cgv.record.remove()
+```
+
+### Updating Records
+```js
+// records can be a single record or an array of records
+// attributes is an object e.g. {property1: newValue1, property2: newValue2}
+cgv.updateRecords(records, attributes)
+// OR
+cgv.record.update(attributes)
+```
+
+### Reordering Records
+```js
+cgv.moveRecord(oldIndex, newIndex)
+// OR
+cgv.record.move(newIndex);
+```
+
+### Reading Records
+```js
+cgv.records()
+cgv.records(1)
+cgv.records(name)
+```
+
+# API Details by Record Type
+## Features
+## Tracts
+## Plots
+## Settings
+## LegendItems
+## etc.
+
+## TOC
+
+## Accessing records
+```js
+// TODO: many examples
+cgv.features()
 ```
 
 ## Advantages of Update API
+
+Instead of using the Update API, you could change properties directly:
+```js
+// Not recommended but it's OK to use this method if the advantages below do not apply.
+feature.start = 1234;
+```
+
+However there are several advantages of using the Update API:
 
 - More than one property can be changed at once.
 ```js
