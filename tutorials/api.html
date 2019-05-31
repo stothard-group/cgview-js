@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CGView: API</title>
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
+
+  <!-- Prerequisites -->
+  <!-- Local -->
+  <link rel="stylesheet" href="styles/tutorial.css" />
+  <script src='scripts/tutorial.js'></script>
+</head>
+<body>
+
+  <div id='main' class='cgv-tutorial'>
+		<div id='markdown-out'></div>
+  </div>
+
+<div id='markdown-in' style='display:none;'>
+
+Intro to update, remove, add, reorder, ...
+
+## Updating Object Properties
+CGView object properties, can be changed in two ways, however the <em>update</em> method has several advantages (see below).
+
+1) Change the property directly:
+```js
+feature.start = 1234;
+```
+2) Change the property with the update method:
+```js
+feature.update({start: 1234});
+```
+
+## Advantages of Update API
+
+- More than one property can be changed at once.
+```js
+feature.update({start: 1234, end: 2345});
+```
+- An error will be returned if the property does not exist.
+```js
+feature.update({strt: 1234});
+// => Error: Feature does not contain a 'strt' property.
+```
+- The update methods trigger events (e.g. 'features-update') that can be used as hooks.
+  (LINK FOR EVENTS)
+```js
+cgv.on('features-update', (features) => {
+    const names = features.map( f => f.name );
+    console.log(`The following features have been updated: ${names.join(', ')}`)
+});
+```
+- In some cases multiple objects (e.g. features, tracks, etc) can be updated at once.
+```js
+// This will update all 3 features but only generate 1 'features-update' event.
+cgv.updateFeatures([feature1, feature2, feature3], {type: 'CDS'});
+```
+- The update methods will also be added to the CGView History (LINK) and therefore
+  can undone or redone.
+```js
+cgv.undo();
+cgv.redo();
+```
+
+## Triggering Events
+
+Update events can also be triggered without changing properties.
+This can be useful if something beside the properties have changed (e.g. new features have been added to a track).
+```js
+feature.update();
+// Same as
+cgv.trigger('features-update');
+```
+
+
+</div>
+
+<script>
+  tutorialMarkdown(marked);
+</script>
+
+</html>

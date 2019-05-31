@@ -12,14 +12,10 @@
    * in a input field, the map will move to the bookmark position.
    *
    * ```js
-   *
-   * //
-   * let bookmark = new CGV.Bookmark(cgv);
-   *
    * // Create a new bookmark for the current map postion
-   * let bookmark = cgv.addBookmarks();
+   * let bookmark = viewer.addBookmarks();
    * // => Bookmark {name: 'Bookmark-1', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
-   * cgv.bookmarks().length;
+   * viewer.bookmarks().length;
    * // => 1
    *
    * // Edit the bookmark
@@ -31,7 +27,7 @@
    *
    * // Remove the bookmark
    * bookmark.remove();
-   * cgv.bookmarks().length;
+   * viewer.bookmarks().length;
    * // => 0
    * ```
    */

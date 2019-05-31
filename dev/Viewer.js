@@ -524,6 +524,8 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     /**
      * Adds features to the viewer. See
+     * // FIXME: for History, we will want to be able to handle passing an array of features
+     *           not just feature data. That way they don't have to be reinitialized and they keep the same cgvIDs.
      */
     addFeatures(featureData = []) {
       featureData = CGV.CGArray.arrayerize(featureData);

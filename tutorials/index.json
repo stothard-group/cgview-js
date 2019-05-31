@@ -1,4 +1,7 @@
 {
+  "api": {
+    "title": "CGView API"
+  },
   "basic_map": {
     "title": "Basic Map"
   },

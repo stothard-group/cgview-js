@@ -92,6 +92,7 @@ Component                        | Accessor                                   | 
 
 ### Tutorials ###
 
+- {@tutorial api}: Learn the API best practices for creating, updating and removing items from a map.
 - {@tutorial basic_map}: Learn how to create a simple map features and a plot
 - {@tutorial sequence_map}: Learn how to create a map with features and plots extracted from the sequence.
 - {@tutorial json_map}: Learn how to create a map by importing from JSON.
