@@ -18,16 +18,16 @@
 
 <div id='markdown-in' style='display:none;'>
 
-There are several operations that can be used to manipulate and access
+There are several actions that can be used to manipulate and access
 the different types of records (e.g. features, tracks, etc) in CGView:
 read, add, remove, update, and reorder.
 While it is possible to change record properties directly, see
 [Advantages of Update API](#advantages-of-update-api) to learn why
-it is not recommended. The API operation descriptions below use Features and
+it is not recommended. The API action descriptions below use Features and
 Tracks for the examples. API details by record type are also provided.
 All the examples use a Viewer instance: <em>cgv</em>.
 
-### API Operations
+### API Actions
 - [Adding Records](#adding-records)
 - [Removing Records](#removing-records)
 - [Updating Records](#updating-records) ([Advantages of Update API](#advantages-of-update-api))
@@ -39,21 +39,22 @@ All the examples use a Viewer instance: <em>cgv</em>.
 - [Tracks API](#tracks-api)
 
 
-# API Operations
+# API Actions
 
 ## Adding Records
 Adding records is done through methods on the Viewer Instance (e.g.
 addFeatures, addTracks, etc). Data can be added as a single object to create
 one record on as an array of objects to create an array of records.
+Adding one or more records will trigger a single event (e.g. features-add)
 ```js
 // Add a single feature
 featureData = {...};
-cgv.addFeatures(featureData)
+cgv.addFeatures(featureData);
 // => Feature
 
 // Add a multiple features
 featureData = [{...},{...}];
-cgv.addFeatures(featureData)
+cgv.addFeatures(featureData);
 // => [Feature, Feature]
 ```
 
@@ -63,58 +64,44 @@ trigger events or add the action to the CGView History (see
 [Advantages of Update API](#advantages-of-update-api)).
 ```js
 featureData = {...};
-// Create Feature with Add API
-cgv.addFeatures(featureData)
+// Create Feature with Add API (Recommended)
+cgv.addFeatures(featureData);
 
 // Create Feature directly (Not Recommended)
-new CGV.Feature(cgv, featureData)
+new CGV.Feature(cgv, featureData);
 ```
 
 ## Removing Records
+Removing records is done through methods on the Viewer Instance (e.g. removeFeatures)
+or directly on the record. Removing records will trigger a single event (e.g. features-remove).
 ```js
-// records can be a single record or an array of records
-cgv.removeRecords(record)
+// Remove a single record
+feature = cgv.features(1);
+cgv.removeFeatures(feature);
 // OR
-cgv.record.remove()
+feature.remove();
+
+// Remove multiple records
+features = [feature_1, feature_2, features_3];
+cgv.removeFeatures(features);
 ```
 
-### Updating Records
+## Updating Records
+Updating records is done through methods on the Viewer Instance (e.g. updateFeatures)
+or directly on the record. Updaing records will trigger a single event (e.g. features-update).
 ```js
-// records can be a single record or an array of records
-// attributes is an object e.g. {property1: newValue1, property2: newValue2}
-cgv.updateRecords(records, attributes)
+// attributes is an object describing the properties to change
+attributes = {type: 'CDS', legend: 'CDS'};
+
+// Update a single record
+feature = cgv.features(1);
+cgv.updateRecords(feature, attributes);
 // OR
-cgv.record.update(attributes)
-```
+cgv.feature.update(attributes);
 
-### Reordering Records
-```js
-cgv.moveRecord(oldIndex, newIndex)
-// OR
-cgv.record.move(newIndex);
-```
-
-### Reading Records
-```js
-cgv.records()
-cgv.records(1)
-cgv.records(name)
-```
-
-# API Details by Record Type
-## Features
-## Tracts
-## Plots
-## Settings
-## LegendItems
-## etc.
-
-## TOC
-
-## Accessing records
-```js
-// TODO: many examples
-cgv.features()
+// Update multiple records to have the same attributes
+features = [feature_1, feature_2, features_3];
+cgv.updateRecords(features, attributes);
 ```
 
 ## Advantages of Update API
@@ -125,7 +112,7 @@ Instead of using the Update API, you could change properties directly:
 feature.start = 1234;
 ```
 
-However there are several advantages of using the Update API:
+However, there are several advantages of using the Update API:
 
 - More than one property can be changed at once.
 ```js
@@ -156,6 +143,32 @@ cgv.undo();
 cgv.redo();
 ```
 
+## Reordering Records
+For some records, the order is important (e.g. Tracks, Contigs, etc).
+Changing the order is done through methods on the Viewer Instance (e.g. moveTracks)
+or directly on the record. Moving records will trigger a move event (e.g. tracks-reordered).
+CHECK NAMING...
+INDEX COULD BE CONFUSING...
+
+```js
+track = cgv.tracks(1)
+cgv.moveTrack(track.index, newIndex)
+// OR
+track.move(newIndex);
+```
+
+## Reading Records
+Accessing records is done through methods on teh Viewer Instance.
+
+```js
+// Access all the features
+viewer.features()
+// Access the first feature
+viewer.features(1)
+// Access the first feature with the name 'my_feature'
+viewer.features('my_feature')
+```
+
 ## Triggering Events
 
 Update events can also be triggered without changing properties.
@@ -166,6 +179,57 @@ feature.update();
 cgv.trigger('features-update');
 ```
 
+# API Details by Record Type
+
+## Features API
+
+Action                                       | Viewer Method                                  | Feature Method                  | Event
+---------------------------------------------|------------------------------------------------|---------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addFeatures()](Viewer.html#addFeatures)       | -                               | features-add
+[Update](tutorial-api.html#updating-records) | [updateFeatures()](Viewer.html#updateFeatures) | [update()](Feature.html#update) | features-update
+[Remove](tutorial-api.html#removing-records) | [removeFeatures()](Viewer.html#removeFeatures) | [remove()](Feature.html#remove) | features-remove
+[Read](tutorial-api.html#reading-records)    | [features()](Viewer.html#features)             | -                               | -
+
+Attribute                      | Type     | Description
+--------------------------------|----------|------------
+[name](Feature.html#name)       | String   | Name of feature
+[type](Feature.html#type)       | String   | Feature type (e.g. CDS, rRNA, etc)
+[legend](Feature.html#legend)   | String\|LegendItem | Name of legendItem or the legendItem itself
+[collection](Feature.html#collection) | String   | Collection the feature belongs to
+[contig](Feature.html#contig)   | String\|Contig | Name of contig or the contig itself
+[start](Feature.html#start) *   | Number   | Start base pair on the contig
+[stop](Feature.html#stop) *     | Number   | Stop base pair on the contig
+[strand](Feature.html#strand)   | String   | Strand the features is on [Default: 1]
+[score](Feature.html#score)     | Number   | Score associated with the feature
+
+*Required
+
+## Bookmarks API
+
+Action                                       | Viewer Method                                    | Bookmark Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                                | bookmarks-add
+[Update](tutorial-api.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](Bookmark.html#update) | bookmarks-update
+[Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
+[Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
+
+Attribute                          | Type     | Description
+-----------------------------------|----------|------------
+[name](Bookmark.html#name)         | String   | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
+[bp](Bookmark.html#bp)             | Number   | Base pair to center the map position [Default: Current bp]
+[zoom](Bookmark.html#zoom)         | Number   | Zoom factor [Default: Current zoomFactor]
+[format](Bookmark.html#format)     | String   | Map format [Default: Current map format]
+[bbOffset](Bookmark.html#bbOffset) | Number   | Distance from the backbone to the center of the canvas [Default: 0]
+[shortcut](Bookmark.html#shortcut) | String   | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
+[favorite](Bookmark.html#favorite) | Boolean  | Bookmark is a favorite [Default: false]
+[visible](Bookmark.html#visible)   | Boolean  | Bookmark is visible [Default: true]
+
+
+## Tracts
+## Plots
+## Settings
+## LegendItems
+## etc.
 
 </div>
 

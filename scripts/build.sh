@@ -36,7 +36,9 @@ jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/do
 # BUILD DASH DOCSET
 # Note: use --private to display private symbols
 # Location of original template: /usr/local/lib/node_modules/jsdoc-dash-template
+# Note: It's best to remove old dash folder first
 echo "Building Dash Documentation..."
+rm -r ${CGVIEW_DIR}/docs/dash
 jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
 
 echo "Done!"

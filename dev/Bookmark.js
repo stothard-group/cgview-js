@@ -11,6 +11,30 @@
    * Bookmarks can have shortcut key associated with them. If the key is typed, while not
    * in a input field, the map will move to the bookmark position.
    *
+   * ### Action and Events
+   *
+   * Action                                       | Viewer Method                                    | Bookmark Method                  | Event
+   * ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+   * [Add](tutorial-api.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                                | bookmarks-add
+   * [Update](tutorial-api.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](Bookmark.html#update) | bookmarks-update
+   * [Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
+   * [Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
+   *
+   *<a name="attributes"></a>
+   * ### Attributes
+   *
+   * Attribute                          | Type     | Description
+   * -----------------------------------|----------|------------
+   * [name](Bookmark.html#name)         | String   | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
+   * [bp](Bookmark.html#bp)             | Number   | Base pair to center the map position [Default: Current bp]
+   * [zoom](Bookmark.html#zoom)         | Number   | Zoom factor [Default: Current zoomFactor]
+   * [format](Bookmark.html#format)     | String   | Map format [Default: Current map format]
+   * [bbOffset](Bookmark.html#bbOffset) | Number   | Distance from the backbone to the center of the canvas [Default: 0]
+   * [shortcut](Bookmark.html#shortcut) | String   | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
+   * [favorite](Bookmark.html#favorite) | Boolean  | Bookmark is a favorite [Default: false]
+   * [visible](Bookmark.html#visible)   | Boolean  | Bookmark is visible [Default: true]
+   *
+   * ### Examples
    * ```js
    * // Create a new bookmark for the current map postion
    * let bookmark = viewer.addBookmarks();
@@ -40,18 +64,7 @@
     /**
      * Create a new bookmark. 
      * @param {Viewer} viewer - The viewer
-     * @param {Object} options - Options used to create the bookmark
-     *
-     *  Option                | Default          | Description
-     *  ----------------------|------------------|------------------------------
-     *  bp                    | Current bp       | Base pair at the center of the canvas. A value of 0 indicates the map is centered.
-     *  zoom                  | Current zoomFactor | The zoom factor.
-     *  format                | Current Format   | The map format (linear or circular).
-     *  name                  | "Bookmark-N"     | Name for the bookmark. By default the name will be "Bookmark-" followed by the number of the bookmark.
-     *  bbOffset              | 0                | Distance from center of map to backbone.
-     *  favorite              | false            | Is this a favorite bookmark.
-     *  shortcut              | N                | Single character shortcut. Pressing this keyboard character will be move the map to this position. Default to N (see Name) up to 9.
-     *
+     * @param {Object} options - [Attributes](Bookmark.html#attributes) used to create the bookmark
      * @param {Object} [meta] - User-defined key:value pairs to add to the bookmark.
      */
     constructor(viewer, options = {}, meta = {}) {
