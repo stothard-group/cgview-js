@@ -369,6 +369,19 @@ thead tr
   color: #ddd;
 }
 
+.class-description p:first-child {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+#main table {
+  width: 100%;
+}
+
+#main table td {
+  padding: 2px 3px;
+  font-size: 16px;
+}
 
 /* .cgv-tutorial p { */
 /*   font-size: 14px; */

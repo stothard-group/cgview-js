@@ -13,12 +13,9 @@ a.json-link span{
 }
 
 /* This will become part of the global CSS */
-.main table {
-  
-}
-.main table td {
-  padding: 2px 3px;
-}
+/* .main table td { */
+/*   padding: 2px 3px; */
+/* } */
 
 .cgv-tutorial ul {
   margin-bottom: 10px;

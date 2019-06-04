@@ -86,7 +86,7 @@
     }
 
     /**
-     * @member {Boolean} - Get or Set the meta data of this object.
+     * @member {Boolean} - Get or Set the meta data of this object. See the {@tutorial meta} tutorial.
      */
     get meta() {
       return this._meta;

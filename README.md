@@ -97,6 +97,7 @@ Component                        | Accessor                                   | 
 - {@tutorial sequence_map}: Learn how to create a map with features and plots extracted from the sequence.
 - {@tutorial json_map}: Learn how to create a map by importing from JSON.
 - {@tutorial json_format}: Learn about the JSON format.
+- {@tutorial meta}: Learn how to store extra data using the meta property.
 - {@tutorial scales}: Learn about the different scales and layouts.
 - {@tutorial mindmap}: See the API as a mind map.
 - Helpful tips: Learn about some useful CGView.js tips.

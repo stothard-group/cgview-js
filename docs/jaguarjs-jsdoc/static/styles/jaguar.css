@@ -381,3 +381,13 @@ footer {
 .cgv-tutorial .prettyprint code {
   font-size: 12px;
 }
+
+.class-description p:first-child {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.main table td {
+  padding: 2px 3px;
+}
+

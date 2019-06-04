@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
   /**
-   * <br />
    * Bookmarks are saved map locations. Bookmarks store the base pair (bp),
    * the zoomFactor (zoom) and map format (e.g. linear or circular). By default
    * the map backbone at the provided bp will be centered in the middle of the canvas.
@@ -65,7 +64,7 @@
      * Create a new bookmark. 
      * @param {Viewer} viewer - The viewer
      * @param {Object} options - [Attributes](Bookmark.html#attributes) used to create the bookmark
-     * @param {Object} [meta] - User-defined key:value pairs to add to the bookmark.
+     * @param {Object} [meta] - User-defined {@tutorial meta} to add to the bookmark.
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);

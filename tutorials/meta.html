@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CGView: Meta Data</title>
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
+
+  <!-- Prerequisites -->
+  <!-- Local -->
+  <link rel="stylesheet" href="styles/tutorial.css" />
+  <script src='scripts/tutorial.js'></script>
+</head>
+<body>
+
+  <div id='main' class='cgv-tutorial'>
+		<div id='markdown-out'></div>
+  </div>
+
+<div id='markdown-in' style='display:none;'>
+
+All the data driven components in CGView have the ability to contain meta data.
+Meta data (i.e. user-defined key:value pairs) can be stored simply as an object
+property named <em>meta</em> on most objects.
+
+TODO:
+* examples
+* adding through constructor
+* adding though add actions (e.g. addFeatures(data, meta))
+  * meta can be in data for per obejct data
+  * can also be added as second argument to be added  all features (NOT IMPLEMENTED YET)
+* meta data is never used by CGView
+* good place to store extra data for external projects (e.g. proksee)
+  * example would be extra qualifier tag data for features
+* only if meta data exists for an object, will it be exported in json
+* meta data will also be imported from json
+* HOW will meta data merge options.meta and constructor meta argument. Is the meta argument needed?
+
+</div>
+
+<script>
+  tutorialMarkdown(marked);
+</script>
+
+</html>

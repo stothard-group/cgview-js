@@ -2,6 +2,9 @@
   "api": {
     "title": "CGView API"
   },
+  "meta": {
+    "title": "Meta Data"
+  },
   "basic_map": {
     "title": "Basic Map"
   },
