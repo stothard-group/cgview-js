@@ -195,7 +195,7 @@
       this._items = parent._items.filter( i => !items.include(i) );
       this.viewer.clear('captions');
       this.viewer.refreshCaptions();
-      this.viewer.trigger(`${this.toString().toLowerCase()}Items-update`, items);
+      this.viewer.trigger(`${this.toString().toLowerCase()}Items-remove`, items);
     }
 
     updateItemsBase(validKeys, items, attributes) {

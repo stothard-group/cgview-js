@@ -561,7 +561,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Adds bookmarks to the viewer. See
+     * Adds bookmarks to the viewer...
      */
     addBookmarks(bookmarkData = []) {
       bookmarkData = CGV.CGArray.arrayerize(bookmarkData);
@@ -570,6 +570,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       return bookmarks;
     }
 
+    /**
+     * Remove bookmarks...
+     */
     removeBookmarks(bookmarks) {
       bookmarks = CGV.CGArray.arrayerize(bookmarks);
       this._bookmarks = this._bookmarks.filter( b => !bookmarks.includes(b) );

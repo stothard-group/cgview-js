@@ -173,6 +173,13 @@
     }
 
     /**
+     * Remove bookmark...
+     */
+    remove() {
+      this.viewer.removeBookmarks(this);
+    }
+
+    /**
      * Move and zoom the map to this Bookmarks position.
      */
     moveTo(duration = 1000) {
@@ -193,7 +200,7 @@
     incrementalShortcut() {
       const currentShortcuts = this.viewer.bookmarks().map( b => b.shorcut);
       const shortcut = CGV.uniqueId('', currentShortcuts.length, currentShortcuts);
-      if (shortcut < 10 && shortcut > 0) { return shortcut}
+      if (shortcut < 10 && shortcut > 0) { return shortcut; }
     }
 
 
@@ -204,8 +211,8 @@
         zoom: this.zoom,
         bbOffset: this.bbOffset,
         format: this.format,
-        favorite: this.favorite,
-        shortcut: this.shortcut
+        shortcut: this.shortcut,
+        favorite: this.favorite
       };
       return json;
     }

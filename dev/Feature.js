@@ -424,12 +424,7 @@
      * Remove the Feature from the viewer, tracks and slots
      */
     remove() {
-      // FIXME: should this not be calling viewer.removeFeatures(this)
-      this.viewer._features = this.viewer._features.remove(this);
-      this.viewer.annotation.removeLabels(this.label);
-      this.tracks().each( (i, track) => {
-        track.removeFeatures(this);
-      });
+      this.viewer.removeFeatures(this);
     }
 
     /**

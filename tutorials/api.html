@@ -211,6 +211,8 @@ Attribute                      | Type     | Description
 
 *Required
 
+## Tracks API
+
 ## Bookmarks API
 
 Action                                       | Viewer Method                                    | Bookmark Method                  | Event
@@ -220,18 +222,35 @@ Action                                       | Viewer Method                    
 [Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
 [Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
 
-Attribute                          | Type     | Description
------------------------------------|----------|------------
-[name](Bookmark.html#name)         | String   | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
-[bp](Bookmark.html#bp)             | Number   | Base pair to center the map position [Default: Current bp]
-[zoom](Bookmark.html#zoom)         | Number   | Zoom factor [Default: Current zoomFactor]
-[format](Bookmark.html#format)     | String   | Map format [Default: Current map format]
-[bbOffset](Bookmark.html#bbOffset) | Number   | Distance from the backbone to the center of the canvas [Default: 0]
-[shortcut](Bookmark.html#shortcut) | String   | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
-[favorite](Bookmark.html#favorite) | Boolean  | Bookmark is a favorite [Default: false]
-[visible](CGObject.html#visible)   | Boolean  | Bookmark is visible [Default: true]
-[meta](CGObject.html#meta)         | Object   | [Meta data](tutorial-meta.html) for Bookmark
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Bookmark.html#name)         | String    | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
+[bp](Bookmark.html#bp)             | Number    | Base pair to center the map position [Default: Current bp]
+[zoom](Bookmark.html#zoom)         | Number    | Zoom factor [Default: Current zoomFactor]
+[format](Bookmark.html#format)     | String    | Map format [Default: Current map format]
+[bbOffset](Bookmark.html#bbOffset) | Number    | Distance from the backbone to the center of the canvas [Default: 0]
+[shortcut](Bookmark.html#shortcut) | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
+[favorite](Bookmark.html#favorite) | Boolean   | Bookmark is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | Bookmark is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
 
+
+## TEMPLATE
+
+Action                                       | Viewer Method                                    | Record Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addRecords()](Viewer.html#addRecords)       | -                                | records-add
+[Update](tutorial-api.html#updating-records) | [updateRecords()](Viewer.html#updateRecords) | [update()](Record.html#update) | records-update
+[Remove](tutorial-api.html#removing-records) | [removeRecords()](Viewer.html#removeRecords) | [remove()](Record.html#remove) | records-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveRecord()](Viewer.html#moveRecord) | [move()](Record.html#move) | records-reorder
+[Read](tutorial-api.html#reading-records)    | [records()](Viewer.html#records)             | -                                | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Record.html#name)         | String    | Name of record [Default: "Record-N" where N is the number of the record]
+[favorite](Record.html#favorite) | Boolean   | Record is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | Record is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Record
 
 ## Tracts
 ## Plots
