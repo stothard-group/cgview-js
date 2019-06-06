@@ -94,6 +94,9 @@
 
     /**
      * Convert the *value* to be between the 1 and the sequence length.
+     * Values bigger or smaller than the sequence length will be wrappeed around.
+     * For example, if sequence length is 1000 and _value_ is 1200,
+     * a value of 200 will be returned.
      * @param {Number} value - The number to normalize.
      * @return {Number}
      */
@@ -130,6 +133,7 @@
 
     /**
      * Return true if the range length is the same as the sequence length
+     * FIXME: chagne to isFullLength or isFullSequenceLength
      * @return {Boolean}
      */
     isFullCircle() {
