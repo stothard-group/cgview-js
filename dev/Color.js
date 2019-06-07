@@ -205,6 +205,17 @@
       return this;
     }
 
+    invert() {
+      const rgb = this.rgb;
+      this.rgb = {
+        r: 255 - rgb.r,
+        g: 255 - rgb.g,
+        b: 255 - rgb.b
+      };
+      return this;
+    }
+
+
     /**
      * Update the internal RGBA String using the current opacity property.
      * @private

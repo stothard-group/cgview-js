@@ -195,9 +195,6 @@
       this.viewer.moveTo(start, stop, {duration, ease});
     }
 
-    draw() {
-    }
-
     toJSON() {
       const json = {
         id: this.id,

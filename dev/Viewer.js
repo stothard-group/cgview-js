@@ -835,6 +835,35 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.refreshCaptions();
     }
 
+    invertColors() {
+      // FIXME: use update API (either on items [e.g. legend, legendItems, etc] or on colors [if done])
+      this.settings.backgroundColor.invert();
+      this.legend.backgroundColor.invert();
+      this.legend.items().each( (i, item) => {
+        item.fontColor.invert();
+        item.swatchColor.invert();
+      });
+      this.legend.refresh();
+      this.captions().each( (i, caption) => {
+        caption.backgroundColor.invert();
+        caption.items().each( (i, item) => {
+          item.fontColor.invert();
+        });
+        caption.refresh();
+      });
+      this.ruler.color.invert();
+
+      this.dividers.slot.color.invert();
+      if (!this.dividers.slotMirrorsTrack) {
+        this.dividers.track.color.invert();
+      }
+      this.backbone.color.invert();
+      this.backbone.colorAlternate.invert();
+      this.sequence.color.invert();
+      this.annotation.color && this.annotation.color.invert();
+      this.draw();
+    }
+
     on(event, callback) {
       this.events.on(event, callback);
     }
