@@ -332,7 +332,9 @@
 
     fillBackground() {
       this.ctx.fillStyle = this.backgroundColor.rgbaString;
-      this.ctx.clearRect(this.originX, this.originY, this.width, this.height);
+      // Added margin to remove thin lines of previous background that were not being removed
+      const margin = 1;
+      this.ctx.clearRect(this.originX - margin, this.originY, this.width + (margin * 2), this.height);
       this.ctx.fillRect(this.originX, this.originY, this.width, this.height);
     }
 
