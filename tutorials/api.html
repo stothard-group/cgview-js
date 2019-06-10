@@ -41,6 +41,11 @@ All the examples use a Viewer instance: <em>cgv</em>.
 
 
 # API Actions
+NOT IMPLEMENTED: All the API actions (except read) can be provided with an optional
+options object that will effect how the action is added to the History.
+- groupID or bundleID: id used to group actions together
+- name: name that will show up in History
+- addToHistory: whether this action is added to History. This let us skip transient actions (e.g. color changes).
 
 ## Adding Records
 Adding records is done through methods on the Viewer Instance (e.g.
