@@ -153,7 +153,8 @@
      * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
     get fontColor() {
-      return this._fontColor.rgbaString;
+      // return this._fontColor.rgbaString;
+      return this._fontColor;
     }
 
     set fontColor(value) {
