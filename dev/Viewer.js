@@ -781,6 +781,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     zoomTo(bp, zoomFactor, options = {}) {
       const self = this;
 
+
       const {
         bbOffset = CGV.defaultFor(options.bbOffset, 0),
         duration = CGV.defaultFor(options.duration, 1000),
@@ -855,9 +856,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.refresh();
       this.captions().each( (i, caption) => {
         caption.backgroundColor.invert();
-        caption.items().each( (i, item) => {
-          item.fontColor.invert();
-        });
+        // caption.items().each( (i, item) => {
+        //   item.fontColor.invert();
+        // });
         caption.refresh();
       });
       this.ruler.color.invert();

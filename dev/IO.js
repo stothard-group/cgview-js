@@ -153,7 +153,7 @@
       // Load Captions
       if (data.captions) {
         data.captions.forEach((captionData) => {
-          new CGV.Caption(viewer, captionData);
+          new CGV.Caption2(viewer, captionData);
         });
       }
 

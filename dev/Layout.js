@@ -663,6 +663,14 @@
       if (viewer.annotation.visible) {
         viewer.annotation.draw(this.centerInsideOffset, this.centerOutsideOffset);
       }
+
+      // Captions on the Map layer
+      for (let i = 0, len = viewer._captions.length; i < len; i++) {
+        // FIXME ONly if relativeTo Map
+        viewer._captions[i].draw();
+      }
+    
+
       // Progess
       this.drawProgress();
 

@@ -25,7 +25,8 @@ class CGVPerformance {
       const p = new Progress();
       for (const zoomLevel of this.zoomLevels) {
         const bp = (zoomLevel === 1) ? 0 : 1;
-        cgv.zoomTo(bp, zoomLevel, 0, undefined, function() {
+        cgv.zoomTo(bp, zoomLevel, {callback: function() {
+          console.log('CALLBACK')
           // Visible Range
           results[zoomLevel].visibleRange = `${d3.format(',')(cgv.backbone.visibleRange.length)}`;
           // Fast
@@ -38,7 +39,7 @@ class CGVPerformance {
           layout.drawAllSlots(true);
           layout.drawAllSlots(false);
           results[zoomLevel].drawFull.push(p.intervalTime());
-        });
+        }});
       }
     }
     window.results = results;
