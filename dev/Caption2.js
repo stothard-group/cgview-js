@@ -80,6 +80,7 @@
     }
 
     set relativeTo(value) {
+      this.box.clear(this.ctx);
       this.box.relativeTo = value;
       this.refresh();
     }
@@ -87,11 +88,11 @@
     /**
      * @member {Context} - Get the *Context* for drawing.
      */
-    // FIXME: context will depend on relativeTo
-    // - this could be set when setting relativeTo (e.g. this._ctx = ...)
+    // FIXME: 
+    // - if this is slow we could be set when setting relativeTo (e.g. this._ctx = ...)
     get ctx() {
-      // return this.canvas.context('captions');
-      const layer = (this.relativeTo === 'map') ? 'map' : 'captions';
+      // return this._ctx || this.canvas.context('forground');
+      const layer = (this.relativeTo === 'map') ? 'foreground' : 'canvas';
       return this.canvas.context(layer);
     }
     //
@@ -101,10 +102,7 @@
     // get id() {
     //   return this.position;
     // }
-    //
-    /**
-     * @member {String} - Get or set the caption postion. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
-     */
+
     get position() {
       return this.box.position;
     }
@@ -284,7 +282,7 @@
     remove() {
       const viewer = this.viewer;
       viewer._captions = viewer._captions.remove(this);
-      viewer.clear('captions');
+      viewer.clear('canvas');
       viewer.refreshCaptions();
     }
 

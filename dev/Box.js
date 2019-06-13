@@ -32,12 +32,12 @@
      *
      *   If relativeTo is 'canvas', the box will be in a static position on the Canvas
      *   and will not move as the map is panned. String values (e.g. top-right, bottom-middle, etc)
-     *   position the box appropriately. An object with xOffset and yOffset values between
+     *   position the box appropriately. An object with xPercent and yPercent values between
      *   0 and 100 will position the box along the x and y axes starting from the top-left.
      *   The string values are associated with specific offsets. For example,
-     *   top-left = {xOffset: 0, yOffset: 0}
-     *   middle-center = {xOffset: 50, yOffset: 50}
-     *   bottom-right = {xOffset: 100, yOffset: 100}
+     *   top-left = {xPercent: 0, yPercent: 0}
+     *   middle-center = {xPercent: 50, yPercent: 50}
+     *   bottom-right = {xPercent: 100, yPercent: 100}
      *
      *   If relativeTo is 'map', the box will move with the map as it's panned.
      *   The position  will consist of
@@ -79,6 +79,17 @@
       return this.viewer.canvas;
     }
 
+    get relativeTo() {
+      return this._relativeTo;
+    }
+
+    set relativeTo(value) {
+      if ( CGV.validate(value, ['map', 'canvas']) ) {
+        this._relativeTo = value;
+        // TODO change positions based on current map position
+      }
+    }
+
     /**
      * FIXME: standarize the strings
      * @member {String} - Get or set the postion. String values include: "top-left", "top-center", "top-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", or "bottom-right".
@@ -89,11 +100,12 @@
 
     // relativeTo: canvas
     //   value = 'top-right'
-    //   value = {xOffset: 100, yOffset: 0}
+    //   value = {xPercent: 100, yPercent: 0}
     // relativeTo: map
     //   value = 'top-right'
     //   value = {bp: 1000, bbOffset: 200, anchor: ??}
     set position(value) {
+      // TODO: validate position
       this._position = value;
       this.refresh();
     }
@@ -249,6 +261,12 @@
       return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) );
     }
 
+    _validateStringPosition(string) {
+      // const allowedStrings = ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
+      const allowedStrings = ['upper-left', 'upper-center', 'upper-right', 'middle-left', 'middle-center', 'middle-right', 'lower-left', 'lower-center', 'lower-right'];
+      CGV.validate(string, allowedStrings);
+    }
+
     originForPosition(position) {
       if (this.relativeTo === 'map') {
         return this._originForPositionRelativeToMap(position);
@@ -259,6 +277,7 @@
 
     _originForPositionRelativeToMap(position) {
       if (typeof position === 'string') {
+        this._validateStringPosition(position);
         return this._originOnMapFromString(position);
       } else {
         return this._originOnMapFromObject(position);
@@ -267,6 +286,7 @@
 
     _originForPositionRelativeToCanvas(position) {
       if (typeof position === 'string') {
+        this._validateStringPosition(position);
         return this._originOnCanvasFromString(position);
       } else {
         return this._originOnCanvasFromObject(position);
@@ -274,61 +294,45 @@
     }
 
     _originOnCanvasFromString(position) {
-      const margin = 0;
-      const canvasWidth = this.canvas.width;
-      const canvasHeight = this.canvas.height;
-      const boxWidth = this.width;
-      const boxHeight = this.height;
-      let x, y;
-
-      //FIXME: will be changed in BUILDER
+      // FIXME: will be changed in BUILDER
       position = position.replace('upper', 'top');
       position = position.replace('lower', 'bottom');
 
-      if (position === 'top-left') {
-        x = margin;
-        y = margin;
-      } else if (position === 'top-center') {
-        x = (canvasWidth / 2) - (boxWidth / 2);
-        y = margin;
-      } else if (position === 'top-right') {
-        x = canvasWidth - boxWidth - margin;
-        y = margin;
-      } else if (position === 'middle-left') {
-        x = margin;
-        y = (canvasHeight / 2) - (boxHeight / 2);
-      } else if (position === 'middle-center') {
-        x = (canvasWidth / 2) - (boxWidth / 2);
-        y = (canvasHeight / 2) - (boxHeight / 2);
-      } else if (position === 'middle-right') {
-        x = canvasWidth - boxWidth - margin;
-        y = (canvasHeight / 2) - (boxHeight / 2);
-      } else if (position === 'bottom-left') {
-        x = margin;
-        y = canvasHeight - boxHeight - margin;
-      } else if (position === 'bottom-center') {
-        x = (canvasWidth / 2) - (boxWidth / 2);
-        y = canvasHeight - boxHeight - margin;
-      } else if (position === 'bottom-right') {
-        x = canvasWidth - boxWidth - margin;
-        y = canvasHeight - boxHeight - margin;
+      const [yString, xString] = position.split('-');
+      let xPercent, yPercent;
+
+      if (yString === 'top') {
+        yPercent = 0;
+      } else if (yString === 'middle') {
+        yPercent = 50;
+      } else if (yString === 'bottom') {
+        yPercent = 100;
       }
-      return {x, y};
+
+      if (xString === 'left') {
+        xPercent = 0;
+      } else if (xString === 'center') {
+        xPercent = 50;
+      } else if (xString === 'right') {
+        xPercent = 100;
+      }
+
+      return this._originOnCanvasFromObject({xPercent, yPercent});
     }
 
     _originOnCanvasFromObject(position) {
-      const xOffset = position.xOffset;
-      const yOffset = position.yOffset;
+      const xPercent = position.xPercent;
+      const yPercent = position.yPercent;
 
       // boxX and boxY are the weighted point on the box dependent on the offsets
-      // e.g. 0 xOffset would be 0% box width
-      // e.g. 50 xOffset would be 50% box width
-      // e.g. 100 xOffset would be 100% box width
-      const boxX = this.width * xOffset / 100;
-      const boxY = this.height * yOffset / 100;
+      // e.g. 0 xPercent would be 0% box width
+      // e.g. 50 xPercent would be 50% box width
+      // e.g. 100 xPercent would be 100% box width
+      const boxX = this.width * xPercent / 100;
+      const boxY = this.height * yPercent / 100;
 
-      const canvasX = this.canvas.width * xOffset / 100;
-      const canvasY = this.canvas.height * yOffset / 100;
+      const canvasX = this.canvas.width * xPercent / 100;
+      const canvasY = this.canvas.height * yPercent / 100;
 
       const x = canvasX - boxX;
       const y = canvasY - boxY;
@@ -389,14 +393,14 @@
       const point = this.canvas.pointForBp(bp, centerOffset);
 
       // // boxX and boxY are the weighted point on the box dependent on the offsets
-      // // e.g. 0 xOffset would be 0% box width
-      // // e.g. 50 xOffset would be 50% box width
-      // // e.g. 100 xOffset would be 100% box width
-      // const boxX = this.width * xOffset / 100;
-      // const boxY = this.height * yOffset / 100;
+      // // e.g. 0 xPercent would be 0% box width
+      // // e.g. 50 xPercent would be 50% box width
+      // // e.g. 100 xPercent would be 100% box width
+      // const boxX = this.width * xPercent / 100;
+      // const boxY = this.height * yPercent / 100;
       //
-      // const canvasX = this.canvas.width * xOffset / 100;
-      // const canvasY = this.canvas.height * yOffset / 100;
+      // const canvasX = this.canvas.width * xPercent / 100;
+      // const canvasY = this.canvas.height * yPercent / 100;
       //
       // const x = canvasX - boxX;
       // const y = canvasY - boxY;

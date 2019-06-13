@@ -80,7 +80,7 @@
      * @member {Context} - Get the *Context* for drawing.
      */
     get ctx() {
-      return this.canvas.context('captions');
+      return this.canvas.context('canvas');
     }
 
     /**
@@ -194,7 +194,7 @@
     removeItems(items) {
       items = CGV.CGArray.arrayerize(items);
       this._items = parent._items.filter( i => !items.include(i) );
-      this.viewer.clear('captions');
+      this.viewer.clear('canvas');
       this.viewer.refreshCaptions();
       this.viewer.trigger(`${this.toString().toLowerCase()}Items-remove`, items);
     }
@@ -377,7 +377,7 @@
     remove() {
       const viewer = this.viewer;
       viewer._captions = viewer._captions.remove(this);
-      viewer.clear('captions');
+      viewer.clear('canvas');
       viewer.refreshCaptions();
     }
 

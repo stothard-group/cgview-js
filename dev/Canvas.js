@@ -9,6 +9,15 @@
      * - Contains the x, y, bp scales
      * - has methods for for determining visible regions of the circle at a particular centerOffset
      * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
+     *
+     * Layers:
+     *  - background: for drawing behind the map
+     *  - map: main layer, where the map is drawn
+     *  - forground: for drawing in front of the map (e.g. map based captions)
+     *  - canvas: layer for traning static components (e.g. canvas based captions and legend)
+     *  - debug: layer to draw debug information
+     *  - ui: layer for captuing interactions
+     *
      */
     constructor(viewer, container, options = {}) {
       this._viewer = viewer;
@@ -17,7 +26,7 @@
 
       // Create layers
       this.determinePixelRatio(container);
-      this._layerNames = ['background', 'map', 'captions', 'debug', 'ui'];
+      this._layerNames = ['background', 'map', 'foreground', 'canvas', 'debug', 'ui'];
       this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
     }
 

@@ -638,6 +638,7 @@
       // let startTime = new Date().getTime();
 
       viewer.clear('map');
+      viewer.clear('foreground');
       viewer.clear('ui');
 
       if (viewer.messenger.visible) {
@@ -666,16 +667,15 @@
 
       // Captions on the Map layer
       for (let i = 0, len = viewer._captions.length; i < len; i++) {
-        // FIXME ONly if relativeTo Map
+        // FIXME Only if relativeTo Map
         viewer._captions[i].draw();
       }
-    
 
       // Progess
       this.drawProgress();
 
       if (canvas._testDrawRange) {
-        const ctx = canvas.context('captions');
+        const ctx = canvas.context('canvas');
         ctx.strokeStyle = 'grey';
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.stroke();
