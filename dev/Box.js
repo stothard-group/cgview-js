@@ -453,8 +453,8 @@
       if (relativeTo === 'map') {
         if ( CGV.validate(positionKeys, ['xPercent', 'yPercent', 'anchor']) ) {
           const point = {
-            x: origPosition.xPercent * viewer.width,
-            y: origPosition.yPercent * viewer.height
+            x: origPosition.xPercent * viewer.width / 100,
+            y: origPosition.yPercent * viewer.height / 100
           };
           newPosition.bp = viewer.canvas.bpForPoint(point);
           newPosition.bbOffset = viewer.layout.centerOffsetForPoint(point) - viewer.backbone.adjustedCenterOffset;

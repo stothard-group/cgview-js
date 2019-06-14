@@ -39,7 +39,6 @@
         relativeTo: CGV.defaultFor(options.relative, 'canvas'),
         position: CGV.defaultFor(options.position, 'middle-center')
       });
-      console.log(this.name)
       // Setting font will refresh and the caption and draw
       this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
       // FIXME: go through caption initialization and reduce to calles to Refresh (we only need one)
