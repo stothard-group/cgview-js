@@ -7,17 +7,18 @@
    * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
    * @extends Caption
    */
-  class Legend2 extends CGV.Caption {
+  class Legend extends CGV.CGObject {
 
     /**
      * Create a new Legend.
      *
      * @param {Legend} viewer - The parent *Viewer* for the *Legend*.
-     * @param {Object} data - Data used to create the legend.
+     * @param {Object} options - Options used to create the legend.
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
      *  position              | "upper-right"    | Where to draw the legend. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
+     *  relativeTo            | "canvas"         | ... See {@link Box}
      *  font                  | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
      *  fontColor             | "black"          | A string describing the color. See {@link Color} for details.
      *  textAlignment         | "left"           | *left*, *center*, or *right*
@@ -25,9 +26,26 @@
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the legend.
      */
-    constructor(viewer, data = {}, meta = {}) {
-      super(viewer, data, meta);
-      this.name = 'Legend';
+    constructor(viewer, options = {}, meta = {}) {
+      super(viewer, options, meta);
+      this._items = new CGV.CGArray();
+      this.backgroundColor = options.backgroundColor;
+      this.defaultFontColor = CGV.defaultFor(options.fontColor, 'black');
+      this.textAlignment = CGV.defaultFor(options.textAlignment, 'left');
+      this.box = new CGV.Box(viewer, {
+        relativeTo: CGV.defaultFor(options.relative, 'canvas'),
+        // FIXME: use top after updating Builder
+        position: CGV.defaultFor(options.position, 'upper-right')
+        // position: CGV.defaultFor(options.position, 'top-right')
+      });
+      // Setting font will refresh legend and draw
+      this.defaultFont = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
+
+      if (options.items) {
+        this.addItems(options.items);
+      }
+      // FIXME: should be done whenever an item is added
+      this.refresh();
     }
 
     /**
@@ -38,15 +56,120 @@
       return 'Legend';
     }
 
-    /**
-     * @member {Viewer} - Get or set the *Viewer*
-     */
-    get viewer() {
-      return this._viewer;
+    // /**
+    //  * @member {Viewer} - Get or set the *Viewer*
+    //  */
+    // get viewer() {
+    //   return this._viewer;
+    // }
+    //
+    // set viewer(viewer) {
+    //   this._viewer = viewer;
+    // }
+
+    get relativeTo() {
+      return this.box.relativeTo;
     }
 
-    set viewer(viewer) {
-      this._viewer = viewer;
+    set relativeTo(value) {
+      this.box.clear(this.ctx);
+      this.box.relativeTo = value;
+      this.refresh();
+    }
+
+    /**
+     * @member {Context} - Get the *Context* for drawing.
+     */
+    // FIXME: 
+    // - if this is slow we could be set when setting relativeTo (e.g. this._ctx = ...)
+    get ctx() {
+      // return this._ctx || this.canvas.context('forground');
+      const layer = (this.relativeTo === 'map') ? 'foreground' : 'canvas';
+      return this.canvas.context(layer);
+    }
+    //
+    // /**
+    //  * @member {String} - Alias for getting the position. Useful for querying CGArrays.
+    //  */
+    // get id() {
+    //   return this.position;
+    // }
+
+    get position() {
+      return this.box.position;
+    }
+
+    set position(value) {
+      this.box.clear(this.ctx);
+      this.box.position = value;
+      this.refresh();
+    }
+
+    /**
+     * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get backgroundColor() {
+      // TODO set to cgview background color if not defined
+      return this._backgroundColor;
+    }
+
+    set backgroundColor(color) {
+      // this._backgroundColor.color = color;
+      if (color === undefined) {
+        this._backgroundColor = this.viewer.settings.backgroundColor;
+      } else if (color.toString() === 'Color') {
+        this._backgroundColor = color;
+      } else {
+        this._backgroundColor = new CGV.Color(color);
+      }
+      this.refresh();
+    }
+
+    /**
+     * @member {Font} - Get or set the default font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+     */
+    get defaultFont() {
+      return this._defaultFont;
+    }
+
+    set defaultFont(value) {
+      if (value.toString() === 'Font') {
+        this._defaultFont = value;
+      } else {
+        this._defaultFont = new CGV.Font(value);
+      }
+      this.refresh();
+    }
+
+    /**
+     * @member {Color} - Get or set the defaultFontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+     */
+    get defaultFontColor() {
+      // return this._fontColor.rgbaString;
+      return this._defaultFontColor;
+    }
+
+    set defaultFontColor(value) {
+      if (value.toString() === 'Color') {
+        this._defaultFontColor = value;
+      } else {
+        this._defaultFontColor = new CGV.Color(value);
+      }
+      this.refresh();
+    }
+
+    /**
+     * @member {String} - Get or set the text alignment. Possible values are *left*, *center*, or *right*.
+     */
+    get defaultFextAlignment() {
+      return this._defaultFextAlignment;
+    }
+
+    set defaultFextAlignment(value) {
+      if ( CGV.validate(value, ['left', 'center', 'right']) ) {
+        this._defaultFextAlignment = value;
+      }
+      this.refresh();
     }
 
     /**
@@ -71,6 +194,101 @@
       this._highlightedSwatchedItem = value;
     }
 
+    addItems(itemData = []) {
+      itemData = CGV.CGArray.arrayerize(itemData);
+      const items = itemData.map( (data) => new CGV.LegendItem(this, data));
+      this.viewer.trigger('legendItems-add', items);
+      return items;
+    }
+
+    removeItems(items) {
+      items = CGV.CGArray.arrayerize(items);
+      this._items = this._items.filter( i => !items.include(i) );
+      this.viewer.clear('canvas');
+      this.viewer.refreshCaptions();
+      this.viewer.trigger('legendItems-remove', items);
+    }
+
+    updateItemsBase(validKeys, items, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      if (!CGV.validate(keys, validKeys)) { return; }
+      items = CGV.CGArray.arrayerize(items);
+      items.attr(attributes);
+      this.viewer.trigger(`${this.toString().toLowerCase()}Items-update`, {items, attributes});
+      return items;
+    }
+
+    updateItems(items, attributes) {
+      const keys = Object.keys(attributes);
+      const validKeys = ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      items = CGV.CGArray.arrayerize(items);
+      items.attr(attributes);
+      this.viewer.trigger('legendItems-update', {items, attributes});
+      return items;
+    }
+
+    /**
+     * @member {CGArray} - Get the *CaptionItems*
+     */
+    items(term) {
+      return this._items.get(term);
+    }
+
+    /**
+     * @member {CGArray} - Get the *CaptionItems*
+     */
+    visibleItems(term) {
+      return this._items.filter( i => i.visible ).get(term);
+    }
+
+    /**
+     * Recalculates the *Legend* size and position.
+     */
+    refresh() {
+      const box = this.box;
+      if (!box) { return; }
+      box.clear(this.ctx);
+
+      let height = 0;
+      let maxHeight = 0;
+
+      const visibleItems = this.visibleItems();
+      for (let i = 0, len = visibleItems.length; i < len; i++) {
+        const item = visibleItems[i];
+        const itemHeight = item.height;
+        height += itemHeight;
+        if (i < len - 1) {
+          // Add spacing
+          height += (itemHeight / 2);
+        }
+        if (itemHeight > maxHeight) {
+          maxHeight = itemHeight;
+        }
+      }
+
+      box.padding = maxHeight / 2;
+      height += box.padding * 2;
+
+      // Calculate Legend Width
+      const itemFonts = visibleItems.map( i => i.font.css );
+      const itemNames = visibleItems.map( i => i.name );
+      const itemWidths = CGV.Font.calculateWidths(this.ctx, itemFonts, itemNames);
+      for (let i = 0, len = itemWidths.length; i < len; i++) {
+        const item = visibleItems[i];
+        if (item.drawSwatch) {
+          itemWidths[i] += item.height + (box.padding / 2);
+        }
+        item._width = itemWidths[i];
+      }
+      const width = d3.max(itemWidths) + (box.padding * 2);
+
+      box.resize(width, height);
+
+      this.draw();
+    }
+
     // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
     setColorPickerPosition(cp) {
       const margin = 5;
@@ -80,8 +298,8 @@
       // if (this.viewer._container.style('position') !== 'fixed') {
       //   viewerRect = this.viewer._container.node().getBoundingClientRect();
       // }
-      const originX = this.originX + viewerRect.left + window.pageXOffset;
-      const originY = this.originY + viewerRect.top + window.pageYOffset;
+      const originX = this.box.x + viewerRect.left + window.pageXOffset;
+      const originY = this.box.y + viewerRect.top + window.pageYOffset;
       const legendWidth = this.width;
       if (/-left$/.exec(this.position)) {
         pos = {x: originX + legendWidth + margin, y: originY};
@@ -92,12 +310,14 @@
     }
 
     get swatchPadding() {
-      return this.padding / 2;
+      return this.box.padding / 2;
     }
 
-    updateItems(items, attributes) {
-      const validKeys = ['name', 'drawSwatch', 'font', 'fontColor', 'swatchColor', 'decoration'];
-      return this.updateItemsBase(validKeys, items, attributes);
+    fillBackground() {
+      const box = this.box;
+      this.ctx.fillStyle = this.backgroundColor.rgbaString;
+      this.box.clear(this.ctx);
+      this.ctx.fillRect(box.x, box.y, box.width, box.height);
     }
 
     findLegendItemByName(name) {
@@ -207,5 +427,5 @@
 
   }
 
-  CGV.Legend = Legend2;
+  CGV.Legend = Legend;
 })(CGView);

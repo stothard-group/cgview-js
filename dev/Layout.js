@@ -626,9 +626,9 @@
       // Restore
       viewer._zoomFactor = savedZoomFactor;
 
-      console.log(this._nonSlotSpace());
-      console.log(defaultMapWidth, computedMaxMapWidth, computedMaxMapWidth / defaultMapWidth);
-      console.log(defaultSlotTotalThickness, computedSlotTotalThickness, computedSlotTotalThickness / defaultSlotTotalThickness);
+      // console.log(this._nonSlotSpace());
+      // console.log(defaultMapWidth, computedMaxMapWidth, computedMaxMapWidth / defaultMapWidth);
+      // console.log(defaultSlotTotalThickness, computedSlotTotalThickness, computedSlotTotalThickness / defaultSlotTotalThickness);
     }
 
     // FIXME: temp with above
@@ -741,6 +741,8 @@
         // FIXME Only if relativeTo Map
         viewer._captions[i].draw();
       }
+      // FIXME Only if relativeTo Map
+      viewer.legend.draw();
 
       // Progess
       this.drawProgress();
