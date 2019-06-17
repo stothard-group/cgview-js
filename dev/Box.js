@@ -426,7 +426,9 @@
       const bbOffset = position.bbOffset;
       const anchor = position.anchor || { xPercent: 50, yPercent: 50 };
 
-      const centerOffset = bbOffset + this.viewer.backbone.adjustedCenterOffset;
+      // const centerOffset = bbOffset + this.viewer.backbone.adjustedCenterOffset;
+      // const centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset);
+      const centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset) + this.viewer.backbone.adjustedCenterOffset;
       const point = this.canvas.pointForBp(bp, centerOffset);
 
       const boxX = this.width * anchor.xPercent / 100;

@@ -7,6 +7,15 @@
   /**
    * <br />
    * The Layout is in control of creating slots from tracks and drawing the map.
+   *
+   * NOTES:
+   *  - _adjustProportions is called when components: dividers, backbone, tracks/slots
+   *      - change in number, visibility or thickness
+   *      - layout format changes
+   *      - max/min slot thickness change
+   *  - updateLayout is called when
+   *      - proportions are updated
+   *      - every draw loop only if the zoom level has changed
    */
   class Layout {
 
@@ -431,7 +440,7 @@
     _trackNonSlotSpace(track, position = 'inside') {
       const dividers = this.viewer.dividers;
 
-      let slots = track.slots().filter( s =>  s.visible && s[position] );
+      const slots = track.slots().filter( s =>  s.visible && s[position] );
 
       let space = 0;
       if (slots.length > 0) {
@@ -451,8 +460,6 @@
     // position: 'inside', 'outside', 'both'
     // Note: the backbone is only included if position is 'both'
     _nonSlotSpace(position = 'both') {
-      const viewer = this.viewer;
-
       let space = 0;
       const visibleTracks = this.tracks().filter( t =>  t.visible );
       for (let i = 0, len = visibleTracks.length; i < len; i++) {
@@ -515,7 +522,6 @@
     _adjustProportions() {
       const viewer = this.viewer;
       if (viewer.loading) { return; }
-      const backbone = viewer.backbone;
       const visibleSlots = this.visibleSlots();
       this._updateSlotThicknessRatioStats(visibleSlots);
       // The initial maximum amount of space for drawing slots, backbone, dividers, etc
@@ -550,6 +556,8 @@
 
       this.updateInitialBackboneCenterOffset(insideThickness, outsideThickness);
 
+      this._calculateMaxMapThickness();
+
       this.updateLayout(true);
     }
     // NOTE:
@@ -569,6 +577,68 @@
     //   // thicknessRatios: thicknessRatios,
     //   thicknessRatioSum: thicknessRatioSum
     // });
+
+    // FIXME: temp while i figure things out
+    // - IF this is used, create slotSpace method
+    _calculateMaxMapThickness() {
+      const viewer = this.viewer;
+      const savedZoomFactor = viewer.zoomFactor;
+      // Default Map Width
+      viewer._zoomFactor = 1;
+      this.updateLayout(true);
+      const defaultMapWidth =  this.bbOutsideOffset - this.bbInsideOffset;
+
+      let defaultSlotTotalThickness = 0;
+
+      const visibleTracks = this.tracks().filter( t =>  t.visible );
+      for (let i = 0, tracksLength = visibleTracks.length; i < tracksLength; i++) {
+        const track = visibleTracks[i];
+        const slots = track.slots().filter( s => s.visible );
+        if (slots.length > 0) {
+          for (let j = 0, slotsLength = slots.length; j < slotsLength; j++) {
+            const slot = slots[j];
+            defaultSlotTotalThickness += slot.thickness;
+          }
+        }
+      }
+
+      // Max Map Width
+      viewer._zoomFactor = viewer.maxZoomFactor;
+      this.updateLayout(true);
+      const computedMaxMapWidth =  this.bbOutsideOffset - this.bbInsideOffset;
+
+      let computedSlotTotalThickness = 0;
+
+      for (let i = 0, tracksLength = visibleTracks.length; i < tracksLength; i++) {
+        const track = visibleTracks[i];
+        const slots = track.slots().filter( s => s.visible );
+        if (slots.length > 0) {
+          for (let j = 0, slotsLength = slots.length; j < slotsLength; j++) {
+            const slot = slots[j];
+            computedSlotTotalThickness += slot.thickness;
+          }
+        }
+      }
+
+      // FIXME: temp
+      this._maxMapThicknessZoomFactor = computedSlotTotalThickness / defaultSlotTotalThickness;
+
+      // Restore
+      viewer._zoomFactor = savedZoomFactor;
+
+      console.log(this._nonSlotSpace());
+      console.log(defaultMapWidth, computedMaxMapWidth, computedMaxMapWidth / defaultMapWidth);
+      console.log(defaultSlotTotalThickness, computedSlotTotalThickness, computedSlotTotalThickness / defaultSlotTotalThickness);
+    }
+
+    // FIXME: temp with above
+    adjustedBBOffsetFor(bbOffset) {
+      const viewer = this.viewer;
+      const backbone = viewer.backbone;
+      const maxMapThicknessZoomFactor = this._maxMapThicknessZoomFactor;
+      const zoomFactor = (viewer.zoomFactor > maxMapThicknessZoomFactor) ? maxMapThicknessZoomFactor : viewer.zoomFactor;
+      return (bbOffset * zoomFactor) + (backbone.adjustedThickness - backbone.thickness);
+    }
 
     tracks(term) {
       return this.viewer.tracks(term);
