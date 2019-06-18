@@ -321,7 +321,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.canvas.resize(this.width, this.height);
 
-      this.refreshCaptions();
+      this.refreshCanvasLayer();
       // Hide Color Picker: otherwise it may disappear off the screen
       this.colorPicker.close();
 
@@ -648,7 +648,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._features.filter( f => f.source === source );
     }
 
-    refreshCaptions() {
+    refreshCanvasLayer() {
       for (let i = 0, len = this._captions.length; i < len; i++) {
         this._captions[i].refresh();
       }
@@ -833,7 +833,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     moveCaption(oldIndex, newIndex) {
       this._captions.move(oldIndex, newIndex);
-      this.refreshCaptions();
+      this.refreshCanvasLayer();
     }
 
     invertColors() {

@@ -738,11 +738,13 @@
 
       // Captions on the Map layer
       for (let i = 0, len = viewer._captions.length; i < len; i++) {
-        // FIXME Only if relativeTo Map
-        viewer._captions[i].draw();
+        if (viewer._captions[i].relativeTo === 'map') {
+          viewer._captions[i].draw();
+        }
       }
-      // FIXME Only if relativeTo Map
-      viewer.legend.draw();
+      if (viewer.legend.relativeTo === 'map') {
+        viewer.legend.draw();
+      }
 
       // Progess
       this.drawProgress();

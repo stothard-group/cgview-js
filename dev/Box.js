@@ -5,7 +5,9 @@
   /**
    * <br />
    * A Box consists of an x and y point (the top-left corner) and
-   * a width and height. 
+   * a width and height. The Box position can be relative to the
+   * canvas where the position stays static or to the map in which
+   * case the position moves with the map.
    */
   class Box {
 
@@ -86,7 +88,6 @@
     set relativeTo(value) {
       if ( CGV.validate(value, ['map', 'canvas']) && this.relativeTo !== value ) {
         this._relativeTo = value;
-        // TODO change positions based on current map position
         if (this.position && typeof this.position !== 'string') {
           this._convertPosition();
         }
@@ -110,7 +111,7 @@
     set position(value) {
       // TODO: validate position
       this._position = value;
-      this.refresh();
+      this.refresh(true);
     }
 
 
@@ -123,7 +124,7 @@
 
     set width(value) {
       this._width = value;
-      this.refresh();
+      this.refresh(true);
     }
 
     /**
@@ -135,7 +136,7 @@
 
     set height(value) {
       this._height = value;
-      this.refresh();
+      this.refresh(true);
     }
 
     /**
@@ -250,7 +251,7 @@
     resize(width, height) {
       this._width = width;
       this._height = height;
-      this.refresh();
+      this.refresh(true);
     }
 
     /**
@@ -266,8 +267,8 @@
 
     _validateStringPosition(string) {
       // FIXME: Waiting to update builder and JSON files
-      // const allowedStrings = ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
-      const allowedStrings = ['upper-left', 'upper-center', 'upper-right', 'middle-left', 'middle-center', 'middle-right', 'lower-left', 'lower-center', 'lower-right'];
+      const allowedStrings = ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
+      // const allowedStrings = ['upper-left', 'upper-center', 'upper-right', 'middle-left', 'middle-center', 'middle-right', 'lower-left', 'lower-center', 'lower-right'];
       CGV.validate(string, allowedStrings);
     }
 
@@ -448,7 +449,7 @@
       let newPosition = {};
       const positionKeys = Object.keys(origPosition);
       if (!origPosition.anchor) {
-        // FIXME: set to 'middle-center' after ceating anchor mehthods
+        // FIXME: set to 'middle-center' after ceating anchor methhods
         newPosition.anchor = {xPercent: 50, yPercent: 50};
       }
 
@@ -474,7 +475,8 @@
       this.position = newPosition;
     }
 
-    refresh() {
+    refresh(force = false) {
+      if (!force && this.relativeTo === 'canvas') { return; }
       const origin = this.originForPosition(this.position);
       this._x = origin.x;
       this._y = origin.y;
