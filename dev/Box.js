@@ -27,7 +27,7 @@
      * padding      | Number | Sets paddedX and paddedY values (Default: 0)
      * position     | String|Object | Where to place the box. See position details below.
      * relativeTo   | String | Box position is relative to 'canvas' or 'map' [Default: 'canvas']
-     * color        | String|Color | A string describing the color. See {@link Color} for details.
+     * color        | String|Color | A string describing the color. See {@link Color} for details. (DOESN'T DO ANYTHING YET)
      *
      * @param {String|Object} position - A string or object describing the position.
      *   This value depends on the relativeTo parameter.
@@ -42,7 +42,7 @@
      *   bottom-right = {xPercent: 100, yPercent: 100}
      *
      *   If relativeTo is 'map', the box will move with the map as it's panned.
-     *   The position  will consist of
+     *   The position will consist of
      *     - bp
      *     - bbOffset: distance from the backbone
      *     - anchor: where the point on the box is anchored
@@ -50,10 +50,6 @@
      *   a special case that automatically set the bp, bbOffset, anchor values so
      *   the box will appear in the same location as if the relativeTo is set to canvas
      *   and the map zoomFactor is 1x.
-     *
-     *   const box = new Box(width, height, position='middle-center', relativeTo: 'canvas')
-     *   const box = new Box(viewer, options, meta))
-     *
      */
     constructor(viewer, options = {}, meta = {}) {
       this._viewer = viewer;
@@ -95,7 +91,6 @@
     }
 
     /**
-     * FIXME: standarize the strings
      * @member {String} - Get or set the postion. String values include: "top-left", "top-center", "top-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", or "bottom-right".
      */
     get position() {
@@ -113,7 +108,6 @@
       this._position = value;
       this.refresh(true);
     }
-
 
     /**
      * @member {Number} - Get or set the width.
@@ -396,7 +390,6 @@
           // bbOffset = -viewer.backbone.centerOffset;
         }
         bbOffset =  (bbOffset * viewer.zoomFactor) - centerOffset;
-
       } else if (viewer.format === 'linear') {
         // Base pair
         if (xString === 'left') {
@@ -449,7 +442,7 @@
       let newPosition = {};
       const positionKeys = Object.keys(origPosition);
       if (!origPosition.anchor) {
-        // FIXME: set to 'middle-center' after ceating anchor methhods
+        // FIXME: set to 'middle-center' after creating anchor methhods
         newPosition.anchor = {xPercent: 50, yPercent: 50};
       }
 
@@ -492,5 +485,6 @@
 
   CGV.Box = Box;
 })(CGView);
+
 
 
