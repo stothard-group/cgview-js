@@ -401,7 +401,7 @@
      * Return the layer with the specified name (defaults to map layer)
      */
     layers(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
+      if (this._layerNames.includes(layer)) {
         return this._layers[layer];
       } else {
         console.error('Returning map layer by default');
@@ -413,7 +413,7 @@
      * Return the context for the specified layer (defaults to map layer)
      */
     context(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
+      if (this._layerNames.includes(layer)) {
         return this.layers(layer).ctx;
       } else {
         console.error('Returning map layer by default');
@@ -425,7 +425,7 @@
      * Return the node for the specified layer (defaults to map layer)
      */
     node(layer) {
-      if (CGV.validate(layer, this._layerNames)) {
+      if (this._layerNames.includes(layer)) {
         return this.layers(layer).node;
       } else {
         console.error('Returning map layer by default');

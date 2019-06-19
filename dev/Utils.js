@@ -39,6 +39,7 @@
 
   /**
    * Return true if the value is one of the validOptions.
+   * WARNING: do not use on speed sensitive actions as it can be slower than dong a simple array.includes(value)
    *
    * @param {Object} value - Value or an array of values to validate
    * @param {Array} validOptions - Array of valid options
