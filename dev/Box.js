@@ -26,12 +26,13 @@
      * height       | Number | Height of box (Default: 100)
      * padding      | Number | Sets paddedX and paddedY values (Default: 0)
      * position     | String|Object | Where to place the box. See position details below.
-     * relativeTo   | String | Box position is relative to 'canvas' or 'map' [Default: 'canvas']
+     * anchor       | String|Object | Where the position should be anchored to the box.
      * color        | String|Color | A string describing the color. See {@link Color} for details. (DOESN'T DO ANYTHING YET)
      *
      * @param {String|Object} position - A string or object describing the position.
      *   This value depends on the relativeTo parameter.
      *
+     *   // FIXME: Update docs
      *   If relativeTo is 'canvas', the box will be in a static position on the Canvas
      *   and will not move as the map is panned. String values (e.g. top-right, bottom-middle, etc)
      *   position the box appropriately. An object with xPercent and yPercent values between
@@ -51,11 +52,12 @@
      *   the box will appear in the same location as if the relativeTo is set to canvas
      *   and the map zoomFactor is 1x.
      */
-    constructor(viewer, options = {}, meta = {}) {
+    constructor(viewer, options = {}) {
       this._viewer = viewer;
       this._width = CGV.defaultFor(options.width, 100);
       this._height = CGV.defaultFor(options.height, 100);
-      this.relativeTo = CGV.defaultFor(options.relativeTo, 'canvas');
+      this.anchor = options.anchor;
+      // Set position after anchor. If position is on canvas, the anchor will be updated.
       this.position = CGV.defaultFor(options.position, 'middle-center');
       this.padding = CGV.defaultFor(options.padding, 0);
       this.color = CGV.defaultFor(options.color, 'white');
@@ -78,16 +80,11 @@
     }
 
     get relativeTo() {
-      return this._relativeTo;
+      return this.position.on;
     }
 
     set relativeTo(value) {
-      if ( CGV.validate(value, ['map', 'canvas']) && this.relativeTo !== value ) {
-        this._relativeTo = value;
-        if (this.position && typeof this.position !== 'string') {
-          this._convertPosition();
-        }
-      }
+      this.position.on = value;
     }
 
     /**
@@ -97,16 +94,23 @@
       return this._position;
     }
 
-    // relativeTo: canvas
-    //   value = 'top-right'
-    //   value = {xPercent: 100, yPercent: 0}
-    // relativeTo: map
-    //   value = 'top-right'
-    //   value = {bp: 1000, bbOffset: 200, anchor: ??}
     set position(value) {
-      // TODO: validate position
-      this._position = value;
+      this._position = new CGV.Position(this.viewer, value);
+      this._adjustAnchor();
       this.refresh(true);
+    }
+
+    /**
+     * @member {String|Object} - Get or set the anchor.
+     */
+    get anchor() {
+      return this._anchor;
+    }
+
+    set anchor(value) {
+      if (this.position && this.position.onCanvas) { return; }
+      this._anchor = new CGV.Anchor(value);
+      this.position && this.refresh(true);
     }
 
     /**
@@ -259,222 +263,19 @@
       return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) );
     }
 
-    _validateStringPosition(string) {
-      // FIXME: Waiting to update builder and JSON files
-      const allowedStrings = ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
-      // const allowedStrings = ['upper-left', 'upper-center', 'upper-right', 'middle-left', 'middle-center', 'middle-right', 'lower-left', 'lower-center', 'lower-right'];
-      CGV.validate(string, allowedStrings);
-    }
-
-    originForPosition(position) {
-      if (this.relativeTo === 'map') {
-        return this._originForPositionRelativeToMap(position);
-      } else if (this.relativeTo === 'canvas') {
-        return this._originForPositionRelativeToCanvas(position);
+    _adjustAnchor() {
+      if (this.position.onCanvas) {
+        this.anchor.xPercent = this.position.xPercent;
+        this.anchor.yPercent = this.position.yPercent;
       }
-    }
-
-    _originForPositionRelativeToMap(position) {
-      if (typeof position === 'string') {
-        this._validateStringPosition(position);
-        return this._originOnMapFromString(position);
-      } else {
-        return this._originOnMapFromObject(position);
-      }
-    }
-
-    _originForPositionRelativeToCanvas(position) {
-      if (typeof position === 'string') {
-        this._validateStringPosition(position);
-        return this._originOnCanvasFromString(position);
-      } else {
-        return this._originOnCanvasFromObject(position);
-      }
-    }
-
-    _originOnCanvasFromString(position) {
-      // FIXME: will be changed in BUILDER
-      position = position.replace('upper', 'top');
-      position = position.replace('lower', 'bottom');
-
-      const [yString, xString] = position.split('-');
-      let xPercent, yPercent;
-
-      if (yString === 'top') {
-        yPercent = 0;
-      } else if (yString === 'middle') {
-        yPercent = 50;
-      } else if (yString === 'bottom') {
-        yPercent = 100;
-      }
-
-      if (xString === 'left') {
-        xPercent = 0;
-      } else if (xString === 'center') {
-        xPercent = 50;
-      } else if (xString === 'right') {
-        xPercent = 100;
-      }
-
-      return this._originOnCanvasFromObject({xPercent, yPercent});
-    }
-
-    _originOnCanvasFromObject(position) {
-      const xPercent = position.xPercent;
-      const yPercent = position.yPercent;
-
-      // boxX and boxY are the weighted point on the box dependent on the offsets
-      // e.g. 0 xPercent would be 0% box width
-      // e.g. 50 xPercent would be 50% box width
-      // e.g. 100 xPercent would be 100% box width
-      const boxX = this.width * xPercent / 100;
-      const boxY = this.height * yPercent / 100;
-
-      const canvasX = this.canvas.width * xPercent / 100;
-      const canvasY = this.canvas.height * yPercent / 100;
-
-      const x = canvasX - boxX;
-      const y = canvasY - boxY;
-
-      return {x, y};
-    }
-
-    _originOnMapFromString(position) {
-      const viewer = this.viewer;
-      // FIXME: will be changed in BUILDER
-      position = position.replace('upper', 'top');
-      position = position.replace('lower', 'bottom');
-
-      const [yString, xString] = position.split('-');
-
-      // Anchor
-      const anchor = {};
-      if (yString === 'top') {
-        anchor.yPercent = 0;
-      } else if (yString === 'middle') {
-        anchor.yPercent = 50;
-      } else if (yString === 'bottom') {
-        anchor.yPercent = 100;
-      }
-
-      if (xString === 'left') {
-        anchor.xPercent = 0;
-      } else if (xString === 'center') {
-        anchor.xPercent = 50;
-      } else if (xString === 'right') {
-        anchor.xPercent = 100;
-      }
-
-      let bp, bbOffset;
-      const seqLength = viewer.sequence.length;
-
-      if (viewer.format === 'circular') {
-        // Base pair
-        const lengthFractions = {
-          'middle-center': 0, 'top-right': 1, 'middle-right': 2,
-          'bottom-right': 3, 'bottom-center': 4, 'bottom-left': 5,
-          'middle-left': 6, 'top-left': 7, 'top-center': 8
-        };
-        bp = lengthFractions[position] / 8 * seqLength;
-
-        // bbOffset
-        const centerOffset = viewer.backbone.adjustedCenterOffset;
-        bbOffset = 0;
-        if (['top-center', 'bottom-center'].includes(position)) {
-          bbOffset = 1 / 2 * viewer.height;
-        } else if (['middle-left', 'middle-right'].includes(position)) {
-          bbOffset = 1 / 2 * viewer.width;
-        } else if (['top-left', 'top-right', 'bottom-left', 'bottom-right'].includes(position)) {
-          bbOffset = Math.hypot( (1 / 2 * viewer.height), (1 / 2 * viewer.width) );
-        } else if (position === 'middle-center') {
-          // bbOffset = -viewer.backbone.centerOffset;
-        }
-        bbOffset =  (bbOffset * viewer.zoomFactor) - centerOffset;
-      } else if (viewer.format === 'linear') {
-        // Base pair
-        if (xString === 'left') {
-          bp = 1;
-        } else if (xString === 'center') {
-          bp = 0.5 * seqLength;
-        } else if (xString === 'right') {
-          bp = seqLength;
-        }
-
-        // bbOffset
-        if (yString === 'top') {
-          bbOffset = 1 / 2 * viewer.height;
-        } else if (yString === 'middle') {
-          bbOffset = 0;
-        } else if (yString === 'bottom') {
-          bbOffset = -1 / 2 * viewer.height;
-        }
-      }
-
-      // console.log({bp, bbOffset, anchor});
-      return this._originOnMapFromObject({bp, bbOffset, anchor});
-    }
-
-    // bp, bbOffset, anchor
-    _originOnMapFromObject(position) {
-      const bp = position.bp;
-      const bbOffset = position.bbOffset;
-      const anchor = position.anchor || { xPercent: 50, yPercent: 50 };
-
-      // const centerOffset = bbOffset + this.viewer.backbone.adjustedCenterOffset;
-      // const centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset);
-      const centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset) + this.viewer.backbone.adjustedCenterOffset;
-      const point = this.canvas.pointForBp(bp, centerOffset);
-
-      const boxX = this.width * anchor.xPercent / 100;
-      const boxY = this.height * anchor.yPercent / 100;
-
-      return {
-        x: point.x - boxX,
-        y: point.y - boxY
-      };
-    }
-
-    _convertPosition() {
-      const viewer = this.viewer;
-      if (typeof this.position === 'string') { return; }
-      const relativeTo = this.relativeTo;
-      const origPosition = this.position;
-      let newPosition = {};
-      const positionKeys = Object.keys(origPosition);
-      if (!origPosition.anchor) {
-        // FIXME: set to 'middle-center' after creating anchor methhods
-        newPosition.anchor = {xPercent: 50, yPercent: 50};
-      }
-
-      if (relativeTo === 'map') {
-        if ( CGV.validate(positionKeys, ['xPercent', 'yPercent', 'anchor']) ) {
-          const point = {
-            x: origPosition.xPercent * viewer.width / 100,
-            y: origPosition.yPercent * viewer.height / 100
-          };
-          newPosition.bp = viewer.canvas.bpForPoint(point);
-          newPosition.bbOffset = viewer.layout.centerOffsetForPoint(point) - viewer.backbone.adjustedCenterOffset;
-        }
-      } else if (relativeTo === 'canvas') {
-        if ( CGV.validate(positionKeys, ['bbOffset', 'bp', 'anchor']) ) {
-          const centerOffset = origPosition.bbOffset + viewer.backbone.adjustedCenterOffset;
-          const point = viewer.canvas.pointForBp(origPosition.bp, centerOffset);
-          newPosition.xPercent = point.x / viewer.width * 100;
-          newPosition.yPercent = point.y / viewer.height * 100;
-        }
-      } else {
-        newPosition = 'middle-center';
-      }
-      this.position = newPosition;
     }
 
     refresh(force = false) {
       if (!force && this.relativeTo === 'canvas') { return; }
-      const origin = this.originForPosition(this.position);
-      this._x = origin.x;
-      this._y = origin.y;
+      this.position.refresh();
+      this._x = this.position.x - (this.width * this.anchor.xPercent / 100);
+      this._y = this.position.y - (this.height * this.anchor.yPercent / 100);
     }
-
 
     clear(ctx) {
       // Added margin of 1 to remove thin lines of previous background that were not being removed

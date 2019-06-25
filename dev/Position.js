@@ -58,8 +58,8 @@
      *
      */
     constructor(viewer, value) {
-      this.viewer = viewer;
-      this.processValue(value);
+      this._viewer = viewer;
+      this.value = value;
     }
 
     /**
@@ -76,6 +76,29 @@
 
     static get names() {
       return ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
+    }
+
+    static percentsFromName(name) {
+      const [yString, xString] = name.split('-');
+      let xPercent, yPercent;
+
+      if (yString === 'top') {
+        yPercent = 0;
+      } else if (yString === 'middle') {
+        yPercent = 50;
+      } else if (yString === 'bottom') {
+        yPercent = 100;
+      }
+
+      if (xString === 'left') {
+        xPercent = 0;
+      } else if (xString === 'center') {
+        xPercent = 50;
+      } else if (xString === 'right') {
+        xPercent = 100;
+      }
+
+      return { xPercent, yPercent };
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -104,8 +127,19 @@
       return this._y;
     }
 
+    /**
+     * @member {Point} - Get the x/y values for the position as a point.
+     */
+    get point() {
+      return {x: this.x, y: this.y};
+    }
+
     get value() {
       return this._value;
+    }
+
+    set value(value) {
+      return this._processValue(value);
     }
 
     get type() {
@@ -113,11 +147,23 @@
     }
 
     get xPercent() {
-      return this.value && this.value.xPercent;
+      return this._xPercent;
     }
 
     get yPercent() {
-      return this.value && this.value.yPercent;
+      return this._yPercent;
+    }
+
+    get on() {
+      return this._on;
+    }
+
+    set on(value) {
+      if (value === 'map') {
+        this.convertToOnMap();
+      } else if (value === 'canvas') {
+        this.convertToOnCanvas();
+      }
     }
 
     get onMap() {
@@ -128,7 +174,11 @@
       return this.on === 'canvas';
     }
 
-    processValue(value) {
+    get offsetType() {
+      return this._offsetType;
+    }
+
+    _processValue(value) {
       if (typeof value === 'string') {
         this._value = CGV.validate(value, Position.names) ? value : 'middle-center';
         this._on = 'canvas';
@@ -157,7 +207,7 @@
           const {mapOffset, bbOffset} = value;
           if (CGV.isNumeric(mapOffset)) {
             this._offsetType = 'map';
-            this._value.mapOffset = Number(mapOffset)
+            this._value.mapOffset = Number(mapOffset);
           } else if (CGV.isNumeric(bbOffset)) {
             this._offsetType = 'backbone';
             this._value.bbOffset = CGV.constrain(bbOffset, -100, 100);
@@ -191,25 +241,12 @@
       this._y = origin.y;
     }
 
+
     _originFromName(name) {
-      const [yString, xString] = name.split('-');
-      let xPercent, yPercent;
+      const { xPercent, yPercent } = Position.percentsFromName(name);
 
-      if (yString === 'top') {
-        yPercent = 0;
-      } else if (yString === 'middle') {
-        yPercent = 50;
-      } else if (yString === 'bottom') {
-        yPercent = 100;
-      }
-
-      if (xString === 'left') {
-        xPercent = 0;
-      } else if (xString === 'center') {
-        xPercent = 50;
-      } else if (xString === 'right') {
-        xPercent = 100;
-      }
+      this._xPercent = xPercent;
+      this._yPercent = yPercent;
 
       return this._originFromCanvasPercents({xPercent, yPercent});
     }
@@ -223,7 +260,7 @@
 
     _originFromMapPercent({percentLength, bbOffset, mapOffset}) {
       const layout = this.viewer.layout;
-      const bp = this.viewer.sequence.length * percentLength;
+      const bp = this.viewer.sequence.length * percentLength / 100;
       let centerOffset;
       if (this.offsetType === 'backbone') {
         // FIXME: need better way to convert offsets
@@ -239,19 +276,40 @@
       return point;
     }
 
-    // update(attributes) {
-    //   this.refresh();
-    // }
+    convertToOnMap() {
+      if (this.onMap) { return this; }
+      const viewer = this.viewer;
+      const canvas = this.canvas;
+      const point = this.point;
+      const bp = canvas.bpForPoint(point);
+      // FIXME: TEMP - need best way to get bbOffset or mapOffset
+      //               dpending on position
+      const bbOffset = viewer.layout.centerOffsetForPoint(point) - viewer.backbone.adjustedCenterOffset;
+      const percentLength = bp / viewer.sequence.length * 100;
+      this.value = {percentLength, bbOffset};
+      return this;
+    }
+
+    convertToOnCanvas() {
+      if (this.onCanvas) { return this; }
+      const viewer = this.viewer;
+      const canvas = this.canvas;
+      const value = this.value;
+      // FIXME: TEMP - need best way to get bbOffset or mapOffset
+      //               dpending on position
+      const centerOffset = value.bbOffset + viewer.backbone.adjustedCenterOffset;
+      const bp = viewer.sequence.length * value.percentLength / 100;
+      const point = canvas.pointForBp(bp, centerOffset);
+
+      this.value = {
+        xPercent: point.x / viewer.width * 100,
+        yPercent: point.y / viewer.height * 100
+      };
+      return this;
+    }
 
     toJSON() {
-      if (this.name) {
-        return this.name;
-      } else {
-        return {
-          xPercent: this.xPercent,
-          yPercent: this.yPercent
-        };
-      }
+      return this.value;
     }
 
   }

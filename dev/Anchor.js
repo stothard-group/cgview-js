@@ -36,9 +36,12 @@
     constructor(value) {
       if (typeof value === 'string') {
         this.name = value;
+      } else if (typeof value === 'object') {
+        this.xPercent = Number(value.xPercent) || 50;
+        this.yPercent = Number(value.yPercent) || 50;
       } else {
-        this.xPercent = Number(value.xPercent) || 0;
-        this.yPercent = Number(value.yPercent) || 0;
+        this.xPercent = 50;
+        this.yPercent = 50;
       }
     }
 
@@ -48,14 +51,6 @@
      */
     toString() {
       return 'Anchor';
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // STATIC CLASSS METHODS
-    //////////////////////////////////////////////////////////////////////////
-
-    static get names() {
-      return ['top-left', 'top-center', 'top-right', 'middle-left', 'middle-center', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right'];
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -96,7 +91,7 @@
     }
 
     set name(value) {
-      if (value && CGV.validate(value, Anchor.names)) {
+      if (value && CGV.validate(value, CGV.Position.names)) {
         this._name = value;
         this._updatePercentsFromName(value);
       }
@@ -104,23 +99,10 @@
 
     // Should only be called from set name so the string is validated first.
     _updatePercentsFromName(name) {
-      const [yString, xString] = name.split('-');
+      const { xPercent, yPercent } = CGV.Position.percentsFromName(name);
 
-      if (yString === 'top') {
-        this.yPercent = 0;
-      } else if (yString === 'middle') {
-        this.yPercent = 50;
-      } else if (yString === 'bottom') {
-        this.yPercent = 100;
-      }
-
-      if (xString === 'left') {
-        this.xPercent = 0;
-      } else if (xString === 'center') {
-        this.xPercent = 50;
-      } else if (xString === 'right') {
-        this.xPercent = 100;
-      }
+      this.xPercent = xPercent;
+      this.yPercent = yPercent;
     }
 
     _nameFromPercents() {

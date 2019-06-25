@@ -17,9 +17,8 @@
      *
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
-     *  position              | "upper-right"    | Where to draw the caption. See {@link Box}
-     *  relativeTo            | "canvas"         | ... See {@link Box}
-     *  anchor                |
+     *  position              | "upper-right"    | Where to draw the caption. See {@link Position}
+     *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
      *  font                  | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
      *  fontColor             | "black"          | A string describing the color. See {@link Color} for details.
      *  textAlignment         | "left"           | *left*, *center*, or *right*
@@ -37,8 +36,8 @@
       this.fontColor = CGV.defaultFor(options.fontColor, 'black');
       this.textAlignment = CGV.defaultFor(options.textAlignment, 'left');
       this.box = new CGV.Box(viewer, {
-        relativeTo: CGV.defaultFor(options.relative, 'canvas'),
-        position: CGV.defaultFor(options.position, 'middle-center')
+        position: CGV.defaultFor(options.position, 'middle-center'),
+        anchor: CGV.defaultFor(options.anchor, 'middle-center')
       });
       // Setting font will refresh the caption and draw
       this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
@@ -85,23 +84,26 @@
       this.refresh();
     }
 
+    get anchor() {
+      return this.box.anchor;
+    }
+
+    set anchor(value) {
+      this.clear();
+      this.box.anchor = value;
+      this.refresh();
+    }
+
     /**
      * @member {Context} - Get the *Context* for drawing.
      */
-    // FIXME: 
+    // FIXME:
     // - if this is slow we could be set when setting relativeTo (e.g. this._ctx = ...)
     get ctx() {
       // return this._ctx || this.canvas.context('forground');
       const layer = (this.relativeTo === 'map') ? 'foreground' : 'canvas';
       return this.canvas.context(layer);
     }
-    //
-    // /**
-    //  * @member {String} - Alias for getting the position. Useful for querying CGArrays.
-    //  */
-    // get id() {
-    //   return this.position;
-    // }
 
     get position() {
       return this.box.position;
@@ -291,16 +293,22 @@
     }
 
     toJSON() {
-      return {
+      const json = {
         name: this.name,
-        position: this.position,
-        relativeTo: this.relativeTo,
+        position: this.position.toJSON(),
         textAlignment: this.textAlignment,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
-        backgroundColor: this.backgroundColor.rgbaString,
-        visible: this.visible
+        backgroundColor: this.backgroundColor.rgbaString
+      };
+      if (this.position.onMap) {
+        json.anchor = this.anchor.toJSON();
       }
+      if (!this.visible) {
+        json.visible = this.visible;
+      }
+
+      return json;
     }
 
   }
