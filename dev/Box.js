@@ -37,9 +37,9 @@
      *   position the box appropriately. An object with xPercent and yPercent values between
      *   0 and 100 will position the box along the x and y axes starting from the top-left.
      *   The string values are associated with specific offsets. For example,
-     *   top-left = {xPercent: 0, yPercent: 0}
-     *   middle-center = {xPercent: 50, yPercent: 50}
-     *   bottom-right = {xPercent: 100, yPercent: 100}
+     *     - top-left = {xPercent: 0, yPercent: 0}
+     *     - middle-center = {xPercent: 50, yPercent: 50}
+     *     - bottom-right = {xPercent: 100, yPercent: 100}
      *
      *   If relativeTo is 'map', the box will move with the map as it's panned.
      *   The position will consist of
@@ -57,8 +57,8 @@
       this._height = CGV.defaultFor(options.height, 100);
       this.relativeTo = CGV.defaultFor(options.relativeTo, 'canvas');
       this.position = CGV.defaultFor(options.position, 'middle-center');
-      this.color = CGV.defaultFor(options.color, 'white');
       this.padding = CGV.defaultFor(options.padding, 0);
+      this.color = CGV.defaultFor(options.color, 'white');
     }
 
     /**

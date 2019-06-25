@@ -19,6 +19,7 @@
      *  ----------------------|-------------------------------------------------
      *  position              | "upper-right"    | Where to draw the caption. See {@link Box}
      *  relativeTo            | "canvas"         | ... See {@link Box}
+     *  anchor                |
      *  font                  | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
      *  fontColor             | "black"          | A string describing the color. See {@link Color} for details.
      *  textAlignment         | "left"           | *left*, *center*, or *right*
