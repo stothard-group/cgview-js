@@ -74,13 +74,13 @@
       this.refresh();
     }
 
-    get relativeTo() {
-      return this.box.relativeTo;
+    get on() {
+      return this.box.on;
     }
 
-    set relativeTo(value) {
+    set on(value) {
       this.clear();
-      this.box.relativeTo = value;
+      this.box.on = value;
       this.refresh();
     }
 
@@ -94,14 +94,19 @@
       this.refresh();
     }
 
+    get onMap() {
+      return this.position.onMap;
+    }
+
+    get onCanvas() {
+      return this.position.onCanvas;
+    }
+
     /**
      * @member {Context} - Get the *Context* for drawing.
      */
-    // FIXME:
-    // - if this is slow we could be set when setting relativeTo (e.g. this._ctx = ...)
     get ctx() {
-      // return this._ctx || this.canvas.context('forground');
-      const layer = (this.relativeTo === 'map') ? 'foreground' : 'canvas';
+      const layer = (this.onMap) ? 'foreground' : 'canvas';
       return this.canvas.context(layer);
     }
 

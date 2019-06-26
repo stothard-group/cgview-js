@@ -18,7 +18,7 @@
      *  Option                | Default          | Description
      *  ----------------------|-------------------------------------------------
      *  position              | "upper-right"    | Where to draw the legend. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
-     *  relativeTo            | "canvas"         | ... See {@link Box}
+     *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
      *  defaultFont           | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
      *  defaultFontColor      | "black"          | A string describing the color. See {@link Color} for details.
      *  textAlignment         | "left"           | *left*, *center*, or *right*
@@ -34,8 +34,8 @@
       this.defaultFontColor = CGV.defaultFor(options.fontColor, 'black');
       this.textAlignment = CGV.defaultFor(options.textAlignment, 'left');
       this.box = new CGV.Box(viewer, {
-        relativeTo: CGV.defaultFor(options.relative, 'canvas'),
-        position: CGV.defaultFor(options.position, 'top-right')
+        position: CGV.defaultFor(options.position, 'top-right'),
+        anchor: CGV.defaultFor(options.anchor, 'middle-center')
       });
       // Setting font will refresh legend and draw
       this.defaultFont = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
@@ -72,6 +72,16 @@
     set relativeTo(value) {
       this.clear();
       this.box.relativeTo = value;
+      this.refresh();
+    }
+
+    get anchor() {
+      return this.box.anchor;
+    }
+
+    set anchor(value) {
+      this.clear();
+      this.box.anchor = value;
       this.refresh();
     }
 
@@ -430,14 +440,19 @@
     toJSON() {
       const json = {
         name: this.name,
-        position: this.position,
+        position: this.position.toJSON(),
         defaultTextAlignment: this.textAlignment,
         defaultFont: this.font.string,
         defaultFontColor: this.fontColor.rgbaString,
         backgroundColor: this.backgroundColor.rgbaString,
-        visible: this.visible,
         items: []
       };
+      if (this.position.onMap) {
+        json.anchor = this.anchor.toJSON();
+      }
+      if (!this.visible) {
+        json.visible = this.visible;
+      }
       this.items().each( (i, item) => {
         json.items.push(item.toJSON());
       });

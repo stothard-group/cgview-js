@@ -27,18 +27,18 @@
      *   bottom-right     | 100      | 100
      *
      *   Examples:
-     *    position: { percentLength: 23, mapOffset: 10 }
-     *    position: { percentLength: 23, bbOffset: 10 }
-     *    position: { contig: 'contig-1', bp: 100, mapOffset: 10 }
-     *    position: { xPercent: 50, yPercent: 40 }
-     *    position: 'top-left'
+     *    value: { lengthPercent: 23, mapOffset: 10 }
+     *    value: { lengthPercent: 23, bbOffset: 10 }
+     *    value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
+     *    value: { xPercent: 50, yPercent: 40 }
+     *    value: 'top-left'
      *
      *   Order of priority for value:
      *   Value                           | Assumes On |
      *   --------------------------------|------------|------------
      *   "top-left"                      | Canvas     |
      *   {xPercent, yPercent,...}        | Canvas     |
-     *   {percentLength,...}             | Map        |
+     *   {lengthPercent,...}             | Map        |
      *   {contig, bp,...}                | Map        |
      *   {bp,...}                        | Map        |
      *
@@ -48,12 +48,11 @@
      *   The position (on the map) can be updated by called refresh, if the map pans or zoomes.
      *   The type of position can be changed by altering the position properties:
      *      - on: map, canvas
-     *      - type: percent, bp, name
-     *      - offsetTo: backbone, map
+     *      - offsetTo: backbone, map // NOT IMPLEMENTED
      *      - value:
      *         - 'top-left'
      *         - {bp: 1, contig: 'c-1'}
-     *         - {percentLength: 23, mapOffset: 23}
+     *         - {lengthPercent: 23, mapOffset: 23}
      *         - {xPercent: 20, yPercent: 30}
      *
      */
@@ -190,13 +189,14 @@
           this._value = {xPercent, yPercent};
           this._on = 'canvas';
           this._type = 'percent';
-        } else if (keys.includes('percentLength')) {
-          const {percentLength} = value;
-          this._value = {percentLength};
+        } else if (keys.includes('lengthPercent')) {
+          const {lengthPercent} = value;
+          this._value = {lengthPercent};
           this._on = 'map';
           this._type = 'percent';
         } else if (keys.includes('bp')) {
           // FIXME: handle bp without contig
+          // FIXME: currently not handing bp at all (do we need to yet?)
           const {bp, contig} = value;
           this._value = {bp, contig};
           this._on = 'map';
@@ -258,9 +258,9 @@
       return {x, y};
     }
 
-    _originFromMapPercent({percentLength, bbOffset, mapOffset}) {
+    _originFromMapPercent({lengthPercent, bbOffset, mapOffset}) {
       const layout = this.viewer.layout;
-      const bp = this.viewer.sequence.length * percentLength / 100;
+      const bp = this.viewer.sequence.length * lengthPercent / 100;
       let centerOffset;
       if (this.offsetType === 'backbone') {
         // FIXME: need better way to convert offsets
@@ -285,8 +285,8 @@
       // FIXME: TEMP - need best way to get bbOffset or mapOffset
       //               dpending on position
       const bbOffset = viewer.layout.centerOffsetForPoint(point) - viewer.backbone.adjustedCenterOffset;
-      const percentLength = bp / viewer.sequence.length * 100;
-      this.value = {percentLength, bbOffset};
+      const lengthPercent = bp / viewer.sequence.length * 100;
+      this.value = {lengthPercent, bbOffset};
       return this;
     }
 
@@ -298,7 +298,7 @@
       // FIXME: TEMP - need best way to get bbOffset or mapOffset
       //               dpending on position
       const centerOffset = value.bbOffset + viewer.backbone.adjustedCenterOffset;
-      const bp = viewer.sequence.length * value.percentLength / 100;
+      const bp = viewer.sequence.length * value.lengthPercent / 100;
       const point = canvas.pointForBp(bp, centerOffset);
 
       this.value = {

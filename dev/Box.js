@@ -16,7 +16,7 @@
      *
      * @param {Viewer} viewer - The viewer this box will be associated with.
      * @param {Object} options - Options for creating the box.
-     * @param {Object} width - Meta data...
+     * @param {Object} meta - Meta data...
      *
      * ### Options
      *
@@ -25,15 +25,12 @@
      * width        | Number | Width of box (Default: 100)
      * height       | Number | Height of box (Default: 100)
      * padding      | Number | Sets paddedX and paddedY values (Default: 0)
-     * position     | String|Object | Where to place the box. See position details below.
+     * position     | String|Object | Where to place the box. See {@link Position} for details.
      * anchor       | String|Object | Where the position should be anchored to the box.
      * color        | String|Color | A string describing the color. See {@link Color} for details. (DOESN'T DO ANYTHING YET)
      *
-     * @param {String|Object} position - A string or object describing the position.
-     *   This value depends on the relativeTo parameter.
-     *
-     *   // FIXME: Update docs
-     *   If relativeTo is 'canvas', the box will be in a static position on the Canvas
+     *   Position:
+     *   If the position is on (i.e. relativeTo) the 'canvas', the box will be in a static position
      *   and will not move as the map is panned. String values (e.g. top-right, bottom-middle, etc)
      *   position the box appropriately. An object with xPercent and yPercent values between
      *   0 and 100 will position the box along the x and y axes starting from the top-left.
@@ -42,15 +39,13 @@
      *     - middle-center = {xPercent: 50, yPercent: 50}
      *     - bottom-right = {xPercent: 100, yPercent: 100}
      *
-     *   If relativeTo is 'map', the box will move with the map as it's panned.
+     *   If position is on (i.e. relativeTo) the 'map', the box will move with the map as it's panned.
      *   The position will consist of
-     *     - bp
-     *     - bbOffset: distance from the backbone
-     *     - anchor: where the point on the box is anchored
-     *   String values (e.g. top-right, bottom-middle, etc) for the position are
-     *   a special case that automatically set the bp, bbOffset, anchor values so
-     *   the box will appear in the same location as if the relativeTo is set to canvas
-     *   and the map zoomFactor is 1x.
+     *     - lengthPercent: 0 - start of map; 50 - middle of map; 100 - end of map
+     *     - mapOffset or bbOffset: distance from the thbackbone
+     *
+     *   Anchor:
+     *   The anchor is where the position is attached to the box.
      */
     constructor(viewer, options = {}) {
       this._viewer = viewer;
@@ -79,11 +74,11 @@
       return this.viewer.canvas;
     }
 
-    get relativeTo() {
+    get on() {
       return this.position.on;
     }
 
-    set relativeTo(value) {
+    set on(value) {
       this.position.on = value;
     }
 
@@ -271,7 +266,7 @@
     }
 
     refresh(force = false) {
-      if (!force && this.relativeTo === 'canvas') { return; }
+      if (!force && this.on === 'canvas') { return; }
       this.position.refresh();
       this._x = this.position.x - (this.width * this.anchor.xPercent / 100);
       this._y = this.position.y - (this.height * this.anchor.yPercent / 100);
