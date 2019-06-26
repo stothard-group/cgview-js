@@ -384,13 +384,34 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._features.get(term);
     }
 
-    /**
-     * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-     * @return {CGArray}
-     */
-    bookmarks(term) {
-      return this._bookmarks.get(term);
+    // testFunctionExample() {
+    //   this.dividers.slot.update({thickness: 4});
+    //   this.dividers.update({slotMirrorsTrack: true, slot: {thickness: 3}});
+    //   this.tracks(1).update({data: {type: 'features', from: 'type', extract: 'CDS', options: {}}});
+    //   this.tracks(1).update({dataType: 'features', dataFrom: 'type', dataExtract: 'CDS', dataOptions: {}});
+    // }
+
+    // updateObjects({ objects, attributes, validKeys: [], eventName }) {
+    //   objects = CGV.CGArray.arrayerize(objects);
+    //   if (attributes) {
+    //     // Validate attribute keys
+    //     const keys = Object.keys(attributes);
+    //     if (!CGV.validate(keys, validKeys)) { return; }
+    //     // Change
+    //     objects.attr(attributes);
+    //   }
+    //   this.trigger(eventName, { objects, attributes });
+    // }
+
+    update(attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['name'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.trigger('viewer-update', { attributes });
     }
 
 
@@ -421,35 +442,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.trigger('tracks-remove', tracks);
     }
 
-    // testFunctionExample() {
-    //   this.dividers.slot.update({thickness: 4});
-    //   this.dividers.update({slotMirrorsTrack: true, slot: {thickness: 3}});
-    //   this.tracks(1).update({data: {type: 'features', from: 'type', extract: 'CDS', options: {}}});
-    //   this.tracks(1).update({dataType: 'features', dataFrom: 'type', dataExtract: 'CDS', dataOptions: {}});
-    // }
-
-    // updateObjects({ objects, attributes, validKeys: [], eventName }) {
-    //   objects = CGV.CGArray.arrayerize(objects);
-    //   if (attributes) {
-    //     // Validate attribute keys
-    //     const keys = Object.keys(attributes);
-    //     if (!CGV.validate(keys, validKeys)) { return; }
-    //     // Change
-    //     objects.attr(attributes);
-    //   }
-    //   this.trigger(eventName, { objects, attributes });
-    // }
-
-    update(attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
-      this.trigger('viewer-update', { attributes });
-    }
 
     /**
      * Update track properties to the viewer. If no attribtes are given, the trigger event will still be called.
@@ -494,15 +486,6 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
-     * Returns an [CGArray](CGArray.html) of Plots or a single Plot from all the Tracks in the viewer.
-     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-     * @return {CGArray}
-     */
-    plots(term) {
-      return this._plots.get(term);
-    }
-
-    /**
      * Returns an [CGArray](CGArray.html) of Captions or a single Caption.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
@@ -513,6 +496,36 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     visibleCaptions(term) {
       return this._captions.filter( i => i.visible ).get(term);
+    }
+
+    /**
+     * Adds Captions to the viewer. See
+     */
+    addCaptions(captionData = []) {
+      captionData = CGV.CGArray.arrayerize(captionData);
+      const captions = captionData.map( (data) => new CGV.Caption(this, data));
+      this.trigger('captions-add', captions);
+      return captions;
+    }
+
+    updateCaptions(captions, attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      captions = CGV.CGArray.arrayerize(captions);
+      captions.attr(attributes);
+      this.trigger('captions-update', { captions, attributes });
+    }
+
+
+    /**
+     * Returns an [CGArray](CGArray.html) of Plots or a single Plot from all the Tracks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+     * @return {CGArray}
+     */
+    plots(term) {
+      return this._plots.get(term);
     }
 
     /**
@@ -565,6 +578,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       features.attr(attributes);
       // TODO: refresh tracks if any attribute is source
       this.trigger('features-update', { features, attributes });
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+     * @return {CGArray}
+     */
+    bookmarks(term) {
+      return this._bookmarks.get(term);
     }
 
     /**
@@ -863,9 +885,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.refresh();
       this.captions().each( (i, caption) => {
         caption.backgroundColor.invert();
-        // caption.items().each( (i, item) => {
-        //   item.fontColor.invert();
-        // });
         caption.refresh();
       });
       this.ruler.color.invert();

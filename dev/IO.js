@@ -152,9 +152,7 @@
 
       // Load Captions
       if (data.captions) {
-        data.captions.forEach((captionData) => {
-          new CGV.Caption(viewer, captionData);
-        });
+        viewer.addCaptions(data.captions);
       }
 
       // Load Legend
@@ -162,9 +160,6 @@
 
       // Create features
       if (data.features) {
-        // data.features.forEach((featureData) => {
-        //   new CGV.Feature(viewer, featureData);
-        // });
         viewer.addFeatures(data.features);
       }
 
@@ -178,9 +173,6 @@
       // Create tracks
       if (data.tracks) {
         viewer.addTracks(data.tracks);
-        // data.tracks.forEach((trackData) => {
-        //   new CGV.Track(viewer, trackData);
-        // });
       }
       viewer._loading = false;
 

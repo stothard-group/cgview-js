@@ -206,6 +206,10 @@
       return this.name.split('\n');
     }
 
+    update(attributes) {
+      this.viewer.updateCaptions(this, attributes);
+    }
+
     /**
      * Recalculates the *Caption* size and position.
      */
@@ -304,14 +308,17 @@
         textAlignment: this.textAlignment,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
-        backgroundColor: this.backgroundColor.rgbaString
+        backgroundColor: this.backgroundColor.rgbaString,
+        visible: this.visible
       };
       if (this.position.onMap) {
         json.anchor = this.anchor.toJSON();
       }
-      if (!this.visible) {
-        json.visible = this.visible;
-      }
+      // FIXME: proksee needs to know visible status but IO would be smaller without defaults
+      //        - Maybe, we should have parameters for full JSON and reduced JSON
+      // if (!this.visible) {
+      //   json.visible = this.visible;
+      // }
 
       return json;
     }

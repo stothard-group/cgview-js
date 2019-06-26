@@ -258,22 +258,24 @@
       return {x, y};
     }
 
-    _originFromMapPercent({lengthPercent, bbOffset, mapOffset}) {
+    _originFromMapPercent(value = this.value) {
+      const bp = this.viewer.sequence.length * value.lengthPercent / 100;
+      const centerOffset = this.centerOffset(value);
+      const point = this.canvas.pointForBp(bp, centerOffset);
+      return point;
+    }
+
+    centerOffset(value = this.value) {
+      const {bbOffset, mapOffset} = value;
       const layout = this.viewer.layout;
-      const bp = this.viewer.sequence.length * lengthPercent / 100;
       let centerOffset;
       if (this.offsetType === 'backbone') {
         // FIXME: need better way to convert offsets
         centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset) + this.viewer.backbone.adjustedCenterOffset;
       } else {
-        if (mapOffset >= 0) {
-          centerOffset = layout.centerOutsideOffset + mapOffset;
-        } else {
-          centerOffset = layout.centerInsideOffset + mapOffset;
-        }
+        centerOffset = mapOffset + ( (mapOffset >= 0) ? layout.centerOutsideOffset : layout.centerInsideOffset );
       }
-      const point = this.canvas.pointForBp(bp, centerOffset);
-      return point;
+      return centerOffset;
     }
 
     convertToOnMap() {
@@ -297,7 +299,8 @@
       const value = this.value;
       // FIXME: TEMP - need best way to get bbOffset or mapOffset
       //               dpending on position
-      const centerOffset = value.bbOffset + viewer.backbone.adjustedCenterOffset;
+      // const centerOffset = value.bbOffset + viewer.backbone.adjustedCenterOffset;
+      const centerOffset = this.centerOffset(value);
       const bp = viewer.sequence.length * value.lengthPercent / 100;
       const point = canvas.pointForBp(bp, centerOffset);
 

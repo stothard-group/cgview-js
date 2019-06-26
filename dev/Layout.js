@@ -738,11 +738,11 @@
 
       // Captions on the Map layer
       for (let i = 0, len = viewer._captions.length; i < len; i++) {
-        if (viewer._captions[i].relativeTo === 'map') {
+        if (viewer._captions[i].onMap) {
           viewer._captions[i].draw();
         }
       }
-      if (viewer.legend.relativeTo === 'map') {
+      if (viewer.legend.position.onMap) {
         viewer.legend.draw();
       }
 
