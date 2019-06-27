@@ -632,13 +632,36 @@
     }
 
     // FIXME: temp with above
-    adjustedBBOffsetFor(bbOffset) {
-      const viewer = this.viewer;
-      const backbone = viewer.backbone;
-      const maxMapThicknessZoomFactor = this._maxMapThicknessZoomFactor;
-      const zoomFactor = (viewer.zoomFactor > maxMapThicknessZoomFactor) ? maxMapThicknessZoomFactor : viewer.zoomFactor;
-      return (bbOffset * zoomFactor) + (backbone.adjustedThickness - backbone.thickness);
+    // adjustedBBOffsetFor(bbOffset) {
+    //   const viewer = this.viewer;
+    //   const backbone = viewer.backbone;
+    //   const maxMapThicknessZoomFactor = this._maxMapThicknessZoomFactor;
+    //   const zoomFactor = (viewer.zoomFactor > maxMapThicknessZoomFactor) ? maxMapThicknessZoomFactor : viewer.zoomFactor;
+    //   return (bbOffset * zoomFactor) + (backbone.adjustedThickness - backbone.thickness);
+    // }
+
+    // Calculate centerOffset for the supplied mapOffset
+    // - Positive (+ve) mapOffsets are the distance from the outer/top edge of the map.
+    // - Negative (-ve) mapOffsets are the distance from the inner/bottom edge of the map.
+    centerOffsetForMapOffset(mapOffset) {
+      return mapOffset + ( (mapOffset >= 0) ? this.centerOutsideOffset : this.centerInsideOffset );
     }
+
+    // Calculate centerOffset for the supplied bbOffsetPercent:
+    // -    0: center of backbone
+    // -  100: outside/top edge of map
+    // - -100: inside/bottom edge of map
+    centerOffsetForBBOffsetPercent(bbOffsetPercent) {
+      const bbOffset = this.backbone.adjustedCenterOffset;
+      if (bbOffsetPercent === 0) {
+        return bbOffset;
+      } else if (bbOffsetPercent > 0) {
+        return bbOffset + (bbOffsetPercent / 100 * this.bbOutsideOffset);
+      } else if (bbOffsetPercent < 0) {
+        return bbOffset - (bbOffsetPercent / 100 * this.bbInsideOffset);
+      }
+    }
+
 
     tracks(term) {
       return this.viewer.tracks(term);

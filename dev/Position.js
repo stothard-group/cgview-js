@@ -28,7 +28,7 @@
      *
      *   Examples:
      *    value: { lengthPercent: 23, mapOffset: 10 }
-     *    value: { lengthPercent: 23, bbOffset: 10 }
+     *    value: { lengthPercent: 23, bbOffsetPercent: 10 }
      *    value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
      *    value: { xPercent: 50, yPercent: 40 }
      *    value: 'top-left'
@@ -42,7 +42,7 @@
      *   {contig, bp,...}                | Map        |
      *   {bp,...}                        | Map        |
      *
-     *   For offsets on the map: mapOffset > bbOffset > default [mapOffset: 20]
+     *   For offsets on the map: mapOffset > bbOffsetPercent > default [mapOffset: 20]
      *
      *   Positions create a point in canvas space based on the supplied values.
      *   The position (on the map) can be updated by called refresh, if the map pans or zoomes.
@@ -204,13 +204,13 @@
         }
         // Add offset value
         if (this.onMap) {
-          const {mapOffset, bbOffset} = value;
+          const {mapOffset, bbOffsetPercent} = value;
           if (CGV.isNumeric(mapOffset)) {
             this._offsetType = 'map';
             this._value.mapOffset = Number(mapOffset);
-          } else if (CGV.isNumeric(bbOffset)) {
+          } else if (CGV.isNumeric(bbOffsetPercent)) {
             this._offsetType = 'backbone';
-            this._value.bbOffset = CGV.constrain(bbOffset, -100, 100);
+            this._value.bbOffsetPercent = CGV.constrain(bbOffsetPercent, -100, 100);
           } else {
             this._offsetType = 'map';
             this._value.mapOffset = 20;
@@ -266,14 +266,13 @@
     }
 
     centerOffset(value = this.value) {
-      const {bbOffset, mapOffset} = value;
+      const {bbOffsetPercent, mapOffset} = value;
       const layout = this.viewer.layout;
       let centerOffset;
       if (this.offsetType === 'backbone') {
-        // FIXME: need better way to convert offsets
-        centerOffset = this.viewer.layout.adjustedBBOffsetFor(bbOffset) + this.viewer.backbone.adjustedCenterOffset;
+        centerOffset = layout.centerOffsetForBBOffsetPercent(bbOffsetPercent);
       } else {
-        centerOffset = mapOffset + ( (mapOffset >= 0) ? layout.centerOutsideOffset : layout.centerInsideOffset );
+        centerOffset = layout.centerOffsetForMapOffset(mapOffset);
       }
       return centerOffset;
     }
@@ -282,13 +281,34 @@
       if (this.onMap) { return this; }
       const viewer = this.viewer;
       const canvas = this.canvas;
+      const layout = viewer.layout;
+
       const point = this.point;
       const bp = canvas.bpForPoint(point);
-      // FIXME: TEMP - need best way to get bbOffset or mapOffset
-      //               dpending on position
-      const bbOffset = viewer.layout.centerOffsetForPoint(point) - viewer.backbone.adjustedCenterOffset;
       const lengthPercent = bp / viewer.sequence.length * 100;
-      this.value = {lengthPercent, bbOffset};
+
+      const ptOffset = layout.centerOffsetForPoint(point);
+      const bbCenterOffset = viewer.backbone.adjustedCenterOffset;
+
+      let mapOffset, bbOffsetPercent;
+      if (ptOffset >= layout.centerOutsideOffset) {
+        // Outside Map
+        mapOffset = ptOffset - layout.centerOutsideOffset;
+        this.value = {lengthPercent, mapOffset};
+      } else if (ptOffset <= layout.centerInsideOffset) {
+        // Inside Map
+        mapOffset = ptOffset - layout.centerInsideOffset;
+        this.value = {lengthPercent, mapOffset};
+      } else if (ptOffset >= bbCenterOffset) {
+        // Outside Backbone
+        bbOffsetPercent = (ptOffset - bbCenterOffset) / layout.bbOutsideOffset * 100;
+        this.value = {lengthPercent, bbOffsetPercent};
+      } else if (ptOffset < bbCenterOffset) {
+        // Inside Backbone
+        bbOffsetPercent = (bbCenterOffset - ptOffset) / layout.bbInsideOffset * 100;
+        this.value = {lengthPercent, bbOffsetPercent};
+      }
+
       return this;
     }
 
@@ -297,9 +317,6 @@
       const viewer = this.viewer;
       const canvas = this.canvas;
       const value = this.value;
-      // FIXME: TEMP - need best way to get bbOffset or mapOffset
-      //               dpending on position
-      // const centerOffset = value.bbOffset + viewer.backbone.adjustedCenterOffset;
       const centerOffset = this.centerOffset(value);
       const bp = viewer.sequence.length * value.lengthPercent / 100;
       const point = canvas.pointForBp(bp, centerOffset);

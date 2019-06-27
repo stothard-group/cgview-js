@@ -42,7 +42,7 @@
      *   If position is on (i.e. relativeTo) the 'map', the box will move with the map as it's panned.
      *   The position will consist of
      *     - lengthPercent: 0 - start of map; 50 - middle of map; 100 - end of map
-     *     - mapOffset or bbOffset: distance from the thbackbone
+     *     - mapOffset or bbOffsetPercent: distance from the thbackbone
      *
      *   Anchor:
      *   The anchor is where the position is attached to the box.
