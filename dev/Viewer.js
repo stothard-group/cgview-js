@@ -872,7 +872,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.legend.backgroundColor.invert();
 
       // FIXME: with legend update API
-      const defaultFontColor = this.legend.fontColor.invert();
+      const defaultFontColor = this.legend.defaultFontColor.invert();
       this.legend.items().each( (i, item) => {
         let attributes = {
           swatchColor: item.swatchColor.invert().rgbaString

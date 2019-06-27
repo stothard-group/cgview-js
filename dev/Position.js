@@ -45,16 +45,25 @@
      *   For offsets on the map: mapOffset > bbOffsetPercent > default [mapOffset: 20]
      *
      *   Positions create a point in canvas space based on the supplied values.
-     *   The position (on the map) can be updated by called refresh, if the map pans or zoomes.
+     *   The position (on the map) can be updated by called refresh, if the map pans or zooms.
      *   The type of position can be changed by altering the position properties:
      *      - on: map, canvas
-     *      - offsetTo: backbone, map // NOT IMPLEMENTED
+     *      - offsetType: backbone, map // NOT IMPLEMENTED
      *      - value:
      *         - 'top-left'
      *         - {bp: 1, contig: 'c-1'}
      *         - {lengthPercent: 23, mapOffset: 23}
      *         - {xPercent: 20, yPercent: 30}
      *
+     * mapOffset values are the pixel distance from the map:
+     *   -  >=0: Add to outside edge of map
+     *   -   <0: Subtract from inside edge of map
+     *
+     * bbOffsetPercent values are the percentage distance from the backbone
+     * to the outside/upper edge or the inside/botom edge of the map:
+     *   -    0: center of backbone
+     *   -  100: outside edge of map
+     *   - -100: inside edge of map
      */
     constructor(viewer, value) {
       this._viewer = viewer;
@@ -177,6 +186,11 @@
       return this._offsetType;
     }
 
+    // Constrains value between min and max. Also rounds to decimals.
+    formatNumber(number, min = 0, max = 100, decimals = 2) {
+      return CGV.round( CGV.constrain(number, min, max), decimals );
+    }
+
     _processValue(value) {
       if (typeof value === 'string') {
         this._value = CGV.validate(value, Position.names) ? value : 'middle-center';
@@ -186,21 +200,23 @@
         const keys = Object.keys(value);
         if (keys.includes('xPercent') && keys.includes('yPercent')) {
           const {xPercent, yPercent} = value;
-          this._value = {xPercent, yPercent};
+          this._xPercent = this.formatNumber(xPercent);
+          this._yPercent = this.formatNumber(yPercent);
+          this._value = {xPercent: this.xPercent, yPercent: this.yPercent};
           this._on = 'canvas';
           this._type = 'percent';
         } else if (keys.includes('lengthPercent')) {
           const {lengthPercent} = value;
-          this._value = {lengthPercent};
+          this._value = {lengthPercent: this.formatNumber(lengthPercent)};
           this._on = 'map';
           this._type = 'percent';
         } else if (keys.includes('bp')) {
           // FIXME: handle bp without contig
           // FIXME: currently not handing bp at all (do we need to yet?)
-          const {bp, contig} = value;
-          this._value = {bp, contig};
-          this._on = 'map';
-          this._type = 'bp';
+          // const {bp, contig} = value;
+          // this._value = {bp, contig};
+          // this._on = 'map';
+          // this._type = 'bp';
         }
         // Add offset value
         if (this.onMap) {
@@ -285,7 +301,7 @@
 
       const point = this.point;
       const bp = canvas.bpForPoint(point);
-      const lengthPercent = bp / viewer.sequence.length * 100;
+      const lengthPercent = this.formatNumber(bp / viewer.sequence.length * 100);
 
       const ptOffset = layout.centerOffsetForPoint(point);
       const bbCenterOffset = viewer.backbone.adjustedCenterOffset;
@@ -322,8 +338,8 @@
       const point = canvas.pointForBp(bp, centerOffset);
 
       this.value = {
-        xPercent: point.x / viewer.width * 100,
-        yPercent: point.y / viewer.height * 100
+        xPercent: this.formatNumber(point.x / viewer.width * 100),
+        yPercent: this.formatNumber(point.y / viewer.height * 10)
       };
       return this;
     }
