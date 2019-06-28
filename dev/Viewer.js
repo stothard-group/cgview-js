@@ -121,6 +121,21 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.layout.updateScales();
 
+      // TEMP TESTING FOR EDIT MODE
+      this.shiftSet = false;
+      const shiftTest = (e) => {if (e.shiftKey) {console.log(e);}}
+      this._wrapper.on('mouseover', () => {
+        if (!this.shiftSet) {
+          document.addEventListener('keydown', shiftTest);
+          this.shiftSet = true;
+        }
+      }).on('mouseout', () => {
+        if (this.shiftSet) {
+          document.removeEventListener('keydown', shiftTest);
+          this.shiftSet = false;
+        }
+      });
+
       this._loading = false;
     }
 
