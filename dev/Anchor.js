@@ -66,7 +66,8 @@
 
     set xPercent(value) {
       this._xPercent = CGV.constrain(value, 0, 100);
-      this._name = this._nameFromPercents();
+      // this._name = this._nameFromPercents();
+      this._name = CGV.Position.nameFromPercents();
     }
 
     /**
@@ -78,7 +79,8 @@
 
     set yPercent(value) {
       this._yPercent = CGV.constrain(value, 0, 100);
-      this._name = this._nameFromPercents();
+      // this._name = this._nameFromPercents();
+      this._name = CGV.Position.nameFromPercents();
     }
 
     /**
@@ -103,32 +105,6 @@
 
       this.xPercent = xPercent;
       this.yPercent = yPercent;
-    }
-
-    _nameFromPercents() {
-      const allowedPercents = [0, 50, 100];
-      const x = this.xPercent;
-      const y = this.yPercent;
-      if (allowedPercents.includes(x) && allowedPercents.includes(y)) {
-        let name = '';
-        // Y Percent
-        if (y === 0) {
-          name += 'top';
-        } else if (y === 50) {
-          name += 'middle';
-        } else if (y === 100) {
-          name += 'bottom';
-        }
-        // X Percent
-        if (x === 0) {
-          name += '-left';
-        } else if (x === 50) {
-          name += '-center';
-        } else if (x === 100) {
-          name += '-right';
-        }
-        return name;
-      }
     }
 
     toJSON() {

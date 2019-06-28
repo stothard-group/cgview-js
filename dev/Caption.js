@@ -210,6 +210,10 @@
       this.viewer.updateCaptions(this, attributes);
     }
 
+    moveTo(duration) {
+      this.position.moveTo(duration);
+    }
+
     /**
      * Recalculates the *Caption* size and position.
      */

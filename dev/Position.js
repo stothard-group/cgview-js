@@ -109,6 +109,30 @@
       return { xPercent, yPercent };
     }
 
+    static nameFromPercents(xPercent, yPercent) {
+      const allowedPercents = [0, 50, 100];
+      if (allowedPercents.includes(xPercent) && allowedPercents.includes(yPercent)) {
+        let name = '';
+        // yPercent Percent
+        if (yPercent === 0) {
+          name += 'top';
+        } else if (yPercent === 50) {
+          name += 'middle';
+        } else if (yPercent === 100) {
+          name += 'bottom';
+        }
+        // xPercent Percent
+        if (xPercent === 0) {
+          name += '-left';
+        } else if (xPercent === 50) {
+          name += '-center';
+        } else if (xPercent === 100) {
+          name += '-right';
+        }
+        return name;
+      }
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // MEMBERS
     //////////////////////////////////////////////////////////////////////////
@@ -154,6 +178,10 @@
       return this._type;
     }
 
+    get name() {
+      return (Position.names.includes(this.value) && this.value) || Position.nameFromPercents(this.xPercent, this.yPercent);
+    }
+
     get xPercent() {
       return this._xPercent;
     }
@@ -187,8 +215,9 @@
     }
 
     // Constrains value between min and max. Also rounds to decimals.
-    formatNumber(number, min = 0, max = 100, decimals = 2) {
+    formatNumber(number, min = 0, max = 100, decimals = 1) {
       return CGV.round( CGV.constrain(number, min, max), decimals );
+      // return number;
     }
 
     _processValue(value) {
@@ -207,7 +236,7 @@
           this._type = 'percent';
         } else if (keys.includes('lengthPercent')) {
           const {lengthPercent} = value;
-          this._value = {lengthPercent: this.formatNumber(lengthPercent)};
+          this._value = {lengthPercent: this.formatNumber(lengthPercent, 0, 100, 6)};
           this._on = 'map';
           this._type = 'percent';
         } else if (keys.includes('bp')) {
@@ -223,10 +252,12 @@
           const {mapOffset, bbOffsetPercent} = value;
           if (CGV.isNumeric(mapOffset)) {
             this._offsetType = 'map';
-            this._value.mapOffset = Number(mapOffset);
+            // this._value.mapOffset = Number(mapOffset);
+            this._value.mapOffset = Math.round(mapOffset);
           } else if (CGV.isNumeric(bbOffsetPercent)) {
             this._offsetType = 'backbone';
-            this._value.bbOffsetPercent = CGV.constrain(bbOffsetPercent, -100, 100);
+            // this._value.bbOffsetPercent = CGV.constrain(bbOffsetPercent, -100, 100);
+            this._value.bbOffsetPercent = this.formatNumber(bbOffsetPercent, -100, 100, 0);
           } else {
             this._offsetType = 'map';
             this._value.mapOffset = 20;
@@ -339,9 +370,17 @@
 
       this.value = {
         xPercent: this.formatNumber(point.x / viewer.width * 100),
-        yPercent: this.formatNumber(point.y / viewer.height * 10)
+        yPercent: this.formatNumber(point.y / viewer.height * 100)
       };
       return this;
+    }
+
+    moveTo(duration) {
+      if (this.onMap) {
+        const bp = this.viewer.sequence.length * this.value.lengthPercent / 100;
+        const bbOffset = this.viewer.backbone.adjustedCenterOffset - this.centerOffset();
+        this.viewer.moveTo(bp, null, {duration, bbOffset});
+      }
     }
 
     toJSON() {
