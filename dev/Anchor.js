@@ -35,10 +35,14 @@
      */
     constructor(value) {
       if (typeof value === 'string') {
-        this.name = value;
+        if (value === 'auto') {
+          this.auto = true;
+        } else {
+          this.name = value;
+        }
       } else if (typeof value === 'object') {
-        this.xPercent = Number(value.xPercent) || 50;
-        this.yPercent = Number(value.yPercent) || 50;
+        this.xPercent = CGV.defaultFor(Number(value.xPercent), 50);
+        this.yPercent = CGV.defaultFor(Number(value.yPercent), 50);
       } else {
         this.xPercent = 50;
         this.yPercent = 50;
@@ -57,6 +61,14 @@
     // MEMBERS
     //////////////////////////////////////////////////////////////////////////
 
+    get auto() {
+      return this._auto;
+    }
+
+    set auto(value) {
+      this._auto = Boolean(value);
+    }
+
     /**
      * @member {Number} - Get or set the xPercent. The value will be constrained between 0 and 100.
      */
@@ -66,8 +78,7 @@
 
     set xPercent(value) {
       this._xPercent = CGV.constrain(value, 0, 100);
-      // this._name = this._nameFromPercents();
-      this._name = CGV.Position.nameFromPercents();
+      this._name = CGV.Position.nameFromPercents(this.xPercent, this.yPercent);
     }
 
     /**
@@ -79,8 +90,7 @@
 
     set yPercent(value) {
       this._yPercent = CGV.constrain(value, 0, 100);
-      // this._name = this._nameFromPercents();
-      this._name = CGV.Position.nameFromPercents();
+      this._name = CGV.Position.nameFromPercents(this.xPercent, this.yPercent);
     }
 
     /**
@@ -103,8 +113,42 @@
     _updatePercentsFromName(name) {
       const { xPercent, yPercent } = CGV.Position.percentsFromName(name);
 
-      this.xPercent = xPercent;
-      this.yPercent = yPercent;
+      this._xPercent = xPercent;
+      this._yPercent = yPercent;
+    }
+
+    autoUpdateForPosition(position) {
+      if (this.auto) {
+        if (position.onCanvas) {
+          this.xPercent = position.xPercent;
+          this.yPercent = position.yPercent;
+        } else if (position.onMap) {
+          const format = position.viewer.format;
+          const offsetPositive = position.offsetPositive;
+          const lengthPercent = position.value.lengthPercent;
+          if (format === 'linear') {
+            this.yPercent = offsetPositive ? 100 : 0;
+            this.xPercent = lengthPercent;
+          } else if (format === 'circular') {
+            if (lengthPercent <= 7) {
+              this.xPercent = (lengthPercent + 7) / 14 * 100;
+              this.yPercent = 100;
+            } else if (lengthPercent > 7 && lengthPercent < 43) {
+              this.xPercent = 0;
+              this.yPercent = (lengthPercent - 7) / 36 * 100;
+            } else if (lengthPercent >= 43 && lengthPercent <= 57) {
+              this.xPercent = (lengthPercent - 43) / 14 * 100;
+              this.yPercent = 0;
+            } else if (lengthPercent > 57 && lengthPercent < 93) {
+              this.xPercent = 100;
+              this.yPercent = (lengthPercent - 57) / 36 * 100;
+            } else if (lengthPercent >= 93) {
+              this.xPercent = (lengthPercent - 93) / 14 * 100;
+              this.yPercent = 100;
+            }
+          }
+        }
+      }
     }
 
     toJSON() {

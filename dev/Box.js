@@ -268,6 +268,9 @@
     refresh(force = false) {
       if (!force && this.on === 'canvas') { return; }
       this.position.refresh();
+      if (this.anchor.auto) {
+        this.anchor.autoUpdateForPosition(this.position);
+      }
       this._x = this.position.x - (this.width * this.anchor.xPercent / 100);
       this._y = this.position.y - (this.height * this.anchor.yPercent / 100);
     }

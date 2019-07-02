@@ -214,10 +214,18 @@
       return this._offsetType;
     }
 
+    get offsetPositive() {
+      if (this.onMap) {
+        const { bbOffsetPercent, mapOffset } = this.value;
+        const offset = (this.offsetType === 'map') ? mapOffset : bbOffsetPercent;
+        return offset >= 0;
+      }
+      return undefined;
+    }
+
     // Constrains value between min and max. Also rounds to decimals.
     formatNumber(number, min = 0, max = 100, decimals = 1) {
       return CGV.round( CGV.constrain(number, min, max), decimals );
-      // return number;
     }
 
     _processValue(value) {
