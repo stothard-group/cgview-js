@@ -77,7 +77,7 @@
     }
 
     set xPercent(value) {
-      this._xPercent = CGV.constrain(value, 0, 100);
+      this._xPercent = Math.round(CGV.constrain(value, 0, 100))
       this._name = CGV.Position.nameFromPercents(this.xPercent, this.yPercent);
     }
 
@@ -89,7 +89,7 @@
     }
 
     set yPercent(value) {
-      this._yPercent = CGV.constrain(value, 0, 100);
+      this._yPercent = Math.round(CGV.constrain(value, 0, 100));
       this._name = CGV.Position.nameFromPercents(this.xPercent, this.yPercent);
     }
 
@@ -152,7 +152,9 @@
     }
 
     toJSON() {
-      if (this.name) {
+      if (this.auto) {
+        return 'auto';
+      } else if (this.name) {
         return this.name;
       } else {
         return {

@@ -118,6 +118,7 @@
       this.clear();
       this.box.position = value;
       this.refresh();
+      // FIXME: need to update anchor 
     }
 
     /**

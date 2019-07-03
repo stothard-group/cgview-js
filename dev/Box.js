@@ -80,6 +80,7 @@
 
     set on(value) {
       this.position.on = value;
+      this._adjustAnchor();
     }
 
     /**
@@ -262,6 +263,7 @@
       if (this.position.onCanvas) {
         this.anchor.xPercent = this.position.xPercent;
         this.anchor.yPercent = this.position.yPercent;
+        this.anchor.auto = true;
       }
     }
 
