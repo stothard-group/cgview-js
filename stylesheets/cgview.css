@@ -34,7 +34,8 @@
   height: 18px;
   width: 28px;
   background-color: white;
-  border: 1px solid #585858;
+  /* border: 1px solid #585858; */
+  border: 1px solid #B4B4B4;
   border-radius: 2px;
 }
 .cp-done-button:hover {
@@ -47,10 +48,9 @@
   height: 100px;
   position: relative;
   display: inline-block;
-  border: 1px solid #C8C8C8;
-  /* border-right-color: #585858; */
-  border-bottom-color: #585858;
-  border-radius: 2px;
+  /* border: 1px solid #C8C8C8; */
+  /* border-bottom-color: #585858; */
+  /* border-radius: 2px; */
   cursor: pointer;
   /* overflow: hidden; */
 }
@@ -122,13 +122,14 @@
   top: -1px;
   position: relative;
   display: inline-block;
-  border: 1px solid #585858;
-  border-radius: 2px;
+  /* border: 1px solid #585858; */
+  /* border-radius: 2px; */
   cursor: pointer;
 }
 
 .cp-color-slider {
   height: 100px;
+  border-radius: 2px;
   /* margin-left: 1px; */
 }
 
@@ -171,8 +172,8 @@
   margin-top: 5px;
   position: relative;
   display: block;
-  border: 1px solid #585858;
-  border-radius: 2px;
+  /* border: 1px solid #585858; */
+  /* border-radius: 2px; */
   cursor: pointer;
 }
 .cp-alpha-slider-indicator {
@@ -209,11 +210,12 @@
 .cp-dialog {
   z-index: 1000;
   position: absolute;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   padding: 5px;
   background-color: white;
   border-radius: 2px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5); */
+  box-shadow: 0 0 0 1px rgba(16,22,26,.1),0 2px 4px rgba(16,22,26,.2),0 8px 24px rgba(16,22,26,.2);
 }
 
 .cp-dialog * {
@@ -253,7 +255,8 @@
   display: inline-block;
   height: 20px;
   width: 20px;
-  border: 1px solid #585858;
+  /* border: 1px solid #585858; */
+  border: 1px solid #B4B4B4;
 }
 .cp-color-current {
   border-left: none;
@@ -271,6 +274,7 @@
   position: absolute;
   /* box-sizing: border-box; */
   height: 100px;
+  border-radius: 2px;
 }
 
 /*******************************************/

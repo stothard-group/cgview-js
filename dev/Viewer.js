@@ -899,7 +899,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       });
       this.legend.refresh();
       this.captions().each( (i, caption) => {
-        caption.backgroundColor.invert();
+        // caption.backgroundColor.invert();
+        caption.update({
+          backgroundColor: caption.backgroundColor.invert().rgbaString,
+          fontColor: caption.fontColor.invert().rgbaString
+        });
         caption.refresh();
       });
       this.ruler.color.invert();

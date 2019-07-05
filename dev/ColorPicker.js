@@ -7,7 +7,7 @@
     /**
      * The ColorPicker
      * Based on Flexi Color Picker: http://www.daviddurman.com/flexi-color-picker/
-     * Color is stored interanlly as HSV, as well as a Color object.
+     * Color is stored internally as HSV, as well as a Color object.
      */
     constructor(containerId, options = {}) {
       this.containerId = containerId;
@@ -191,7 +191,7 @@
               ]
             )
           ),
-          $el('rect', { x: '0', y: '0', width: '20px', height: '100px', fill: `url(#${containerId}-gradient-hsv)`})
+          $el('rect', { x: '0', y: '0', width: '20px', height: '100px', rx: '2px', fill: `url(#${containerId}-gradient-hsv)`})
         ]
       );
 
@@ -213,8 +213,8 @@
               )
             ]
           ),
-          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: `url(#${containerId}-gradient-white)`}),
-          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', fill: `url(#${containerId}-gradient-black)`})
+          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', rx: '2px', fill: `url(#${containerId}-gradient-white)`}),
+          $el('rect', { x: '0', y: '0', width: '100px', height: '100px', rx: '2px', fill: `url(#${containerId}-gradient-black)`})
         ]
       );
 
@@ -237,8 +237,8 @@
               )
             ]
           ),
-          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: `url(#${containerId}-alpha-squares)`}),
-          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', fill: `url(#${containerId}-alpha-gradient)`})
+          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-squares)`}),
+          $el('rect', { x: '0', y: '0', width: '127px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-gradient)`})
         ]
       );
 
