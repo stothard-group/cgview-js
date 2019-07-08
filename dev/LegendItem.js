@@ -320,6 +320,11 @@
       this.legend.removeItems(this);
     }
 
+    move(newIndex) {
+      const currentIndex = this.legend.items().indexOf(this);
+      this.legend.moveItem(currentIndex, newIndex);
+    }
+
     /**
      * Update item properties.
      */

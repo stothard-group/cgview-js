@@ -31,14 +31,16 @@
       this._items = new CGV.CGArray();
       this.backgroundColor = options.backgroundColor;
       // FIXME: start using defaultFontColor, etc from JSON
-      this.defaultFontColor = CGV.defaultFor(options.fontColor, 'black');
+      this.defaultFontColor = CGV.defaultFor(options.defaultFontColor, 'black');
       this.textAlignment = CGV.defaultFor(options.textAlignment, 'left');
       this.box = new CGV.Box(viewer, {
         position: CGV.defaultFor(options.position, 'top-right'),
         anchor: CGV.defaultFor(options.anchor, 'middle-center')
       });
       // Setting font will refresh legend and draw
-      this.defaultFont = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
+      this.defaultFont = CGV.defaultFor(options.defaultFont, 'sans-serif, plain, 14');
+
+      viewer.trigger('legend-add', this);
 
       if (options.items) {
         this.addItems(options.items);
@@ -62,26 +64,6 @@
     set visible(value) {
       // super.visible = value;
       this._visible = value;
-      this.refresh();
-    }
-
-    get relativeTo() {
-      return this.box.relativeTo;
-    }
-
-    set relativeTo(value) {
-      this.clear();
-      this.box.relativeTo = value;
-      this.refresh();
-    }
-
-    get anchor() {
-      return this.box.anchor;
-    }
-
-    set anchor(value) {
-      this.clear();
-      this.box.anchor = value;
       this.refresh();
     }
 
@@ -110,6 +92,26 @@
     set position(value) {
       this.clear();
       this.box.position = value;
+      this.refresh();
+    }
+
+    get on() {
+      return this.box.on;
+    }
+
+    set on(value) {
+      this.clear();
+      this.box.on = value;
+      this.refresh();
+    }
+
+    get anchor() {
+      return this.box.anchor;
+    }
+
+    set anchor(value) {
+      this.clear();
+      this.box.anchor = value;
       this.refresh();
     }
 
@@ -169,13 +171,13 @@
     /**
      * @member {String} - Get or set the text alignment. Possible values are *left*, *center*, or *right*.
      */
-    get defaultTextAlignment() {
-      return this._defaultFextAlignment;
+    get textAlignment() {
+      return this._textAlignment;
     }
 
-    set defaultTextAlignment(value) {
+    set textAlignment(value) {
       if ( CGV.validate(value, ['left', 'center', 'right']) ) {
-        this._defaultFextAlignment = value;
+        this._textAlignment = value;
       }
       this.refresh();
     }
@@ -200,6 +202,16 @@
 
     set highlightedSwatchedItem(value) {
       this._highlightedSwatchedItem = value;
+    }
+
+    update(attributes) {
+      const keys = Object.keys(attributes);
+      const validKeys = ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'textAlignment',  'backgroundColor', 'visible'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.viewer.trigger('legend-update', { attributes });
     }
 
     /**
@@ -233,7 +245,7 @@
 
     updateItems(items, attributes) {
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration'];
+      const validKeys = ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'visible'];
       if (!CGV.validate(keys, validKeys)) { return; }
       items = CGV.CGArray.arrayerize(items);
       items.attr(attributes);
@@ -243,7 +255,7 @@
 
     moveItem(oldIndex, newIndex) {
       this._items.move(oldIndex, newIndex);
-      // FIXME: need to trigger event
+      this.viewer.trigger('legendItems-moved', {oldIndex: oldIndex, newIndex: newIndex});
       this.refresh();
     }
 
@@ -441,18 +453,21 @@
       const json = {
         name: this.name,
         position: this.position.toJSON(),
-        defaultTextAlignment: this.textAlignment,
-        defaultFont: this.font.string,
-        defaultFontColor: this.fontColor.rgbaString,
+        textAlignment: this.textAlignment,
+        defaultFont: this.defaultFont.string,
+        defaultFontColor: this.defaultFontColor.rgbaString,
         backgroundColor: this.backgroundColor.rgbaString,
-        items: []
+        items: [],
+        visible: this.visible
       };
       if (this.position.onMap) {
         json.anchor = this.anchor.toJSON();
       }
-      if (!this.visible) {
-        json.visible = this.visible;
-      }
+      // FIXME: proksee needs to know visible status but IO would be smaller without defaults
+      //        - Maybe, we should have parameters for full JSON and reduced JSON
+      // if (!this.visible) {
+      //   json.visible = this.visible;
+      // }
       this.items().each( (i, item) => {
         json.items.push(item.toJSON());
       });
