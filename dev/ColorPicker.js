@@ -86,6 +86,7 @@
       const pickerRgbString = CGV.Color.rgb2String( CGV.Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
       this.pickerElement.style.backgroundColor = pickerRgbString;
       this.pickerIndicatorRect1.style.backgroundColor = this.color.rgbString;
+      this.slideIndicator.style.backgroundColor = pickerRgbString;
       d3.select(this.alphaElement).selectAll('stop').attr('stop-color', this.color.rgbString);
       this.currentColorIndicator.style.backgroundColor = this.color.rgbaString;
       this.onChange && this.onChange(this.color);
