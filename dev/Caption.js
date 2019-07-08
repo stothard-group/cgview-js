@@ -306,6 +306,11 @@
       viewer.refreshCanvasLayer();
     }
 
+    move(newIndex) {
+      const currentIndex = this.viewer.captions().indexOf(this);
+      this.viewer.moveCaption(currentIndex, newIndex);
+    }
+
     toJSON() {
       const json = {
         name: this.name,

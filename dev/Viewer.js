@@ -533,6 +533,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.trigger('captions-update', { captions, attributes });
     }
 
+    moveCaption(oldIndex, newIndex) {
+      this._captions.move(oldIndex, newIndex);
+      this.refreshCanvasLayer();
+      this.trigger('captions-moved', {oldIndex: oldIndex, newIndex: newIndex});
+    }
 
     /**
      * Returns an [CGArray](CGArray.html) of Plots or a single Plot from all the Tracks in the viewer.
@@ -873,11 +878,6 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     reset(duration = 1000, ease) {
       this.zoomTo(0, 1, {duration, ease});
-    }
-
-    moveCaption(oldIndex, newIndex) {
-      this._captions.move(oldIndex, newIndex);
-      this.refreshCanvasLayer();
     }
 
     invertColors() {
