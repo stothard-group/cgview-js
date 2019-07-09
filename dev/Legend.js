@@ -148,6 +148,15 @@
       } else {
         this._defaultFont = new CGV.Font(value);
       }
+
+      // Trigger update events for items with default font
+      for (let i = 0, len = this._items.length; i < len; i++) {
+        const item = this._items[i];
+        if (item.usingDefaultFont) {
+          item.update({font: undefined});
+        }
+      }
+
       this.refresh();
     }
 
@@ -165,6 +174,15 @@
       } else {
         this._defaultFontColor = new CGV.Color(value);
       }
+
+      // Trigger update events for items with default font color
+      for (let i = 0, len = this._items.length; i < len; i++) {
+        const item = this._items[i];
+        if (item.usingDefaultFontColor) {
+          item.update({fontColor: undefined});
+        }
+      }
+
       this.refresh();
     }
 

@@ -112,13 +112,27 @@
     /**
      * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
      */
+    // get font() {
+    //   return this._font;
+    // }
+    //
+    // set font(value) {
+    //   if (value === undefined) {
+    //     this._font = this.legend.defaultFont;
+    //   } else if (value.toString() === 'Font') {
+    //     this._font = value;
+    //   } else {
+    //     this._font = new CGV.Font(value);
+    //   }
+    //   this.refresh();
+    // }
     get font() {
-      return this._font;
+      return this._font || this.legend.defaultFont;
     }
 
     set font(value) {
       if (value === undefined) {
-        this._font = this.legend.defaultFont;
+        this._font = undefined;
       } else if (value.toString() === 'Font') {
         this._font = value;
       } else {
@@ -127,22 +141,45 @@
       this.refresh();
     }
 
+    get usingDefaultFont() {
+      return this.font === this.legend.defaultFont;
+    }
+
     /**
      * @member {Color} - Get or set the fontColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
      */
+    // get fontColor() {
+    //   return this._fontColor;
+    // }
+    //
+    // set fontColor(color) {
+    //   if (color === undefined) {
+    //     this._fontColor = this.legend.defaultFontColor;
+    //   } else if (color.toString() === 'Color') {
+    //     this._fontColor = color;
+    //   } else {
+    //     this._fontColor = new CGV.Color(color);
+    //   }
+    //   this.refresh();
+    // }
     get fontColor() {
-      return this._fontColor;
+      return this._fontColor || this.legend.defaultFontColor;
     }
 
     set fontColor(color) {
       if (color === undefined) {
-        this._fontColor = this.legend.defaultFontColor;
+        // this._fontColor = this.legend.defaultFontColor;
+        this._fontColor = undefined;
       } else if (color.toString() === 'Color') {
         this._fontColor = color;
       } else {
         this._fontColor = new CGV.Color(color);
       }
       this.refresh();
+    }
+
+    get usingDefaultFontColor() {
+      return this.fontColor === this.legend.defaultFontColor;
     }
 
     /**
