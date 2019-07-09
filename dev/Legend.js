@@ -64,7 +64,8 @@
     set visible(value) {
       // super.visible = value;
       this._visible = value;
-      this.refresh();
+      this.viewer.refreshCanvasLayer();
+      // this.refresh();
     }
 
     /**
@@ -92,7 +93,8 @@
     set position(value) {
       this.clear();
       this.box.position = value;
-      this.refresh();
+      this.viewer.refreshCanvasLayer();
+      // this.refresh();
     }
 
     get on() {

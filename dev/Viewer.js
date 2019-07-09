@@ -701,7 +701,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       for (let i = 0, len = this._captions.length; i < len; i++) {
         this._captions[i].refresh();
       }
-      this.legend.refresh();
+      this.legend && this.legend.refresh();
     }
 
     test2MoveTo(start, stop) {

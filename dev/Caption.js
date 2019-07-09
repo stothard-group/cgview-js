@@ -71,7 +71,9 @@
     set visible(value) {
       // super.visible = value;
       this._visible = value;
-      this.refresh();
+      this.viewer.refreshCanvasLayer();
+      // this.viewer ? this.viewer.refreshCanvasLayer() : this.refresh();
+      // this.refresh();
     }
 
     get on() {
@@ -117,7 +119,8 @@
     set position(value) {
       this.clear();
       this.box.position = value;
-      this.refresh();
+      // this.refresh();
+      this.viewer.refreshCanvasLayer();
       // FIXME: need to update anchor 
     }
 
