@@ -72,10 +72,10 @@
      * @member {Context} - Get the *Context* for drawing.
      */
     // FIXME: 
-    // - if this is slow we could be set when setting relativeTo (e.g. this._ctx = ...)
+    // - if this is slow we could be set when setting "on" (e.g. this._ctx = ...)
     get ctx() {
       // return this._ctx || this.canvas.context('forground');
-      const layer = (this.relativeTo === 'map') ? 'foreground' : 'canvas';
+      const layer = (this.on === 'map') ? 'foreground' : 'canvas';
       return this.canvas.context(layer);
     }
     //
