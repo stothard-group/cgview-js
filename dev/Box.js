@@ -80,7 +80,18 @@
 
     set on(value) {
       this.position.on = value;
-      this._adjustAnchor();
+      // this._adjustAnchor(); // Only needed when onCanvas, which is called when the position is set
+      if (this.position.onMap) {
+        // To keep the box in the same position when changing to onMap, the auto anchor has to be turned off.
+        this.anchor.auto = false;
+      } else if (this.position.onCanvas) {
+        // To keep the box in the same position when changing to onCanvas, the position must be adjusted.
+        // Adjust Position
+        this.position = {
+          xPercent: this.x / (this.viewer.width - this.width) * 100,
+          yPercent: this.y / (this.viewer.height - this.height) * 100
+        }
+      }
     }
 
     /**

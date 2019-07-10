@@ -279,6 +279,10 @@
       this.refresh();
     }
 
+    moveTo(duration) {
+      this.position.moveTo(duration);
+    }
+
     /**
      * Recalculates the *Legend* size and position.
      */
