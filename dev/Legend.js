@@ -360,6 +360,14 @@
       this.ctx.fillRect(box.x, box.y, box.width, box.height);
     }
 
+    invertColors() {
+      this.update({
+        backgroundColor: this.backgroundColor.invert().rgbaString,
+        defaultFontColor: this.defaultFontColor.invert().rgbaString
+      });
+      this.items().each( (i, item) => item.invertColors() );
+    }
+
     findLegendItemByName(name) {
       if (!name) { return; }
       return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );

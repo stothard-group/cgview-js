@@ -881,31 +881,12 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     invertColors() {
-      // FIXME: use update API (either on items [e.g. legend, legendItems, etc] or on colors [if done])
-      // FIXME: use new method (NOT IMPLEMENTED YET): legendItem.usingDefaultFontColor
       this.settings.backgroundColor.invert();
-      this.legend.backgroundColor.invert();
 
-      // FIXME: with legend update API
-      const defaultFontColor = this.legend.defaultFontColor.invert();
-      this.legend.items().each( (i, item) => {
-        let attributes = {
-          swatchColor: item.swatchColor.invert().rgbaString
-        };
-        if (defaultFontColor !== item.fontColor) {
-          attributes.fontColor = item.fontColor.invert().rgbaString;
-        }
-        item.update(attributes);
-      });
-      this.legend.refresh();
-      this.captions().each( (i, caption) => {
-        // caption.backgroundColor.invert();
-        caption.update({
-          backgroundColor: caption.backgroundColor.invert().rgbaString,
-          fontColor: caption.fontColor.invert().rgbaString
-        });
-        caption.refresh();
-      });
+      this.legend.invertColors();
+      this.captions().each( (i, caption) => caption.invertColors() );
+      this.refreshCanvasLayer();
+
       this.ruler.color.invert();
 
       this.dividers.slot.color.invert();

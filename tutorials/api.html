@@ -206,15 +206,15 @@ Attribute                      | Type     | Description
 [legend](Feature.html#legend)   | String\|LegendItem | Name of legendItem or the legendItem itself
 [collection](Feature.html#collection) | String   | Collection the feature belongs to
 [contig](Feature.html#contig)   | String\|Contig | Name of contig or the contig itself
-[start](Feature.html#start) *   | Number   | Start base pair on the contig
-[stop](Feature.html#stop) *     | Number   | Stop base pair on the contig
+[start](Feature.html#start)*   | Number   | Start base pair on the contig
+[stop](Feature.html#stop)*     | Number   | Stop base pair on the contig
 [strand](Feature.html#strand)   | String   | Strand the features is on [Default: 1]
 [score](Feature.html#score)     | Number   | Score associated with the feature
 [favorite](Feature.html#favorite) | Boolean  | Feature is a favorite [Default: false]
 [visible](CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
 [meta](CGObject.html#meta)      | Object   | [Meta data](tutorial-meta.html) for Feature
 
-*Required
+*Required on Feature creation
 
 ## Tracks API
 
@@ -239,6 +239,31 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Bookmark is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
 
+
+## Captions API
+
+Action                                       | Viewer Method                                    | Caption Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addCaptions()](Viewer.html#addCaptions)       | -                                | captions-add
+[Update](tutorial-api.html#updating-records) | [updateCaptions()](Viewer.html#updateCaptions) | [update()](Caption.html#update) | captions-update
+[Remove](tutorial-api.html#removing-records) | [removeCaptions()](Viewer.html#removeCaptions) | [remove()](Caption.html#remove) | captions-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveCaption()](Viewer.html#moveCaption) | [move()](Caption.html#move) | captions-reorder
+[Read](tutorial-api.html#reading-records)    | [captions()](Viewer.html#captions)             | -                                | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Caption.html#name)          | String    | Text of the caption
+[position](Caption.html#position)  | String\|Object   | Where to draw the caption [Default: 'middle-center']. See {@link Position} for details.
+[anchor](Caption.html#anchor)      | String\|Object   | Where to anchor the caption box to the position [Default: 'middle-center']. See {@link Anchor} for details.
+[font](Caption.html#font)          | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+[fontColor](Caption.html#fontColor) | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[textAlignment](Caption.html#textAlignment) | String    | Alignment of caption text: *left*, *center*, or *right* [Default: 'left']
+[backgroundColor](Caption.html#font) | String    | A string describing the background color of the caption [Default: 'white']. See {@link Color} for details.
+[on](Caption.html#on)**              | String    | Place the caption relative to the 'canvas' or 'map' [Default: 'canvas']
+[visible](CGObject.html#visible)   | Boolean   | Caption is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Caption
+
+**Ignored on Caption creation
 
 ## TEMPLATE
 

@@ -353,6 +353,16 @@
       ctx.strokeRect(x, this.textY(), this.width, this.height);
     }
 
+    invertColors() {
+      const attributes = {
+        swatchColor: this.swatchColor.invert().rgbaString
+      };
+      if (!this.usingDefaultFontColor) {
+        attributes.fontColor = this.fontColor.invert().rgbaString;
+      }
+      this.update(attributes);
+    }
+
     remove() {
       this.legend.removeItems(this);
     }

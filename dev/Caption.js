@@ -252,6 +252,13 @@
       this.ctx.fillRect(box.x, box.y, box.width, box.height);
     }
 
+    invertColors() {
+      this.update({
+        backgroundColor: this.backgroundColor.invert().rgbaString,
+        fontColor: this.fontColor.invert().rgbaString
+      });
+    }
+
     // highlight(color = '#FFB') {
     //   if (!this.visible) { return; }
     //   // let ctx = this.canvas.context('background');
