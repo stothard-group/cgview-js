@@ -22,6 +22,8 @@
       this.color = options.color;
       this.lineCap = 'round';
       this.onlyDrawFavorites = CGV.defaultFor(options.onlyDrawFavorites, false);
+
+      this.viewer.trigger('annotation-update', { attributes: this.toJSON() });
     }
 
     /**
@@ -347,10 +349,22 @@
       }
     }
 
+    update(attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['color', 'font', 'onlyDrawFavorites'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.viewer.trigger('annotation-update', { attributes });
+    }
+
     toJSON() {
       return {
         font: this.font.string,
         color: this.color && this.color.rgbaString,
+        onlyDrawFavorites: this.onlyDrawFavorites,
         visible: this.visible
       };
     }

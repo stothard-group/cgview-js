@@ -880,8 +880,9 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.zoomTo(0, 1, {duration, ease});
     }
 
+    // FIXME: Each object must use update API
     invertColors() {
-      this.settings.backgroundColor.invert();
+      this.settings.update({backgroundColor: this.settings.backgroundColor.invert().rgbaString});
 
       this.legend.invertColors();
       this.captions().each( (i, caption) => caption.invertColors() );

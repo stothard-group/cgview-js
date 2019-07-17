@@ -190,6 +190,18 @@ cgv.trigger('features-update');
 
 # API Details by Record Type
 
+## Settings (General)
+
+Action                                       | Viewer Method                                    | Settings Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Settings.html#update) | settings-update
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[backgroundColor](Settings.html#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
+[showShading](Settings.html#showShading) | Boolean   | Should a shading effect be drawn on the features [Default: true]
+[arrowHeadLength](Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
+
 ## Features API
 
 Action                                       | Viewer Method                                  | Feature Method                  | Event
@@ -265,6 +277,67 @@ Attribute                          | Type      | Description
 
 **Ignored on Caption creation
 
+## Legend API
+
+Action                                          | Viewer Method                                    | Legend Method                  | Event
+------------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Add](tutorial-api.html#adding-records)         | -                                                | -                                | legends-add
+[Update](tutorial-api.html#updating-records)    | -                                                | [update()](Legend.html#update)   | legends-update
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[position](Legend.html#position)  | String\|Object   | Where to draw the legend [Default: 'top-right']. See {@link Position} for details.
+[anchor](Legend.html#anchor)      | String\|Object   | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
+[defaultFont](Legend.html#defaultFont)          | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+[defaultFontColor](Legend.html#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
+[textAlignment](Legend.html#textAlignment) | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
+[backgroundColor](Legend.html#font) | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
+[on](Legend.html#on)**              | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
+[visible](CGObject.html#visible)   | Boolean   | Legend is visible [Default: true]
+[items](Legend.html#items)***      | Array     | Array of legend item data.
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Legend
+
+**Ignored on Legend creation
+***Ignored on Legend update
+
+## Legend Items
+
+Action                                          | Viewer Method                                  | LegendItem Method                  | Event
+------------------------------------------------|------------------------------------------------|------------------------------------|-----
+[Add](tutorial-api.html#adding-records)         | [addItems()](Legend.html#addItems)             | -                                  | legendItems-add
+[Update](tutorial-api.html#updating-records)    | [updateItems()](Legend.html#updateItems)       | [update()](LegendItem.html#update) | legendItems-update
+[Remove](tutorial-api.html#removing-records)    | [removeLegendItems()](Legend.html#removeItems) | [remove()](LegendItem.html#remove) | legendItems-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveLegendItem()](Legend.html#moveItem)       | [move()](LegendItem.html#move)     | legendItems-reorder
+[Read](tutorial-api.html#reading-records)       | [legendItems()](Legend.html#items)             | -                                  | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](LegendItem.html#name)         | String    | Name to diplay for legendItem 
+[font](LegendItem.html#font)           | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+[fontColor](LegendItem.html#fontColor) | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
+[decoration](LegendItem.html#decoration) | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
+[swatchColor](LegendItem.html#swatchColor) | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
+[drawSwatch](LegendItem.html#drawSwatch) | Boolean   | Draw the swatch beside the legendItem name [Default: true]
+[favorite](LegendItem.html#favorite) | Boolean   | LegendItem is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | LegendItem is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for LegendItem
+
+## Annotation
+
+Action                                       | Viewer Method                                    | Annotation Method                  | Event
+---------------------------------------------|--------------------------------------------------|------------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Annotation.html#update) | annotation-update
+[Read](tutorial-api.html#reading-records)    | [annotation](Viewer.html#annotation)             | -                                  | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[font](Annotation.html#font)       | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See {@link Font} for details.
+[color](Annotation.html#color)     | Boolean   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
+[onlyDrawFavorites](Annotation.html#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | Labels are visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Annotation
+
+
 ## TEMPLATE
 
 Action                                       | Viewer Method                                    | Record Method                  | Event
@@ -282,9 +355,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Record is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Record
 
-## Tracts
+## Tracks
 ## Plots
-## Settings
 ## LegendItems
 ## etc.
 

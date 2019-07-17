@@ -26,6 +26,8 @@
       this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
       this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
       this._showShading = CGV.defaultFor(options.showShading, true);
+      console.log(this.toJSON())
+      this.viewer.trigger('settings-update', {attributes: this.toJSON()});
     }
 
     /**
@@ -61,9 +63,7 @@
      * @member {Number} - Set or get the arrow head length as a fraction of the slot width. The value must be between 0 and 1 [Default: 0.3].
      */
     set arrowHeadLength(value) {
-      if (value) {
-        this._arrowHeadLength = CGV.constrain(value, 0, 1);
-      }
+      this._arrowHeadLength = CGV.constrain(Number(value), 0, 1);
     }
 
     get arrowHeadLength() {
@@ -85,7 +85,7 @@
     update(attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['format'];
+      const validKeys = ['format', 'backgroundColor', 'showShading', 'arrowHeadLength'];
       if (!CGV.validate(keys, validKeys)) { return; }
       for (let i = 0; i < keys.length; i++) {
         this[keys[i]] = attributes[keys[i]];
