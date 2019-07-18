@@ -26,7 +26,6 @@
       this._backgroundColor = new CGV.Color( CGV.defaultFor(options.backgroundColor, 'white') );
       this.arrowHeadLength = CGV.defaultFor(options.arrowHeadLength, 0.3);
       this._showShading = CGV.defaultFor(options.showShading, true);
-      console.log(this.toJSON())
       this.viewer.trigger('settings-update', {attributes: this.toJSON()});
     }
 

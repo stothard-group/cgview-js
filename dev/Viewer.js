@@ -352,7 +352,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.draw(fast);
 
-      this.trigger('resize');
+      // this.trigger('resize');
     }
 
     /**
@@ -421,9 +421,16 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     update(attributes) {
       // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name'];
+      let keys = Object.keys(attributes);
+      const validKeys = ['name', 'width', 'height'];
       if (!CGV.validate(keys, validKeys)) { return; }
+
+      // Special Case for Resizing - we don't want to update width and height separately
+      if (keys.includes('width') && keys.includes('height')) {
+        this.resize(attributes.width, attributes.height);
+        keys = keys.filter( i => i !== 'width' && i !== 'height' );
+      }
+
       for (let i = 0; i < keys.length; i++) {
         this[keys[i]] = attributes[keys[i]];
       }
