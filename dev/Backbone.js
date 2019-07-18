@@ -209,6 +209,13 @@
       }
     }
 
+    invertColors() {
+      this.update({
+        color: this.color.invert().rgbaString,
+        colorAlternate: this.colorAlternate.invert().rgbaString
+      });
+    }
+
     draw() {
       this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
       if (this.visibleRange && this.visible) {

@@ -889,16 +889,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.captions().each( (i, caption) => caption.invertColors() );
       this.refreshCanvasLayer();
 
-      this.ruler.color.invert();
+      this.ruler.invertColors();
 
       this.dividers.slot.color.invert();
       if (!this.dividers.slotMirrorsTrack) {
         this.dividers.track.color.invert();
       }
-      this.backbone.color.invert();
-      this.backbone.colorAlternate.invert();
+      this.backbone.invertColors();
       this.sequence.color.invert();
-      this.annotation.color && this.annotation.color.invert();
+      this.annotation.invertColors();
       this.draw();
     }
 

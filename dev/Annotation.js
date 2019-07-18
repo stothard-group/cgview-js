@@ -265,6 +265,12 @@
       return labels;
     }
 
+    invertColors() {
+      if (this.color) {
+        this.update({ color: this.color.invert().rgbaString });
+      }
+    }
+
     draw(innerCenterOffset, outerCenterOffset) {
       if (this._labels.length !== this._labelsNCList.length) {
         this.refresh();

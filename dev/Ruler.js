@@ -292,6 +292,12 @@
       ctx.fillText(label, labelPt.x, labelPt.y);
     }
 
+    invertColors() {
+      this.update({
+        color: this.color.invert().rgbaString
+      });
+    }
+
     update(attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
