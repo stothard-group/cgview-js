@@ -332,10 +332,24 @@ Action                                       | Viewer Method                    
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
 [font](Annotation.html#font)       | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See {@link Font} for details.
-[color](Annotation.html#color)     | Boolean   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
+[color](Annotation.html#color)     | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
 [onlyDrawFavorites](Annotation.html#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
 [visible](CGObject.html#visible)   | Boolean   | Labels are visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Annotation
+
+## Ruler
+
+Action                                       | Viewer Method                                    | Ruler Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Ruler.html#update) | ruler-update
+[Read](tutorial-api.html#reading-records)    | [ruler](Viewer.html#ruler)                       | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[font](Ruler.html#font)            | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See {@link Font} for details.
+[color](Ruler.html#color)          | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Rulers are visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
 
 
 ## TEMPLATE
