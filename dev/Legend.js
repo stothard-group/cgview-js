@@ -40,9 +40,7 @@
       // Setting font will refresh legend and draw
       this.defaultFont = CGV.defaultFor(options.defaultFont, 'sans-serif, plain, 14');
 
-      // FIXME: Instead of legend-add, could we not Trigger legend-update and use toJSON as the attributes?
-      //  - This is what I know do in Settings. Think about it...
-      viewer.trigger('legend-add', this);
+      this.viewer.trigger('legend-update', { attributes: this.toJSON() });
 
       if (options.items) {
         this.addItems(options.items);
