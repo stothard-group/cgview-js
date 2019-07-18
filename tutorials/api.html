@@ -351,6 +351,20 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Rulers are visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
 
+## Backbone
+
+Action                                       | Viewer Method                                    | Backbone Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Backbone.html#update) | backbone-update
+[Read](tutorial-api.html#reading-records)    | [backbone](Viewer.html#backbone)                 | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[color](Backbone.html#color)       | String    | A string describing the main backbone color [Default: 'grey']. See {@link Color} for details.
+[colorAlternate](Backbone.html#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Backbone is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Backbone
+
 
 ## TEMPLATE
 

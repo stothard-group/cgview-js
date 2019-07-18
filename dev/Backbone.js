@@ -22,6 +22,8 @@
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
       this.contigDecoration = CGV.defaultFor(options.contigDecoration, 'arrow');
+
+      this.viewer.trigger('backbone-update', { attributes: this.toJSON() });
     }
 
     /**
@@ -248,9 +250,21 @@
       }
     }
 
+    update(attributes) {
+      // Validate attribute keys
+      const keys = Object.keys(attributes);
+      const validKeys = ['color', 'colorAlternate', 'thickness', 'visible'];
+      if (!CGV.validate(keys, validKeys)) { return; }
+      for (let i = 0; i < keys.length; i++) {
+        this[keys[i]] = attributes[keys[i]];
+      }
+      this.viewer.trigger('backbone-update', { attributes });
+    }
+
     toJSON() {
       return {
         color: this.color.rgbaString,
+        colorAlternate: this.colorAlternate.rgbaString,
         thickness: this._thickness,
         visible: this.visible
       };

@@ -95,12 +95,12 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.allowDragAndDrop = CGV.defaultFor(options.allowDragAndDrop, true);
       // Initialize Sequence
       this._sequence = new CGV.Sequence(this, options.sequence);
+      // Initialize Events
+      this.events = new CGV.Events();
       // Initialize Backbone
       this.backbone = new CGV.Backbone(this, options.backbone);
-      // Initialize Events
       // this.initializeDragging();
       this.initializeZooming();
-      this.events = new CGV.Events();
       this.eventMonitor = new CGV.EventMonitor(this);
       // Initial Messenger
       this.messenger = new CGV.Messenger(this, options.messenger);
