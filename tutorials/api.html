@@ -283,6 +283,7 @@ Action                                          | Viewer Method                 
 ------------------------------------------------|--------------------------------------------------|----------------------------------|-----
 [Add](tutorial-api.html#adding-records)         | -                                                | -                                | legends-add
 [Update](tutorial-api.html#updating-records)    | -                                                | [update()](Legend.html#update)   | legends-update
+[Read](tutorial-api.html#reading-records)       | [legend](Viewer.html#legend)                     | -                                | -
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
@@ -364,6 +365,20 @@ Attribute                          | Type      | Description
 [colorAlternate](Backbone.html#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See {@link Color} for details.
 [visible](CGObject.html#visible)   | Boolean   | Backbone is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Backbone
+
+## Sequence
+
+Action                                       | Viewer Method                                    | Sequence Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Sequence.html#update) | sequence-update
+[Read](tutorial-api.html#reading-records)    | [sequence](Viewer.html#sequence)                 | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[font](Ruler.html#font)            | String    | A string describing the font [Default: 'sans-serif, plain, 14']. See {@link Font} for details.
+[color](Sequence.html#color)       | String    | A string describing the main sequence color [Default: 'black']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Sequence is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Sequence
 
 
 ## TEMPLATE
