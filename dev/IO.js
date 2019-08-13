@@ -57,9 +57,10 @@
             backbone: v.backbone.toJSON(),
             ruler: v.ruler.toJSON(),
             annotation: v.annotation.toJSON(),
-            dividers: {
-              slot: v.slotDivider.toJSON()
-            },
+            // dividers: {
+            //   slot: v.slotDivider.toJSON()
+            // },
+            dividers: v.dividers.toJSON(),
             highlighter: v.highlighter.toJSON()
           },
           captions: [],
