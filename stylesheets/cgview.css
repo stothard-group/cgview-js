@@ -133,6 +133,10 @@
   /* margin-left: 1px; */
 }
 
+.cp-color-slider svg {
+  vertical-align: baseline;
+}
+
 .cp-color-slider-indicator {
   /* width: 100%; */
   left: -2px;
