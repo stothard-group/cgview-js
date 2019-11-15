@@ -52,24 +52,19 @@
           updated: this.formatDate(new Date()),
           id: v.id,
           name: v.name,
-          settings: {
-            general: v.settings.toJSON(),
-            backbone: v.backbone.toJSON(),
-            ruler: v.ruler.toJSON(),
-            annotation: v.annotation.toJSON(),
-            // dividers: {
-            //   slot: v.slotDivider.toJSON()
-            // },
-            dividers: v.dividers.toJSON(),
-            highlighter: v.highlighter.toJSON()
-          },
+          settings: v.settings.toJSON(),
+          backbone: v.backbone.toJSON(),
+          ruler: v.ruler.toJSON(),
+          annotation: v.annotation.toJSON(),
+          dividers: v.dividers.toJSON(),
+          highlighter: v.highlighter.toJSON(),
           captions: [],
           legend: v.legend.toJSON(),
           sequence: v.sequence.toJSON(),
           features: [],
           plots: [],
-          bookmarks: []
-          // layout: v.layout.toJSON()
+          bookmarks: [],
+          tracks: []
         }
       };
       v.captions().each( (i, caption) => {
@@ -84,6 +79,9 @@
       });
       v.bookmarks().each( (i, bookmark) => {
         json.cgview.bookmarks.push(bookmark.toJSON());
+      });
+      v.tracks().each( (i, track) => {
+        json.cgview.tracks.push(track.toJSON());
       });
       return json;
     }
@@ -109,7 +107,8 @@
       // In events this should mention how everything is reset (e.g. tracks, features, etc)
 
       viewer._id = data.id;
-      viewer.name = data.name;
+      // viewer.name = data.name;
+      viewer.update({name: data.name});
 
       // data Info
       viewer._dataInfo = {
@@ -146,9 +145,7 @@
 
       // Load Bookmarks
       if (data.bookmarks) {
-        data.bookmarks.forEach((bookmarkData) => {
-          new CGV.Bookmark(viewer, bookmarkData);
-        });
+        viewer.addBookmarks(data.bookmarks);
       }
 
       // Load Captions

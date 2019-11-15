@@ -75,7 +75,7 @@
       this.format = CGV.defaultFor(options.format, viewer.format);
       this.name = CGV.defaultFor(options.name, this.incrementalName());
       this.favorite = CGV.defaultFor(options.favorite, false);
-      this.shortcut = CGV.defaultFor(options.favorite, this.incrementalShortcut());
+      this.shortcut = CGV.defaultFor(options.shortcut, this.incrementalShortcut());
       this.bbOffset = CGV.defaultFor(options.bbOffset, viewer.bbOffset);
     }
 

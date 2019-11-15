@@ -51,7 +51,7 @@ options object that will effect how the action is added to the History.
 Adding records is done through methods on the Viewer Instance (e.g.
 addFeatures, addTracks, etc). Data can be added as a single object to create
 one record on as an array of objects to create an array of records.
-Adding one or more records will trigger a single event (e.g. features-add)
+Adding one or more records will trigger a single event (e.g. features-add).
 Each record type will have a list of attributes that can be set when creating
 records or updating them.
 ```js
@@ -104,13 +104,13 @@ attributes = {type: 'CDS', legend: 'CDS'};
 
 // Update a single record
 feature = cgv.features(1);
-cgv.updateRecords(feature, attributes);
+cgv.updateFeatures(feature, attributes);
 // OR
 cgv.feature.update(attributes);
 
 // Update multiple records to have the same attributes
 features = [feature_1, feature_2, features_3];
-cgv.updateRecords(features, attributes);
+cgv.updateFeatures(features, attributes);
 ```
 
 ## Advantages of Update API
