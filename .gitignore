@@ -1,6 +1,7 @@
 .DS_Store
 docs/html
 docs/dash
+docs/node_modules
 docs/dash-jsdoc/node_modules
 jsv
 examples

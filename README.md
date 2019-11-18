@@ -87,7 +87,7 @@ Component                        | Accessor                                   | 
 
 ### JSON Format ###
 
-- [See the CGView JSON format](json_format.html)
+- [See the CGView JSON format](tutorial-json_format.html)
 - [See the CGView JSON format as a mind map](mindmap.html)
 
 ### Tutorials ###

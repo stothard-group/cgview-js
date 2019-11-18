@@ -37,9 +37,25 @@ jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/do
 # Note: It's best to remove old dash folder first
 echo "Building Dash Documentation..."
 rm -r ${CGVIEW_DIR}/docs/dash
-jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --destination ${CGVIEW_DIR}/docs/dash --private --template ${CGVIEW_DIR}/docs/dash-jsdoc --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
+jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/dash-jsdoc --destination ${CGVIEW_DIR}/docs/dash --private --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
 
 echo "Done!"
 
+# TROUBLESHOOTING
+# If there are node errors, you may need to update the packages. I did the following to fix issues:
+# - For testing, I copy the docs directory and problem solve before performing on the main docs directory
+# - jaguarjs-jsdoc:
+#   - delete node_modules directory and package-lock
+#   - run "npm install"
+# - dash-jsdoc:
+#   - I added underscore to package.json file
+#   - npm install would not work for some reason
+#     - So I created a new directory ran "npm init" added "underscore" to it and installed
+#     - Then I copied the "underscore" directory to the dash-jsdoc node modules
+#   - For the sqlite issue, I when into "/node_modules/sequelize":
+#     - I upgrade sqlite (under devDependencies) to: "sqlite3": "^4.1.0"
+#     - Then run "npm install"
 
+# To use newer version of npm for now:
+# /usr/local/Cellar/node/12.12.0/bin/npm install
 
