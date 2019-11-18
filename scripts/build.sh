@@ -41,7 +41,9 @@ jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/do
 
 echo "Done!"
 
+# --------------------------------------------------------------------------------
 # TROUBLESHOOTING
+# --------------------------------------------------------------------------------
 # If there are node errors, you may need to update the packages. I did the following to fix issues:
 # - For testing, I copy the docs directory and problem solve before performing on the main docs directory
 # - jaguarjs-jsdoc:

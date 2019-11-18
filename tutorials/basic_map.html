@@ -8,12 +8,12 @@
   <!-- Prerequisites -->
   <!-- Local -->
   <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
-  <script src="../javascript/d3.v4.min.js"></script>
+  <script src="scripts/d3.v4.min.js"></script>
   <!-- CGView -->
-  <script src='../src/CGView.js'></script>
-  <link rel="stylesheet" href="../stylesheets/cgview.css" />
-  <link rel="stylesheet" href="styles/tutorial.css" />
+  <script src='scripts/CGView.js'></script>
   <script src='scripts/tutorial.js'></script>
+  <link rel="stylesheet" href="styles/cgview.css" />
+  <link rel="stylesheet" href="styles/tutorial.css" />
 </head>
 <body>
 
@@ -109,7 +109,9 @@ Here we find the generated LegendItem and change it's color and decoration.
 
 ```js
 // Find the legend item
-var legendItem = cgv.legend.items('CDS');
+// FIXME: CGArray: uses id but CDS is the name
+// var legendItem = cgv.legend.items('CDS');
+var legendItem = cgv.legend.items(1);
 // Change the color. The color can be a color name, RGB, or RGBA.
 legendItem.color = 'green';
 // Change the decoration. Options: 'arc', 'arrow', 'none'
