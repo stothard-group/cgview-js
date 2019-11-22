@@ -142,7 +142,7 @@
       } else if (this.viewer.backbone.containsCenterOffset(centerOffset)) {
         const backbone = this.viewer.backbone;
         const sequence = this.viewer.sequence;
-        if (sequence.hasContigs) {
+        if (sequence.hasMultipleContigs) {
           elementType = 'contig';
           element = sequence.contigForBp(bp);
         } else {

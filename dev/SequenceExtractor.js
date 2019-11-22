@@ -71,7 +71,7 @@
 
     sequenceInput(concatenate = false) {
       let type, data;
-      if (this.sequence.hasContigs && !concatenate) {
+      if (this.sequence.hasMultipleContigs && !concatenate) {
         type = 'contigs';
         data = this.sequence.contigs().map( c => c.toJSON() );
       } else {

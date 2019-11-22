@@ -28,8 +28,7 @@
       this.name = CGV.defaultFor(options.name, this.id);
       this.orientation = CGV.defaultFor(options.orientation, '+');
       this.seq = options.seq;
-      this._lengthBefore = 0;
-
+      this._updateLengthOffset(0);
 
       if (!this.seq) {
         this.length = options.length;
@@ -50,6 +49,13 @@
      */
     toString() {
       return 'Contig';
+    }
+
+    /**
+     * @member {String} - Get the sequence.
+     */
+    get sequence() {
+      return this._sequence;
     }
 
     /**
@@ -136,8 +142,8 @@
     /**
      * @member {Number} - Get the length of all the contigs before this one.
      */
-    get lengthBefore() {
-      return this._lengthBefore;
+    get lengthOffset() {
+      return this._lengthOffset;
     }
 
     /**
@@ -145,33 +151,33 @@
      *   The range start is the total length of the contigs before this one plus 1.
      *   The range stop is the total length of the contigs before this one plus this contigs length.
      */
-    get globalRange() {
-      return this._globalRange;
+    get mapRange() {
+      return this._mapRange;
     }
 
     /**
      * @member {Number} - Get the start position (bp) of the contig in relation to the entire map.
      *   The start is the total length of the contigs before this one plus 1.
      */
-    get globalStart() {
-      return this._globalRange.start;
+    get mapStart() {
+      return this._mapRange.start;
     }
 
     /**
      * @member {Number} - Get the stop position (bp) of the contig in relation to the entire map.
      *   The stop is the total length of the contigs before this one plus this contigs length.
      */
-    get globalStop() {
-      return this._globalRange.stop;
+    get mapStop() {
+      return this._mapRange.stop;
     }
 
     /**
-     * Updates the lengthBefore for this contig and also update the globalRange.
+     * Updates the lengthOffset for this contig and also update the mapRange.
      * @param {length} - Total length of all the contigs before this one.
      */
-    _updateLengthBefore(length) {
-      this._lengthBefore = length;
-      this._globalRange = new CGV.CGRange(this.sequence, length + 1, length + this.length);
+    _updateLengthOffset(length) {
+      this._lengthOffset = length;
+      this._mapRange = new CGV.CGRange(this.sequence, length + 1, length + this.length);
     }
 
     update(attributes) {
@@ -190,8 +196,8 @@
      */
     moveTo(duration, ease) {
       const buffer = Math.ceil(this.length * 0.05);
-      const start = this.sequence.subtractBp(this.globalStart, buffer);
-      const stop = this.sequence.addBp(this.globalStop, buffer);
+      const start = this.sequence.subtractBp(this.mapStart, buffer);
+      const stop = this.sequence.addBp(this.mapStop, buffer);
       this.viewer.moveTo(start, stop, {duration, ease});
     }
 

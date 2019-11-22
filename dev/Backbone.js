@@ -221,7 +221,7 @@
       if (this.visibleRange && this.visible) {
         this.refreshThickness();
 
-        if (this.sequence.hasContigs) {
+        if (this.sequence.hasMultipleContigs) {
           const contigs = this.sequence.contigsForRange(this.visibleRange);
           for (let i = 0, len = contigs.length; i < len; i++) {
             const contig = contigs[i];
