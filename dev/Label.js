@@ -7,7 +7,7 @@
     constructor(feature, options = {}) {
       this._feature = feature;
       this.name = options.name;
-      this.bp = this.feature.start + (this.feature.length / 2);
+      this.bp = this.feature.mapStart + (this.feature.length / 2);
       this.bpDefault = this.bp;
 
       // this.lineAttachmentDefault = this.viewer.layout.clockPositionForBp(this.bp);

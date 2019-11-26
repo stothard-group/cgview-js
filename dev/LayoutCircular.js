@@ -90,15 +90,15 @@
     visibleRangeForCenterOffset(centerOffset, margin = 0) {
       const ranges = this._visibleRangesForRadius(centerOffset, margin);
       if (ranges.length === 2) {
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[1]);
+        return new CGV.CGRange(this.sequence.mapContig, ranges[0], ranges[1]);
       } else if (ranges.length > 2) {
-        return new CGV.CGRange(this.sequence, ranges[0], ranges[ranges.length - 1]);
+        return new CGV.CGRange(this.sequence.mapContig, ranges[0], ranges[ranges.length - 1]);
       } else if ( (centerOffset - margin) > this._maximumVisibleRadius() ) {
         return undefined;
       } else if ( (centerOffset + margin) < this._minimumVisibleRadius() ) {
         return undefined;
       } else {
-        return new CGV.CGRange(this.sequence, 1, this.sequence.length);
+        return new CGV.CGRange(this.sequence.mapContig, 1, this.sequence.length);
       }
       // } else {
       //   return undefined

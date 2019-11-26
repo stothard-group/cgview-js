@@ -159,7 +159,7 @@
 
     // Refresh needs to be called when new features are added, etc
     refresh() {
-      this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length});
+      this._featureNCList = new CGV.NCList(this._features, {circularLength: this.sequence.length, startProperty: 'mapStart', stopProperty: 'mapStop'});
     }
 
     /**
@@ -232,7 +232,7 @@
         const stop = range.stop;
         if (this.hasFeatures) {
           let featureCount = this._features.length;
-          if (!range.isFullCircle()) {
+          if (!range.isMapLength()) {
             featureCount = this._featureNCList.count(start, stop);
           }
           let step = 1;

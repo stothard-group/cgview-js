@@ -89,7 +89,7 @@
       const domainX = this.scale.x.domain();
       const start = Math.floor(this.scale.bp.invert(domainX[0] - margin));
       const end = Math.ceil(this.scale.bp.invert(domainX[1] + margin));
-      return new CGV.CGRange(this.sequence,
+      return new CGV.CGRange(this.sequence.mapContig,
         Math.max(start, 1),
         Math.min(end, this.sequence.length));
     }

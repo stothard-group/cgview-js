@@ -396,6 +396,14 @@
       this.viewer.trigger('contigs-update', { contigs, attributes });
     }
 
+    moveContig(oldIndex, newIndex) {
+      this._contigs.move(oldIndex, newIndex);
+      // FIXME: UPDATE OFFSET AND RANGES
+      // FIXME: UPDATE Sequence Plot Extractors
+      this.updateMapContig();
+      this.viewer.trigger('contigs-moved', {oldIndex: oldIndex, newIndex: newIndex});
+    }
+
 
     createMapContig(data) {
       if (data.seq) {
@@ -654,7 +662,7 @@
       const seq = (strand === 1) ? this.seq : this.reverseComplement();
       while ( (match = re.exec(seq)) !== null) {
         start = (strand === 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
-        ranges.push( new CGV.CGRange(this, start, start + match[0].length - 1 ) );
+        ranges.push( new CGV.CGRange(this.mapContig, start, start + match[0].length - 1 ) );
         re.lastIndex = match.index + 1;
       }
       return ranges;

@@ -152,7 +152,9 @@
      *   The range stop is the total length of the contigs before this one plus this contigs length.
      */
     get mapRange() {
-      return this._mapRange;
+      // FIXME: this need to be stored better
+      // return this._mapRange;
+      return new CGV.CGRange(this.sequence.mapContig, this.lengthOffset + 1, length + this.length);
     }
 
     /**
@@ -160,7 +162,7 @@
      *   The start is the total length of the contigs before this one plus 1.
      */
     get mapStart() {
-      return this._mapRange.start;
+      return this.mapRange.start;
     }
 
     /**
@@ -168,7 +170,7 @@
      *   The stop is the total length of the contigs before this one plus this contigs length.
      */
     get mapStop() {
-      return this._mapRange.stop;
+      return this.mapRange.stop;
     }
 
     /**
@@ -177,7 +179,7 @@
      */
     _updateLengthOffset(length) {
       this._lengthOffset = length;
-      this._mapRange = new CGV.CGRange(this.sequence, length + 1, length + this.length);
+      // this._mapRange = new CGV.CGRange(this.sequence.mapContig, length + 1, length + this.length);
     }
 
     update(attributes) {

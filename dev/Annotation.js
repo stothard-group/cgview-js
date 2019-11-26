@@ -154,20 +154,22 @@
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
-        containsStart = visibleRange.contains(feature.start);
-        containsStop = visibleRange.contains(feature.stop);
+        containsStart = visibleRange.contains(feature.mapStart);
+        containsStop = visibleRange.contains(feature.mapStop);
         if (containsStart && containsStop) {
           label.bp = label.bpDefault;
           label.lineAttachment = label.lineAttachmentDefault;
           // console.log(label.lineAttachment)
         } else {
           if (containsStart) {
-            label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
+            // FIXME:
+            // label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
           } else if (containsStop) {
-            label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
+            // FIXME:
+            // label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
           } else {
-            featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.stop);
-            featureLengthUpStream = sequence.lengthOfRange(feature.start, visibleRange.start);
+            featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.mapStop);
+            featureLengthUpStream = sequence.lengthOfRange(feature.mapStart, visibleRange.start);
             const halfVisibleRangeLength = visibleRange.length / 2;
             const center = visibleRange.start + halfVisibleRangeLength;
             if (featureLengthUpStream > featureLengthDownStream) {

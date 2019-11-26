@@ -12,15 +12,14 @@
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
-      // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this.contig = data.contig;
+      // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this.updateRanges(data.start, data.stop);
       this.strand = CGV.defaultFor(data.strand, 1);
       this.score = CGV.defaultFor(data.score, 1);
       this.label = new CGV.Label(this, {name: data.name} );
       this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
-
 
       this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
@@ -136,17 +135,22 @@
      * @member {Range} - Get or set the range of the feature with respect to its contig.
      *   All ranges are assumed to be going in a clockwise direction.
      */
-    get contigRange() {
-      return this._contigRange;
+    // FIXME: This will become mapRange
+    // NEED FASTER WAY
+    get mapRange() {
+      // return this._mapRange;
+      return this.range.onMap;
     }
-
-    set contigRange(value) {
-      this._contigRange = value;
-    }
+    //
+    // set contigRange(value) {
+    //   this._contigRange = value;
+    // }
 
     /**
      * @member {Number} - Get or set the start position of the feature in basepair (bp).
      *   All start and stop positions are assumed to be going in a clockwise direction.
+     *   This position is relative to the contig the feature is on. If there is only one
+     *   contig, this value will be the same as mapStart.
      */
     get start() {
       return this.range.start;
@@ -160,6 +164,8 @@
     /**
      * @member {Number} - Get or set the stop position of the feature in basepair (bp).
      *   All start and stop positions are assumed to be going in a clockwise direction.
+     *   This position is relative to the contig the feature is on. If there is only one
+     *   contig, this value will be the same as mapStop.
      */
     get stop() {
       return this.range.stop;
@@ -169,6 +175,32 @@
       // FIXME: check if on a contig. If so update contigRange as well.
       this.range.stop = value;
     }
+
+    /**
+     * @member {Number} - Get or set the start position of the feature in basepair (bp).
+     *   All start and stop positions are assumed to be going in a clockwise direction.
+     */
+    get mapStart() {
+      return this.range.mapStart;
+    }
+
+    // set mapStart(value) {
+    //   // FIXME: check if on a contig. If so update contigRange as well.
+    //   this.range.start = value;
+    // }
+
+    /**
+     * @member {Number} - Get or set the stop position of the feature in basepair (bp).
+     *   All start and stop positions are assumed to be going in a clockwise direction.
+     */
+    get mapStop() {
+      return this.range.mapStop;
+    }
+
+    // set mapStop(value) {
+    //   // FIXME: check if on a contig. If so update contigRange as well.
+    //   this.range.stop = value;
+    // }
 
     get length() {
       return this.range.length;
@@ -286,28 +318,34 @@
      * @param {Number} start - Start position (bp).
      * @param {Number} stop - Stop position (bp).
      */
+    // updateRanges(start, stop) {
+    //   start = Number(start);
+    //   stop = Number(stop);
+    //   const sequence = this.sequence;
+    //   let globalStart = start;
+    //   let globalStop = stop;
+    //   if (this.contig) {
+    //     // Create range as global bp position and
+    //     // contigRange as given start/stop positions
+    //     globalStart = sequence.bpForContig(this.contig, start);
+    //     globalStop = sequence.bpForContig(this.contig, stop);
+    //     this.contigRange = new CGV.CGRange(sequence, start, stop);
+    //   }
+    //   this.range = new CGV.CGRange(sequence, globalStart, globalStop);
+    // }
     updateRanges(start, stop) {
       start = Number(start);
       stop = Number(stop);
-      const sequence = this.sequence;
-      let globalStart = start;
-      let globalStop = stop;
-      if (this.contig) {
-        // Create range as global bp position and
-        // contigRange as given start/stop positions
-        globalStart = sequence.bpForContig(this.contig, start);
-        globalStop = sequence.bpForContig(this.contig, stop);
-        this.contigRange = new CGV.CGRange(sequence, start, stop);
-      }
-      this.range = new CGV.CGRange(sequence, globalStart, globalStop);
+      const contig = this.contig || this.sequence.mapContig;
+      this.range = new CGV.CGRange(contig, start, stop);
     }
 
     draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
       if (!this.visible) { return; }
-      if (this.range.overlapsRange(visibleRange)) {
+      if (this.mapRange.overlapsRange(visibleRange)) {
         const canvas = this.canvas;
-        let start = this.start;
-        let stop = this.stop;
+        let start = this.mapStart;
+        let stop = this.mapStop;
         const containsStart = visibleRange.contains(start);
         const containsStop = visibleRange.contains(stop);
         const color = options.color || this.color;
@@ -322,7 +360,7 @@
         // in the visible range, the feature should be drawn as 2 arcs.
         if ( (this.viewer.zoomFactor > 1000) &&
              (containsStart && containsStop) &&
-             (this.range.overHalfCircle()) ) {
+             (this.range.overHalfMapLength()) ) {
           canvas.drawElement(layer, visibleRange.start - 100, stop,
             this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);

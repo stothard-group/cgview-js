@@ -27,6 +27,8 @@
     constructor(intervals = [], options = {}) {
       this.intervals = [];
       this.circularLength = options.circularLength;
+      this.startProperty = options.startProperty || 'start';
+      this.stopProperty = options.stopProperty || 'stop';
       this.fill(intervals);
     }
 
@@ -78,17 +80,18 @@
         this.topList = [];
         return;
       }
-      const start = this.start;
-      const end = this.end;
+      // const start = this.start;
+      // const end = this.end;
       const sublist = this.sublist;
 
       intervals = this._normalize(intervals);
       this.intervals = intervals;
 
       // Sort by overlap
-      intervals.sort(function(a, b) {
-        if (start(a) !== start(b)) return start(a) - start(b);
-        else return end(b) - end(a);
+      // intervals.sort(function(a, b) {
+      intervals.sort( (a, b) => {
+        if (this.start(a) !== this.start(b)) return this.start(a) - this.start(b);
+        else return this.end(b) - this.end(a);
       });
       const sublistStack = [];
       let curList = [];
@@ -99,7 +102,7 @@
       for (let i = 1, len = intervals.length; i < len; i++) {
         curInterval = intervals[i];
         // if this interval is contained in the previous interval,
-        if (end(curInterval) < end(intervals[i - 1])) {
+        if (this.end(curInterval) < this.end(intervals[i - 1])) {
           // create a new sublist starting with this interval
           sublistStack.push(curList);
           curList = new Array(curInterval);
@@ -112,8 +115,8 @@
               break;
             } else {
               topSublist = sublistStack[sublistStack.length - 1];
-              if (end(topSublist[topSublist.length - 1])
-                          > end(curInterval)) {
+              if (this.end(topSublist[topSublist.length - 1])
+                          > this.end(curInterval)) {
                 // curList is the first (deepest) sublist that
                 // curInterval fits into
                 curList.push(curInterval);
@@ -131,14 +134,16 @@
      * Method to retrieve the stop coordinate of the interval
      */
     end(interval) {
-      return interval.stop || interval.interval.stop;
+      // return interval.stop || interval.interval.stop;
+      return interval[this.stopProperty] || interval.interval[this.stopProperty];
     }
 
     /**
      * Method to retrieve the start coordinate of the interval
      */
     start(interval) {
-      return interval.start || interval.interval.start;
+      // return interval.start || interval.interval.start;
+      return interval[this.startProperty] || interval.interval[this.startProperty];
     }
 
     /**

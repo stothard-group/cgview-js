@@ -716,7 +716,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       // TODO: check for visibile range
       const startRange = this.backbone.visibleRange;
       const startBp = startRange.middle;
-      const endBp = new CGV.CGRange(this.sequence, start, stop).middle;
+      const endBp = new CGV.CGRange(this.sequence.mapContig, start, stop).middle;
       const startEndLength = Math.abs(endBp - startBp);
 
       const zoomScale = d3.scalePow()
