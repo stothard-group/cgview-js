@@ -388,10 +388,17 @@
     updateContigs(contigs, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'orientation', 'order'];
+      const validKeys = ['name', 'orientation', 'order', 'visible'];
       if (!CGV.validate(keys, validKeys)) { return; }
       contigs = CGV.CGArray.arrayerize(contigs);
       contigs.attr(attributes);
+      // FIXME: this should only update if orientation, order or visible changes
+      this.updateMapContig();
+      // TRYING THIS OUT
+      for (const track of this.viewer.tracks()) {
+        track.refresh();
+      }
+      this.viewer.trigger('tracks-update', { tracks: this.viewer.tracks() });
       // TODO: refresh sequence, features, etc
       this.viewer.trigger('contigs-update', { contigs, attributes });
     }
@@ -433,6 +440,8 @@
         for (let i = 0, len = this._contigs.length; i < len; i++) {
           const contig = this._contigs[i];
           contig._index = i + 1;
+          if (!contig.visible) {continue;}
+
           contig._updateLengthOffset(length);
 
           if (useSeq) {
@@ -453,13 +462,6 @@
         // Create  mapContig
         const data = (useSeq) ? {seq} : {length};
         this._mapContig = new CGV.Contig(this, data);
-        // if (useSeq) {
-        //   // this.seq = seq;
-        //   this._mapContig = new CGV.Contig(this, {seq});
-        // } else {
-        //   // this.length = length;
-        //   this._mapContig = new CGV.Contig(this, {length});
-        // }
       }
       this._sequenceExtractor = (this.hasSeq) ? new CGV.SequenceExtractor(this) : undefined;
       this._updateScale();
@@ -507,16 +509,16 @@
     }
 
     /**
-     * Returns all the contigs that overlap the given range.
+     * Returns all the contigs that overlap the given range using map coordinates.
      * @param {CGRange} range - Range to find overlapping contigs.
      *
      * @return {CGArray} CGArray of Contigs
      */
-    contigsForRange(range) {
+    contigsForMapRange(range) {
       const contigs = new CGV.CGArray();
       for (let i = 1, len = this.sequence.contigs().length; i <= len; i++) {
         const contig = this.sequence.contigs(i);
-        if (range.overlapsRange(contig.mapRange)) {
+        if (range.overlapsMapRange(contig.mapRange)) {
           contigs.push(contig);
         }
       }

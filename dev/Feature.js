@@ -342,7 +342,7 @@
 
     draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
       if (!this.visible) { return; }
-      if (this.mapRange.overlapsRange(visibleRange)) {
+      if (this.mapRange.overlapsMapRange(visibleRange)) {
         const canvas = this.canvas;
         let start = this.mapStart;
         let stop = this.mapStop;

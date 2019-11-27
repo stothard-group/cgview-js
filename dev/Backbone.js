@@ -222,7 +222,7 @@
         this.refreshThickness();
 
         if (this.sequence.hasMultipleContigs) {
-          const contigs = this.sequence.contigsForRange(this.visibleRange);
+          const contigs = this.sequence.contigsForMapRange(this.visibleRange);
           for (let i = 0, len = contigs.length; i < len; i++) {
             const contig = contigs[i];
             const start = this.sequence.bpForContig(contig);

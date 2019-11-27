@@ -241,7 +241,7 @@
      * @param {Range} range2 - The range with which to test overlap.
      * @return {Boolwan}
      */
-    overlapsRange(range2) {
+    overlapsMapRange(range2) {
       // return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start));
       return (this.containsMapBp(range2.mapStart) || this.containsMapBp(range2.mapStop) || range2.containsMapBp(this.mapStart));
     }

@@ -291,7 +291,7 @@
     updateFeatures() {
       if (this.contents.from === 'source' || this.contents.from === 'type') {
         this.viewer.features().each( (i, feature) => {
-          if (this.contents.extract.includes(feature[this.contents.from])) {
+          if (this.contents.extract.includes(feature[this.contents.from]) && feature.contig.visible) {
             this._features.push(feature);
           }
         });
