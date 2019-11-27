@@ -346,8 +346,8 @@
         const canvas = this.canvas;
         let start = this.mapStart;
         let stop = this.mapStop;
-        const containsStart = visibleRange.contains(start);
-        const containsStop = visibleRange.contains(stop);
+        const containsStart = visibleRange.containsMapBp(start);
+        const containsStop = visibleRange.containsMapBp(stop);
         const color = options.color || this.color;
         const showShading = options.showShading;
         if (!containsStart) {

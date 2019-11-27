@@ -612,7 +612,7 @@
     forRange(range) {
       let seq;
       if (this.seq) {
-        if (range.spansOrigin()) {
+        if (range.isWrapped()) {
           // seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
           seq = this.seq.substring(range.start - 1) + this.seq.substring(0, range.stop);
         } else {

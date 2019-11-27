@@ -154,8 +154,8 @@
       for (let i = 0, len = labels.length; i < len; i++) {
         label = labels[i];
         feature = label.feature;
-        containsStart = visibleRange.contains(feature.mapStart);
-        containsStop = visibleRange.contains(feature.mapStop);
+        containsStart = visibleRange.containsMapBp(feature.mapStart);
+        containsStop = visibleRange.containsMapBp(feature.mapStop);
         if (containsStart && containsStop) {
           label.bp = label.bpDefault;
           label.lineAttachment = label.lineAttachmentDefault;

@@ -47,25 +47,37 @@
     // }
 
     /**
-     * @member {Number} - Get or set the range start.
+     * @member {Number} - Get or set the range start. Start must be less than
+     * Stop unless the contig represents the entire map, in which case,
+     * wrapping is allowed. The value will be constrained between the 1 and the
+     * contig length.
      */
     get start() {
       return this._start;
     }
 
     set start(value) {
-      this._start = Number(value);
+      // this._start = Number(value);
+      // this._start = CGV.constrain(value, 1, this.stop || this.contig.length);
+      const stop = this.isWrappingAllowed ? this.contig.length : (this.stop || this.contig.length);
+      this._start = CGV.constrain(value, 1, stop);
     }
 
     /**
-     * @member {Number} - Get or set the range stop.
+     * @member {Number} - Get or set the range stop. Stop must be greater than
+     * Start unless the contig represents the entire map, in which case,
+     * wrapping is allowed. The value will be constrained between the 1 and the
+     * contig length.
      */
     get stop() {
       return this._stop;
     }
 
     set stop(value) {
-      this._stop = Number(value);
+      // this._stop = Number(value);
+      // this._stop = CGV.constrain(value, this.start || 1, this.contig.length);
+      const start = this.isWrappingAllowed ? 1 : (this.start || 1);
+      this._stop = CGV.constrain(value, start, this.contig.length);
     }
 
     /**
@@ -78,6 +90,7 @@
 
     set mapStart(value) {
       // this._start = Number(value);
+      this.start = value - this.contig.lengthOffset;
     }
 
     /**
@@ -90,6 +103,7 @@
 
     set mapStop(value) {
       // this._stop = Number(value);
+      this.stop = value - this.contig.lengthOffset;
     }
 
     get onMap() {
@@ -129,7 +143,7 @@
     }
 
     /**
-     * Convert the *value* to be between the 1 and the sequence length.
+     * Convert the *value* to be between the 1 and the contig length.
      * Values will be constrained to the contig unless the Map Sequence only contains a single contig,
      * in which case, values bigger or smaller than the sequence length will be wrappeed around.
      * For example, if sequence length is 1000 and _value_ is 1200,
@@ -140,7 +154,7 @@
     normalize(value) {
       if (this.sequence.hasMultipleContigs) {
         // Multiple Contigs. Values are constrained between one and contig length.
-        return CGV.constrain(value, this.start, this.stop);
+        return CGV.constrain(value, 1, this.contig.length);
       } else {
         // Single Contig. Wrapping possible.
         let rotations;
@@ -183,10 +197,19 @@
     }
 
     /**
-     * Return true if the range spans the origin (ie. the stop is less than the start position)
+     * Return true if the contig length is the same as the sequence length.
+     * If so, then the range can wrap around (i.e., that stop position can be less than the start).
      * @return {Boolean}
      */
-    spansOrigin() {
+    isWrappingAllowed() {
+      return (this.contig.length === this.sequence.length);
+    }
+
+    /**
+     * Return true if the range wraps around the end of the contig (ie. the stop is less than the start position)
+     * @return {Boolean}
+     */
+    isWrapped() {
       return (this.stop < this.start);
     }
 
@@ -195,7 +218,7 @@
      * @param {Number} position - The position to check if it's in the range.
      * @return {Boolean}
      */
-    contains(position) {
+    containsMapBp(position) {
       if (this.stop >= this.start) {
         // Typical Range
         return (position >= this.mapStart && position <= this.mapStop);
@@ -220,20 +243,26 @@
      */
     overlapsRange(range2) {
       // return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start));
-      return (this.contains(range2.start) || this.contains(range2.stop) || range2.contains(this.start));
+      return (this.containsMapBp(range2.mapStart) || this.containsMapBp(range2.mapStop) || range2.containsMapBp(this.mapStart));
     }
 
     /**
-     * Merge the with the supplied range to give the biggest possible range.
+     * Merge with the supplied range to give the biggest possible range.
      * This may produce unexpected results of the ranges do not overlap.
+     * Both ranges must be on the same contig. If not, the CGRange calling
+     * this method will be returned.
      * @param {Range} range2 - The range to merge with.
      * @return {Range}
      */
+    // NOTE:
+    // - ONLY used in Ruler.updateTicks to merge innerRange with outerRange
     mergeWithRange(range2) {
-      // console.log('HERE')
+      if (range2.contig !== this.contig) {
+        return this;
+      }
       const range1 = this;
-      const range3 = new CGV.CGRange(this.sequence, range1.start, range2.stop);
-      const range4 = new CGV.CGRange(this.sequence, range2.start, range1.stop);
+      const range3 = new CGV.CGRange(this.contig, range1.start, range2.stop);
+      const range4 = new CGV.CGRange(this.contig, range2.start, range1.stop);
       const ranges = [range1, range2, range3, range4];
       let greatestLength = 0;
       let rangeLength, longestRange;
