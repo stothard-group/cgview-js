@@ -137,18 +137,32 @@
       return this._feature;
     }
 
+    // /**
+    //  * @member {Number} - Get the start position of the feature
+    //  */
+    // get start() {
+    //   return this.feature.start;
+    // }
+    //
+    // /**
+    //  * @member {Number} - Get the stop position of the feature
+    //  */
+    // get stop() {
+    //   return this.feature.stop;
+    // }
+
     /**
-     * @member {Number} - Get the start position of the feature
+     * @member {Number} - Get the mapStart position of the feature
      */
-    get start() {
-      return this.feature.start;
+    get mapStart() {
+      return this.feature.mapStart;
     }
 
     /**
-     * @member {Number} - Get the stop position of the feature
+     * @member {Number} - Get the mapStop position of the feature
      */
-    get stop() {
-      return this.feature.stop;
+    get mapStop() {
+      return this.feature.mapStop;
     }
 
 

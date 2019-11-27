@@ -130,7 +130,7 @@
     }
 
     refresh() {
-      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.sequence.length });
+      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.sequence.length, startProperty: 'mapStart', stopProperty: 'mapStop'});
     }
 
     refreshLabelWidths() {
