@@ -162,11 +162,9 @@
           // console.log(label.lineAttachment)
         } else {
           if (containsStart) {
-            // FIXME:
-            // label.bp = feature.range.getStartPlus( sequence.lengthOfRange(feature.start, visibleRange.stop) / 2 );
+            label.bp = feature.mapRange.getStartPlus( sequence.lengthOfRange(feature.mapStart, visibleRange.stop) / 2 );
           } else if (containsStop) {
-            // FIXME:
-            // label.bp = feature.range.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.stop) / 2 );
+            label.bp = feature.mapRange.getStopPlus( -sequence.lengthOfRange(visibleRange.start, feature.mapStop) / 2 );
           } else {
             featureLengthDownStream = sequence.lengthOfRange(visibleRange.stop, feature.mapStop);
             featureLengthUpStream = sequence.lengthOfRange(feature.mapStart, visibleRange.start);

@@ -39,12 +39,12 @@
       return this.contig.sequence;
     }
 
-    /**
-     * @member {Number} - Get the sequence length
-     */
-    get sequenceLength() {
-      return this.sequence.length;
-    }
+    // /**
+    //  * @member {Number} - Get the sequence length
+    //  */
+    // get sequenceLength() {
+    //   return this.sequence.length;
+    // }
 
     /**
      * @member {Number} - Get or set the range start.
@@ -128,44 +128,51 @@
       return this.length > (this.sequence.length / 2);
     }
 
-    // /**
-    //  * Convert the *value* to be between the 1 and the sequence length.
-    //  * Values bigger or smaller than the sequence length will be wrappeed around.
-    //  * For example, if sequence length is 1000 and _value_ is 1200,
-    //  * a value of 200 will be returned.
-    //  * @param {Number} value - The number to normalize.
-    //  * @return {Number}
-    //  */
-    // normalize(value) {
-    //   let rotations;
-    //   if (value > this.sequenceLength) {
-    //     rotations = Math.floor(value / this.sequenceLength);
-    //     return (value - (this.sequenceLength * rotations) );
-    //   } else if (value < 1) {
-    //     rotations = Math.ceil(Math.abs(value / this.sequenceLength));
-    //     return (this.sequenceLength * rotations) + value;
-    //   } else {
-    //     return value;
-    //   }
-    // }
-    //
-    // /**
-    //  * Return the *start* of the range plus the *value*.
-    //  * @param {Number} - Number to add.
-    //  * @return {Number}
-    //  */
-    // getStartPlus(value) {
-    //   return this.normalize(this.start + value);
-    // }
-    //
-    // /**
-    //  * Return the *stop* of the range plus the *value*.
-    //  * @param {Number} - Number to add.
-    //  * @return {Number}
-    //  */
-    // getStopPlus(value) {
-    //   return this.normalize(this.stop + value);
-    // }
+    /**
+     * Convert the *value* to be between the 1 and the sequence length.
+     * Values will be constrained to the contig unless the Map Sequence only contains a single contig,
+     * in which case, values bigger or smaller than the sequence length will be wrappeed around.
+     * For example, if sequence length is 1000 and _value_ is 1200,
+     * a value of 200 will be returned.
+     * @param {Number} value - The number to normalize.
+     * @return {Number}
+     */
+    normalize(value) {
+      if (this.sequence.hasMultipleContigs) {
+        // Multiple Contigs. Values are constrained between one and contig length.
+        return CGV.constrain(value, this.start, this.stop);
+      } else {
+        // Single Contig. Wrapping possible.
+        let rotations;
+        if (value > this.sequenceLength) {
+          rotations = Math.floor(value / this.sequenceLength);
+          return (value - (this.sequenceLength * rotations) );
+        } else if (value < 1) {
+          rotations = Math.ceil(Math.abs(value / this.sequenceLength));
+          return (this.sequenceLength * rotations) + value;
+        } else {
+          return value;
+        }
+      }
+    }
+
+    /**
+     * Return the *start* of the range plus the *value*.
+     * @param {Number} - Number to add.
+     * @return {Number}
+     */
+    getStartPlus(value) {
+      return this.normalize(this.start + value);
+    }
+
+    /**
+     * Return the *stop* of the range plus the *value*.
+     * @param {Number} - Number to add.
+     * @return {Number}
+     */
+    getStopPlus(value) {
+      return this.normalize(this.stop + value);
+    }
 
     /**
      * Return true if the range length is the same as the sequence length

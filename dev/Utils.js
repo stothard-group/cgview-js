@@ -451,7 +451,7 @@
 
   /**
    * Contain the value between the min and max values
-   * @param {Number} value - Number to contrain
+   * @param {Number} value - Number to constrain
    * @param {Number} min - If the value is less than min, min will be returned
    * @param {Number} max - If the value is greater than max, max will be returned
    * @return {Number}
