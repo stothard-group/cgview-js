@@ -365,9 +365,9 @@
         this._contigs.push(contig);
         return contig;
       });
+      this.updateMapContig();
       this.viewer.trigger('contigs-add', contigs);
       // this.updateFromContigs();
-      this.updateMapContig();
       return contigs;
       // Check for sequence or length
       // Can probably just add the sequence or length, instead of calling updateFromContigs
@@ -388,7 +388,7 @@
     updateContigs(contigs, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'orientation', 'order', 'visible'];
+      const validKeys = ['name', 'orientation', 'visible'];
       if (!CGV.validate(keys, validKeys)) { return; }
       contigs = CGV.CGArray.arrayerize(contigs);
       contigs.attr(attributes);
@@ -398,6 +398,8 @@
       for (const track of this.viewer.tracks()) {
         track.refresh();
       }
+      this.viewer.annotation.refresh();
+      // FIXME: Only trigger contigs if visibiliy changes
       this.viewer.trigger('tracks-update', { tracks: this.viewer.tracks() });
       // TODO: refresh sequence, features, etc
       this.viewer.trigger('contigs-update', { contigs, attributes });
@@ -409,6 +411,18 @@
       // FIXME: UPDATE Sequence Plot Extractors
       this.updateMapContig();
       this.viewer.trigger('contigs-moved', {oldIndex: oldIndex, newIndex: newIndex});
+
+      // Calling contigs-update as well.
+      // Because each contig between oldIndex and newIndex will have there order/index changed
+      const contigs = [];
+      const start = Math.min(oldIndex, newIndex);
+      const len = Math.max(oldIndex, newIndex);
+      for (let i = start; i <= len; i++) {
+        contigs.push(this._contigs[i]);
+      }
+      this.viewer.trigger('contigs-update', { contigs, attributes: {} });
+
+
     }
 
 
@@ -509,7 +523,7 @@
     }
 
     /**
-     * Returns all the contigs that overlap the given range using map coordinates.
+     * Returns all the visible contigs that overlap the given range using map coordinates.
      * @param {CGRange} range - Range to find overlapping contigs.
      *
      * @return {CGArray} CGArray of Contigs
@@ -518,7 +532,7 @@
       const contigs = new CGV.CGArray();
       for (let i = 1, len = this.sequence.contigs().length; i <= len; i++) {
         const contig = this.sequence.contigs(i);
-        if (range.overlapsMapRange(contig.mapRange)) {
+        if (contig.visible && range.overlapsMapRange(contig.mapRange)) {
           contigs.push(contig);
         }
       }

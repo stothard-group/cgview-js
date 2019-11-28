@@ -129,8 +129,15 @@
       this.refresh();
     }
 
+    // Called from Viewer.add/removeFeatures()
     refresh() {
-      this._labelsNCList = new CGV.NCList(this._labels, { circularLength: this.sequence.length, startProperty: 'mapStart', stopProperty: 'mapStop'});
+      // Remove labels that are on invisible contigs
+      const labels = this._labels.filter( (l) => l.feature.contig && l.feature.contig.visible);
+      // Update default Bp for labels
+      for (const label of labels) {
+        label.bpDefault = label.feature.mapRange.middle;
+      }
+      this._labelsNCList = new CGV.NCList(labels, { circularLength: this.sequence.length, startProperty: 'mapStart', stopProperty: 'mapStop'});
     }
 
     refreshLabelWidths() {
@@ -272,9 +279,10 @@
     }
 
     draw(innerCenterOffset, outerCenterOffset) {
-      if (this._labels.length !== this._labelsNCList.length) {
-        this.refresh();
-      }
+      // TRY refreshing through addFeatures/remove
+      // if (this._labels.length !== this._labelsNCList.length) {
+      //   this.refresh();
+      // }
 
       this._visibleRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset);
 
@@ -317,6 +325,15 @@
       // Draw label lines first so that label text will draw over them
       for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
+        // if (label.name === 'AUI44_00380') {
+        // if (label.name === 'AUI44_00145') {
+        //   console.log('AT LABEL');
+        //   console.log(label.feature.contig.visible)
+        //   console.log(label.bp)
+        // }
+        // FIXME: it would be better to remove invisible labels before calculating position
+        // - this works to remove label, but the space is not available for another label
+        if (!label.feature.visible) { continue; }
         const color = this.color || label.feature.color;
 
         // canvas.radiantLine('map', label.bp,
@@ -340,6 +357,9 @@
       backgroundColor.opacity = 0.75;
       for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
         label = this._visibleLabels[i];
+        // FIXME: it would be better to remove invisible labels before calculating position
+        // - this works to remove label, but the space is not available for another label
+        if (!label.feature.visible) { continue; }
         const color = this.color || label.feature.color;
 
         ctx.fillStyle = backgroundColor.rgbaString;

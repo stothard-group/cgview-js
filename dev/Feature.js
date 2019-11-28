@@ -12,7 +12,7 @@
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
-      this.contig = data.contig;
+      this.contig = data.contig || viewer.sequence.mapContig;
       // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this.updateRanges(data.start, data.stop);
       this.strand = CGV.defaultFor(data.strand, 1);
@@ -495,8 +495,9 @@
       });
     }
 
+    // FIXME: contig should only be available if the sequence hasMultipleContigs
     toJSON() {
-      return {
+      const json = {
         name: this.name,
         type: this.type,
         start: this.start,
@@ -508,6 +509,10 @@
         visible: this.visible,
         favorite: this.favorite
       };
+      if (this.sequence.hasMultipleContigs) {
+        json.contig = this.contig.name;
+      }
+      return json;
     }
 
   }

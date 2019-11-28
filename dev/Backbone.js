@@ -227,7 +227,8 @@
             const contig = contigs[i];
             const start = this.sequence.bpForContig(contig);
             const stop = this.sequence.bpForContig(contig, contig.length);
-            const color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
+            // const color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
+            const color = (i % 2 === 0) ? this.color : this.colorAlternate;
             this.viewer.canvas.drawElement('map', start, stop, this.adjustedCenterOffset, color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(contig));
           }
         } else {

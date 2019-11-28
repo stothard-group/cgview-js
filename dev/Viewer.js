@@ -578,6 +578,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     addFeatures(featureData = []) {
       featureData = CGV.CGArray.arrayerize(featureData);
       const features = featureData.map( (data) => new CGV.Feature(this, data));
+      this.annotation.refresh();
       this.trigger('features-add', features);
       return features;
       // FIXME: need to update tracks??
@@ -591,6 +592,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.tracks().each( (i, track) => {
         track.removeFeatures(features);
       });
+      this.annotation.refresh();
       this.trigger('features-remove', features);
     }
 

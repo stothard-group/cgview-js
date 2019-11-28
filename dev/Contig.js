@@ -82,6 +82,20 @@
     }
 
     /**
+     * @member {String} - Get or set the contig visibility. Note, that at least one contig must be visible.
+     */
+    get visible() {
+      return this._visible;
+    }
+
+    // FIXME: this will probably fail if loading a JSON where the first contig is not visible
+    set visible(value) {
+      if (value || this.sequence.contigs().filter( c => c.visible ).length > 1) {
+        this._visible = value;
+      }
+    }
+
+    /**
      * @member {Number} - Get the contig index (base-1) in relation to all the other contigs.
      */
     get index() {
