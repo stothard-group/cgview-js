@@ -222,6 +222,7 @@
       exportContext.drawImage(tempLayers.background.node, 0, 0);
       exportContext.drawImage(tempLayers.map.node, 0, 0);
       exportContext.drawImage(tempLayers.foreground.node, 0, 0);
+      exportContext.drawImage(tempLayers.canvas.node, 0, 0);
 
       // Generate image from export layer
       // let image = tempLayers['export'].node.toDataURL();
