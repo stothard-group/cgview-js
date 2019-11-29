@@ -388,7 +388,7 @@
     updateContigs(contigs, attributes) {
       // Validate attribute keys
       const keys = Object.keys(attributes);
-      const validKeys = ['name', 'orientation', 'visible'];
+      const validKeys = ['name', 'orientation', 'color', 'visible'];
       if (!CGV.validate(keys, validKeys)) { return; }
       contigs = CGV.CGArray.arrayerize(contigs);
       contigs.attr(attributes);

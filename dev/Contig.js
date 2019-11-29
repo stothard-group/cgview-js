@@ -28,6 +28,7 @@
       this.name = CGV.defaultFor(options.name, this.id);
       this.orientation = CGV.defaultFor(options.orientation, '+');
       this.seq = options.seq;
+      this.color = options.color;
       this._updateLengthOffset(0);
 
       if (!this.seq) {
@@ -160,6 +161,20 @@
       return this._lengthOffset;
     }
 
+    get color() {
+      return this._color;
+    }
+
+    set color(color) {
+      if (color === undefined) {
+        this._color = undefined;
+      } else if (color.toString() === 'Color') {
+        this._color = color;
+      } else {
+        this._color = new CGV.Color(color);
+      }
+    }
+
     /**
      * @member {CGRange} - Get the range of the contig in relation to the entire map.
      *   The range start is the total length of the contigs before this one plus 1.
@@ -223,6 +238,7 @@
         name: this.name,
         orientation: this.orientation,
         length: this.length,
+        color: this.color && this.color.rgbaString,
         visible: this.visible
       };
       if (this.hasSeq) {

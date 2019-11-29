@@ -132,7 +132,7 @@
     // Called from Viewer.add/removeFeatures()
     refresh() {
       // Remove labels that are on invisible contigs
-      const labels = this._labels.filter( (l) => l.feature.contig && l.feature.contig.visible);
+      const labels = this._labels.filter( (l) => l.feature.contig.visible);
       // Update default Bp for labels
       for (const label of labels) {
         label.bpDefault = label.feature.mapRange.middle;
