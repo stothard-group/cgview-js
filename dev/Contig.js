@@ -183,7 +183,7 @@
     get mapRange() {
       // FIXME: this need to be stored better
       // return this._mapRange;
-      return new CGV.CGRange(this.sequence.mapContig, this.lengthOffset + 1, length + this.length);
+      return new CGV.CGRange(this.sequence.mapContig, this.lengthOffset + 1, this.lengthOffset + this.length);
     }
 
     /**
