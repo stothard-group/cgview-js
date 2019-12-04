@@ -338,16 +338,6 @@
       return this._contigs.length > 1;
     }
 
-    // update(attributes) {
-    //   // Validate attribute keys
-    //   const keys = Object.keys(attributes);
-    //   const validKeys = ['seq', 'length', 'color', 'font', 'visible'];
-    //   if (!CGV.validate(keys, validKeys)) { return; }
-    //   for (let i = 0; i < keys.length; i++) {
-    //     this[keys[i]] = attributes[keys[i]];
-    //   }
-    //   this.trigger('sequence-update', { attributes });
-    // }
 
     // loadContigs(contigs) {
     //   // Create contigs
@@ -386,13 +376,6 @@
      * Update contige properties.
      */
     updateContigs(contigsOrUpdates, attributes) {
-      // // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['name', 'orientation', 'color', 'visible'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // contigs = CGV.CGArray.arrayerize(contigs);
-      // contigs.attr(attributes);
-
       const { records: contigs, updates } = this.viewer.updateRecords(contigsOrUpdates, attributes, {
         recordClass: 'Contig',
         validKeys: ['name', 'orientation', 'color', 'visible']
@@ -767,13 +750,6 @@
         recordClass: 'Sequence',
         validKeys: ['color', 'font', 'visible']
       });
-      // // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['color', 'font', 'visible'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // for (let i = 0; i < keys.length; i++) {
-      //   this[keys[i]] = attributes[keys[i]];
-      // }
       this.viewer.trigger('sequence-update', { attributes });
     }
 

@@ -517,12 +517,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         recordClass: 'Feature',
         validKeys: ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor']
       });
-      // // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // captions = CGV.CGArray.arrayerize(captions);
-      // captions.attr(attributes);
       this.trigger('captions-update', { captions, attributes, updates });
     }
 
@@ -593,12 +587,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         recordClass: 'Feature',
         validKeys: ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop']
       });
-      // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // features = CGV.CGArray.arrayerize(features);
-      // features.attr(attributes);
       // TODO: refresh tracks if any attribute is source
       this.trigger('features-update', { features, attributes, updates });
     }
@@ -666,33 +654,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return { records, updates, attributes };
     }
 
-    // updateFeatures2(changes) {
-    //   // Validate attribute keys
-    //   const keys = [];
-    //   const values = Object.values(changes);
-    //   for (const value of values) {
-    //     keys.concat(Object.keys(value));
-    //   }
-    //   const uniqKeys = [...new Set(keys)];
-    //   const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
-    //   if (!CGV.validate(uniqKeys, validKeys)) { return; }
-    //
-    //   const features = [];
-    //   const cgvIDs = Object.keys(changes);
-    //   for (const cgvID of cgvIDs) {
-    //     // TODO: ERROR CHECK: confirm it's a Feature
-    //     const feature = this.objects(cgvID)
-    //     features.push(feature);
-    //     // Change attributes
-    //     const attributes = Object.keys(changes[cgvID]);
-    //     for (const attribute of attributes) {
-    //       feature[attribute] = changes[cgvID][attribute];
-    //     }
-    //   }
-    //   // TODO: refresh tracks if any attribute is source
-    //   this.trigger('features-ulpdate', { features, changes });
-    // }
-
     /**
      * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
@@ -733,12 +694,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         recordClass: 'Bookmark',
         validKeys: ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset']
       });
-      // // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // bookmarks = CGV.CGArray.arrayerize(bookmarks);
-      // bookmarks.attr(attributes);
       this.trigger('bookmarks-update', { bookmarks, attributes, updates });
     }
 

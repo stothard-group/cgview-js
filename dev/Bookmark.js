@@ -172,6 +172,10 @@
       this._shortcut = ([undefined, null, ''].includes(value)) ? undefined : String(value).charAt(0);
     }
 
+    update(attributes) {
+      this.viewer.updateBookmarks(this, attributes);
+    }
+
     /**
      * Remove bookmark...
      */

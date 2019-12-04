@@ -94,13 +94,6 @@
         recordClass: 'Settings',
         validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength']
       });
-      // // Validate attribute keys
-      // const keys = Object.keys(attributes);
-      // const validKeys = ['format', 'backgroundColor', 'showShading', 'arrowHeadLength'];
-      // if (!CGV.validate(keys, validKeys)) { return; }
-      // for (let i = 0; i < keys.length; i++) {
-      //   this[keys[i]] = attributes[keys[i]];
-      // }
       this.viewer.trigger('settings-update', { attributes });
     }
 
