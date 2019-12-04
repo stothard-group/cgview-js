@@ -400,25 +400,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._features.get(term);
     }
 
-    // testFunctionExample() {
-    //   this.dividers.slot.update({thickness: 4});
-    //   this.dividers.update({slotMirrorsTrack: true, slot: {thickness: 3}});
-    //   this.tracks(1).update({data: {type: 'features', from: 'type', extract: 'CDS', options: {}}});
-    //   this.tracks(1).update({dataType: 'features', dataFrom: 'type', dataExtract: 'CDS', dataOptions: {}});
-    // }
-
-    // updateObjects({ objects, attributes, validKeys: [], eventName }) {
-    //   objects = CGV.CGArray.arrayerize(objects);
-    //   if (attributes) {
-    //     // Validate attribute keys
-    //     const keys = Object.keys(attributes);
-    //     if (!CGV.validate(keys, validKeys)) { return; }
-    //     // Change
-    //     objects.attr(attributes);
-    //   }
-    //   this.trigger(eventName, { objects, attributes });
-    // }
-
     update(attributes) {
       // Validate attribute keys
       let keys = Object.keys(attributes);
@@ -531,14 +512,18 @@ if (window.CGV === undefined) window.CGV = CGView;
       return captions;
     }
 
-    updateCaptions(captions, attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      captions = CGV.CGArray.arrayerize(captions);
-      captions.attr(attributes);
-      this.trigger('captions-update', { captions, attributes });
+    updateCaptions(captionsOrUpdates, attributes) {
+      const { records: captions, updates } = this.updateRecords(captionsOrUpdates, attributes, {
+        recordClass: 'Feature',
+        validKeys: ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // captions = CGV.CGArray.arrayerize(captions);
+      // captions.attr(attributes);
+      this.trigger('captions-update', { captions, attributes, updates });
     }
 
     moveCaption(oldIndex, newIndex) {
@@ -587,28 +572,126 @@ if (window.CGV === undefined) window.CGV = CGView;
     removeFeatures(features) {
       features = CGV.CGArray.arrayerize(features);
       this._features = this._features.filter( f => !features.includes(f) );
+      // Update Annotationa and Tracks
       const labels = features.map( f => f.label );
       this.annotation.removeLabels(labels);
       this.tracks().each( (i, track) => {
         track.removeFeatures(features);
       });
       this.annotation.refresh();
+      // Update Contigs
+      CGV.Contig.removeFeatures(features);
+
       this.trigger('features-remove', features);
     }
 
     /**
      * Update feature properties to the viewer.
      */
-    updateFeatures(features, attributes) {
+    updateFeatures(featuresOrUpdates, attributes) {
+      const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
+        recordClass: 'Feature',
+        validKeys: ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop']
+      });
       // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      features = CGV.CGArray.arrayerize(features);
-      features.attr(attributes);
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // features = CGV.CGArray.arrayerize(features);
+      // features.attr(attributes);
       // TODO: refresh tracks if any attribute is source
-      this.trigger('features-update', { features, attributes });
+      this.trigger('features-update', { features, attributes, updates });
     }
+
+    updateRecordsWithAttributes(records, attributes, options = {}) {
+      const validKeys = options.validKeys;
+      const recordClass = options.recordClass;
+      // Validate attribute keys
+      const attibuteKeys = Object.keys(attributes);
+      if (validKeys && !CGV.validate(attibuteKeys, validKeys)) { return; }
+      // Validate record Class
+      records = CGV.CGArray.arrayerize(records);
+      if (recordClass && records.some( r => r.toString() !== recordClass )) {
+        console.error(`The following records were not of the Class '${recordClass}':`, records.filter ( r => r.toString() != recordClass));
+        return;
+      }
+      // Update Records
+      records.attr(attributes);
+      return records;
+    }
+
+    updateRecordsIndividually(updates, options = {}) {
+      const validKeys = options.validKeys;
+      const recordClass = options.recordClass;
+      // Validate attribute keys
+      if (validKeys) {
+        let allAttributeKeys = [];
+        const values = Object.values(updates);
+        for (const value of values) {
+          allAttributeKeys = allAttributeKeys.concat(Object.keys(value));
+        }
+        const uniqAttributeKeys = [...new Set(allAttributeKeys)];
+        if (!CGV.validate(uniqAttributeKeys, validKeys)) { return; }
+      }
+      // Get records form cgvIDs update keys
+      const cgvIDs = new CGV.CGArray(Object.keys(updates));
+      const records = cgvIDs.map( id => this.objects(id) );
+      // Validate record Class
+      if (recordClass && records.some( r => r.toString() !== recordClass )) {
+        console.error(`The following records were not of the Class '${recordClass}':`, records.filter ( r => r.toString() != recordClass));
+        return;
+      }
+      // Update Records
+      for (const record of records) {
+        const attributes = Object.keys(updates[record.cgvID]);
+        for (const attribute of attributes) {
+          record[attribute] = updates[record.cgvID][attribute];
+        }
+      }
+      return records;
+    }
+
+    // Returns records (CGArray), updates, attributes
+    // NOTE: Not used by Viewer.updateTracks or Viewer.update
+    updateRecords(recordsOrUpdates, attributes, options) {
+      let records, updates;
+      if (recordsOrUpdates.toString() === "[object Object]") {
+        // Assume recordsOrUpdate is an object of updates
+        updates = recordsOrUpdates;
+        records = this.updateRecordsIndividually(updates, options);
+      } else {
+        // Assume recordsOrUpdate is an individual record or an array of records
+        records = this.updateRecordsWithAttributes(recordsOrUpdates, attributes, options);
+      }
+      return { records, updates, attributes };
+    }
+
+    // updateFeatures2(changes) {
+    //   // Validate attribute keys
+    //   const keys = [];
+    //   const values = Object.values(changes);
+    //   for (const value of values) {
+    //     keys.concat(Object.keys(value));
+    //   }
+    //   const uniqKeys = [...new Set(keys)];
+    //   const validKeys = ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop'];
+    //   if (!CGV.validate(uniqKeys, validKeys)) { return; }
+    //
+    //   const features = [];
+    //   const cgvIDs = Object.keys(changes);
+    //   for (const cgvID of cgvIDs) {
+    //     // TODO: ERROR CHECK: confirm it's a Feature
+    //     const feature = this.objects(cgvID)
+    //     features.push(feature);
+    //     // Change attributes
+    //     const attributes = Object.keys(changes[cgvID]);
+    //     for (const attribute of attributes) {
+    //       feature[attribute] = changes[cgvID][attribute];
+    //     }
+    //   }
+    //   // TODO: refresh tracks if any attribute is source
+    //   this.trigger('features-ulpdate', { features, changes });
+    // }
 
     /**
      * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
@@ -645,14 +728,18 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Update bookmark properties to the viewer.
      */
-    updateBookmarks(bookmarks, attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      bookmarks = CGV.CGArray.arrayerize(bookmarks);
-      bookmarks.attr(attributes);
-      this.trigger('bookmarks-update', { bookmarks, attributes });
+    updateBookmarks(bookmarksOrUpdates, attributes) {
+      const { records: bookmarks, updates } = this.updateRecords(bookmarksOrUpdates, attributes, {
+        recordClass: 'Bookmark',
+        validKeys: ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // bookmarks = CGV.CGArray.arrayerize(bookmarks);
+      // bookmarks.attr(attributes);
+      this.trigger('bookmarks-update', { bookmarks, attributes, updates });
     }
 
     removePlots(plots) {

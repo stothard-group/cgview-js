@@ -291,20 +291,35 @@
     }
 
     set contig(value) {
+      const oldContig = this._contig;
+      let newContig;
       if (value === undefined) {
-        this._contig = undefined;
-        return;
-      }
-      if (value && value.toString() === 'Contig') {
-        this._contig  = value;
+        // this._contig = undefined;
+        newContig = undefined;
+      } else if (value && value.toString() === 'Contig') {
+        // this._contig  = value;
+        newContig = value;
       } else {
         const contig = this.viewer.sequence.contigs(value);
         if (contig) {
-          this._contig  = contig;
+          // this._contig  = contig;
+          newContig = contig;
         } else {
           console.error(`Feature '${this.name}' could not find contig '${value}'`)
         }
       }
+      if (oldContig !== newContig) {
+        // Add feature to new Contig
+        if (newContig) {
+          newContig._features.push(this);
+        }
+        // Remove feature from old Contig
+        if (oldContig) {
+          CGV.Contig.removeFeatures(this);
+        }
+      }
+      // Must be done after calling CGV.Contig.removeFeatures()
+      this._contig = newContig;
     }
 
     update(attributes) {

@@ -21,6 +21,14 @@
       this.viewer.trigger('ruler-update', { attributes: this.toJSON() });
     }
 
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Ruler'
+     */
+    toString() {
+      return 'Ruler';
+    }
+
     get font() {
       return this._font;
     }
@@ -299,13 +307,17 @@
     }
 
     update(attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['color', 'font', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
+      this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Ruler',
+        validKeys: ['color', 'font', 'visible']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['color', 'font', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // for (let i = 0; i < keys.length; i++) {
+      //   this[keys[i]] = attributes[keys[i]];
+      // }
       this.viewer.trigger('ruler-update', { attributes });
     }
 

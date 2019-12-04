@@ -376,13 +376,17 @@
     }
 
     update(attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['color', 'font', 'onlyDrawFavorites', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
+      this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Annotation',
+        validKeys: ['color', 'font', 'onlyDrawFavorites', 'visible']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['color', 'font', 'onlyDrawFavorites', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // for (let i = 0; i < keys.length; i++) {
+      //   this[keys[i]] = attributes[keys[i]];
+      // }
       this.viewer.trigger('annotation-update', { attributes });
     }
 

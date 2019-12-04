@@ -385,13 +385,19 @@
     /**
      * Update contige properties.
      */
-    updateContigs(contigs, attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['name', 'orientation', 'color', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      contigs = CGV.CGArray.arrayerize(contigs);
-      contigs.attr(attributes);
+    updateContigs(contigsOrUpdates, attributes) {
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'orientation', 'color', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // contigs = CGV.CGArray.arrayerize(contigs);
+      // contigs.attr(attributes);
+
+      const { records: contigs, updates } = this.viewer.updateRecords(contigsOrUpdates, attributes, {
+        recordClass: 'Contig',
+        validKeys: ['name', 'orientation', 'color', 'visible']
+      });
+
       // FIXME: this should only update if orientation, order or visible changes
       this.updateMapContig();
       // TRYING THIS OUT
@@ -402,7 +408,7 @@
       // FIXME: Only trigger contigs if visibiliy changes
       this.viewer.trigger('tracks-update', { tracks: this.viewer.tracks() });
       // TODO: refresh sequence, features, etc
-      this.viewer.trigger('contigs-update', { contigs, attributes });
+      this.viewer.trigger('contigs-update', { contigs, attributes, updates });
     }
 
     moveContig(oldIndex, newIndex) {
@@ -757,13 +763,17 @@
     }
 
     update(attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['color', 'font', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
+      this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Sequence',
+        validKeys: ['color', 'font', 'visible']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['color', 'font', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // for (let i = 0; i < keys.length; i++) {
+      //   this[keys[i]] = attributes[keys[i]];
+      // }
       this.viewer.trigger('sequence-update', { attributes });
     }
 

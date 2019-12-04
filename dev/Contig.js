@@ -29,6 +29,7 @@
       this.orientation = CGV.defaultFor(options.orientation, '+');
       this.seq = options.seq;
       this.color = options.color;
+      this._features = new CGV.CGArray();
       this._updateLengthOffset(0);
 
       if (!this.seq) {
@@ -38,6 +39,30 @@
         console.error(`Contig ${this.name} [${this.id}] has no sequence or length set!`)
       }
 
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // STATIC
+    //////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Removes supplied features from their contigs
+     */
+    static removeFeatures(features) {
+      features = CGV.CGArray.arrayerize(features);
+      const viewer = features[0].viewer;
+      const contigMap = {};
+      for (const feature of features) {
+        const cgvID = feature.contig && feature.contig.cgvID;
+        if (cgvID) {
+          contigMap[cgvID] ? contigMap[cgvID].push(feature) : contigMap[cgvID] = [feature];
+        }
+      }
+      const cgvIDs = Object.keys(contigMap);
+      for (const cgvID of cgvIDs) {
+        const contig = viewer.objects(cgvID);
+        contig._features = contig._features.filter ( f => !contigMap[cgvID].includes(f) );
+      }
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -113,10 +138,16 @@
     }
 
     set orientation(value) {
-      // FIXME: check that value is '+' or '-'
+      const validKeys = ['-', '+'];
+      if (!CGV.validate(value, validKeys)) { return; }
+      if (this._orientation && (value !== this._orientation)) {
+        this.reverseFeatureOrientations();
+      }
+      if (this.seq) {
+        this.seq = this.reverseComplement();
+      }
       this._orientation = value;
       // FIXME: reverse complement the sequence
-      // FIXME: update feature start, stop and strand
     }
 
     /**
@@ -211,12 +242,25 @@
       // this._mapRange = new CGV.CGRange(this.sequence.mapContig, length + 1, length + this.length);
     }
 
+    reverseComplement() {
+      return CGV.Sequence.reverseComplement(this.seq);
+    }
+
     update(attributes) {
       this.sequence.updateContigs(this, attributes);
     }
 
     hasSeq() {
       return typeof this.seq === 'string';
+    }
+
+    /**
+     * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the features on this Contig.
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+     * @return {CGArray}
+     */
+    features(term) {
+      return this._features.get(term);
     }
 
     /**
@@ -230,6 +274,19 @@
       const start = this.sequence.subtractBp(this.mapStart, buffer);
       const stop = this.sequence.addBp(this.mapStop, buffer);
       this.viewer.moveTo(start, stop, {duration, ease});
+    }
+
+    reverseFeatureOrientations() {
+      const updates = {};
+      for (let i = 0, len = this._features.length; i < len; i++) {
+        const feature = this._features[i];
+        updates[feature.cgvID] = {
+          start: this.length - feature.stop + 1,
+          stop: this.length - feature.start + 1,
+          strand: -(feature.strand)
+        };
+      }
+      this.viewer.updateFeatures(updates);
     }
 
     toJSON() {

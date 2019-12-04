@@ -225,12 +225,16 @@
     }
 
     update(attributes) {
-      const keys = Object.keys(attributes);
-      const validKeys = ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'textAlignment',  'backgroundColor', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
+      this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Legend',
+        validKeys: ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'textAlignment',  'backgroundColor', 'visible']
+      });
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'textAlignment',  'backgroundColor', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // for (let i = 0; i < keys.length; i++) {
+      //   this[keys[i]] = attributes[keys[i]];
+      // }
       this.viewer.trigger('legend-update', { attributes });
     }
 
@@ -263,14 +267,17 @@
       this.viewer.trigger('legendItems-remove', items);
     }
 
-    updateItems(items, attributes) {
-      const keys = Object.keys(attributes);
-      const validKeys = ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      items = CGV.CGArray.arrayerize(items);
-      items.attr(attributes);
-      this.viewer.trigger('legendItems-update', {items, attributes});
-      return items;
+    updateItems(itemsOrUpdates, attributes) {
+      const { records: items, updates } = this.viewer.updateRecords(itemsOrUpdates, attributes, {
+        recordClass: 'LegendItem',
+        validKeys: ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'visible']
+      });
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // items = CGV.CGArray.arrayerize(items);
+      // items.attr(attributes);
+      this.viewer.trigger('legendItems-update', { items, attributes, updates });
     }
 
     moveItem(oldIndex, newIndex) {

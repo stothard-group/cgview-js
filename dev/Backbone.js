@@ -227,8 +227,8 @@
             const contig = contigs[i];
             const start = this.sequence.bpForContig(contig);
             const stop = this.sequence.bpForContig(contig, contig.length);
-            // const color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
-            let color = (i % 2 === 0) ? this.color : this.colorAlternate;
+            let color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
+            // let color = (i % 2 === 0) ? this.color : this.colorAlternate;
             if (contig.color) {
               color = contig.color;
             }
@@ -262,13 +262,17 @@
     }
 
     update(attributes) {
-      // Validate attribute keys
-      const keys = Object.keys(attributes);
-      const validKeys = ['color', 'colorAlternate', 'thickness', 'visible'];
-      if (!CGV.validate(keys, validKeys)) { return; }
-      for (let i = 0; i < keys.length; i++) {
-        this[keys[i]] = attributes[keys[i]];
-      }
+      this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Backbone',
+        validKeys: ['color', 'colorAlternate', 'thickness', 'visible']
+      });
+      // // Validate attribute keys
+      // const keys = Object.keys(attributes);
+      // const validKeys = ['color', 'colorAlternate', 'thickness', 'visible'];
+      // if (!CGV.validate(keys, validKeys)) { return; }
+      // for (let i = 0; i < keys.length; i++) {
+      //   this[keys[i]] = attributes[keys[i]];
+      // }
       this.viewer.trigger('backbone-update', { attributes });
     }
 
