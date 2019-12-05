@@ -23,6 +23,13 @@
      *  contigs               | undefined        | An array of ...
      *
      * @param {Object=} meta - User-defined key:value pairs to add to the caption.
+     *
+     * Implementation notes:
+     *   - Internally contigs are always used. If 'seq' is provided, it will be converted to a single contig.
+     *   - All the contigs are concatenated into a single contig called mapContig.
+     *     -  Sequence.seq === Sequence.mapContig.seq
+     *   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
+     *
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);

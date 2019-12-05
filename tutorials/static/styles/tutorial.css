@@ -21,3 +21,11 @@ a.json-link span{
   margin-bottom: 10px;
 }
 
+#api-details-by-record-type + table {
+  font-size: 14px;
+  margin-left: 10px;
+}
+#api-details-by-record-type + table th {
+  font-size: 8px;
+  /* Remove header completely later */
+}

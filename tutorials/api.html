@@ -34,11 +34,35 @@ All the examples use a Viewer instance: <em>cgv</em>.
 - [Reordering Records](#reordering-records)
 - [Reading Records](#reading-records)
 
-### API Details by Record Type
-- [Features](#features-api)
-- [Tracks](#tracks-api)
-- [Bookmarks](#bookmarks-api)
 
+### API Details by Record Type
+[]()                            | []()                       | NOT COMPLETE
+--------------------------------|----------------------------|-----------------------
+[Features](#features)           | [Bookmarks](#bookmarks)    | [Tracks](#tracks)
+[Settings](#settings-general-)  | [Sequence](#sequence)      | [Plots](#plots)
+[Captions](#captions)           | [Legend](#legend)          | [Viewer](#viewer)
+[Legend Items](#legend-items)   | [Annotation](#annotation)  | [Contigs](#contigs)
+[Ruler](#ruler)                 | [Backbone](#backbone)      | [Dividers](#dividers)
+
+
+### API Details by Record Type
+- [Features](#features)
+- [Bookmarks](#bookmarks)
+- [Settings](#settings-general-)
+- [Sequence](#sequence)
+- [Captions](#captions)
+- [Legend](#legend)
+- [Legend Items](#legend-items)
+- [Annotation](#annotation)
+- [Ruler](#ruler)
+- [Backbone](#backbone)
+
+### API Details NOT Complete
+- [Tracks](#tracks)
+- [Plots](#plots)
+- [Viewer](#viewer)
+- [Contigs](#contigs)
+- [Dividers](#dividers)
 
 # API Actions
 NOT IMPLEMENTED: All the API actions (except read) can be provided with an optional
@@ -111,6 +135,14 @@ cgv.feature.update(attributes);
 // Update multiple records to have the same attributes
 features = [feature_1, feature_2, features_3];
 cgv.updateFeatures(features, attributes);
+
+// Update multiple records with different attributes
+// The updates object has record cgvIDs as keys and the new attributes as values
+const updates = {
+  feature_1.cgvID: {type: 'CDS', legend: 'CDS'},
+  feature_2.cgvID: {type: 'tRNA', legend: 'tRNA'}
+}
+cgv.updateFeatures(updates);
 ```
 
 ## Advantages of Update API
@@ -202,7 +234,7 @@ Attribute                          | Type      | Description
 [showShading](Settings.html#showShading) | Boolean   | Should a shading effect be drawn on the features [Default: true]
 [arrowHeadLength](Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
 
-## Features API
+## Features
 
 Action                                       | Viewer Method                                  | Feature Method                  | Event
 ---------------------------------------------|------------------------------------------------|---------------------------------|-----
@@ -228,9 +260,9 @@ Attribute                      | Type     | Description
 
 †Required on Feature creation
 
-## Tracks API
+## Tracks
 
-## Bookmarks API
+## Bookmarks
 
 Action                                       | Viewer Method                                    | Bookmark Method                  | Event
 ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
@@ -252,7 +284,7 @@ Attribute                          | Type      | Description
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
 
 
-## Captions API
+## Captions
 
 Action                                       | Viewer Method                                    | Caption Method                  | Event
 ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
@@ -277,7 +309,7 @@ Attribute                          | Type      | Description
 
 ††Ignored on Caption creation
 
-## Legend API
+## Legend
 
 Action                                          | Viewer Method                                    | Legend Method                  | Event
 ------------------------------------------------|--------------------------------------------------|----------------------------------|-----
@@ -397,9 +429,6 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Record is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Record
 
-## Tracks
-## Plots
-## etc.
 
 </div>
 

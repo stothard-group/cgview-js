@@ -7,8 +7,9 @@
    * A CGRange contains a start, stop on a sequence contig.
    * Ranges are always in a clockise direction.
    * The start is always less than the stop position with following exception.
-   * Since the genomes are circular, if the genome contains a single contig,
-   * it's possibe for the range to loop around.
+   * Since the genomes are circular, if the genome contains a single contig
+   * (i.e., Sequence.hasMultipleContigs is false) it's possibe for the range to
+   * loop around (i.e., that stop can be less than the start).
    */
   class CGRange {
 

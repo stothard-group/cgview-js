@@ -6,6 +6,14 @@
 
     /**
      * A Feature
+     *
+     *
+     * Implementation notes:
+     *   - The feature range is the range on the contig
+     *   - Feature.mapRange is the range on the Sequence.mapContig
+     *   - If there is only one contig in the map, then Feature.mapRange === Feature.range
+     *   - Feature.start/stop are positions on the contig
+     *   - Feature mapStart/mapStop are position on Sequence.mapContig
      */
     constructor(viewer, data = {}, meta = {}) {
       super(viewer, data, meta);
