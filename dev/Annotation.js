@@ -129,10 +129,11 @@
       this.refresh();
     }
 
-    // Called from Viewer.add/removeFeatures()
+    // Called from Viewer.add/removeFeatures() and Sequence.updateContigs()
     refresh() {
       // Remove labels that are on invisible contigs
       const labels = this._labels.filter( (l) => l.feature.contig.visible);
+      this._availableLabels = labels;
       // Update default Bp for labels
       for (const label of labels) {
         label.bpDefault = label.feature.mapRange.middle;
@@ -240,7 +241,8 @@
       const visibleRange = this._visibleRange;
       if (visibleRange) {
         if (visibleRange.start === 1 && visibleRange.stop === this.sequence.length) {
-          labelArray = this._labels;
+          // labelArray = this._labels;
+          labelArray = this._availableLabels; // Only labels that are on visible contigs;
         } else {
           labelArray = this._labelsNCList.find(visibleRange.start, visibleRange.stop);
         }
