@@ -4,12 +4,28 @@
 (function(CGV) {
   /**
    * <br />
-   * The CGView Sequence class holds the sequence of the map.
+   * The CGView Sequence represents the sequence that makes up the map. The essential
+   * proptery of the Sequence is the length. The length must be known in order to draw
+   * a map of the correct size. There are 3 ways to set the Sequence length on map
+   * creation.
+   * - seq: provide the sequence. The length will be set directly from the sequence.
+   * - length: provide the sequence length without sequence
+   * - contigs: an array of contigs. Each contig must then include its length or sequence.
+   *
+   * The seq and length propteries are read only and cannot be changed unless a new
+   * map is loaded (see IO.loadJSON). With contigs, the updateContigs and
+   * moveContigs methods can be used to change the name, orienation, visbility and
+   * order, however, the seq and length property of each contig is still read only.
+   *
+   * Sequence Coordinates:
+   * CGView uses two coordinate systems: Contig space and map space. For features and plot, positions are relative to contigs. However, when drawing we use positions relative to the entire map.
+   * [Image of map with contigs. Show contig/map space]
    */
   class Sequence extends CGV.CGObject {
 
     /**
      * Create a Sequence
+     * REPLACE WITH API
      *
      * @param {Viewer} viewer - The viewer that contains the backbone
      * @param {Object} options - Options used to create the sequence
@@ -29,6 +45,8 @@
      *   - All the contigs are concatenated into a single contig called mapContig.
      *     -  Sequence.seq === Sequence.mapContig.seq
      *   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
+     *   - Make note in update/updateContig methods that if only one contig is provided (or the sequence seq), they are treated the same internally. Therefore, if the contig name is changed, so is the sequence name.
+     *   - Note for toJSON: will output single contigs as attributes of the sequence (so no contigs property)
      *
      */
     constructor(viewer, options = {}, meta = {}) {
@@ -41,20 +59,6 @@
       this._contigs = new CGV.CGArray();
 
       this.createMapContig(options);
-
-      // if (options.contigs && options.contigs.length > 0) {
-      //   // this.loadContigs(options.contigs;
-      //   this.addContigs(options.contigs);
-      // } else {
-      //   this.seq = options.seq;
-      // }
-      //
-      // if (!this.seq && !this.hasContigs) {
-      //   this.length = options.length;
-      // }
-      // if (!this.length) {
-      //   this.length = 1000;
-      // }
 
       this.viewer.trigger('sequence-update', { attributes: this.toJSON() });
     }
@@ -422,6 +426,13 @@
     }
 
 
+    // Order of importance:
+    // 1) seq
+    // 2) contigs
+    //   a) seq
+    //   b) length
+    // 3) length
+    // 4) Default: length 1000 bp
     createMapContig(data) {
       if (data.seq) {
         // this._mapContig = new CGV.Contig(this, data);
@@ -430,7 +441,7 @@
       } else if (data.contigs) {
         this.addContigs(data.contigs);
       } else if (data.length) {
-        this.addContigs([{length: data.seq}]);
+        this.addContigs([{length: data.length}]);
       } else {
         // console.error('A "seq", "contigs", or "length" must be provided');
         this.addContigs([{length: 1000}]);
@@ -440,6 +451,7 @@
     updateMapContig() {
       if (this._contigs.length === 1) {
         this._mapContig = this._contigs[0];
+        this._mapContig._index = 1;
       } else {
         // Concatenate contigs
         // The contigs can't have a mixture of sequence and length
@@ -469,9 +481,15 @@
             }
           }
         }
-        // Create  mapContig
+        const oldMapContig = this.mapContig;
+        // Create new mapContig
         const data = (useSeq) ? {seq} : {length};
         this._mapContig = new CGV.Contig(this, data);
+        // Move features from previous mapContig to new mapContig
+        if (oldMapContig) {
+          oldMapContig.features().forEach( f => f.contig = this.mapContig  );
+          oldMapContig.deleteFromObjects();
+        }
       }
       this._sequenceExtractor = (this.hasSeq) ? new CGV.SequenceExtractor(this) : undefined;
       this._updateScale();

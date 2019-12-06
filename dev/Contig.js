@@ -270,10 +270,14 @@
      * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
      */
     moveTo(duration, ease) {
-      const buffer = Math.ceil(this.length * 0.05);
-      const start = this.sequence.subtractBp(this.mapStart, buffer);
-      const stop = this.sequence.addBp(this.mapStop, buffer);
-      this.viewer.moveTo(start, stop, {duration, ease});
+      if (this.mapRange.isMapLength()) {
+        this.viewer.reset(duration, ease);
+      } else {
+        const buffer = Math.ceil(this.length * 0.05);
+        const start = this.sequence.subtractBp(this.mapStart, buffer);
+        const stop = this.sequence.addBp(this.mapStop, buffer);
+        this.viewer.moveTo(start, stop, {duration, ease});
+      }
     }
 
     reverseFeatureOrientations() {

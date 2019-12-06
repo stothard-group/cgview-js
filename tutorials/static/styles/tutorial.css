@@ -28,4 +28,5 @@ a.json-link span{
 #api-details-by-record-type + table th {
   font-size: 8px;
   /* Remove header completely later */
+  line-height: 0;
 }

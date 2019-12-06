@@ -575,6 +575,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.annotation.refresh();
       // Update Contigs
       CGV.Contig.removeFeatures(features);
+      // Remove from Objects
+      features.forEach( f => f.deleteFromObjects() );
 
       this.trigger('features-remove', features);
     }

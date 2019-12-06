@@ -14,6 +14,10 @@
      *   - If there is only one contig in the map, then Feature.mapRange === Feature.range
      *   - Feature.start/stop are positions on the contig
      *   - Feature mapStart/mapStop are position on Sequence.mapContig
+     *   - If no contig is provided, the default contig will be Sequence.mapContig
+     *     - Whenever mapContig is updated/regenerated the feature will be moved to the new mapContig
+     *     - Features on the mapContig are able to span contigs
+     *     - If contigs are rearranged, a mapContig feature will stay at the same position (start/stop)
      */
     constructor(viewer, data = {}, meta = {}) {
       super(viewer, data, meta);

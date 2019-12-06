@@ -36,7 +36,7 @@ All the examples use a Viewer instance: <em>cgv</em>.
 
 
 ### API Details by Record Type
-[]()                            | []()                       | NOT COMPLETE
+[]()                            | []()                       | []()
 --------------------------------|----------------------------|-----------------------
 [Features](#features)           | [Bookmarks](#bookmarks)    | [Tracks](#tracks)
 [Settings](#settings-general-)  | [Sequence](#sequence)      | [Plots](#plots)
@@ -44,25 +44,6 @@ All the examples use a Viewer instance: <em>cgv</em>.
 [Legend Items](#legend-items)   | [Annotation](#annotation)  | [Contigs](#contigs)
 [Ruler](#ruler)                 | [Backbone](#backbone)      | [Dividers](#dividers)
 
-
-### API Details by Record Type
-- [Features](#features)
-- [Bookmarks](#bookmarks)
-- [Settings](#settings-general-)
-- [Sequence](#sequence)
-- [Captions](#captions)
-- [Legend](#legend)
-- [Legend Items](#legend-items)
-- [Annotation](#annotation)
-- [Ruler](#ruler)
-- [Backbone](#backbone)
-
-### API Details NOT Complete
-- [Tracks](#tracks)
-- [Plots](#plots)
-- [Viewer](#viewer)
-- [Contigs](#contigs)
-- [Dividers](#dividers)
 
 # API Actions
 NOT IMPLEMENTED: All the API actions (except read) can be provided with an optional
@@ -406,10 +387,40 @@ Action                                       | Viewer Method                    
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
-[font](Ruler.html#font)            | String    | A string describing the font [Default: 'sans-serif, plain, 14']. See {@link Font} for details.
-[color](Sequence.html#color)       | String    | A string describing the main sequence color [Default: 'black']. See {@link Color} for details.
-[visible](CGObject.html#visible)   | Boolean   | Sequence is visible [Default: true]
+[name](Sequence.html#name)         | String    | Sequence name. [TODO]
+[id](Sequence.html#id)             | String    | Sequence ID. [TODO]
+[seq](Sequence.html#seq)†††        | String    | The map sequence.
+[length](Sequence.html#length)†††  | Number    | The length of the sequence. This is ignored if a seq is provided.
+[contigs](Sequence.html#contigs)††† | Array    | Array of contigs. Contigs are ignored if a seq is provided.
+[font](Sequence.html#font)         | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
+[color](Sequence.html#color)       | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Sequence
+
+†††Ignored on Sequence update
+
+
+## Contigs
+
+Action                                          | Sequence Method                                  | Contig Method                  | Event
+------------------------------------------------|------------------------------------------------|------------------------------------|-----
+[Add](tutorial-api.html#adding-records)         | [addContigs()](Sequence.html#addContigs)         | -                              | contigs-add
+[Update](tutorial-api.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs)   | [update()](Contig.html#update) | contigs-update
+[Remove](tutorial-api.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs)   | [remove()](Contig.html#remove) | contigs-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)        | [move()](Contig.html#move)     | contigs-reorder
+[Read](tutorial-api.html#reading-records)       | [contigs()](Sequence.html#items)                 | -                              | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Contig.html#name)           | String    | Contig name.
+[id](Contig.html#id)               | String    | Contig ID.
+[seq](Contig.html#seq)†††          | String    | The contig sequence.
+[length](Contig.html#length)†††    | Number    | The length of the sequence. This is ignored if a seq is provided.
+[orientation](Contig.html#orientation) | String    | '+' for forward orientation and '-' for the reverse.
+[visible](CGObject.html#visible)   | Boolean   | Contig is visible [Default: true].
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Contig.
+
+†††Ignored on Contig update
 
 
 ## TEMPLATE
@@ -429,6 +440,9 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Record is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Record
 
+†Required on Record creation
+††Ignored on Record creation
+†††Ignored on Record update
 
 </div>
 

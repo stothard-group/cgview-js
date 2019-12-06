@@ -45,7 +45,6 @@
       return this._cgvID;
     }
 
-
     /**
      * @member {Viewer} - Get the viewer.
      */
@@ -94,6 +93,13 @@
 
     set meta(value) {
       this._meta = value;
+    }
+
+    /**
+     * Remove the object from Viewer.objects
+     */
+    deleteFromObjects() {
+      delete this.viewer._objects[this.cgvID];
     }
 
   }
