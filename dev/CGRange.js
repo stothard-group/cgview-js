@@ -107,6 +107,7 @@
       this.stop = value - this.contig.lengthOffset;
     }
 
+    // Should this return "this" if 
     get onMap() {
       return new CGV.CGRange(this.sequence.mapContig, this.mapStart, this.mapStop);
     }
@@ -203,7 +204,8 @@
      * @return {Boolean}
      */
     isWrappingAllowed() {
-      return (this.contig.length === this.sequence.length);
+      // return (!this.sequence.hasMultipleContigs && this.contig.length === this.sequence.length);
+      return (this.contig === this.sequence.mapContig);
     }
 
     /**

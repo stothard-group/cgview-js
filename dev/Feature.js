@@ -147,16 +147,9 @@
      * @member {Range} - Get or set the range of the feature with respect to its contig.
      *   All ranges are assumed to be going in a clockwise direction.
      */
-    // FIXME: This will become mapRange
-    // NEED FASTER WAY
     get mapRange() {
-      // return this._mapRange;
       return this.range.onMap;
     }
-    //
-    // set contigRange(value) {
-    //   this._contigRange = value;
-    // }
 
     /**
      * @member {Number} - Get or set the start position of the feature in basepair (bp).
