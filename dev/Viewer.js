@@ -600,7 +600,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateFeatures(featuresOrUpdates, attributes) {
       const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
         recordClass: 'Feature',
-        validKeys: ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+        validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
       });
       // TODO: refresh tracks if any attribute is source
       this.trigger('features-update', { features, attributes, updates });
@@ -656,9 +656,9 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     // Returns records (CGArray), updates, attributes
     // NOTE: Not used by Viewer.updateTracks or Viewer.update
-    updateRecords(recordsOrUpdates, attributes, options) {
+    updateRecords(recordsOrUpdates = [], attributes = {}, options = {}) {
       let records, updates;
-      if (recordsOrUpdates.toString() === "[object Object]") {
+      if (recordsOrUpdates.toString() === '[object Object]') {
         // Assume recordsOrUpdate is an object of updates
         updates = recordsOrUpdates;
         records = this.updateRecordsIndividually(updates, options);
@@ -667,6 +667,35 @@ if (window.CGV === undefined) window.CGV = CGView;
         records = this.updateRecordsWithAttributes(recordsOrUpdates, attributes, options);
       }
       return { records, updates, attributes };
+    }
+
+    /**
+     * Returns a CGArray of the records that have had the attributesOfInterest changed.
+     * If attributes has any of the attributesOfInterest then all the records are returned.
+     * Otherwise any record in updates that has an attributesOfInterest of changed is returned.
+     */
+    recordsWithChangedAttributes(attributesOfInterest, records, attributes, updates) {
+      records = CGV.CGArray.arrayerize(records);
+      let returnedRecords = new CGV.CGArray();
+      attributesOfInterest = CGV.CGArray.arrayerize(attributesOfInterest);
+      const attributeKeys = Object.keys(attributes);
+      if (attributeKeys.length > 0) {
+        for (const attribute of attributesOfInterest) {
+          if (attributeKeys.includes(attribute)) {
+            return returnedRecords = records;
+          }
+        }
+      } else if (updates) {
+        for (const record of records) {
+          for (const attribute of attributesOfInterest) {
+            if (Object.keys(updates[record.cgvID]).includes(attribute)) {
+              returnedRecords.push(record);
+              continue;
+            }
+          }
+        }
+      }
+      return returnedRecords;
     }
 
     /**
