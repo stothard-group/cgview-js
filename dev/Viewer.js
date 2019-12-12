@@ -587,7 +587,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateFeatures(featuresOrUpdates, attributes) {
       const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
         recordClass: 'Feature',
-        validKeys: ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop']
+        validKeys: ['name', 'type', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
       });
       // TODO: refresh tracks if any attribute is source
       this.trigger('features-update', { features, attributes, updates });

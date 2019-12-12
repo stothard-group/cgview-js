@@ -189,10 +189,9 @@
       return this.range.mapStart;
     }
 
-    // set mapStart(value) {
-    //   // FIXME: check if on a contig. If so update contigRange as well.
-    //   this.range.start = value;
-    // }
+    set mapStart(value) {
+      this.range.mapStart = value;
+    }
 
     /**
      * @member {Number} - Get or set the stop position of the feature in basepair (bp).
@@ -202,10 +201,9 @@
       return this.range.mapStop;
     }
 
-    // set mapStop(value) {
-    //   // FIXME: check if on a contig. If so update contigRange as well.
-    //   this.range.stop = value;
-    // }
+    set mapStop(value) {
+      this.range.mapStop = value;
+    }
 
     get length() {
       return this.range.length;
