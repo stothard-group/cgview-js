@@ -258,6 +258,8 @@
       this._items = this._items.filter( i => !items.include(i) );
       this.viewer.clear('canvas');
       this.viewer.refreshCanvasLayer();
+      // Remove from Objects
+      items.forEach( i => i.deleteFromObjects() );
       this.viewer.trigger('legendItems-remove', items);
     }
 

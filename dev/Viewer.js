@@ -441,8 +441,9 @@ if (window.CGV === undefined) window.CGV = CGView;
     removeTracks(tracks) {
       tracks = CGV.CGArray.arrayerize(tracks);
       this._tracks = this._tracks.filter( t => !tracks.includes(t) );
-      // this._tracks = this._tracks.remove(track);
       this.layout._adjustProportions();
+      // Remove from Objects
+      tracks.forEach( t => t.deleteFromObjects() );
       this.trigger('tracks-remove', tracks);
     }
 
@@ -518,6 +519,18 @@ if (window.CGV === undefined) window.CGV = CGView;
         validKeys: ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor']
       });
       this.trigger('captions-update', { captions, attributes, updates });
+    }
+
+    removeCaptions(captions) {
+      captions = CGV.CGArray.arrayerize(captions);
+      this._captions = this._captions.filter( f => !captions.includes(f) );
+      // Update Layers
+      this.clear('canvas');
+      this.refreshCanvasLayer();
+      // Remove from Objects
+      captions.forEach( c => c.deleteFromObjects() );
+
+      this.trigger('captions-remove', captions);
     }
 
     moveCaption(oldIndex, newIndex) {
@@ -681,6 +694,8 @@ if (window.CGV === undefined) window.CGV = CGView;
     removeBookmarks(bookmarks) {
       bookmarks = CGV.CGArray.arrayerize(bookmarks);
       this._bookmarks = this._bookmarks.filter( b => !bookmarks.includes(b) );
+      // Remove from Objects
+      bookmarks.forEach( b => b.deleteFromObjects() );
       this.trigger('bookmarks-remove', bookmarks);
     }
 

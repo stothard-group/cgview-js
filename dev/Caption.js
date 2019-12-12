@@ -310,10 +310,11 @@
     }
 
     remove() {
-      const viewer = this.viewer;
-      viewer._captions = viewer._captions.remove(this);
-      viewer.clear('canvas');
-      viewer.refreshCanvasLayer();
+      // const viewer = this.viewer;
+      // viewer._captions = viewer._captions.remove(this);
+      // viewer.clear('canvas');
+      // viewer.refreshCanvasLayer();
+      this.viewer.removeCaptions(this);
     }
 
     move(newIndex) {
