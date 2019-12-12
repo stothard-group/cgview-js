@@ -376,11 +376,22 @@
       // this.updateFromContigs()
     }
 
-    removeContig(id) {
-      // Remove features for the contig
-      // Remove contig
-      // Update Plots
-      // this.updateFromContigs
+    // Removing contigs, will remove the features associated with the contig
+    // This will only work with contigs in Sequence.contigs(). It will
+    // not remove the mapContig.
+    // TODO: deal with plots
+    removeContigs(contigs) {
+      contigs = CGV.CGArray.arrayerize(contigs);
+      // First remove features
+      const features = contigs.map( c => c.features() ).flat();
+      this.viewer.removeFeatures(features);
+      // Remove contigs
+      this._contigs = this._contigs.filter( c => !contigs.includes(c) );
+      // Remove from Objects
+      contigs.forEach( c => c.deleteFromObjects() );
+
+      this.updateMapContig();
+      this.viewer.trigger('contigs-remove', contigs);
     }
 
     /**

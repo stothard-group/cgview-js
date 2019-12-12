@@ -264,6 +264,13 @@
     }
 
     /**
+     * Remove the Contig from the Sequence
+     */
+    remove() {
+      this.sequence.removeContigs(this);
+    }
+
+    /**
      * Zoom and pan map to show the contig
      *
      * @param {Number} duration - Length of animation
