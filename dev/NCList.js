@@ -48,13 +48,15 @@
       const nomalizedIntervals = [];
       for (let i = 0, len = intervals.length; i < len; i++) {
         interval = intervals[i];
-        if (interval.start <= interval.stop) {
+        // if (interval.start <= interval.stop) {
+        if (interval[this.startProperty] <= interval[this.stopProperty]) {
           nomalizedIntervals.push( {interval: interval, index: i});
         } else {
           nomalizedIntervals.push({
             interval: interval,
             index: i,
-            start: interval.start,
+            // start: interval.start,
+            start: this.start(interval),
             stop: this.circularLength,
             crossesOrigin: true
           });
@@ -62,7 +64,8 @@
             interval: interval,
             index: i,
             start: 1,
-            stop: interval.stop,
+            // stop: interval.stop,
+            stop: this.end(interval),
             crossesOrigin: true
           });
         }
@@ -135,7 +138,9 @@
      */
     end(interval) {
       // return interval.stop || interval.interval.stop;
-      return interval[this.stopProperty] || interval.interval[this.stopProperty];
+      // return interval[this.stopProperty] || interval.interval[this.stopProperty];
+
+      return interval.stop || interval.interval[this.stopProperty];
     }
 
     /**
@@ -143,7 +148,8 @@
      */
     start(interval) {
       // return interval.start || interval.interval.start;
-      return interval[this.startProperty] || interval.interval[this.startProperty];
+      // return interval[this.startProperty] || interval.interval[this.startProperty];
+      return interval.start || interval.interval[this.startProperty];
     }
 
     /**
@@ -253,7 +259,7 @@
 
 
     /*
-     * Test that the correct intervalsare returned especially for circular sequences
+     * Test that the correct intervals are returned especially for circular sequences
      */
     static test() {
       function testInterval(nc, start, stop, expected) {

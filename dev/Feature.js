@@ -162,7 +162,6 @@
     }
 
     set start(value) {
-      // FIXME: check if on a contig. If so update contigRange as well.
       this.range.start = value;
     }
 
@@ -177,7 +176,6 @@
     }
 
     set stop(value) {
-      // FIXME: check if on a contig. If so update contigRange as well.
       this.range.stop = value;
     }
 
@@ -369,16 +367,22 @@
         const color = options.color || this.color;
         const showShading = options.showShading;
         if (!containsStart) {
-          start = visibleRange.start - 100;
+          // start = visibleRange.start - 100;
+          start = Math.max(1, visibleRange.start - 100);
         }
         if (!containsStop) {
-          stop = visibleRange.stop + 100;
+          // stop = visibleRange.stop + 100;
+          stop = Math.min(this.sequence.length, visibleRange.stop + 100);
         }
+
         // When zoomed in, if the feature starts in the visible range and wraps around to end
         // in the visible range, the feature should be drawn as 2 arcs.
-        if ( (this.viewer.zoomFactor > 1000) &&
-             (containsStart && containsStop) &&
-             (this.range.overHalfMapLength()) ) {
+        const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overlapsMapRange();
+        //  When the feature wraps the origin on a linear map and both the start and stop
+        //  can be seen, draw as 2 elements.
+        const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');
+
+        if (zoomedSplitFeature || unzoomedSplitLinearFeature) {
           canvas.drawElement(layer, visibleRange.start - 100, stop,
             this.adjustedCenterOffset(slotCenterOffset, slotThickness),
             color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);

@@ -674,7 +674,7 @@ if (window.CGV === undefined) window.CGV = CGView;
      * If attributes has any of the attributesOfInterest then all the records are returned.
      * Otherwise any record in updates that has an attributesOfInterest of changed is returned.
      */
-    recordsWithChangedAttributes(attributesOfInterest, records, attributes, updates) {
+    recordsWithChangedAttributes(attributesOfInterest, records, attributes = {}, updates) {
       records = CGV.CGArray.arrayerize(records);
       let returnedRecords = new CGV.CGArray();
       attributesOfInterest = CGV.CGArray.arrayerize(attributesOfInterest);

@@ -379,18 +379,26 @@
     // Removing contigs, will remove the features associated with the contig
     // This will only work with contigs in Sequence.contigs(). It will
     // not remove the mapContig.
+    // Will not remove last contig. If removing all contigs, the last contig will not be removed.
     // TODO: deal with plots
     removeContigs(contigs) {
-      contigs = CGV.CGArray.arrayerize(contigs);
-      // First remove features
-      const features = contigs.map( c => c.features() ).flat();
-      this.viewer.removeFeatures(features);
-      // Remove contigs
-      this._contigs = this._contigs.filter( c => !contigs.includes(c) );
-      // Remove from Objects
-      contigs.forEach( c => c.deleteFromObjects() );
+      contigs = CGV.CGArray.arrayerize(contigs).slice();
+      // Do not remove last contig
+      if (contigs.length === this._contigs.length) {
+        const lastContig = contigs.pop();
+        console.error('The last contig can not be removed. Keeping:', lastContig);
+      }
+      if (contigs.length > 0) {
+        // First remove features
+        const features = contigs.map( c => c.features() ).flat();
+        this.viewer.removeFeatures(features);
+        // Remove contigs
+        this._contigs = this._contigs.filter( c => !contigs.includes(c) );
+        // Remove from Objects
+        contigs.forEach( c => c.deleteFromObjects() );
+        this.updateMapContig();
+      }
 
-      this.updateMapContig();
       this.viewer.trigger('contigs-remove', contigs);
     }
 
@@ -463,6 +471,7 @@
       if (this._contigs.length === 1) {
         this._mapContig = this._contigs[0];
         this._mapContig._index = 1;
+        this._mapContig._updateLengthOffset(0);
       } else {
         // Concatenate contigs
         // The contigs can't have a mixture of sequence and length
