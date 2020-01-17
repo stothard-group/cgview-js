@@ -238,8 +238,8 @@
       }
     }
 
-    downloadFasta(fastaId, filename = 'sequence.fa') {
-      const fasta = this.viewer.sequence.asFasta(fastaId);
+    downloadFasta(fastaId, filename = 'sequence.fa', options = {}) {
+      const fasta = this.viewer.sequence.asFasta(fastaId, options);
       this.download(fasta, filename, 'text/plain');
     }
 

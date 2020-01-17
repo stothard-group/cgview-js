@@ -300,6 +300,11 @@
       this.viewer.updateFeatures(updates);
     }
 
+    // TODO: options for id
+    asFasta() {
+      return `>${this.id}\n${this.seq}`;
+    }
+
     toJSON() {
       const json = {
         id: this.id,

@@ -603,8 +603,18 @@
       }
     }
 
-    asFasta(id = 'sequence') {
-      return `>${id}\n${this.seq}`;
+    // id is not used if there are multiple contigs and we are not concatenating them
+    asFasta(id = 'sequence', options = {}) {
+      const concatenate = options.concatenateContigs;
+      if (concatenate || !this.hasMultipleContigs) {
+        return `>${id}\n${this.seq}`;
+      } else {
+        let fasta = '';
+        for (const contig of this._contigs) {
+          fasta += `${contig.asFasta()}\n`;
+        }
+        return fasta;
+      }
     }
 
     lengthOfRange(start, stop) {
