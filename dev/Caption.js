@@ -322,10 +322,10 @@
       this.viewer.moveCaption(currentIndex, newIndex);
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       const json = {
         name: this.name,
-        position: this.position.toJSON(),
+        position: this.position.toJSON(options),
         textAlignment: this.textAlignment,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
@@ -335,12 +335,10 @@
       if (this.position.onMap) {
         json.anchor = this.anchor.toJSON();
       }
-      // FIXME: proksee needs to know visible status but IO would be smaller without defaults
-      //        - Maybe, we should have parameters for full JSON and reduced JSON
-      // if (!this.visible) {
-      //   json.visible = this.visible;
-      // }
-
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
       return json;
     }
 

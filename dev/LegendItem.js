@@ -395,15 +395,26 @@
       return this.viewer._plots.filter( p => p.legendItem.includes(this) ).get(term);
     }
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         name: this.name,
         font: this.font.string,
         fontColor: this.fontColor.rgbaString,
         swatchColor: this.swatchColor.rgbaString,
-        decoration: this.decoration,
-        visible: this.visible
+        decoration: this.decoration
+        // visible: this.visible
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      if (!this.usingDefaultFontColor || options.includeDefaults) {
+        json.fontColor = this.fontColor.rgbaString;
+      }
+      if (!this.usingDefaultFont || options.includeDefaults) {
+        json.font = this.font.string;
+      }
+      return json;
     }
 
   }

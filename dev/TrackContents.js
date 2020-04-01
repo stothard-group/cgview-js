@@ -91,7 +91,7 @@
       this.track.update({contents: attributes});
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       const json = {
         type: this.type,
         from: this.from

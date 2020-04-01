@@ -60,7 +60,7 @@
 
       this.createMapContig(options);
 
-      this.viewer.trigger('sequence-update', { attributes: this.toJSON() });
+      this.viewer.trigger('sequence-update', { attributes: this.toJSON({includeDefaults: true}) });
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -604,10 +604,11 @@
     }
 
     // id is not used if there are multiple contigs and we are not concatenating them
-    asFasta(id = 'sequence', options = {}) {
+    asFasta(id, options = {}) {
       const concatenate = options.concatenateContigs;
       if (concatenate || !this.hasMultipleContigs) {
-        return `>${id}\n${this.seq}`;
+        const name = id || this.contigs(1).id;
+        return `>${name}\n${this.seq}`;
       } else {
         let fasta = '';
         for (const contig of this._contigs) {
@@ -808,13 +809,17 @@
       this.viewer.trigger('sequence-update', { attributes });
     }
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         font: this.font.string,
         color: this.color.rgbString,
-        seq: this.seq,
-        visible: this.visible
+        contigs: this._contigs.map( c => c.toJSON(options) )
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      return json;
     }
 
   }

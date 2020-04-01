@@ -387,16 +387,20 @@
     }
 
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         name: this.name,
         readingFrame: this.readingFrame,
         strand: this.strand,
         position: this.position,
         thicknessRatio: this.thicknessRatio,
-        contents: this.contents.toJSON(),
-        visible: this.visible
+        contents: this.contents.toJSON(options)
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      return json;
     }
 
   }

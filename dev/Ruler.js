@@ -18,7 +18,7 @@
       this.color = new CGV.Color( CGV.defaultFor(options.color, 'black') );
       this.lineCap = 'round';
 
-      this.viewer.trigger('ruler-update', { attributes: this.toJSON() });
+      this.viewer.trigger('ruler-update', { attributes: this.toJSON({includeDefaults: true}) });
     }
 
     /**
@@ -314,12 +314,17 @@
       this.viewer.trigger('ruler-update', { attributes });
     }
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         font: this.font.string,
         color: this.color.rgbaString,
         visible: this.visible
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      return json;
     }
 
   }

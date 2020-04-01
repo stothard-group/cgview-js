@@ -391,7 +391,7 @@
       }
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       return this.value;
     }
 

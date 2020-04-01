@@ -515,7 +515,7 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     updateCaptions(captionsOrUpdates, attributes) {
       const { records: captions, updates } = this.updateRecords(captionsOrUpdates, attributes, {
-        recordClass: 'Feature',
+        recordClass: 'Caption',
         validKeys: ['name', 'on', 'anchor', 'position', 'font', 'visible', 'fontColor', 'textAlignment', 'backgroundColor']
       });
       this.trigger('captions-update', { captions, attributes, updates });

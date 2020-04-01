@@ -23,7 +23,7 @@
       this.lineCap = 'round';
       this.onlyDrawFavorites = CGV.defaultFor(options.onlyDrawFavorites, false);
 
-      this.viewer.trigger('annotation-update', { attributes: this.toJSON() });
+      this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
     }
 
     /**
@@ -385,13 +385,18 @@
       this.viewer.trigger('annotation-update', { attributes });
     }
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         font: this.font.string,
         color: this.color && this.color.rgbaString,
         onlyDrawFavorites: this.onlyDrawFavorites,
         visible: this.visible
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      return json;
     }
 
   }

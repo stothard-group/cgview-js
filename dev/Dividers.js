@@ -85,9 +85,9 @@
       }
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       return {
-        track: this._track.toJSON(),
+        track: this._track.toJSON(options),
         slot: this._slot.toJSON(),
         slotMirrorsTrack: Boolean(this.slotMirrorsTrack)
       };

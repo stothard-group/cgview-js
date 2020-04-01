@@ -40,7 +40,7 @@
       // Setting font will refresh legend and draw
       this.defaultFont = CGV.defaultFor(options.defaultFont, 'sans-serif, plain, 14');
 
-      this.viewer.trigger('legend-update', { attributes: this.toJSON() });
+      this.viewer.trigger('legend-update', { attributes: this.toJSON({includeDefaults: true}) });
 
       if (options.items) {
         this.addItems(options.items);
@@ -479,27 +479,25 @@
       }
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       const json = {
         name: this.name,
-        position: this.position.toJSON(),
+        position: this.position.toJSON(options),
         textAlignment: this.textAlignment,
         defaultFont: this.defaultFont.string,
         defaultFontColor: this.defaultFontColor.rgbaString,
         backgroundColor: this.backgroundColor.rgbaString,
-        items: [],
-        visible: this.visible
+        items: []
       };
       if (this.position.onMap) {
-        json.anchor = this.anchor.toJSON();
+        json.anchor = this.anchor.toJSON(options);
       }
-      // FIXME: proksee needs to know visible status but IO would be smaller without defaults
-      //        - Maybe, we should have parameters for full JSON and reduced JSON
-      // if (!this.visible) {
-      //   json.visible = this.visible;
-      // }
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
       this.items().each( (i, item) => {
-        json.items.push(item.toJSON());
+        json.items.push(item.toJSON(options));
       });
       return json;
     }

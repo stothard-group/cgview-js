@@ -517,8 +517,7 @@
       });
     }
 
-    // FIXME: contig should only be available if the sequence hasMultipleContigs
-    toJSON() {
+    toJSON(options = {}) {
       const json = {
         name: this.name,
         type: this.type,
@@ -526,13 +525,23 @@
         stop: this.stop,
         strand: this.strand,
         source: this.source,
-        legend: this.legend.name,
-        score: this.score,
-        visible: this.visible,
-        favorite: this.favorite
+        legend: this.legend.name
+        // score: this.score,
+        // visible: this.visible,
+        // favorite: this.favorite
       };
       if (this.sequence.hasMultipleContigs) {
         json.contig = this.contig.name;
+      }
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      if (this.score !== undefined || options.includeDefaults) {
+        json.score = this.score;
+      }
+      if (!this.favorite || options.includeDefaults) {
+        json.favorite = this.favorite;
       }
       return json;
     }

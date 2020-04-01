@@ -208,16 +208,19 @@
     }
 
 
-    toJSON() {
+    toJSON(options = {}) {
       const json = {
         name: this.name,
         bp: this.bp,
         zoom: this.zoom,
         bbOffset: this.bbOffset,
         format: this.format,
-        shortcut: this.shortcut,
-        favorite: this.favorite
+        shortcut: this.shortcut
+        // favorite: this.favorite
       };
+      if (!this.favorite || options.includeDefaults) {
+        json.favorite = this.favorite;
+      }
       return json;
     }
 

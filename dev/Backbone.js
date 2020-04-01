@@ -23,7 +23,7 @@
       this._bpThicknessAddition = 0;
       this.contigDecoration = CGV.defaultFor(options.contigDecoration, 'arrow');
 
-      this.viewer.trigger('backbone-update', { attributes: this.toJSON() });
+      this.viewer.trigger('backbone-update', { attributes: this.toJSON({includeDefaults: true}) });
     }
 
     /**
@@ -269,13 +269,17 @@
       this.viewer.trigger('backbone-update', { attributes });
     }
 
-    toJSON() {
-      return {
+    toJSON(options = {}) {
+      const json = {
         color: this.color.rgbaString,
         colorAlternate: this.colorAlternate.rgbaString,
-        thickness: this._thickness,
-        visible: this.visible
+        thickness: this._thickness
       };
+      // Optionally add default values
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      return json;
     }
 
   }

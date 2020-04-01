@@ -41,7 +41,7 @@
       return timeformat(d);
     }
 
-    toJSON() {
+    toJSON(options = {}) {
       const v = this.viewer;
       const jsonInfo = v._jsonInfo || {};
 
@@ -52,15 +52,15 @@
           updated: this.formatDate(new Date()),
           id: v.id,
           name: v.name,
-          settings: v.settings.toJSON(),
-          backbone: v.backbone.toJSON(),
-          ruler: v.ruler.toJSON(),
-          annotation: v.annotation.toJSON(),
-          dividers: v.dividers.toJSON(),
-          highlighter: v.highlighter.toJSON(),
+          settings: v.settings.toJSON(options),
+          backbone: v.backbone.toJSON(options),
+          ruler: v.ruler.toJSON(options),
+          annotation: v.annotation.toJSON(options),
+          dividers: v.dividers.toJSON(options),
+          highlighter: v.highlighter.toJSON(options),
           captions: [],
-          legend: v.legend.toJSON(),
-          sequence: v.sequence.toJSON(),
+          legend: v.legend.toJSON(options),
+          sequence: v.sequence.toJSON(options),
           features: [],
           plots: [],
           bookmarks: [],
@@ -68,20 +68,20 @@
         }
       };
       v.captions().each( (i, caption) => {
-        json.cgview.captions.push(caption.toJSON());
+        json.cgview.captions.push(caption.toJSON(options));
       });
       v.features().each( (i, feature) => {
         // Only export features that were not extracted from the sequence.
         if (!feature.extractedFromSequence ||
             feature.tracks().filter( t => t.contents.from !== 'sequence' ).length > 0) {
-          json.cgview.features.push(feature.toJSON());
+          json.cgview.features.push(feature.toJSON(options));
         }
       });
       v.bookmarks().each( (i, bookmark) => {
-        json.cgview.bookmarks.push(bookmark.toJSON());
+        json.cgview.bookmarks.push(bookmark.toJSON(options));
       });
       v.tracks().each( (i, track) => {
-        json.cgview.tracks.push(track.toJSON());
+        json.cgview.tracks.push(track.toJSON(options));
       });
       return json;
     }
@@ -243,8 +243,8 @@
       this.download(fasta, filename, 'text/plain');
     }
 
-    downloadJSON(filename = 'cgview.json') {
-      const json = this.viewer.io.toJSON();
+    downloadJSON(filename = 'cgview.json', options = {}) {
+      const json = this.viewer.io.toJSON(options);
       this.download(JSON.stringify(json), filename, 'text/json');
     }
 
