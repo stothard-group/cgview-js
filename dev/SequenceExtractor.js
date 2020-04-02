@@ -123,11 +123,14 @@
       worker.onmessage = (e) => {
         const messageType = e.data.messageType;
         if (messageType === 'progress') {
-          track.loadProgress = e.data.progress;
+          // track.loadProgress = e.data.progress;
+          track.update({loadProgress: e.data.progress});
+
           viewer.layout.drawProgress();
         }
         if (messageType === 'complete') {
-          track.loadProgress = 100;
+          // track.loadProgress = 100;
+          track.update({loadProgress: 100});
           const featureDataArray = e.data.featureDataArray;
           console.log(`Features '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );
           startTime = new Date().getTime();
@@ -176,18 +179,20 @@
         options: {
           window: CGV.defaultFor(options.window, this.getWindowStep().window),
           step: CGV.defaultFor(options.step, this.getWindowStep().step),
-          deviation: CGV.defaultFor(options.deviation, 'scale'), // 'scale' or 'average
+          deviation: CGV.defaultFor(options.deviation, 'scale') // 'scale' or 'average
         }
       };
       worker.postMessage(message);
       worker.onmessage = (e) => {
         const messageType = e.data.messageType;
         if (messageType === 'progress') {
-          track.loadProgress = e.data.progress;
+          // track.loadProgress = e.data.progress;
+          track.update({loadProgress: e.data.progress});
           viewer.layout.drawProgress();
         }
         if (messageType === 'complete') {
-          track.loadProgress = 100;
+          // track.loadProgress = 100;
+          track.update({loadProgress: 100});
           const baseContent = e.data.baseContent;
           const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
           data.legendPositive = this.getLegendItem(extractType, '+').name;

@@ -964,11 +964,9 @@
     drawProgress() {
       this.canvas.clear('background');
       let track, slot, progress;
-      // for (let i = 0, trackLen = this._tracks.length; i < trackLen; i++) {
-      //   track = this._tracks[i];
-      const tracks = this.tracks();
-      for (let i = 0, trackLen = tracks.length; i < trackLen; i++) {
-        track = tracks[i];
+      const visibleTracks = this.tracks().filter( t =>  t.visible );
+      for (let i = 0, trackLen = visibleTracks.length; i < trackLen; i++) {
+        track = visibleTracks[i];
         progress = track.loadProgress;
         for (let j = 0, slotLen = track._slots.length; j < slotLen; j++) {
           slot = track._slots[j];

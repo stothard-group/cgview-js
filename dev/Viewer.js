@@ -456,7 +456,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (attributes) {
         // Validate attribute keys
         const keys = Object.keys(attributes);
-        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible', 'thicknessRatio', 'contents'];
+        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible', 'thicknessRatio', 'loadProgress', 'contents'];
         if (!CGV.validate(keys, validKeys)) { return false; }
         const contents = attributes.contents;
         if (contents) {

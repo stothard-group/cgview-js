@@ -167,7 +167,7 @@
 
     set loadProgress(value) {
       this._loadProgress = value;
-      this.viewer.trigger('track-load-progress-changed', this);
+      // this.viewer.trigger('track-load-progress-changed', this);
     }
 
     /**
@@ -399,6 +399,10 @@
       // Optionally add default values
       if (!this.visible || options.includeDefaults) {
         json.visible = this.visible;
+      }
+      // This could be a new Track specific toJSON option
+      if (options.includeDefaults) {
+        json.loadProgress = this.loadProgress;
       }
       return json;
     }
