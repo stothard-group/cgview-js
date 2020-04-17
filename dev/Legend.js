@@ -374,6 +374,12 @@
     findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
       let item = this.findLegendItemByName(name);
       if (!item) {
+        const obj = this.viewer.objects(name);
+        if (obj && obj.toString() === 'LegendItem') {
+          item = obj;
+        }
+      }
+      if (!item) {
         if (!color) {
           const currentColors = this._items.map( i => i.swatchColor );
           // color = CGV.Color.getColor(currentColors);
