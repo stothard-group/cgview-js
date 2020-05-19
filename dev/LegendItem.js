@@ -398,8 +398,8 @@
     toJSON(options = {}) {
       const json = {
         name: this.name,
-        font: this.font.string,
-        fontColor: this.fontColor.rgbaString,
+        // font: this.font.string,
+        // fontColor: this.fontColor.rgbaString,
         swatchColor: this.swatchColor.rgbaString,
         decoration: this.decoration
         // visible: this.visible
