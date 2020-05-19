@@ -495,8 +495,8 @@
      */
     moveTo(duration, ease) {
       const buffer = Math.ceil(this.length * 0.05);
-      const start = this.sequence.subtractBp(this.start, buffer);
-      const stop = this.sequence.addBp(this.stop, buffer);
+      const start = this.sequence.subtractBp(this.mapStart, buffer);
+      const stop = this.sequence.addBp(this.mapStop, buffer);
       this.viewer.moveTo(start, stop, {duration, ease});
     }
 

@@ -429,6 +429,13 @@
       // FIXME: UPDATE OFFSET AND RANGES
       // FIXME: UPDATE Sequence Plot Extractors
       this.updateMapContig();
+
+      // TRYING THIS OUT
+      for (const track of this.viewer.tracks()) {
+        track.refresh();
+      }
+      this.viewer.annotation.refresh();
+
       this.viewer.trigger('contigs-moved', {oldIndex: oldIndex, newIndex: newIndex});
 
       // Calling contigs-update as well.
