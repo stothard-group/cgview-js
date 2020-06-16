@@ -54,7 +54,7 @@ echo "Done!"
 #   - npm install would not work for some reason
 #     - So I created a new directory ran "npm init" added "underscore" to it and installed
 #     - Then I copied the "underscore" directory to the dash-jsdoc node modules
-#   - For the sqlite issue, I when into "/node_modules/sequelize":
+#   - For the sqlite issue, I went into "/node_modules/sequelize":
 #     - I upgrade sqlite (under devDependencies) to: "sqlite3": "^4.1.0"
 #     - Then run "npm install"
 

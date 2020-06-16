@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # FIXME: get directory from the current script location
-CGVIEW_DIR=~/workspace/stothard_group/cgview-js
-CGVIEW_SERVER_DIR=~/workspace/stothard_group/proksee-server
+CGVIEW_DIR=~/workspace/cgview-js
+CGVIEW_SERVER_DIR=~/workspace/proksee-server
 
 CGVIEW_JS=${CGVIEW_DIR}/src/CGView.js
 

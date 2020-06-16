@@ -21,7 +21,9 @@
       this.colorAlternate = CGV.defaultFor(options.colorAlternate, 'rgb(200,200,200)');
       this.thickness = CGV.defaultFor(options.thickness, 5);
       this._bpThicknessAddition = 0;
-      this.contigDecoration = CGV.defaultFor(options.contigDecoration, 'arrow');
+      // Default decoration is arrow for multiple contigs and arc for single contig
+      const defaultDecoration = this.sequence.hasMultipleContigs ? 'arrow' : 'arc';
+      this.decoration = CGV.defaultFor(options.decoration, defaultDecoration);
 
       this.viewer.trigger('backbone-update', { attributes: this.toJSON({includeDefaults: true}) });
     }
@@ -78,14 +80,14 @@
     }
 
     /**
-     * @member {String} - Get or set the contig decoration: 'arrow' or 'arc'
+     * @member {String} - Get or set the decoration for the backbone contigs: 'arrow' or 'arc'
      */
-    get contigDecoration() {
-      return this._contigDecoration;
+    get decoration() {
+      return this._decoration;
     }
 
-    set contigDecoration(value) {
-      this._contigDecoration = value;
+    set decoration(value) {
+      this._decoration = value;
     }
 
     /**
@@ -202,10 +204,10 @@
     }
 
     directionalDecorationForContig(contig) {
-      if (this.contigDecoration === 'arrow') {
+      if (this.decoration === 'arrow') {
         return contig.orientation === '+' ? 'clockwise-arrow' : 'counterclockwise-arrow';
       } else {
-        return this.contigDecoration;
+        return this.decoration;
       }
     }
 
@@ -235,7 +237,12 @@
             this.viewer.canvas.drawElement('map', start, stop, this.adjustedCenterOffset, color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(contig));
           }
         } else {
-          this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness);
+          if (this.visibleRange.isWrapped && this.decoration === 'arrow') {
+            this.viewer.canvas.drawElement('map', this.visibleRange.start, this.sequence.length, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(this.sequence.mapContig));
+            this.viewer.canvas.drawElement('map', 1, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(this.sequence.mapContig));
+          } else {
+            this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(this.sequence.mapContig));
+          }
         }
 
         if (this.pixelsPerBp() > 1) {
@@ -264,7 +271,7 @@
     update(attributes) {
       this.viewer.updateRecords(this, attributes, {
         recordClass: 'Backbone',
-        validKeys: ['color', 'colorAlternate', 'thickness', 'visible']
+        validKeys: ['color', 'colorAlternate', 'thickness', 'decoration', 'visible']
       });
       this.viewer.trigger('backbone-update', { attributes });
     }
@@ -273,7 +280,8 @@
       const json = {
         color: this.color.rgbaString,
         colorAlternate: this.colorAlternate.rgbaString,
-        thickness: this._thickness
+        thickness: this._thickness,
+        decoration: this.decoration
       };
       // Optionally add default values
       if (!this.visible || options.includeDefaults) {
