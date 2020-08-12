@@ -106,7 +106,8 @@
       viewer.trigger('cgv-json-load', data);
       // In events this should mention how everything is reset (e.g. tracks, features, etc)
 
-      viewer._id = data.id;
+      // viewer._id = data.id;
+      viewer.update({id: data.id});
       // viewer.name = data.name;
       viewer.update({name: data.name});
 
@@ -207,6 +208,8 @@
       }
       canvas._layers = tempLayers;
 
+     // tempLayers.map.ctx = new C2S(1000, 1000); 
+
       // Draw map on to new layers
       viewer.drawExport();
       viewer.fillBackground();
@@ -227,6 +230,7 @@
       // Generate image from export layer
       // let image = tempLayers['export'].node.toDataURL();
       tempLayers.export.node.toBlob( (blob) => { this.download(blob, filename, 'image/png');} );
+      // console.log(tempLayers.map.ctx.getSerializedSvg(true));
 
       // Restore original layers and settings
       canvas._layers = origLayers;

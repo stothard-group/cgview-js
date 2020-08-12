@@ -158,6 +158,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._id;
     }
 
+    set id(value) {
+      this._id = value;
+    }
+
     /**
      * @member {String} - Get or set the map format: circular, linear
      */
@@ -403,7 +407,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     update(attributes) {
       // Validate attribute keys
       let keys = Object.keys(attributes);
-      const validKeys = ['name', 'width', 'height'];
+      const validKeys = ['name', 'id', 'width', 'height'];
       if (!CGV.validate(keys, validKeys)) { return; }
 
       // Special Case for Resizing - we don't want to update width and height separately

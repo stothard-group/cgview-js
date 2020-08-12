@@ -7,6 +7,8 @@
   <!-- <script src="javascript/d3.v4.min.js"></script> -->
   <!-- Remote d3 V5.10 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.10.0/d3.js"></script>
+  <!-- Canvas To SVG -->
+  <script src="javascript/canvas2svg.js"></script>
 
   <!-- CGView ES5 -->
   <!-- <script src='src/CGView.min.js'></script> -->
@@ -127,6 +129,7 @@
     </div>
 
 		<div id='cgview' style='clear:both;'></div>
+    <button id='download-svg'>Download SVG</button>
     <div id='results'></div>
   </div>
 
@@ -247,6 +250,8 @@
       // console.log(`Changed to ${cgv.format}`)
       cgv.drawFull();
     });
+
+    $('#download-svg').on('click', function() { cgv.io.downloadImage(600,600); return false });
 
     // $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
     // $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });
