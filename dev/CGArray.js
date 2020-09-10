@@ -99,6 +99,23 @@
       return new CGV.CGArray(res);
     }
 
+    // FIXME: return an CGArray with a single element of 0 when it should be empty
+    // FIXME: Using Polyfill for now
+    // https://github.com/jonathantneal/array-flat-polyfill/blob/master/src/flat.js
+    flat() {
+      var self = this;
+      var depth = isNaN(arguments[0]) ? 1 : Number(arguments[0]);
+      return depth ? Array.prototype.reduce.call(this, function (acc, cur) {
+        if (Array.isArray(cur)) {
+          acc.push.apply(acc, self.flat.call(cur, depth - 1));
+        } else {
+          acc.push(cur);
+        }
+
+        return acc;
+      }, []) : Array.prototype.slice.call(this);
+    }
+
     map(...rest) {
       return (this.length === 0) ? this : super.map(...rest);
     }

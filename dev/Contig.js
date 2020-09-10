@@ -50,6 +50,7 @@
      */
     static removeFeatures(features) {
       features = CGV.CGArray.arrayerize(features);
+      if (features.length === 0) { return }
       const viewer = features[0].viewer;
       const contigMap = {};
       for (const feature of features) {
