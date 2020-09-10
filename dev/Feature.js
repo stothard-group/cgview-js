@@ -534,13 +534,16 @@
         json.contig = this.contig.name;
       }
       // Optionally add default values
+      // Visible is normally true
       if (!this.visible || options.includeDefaults) {
         json.visible = this.visible;
       }
-      if (this.score !== undefined || options.includeDefaults) {
+      // Score is normally undefined (which defaults to 1)
+      if ((this.score !== undefined && this.score !== 1) || options.includeDefaults) {
         json.score = this.score;
       }
-      if (!this.favorite || options.includeDefaults) {
+      // Favoroite is normally false
+      if (this.favorite || options.includeDefaults) {
         json.favorite = this.favorite;
       }
       return json;

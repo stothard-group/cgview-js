@@ -298,7 +298,7 @@
         orientation: this.orientation,
         length: this.length,
         color: this.color && this.color.rgbaString,
-        visible: this.visible
+        // visible: this.visible
       };
       if (this.hasSeq) {
         json.seq = this.seq;

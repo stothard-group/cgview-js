@@ -318,7 +318,7 @@
       const json = {
         font: this.font.string,
         color: this.color.rgbaString,
-        visible: this.visible
+        // visible: this.visible
       };
       // Optionally add default values
       if (!this.visible || options.includeDefaults) {
