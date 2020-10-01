@@ -114,7 +114,10 @@
         seqData: seqInput.data,
         seqTotalLength: this.sequence.length,
         options: {
-          startPattern: CGV.defaultFor(options.start, 'ATG'),
+          // startPattern: CGV.defaultFor(options.start, 'ATG'),
+          // stopPattern: CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
+          // These are start/stop codons for Genetic Code Table 11
+          startPattern: CGV.defaultFor(options.start, 'ATG, TTG, CTG, ATT, ATC, ATA, GTG'),
           stopPattern: CGV.defaultFor(options.stop, 'TAA,TAG,TGA'),
           minORFLength: CGV.defaultFor(options.minORFLength, 100)
         }

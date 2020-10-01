@@ -29,6 +29,9 @@
       this.updateRanges(data.start, data.stop);
       this.strand = CGV.defaultFor(data.strand, 1);
       this.score = CGV.defaultFor(data.score, 1);
+      if (data.codon_start) {
+        this.codon_start = data.codon_start;
+      }
       this.label = new CGV.Label(this, {name: data.name} );
       this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -70,6 +73,17 @@
       } else {
         this.label = new CGV.Label(this, {name: value} );
       }
+    }
+
+    /**
+     * @member {String} - Get or set the Codon start
+     */
+    get codon_start() {
+      return this._codon_start || 1;
+    }
+
+    set codon_start(value) {
+      this._codon_start = value;
     }
 
     /**
@@ -530,6 +544,9 @@
         // visible: this.visible,
         // favorite: this.favorite
       };
+      if (this.codon_start && this.codon_start != 1) {
+        json.codon_start = this.codon_start;
+      }
       if (this.sequence.hasMultipleContigs) {
         json.contig = this.contig.name;
       }

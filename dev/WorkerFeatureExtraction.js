@@ -197,7 +197,8 @@
           for (let j = stopIndex, jLen = stopsByRF[rf].length; j < jLen; j++) {
             stop = stops[j];
             orfLength = (strand === 1) ? stop.stop - start.start : start.stop - stop.start;
-            if (orfLength >= minORFLength) {
+            // ORF length is measure in codons
+            if (orfLength >= (minORFLength * 3)) {
               position = (strand === 1) ? stop.stop : stop.start;
 
               featureData = {
