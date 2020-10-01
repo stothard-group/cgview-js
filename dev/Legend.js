@@ -255,7 +255,7 @@
 
     removeItems(items) {
       items = CGV.CGArray.arrayerize(items);
-      this._items = this._items.filter( i => !items.include(i) );
+      this._items = this._items.filter( i => !items.includes(i) );
       this.viewer.clear('canvas');
       this.viewer.refreshCanvasLayer();
       // Remove from Objects
