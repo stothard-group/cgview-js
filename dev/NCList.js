@@ -138,9 +138,8 @@
      */
     end(interval) {
       // return interval.stop || interval.interval.stop;
-      // return interval[this.stopProperty] || interval.interval[this.stopProperty];
-
-      return interval.stop || interval.interval[this.stopProperty];
+      // return interval.stop || interval.interval[this.stopProperty];
+      return interval[this.stopProperty] || interval.interval[this.stopProperty];
     }
 
     /**
@@ -148,8 +147,8 @@
      */
     start(interval) {
       // return interval.start || interval.interval.start;
-      // return interval[this.startProperty] || interval.interval[this.startProperty];
-      return interval.start || interval.interval[this.startProperty];
+      // return interval.start || interval.interval[this.startProperty];
+      return interval[this.startProperty] || interval.interval[this.startProperty];
     }
 
     /**
