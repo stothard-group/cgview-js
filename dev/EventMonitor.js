@@ -131,7 +131,17 @@
     _getElement(slot, bp, centerOffset) {
       let elementType, element;
       if (slot) {
-        const feature = slot.findFeaturesForBp(bp)[0];
+
+        // If mulitple features are returned, let's go with the smallest one
+        const features = slot.findFeaturesForBp(bp);
+        let feature = features[0];
+        for (let i = 0, len = features.length; i < len; i++) {
+          const currentFeature = features[i];
+          if (currentFeature.length < feature.length) {
+            feature = currentFeature;
+          }
+        }
+
         if (feature) {
           elementType = 'feature';
           element = feature;

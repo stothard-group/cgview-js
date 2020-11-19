@@ -3,7 +3,7 @@
 This is a JavaScript port of the Java program [CGView](http://wishart.biology.ualberta.ca/cgview/index.html).
 While CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
 interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
-with resolutions upto 6000x6000 pixels.
+with resolutions upto 8000x8000 pixels.
 
 ### Dependencies
 * [D3](http://d3js.org) (Version 4)

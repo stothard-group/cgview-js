@@ -159,7 +159,7 @@ cgv.on('features-update', (features) => {
 cgv.updateFeatures([feature1, feature2, feature3], {type: 'CDS'});
 ```
 - The update methods will also be added to the CGView History (LINK) and therefore
-  can undone or redone.
+  can undone or redone. (NOT IMPLEMENTED YET)
 ```js
 cgv.undo();
 cgv.redo();
@@ -180,7 +180,7 @@ track.move(newIndex);
 ```
 
 ## Reading Records
-Accessing records is done through methods on teh Viewer Instance.
+Accessing records is done through methods on the Viewer Instance.
 
 ```js
 // Access all the features
