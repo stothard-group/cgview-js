@@ -404,6 +404,15 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._features.get(term);
     }
 
+    /**
+     * Returns an [CGArray](CGArray.html) of contigs or a single contig from all the contigs in the viewer. This is an alias for Viewer.sequence.contigs().
+     * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+     * @return {CGArray}
+     */
+    contigs(term) {
+      return this.sequence.contigs(term);
+    }
+
     update(attributes) {
       // Validate attribute keys
       let keys = Object.keys(attributes);
