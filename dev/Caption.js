@@ -19,7 +19,7 @@
      *  ----------------------|-------------------------------------------------
      *  position              | "upper-right"    | Where to draw the caption. See {@link Position}
      *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
-     *  font                  | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
+     *  font                  | "sans-serif,plain,8" | A string describing the font. See {@link Font} for details.
      *  fontColor             | "black"          | A string describing the color. See {@link Color} for details.
      *  textAlignment         | "left"           | *left*, *center*, or *right*
      *  backgroundColor       | Viewer backgroundColor | A string describing the color. See {@link Color} for details.
@@ -40,7 +40,7 @@
         anchor: CGV.defaultFor(options.anchor, 'middle-center')
       });
       // Setting font will refresh the caption and draw
-      this.font = CGV.defaultFor(options.font, 'SansSerif, plain, 8');
+      this.font = CGV.defaultFor(options.font, 'sans-serif, plain, 8');
       // FIXME: go through caption initialization and reduce to calles to Refresh (we only need one)
     }
 
