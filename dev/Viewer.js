@@ -584,6 +584,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       featureData = CGV.CGArray.arrayerize(featureData);
       const features = featureData.map( (data) => new CGV.Feature(this, data));
       this.annotation.refresh();
+      this.tracks().each( (i,t) => t.refresh() );
       this.trigger('features-add', features);
       return features;
       // FIXME: need to update tracks??
@@ -615,7 +616,23 @@ if (window.CGV === undefined) window.CGV = CGView;
         recordClass: 'Feature',
         validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
       });
-      // TODO: refresh tracks if any attribute is source
+      // Refresh tracks if any attribute is source
+      let sourceChanged;
+      if (featuresOrUpdates.toString() === '[object Object]') {
+        const values = Object.values(featuresOrUpdates);
+        for (let value of values) {
+          if (Object.keys(value).includes('source')) {
+            sourceChanged = true;
+          }
+        }
+      } else {
+        sourceChanged = attributes && Object.keys(attributes).includes('source');
+      }
+      if (sourceChanged) {
+        for (let track of cgv.tracks()) {
+          track.refresh();
+        }
+      }
       this.trigger('features-update', { features, attributes, updates });
     }
 
