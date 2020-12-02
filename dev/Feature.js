@@ -335,6 +335,11 @@
       }
       // Must be done after calling CGV.Contig.removeFeatures()
       this._contig = newContig;
+      if (oldContig) {
+        // FIXME: adjust start/stop if the new contig is shorter than old contig
+        // and the position needs to be constrained. Try to keep the same length.
+        this.updateRanges(this.start, this.stop);
+      }
     }
 
     update(attributes) {
