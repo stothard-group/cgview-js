@@ -57,6 +57,8 @@
     setColor(color) {
       if (typeof color === 'string' || color instanceof String) {
         this._string = color;
+      } else if (color.toString() === 'Color') {
+        this._string = color.rgbaString;
       } else {
         const keys = Object.keys(color);
         if (keys.includes('h') && keys.includes('s') && keys.includes('v')) {
