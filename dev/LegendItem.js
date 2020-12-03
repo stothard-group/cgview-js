@@ -380,18 +380,10 @@
     }
 
     features(term) {
-      // let viewer = this.viewer;
-      // let _features = new CGV.CGArray( viewer._features.filter( (f) => { return f.legendItem === this } ));
-      // return _features.get(term);
       return this.viewer._features.filter( f => f.legendItem === this ).get(term);
     }
 
     plots(term) {
-      // let viewer = this.viewer;
-      // let _plots = new CGV.CGArray( viewer._plots.filter( (p) => {
-      //   return p.legendItem.includes(this)
-      // }));
-      // return _plots.get(term);
       return this.viewer._plots.filter( p => p.legendItem.includes(this) ).get(term);
     }
 

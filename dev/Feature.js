@@ -418,7 +418,7 @@
 
     /**
      * Highlights the feature on every slot it is visible. An optional slot can be provided,
-     * in which case the feature will on ly be highlighted on the slot.
+     * in which case the feature will only be highlighted on the slot.
      * @param {Slot} slot - Only highlight the feature on this slot.
      */
     highlight(slot) {

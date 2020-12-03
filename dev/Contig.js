@@ -292,6 +292,28 @@
       return `>${this.id}\n${this.seq}`;
     }
 
+    highlight(color) {
+      const backbone = this.viewer.backbone;
+      const canvas = this.viewer.canvas;
+      const visibleRange = backbone.visibleRange;
+      let highlightColor;
+      if (color) {
+        highlightColor = new CGV.Color(color);
+      } else {
+        let origColor = (this.index % 2 === 0) ? backbone.color : backbone.colorAlternate;
+        if (this.color) {
+          origColor = this.color;
+        }
+        highlightColor = origColor.copy();
+        highlightColor.highlight();
+      }
+      if (this.visible) {
+        const start = this.sequence.bpForContig(this);
+        const stop = this.sequence.bpForContig(this, this.length);
+        this.viewer.canvas.drawElement('ui', start, stop, backbone.adjustedCenterOffset, highlightColor.rgbaString, backbone.adjustedThickness, backbone.directionalDecorationForContig(this));
+      }
+    }
+
     toJSON(options = {}) {
       const json = {
         id: this.id,
