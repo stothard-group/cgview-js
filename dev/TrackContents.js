@@ -73,7 +73,7 @@
     }
 
     set extract(value) {
-      this._extract = new CGV.CGArray(value);
+      this._extract = (value === undefined) ? new CGVArray() : new CGV.CGArray(value);
     }
 
 

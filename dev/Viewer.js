@@ -571,7 +571,12 @@ if (window.CGV === undefined) window.CGV = CGView;
     sources(term) {
       const featureSources = this._features.map( f => f.source );
       const plotSources = this._plots.map( p => p.source );
-      const allSources = featureSources.concat(plotSources);
+      const trackSources = this.tracks().
+        map(t => t.contents).
+        filter( c => c.from === 'source').
+        map( c => c.extract ).flat();
+
+      const allSources = featureSources.concat(plotSources).concat(trackSources);
       return new CGV.CGArray([...new Set(allSources)]).get(term);
     }
 

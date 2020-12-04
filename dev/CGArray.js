@@ -62,6 +62,22 @@
       return this.filter( i => i !== element );
     }
 
+    /**
+     * Return the first element of the CGArray or "undefined" if the array is empty
+     * @return {Element|or|undefined}
+     */
+    get first() {
+      return this[0];
+    }
+
+    /**
+     * Return the last element of the CGArray or "undefined" if the array is empty
+     * @return {Element|or|undefined}
+     */
+    get last() {
+      return this[this.length - 1];
+    }
+
     // FIXME: return an CGArray with a single element of 0 when it should be empty
     // FIXME: Using Polyfill for now
     // filter(selector) {
