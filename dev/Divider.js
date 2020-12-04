@@ -99,45 +99,45 @@
       return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
     }
 
-    /**
-     * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
-     */
-    set bbOffsets(value) {
-      if (value && value.toString() === 'CGArray') {
-        this._bbOffsets = value;
-      }
-    }
-
-    get bbOffsets() {
-      return this._bbOffsets;
-    }
-
-    /**
-     * The visible range
-     * @member {Range}
-     */
-    get visibleRange() {
-      return this._visibleRange;
-    }
-
-    clearBbOffsets() {
-      this.bbOffsets = new CGV.CGArray();
-    }
-
-    addBbOffset(bbOffset) {
-      this._bbOffsets.push(bbOffset);
-    }
-
-    draw() {
-      if (!this.visible || this.thickness === 0) { return; }
-      for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
-        const bbOffset = this._bbOffsets[i];
-        this._visibleRange = this.canvas.visibleRangeForCenterOffset(bbOffset, 100);
-        if (this.visibleRange) {
-          this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
-        }
-      }
-    }
+    // /**
+    //  * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
+    //  */
+    // set bbOffsets(value) {
+    //   if (value && value.toString() === 'CGArray') {
+    //     this._bbOffsets = value;
+    //   }
+    // }
+    //
+    // get bbOffsets() {
+    //   return this._bbOffsets;
+    // }
+    //
+    // /**
+    //  * The visible range
+    //  * @member {Range}
+    //  */
+    // get visibleRange() {
+    //   return this._visibleRange;
+    // }
+    //
+    // clearBbOffsets() {
+    //   this.bbOffsets = new CGV.CGArray();
+    // }
+    //
+    // addBbOffset(bbOffset) {
+    //   this._bbOffsets.push(bbOffset);
+    // }
+    //
+    // draw() {
+    //   if (!this.visible || this.thickness === 0) { return; }
+    //   for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
+    //     const bbOffset = this._bbOffsets[i];
+    //     this._visibleRange = this.canvas.visibleRangeForCenterOffset(bbOffset, 100);
+    //     if (this.visibleRange) {
+    //       this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
+    //     }
+    //   }
+    // }
 
     toJSON() {
       return {
