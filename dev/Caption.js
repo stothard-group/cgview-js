@@ -259,16 +259,18 @@
       });
     }
 
-    // highlight(color = '#FFB') {
-    //   if (!this.visible) { return; }
-    //   // let ctx = this.canvas.context('background');
-    //   // ctx.fillStyle = color;
-    //   // ctx.fillRect(this.originX, this.originY, this.width, this.height);
-    //   const ctx = this.canvas.context('ui');
-    //   ctx.lineWidth = 1;
-    //   ctx.strokeStyle = color;
-    //   ctx.strokeRect(this.originX, this.originY, this.width, this.height);
-    // }
+    highlight(color = this.fontColor) {
+      if (!this.visible) { return; }
+      // let ctx = this.canvas.context('background');
+      // ctx.fillStyle = color;
+      // ctx.fillRect(this.originX, this.originY, this.width, this.height);
+      const ctx = this.canvas.context('ui');
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = color.rgbaString;
+      const box = this.box;
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+    }
 
     textX() {
       const box = this.box;

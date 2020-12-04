@@ -336,7 +336,7 @@
       }
     }
 
-    highlight(color = '#FFB') {
+    highlight(color = this.fontColor) {
       if (!this.visible || !this.legend.visible) { return; }
       // let ctx = this.canvas.context('background');
       // ctx.fillStyle = color;
@@ -349,7 +349,7 @@
         x -= this.width;
       }
       ctx.lineWidth = 1;
-      ctx.strokeStyle = 'black';
+      ctx.strokeStyle = color.rgbaString;
       ctx.strokeRect(x, this.textY(), this.width, this.height);
     }
 
