@@ -374,10 +374,37 @@ Action                                       | Viewer Method                    
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
+[thickness](Backbone.html#thickness) | Number    | Thickness of backbone [Default: 5]
 [color](Backbone.html#color)       | String    | A string describing the main backbone color [Default: 'grey']. See {@link Color} for details.
 [colorAlternate](Backbone.html#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See {@link Color} for details.
+[decoration](Backbone.html#decoration) | String    | How the bakcbone should be drawn. Choices: 'arc', 'arrow' [Default: arc for single contig, arrow for muliple contigs]
 [visible](CGObject.html#visible)   | Boolean   | Backbone is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Backbone
+
+## Dividers
+
+There are two type of dividers: slot and track. They are accessed from the Viewer dividers object:
+- Viewer.dividers.track - controlls spacing/lines between tracks.
+- Viewer.dividers.slot - controls spacing/lines betweens slots within a track.
+
+If either track or slot has their mirror set to true, then both dividers will be treated as the same.
+In addition, if only settings for one of the dividers is provided on Viewer creation, then it will be mirrored.
+
+Action                                       | Viewer Method                                    | Divider Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Divider.html#update) | divider-update
+[Read](tutorial-api.html#reading-records)    | [dividers](Viewer.html#dividers)                 | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[color](Divider.html#color)        | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[thickness](Divider.html#thickness) | Number    | Thickness of divider [Default: 1]
+[spacing](Divider.html#spacing)    | Number    | Spacing between divider and track/slot content [Default: 1]
+[mirror](Divider.html#mirror)<sup>ic</sup>      | Boolean   | If true, the other dividers will use the same settings as this divider.
+[visible](CGObject.html#visible)   | Boolean   | Dividers are visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
+
+<sup>ic</sup> Ignored on Record creation
 
 ## Sequence
 

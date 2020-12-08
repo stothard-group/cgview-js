@@ -12,14 +12,17 @@
      * Create a divider
      *
      * @param {Viewer} viewer - The viewer that contains the divider
+     * @param {String} name - The name for the divider. One of track, slot, or mirrored.
      * @param {Object} options - Options and stuff
      */
-    constructor(viewer, options = {}, meta = {}) {
+    constructor(viewer, name, options = {}, meta = {}) {
       super(viewer, options, meta);
       this.color = CGV.defaultFor(options.color, 'grey');
       this._thickness = CGV.defaultFor(options.thickness, 1);
       this._spacing = CGV.defaultFor(options.spacing, 1);
+      this._name = name;
       this._bbOffsets = new CGV.CGArray();
+      this.viewer.trigger('divider-update', { divider: this, attributes: this.toJSON({includeDefaults: true}) });
     }
 
     /**
@@ -28,6 +31,10 @@
      */
     toString() {
       return 'Divider';
+    }
+
+    get name() {
+      return this._name;
     }
 
     get visible() {
@@ -98,6 +105,33 @@
     get adjustedSpacing() {
       return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
     }
+
+    get mirror() {
+      return this._mirror;
+    }
+
+    set mirror(value) {
+      this._mirror = value;
+      if (value === true) {
+        // Mirror other divider to this one
+        this.viewer.dividers.mirrorDivider(this);
+      } else {
+        // Turns off mirroring
+        this.viewer.dividers.mirrorDivider();
+      }
+    }
+
+    /**
+     * Update divider
+     */
+    update(attributes) {
+      const { records: dividers, updates } = this.viewer.updateRecords(this, attributes, {
+        recordClass: 'Divider',
+        validKeys: ['visible', 'color', 'thickness', 'spacing', 'mirror']
+      });
+      this.viewer.trigger('divider-update', { divider: this, attributes, updates });
+    }
+
 
     // /**
     //  * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
