@@ -244,7 +244,8 @@
         item = legend.findLegendItemOrCreate('ORF', 'green', 'arc');
         break;
       case 'gc-content':
-        item = legend.findLegendItemOrCreate('GC Content', 'black');
+        const color = this.viewer.settings.backgroundColor.copy().invert()
+        item = legend.findLegendItemOrCreate('GC Content', color);
         break;
       case 'gc-skew': {
         const color = (sign === '+') ? 'rgb(0,153,0)' : 'rgb(153,0,153)';
