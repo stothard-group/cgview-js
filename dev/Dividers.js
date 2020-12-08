@@ -117,7 +117,7 @@
       // if (!this.visible || this.thickness === 0) { return; }
       for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
         const bbOffset = this._bbOffsets[i];
-        if (!this[bbOffset.type].visible) { return } 
+        if (!this[bbOffset.type].visible) { continue; } 
         const centerOffset = backboneOffset + bbOffset.distance;
         const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, 100);
         if (visibleRange) {
