@@ -564,7 +564,7 @@
       if ((this.score !== undefined && this.score !== 1) || options.includeDefaults) {
         json.score = this.score;
       }
-      // Favoroite is normally false
+      // Favorite is normally false
       if (this.favorite || options.includeDefaults) {
         json.favorite = this.favorite;
       }

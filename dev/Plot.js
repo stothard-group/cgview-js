@@ -2,17 +2,22 @@
 // Plot
 //////////////////////////////////////////////////////////////////////////////
 (function(CGV) {
-  class Plot {
+  class Plot extends CGV.CGObject {
 
     /**
      * Draw a plot consisting of arcs
      */
     constructor(viewer, data = {}, meta = {}) {
+      super(viewer, data, meta);
       this.viewer = viewer;
+      this.name = data.name;
       this.positions = data.positions;
       this.scores = data.scores;
+      this.type = CGV.defaultFor(data.type, 'line');
       this.source = CGV.defaultFor(data.source, '');
-      this._baseline = CGV.defaultFor(data.baseline, 0.5);
+      this.axisMin = CGV.defaultFor(data.axisMin, this.scoreMin);
+      this.axisMax = CGV.defaultFor(data.axisMax, this.scoreMax);
+      this.baseline = CGV.defaultFor(data.baseline, 0);
 
       if (data.legend) {
         this.legendItem  = data.legend;
@@ -31,6 +36,37 @@
       } else if (!this.legendItemNegative) {
         this.legendItemNegative  = this.legendItemPositive;
       }
+    }
+
+    /**
+     * Return the class name as a string.
+     * @return {String} - 'Plot'
+     */
+    toString() {
+      return 'Plot';
+    }
+
+    /**
+     * @member {String} - Get or set the name.
+     */
+    get name() {
+      return this._name;
+    }
+
+    set name(value) {
+      this._name = value;
+    }
+
+    /**
+     * @member {type} - Get or set the *type*
+     */
+    get type() {
+      return this._type;
+    }
+
+    set type(value) {
+      if (!CGV.validate(value, ['line', 'bar'])) { return }
+      this._type = value;
     }
 
     /**
@@ -158,26 +194,29 @@
      * @member {LegendItem} - Alias for [legendItemPositive](plot.html#legendItemPositive).
      */
     get legendPositive() {
-      return this._legendItemPositive;
+      return this.legendItemPositive;
     }
 
     set legendPositive(value) {
-      this._legendItemPositive = value;
+      this.legendItemPositive = value;
     }
 
     /**
      * @member {LegendItem} - Alias for [legendItemNegative](plot.html#legendItemNegative).
      */
     get legendNegative() {
-      return this._legendItemNegative;
+      return this.legendItemNegative;
     }
 
     set legendNegative(value) {
-      this._legendItemNegative = value;
+      this.legendItemNegative = value;
     }
 
     /**
-     * @member {Number} - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
+     * @member {Number} - Get or set the plot baseline. This is a value between the axisMin and axisMax
+     * and indicates where where the baseline will be drawn. By default this is 0.
+     *
+     * DELETE OLD - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
      *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).
      */
     get baseline() {
@@ -186,13 +225,87 @@
 
     set baseline(value) {
       value = Number(value);
-      if (value > 1) {
-        this._baseline = 1;
-      } else if (value < 0) {
-        this._baseline = 0;
+      const minAxis = this.axisMin;
+      const maxAxis = this.axisMax;
+      if (value > maxAxis) {
+        this._baseline = maxAxis;
+      } else if (value < minAxis) {
+        this._baseline = minAxis;
       } else {
         this._baseline = value;
       }
+    }
+
+    /**
+     * @member {Number} - Get or set the plot minimum axis value. This is a value must be less than
+     * or equal to the minimum score.
+     */
+    get axisMin() {
+      return this._axisMin;
+    }
+
+    set axisMin(value) {
+      value = Number(value);
+      const minScore = this.scoreMin;
+      if (value > minScore) {
+        this._axisMin = minScore;
+      } else {
+        this._axisMin = value;
+      }
+    }
+
+    /**
+     * @member {Number} - Get or set the plot maximum axis value. This is a value must be greater than
+     * or equal to the maximum score.
+     */
+    get axisMax() {
+      return this._axisMax;
+    }
+
+    set axisMax(value) {
+      value = Number(value);
+      const maxScore = this.scoreMax;
+      if (value < maxScore) {
+        this._axisMax = maxScore;
+      } else {
+        this._axisMax = value;
+      }
+    }
+
+    get scoreMax() {
+      return d3.max(this.scores);
+    }
+
+    get scoreMin() {
+      return d3.min(this.scores);
+    }
+
+    get scoreMean() {
+      return d3.mean(this.scores);
+    }
+
+    get scoreMedian() {
+      return d3.median(this.scores);
+    }
+
+
+    /**
+     * Highlights the tracks the plot is on. An optional track can be provided,
+     * in which case the plot will only be highlighted on the track.
+     * @param {Track} track - Only highlight the feature on this track.
+     */
+    highlight(track) {
+      if (!this.visible) { return; }
+      this.canvas.clear('ui');
+      if (track && track.plot === this) {
+        track.highlight();
+      } else {
+        this.tracks().each( (i, t) => t.highlight());
+      }
+    }
+
+    update(attributes) {
+      this.viewer.updatePlots(this, attributes);
     }
 
     tracks(term) {
@@ -209,10 +322,7 @@
      * Remove the Plot from the viewer, tracks and slots
      */
     remove() {
-      this.viewer._plots = this.viewer._plots.remove(this);
-      this.tracks().each( (i, track) => {
-        track.removePlot();
-      });
+      this.viewer.removePlots(this);
     }
 
     scoreForPosition(bp) {
@@ -224,8 +334,10 @@
       }
     }
 
+
     draw(canvas, slotRadius, slotThickness, fast, range) {
       // let startTime = new Date().getTime();
+      if (!this.visible) { return; }
       if (this.colorNegative.rgbaString === this.colorPositive.rgbaString) {
         this._drawPath(canvas, slotRadius, slotThickness, fast, range, this.colorPositive);
       } else {
@@ -264,7 +376,9 @@
       ctx.beginPath();
 
       // Calculate baseline Radius
-      const baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+      // const baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * this.baseline);
+      const axisRange = this.axisMax - this.axisMin;
+      const baselineRadius = slotRadius - (slotThickness / 2) + (slotThickness * (this.baseline - this.axisMin)/axisRange);
 
       // Move to the first point
       const startPoint = canvas.pointForBp(startPosition, baselineRadius);
@@ -286,6 +400,7 @@
           step = CGV.base2(initialStep);
         }
       }
+
       this.positionsFromRange(startPosition, stopPosition, step, (i) => {
         // Handle Origin in middle of range
         if (i === 0 && startIndex !== 0) {
@@ -300,7 +415,10 @@
         currentPosition = positions[i];
         canvas.path('map', savedR, savedPosition, currentPosition, false, 'lineTo');
         if ( this._keepPoint(score, orientation) ) {
-          savedR = baselineRadius + ((score - this.baseline) * slotThickness);
+          // savedR = baselineRadius + ((score - this.baseline) * slotThickness);
+          savedR = baselineRadius + ((score - this.baseline)/axisRange * slotThickness);
+          // savedR = baselineRadius + ((((score - axisMin)/axisRange) - this.baseline) * slotThickness);
+          // return ((to.max - to.min) * (value - from.min) / (from.max - from.min)) + to.min;
         } else {
           savedR = baselineRadius;
         }
@@ -328,6 +446,12 @@
     }
 
 
+    // If the positive and negative legend are the same, the plot is drawn as a single path.
+    // If the positive and negative legend are different, two plots are drawn:
+    // - one above the baseline (positive)
+    // - one below the baseline (negative)
+    // This method checks if a point should be kept based on it's score and orientation.
+    // If no orientation is provided, a single path will be drawn and all the points are kept.
     _keepPoint(score, orientation) {
       if (orientation === undefined) {
         return true;
@@ -390,8 +514,42 @@
       }
     }
 
-  }
+    toJSON(options = {}) {
+      const json = {
+        name: this.name,
+        type: this.type,
+        baseline: this.baseline,
+        source: this.source,
+      };
+      if (this.legendPositive === this.legendNegative) {
+        json.legend = this.legendPositive.name;
+      } else {
+        json.legendPositive = this.legendPositive.name;
+        json.legendNegative = this.legendNegative.name;
+      }
+      if ( (this.axisMin !== this.scoreMin) || options.includeDefaults) {
+        json.axisMin = this.axisMin;
+      }
+      if ( (this.axisMax !== this.scoreMax) || options.includeDefaults) {
+        json.axisMax = this.axisMax;
+      }
+      if (options.includeData) {
+        //Need this for IO
+        //...positions, scores, meta, etc
+      }
+      // Optionally add default values
+      // Visible is normally true
+      if (!this.visible || options.includeDefaults) {
+        json.visible = this.visible;
+      }
+      // Favorite is normally false
+      if (this.favorite || options.includeDefaults) {
+        json.favorite = this.favorite;
+      }
+      return json;
+    }
 
+  }
 
   CGV.Plot = Plot;
 })(CGView);

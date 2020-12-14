@@ -162,11 +162,12 @@
         viewer.addFeatures(data.features);
       }
 
-      // Create features
+      // Create plots
       if (data.plots) {
-        data.plots.forEach((plotData) => {
-          new CGV.Plot(viewer, plotData);
-        });
+        viewer.addPlots(data.plots);
+        // data.plots.forEach((plotData) => {
+        //   new CGV.Plot(viewer, plotData);
+        // });
       }
 
       // Create tracks

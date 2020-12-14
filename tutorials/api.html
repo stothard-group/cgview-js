@@ -243,6 +243,34 @@ Attribute                      | Type     | Description
 
 <sup>rc</sup> Required on Feature creation
 
+## Plots
+
+Action                                       | Viewer Method                                  | Plot Method                  | Event
+---------------------------------------------|------------------------------------------------|---------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addPlots()](Viewer.html#addPlots)       | -                               | plots-add
+[Update](tutorial-api.html#updating-records) | [updatePlots()](Viewer.html#updatePlots) | [update()](Plot.html#update) | plots-update
+[Remove](tutorial-api.html#removing-records) | [removePlots()](Viewer.html#removePlots) | [remove()](Plot.html#remove) | plots-remove
+[Read](tutorial-api.html#reading-records)    | [plots()](Viewer.html#plots)             | -                               | -
+
+Attribute                      | Type     | Description
+--------------------------------|----------|------------
+[name](Plot.html#name)       | String   | Name of plot
+[legend](Plot.html#legend)   | String\|LegendItem | Name of legendItem or the legendItem itself (sets positive and negative legend)
+[legendNegative](Plot.html#legendNegative)   | String\|LegendItem | Name of legendItem or the legendItem itself for the plot above the baseline
+[legendPositive](Plot.html#legendPositive)   | String\|LegendItem | Name of legendItem or the legendItem itself for the plot below the baseline
+[collection](Plot.html#collection) | String   | Collection the plot belongs to
+[positions](Plot.html#positions)<sup>rc,iu</sup>   | Array   | Array of base pair position on contig
+[scores](Plot.html#scores)<sup>rc,iu</sup>     | Array   | Array of scores
+[baseline](Plot.html#baseline)     | Number   | Score where the plot goes from negative to positive (in terms of legend)
+[axisMax](Plot.html#axisMax)     | Number   | Maximum value for the plot axis
+[axisMin](Plot.html#axisMin)     | Number   | Minimum value for the plot axis
+[favorite](Plot.html#favorite) | Boolean  | Plot is a favorite [Default: false]
+[visible](CGObject.html#visible) | Boolean  | Plot is visible [Default: true]
+[meta](CGObject.html#meta)      | Object   | [Meta data](tutorial-meta.html) for Plot
+
+<sup>rc</sup> Required on Plot creation
+<sup>iu</sup> Ignored on Plot update
+
 ## Tracks
 ## Bookmarks
 
@@ -402,7 +430,7 @@ Attribute                          | Type      | Description
 [spacing](Divider.html#spacing)    | Number    | Spacing between divider and track/slot content [Default: 1]
 [mirror](Divider.html#mirror)<sup>ic</sup>      | Boolean   | If true, the other dividers will use the same settings as this divider.
 [visible](CGObject.html#visible)   | Boolean   | Dividers are visible [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Divider
 
 <sup>ic</sup> Ignored on Record creation
 

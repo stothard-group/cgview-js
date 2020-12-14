@@ -200,9 +200,11 @@
           const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
           data.legendPositive = this.getLegendItem(extractType, '+').name;
           data.legendNegative = this.getLegendItem(extractType, '-').name;
+          data.name = extractType;
 
-          const plot = new CGV.Plot(viewer, data);
-          track._plot = plot;
+          // const plot = new CGV.Plot(viewer, data);
+          const plots = viewer.addPlots(data);
+          track._plot = plots[0];
           track.updateSlots();
           track.triggerUpdate();
           console.log(`Plot '${extractType}' Worker Time: ${CGV.elapsedTime(startTime)}` );

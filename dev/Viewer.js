@@ -580,67 +580,6 @@ if (window.CGV === undefined) window.CGV = CGView;
       return new CGV.CGArray([...new Set(allSources)]).get(term);
     }
 
-    /**
-     * Adds features to the viewer. See
-     * // FIXME: for History, we will want to be able to handle passing an array of features
-     *           not just feature data. That way they don't have to be reinitialized and they keep the same cgvIDs.
-     */
-    addFeatures(featureData = []) {
-      featureData = CGV.CGArray.arrayerize(featureData);
-      const features = featureData.map( (data) => new CGV.Feature(this, data));
-      this.annotation.refresh();
-      // this.tracks().each( (i,t) => t.refresh() );
-      this.trigger('features-add', features);
-      return features;
-      // FIXME: need to update tracks??
-    }
-
-    removeFeatures(features) {
-      features = CGV.CGArray.arrayerize(features);
-      this._features = this._features.filter( f => !features.includes(f) );
-      // Update Annotationa and Tracks
-      const labels = features.map( f => f.label );
-      this.annotation.removeLabels(labels);
-      this.tracks().each( (i, track) => {
-        track.removeFeatures(features);
-      });
-      this.annotation.refresh();
-      // Update Contigs
-      CGV.Contig.removeFeatures(features);
-      // Remove from Objects
-      features.forEach( f => f.deleteFromObjects() );
-
-      this.trigger('features-remove', features);
-    }
-
-    /**
-     * Update feature properties to the viewer.
-     */
-    updateFeatures(featuresOrUpdates, attributes) {
-      const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
-        recordClass: 'Feature',
-        validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
-      });
-      // Refresh tracks if any attribute is source
-      let sourceChanged;
-      if (featuresOrUpdates.toString() === '[object Object]') {
-        const values = Object.values(featuresOrUpdates);
-        for (let value of values) {
-          if (Object.keys(value).includes('source')) {
-            sourceChanged = true;
-          }
-        }
-      } else {
-        sourceChanged = attributes && Object.keys(attributes).includes('source');
-      }
-      if (sourceChanged) {
-        for (let track of cgv.tracks()) {
-          track.refresh();
-        }
-      }
-      this.trigger('features-update', { features, attributes, updates });
-    }
-
     updateRecordsWithAttributes(records, attributes, options = {}) {
       const validKeys = options.validKeys;
       const recordClass = options.recordClass;
@@ -734,6 +673,122 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * Adds features to the viewer. See
+     * // FIXME: for History, we will want to be able to handle passing an array of features
+     *           not just feature data. That way they don't have to be reinitialized and they keep the same cgvIDs.
+     */
+    addFeatures(featureData = []) {
+      featureData = CGV.CGArray.arrayerize(featureData);
+      const features = featureData.map( (data) => new CGV.Feature(this, data));
+      this.annotation.refresh();
+      // FIXME: need to update tracks??
+      // This causes sequence-based (e.g. orfs) to reload too
+      // this.tracks().each( (i,t) => t.refresh() );
+      this.trigger('features-add', features);
+      return features;
+    }
+
+    removeFeatures(features) {
+      features = CGV.CGArray.arrayerize(features);
+      this._features = this._features.filter( f => !features.includes(f) );
+      // Update Annotationa and Tracks
+      const labels = features.map( f => f.label );
+      this.annotation.removeLabels(labels);
+      this.tracks().each( (i, track) => {
+        track.removeFeatures(features);
+      });
+      this.annotation.refresh();
+      // Update Contigs
+      CGV.Contig.removeFeatures(features);
+      // Remove from Objects
+      features.forEach( f => f.deleteFromObjects() );
+
+      this.trigger('features-remove', features);
+    }
+
+    /**
+     * Update feature properties to the viewer.
+     */
+    updateFeatures(featuresOrUpdates, attributes) {
+      const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
+        recordClass: 'Feature',
+        validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+      });
+      // Refresh tracks if any attribute is source
+      let sourceChanged;
+      if (featuresOrUpdates.toString() === '[object Object]') {
+        const values = Object.values(featuresOrUpdates);
+        for (let value of values) {
+          if (Object.keys(value).includes('source')) {
+            sourceChanged = true;
+          }
+        }
+      } else {
+        sourceChanged = attributes && Object.keys(attributes).includes('source');
+      }
+      if (sourceChanged) {
+        for (let track of cgv.tracks()) {
+          track.refresh();
+        }
+      }
+      this.trigger('features-update', { features, attributes, updates });
+    }
+
+    /**
+     * Adds plots to the viewer.
+     */
+    addPlots(plotData = []) {
+      plotData = CGV.CGArray.arrayerize(plotData);
+      const plots = plotData.map( (data) => new CGV.Plot(this, data));
+      this.annotation.refresh();
+      this.trigger('plots-add', plots);
+      return plots;
+    }
+
+    removePlots(plots) {
+      plots = CGV.CGArray.arrayerize(plots);
+      this._plots = this._plots.filter( p => !plots.includes(p) );
+      plots.each( (i, plot) => {
+        plot.tracks().each( (j, track) => {
+          track.removePlot();
+        });
+      });
+      // Remove from Objects
+      plots.forEach( f => f.deleteFromObjects() );
+
+      this.trigger('plots-remove', plots);
+    }
+
+    /**
+     * Update plot properties to the viewer.
+     */
+    updatePlots(plotsOrUpdates, attributes) {
+      const { records: plots, updates } = this.updateRecords(plotsOrUpdates, attributes, {
+        recordClass: 'Plot',
+        validKeys: ['name', 'type','legend', 'legendPositive', 'legendNegative', 'source',
+          'favorite', 'visible', 'baseline', 'axisMin', 'axisMax']
+      });
+      // Refresh tracks if any attribute is source
+      // let sourceChanged;
+      // if (plotsOrUpdates.toString() === '[object Object]') {
+      //   const values = Object.values(plotsOrUpdates);
+      //   for (let value of values) {
+      //     if (Object.keys(value).includes('source')) {
+      //       sourceChanged = true;
+      //     }
+      //   }
+      // } else {
+      //   sourceChanged = attributes && Object.keys(attributes).includes('source');
+      // }
+      // if (sourceChanged) {
+      //   for (let track of cgv.tracks()) {
+      //     track.refresh();
+      //   }
+      // }
+      this.trigger('plots-update', { plots, attributes, updates });
+    }
+
+    /**
      * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
      * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
      * @return {CGArray}
@@ -776,12 +831,6 @@ if (window.CGV === undefined) window.CGV = CGView;
         validKeys: ['name', 'bp', 'zoom', 'format', 'favorite', 'shortcut', 'bbOffset']
       });
       this.trigger('bookmarks-update', { bookmarks, attributes, updates });
-    }
-
-    removePlots(plots) {
-      for (let i = 0, len = plots.length; i < len; i++) {
-        plots[i].remove();
-      }
     }
 
     /**
