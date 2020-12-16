@@ -11,13 +11,15 @@
       super(viewer, data, meta);
       this.viewer = viewer;
       this.name = data.name;
-      this.positions = data.positions;
-      this.scores = data.scores;
+      this.positions = CGV.defaultFor(data.positions, []);
+      this.scores = CGV.defaultFor(data.scores, []);
       this.type = CGV.defaultFor(data.type, 'line');
       this.source = CGV.defaultFor(data.source, '');
-      this.axisMin = CGV.defaultFor(data.axisMin, this.scoreMin);
-      this.axisMax = CGV.defaultFor(data.axisMax, this.scoreMax);
+      this.axisMin = CGV.defaultFor(data.axisMin, d3.min([0, this.scoreMin]));
+      this.axisMax = CGV.defaultFor(data.axisMax, d3.max([0, this.scoreMax]));
       this.baseline = CGV.defaultFor(data.baseline, 0);
+
+      this.extractedFromSequence = CGV.defaultFor(data.extractedFromSequence, false);
 
       if (data.legend) {
         this.legendItem  = data.legend;
@@ -246,12 +248,8 @@
 
     set axisMin(value) {
       value = Number(value);
-      const minScore = this.scoreMin;
-      if (value > minScore) {
-        this._axisMin = minScore;
-      } else {
-        this._axisMin = value;
-      }
+      const minValue = d3.min([this.scoreMin, this.baseline]);
+      this._axisMin = (value > minValue) ? minValue : value;
     }
 
     /**
@@ -264,12 +262,8 @@
 
     set axisMax(value) {
       value = Number(value);
-      const maxScore = this.scoreMax;
-      if (value < maxScore) {
-        this._axisMax = maxScore;
-      } else {
-        this._axisMax = value;
-      }
+      const maxValue = d3.max([this.scoreMax, this.baseline]);
+      this._axisMax = (value < maxValue) ? maxValue : value;
     }
 
     get scoreMax() {
@@ -286,6 +280,18 @@
 
     get scoreMedian() {
       return d3.median(this.scores);
+    }
+
+    /**
+     * @member {Boolean} - Get or set the *extractedFromSequence*. This  plot is
+     * generated directly from the sequence and does not have to be saved when exported JSON.
+     */
+    get extractedFromSequence() {
+      return this._extractedFromSequence;
+    }
+
+    set extractedFromSequence(value) {
+      this._extractedFromSequence = value;
     }
 
 
@@ -514,6 +520,8 @@
       }
     }
 
+    // Options:
+    // - excludeData: if true, the scores and positions are not included
     toJSON(options = {}) {
       const json = {
         name: this.name,
@@ -533,9 +541,9 @@
       if ( (this.axisMax !== this.scoreMax) || options.includeDefaults) {
         json.axisMax = this.axisMax;
       }
-      if (options.includeData) {
-        //Need this for IO
-        //...positions, scores, meta, etc
+      if (!options.excludeData) {
+        json.positions = this.positions;
+        json.scores = this.scores;
       }
       // Optionally add default values
       // Visible is normally true

@@ -201,6 +201,7 @@
           data.legendPositive = this.getLegendItem(extractType, '+').name;
           data.legendNegative = this.getLegendItem(extractType, '-').name;
           data.name = extractType;
+          data.extractedFromSequence = true;
 
           // const plot = new CGV.Plot(viewer, data);
           const plots = viewer.addPlots(data);

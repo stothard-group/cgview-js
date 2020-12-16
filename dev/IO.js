@@ -77,6 +77,13 @@
           json.cgview.features.push(feature.toJSON(options));
         }
       });
+      v.plots().each( (i, plot) => {
+        // Only export plots that were not extracted from the sequence.
+        if (!plot.extractedFromSequence ||
+            plot.tracks().filter( t => t.contents.from !== 'sequence' ).length > 0) {
+          json.cgview.plots.push(plot.toJSON(options));
+        }
+      });
       v.bookmarks().each( (i, bookmark) => {
         json.cgview.bookmarks.push(bookmark.toJSON(options));
       });
