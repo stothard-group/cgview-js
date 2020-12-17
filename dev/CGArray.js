@@ -20,7 +20,8 @@
       if (elements.length === 1) {
         super();
         this.push(elements[0]);
-      } else if (elements.length > 50000) {
+      } else if (elements.length > 40000) {
+        // Note: 50,000 was too large, so we're trying 40,000
         super();
         for (let i = 0, len = elements.length; i < len; i++) {
           this.push(elements[i]);
