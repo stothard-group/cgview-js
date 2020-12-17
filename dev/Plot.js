@@ -447,6 +447,7 @@
       // ctx.strokeStyle = 'black';
       // TODO: draw stroked line for sparse data
       // ctx.lineWidth = 0.05;
+      // ctx.lineWidth = 1;
       // ctx.strokeStyle = color.rgbaString;
       // ctx.stroke();
     }
