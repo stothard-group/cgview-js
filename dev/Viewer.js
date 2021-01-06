@@ -1072,10 +1072,11 @@ if (window.CGV === undefined) window.CGV = CGView;
 
       this.ruler.invertColors();
 
-      this.dividers.slot.color.invert();
-      if (!this.dividers.slotMirrorsTrack) {
-        this.dividers.track.color.invert();
-      }
+      this.dividers.invertColors();
+      // this.dividers.slot.color.invert();
+      // if (!this.dividers.slotMirrorsTrack) {
+      //   this.dividers.track.color.invert();
+      // }
       this.backbone.invertColors();
       this.sequence.color.invert();
       this.annotation.invertColors();

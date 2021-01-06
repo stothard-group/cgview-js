@@ -111,6 +111,15 @@
       }
     }
 
+    invertColors() {
+      if (this.track.mirror) {
+        this.track.color.invert();
+      } else {
+        this.track.color.invert();
+        this.slot.color.invert();
+      }
+    }
+
     draw() {
       const canvas = this.viewer.canvas;
       const backboneOffset = this.viewer.backbone.adjustedCenterOffset;
