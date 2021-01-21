@@ -107,7 +107,7 @@
     }
 
     get mirror() {
-      return this._mirror;
+      return this.viewer.dividers.dividersMirrored;
     }
 
     set mirror(value) {
