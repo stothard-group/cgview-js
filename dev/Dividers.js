@@ -113,10 +113,10 @@
 
     invertColors() {
       if (this.track.mirror) {
-        this.track.color.invert();
+        this.track.update({ color: this.track.color.invert().rgbaString });
       } else {
-        this.track.color.invert();
-        this.slot.color.invert();
+        this.track.update({ color: this.track.color.invert().rgbaString });
+        this.slot.update({ color: this.slot.color.invert().rgbaString });
       }
     }
 

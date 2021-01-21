@@ -808,6 +808,12 @@
       }
     }
 
+    invertColors() {
+      this.update({
+        color: this.color.invert().rgbaString
+      });
+    }
+
     update(attributes) {
       this.viewer.updateRecords(this, attributes, {
         recordClass: 'Sequence',
