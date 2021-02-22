@@ -447,6 +447,10 @@ if (window.CGV === undefined) window.CGV = CGView;
     addTracks(trackData = []) {
       trackData = CGV.CGArray.arrayerize(trackData);
       const tracks = trackData.map( (data) => new CGV.Track(this, data));
+
+      // Recenter the map tracks
+      this.recenterTracks();
+
       this.trigger('tracks-add', tracks);
       return tracks;
     }
@@ -1060,6 +1064,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     reset(duration = 1000, ease) {
       this.zoomTo(0, 1, {duration, ease});
+    }
+
+    /*
+     * Recenter the map tracks at the current bp position
+     */
+    recenterTracks(duration = 0) {
+      this.moveTo(this.bp, undefined, {duration});
     }
 
     // FIXME: Each object must use update API

@@ -606,3 +606,21 @@
     border-width: 11px;
 }
 
+.meta-data-container {
+  border-top: 1px solid white;
+}
+
+.meta-data:not(:last-child) {
+  border-bottom: 1px solid grey;
+}
+
+.meta-data-key {
+  font-weight: bold;
+  font-size: smaller;
+}
+
+.meta-data-value {
+  font-size: smaller;
+  font-style: italic;
+}
+

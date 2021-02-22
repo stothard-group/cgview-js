@@ -396,7 +396,8 @@
 
         // When zoomed in, if the feature starts in the visible range and wraps around to end
         // in the visible range, the feature should be drawn as 2 arcs.
-        const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overlapsMapRange();
+        // const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overlapsMapRange();
+        const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.isWrapped();
         //  When the feature wraps the origin on a linear map and both the start and stop
         //  can be seen, draw as 2 elements.
         const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');
@@ -567,6 +568,10 @@
       // Favorite is normally false
       if (this.favorite || options.includeDefaults) {
         json.favorite = this.favorite;
+      }
+      // Meta Data (TODO: add an option to exclude this)
+      if (Object.keys(this.meta).length > 0) {
+        json.meta = this.meta;
       }
       return json;
     }

@@ -19,12 +19,14 @@
      *  -----------|----------------------|--------------------------
      *  feature    | HighlighterElement   | Describes the highlightling options for features.
      *  plot       | HighlighterElement   | Describes the highlightling options for plots.
+     *  showMetaData | true                | Should meta data be shown in popovers
      *
      * @return {Highlighter}
      */
     constructor(viewer, options = {}, meta = {}) {
       super(viewer, options, meta);
       this._viewer = viewer;
+      this.showMetaData = CGV.defaultFor(options.showMetaData, true);
       this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
       this.feature = new CGV.HighlighterElement('feature', options.feature);
       this.plot = new CGV.HighlighterElement('plot', options.plot);
@@ -91,7 +93,19 @@
 
     featurePopoverContentsDefault(e) {
       const feature = e.element;
-      return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
+      // return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
+      const keys = Object.keys(feature.meta);
+      let metaDivs = '';
+      if (this.showMetaData && keys.length > 0) {
+        metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${feature.meta[k]}</span></div>`).join('');
+        metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
+      }
+      return (`
+        <div style='margin: 0 5px; font-size: 14px'>
+          <div>${feature.type}: ${feature.name}<div>
+          ${metaDivs}
+        </div>
+      `);
     }
 
     plotPopoverContentsDefault(e) {
