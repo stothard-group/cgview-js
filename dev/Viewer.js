@@ -448,8 +448,10 @@ if (window.CGV === undefined) window.CGV = CGView;
       trackData = CGV.CGArray.arrayerize(trackData);
       const tracks = trackData.map( (data) => new CGV.Track(this, data));
 
-      // Recenter the map tracks
-      this.recenterTracks();
+      // Recenter the map tracks if zoomed in if zoomed in
+      if (!(this.backbone.visibleRange && this.backbone.visibleRange.overHalfMapLength())) {
+        this.recenterTracks();
+      }
 
       this.trigger('tracks-add', tracks);
       return tracks;
