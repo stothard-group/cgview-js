@@ -95,7 +95,7 @@
       const slot = this.viewer.layout.slotForCenterOffset(centerOffset);
       const bp = this.canvas.bpForPoint({x: canvasX, y: canvasY});
 
-      const {elementType, element} = this._getElement(slot, bp, centerOffset);
+      const {elementType, element} = this._getElement(slot, bp, centerOffset, canvasX, canvasY);
 
       let score;
       if (elementType === 'plot') {
@@ -128,11 +128,36 @@
      *
      * @returns {Object} Obejct with properties: element and elementType
      */
-    _getElement(slot, bp, centerOffset) {
+    _getElement(slot, bp, centerOffset, canvasX, canvasY) {
       let elementType, element;
-      if (slot) {
 
-        // If mulitple features are returned, let's go with the smallest one
+      // Check Legend
+      const legend = this.viewer.legend;
+      if (legend.box.containsPt(canvasX, canvasY)) {
+        for (let i = 0, len = legend.items().length; i < len; i++) {
+          const item = legend.items()[i];
+          if (item._textContainsPoint({x: canvasX, y: canvasY})) {
+            elementType = 'legendItem';
+            element = item;
+          }
+        }
+      }
+
+      // Check Captions
+      if (!elementType) {
+        const captions = this.viewer.captions();
+        for (let i = 0, len = captions.length; i < len; i++) {
+          const caption = captions[i];
+          if (caption.box.containsPt(canvasX, canvasY)) {
+            elementType = 'caption';
+            element = caption;
+          }
+        }
+      }
+
+      // Check for feature or plot
+      if (!elementType && slot) {
+        // If mulitple features are returned, go with the smallest one
         const features = slot.findFeaturesForBp(bp);
         let feature = features[0];
         for (let i = 0, len = features.length; i < len; i++) {
@@ -141,7 +166,6 @@
             feature = currentFeature;
           }
         }
-
         if (feature) {
           elementType = 'feature';
           element = feature;
@@ -149,7 +173,10 @@
           elementType = 'plot';
           element = slot._plot;
         }
-      } else if (this.viewer.backbone.containsCenterOffset(centerOffset)) {
+      }
+
+      // Check for Backbone or Contig
+      if (!elementType && this.viewer.backbone.containsCenterOffset(centerOffset)) {
         const backbone = this.viewer.backbone;
         const sequence = this.viewer.sequence;
         if (sequence.hasMultipleContigs) {
@@ -160,7 +187,8 @@
           element = backbone;
         }
       }
-      return {elementType: elementType, element: element};
+
+      return {elementType, element};
     }
 
     _legendSwatchClick() {
