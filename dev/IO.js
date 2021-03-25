@@ -182,6 +182,7 @@
         viewer.addTracks(data.tracks);
       }
       viewer._loading = false;
+      viewer.update({dataHasChanged: false});
 
       // Load Layout
       // viewer._layout = new CGV.Layout(viewer, data.layout);

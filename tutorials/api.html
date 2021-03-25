@@ -33,6 +33,8 @@ All the examples use a Viewer instance: <em>cgv</em>.
 - [Updating Records](#updating-records) ([Advantages of Update API](#advantages-of-update-api))
 - [Reordering Records](#reordering-records)
 - [Reading Records](#reading-records)
+- [Triggering Events](#triggering-events)
+- [Dirty Data](#dirty-data)
 
 
 ### API Details by Record Type
@@ -200,6 +202,23 @@ feature.update();
 // Same as
 cgv.trigger('features-update');
 ```
+
+## Dirty Data
+
+If the API is used to change data, the viewer property [Viewer.dataHasChanged](Viewer.html#dataHasChanged) will be set to true.
+This value is set to false automatically only when new data is read in via [IO.loadJSON()](IO.html#loadJSON).
+Otherwise it can be manually set to false.
+This could be used by a site to see if the data has changed and thus should be saved.
+Once saved, the site would manually set this property to false.
+```js
+// New CGView object
+cgv.dataHasChanged
+// => false
+cgv.addFeatures({...})
+cgv.dataHasChanged
+// => true
+```
+
 
 # API Details by Record Type
 

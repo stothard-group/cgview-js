@@ -325,6 +325,21 @@ if (window.CGV === undefined) window.CGV = CGView;
       return this._loading;
     }
 
+    /**
+     * @member {Boolean} - Get or set the dataHasChanged property. This will be
+     * set to false, anytime the data API (add, update, remove, reorder) is
+     * used. It is reset to false automatically when a new JSON is loaded via
+     * [IO.loadJSON()](IO.html#loadJSON).
+     */
+    get dataHasChanged() {
+      return this._dataHasChanged;
+    }
+
+    set dataHasChanged(value) {
+      console.log('DATA', value)
+      this._dataHasChanged = value;
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // METHODS
@@ -416,13 +431,18 @@ if (window.CGV === undefined) window.CGV = CGView;
     update(attributes) {
       // Validate attribute keys
       let keys = Object.keys(attributes);
-      const validKeys = ['name', 'id', 'width', 'height'];
+      const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
       if (!CGV.validate(keys, validKeys)) { return; }
 
       // Special Case for Resizing - we don't want to update width and height separately
       if (keys.includes('width') && keys.includes('height')) {
         this.resize(attributes.width, attributes.height);
         keys = keys.filter( i => i !== 'width' && i !== 'height' );
+      }
+
+      // Trigger ignores 'viewer-update' for dataHasChanged. So we add it here if needed.
+      if (keys.length > 0 && !keys.includes('dataHasChanged')) {
+        attributes.dataHasChanged = true;
       }
 
       for (let i = 0; i < keys.length; i++) {
@@ -452,6 +472,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (!(this.backbone.visibleRange && this.backbone.visibleRange.overHalfMapLength())) {
         this.recenterTracks();
       }
+
+      this.dirty = true;
 
       this.trigger('tracks-add', tracks);
       return tracks;
@@ -1100,6 +1122,12 @@ if (window.CGV === undefined) window.CGV = CGView;
 
     trigger(event, object) {
       this.events.trigger(event, object);
+      // Almost all events will results in data changing with the following exceptions
+      const eventsToIgnoreForDataChange = ['viewer-update', 'cgv-json-load', 'drag', 'zoom-start', 'zoom', 'zoom-end'];
+      if (!this.loading && !eventsToIgnoreForDataChange.includes(event)) {
+        // console.log(event, object)
+        this.update({dataHasChanged: true});
+      }
     }
 
   }
