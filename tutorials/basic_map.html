@@ -178,9 +178,46 @@ cgv.addTracks({
 });
 ```
 
+NEW Track API:
+
+```js
+// The addTracks() method can accept an array of objects or a single object of data
+// that will be used to initialize new Tracks.
+cgv.addTracks({
+  // Name for the track.
+  name: 'My Feature Track',
+  // Draw the features separated into 1 or more slots.
+  // Options:
+  //   - 'none': 1 slot for all features.
+  //   - 'strand': 2 slots (one for each strand).
+  //   - 'readingFrame: 6 slots (one for each reading frame).
+  // Would a better name be 'separateFeaturesBy'?
+  separatedBy: 'strand',
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
+  position: 'both',
+  // The data* properties describe what features or plot will be in the track.
+  // Type of track. Options: 'feature', 'plot'
+  // The type is set automatically when extracting from the sequence.
+  dataType: 'feature',
+  // Methods used to extract the features/plot. Options:
+  //  - 'source'   : the source property of the features/plots will be used for selection
+  //  - 'sequence' : the features/plot will be generated from the sequence
+  dataMethod: 'source',
+  // Key values used to extract the features/plot.
+  // For 'source', the dataKeys can be a single value or an array of values.
+  // For 'sequence', the dataKeys can be one of the following:
+  //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
+  // e.g. In this example all features with a source of 'genome-features' will be used
+  // Would a better name be 'dataValues'? And dataMethod could be 'dataKey'?
+  dataKeys: 'genome-features'
+});
+```
+
 ## Create a [Track](Track.html) for the plot. ##
 
 ```js
+// Add Plot Track
 cgv.addTracks({
   // Name for the track.
   name: 'My Plot Track',

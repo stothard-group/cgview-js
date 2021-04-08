@@ -46,7 +46,7 @@
 
     /**
      * Return the class name as a string.
-     * @return {String} - 'Divider'
+     * @return {String} - 'Dividers'
      */
     toString() {
       return 'Dividers';

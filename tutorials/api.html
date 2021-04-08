@@ -38,13 +38,13 @@ All the examples use a Viewer instance: <em>cgv</em>.
 
 
 ### API Details by Record Type
-[]()                            | []()                       | []()
---------------------------------|----------------------------|-----------------------
-[Features](#features)           | [Bookmarks](#bookmarks)    | [Tracks](#tracks)
-[Settings](#settings-general-)  | [Sequence](#sequence)      | [Plots](#plots)
-[Captions](#captions)           | [Legend](#legend)          | [Viewer](#viewer)
-[Legend Items](#legend-items)   | [Annotation](#annotation)  | [Contigs](#contigs)
-[Ruler](#ruler)                 | [Backbone](#backbone)      | [Dividers](#dividers)
+[]()                            | []()                          | []()
+--------------------------------|-------------------------------|-----------------------
+[Viewer](#viewer)               | [Legend](#legend)             | [Backbone](#backbone)
+[Features](#features)           | [Legend Items](#legend-items) | [Sequence](#sequence)
+[Plots](#plots)                 | [Captions](#captions)         | [Contigs](#contigs)
+[Tracks](#tracks)               | [Annotation](#annotation)     | [Ruler](#ruler)
+[Settings](#settings-general-)  | [Bookmarks](#bookmarks)       | [Dividers](#dividers)
 
 
 # API Actions
@@ -103,7 +103,7 @@ cgv.removeFeatures(features);
 
 ## Updating Records
 Updating records is done through methods on the Viewer Instance (e.g. updateFeatures)
-or directly on the record. Updaing records will trigger a single event (e.g. features-update).
+or directly on the record. Updating records will trigger a single event (e.g. features-update).
 The list of attributes that can be updated for a record are the same as for adding new records.
 ```js
 // attributes is an object describing the properties to change
@@ -222,19 +222,23 @@ cgv.dataHasChanged
 
 # API Details by Record Type
 
-## Settings (General)
 
-Action                                       | Viewer Method                                    | Settings Method                  | Event
----------------------------------------------|--------------------------------------------------|----------------------------------|-----
-[Update](tutorial-api.html#updating-records) | -                                                | [update()](Settings.html#update) | settings-update
+## [Viewer](Viewer.html)
+
+Action                                       | Viewer Method                                    | Event
+---------------------------------------------|--------------------------------------------------|-----
+[Update](tutorial-api.html#updating-records) | [update()](Viewer.html#update)                   | viewer-update
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
-[backgroundColor](Settings.html#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
-[showShading](Settings.html#showShading) | Boolean   | Should a shading effect be drawn on the features [Default: true]
-[arrowHeadLength](Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
+[name](Viewer.html#name)           | String    | Name for the map
+[id](Viewer.html#id)               | String    | ID for the map [Default: random 20 character HexString]
+[width](Viewer.html#width)         | Number    | Width of map in pixels
+[height](Viewer.html#height)       | Number    | Height of map in pixels
+[dataHasChanged](Viewer.html#dataHasChanged) | Boolean    | Has data been update/added to map?
 
-## Features
+
+## [Features](Feature.html)
 
 Action                                       | Viewer Method                                  | Feature Method                  | Event
 ---------------------------------------------|------------------------------------------------|---------------------------------|-----
@@ -262,7 +266,8 @@ Attribute                      | Type     | Description
 
 <sup>rc</sup> Required on Feature creation
 
-## Plots
+
+## [Plots](Plot.html)
 
 Action                                       | Viewer Method                                  | Plot Method                  | Event
 ---------------------------------------------|------------------------------------------------|---------------------------------|-----
@@ -290,30 +295,93 @@ Attribute                      | Type     | Description
 <sup>rc</sup> Required on Plot creation
 <sup>iu</sup> Ignored on Plot update
 
-## Tracks
-## Bookmarks
 
-Action                                       | Viewer Method                                    | Bookmark Method                  | Event
+## [Tracks](Track.html)
+
+Action                                       | Viewer Method                                    | track Method                  | Event
 ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
-[Add](tutorial-api.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                                | bookmarks-add
-[Update](tutorial-api.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](Bookmark.html#update) | bookmarks-update
-[Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
-[Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
+[Add](tutorial-api.html#adding-tracks)      | [addTracks()](Viewer.html#addTracks)       | -                                | tracks-add
+[Update](tutorial-api.html#updating-tracks) | [updateTracks()](Viewer.html#updateTracks) | [update()](Track.html#update) | tracks-update
+[Remove](tutorial-api.html#removing-tracks) | [removeTracks()](Viewer.html#removeTracks) | [remove()](Track.html#remove) | tracks-remove
+[Reorder](tutorial-api.html#reordering-tracks) | [moveTrack()](Viewer.html#moveTrack) | [move()](Track.html#move) | tracks-reorder
+[Read](tutorial-api.html#reading-tracks)    | [tracks()](Viewer.html#tracks)             | -                                | -
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
-[name](Bookmark.html#name)         | String    | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
-[bp](Bookmark.html#bp)             | Number    | Base pair to center the map position [Default: Current bp]
-[zoom](Bookmark.html#zoom)         | Number    | Zoom factor [Default: Current zoomFactor]
-[format](Bookmark.html#format)     | String    | Map format [Default: Current map format]
-[bbOffset](Bookmark.html#bbOffset) | Number    | Distance from the backbone to the center of the canvas [Default: 0]
-[shortcut](Bookmark.html#shortcut) | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
-[favorite](Bookmark.html#favorite) | Boolean   | Bookmark is a favorite [Default: false]
-[visible](CGObject.html#visible)   | Boolean   | Bookmark is visible [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
+[name](Track.html#name)            | String    | Name of track [Default: "Unknown"]
+[dataType](Track.html#dataType) | String    | Type of data shown by the track: plot, feature [Default: feature]
+[dataMethod](Track.html#dataMethod) | String    | Methods used to extract/connect to features or a plot: sequence, source, type [Default: source]
+[dataKeys](Track.html#dataKeys) | String    | Values used by dataMethod to extract features or a plot.
+[position](Track.html#position)    | String    | Position relative to backbone: inside, outside, or both [Default: both]
+[separatedBy](Track.html#separatedBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
+[thicknessRatio](Track.html#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
+[loadProgress](Track.html#loadProgress) | Number    | Number between 0 and 100 indicating progress of track loading. Used interanlly by workers.
+[favorite](Track.html#favorite)    | Boolean   | Track is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | Track is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Track
 
 
-## Captions
+## [Settings (General)](Settings.html)
+
+Action                                       | Viewer Method                                    | Settings Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Settings.html#update) | settings-update
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[backgroundColor](Settings.html#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
+[showShading](Settings.html#showShading) | Boolean   | Should a shading effect be drawn on the features [Default: true]
+[arrowHeadLength](Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
+
+
+## [Legend](Legend.html)
+
+Action                                          | Viewer Method                                    | Legend Method                  | Event
+------------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Update](tutorial-api.html#updating-records)    | -                                                | [update()](Legend.html#update)   | legends-update
+[Read](tutorial-api.html#reading-records)       | [legend](Viewer.html#legend)                     | -                                | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[position](Legend.html#position)  | String\|Object   | Where to draw the legend [Default: 'top-right']. See {@link Position} for details.
+[anchor](Legend.html#anchor)      | String\|Object   | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
+[defaultFont](Legend.html#defaultFont)          | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+[defaultFontColor](Legend.html#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
+[textAlignment](Legend.html#textAlignment) | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
+[backgroundColor](Legend.html#font) | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
+[on](Legend.html#on)<sup>ic</sup>   | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
+[visible](CGObject.html#visible)   | Boolean   | Legend is visible [Default: true]
+[items](Legend.html#items)<sup>iu</sup> | Array     | Array of legend item data.
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Legend
+
+<sup>ic</sup> Ignored on Legend creation
+<sup>iu</sup> Ignored on Legend update
+
+
+## [Legend Items](LegendItem.html)
+
+Action                                          | Viewer Method                                  | LegendItem Method                  | Event
+------------------------------------------------|------------------------------------------------|------------------------------------|-----
+[Add](tutorial-api.html#adding-records)         | [addItems()](Legend.html#addItems)             | -                                  | legendItems-add
+[Update](tutorial-api.html#updating-records)    | [updateItems()](Legend.html#updateItems)       | [update()](LegendItem.html#update) | legendItems-update
+[Remove](tutorial-api.html#removing-records)    | [removeLegendItems()](Legend.html#removeItems) | [remove()](LegendItem.html#remove) | legendItems-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveLegendItem()](Legend.html#moveItem)       | [move()](LegendItem.html#move)     | legendItems-reorder
+[Read](tutorial-api.html#reading-records)       | [legendItems()](Legend.html#items)             | -                                  | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](LegendItem.html#name)         | String    | Name to diplay for legendItem 
+[font](LegendItem.html#font)           | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+[fontColor](LegendItem.html#fontColor) | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
+[decoration](LegendItem.html#decoration) | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
+[swatchColor](LegendItem.html#swatchColor) | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
+[drawSwatch](LegendItem.html#drawSwatch) | Boolean   | Draw the swatch beside the legendItem name [Default: true]
+[favorite](LegendItem.html#favorite) | Boolean   | LegendItem is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | LegendItem is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for LegendItem
+
+
+## [Captions](Caption.html)
 
 Action                                       | Viewer Method                                    | Caption Method                  | Event
 ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
@@ -338,52 +406,8 @@ Attribute                          | Type      | Description
 
 <sup>ic</sup> Ignored on Caption creation
 
-## Legend
 
-Action                                          | Viewer Method                                    | Legend Method                  | Event
-------------------------------------------------|--------------------------------------------------|----------------------------------|-----
-[Update](tutorial-api.html#updating-records)    | -                                                | [update()](Legend.html#update)   | legends-update
-[Read](tutorial-api.html#reading-records)       | [legend](Viewer.html#legend)                     | -                                | -
-
-Attribute                          | Type      | Description
------------------------------------|-----------|------------
-[position](Legend.html#position)  | String\|Object   | Where to draw the legend [Default: 'top-right']. See {@link Position} for details.
-[anchor](Legend.html#anchor)      | String\|Object   | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
-[defaultFont](Legend.html#defaultFont)          | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
-[defaultFontColor](Legend.html#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
-[textAlignment](Legend.html#textAlignment) | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
-[backgroundColor](Legend.html#font) | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
-[on](Legend.html#on)<sup>ic</sup>   | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
-[visible](CGObject.html#visible)   | Boolean   | Legend is visible [Default: true]
-[items](Legend.html#items)<sup>iu</sup> | Array     | Array of legend item data.
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Legend
-
-<sup>ic</sup> Ignored on Legend creation
-<sup>iu</sup> Ignored on Legend update
-
-## Legend Items
-
-Action                                          | Viewer Method                                  | LegendItem Method                  | Event
-------------------------------------------------|------------------------------------------------|------------------------------------|-----
-[Add](tutorial-api.html#adding-records)         | [addItems()](Legend.html#addItems)             | -                                  | legendItems-add
-[Update](tutorial-api.html#updating-records)    | [updateItems()](Legend.html#updateItems)       | [update()](LegendItem.html#update) | legendItems-update
-[Remove](tutorial-api.html#removing-records)    | [removeLegendItems()](Legend.html#removeItems) | [remove()](LegendItem.html#remove) | legendItems-remove
-[Reorder](tutorial-api.html#reordering-records) | [moveLegendItem()](Legend.html#moveItem)       | [move()](LegendItem.html#move)     | legendItems-reorder
-[Read](tutorial-api.html#reading-records)       | [legendItems()](Legend.html#items)             | -                                  | -
-
-Attribute                          | Type      | Description
------------------------------------|-----------|------------
-[name](LegendItem.html#name)         | String    | Name to diplay for legendItem 
-[font](LegendItem.html#font)           | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
-[fontColor](LegendItem.html#fontColor) | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
-[decoration](LegendItem.html#decoration) | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
-[swatchColor](LegendItem.html#swatchColor) | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
-[drawSwatch](LegendItem.html#drawSwatch) | Boolean   | Draw the swatch beside the legendItem name [Default: true]
-[favorite](LegendItem.html#favorite) | Boolean   | LegendItem is a favorite [Default: false]
-[visible](CGObject.html#visible)   | Boolean   | LegendItem is visible [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for LegendItem
-
-## Annotation
+## [Annotation](Annotation.html)
 
 Action                                       | Viewer Method                                    | Annotation Method                  | Event
 ---------------------------------------------|--------------------------------------------------|------------------------------------|-----
@@ -398,21 +422,30 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Labels are visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Annotation
 
-## Ruler
 
-Action                                       | Viewer Method                                    | Ruler Method                  | Event
----------------------------------------------|--------------------------------------------------|-------------------------------|-----
-[Update](tutorial-api.html#updating-records) | -                                                | [update()](Ruler.html#update) | ruler-update
-[Read](tutorial-api.html#reading-records)    | [ruler](Viewer.html#ruler)                       | -                             | -
+## [Bookmarks](Bookmark.html)
+
+Action                                       | Viewer Method                                    | Bookmark Method                  | Event
+---------------------------------------------|--------------------------------------------------|----------------------------------|-----
+[Add](tutorial-api.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                                | bookmarks-add
+[Update](tutorial-api.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](Bookmark.html#update) | bookmarks-update
+[Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
+[Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
-[font](Ruler.html#font)            | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See {@link Font} for details.
-[color](Ruler.html#color)          | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
-[visible](CGObject.html#visible)   | Boolean   | Rulers are visible [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
+[name](Bookmark.html#name)         | String    | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
+[bp](Bookmark.html#bp)             | Number    | Base pair to center the map position [Default: Current bp]
+[zoom](Bookmark.html#zoom)         | Number    | Zoom factor [Default: Current zoomFactor]
+[format](Bookmark.html#format)     | String    | Map format [Default: Current map format]
+[bbOffset](Bookmark.html#bbOffset) | Number    | Distance from the backbone to the center of the canvas [Default: 0]
+[shortcut](Bookmark.html#shortcut) | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
+[favorite](Bookmark.html#favorite) | Boolean   | Bookmark is a favorite [Default: false]
+[visible](CGObject.html#visible)   | Boolean   | Bookmark is visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
 
-## Backbone
+
+## [Backbone](Backbone.html)
 
 Action                                       | Viewer Method                                    | Backbone Method                  | Event
 ---------------------------------------------|--------------------------------------------------|-------------------------------|-----
@@ -428,7 +461,68 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Backbone is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Backbone
 
-## Dividers
+
+## [Sequence](Sequence.html)
+
+Action                                       | Viewer Method                                    | Sequence Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Sequence.html#update) | sequence-update
+[Read](tutorial-api.html#reading-records)    | [sequence](Viewer.html#sequence)                 | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Sequence.html#name)         | String    | Sequence name. [TODO]
+[id](Sequence.html#id)             | String    | Sequence ID. [TODO]
+[seq](Sequence.html#seq)<sup>iu</sup> | String    | The map sequence.
+[length](Sequence.html#length)<sup>iu</sup> | Number    | The length of the sequence. This is ignored if a seq is provided.
+[contigs](Sequence.html#contigs)<sup>iu</sup> | Array    | Array of contigs. Contigs are ignored if a seq is provided.
+[font](Sequence.html#font)         | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
+[color](Sequence.html#color)       | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Sequence
+
+<sup>iu</sup> Ignored on Sequence update
+
+
+## [Contigs](Contig.html)
+
+Action                                          | Sequence Method                                  | Contig Method                  | Event
+------------------------------------------------|------------------------------------------------|------------------------------------|-----
+[Add](tutorial-api.html#adding-records)         | [addContigs()](Sequence.html#addContigs)         | -                              | contigs-add
+[Update](tutorial-api.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs)   | [update()](Contig.html#update) | contigs-update
+[Remove](tutorial-api.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs)   | [remove()](Contig.html#remove) | contigs-remove
+[Reorder](tutorial-api.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)        | [move()](Contig.html#move)     | contigs-reorder
+[Read](tutorial-api.html#reading-records)       | [contigs()](Sequence.html#items)                 | -                              | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[name](Contig.html#name)           | String    | Contig name.
+[id](Contig.html#id)               | String    | Contig ID.
+[seq](Contig.html#seq)<sup>iu</sup> | String    | The contig sequence.
+[length](Contig.html#length)<sup>iu</sup> | Number    | The length of the sequence. This is ignored if a seq is provided.
+[orientation](Contig.html#orientation) | String    | '+' for forward orientation and '-' for the reverse.
+[visible](CGObject.html#visible)   | Boolean   | Contig is visible [Default: true].
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Contig.
+
+<sup>iu</sup> Ignored on Contig update
+
+
+## [Ruler](Ruler.html)
+
+Action                                       | Viewer Method                                    | Ruler Method                  | Event
+---------------------------------------------|--------------------------------------------------|-------------------------------|-----
+[Update](tutorial-api.html#updating-records) | -                                                | [update()](Ruler.html#update) | ruler-update
+[Read](tutorial-api.html#reading-records)    | [ruler](Viewer.html#ruler)                       | -                             | -
+
+Attribute                          | Type      | Description
+-----------------------------------|-----------|------------
+[font](Ruler.html#font)            | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See {@link Font} for details.
+[color](Ruler.html#color)          | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[visible](CGObject.html#visible)   | Boolean   | Rulers are visible [Default: true]
+[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
+
+
+## [Dividers](Dividers.html)
 
 There are two type of dividers: slot and track. They are accessed from the Viewer dividers object:
 - Viewer.dividers.track - controlls spacing/lines between tracks.
@@ -453,68 +547,10 @@ Attribute                          | Type      | Description
 
 <sup>ic</sup> Ignored on Record creation
 
-## Sequence
 
-Action                                       | Viewer Method                                    | Sequence Method                  | Event
----------------------------------------------|--------------------------------------------------|-------------------------------|-----
-[Update](tutorial-api.html#updating-records) | -                                                | [update()](Sequence.html#update) | sequence-update
-[Read](tutorial-api.html#reading-records)    | [sequence](Viewer.html#sequence)                 | -                             | -
+<br /><br />
 
-Attribute                          | Type      | Description
------------------------------------|-----------|------------
-[name](Sequence.html#name)         | String    | Sequence name. [TODO]
-[id](Sequence.html#id)             | String    | Sequence ID. [TODO]
-[seq](Sequence.html#seq)<sup>iu</sup> | String    | The map sequence.
-[length](Sequence.html#length)<sup>iu</sup> | Number    | The length of the sequence. This is ignored if a seq is provided.
-[contigs](Sequence.html#contigs)<sup>iu</sup> | Array    | Array of contigs. Contigs are ignored if a seq is provided.
-[font](Sequence.html#font)         | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
-[color](Sequence.html#color)       | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
-[visible](CGObject.html#visible)   | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Sequence
-
-<sup>iu</sup> Ignored on Sequence update
-
-
-## Contigs
-
-Action                                          | Sequence Method                                  | Contig Method                  | Event
-------------------------------------------------|------------------------------------------------|------------------------------------|-----
-[Add](tutorial-api.html#adding-records)         | [addContigs()](Sequence.html#addContigs)         | -                              | contigs-add
-[Update](tutorial-api.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs)   | [update()](Contig.html#update) | contigs-update
-[Remove](tutorial-api.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs)   | [remove()](Contig.html#remove) | contigs-remove
-[Reorder](tutorial-api.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)        | [move()](Contig.html#move)     | contigs-reorder
-[Read](tutorial-api.html#reading-records)       | [contigs()](Sequence.html#items)                 | -                              | -
-
-Attribute                          | Type      | Description
------------------------------------|-----------|------------
-[name](Contig.html#name)           | String    | Contig name.
-[id](Contig.html#id)               | String    | Contig ID.
-[seq](Contig.html#seq)<sup>iu</sup> | String    | The contig sequence.
-[length](Contig.html#length)<sup>iu</sup> | Number    | The length of the sequence. This is ignored if a seq is provided.
-[orientation](Contig.html#orientation) | String    | '+' for forward orientation and '-' for the reverse.
-[visible](CGObject.html#visible)   | Boolean   | Contig is visible [Default: true].
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Contig.
-
-<sup>iu</sup> Ignored on Contig update
-
-
-## TEMPLATE
-
-Action                                       | Viewer Method                                    | Record Method                  | Event
----------------------------------------------|--------------------------------------------------|----------------------------------|-----
-[Add](tutorial-api.html#adding-records)      | [addRecords()](Viewer.html#addRecords)       | -                                | records-add
-[Update](tutorial-api.html#updating-records) | [updateRecords()](Viewer.html#updateRecords) | [update()](Record.html#update) | records-update
-[Remove](tutorial-api.html#removing-records) | [removeRecords()](Viewer.html#removeRecords) | [remove()](Record.html#remove) | records-remove
-[Reorder](tutorial-api.html#reordering-records) | [moveRecord()](Viewer.html#moveRecord) | [move()](Record.html#move) | records-reorder
-[Read](tutorial-api.html#reading-records)    | [records()](Viewer.html#records)             | -                                | -
-
-Attribute                          | Type      | Description
------------------------------------|-----------|------------
-[name](Record.html#name)         | String    | Name of record [Default: "Record-N" where N is the number of the record]
-[favorite](Record.html#favorite) | Boolean   | Record is a favorite [Default: false]
-[visible](CGObject.html#visible)   | Boolean   | Record is visible [Default: true]
-[meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Record
-
+#### Legend
 <sup>rc</sup> Required on Record creation
 <sup>ic</sup> Ignored on Record creation
 <sup>iu</sup> Ignored on Record update

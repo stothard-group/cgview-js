@@ -152,7 +152,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     //////////////////////////////////////////////////////////////////////////
 
     /**
-     * @member {Number} - Get map id
+     * @member {String} - Get map id
      */
     get id() {
       return this._id;
@@ -523,6 +523,19 @@ if (window.CGV === undefined) window.CGV = CGView;
         }
       }
       this.trigger('tracks-update', { tracks, attributes });
+    }
+    updateTracksNew(tracksOrUpdates, attributes) {
+      const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
+        recordClass: 'Track',
+        validKeys: ['name', 'position', 'separatedBy', 'dataType', 'dataMethod', 'dataKeys', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
+      });
+      // Check if attributes contain dataType/Method/Keys
+      // - if so refresh all tracks
+      // if updates
+      // - for each track check update[track.cgvID] keys for dataType/Methods/Keys
+      //   - if dataType/Method/Keys present
+      //       - track.refresh();
+      this.trigger('tracks-update', { tracks, attributes, updates });
     }
 
     moveTrack(oldIndex, newIndex) {
