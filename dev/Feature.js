@@ -475,9 +475,9 @@
       const tracks = new CGV.CGArray();
       this.viewer.tracks().each( (i, track) => {
         if (track.type === 'feature') {
-          if ( (track.contents.from === 'source' && track.contents.extract.includes(this.source)) ||
-               (track.contents.from === 'type' && track.contents.extract.includes(this.type)) ||
-               (track.contents.from === 'sequence' && this.extractedFromSequence && track.features().includes(this)) ) {
+          if ( (track.dataMethod === 'source' && track.dataKeys.includes(this.source)) ||
+               (track.dataMethod === 'type' && track.dataKeys.includes(this.type)) ||
+               (track.dataMethod === 'sequence' && this.extractedFromSequence && track.features().includes(this)) ) {
             tracks.push(track);
           }
         }
@@ -531,7 +531,7 @@
       // (e.g. if the feature source changed, it may now belong to a different track)
       this.viewer.tracks().each( (i, track) => {
         if ( track.features().includes(this) ||
-             (track.contents.from === 'source' && track.contents.extract === this.source) ) {
+             (track.dataMethod === 'source' && track.dataKeys.includes(this.source) ) ) {
           track.refresh();
         }
       });

@@ -492,49 +492,66 @@ if (window.CGV === undefined) window.CGV = CGView;
     /**
      * Update track properties to the viewer. If no attribtes are given, the trigger event will still be called.
      */
-    updateTracks(tracks, attributes) {
-      tracks = CGV.CGArray.arrayerize(tracks);
-      if (attributes) {
-        // Validate attribute keys
-        const keys = Object.keys(attributes);
-        const validKeys = ['name', 'position', 'separateFeaturesBy', 'visible', 'thicknessRatio', 'loadProgress', 'contents'];
-        if (!CGV.validate(keys, validKeys)) { return false; }
-        const contents = attributes.contents;
-        if (contents) {
-          // Validate content attribute keys
-          const contentKeys = Object.keys(contents);
-          const validContentKeys = ['type', 'from', 'extract', 'options'];
-          if (!CGV.validate(contentKeys, validContentKeys)) { return false; }
-          for (const track of tracks) {
-            for (const contentKey of contentKeys) {
-              const value = contents[contentKey];
-              track.contents[contentKey] = value;
-            }
-            track.refresh();
-          }
-          // const {contents, ...modifiedAttributes} = attributes;
-          const modifiedAttributes = keys.reduce( (obj, k) => {
-            if (k !== 'contents') { obj[k] = attributes[k]; }
-            return obj;
-          }, {});
-          tracks.attr(modifiedAttributes);
-        } else {
-          tracks.attr(attributes);
-        }
-      }
-      this.trigger('tracks-update', { tracks, attributes });
-    }
-    updateTracksNew(tracksOrUpdates, attributes) {
+    // updateTracks(tracks, attributes) {
+    //   tracks = CGV.CGArray.arrayerize(tracks);
+    //   if (attributes) {
+    //     // Validate attribute keys
+    //     const keys = Object.keys(attributes);
+    //     const validKeys = ['name', 'position', 'separateFeaturesBy', 'visible', 'thicknessRatio', 'loadProgress', 'contents'];
+    //     if (!CGV.validate(keys, validKeys)) { return false; }
+    //     const contents = attributes.contents;
+    //     if (contents) {
+    //       // Validate content attribute keys
+    //       const contentKeys = Object.keys(contents);
+    //       const validContentKeys = ['type', 'from', 'extract', 'options'];
+    //       if (!CGV.validate(contentKeys, validContentKeys)) { return false; }
+    //       for (const track of tracks) {
+    //         for (const contentKey of contentKeys) {
+    //           const value = contents[contentKey];
+    //           track.contents[contentKey] = value;
+    //         }
+    //         track.refresh();
+    //       }
+    //       // const {contents, ...modifiedAttributes} = attributes;
+    //       const modifiedAttributes = keys.reduce( (obj, k) => {
+    //         if (k !== 'contents') { obj[k] = attributes[k]; }
+    //         return obj;
+    //       }, {});
+    //       tracks.attr(modifiedAttributes);
+    //     } else {
+    //       tracks.attr(attributes);
+    //     }
+    //   }
+    //   this.trigger('tracks-update', { tracks, attributes });
+    // }
+    updateTracks(tracksOrUpdates, attributes) {
       const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
         recordClass: 'Track',
-        validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
+        validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'dataOptions', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
       });
-      // Check if attributes contain dataType/Method/Keys
-      // - if so refresh all tracks
-      // if updates
-      // - for each track check update[track.cgvID] keys for dataType/Methods/Keys
-      //   - if dataType/Method/Keys present
-      //       - track.refresh();
+      let tracksToRefresh = [];
+      if (updates) {
+        const cgvIDs = Object.keys(updates);
+        for (let cgvID of cgvIDs) {
+          const value = updates[cgvID];
+          const track = this.objects(cgvID);
+          //TODO: try Sets
+          const keys = Object.keys(value);
+          if (keys.includes('dataMethod') || keys.includes('dataType') || keys.includes('dataKeys')) {
+            if (!tracksToRefresh.includes(track)) {
+              tracksToRefresh.push(track);
+            }
+          }
+        }
+      } else if (attributes) {
+        const keys = Object.keys(attributes);
+        if (keys.includes('dataMethod') || keys.includes('dataType') || keys.includes('dataKeys')) {
+          tracksToRefresh = tracks;
+        }
+      }
+      for (const track of tracksToRefresh) {
+        track.refresh();
+      }
       this.trigger('tracks-update', { tracks, attributes, updates });
     }
 
@@ -609,13 +626,13 @@ if (window.CGV === undefined) window.CGV = CGView;
      */
     // FIXME: need better way to keep track of sources
     // FIXME: sources should not contain things like orfs???
+    // FIXME: contains empty source for sequence plots.
     sources(term) {
       const featureSources = this._features.map( f => f.source );
       const plotSources = this._plots.map( p => p.source );
       const trackSources = this.tracks().
-        map(t => t.contents).
-        filter( c => c.from === 'source').
-        map( c => c.extract ).flat();
+        filter( c => c.dataMethod === 'source').
+        map( c => c.dataKeys ).flat();
 
       const allSources = featureSources.concat(plotSources).concat(trackSources);
       return new CGV.CGArray([...new Set(allSources)]).get(term);
@@ -757,8 +774,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       });
       // Refresh tracks if any attribute is source
       let sourceChanged;
-      if (featuresOrUpdates.toString() === '[object Object]') {
-        const values = Object.values(featuresOrUpdates);
+      if (updates) {
+        const values = Object.values(updates);
         for (let value of values) {
           if (Object.keys(value).includes('source')) {
             sourceChanged = true;

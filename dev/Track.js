@@ -19,15 +19,15 @@
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this.name = CGV.defaultFor(data.name, 'Unknown');
-      this._contents = new CGV.TrackContents(this, data.contents);
+      // this._contents = new CGV.TrackContents(this, data.contents);
       // this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
       // this.strand = CGV.defaultFor(data.strand, 'separated');
       this.separateFeaturesBy = CGV.defaultFor(data.separateFeaturesBy, 'strand');
       this.position = CGV.defaultFor(data.position, 'both');
-      // this.dataType = CGV.defaultFor(data.dataType, 'feature');
-      // this.dataMethod = CGV.defaultFor(data.dataMethod, 'source');
-      // this.dataKeys = data.dataKeys;
-      // this.dataOptions = data.dataOptions || {};
+      this.dataType = CGV.defaultFor(data.dataType, 'feature');
+      this.dataMethod = CGV.defaultFor(data.dataMethod, 'source');
+      this.dataKeys = data.dataKeys;
+      this.dataOptions = data.dataOptions || {};
       this._thicknessRatio = CGV.defaultFor(data.thicknessRatio, 1);
       this._loadProgress = 0;
       this.refresh();
@@ -102,11 +102,11 @@
     //   layout._tracks.push(this);
     // }
 
-    /** * @member {Object} - Get the *Contents*.
-     */
-    get contents() {
-      return this._contents;
-    }
+    // /** * @member {Object} - Get the *Contents*.
+    //  */
+    // get contents() {
+    //   return this._contents;
+    // }
 
     /**
      * @member {String} - Get or set the *dataType*. Must be one of 'feature' or 'plot' [Default: 'feature']
@@ -124,8 +124,8 @@
     /** * @member {String} - Alias for *dataType*.
      */
     get type() {
-      // return this.dataType;
-      return this.contents.type;
+      return this.dataType;
+      // return this.contents.type;
     }
 
     /**
@@ -326,7 +326,7 @@
     refresh() {
       this._features = new CGV.CGArray();
       this._plot = undefined;
-      if (this.contents.from === 'sequence') {
+      if (this.dataMethod === 'sequence') {
         this.extractFromSequence();
       } else if (this.type === 'feature') {
         this.updateFeatures();
@@ -339,16 +339,16 @@
     extractFromSequence() {
       const sequenceExtractor = this.viewer.sequence.sequenceExtractor;
       if (sequenceExtractor) {
-        sequenceExtractor.extractTrackData(this, this.contents.extract[0], this.contents.options);
+        sequenceExtractor.extractTrackData(this, this.dataKeys[0], this.dataOptions);
       } else {
         console.error('No sequence is available to extract features/plots from');
       }
     }
 
     updateFeatures() {
-      if (this.contents.from === 'source' || this.contents.from === 'type') {
+      if (this.dataMethod === 'source' || this.dataMethod === 'type') {
         this.viewer.features().each( (i, feature) => {
-          if (this.contents.extract.includes(feature[this.contents.from]) && feature.contig.visible) {
+          if (this.dataKeys.includes(feature[this.dataMethod]) && feature.contig.visible) {
             this._features.push(feature);
           }
         });
@@ -356,10 +356,10 @@
     }
 
     updatePlot() {
-      if (this.contents.from === 'source') {
+      if (this.dataMethod === 'source') {
         // Plot with particular Source
         this.viewer.plots().find( (plot) => {
-          if (plot.source === this.contents.extract[0]) {
+          if (plot.source === this.dataKeys[0]) {
             this._plot = plot;
           }
         });
@@ -471,7 +471,6 @@
       }
     }
 
-
     toJSON(options = {}) {
       const json = {
         name: this.name,
@@ -480,8 +479,16 @@
         // strand: this.strand,
         position: this.position,
         thicknessRatio: this.thicknessRatio,
-        contents: this.contents.toJSON(options)
+        // contents: this.contents.toJSON(options)
+        dataType: this.dataType,
+        dataMethod: this.dataMethod
       };
+      // DataKeys
+      json.dataKeys = (this.dataKeys.length === 1) ? this.dataKeys[0] : [...dataKeys];
+      // DataOptions
+      if (this.dataOptions && Object.keys(this.dataOptions).length > 0) {
+        json.dataOptions = this.dataOptions;
+      }
       // Optionally add default values
       if (!this.visible || options.includeDefaults) {
         json.visible = this.visible;

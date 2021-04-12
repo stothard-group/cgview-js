@@ -86,12 +86,12 @@
       switch (extractType) {
       case 'start-stop-codons':
       case 'orfs':
-        track.contents.type = 'feature';
+        track.dataType = 'feature';
         this.generateFeatures(track, extractType, options);
         break;
       case 'gc-skew':
       case 'gc-content':
-        track.contents.type = 'plot';
+        track.dataType = 'plot';
         this.generatePlot(track, extractType, options);
         break;
       }
