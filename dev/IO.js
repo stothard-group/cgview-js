@@ -73,14 +73,14 @@
       v.features().each( (i, feature) => {
         // Only export features that were not extracted from the sequence.
         if (!feature.extractedFromSequence ||
-            feature.tracks().filter( t => t.contents.from !== 'sequence' ).length > 0) {
+            feature.tracks().filter( t => t.dataMethod !== 'sequence' ).length > 0) {
           json.cgview.features.push(feature.toJSON(options));
         }
       });
       v.plots().each( (i, plot) => {
         // Only export plots that were not extracted from the sequence.
         if (!plot.extractedFromSequence ||
-            plot.tracks().filter( t => t.contents.from !== 'sequence' ).length > 0) {
+            plot.tracks().filter( t => t.dataMethod !== 'sequence' ).length > 0) {
           json.cgview.plots.push(plot.toJSON(options));
         }
       });

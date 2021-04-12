@@ -336,7 +336,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     set dataHasChanged(value) {
-      console.log('DATA', value)
+      // console.log('DATA', value)
       this._dataHasChanged = value;
     }
 
@@ -497,7 +497,7 @@ if (window.CGV === undefined) window.CGV = CGView;
       if (attributes) {
         // Validate attribute keys
         const keys = Object.keys(attributes);
-        const validKeys = ['name', 'position', 'readingFrame', 'strand', 'visible', 'thicknessRatio', 'loadProgress', 'contents'];
+        const validKeys = ['name', 'position', 'separateFeaturesBy', 'visible', 'thicknessRatio', 'loadProgress', 'contents'];
         if (!CGV.validate(keys, validKeys)) { return false; }
         const contents = attributes.contents;
         if (contents) {
@@ -527,7 +527,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     updateTracksNew(tracksOrUpdates, attributes) {
       const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
         recordClass: 'Track',
-        validKeys: ['name', 'position', 'separatedBy', 'dataType', 'dataMethod', 'dataKeys', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
+        validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
       });
       // Check if attributes contain dataType/Method/Keys
       // - if so refresh all tracks
