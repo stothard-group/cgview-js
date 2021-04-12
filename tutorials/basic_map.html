@@ -150,49 +150,12 @@ Each Track can contain one or more Features or a single Plot.
 cgv.addTracks({
   // Name for the track.
   name: 'My Feature Track',
-  // Draw the track using separated or combined slots for each reading frame.
-  // Options: 'separated', 'combined'.
-  readingFrame: 'combined',
-  // Draw the track using separated or combined slots for the forward and reverse strand.
-  // Options: 'separated', 'combined'.
-  strand: 'separated',
-  // Where to draw the track in relation to the backbone.
-  // Options: 'inside', 'outside', 'both'.
-  position: 'both',
-  // Here we describe what features or plot will be in the track.
-  contents: {
-    // Type of track. Options: 'feature', 'plot'
-    // The type is set automatically when extracting from the sequence.
-    type: 'feature',
-    // From where to extract the features/plot. Options:
-    //  - 'source'   : the source property of the features/plots will be used for selection
-    //  - 'sequence' : the features/plot will be generated from the sequence
-    from: 'source',
-    // How to extract the features/plot.
-    // For 'source', the extract value can be a single value or an array of values.
-    // For 'sequence', the extract value can be one of the following:
-    //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
-    // e.g. In this example all features with a source of 'genome-features' will be used
-    extract: 'genome-features'
-  }
-});
-```
-
-NEW Track API:
-
-```js
-// The addTracks() method can accept an array of objects or a single object of data
-// that will be used to initialize new Tracks.
-cgv.addTracks({
-  // Name for the track.
-  name: 'My Feature Track',
   // Draw the features separated into 1 or more slots.
   // Options:
   //   - 'none': 1 slot for all features.
   //   - 'strand': 2 slots (one for each strand).
   //   - 'readingFrame: 6 slots (one for each reading frame).
-  // Would a better name be 'separateFeaturesBy'?
-  separatedBy: 'strand',
+  separateFeaturesBy: 'strand',
   // Where to draw the track in relation to the backbone.
   // Options: 'inside', 'outside', 'both'.
   position: 'both',
@@ -209,7 +172,6 @@ cgv.addTracks({
   // For 'sequence', the dataKeys can be one of the following:
   //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
   // e.g. In this example all features with a source of 'genome-features' will be used
-  // Would a better name be 'dataValues'? And dataMethod could be 'dataKey'?
   dataKeys: 'genome-features'
 });
 ```
@@ -225,13 +187,11 @@ cgv.addTracks({
   // Where to draw the track in relation to the backbone.
   // Options: 'inside', 'outside', 'both'.
   position: 'inside',
-  // Here we describe what features or plot will be in the track.
-  contents: {
-    type: 'plot',
-    from: 'source',
-    // In this example the first plot with a source of 'genome-plot' will be used
-    extract: 'genome-plot'
-  }
+  // The data* properties describe what plot will be in the track.
+  dataType: 'plot',
+  dataMethod: 'source',
+  // In this example the first plot with a source of 'genome-plot' will be used
+  dataKeys: 'genome-plot'
 });
 ```
 
