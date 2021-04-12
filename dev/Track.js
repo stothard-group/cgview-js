@@ -484,7 +484,7 @@
         dataMethod: this.dataMethod
       };
       // DataKeys
-      json.dataKeys = (this.dataKeys.length === 1) ? this.dataKeys[0] : [...dataKeys];
+      json.dataKeys = (this.dataKeys.length === 1) ? this.dataKeys[0] : [...this.dataKeys];
       // DataOptions
       if (this.dataOptions && Object.keys(this.dataOptions).length > 0) {
         json.dataOptions = this.dataOptions;
