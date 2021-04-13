@@ -1155,8 +1155,11 @@ if (window.CGV === undefined) window.CGV = CGView;
       // Almost all events will results in data changing with the following exceptions
       const eventsToIgnoreForDataChange = ['viewer-update', 'cgv-json-load', 'drag', 'zoom-start', 'zoom', 'zoom-end'];
       if (!this.loading && !eventsToIgnoreForDataChange.includes(event)) {
-        // console.log(event, object)
-        this.update({dataHasChanged: true});
+        // Also need to ignore track-update with loadProgress
+        const attributeKeys = object && object.attributes && Object.keys(object.attributes);
+        if ( !(attributeKeys && attributeKeys.length === 1 && attributeKeys[0] === 'loadProgress')) {
+          this.update({dataHasChanged: true});
+        }
       }
     }
 
