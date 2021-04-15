@@ -188,6 +188,18 @@
         }
       }
 
+      // Check for Labels
+      if (!elementType) {
+        const labels = this.viewer.annotation._visibleLabels;
+        for (let i = 0, len = labels.length; i < len; i++) {
+          const label = labels[i];
+          if (label.rect.containsPt(canvasX, canvasY)) {
+            elementType = 'label';
+            element = label;
+          }
+        }
+      }
+
       return {elementType, element};
     }
 
