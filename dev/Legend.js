@@ -368,7 +368,7 @@
 
     findLegendItemByName(name) {
       if (!name) { return; }
-      console.log(name)
+      // console.log(name)
       return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );
     }
 
