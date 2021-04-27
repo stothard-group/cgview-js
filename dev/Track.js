@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////////
 // Track
 //////////////////////////////////////////////////////////////////////////////
+// TODO: - Instead of check for features or plot. There could be a data attribute which
+//         will point to features or a plot.
 (function(CGV) {
   /**
    * <br />
@@ -19,9 +21,6 @@
       this._features = new CGV.CGArray();
       this._slots = new CGV.CGArray();
       this.name = CGV.defaultFor(data.name, 'Unknown');
-      // this._contents = new CGV.TrackContents(this, data.contents);
-      // this.readingFrame = CGV.defaultFor(data.readingFrame, 'combined');
-      // this.strand = CGV.defaultFor(data.strand, 'separated');
       this.separateFeaturesBy = CGV.defaultFor(data.separateFeaturesBy, 'strand');
       this.position = CGV.defaultFor(data.position, 'both');
       this.dataType = CGV.defaultFor(data.dataType, 'feature');
@@ -94,20 +93,6 @@
       return this.viewer.layout;
     }
 
-    // set layout(layout) {
-    //   if (this.layout) {
-    //     // TODO: Remove if already attached to layout
-    //   }
-    //   this._layout = layout;
-    //   layout._tracks.push(this);
-    // }
-
-    // /** * @member {Object} - Get the *Contents*.
-    //  */
-    // get contents() {
-    //   return this._contents;
-    // }
-
     /**
      * @member {String} - Get or set the *dataType*. Must be one of 'feature' or 'plot' [Default: 'feature']
      */
@@ -179,20 +164,6 @@
         this.updateSlots();
       }
     }
-
-    // /**
-    //  * @member {String} - Get or set the readingFrame. Possible values are 'combined' or 'separated'.
-    //  */
-    // get readingFrame() {
-    //   return this._readingFrame;
-    // }
-    //
-    // set readingFrame(value) {
-    //   if (CGV.validate(value, ['separated', 'combined'])) {
-    //     this._readingFrame = value;
-    //     this.updateSlots();
-    //   }
-    // }
 
     /**
      * @member {String} - Get or set the position. Possible values are 'inside', 'outside', or 'both'.
@@ -404,36 +375,6 @@
         slot.replaceFeatures(this.features());
       }
     }
-    // updateFeatureSlots() {
-    //   this._slots = new CGV.CGArray();
-    //   if (this.readingFrame === 'separated') {
-    //     const features = this.sequence.featuresByReadingFrame(this.features());
-    //     // Direct Reading Frames
-    //     for (const rf of [1, 2, 3]) {
-    //       const slot = new CGV.Slot(this, {strand: 'direct'});
-    //       slot.replaceFeatures(features[`rfPlus${rf}`]);
-    //     }
-    //     // Revers Reading Frames
-    //     for (const rf of [1, 2, 3]) {
-    //       const slot = new CGV.Slot(this, {strand: 'reverse'});
-    //       slot.replaceFeatures(features[`rfMinus${rf}`]);
-    //     }
-    //   } else {
-    //     if (this.strand === 'separated') {
-    //       const features = this.featuresByStrand();
-    //       // Direct Slot
-    //       let slot = new CGV.Slot(this, {strand: 'direct'});
-    //       slot.replaceFeatures(features.direct);
-    //       // Reverse Slot
-    //       slot = new CGV.Slot(this, {strand: 'reverse'});
-    //       slot.replaceFeatures(features.reverse);
-    //     } else if (this.strand === 'combined') {
-    //       // Combined Slot
-    //       const slot = new CGV.Slot(this, {strand: 'direct'});
-    //       slot.replaceFeatures(this.features());
-    //     }
-    //   }
-    // }
 
     // FIXME: this should become simply (update)
     // update(attributes = {}) {
@@ -475,11 +416,8 @@
       const json = {
         name: this.name,
         separateFeaturesBy: this.separateFeaturesBy,
-        // readingFrame: this.readingFrame,
-        // strand: this.strand,
         position: this.position,
         thicknessRatio: this.thicknessRatio,
-        // contents: this.contents.toJSON(options)
         dataType: this.dataType,
         dataMethod: this.dataMethod
       };
@@ -504,3 +442,4 @@
 
   CGV.Track = Track;
 })(CGView);
+

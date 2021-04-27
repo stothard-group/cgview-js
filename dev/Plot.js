@@ -25,18 +25,18 @@
         this.legendItem  = data.legend;
       }
       if (data.legendPositive) {
-        this.legendItemPositive  = data.legendPositive;
+        this.legendItemPositive = data.legendPositive;
       }
       if (data.legendNegative) {
-        this.legendItemNegative  = data.legendNegative;
+        this.legendItemNegative = data.legendNegative;
       }
       const plotID = viewer.plots().indexOf(this) + 1;
       if (!this.legendItemPositive && !this.legendItemNegative) {
         this.legendItem  = `Plot-${plotID}`;
       } else if (!this.legendItemPositive) {
-        this.legendItemPositive  = this.legendItemNegative;
+        this.legendItemPositive = this.legendItemNegative;
       } else if (!this.legendItemNegative) {
-        this.legendItemNegative  = this.legendItemPositive;
+        this.legendItemNegative = this.legendItemPositive;
       }
     }
 
@@ -169,9 +169,9 @@
     set legendItemPositive(value) {
       if (this.legendItemPositive && value === undefined) { return; }
       if (value && value.toString() === 'LegendItem') {
-        this._legendItemPositive  = value;
+        this._legendItemPositive = value;
       } else {
-        this._legendItemPositive  = this.viewer.legend.findLegendItemOrCreate(value);
+        this._legendItemPositive = this.viewer.legend.findLegendItemOrCreate(value);
       }
     }
 
@@ -186,9 +186,9 @@
     set legendItemNegative(value) {
       if (this.legendItemNegative && value === undefined) { return; }
       if (value && value.toString() === 'LegendItem') {
-        this._legendItemNegative  = value;
+        this._legendItemNegative = value;
       } else {
-        this._legendItemNegative  = this.viewer.legend.findLegendItemOrCreate(value);
+        this._legendItemNegative = this.viewer.legend.findLegendItemOrCreate(value);
       }
     }
 
