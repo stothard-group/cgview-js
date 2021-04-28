@@ -356,7 +356,7 @@
           const slot = new CGV.Slot(this, {strand: 'direct'});
           slot.replaceFeatures(features[`rfPlus${rf}`]);
         }
-        // Revers Reading Frames
+        // Reverse Reading Frames
         for (const rf of [1, 2, 3]) {
           const slot = new CGV.Slot(this, {strand: 'reverse'});
           slot.replaceFeatures(features[`rfMinus${rf}`]);

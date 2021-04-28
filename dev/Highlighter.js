@@ -91,6 +91,19 @@
       }
     }
 
+    getTrackDiv(e) {
+      let trackDiv = '';
+      if (e.slot) {
+        const track = e.slot.track;
+        let direction = '';
+        if (track.type === 'feature' && track.separateFeaturesBy !== 'none') {
+          direction = e.slot.isDirect() ? '(+)' : '(-)';
+        }
+        trackDiv = `<div class='track-data'>Track: ${track.name} ${direction}</div>`;
+      }
+      return trackDiv;
+    }
+
     featurePopoverContentsDefault(e) {
       const feature = e.element;
       // return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
@@ -100,10 +113,16 @@
         metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${feature.meta[k]}</span></div>`).join('');
         metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
       }
+      let trackDiv = '';
+      if (e.slot) {
+        const track = e.slot.track;
+        trackDiv = `<div class='track-data'>Track: ${track.name}</div>`;
+      }
       return (`
         <div style='margin: 0 5px; font-size: 14px'>
           <div>${feature.type}: ${feature.name}<div>
           ${metaDivs}
+          ${this.getTrackDiv(e)}
         </div>
       `);
     }
@@ -111,7 +130,12 @@
     plotPopoverContentsDefault(e) {
       const plot = e.element;
       const score = plot.scoreForPosition(e.bp);
-      return `<div style='margin: 0 5px; font-size: 14px'>Score: ${score.toFixed(2)}</div>`;
+      return (`
+        <div style='margin: 0 5px; font-size: 14px'>
+          <div>Score: ${score.toFixed(2)}</div>
+          ${this.getTrackDiv(e)}
+        </div>
+      `);
     }
 
     backbonePopoverContentsDefault(e) {
