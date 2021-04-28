@@ -130,14 +130,11 @@ to store user/app-defined data.
         "tracks": [
             {
                 "name": "Features",
-                "readingFrame": "combined",
-                "strand": "separated",
+                "separateFeaturesBy": "strand",
                 "position": "both",
-                "contents": {
-                    "type": "feature",
-                    "from": "source",
-                    "extract": "sequence-features"
-                }
+                "ataType": "feature",
+                "dataMethod": "source",
+                "dataKeys": "sequence-features"
             }
         ]
     }
