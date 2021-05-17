@@ -24,6 +24,7 @@
       this.viewer = viewer;
       this.type = CGV.defaultFor(data.type, '');
       this.source = CGV.defaultFor(data.source, '');
+      this.favorite = CGV.defaultFor(data.favorite, false);
       this.contig = data.contig || viewer.sequence.mapContig;
       // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
       this.updateRanges(data.start, data.stop);
