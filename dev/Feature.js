@@ -538,6 +538,27 @@
       });
     }
 
+    /**
+     * Translate the sequence of this feature.
+     *
+     * The source of the genetic code used for translation uses the following precedence:
+     * geneticCode (provided to translate method) > geneticCode (of Feature) > geneticCode (of Viewer)
+     *
+     * @param {Number} geneticCode - Number indicating the genetic code to use for the translation. This will override the any genetic code set for the feature or Viewer.
+     */
+    // TODO: get feature seq
+    translate(geneticCode) {
+      const code = geneticCode || this.geneticCode || this.viewer.geneticCode;
+      const table = this.viewer.codonTables.byID(code);
+      // TODO make feature method
+      const naSeq
+      return table && table.translate(this.naSeq, this.start_codon);
+    }
+
+    seq() {
+      return this.contig.forRange(this.range, this.isReverse());
+    }
+
     toJSON(options = {}) {
       const json = {
         name: this.name,

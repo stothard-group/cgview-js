@@ -287,6 +287,10 @@
       this.viewer.updateFeatures(updates);
     }
 
+    forRange(range, revComp) {
+      return CGV.Sequence.forRange(this.seq, range, revComp);
+    }
+
     // TODO: options for id
     asFasta() {
       return `>${this.id}\n${this.seq}`;

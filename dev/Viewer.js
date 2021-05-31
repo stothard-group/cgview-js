@@ -117,6 +117,8 @@ if (window.CGV === undefined) window.CGV = CGView;
       this.ruler = new CGV.Ruler(this, options.ruler);
       // Initialize Highlighter
       this.highlighter = new CGV.Highlighter(this, options.highlighter);
+      // Initialize Codon Tables
+      this.codonTables = new CGV.CodonTables;
       // Initialize Debug
       this.debug = CGV.defaultFor(options.debug, false);
 

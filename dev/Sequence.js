@@ -66,6 +66,25 @@
     //////////////////////////////////////////////////////////////////////////
     // STATIC CLASSS METHODS
     //////////////////////////////////////////////////////////////////////////
+    // Common method for extracting sequence based on a range
+    // range can be a CGRange or any object with a start and stop attribute.
+    static forRange(seq, range, revComp=false) {
+      const start = range && range.start;
+      const stop = range && range.stop;
+      if (!seq || !start || !stop) {return;}
+      let extract = ''
+      if (stop < start) {
+        // Range wraps around
+        extract = seq.substring(start - 1) + seq.substring(0, stop);
+      } else {
+        extract = seq.substring(start - 1, stop);
+      }
+      if (revComp) {
+        extract = Sequence.reverseComplement(extract);
+      }
+      return extract;
+    }
+
     // TODO: Take into account lower case letters
     static complement(seq) {
       let compSeq = '';
@@ -674,19 +693,20 @@
      * Return the sequence for the *range*
      *
      * @param {Range} range - the range for which to return the sequence
-     * @param {Boolean} complement - If true return the complement sequence
+     * @param {Boolean} revComp - If true return the reverse complement sequence
      * @return {String}
      */
-    forRange(range) {
+    forRange(range, revComp) {
       let seq;
       if (this.seq) {
-        if (range.isWrapped()) {
-          // seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
-          seq = this.seq.substring(range.start - 1) + this.seq.substring(0, range.stop);
-        } else {
-          // seq = this.seq.substr(range.start - 1, range.length + 1);
-          seq = this.seq.substring(range.start - 1, range.stop);
-        }
+        seq = CGV.Sequence.forRange(this.seq, range, revComp);
+        // if (range.isWrapped()) {
+        //   // seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
+        //   seq = this.seq.substring(range.start - 1) + this.seq.substring(0, range.stop);
+        // } else {
+        //   // seq = this.seq.substr(range.start - 1, range.length + 1);
+        //   seq = this.seq.substring(range.start - 1, range.stop);
+        // }
       } else {
         // FIXME: For now return fake sequence
         seq = this._fakeSequenceForRange(range);
