@@ -52,6 +52,7 @@
           updated: this.formatDate(new Date()),
           id: v.id,
           name: v.name,
+          geneticCode: v.geneticCode,
           settings: v.settings.toJSON(options),
           backbone: v.backbone.toJSON(options),
           ruler: v.ruler.toJSON(options),
@@ -113,10 +114,12 @@
       viewer.trigger('cgv-json-load', data);
       // In events this should mention how everything is reset (e.g. tracks, features, etc)
 
-      // viewer._id = data.id;
-      viewer.update({id: data.id});
-      // viewer.name = data.name;
-      viewer.update({name: data.name});
+      // Viewer attributes
+      viewer.update({
+        id: data.id,
+        name: data.name,
+        geneticCode: data.geneticCode,
+      });
 
       // data Info
       viewer._dataInfo = {

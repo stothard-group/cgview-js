@@ -30,9 +30,8 @@
       this.updateRanges(data.start, data.stop);
       this.strand = CGV.defaultFor(data.strand, 1);
       this.score = CGV.defaultFor(data.score, 1);
-      if (data.codon_start) {
-        this.codon_start = data.codon_start;
-      }
+      this.codonStart = data.codonStart;
+      this.geneticCode = data.geneticCode;
       this.label = new CGV.Label(this, {name: data.name} );
       this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
       this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
@@ -77,14 +76,25 @@
     }
 
     /**
-     * @member {String} - Get or set the Codon start
+     * @member {String} - Get or set the Codon start (Default: 1)
      */
-    get codon_start() {
-      return this._codon_start || 1;
+    get codonStart() {
+      return this._codonStart || 1;
     }
 
-    set codon_start(value) {
-      this._codon_start = value;
+    set codonStart(value) {
+      this._codonStart = value;
+    }
+
+    /**
+     * @member {String} - Get or set the Genetic code used for translation. If no genetic code is set, the default for the map will be used.
+     */
+    get geneticCode() {
+      return this._geneticCode;
+    }
+
+    set geneticCode(value) {
+      this._geneticCode = value;
     }
 
     /**
@@ -545,17 +555,20 @@
      * geneticCode (provided to translate method) > geneticCode (of Feature) > geneticCode (of Viewer)
      *
      * @param {Number} geneticCode - Number indicating the genetic code to use for the translation. This will override the any genetic code set for the feature or Viewer.
+     * @return {String} - Amino acid sequence
      */
-    // TODO: get feature seq
     translate(geneticCode) {
       const code = geneticCode || this.geneticCode || this.viewer.geneticCode;
       const table = this.viewer.codonTables.byID(code);
-      // TODO make feature method
-      const naSeq
-      return table && table.translate(this.naSeq, this.start_codon);
+      return table && table.translate(this.seq, this.start_codon);
     }
 
-    seq() {
+    /**
+     * Returns the DNA sequence for the feature.
+     *
+     * @return {String} - DNA sequence of feature.
+     */
+    get seq() {
       return this.contig.forRange(this.range, this.isReverse());
     }
 
@@ -572,8 +585,8 @@
         // visible: this.visible,
         // favorite: this.favorite
       };
-      if (this.codon_start && this.codon_start != 1) {
-        json.codon_start = this.codon_start;
+      if (this.codonStart && this.codonStart != 1) {
+        json.codonStart = this.codonStart;
       }
       if (this.sequence.hasMultipleContigs) {
         json.contig = this.contig.name;

@@ -196,6 +196,19 @@ if (window.CGV === undefined) window.CGV = CGView;
     }
 
     /**
+     * @member {Number} - Get or set the genetic code used for translation.
+     * This genetic code will be used unless a feature has an overriding genetic code.
+     * Default: 11
+     */
+    get geneticCode() {
+      return this._geneticCode || 11;
+    }
+
+    set geneticCode(value) {
+      this._geneticCode = value;
+    }
+
+    /**
      * @member {Number} - Get or set the width of the Viewer
      */
     get width() {
@@ -433,7 +446,7 @@ if (window.CGV === undefined) window.CGV = CGView;
     update(attributes) {
       // Validate attribute keys
       let keys = Object.keys(attributes);
-      const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
+      const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged', 'geneticCode'];
       if (!CGV.validate(keys, validKeys)) { return; }
 
       // Special Case for Resizing - we don't want to update width and height separately

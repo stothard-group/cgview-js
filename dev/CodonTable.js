@@ -53,7 +53,7 @@
 
     constructor(geneticCodeID) {
       this._codons = this.generateCodons();
-      this._geneticCodeID = geneticCodeID.toString();
+      this._geneticCodeID = geneticCodeID && geneticCodeID.toString();
       this._generateTable();
     }
 
