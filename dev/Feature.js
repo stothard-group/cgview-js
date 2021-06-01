@@ -588,6 +588,9 @@
       if (this.codonStart && this.codonStart != 1) {
         json.codonStart = this.codonStart;
       }
+      if (this.geneticCode && this.geneticCode != this.viewer.geneticCode) {
+        json.geneticCode = this.geneticCode;
+      }
       if (this.sequence.hasMultipleContigs) {
         json.contig = this.contig.name;
       }
