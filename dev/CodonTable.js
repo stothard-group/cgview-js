@@ -34,13 +34,19 @@
       return table;
     }
 
+    names() {
+      const codes = {};
+      const ids = Object.keys(CodonTable.definitions);
+      ids.map( id => codes[id] = CodonTable.definitions[id].name);
+      return codes
+    }
+
     translate(seq, geneticCodeID, startCodon=1) {
       const table = this.byID(geneticCodeID);
       if (table) {
         return table.translate(seq, startCodon);
       }
     }
-
   }
 
   /**
