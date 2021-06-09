@@ -8,3 +8,7 @@ examples
 data
 src/CGView.js
 src/CGView.min.js
+OLD/
+node_modules/
+dist/
+demo/dist
