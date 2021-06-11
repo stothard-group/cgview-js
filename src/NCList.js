@@ -15,7 +15,7 @@
  * Code adapted from
  * https://searchcode.com/codesearch/view/17093141
  */
-export default class NCList {
+class NCList {
 
   /**
    * Each interval should have a start and stop property.
@@ -295,4 +295,4 @@ export default class NCList {
 
 }
 
-
+export default NCList;

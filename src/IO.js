@@ -4,6 +4,7 @@
 
 // FIXME: Check at the end: A low performance polyfill based on toDataURL.
 
+import { version } from '../package.json';
 import CGArray from './CGArray';
 import Sequence from './Sequence';
 import Settings from './Settings';
@@ -14,8 +15,9 @@ import Dividers from './Dividers';
 import { Highlighter } from './Highlighter';
 import Legend from './Legend';
 import utils from './Utils';
+import * as d3 from 'd3';
 
-export default class IO {
+class IO {
 
   /**
    * Interface for reading and writing data to and from CGView
@@ -60,8 +62,7 @@ export default class IO {
 
     const json = {
       cgview: {
-        // FIXME: where is the version coming from
-        version: CGV.version,
+        version,
         created: jsonInfo.created || this.formatDate(new Date()),
         updated: this.formatDate(new Date()),
         id: v.id,
@@ -358,4 +359,5 @@ if (!HTMLCanvasElement.prototype.toBlob) {
   });
 }
 
+export default IO;
 

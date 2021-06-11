@@ -14,7 +14,7 @@ import utils from './Utils';
  * or plot color will use the swatchColor of *legendItem*.
  * @extends CaptionItem
  */
-export default class LegendItem extends CGObject {
+class LegendItem extends CGObject {
 
   /**
    * Create a new LegendItem. By default a legendItem will use its parent legend font, and fontColor.
@@ -415,5 +415,7 @@ export default class LegendItem extends CGObject {
   }
 
 }
+
+export default LegendItem;
 
 

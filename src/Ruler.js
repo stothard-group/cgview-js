@@ -6,8 +6,9 @@ import CGObject from './CGObject';
 import Color from './Color';
 import Font from './Font';
 import utils from './Utils';
+import * as d3 from 'd3';
 
-export default class Ruler extends CGObject {
+class Ruler extends CGObject {
 
   /**
    * The *Ruler* controls and draws the sequence ruler in bp.
@@ -333,5 +334,7 @@ export default class Ruler extends CGObject {
   }
 
 }
+
+export default Ruler;
 
 

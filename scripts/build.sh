@@ -30,6 +30,8 @@ find ${CGVIEW_DIR}/dev ! -name OLD* ! -name Viewer.js ! -name CGObject.js ! -nam
 # - I added the filename line (line 500)
 echo "Building Web Documentation..."
 jsdoc --configure ${CGVIEW_DIR}/docs/jsdoc_conf.json --template ${CGVIEW_DIR}/docs/jaguarjs-jsdoc --destination ${CGVIEW_DIR}/docs/html --readme ${CGVIEW_DIR}/README.md --tutorials ${CGVIEW_DIR}/tutorials ${CGVIEW_DIR}/dev/*
+# TESTING
+jsdoc --configure ./docs/jsdoc_conf.json --destination ~/Desktop/docs --readme ./README.md --tutorials ./tutorials ./src/*
 
 # BUILD DASH DOCSET
 # Note: use --private to display private symbols

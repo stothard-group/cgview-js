@@ -1,11 +1,25 @@
 {
   "name": "cgview",
   "version": "0.5.0",
+  "main": "dist/cgview.esm.js",
+  "description": "CGView: Circular Genome Viewer",
+  "homepage": "https://cgview.ca",
+  "bugs": "https://github.com/sciguy/cgviewXXXXXXX/issues",
+  "repository": "github:XXXXXXXX/cgview",
+  "file": [
+    "dist/**"
+  ],
+  "keywords": [ "CGView", "circular", "genome", "visualization" ],
   "scripts": {
+    "dev": "echo \"Error: no dev specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup --config --watch"
   },
+  "browserslist": "> 1%, not dead",
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
     "rollup-plugin-terser": "^7.0.2"
-  }
+  },
+  "author": "Jason Grant",
+  "license": "Apache-2.0"
 }

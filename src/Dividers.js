@@ -9,7 +9,7 @@ import CGArray from './CGArray';
  * <br />
  * The CGView Divider is a line that separates tracks or slots.
  */
-export default class Dividers {
+class Dividers {
 
   /**
    * Create a divider
@@ -152,5 +152,7 @@ export default class Dividers {
   }
 
 }
+
+export default Dividers;
 
 

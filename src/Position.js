@@ -8,7 +8,7 @@ import utils from './Utils';
  * <br />
  * Position gives a precise location on the canvas or map.
  */
-export default class Position {
+class Position {
 
   /**
    * Creating a Position. The default value for Position will be 'middel-center'.
@@ -399,4 +399,4 @@ export default class Position {
 
 }
 
-
+export default Position;

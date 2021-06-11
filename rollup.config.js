@@ -4,7 +4,7 @@ import {terser} from 'rollup-plugin-terser';
 export default {
   input: 'src/index.js',
   watch: true,
-  externals: ['d3'],
+  external: ['d3'],
   output: [
     {
       file: 'dist/cgview.js',
@@ -19,6 +19,17 @@ export default {
       name: 'CGV',
       globals: {d3: 'd3'},
       plugins: [terser()]
+    },
+    {
+      file: 'dist/cgview.esm.min.js',
+      format: 'es',
+      globals: {d3: 'd3'},
+      plugins: [terser()]
+    },
+    {
+      file: 'dist/cgview.esm.js',
+      globals: {d3: 'd3'},
+      format: 'es',
     // },
     // {
     //   file: 'dist/cgview.umd.min.js',

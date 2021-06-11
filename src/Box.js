@@ -13,7 +13,7 @@ import utils from './Utils';
  * canvas where the position stays static or to the map in which
  * case the position moves with the map.
  */
-export default class Box {
+class Box {
 
   /**
    * Create a Box
@@ -298,5 +298,7 @@ export default class Box {
   }
 
 }
+
+export default Box;
 
 

@@ -57,7 +57,7 @@ import utils from './Utils';
  * // => 0
  * ```
  */
-export default class Bookmark extends CGObject {
+class Bookmark extends CGObject {
 
   // TODO:
   //  - Offsets of 0 do not need to be saved to json as they will be the default
@@ -228,5 +228,7 @@ export default class Bookmark extends CGObject {
   }
 
 }
+
+export default Bookmark;
 
 

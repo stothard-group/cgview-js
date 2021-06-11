@@ -3,12 +3,13 @@
 //////////////////////////////////////////////////////////////////////////////
 
 import utils from './Utils';
+import * as d3 from 'd3';
 
 /**
  * <br />
  * EventMonitor monitor events on the CGView Canvas and triggers events.
  */
-export default class EventMonitor {
+class EventMonitor {
 
   constructor(viewer) {
     this._viewer = viewer;
@@ -263,4 +264,5 @@ export default class EventMonitor {
 
 }
 
+export default EventMonitor;
 

@@ -4,8 +4,9 @@
 
 import Color from './Color';
 import utils from './Utils';
+import * as d3 from 'd3';
 
-export default class Canvas {
+class Canvas {
 
   /**
    * - Adds several layers (canvases) for drawing
@@ -468,5 +469,7 @@ export default class Canvas {
 
 
 }
+
+export default Canvas;
 
 

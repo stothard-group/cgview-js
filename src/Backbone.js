@@ -11,7 +11,7 @@ import utils from './Utils';
  * The CGView Backbone is the ring that separates the direct and reverse slots
  * of the map.
  */
-export default class Backbone extends CGObject {
+class Backbone extends CGObject {
 
   /**
    * Create a Backbone
@@ -295,5 +295,7 @@ export default class Backbone extends CGObject {
   }
 
 }
+
+export default Backbone;
 
 

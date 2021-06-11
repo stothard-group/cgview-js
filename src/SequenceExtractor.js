@@ -10,7 +10,7 @@ import utils from './Utils';
  * <br />
  * The Extractor creates features or plots based on the sequence
  */
-export default class SequenceExtractor {
+class SequenceExtractor {
 
   /**
    * Create a Sequence Extractor
@@ -289,6 +289,8 @@ export default class SequenceExtractor {
   }
 
 }
+
+export default SequenceExtractor;
 
 
 // extractFeatures(options = {}) {

@@ -2,13 +2,13 @@
 // Layout for Linear Maps
 //////////////////////////////////////////////////////////////////////////////
 
-import CGArray from './CGRange';
+import CGRange from './CGRange';
 
 /**
  * <br />
  * This Layout is in control of handling and drawing the map as a line
  */
-export default class LayoutLinear {
+class LayoutLinear {
 
   /**
    * Create a Layout
@@ -162,5 +162,7 @@ export default class LayoutLinear {
 
 
 }
+
+export default LayoutLinear;
 
 

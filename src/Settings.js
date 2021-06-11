@@ -9,7 +9,7 @@ import utils from './Utils';
  * <br />
  * The CGView Settings contain general settings for the viewer.
  */
-export default class Settings {
+class Settings {
 
   /**
    * Create a the Settings
@@ -110,5 +110,7 @@ export default class Settings {
   }
 
 }
+
+export default Settings;
 
 

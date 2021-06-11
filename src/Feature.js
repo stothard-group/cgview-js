@@ -8,7 +8,7 @@ import CGRange from './CGRange';
 import Label from './Label';
 import utils from './Utils';
 
-export default class Feature extends CGObject {
+class Feature extends CGObject {
 
   /**
    * A Feature
@@ -621,5 +621,7 @@ export default class Feature extends CGObject {
   }
 
 }
+
+export default Feature;
 
 

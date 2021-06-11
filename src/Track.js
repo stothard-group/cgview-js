@@ -15,7 +15,7 @@ import utils from './Utils';
  * The Track is used for layout information
  * @extends CGObject
  */
-export default class Track extends CGObject {
+class Track extends CGObject {
 
   /**
    * Create a new track.
@@ -445,5 +445,7 @@ export default class Track extends CGObject {
   }
 
 }
+
+export default Track;
 
 

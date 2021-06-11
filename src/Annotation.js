@@ -17,8 +17,9 @@ import CGRange from './CGRange';
 /**
  * <br />
  * Annotation controls the drawing and layout of features labels
+ * @extends CGObject
  */
-export default class Annotation extends CGObject {
+class Annotation extends CGObject {
 
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
@@ -412,5 +413,8 @@ export default class Annotation extends CGObject {
   }
 
 }
+
+
+export default Annotation;
 
 

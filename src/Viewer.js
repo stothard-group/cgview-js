@@ -38,6 +38,7 @@ import Plot from './Plot';
 import Bookmark from './Bookmark';
 import CGRange from './CGRange';
 import initializeZooming from './Viewer-Zoom';
+import * as d3 from 'd3';
 
 /**
  * <br />
@@ -47,7 +48,7 @@ import initializeZooming from './Viewer-Zoom';
  * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
  * of component options can be set during construction of the Viewer.
  */
-export default class Viewer {
+class Viewer {
 
   /**
    * Create a viewer
@@ -1206,4 +1207,5 @@ export default class Viewer {
 
 }
 
+export default Viewer;
 

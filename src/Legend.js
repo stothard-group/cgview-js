@@ -9,13 +9,14 @@ import Color from './Color';
 import Font from './Font';
 import Box from './Box';
 import utils from './Utils';
+import * as d3 from 'd3';
 
 /**
  * <br />
  * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
  * @extends Caption
  */
-export default class Legend extends CGObject {
+class Legend extends CGObject {
 
   /**
    * Create a new Legend.
@@ -25,7 +26,7 @@ export default class Legend extends CGObject {
    *
    *  Option                | Default          | Description
    *  ----------------------|-------------------------------------------------
-   *  position              | "upper-right"    | Where to draw the legend. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "lower-left", "lower-center", or "lower-right".
+   *  position              | "upper-right"    | Where to draw the legend. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", or "bottom-right".
    *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
    *  defaultFont           | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
    *  defaultFontColor      | "black"          | A string describing the color. See {@link Color} for details.
@@ -518,5 +519,7 @@ export default class Legend extends CGObject {
   }
 
 }
+
+export default Legend;
 
 

@@ -42,10 +42,9 @@ import Slot from './Slot';
 import Track from './Track';
 import utils from './Utils';
 import Viewer from './Viewer';
-// import WorkerFeatureExtraction from 'WorkerFeatureExtraction';
-// import WorkerPlotExtraction from 'WorkerPlotExtraction
 
-export default {
+// export default {
+export {
   Viewer,
   utils,
   version,

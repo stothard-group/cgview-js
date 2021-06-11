@@ -30,7 +30,7 @@ import utils from './Utils';
  * CGView uses two coordinate systems: Contig space and map space. For features and plot, positions are relative to contigs. However, when drawing we use positions relative to the entire map.
  * [Image of map with contigs. Show contig/map space]
  */
-export default class Sequence extends CGObject {
+class Sequence extends CGObject {
 
   /**
    * Create a Sequence
@@ -95,6 +95,11 @@ export default class Sequence extends CGObject {
   }
 
   // TODO: Take into account lower case letters
+  /**
+   * Return the Complement the sequence
+   * @return {String} - 'Sequence'
+   * @static
+   */
   static complement(seq) {
     let compSeq = '';
     let char, compChar;
@@ -865,6 +870,8 @@ export default class Sequence extends CGObject {
   }
 
 }
+
+export default Sequence;
 
 
 // testRF(features) {

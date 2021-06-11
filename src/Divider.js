@@ -11,7 +11,7 @@ import utils from './Utils';
  * <br />
  * The CGView Divider is a line that separates tracks or slots.
  */
-export default class Divider extends CGObject {
+class Divider extends CGObject {
 
   /**
    * Create a divider
@@ -188,5 +188,7 @@ export default class Divider extends CGObject {
   }
 
 }
+
+export default Divider;
 
 

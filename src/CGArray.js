@@ -10,7 +10,7 @@
  * If a single array is provided it will be converted to an CGArray.
  * If mulitple elements are provided, they will be added to the new CGArray.
  */
-export default class CGArray extends Array {
+class CGArray extends Array {
 
   constructor(...items) {
     let elements = items;
@@ -287,5 +287,7 @@ export default class CGArray extends Array {
 
 
 }
+
+export default CGArray;
 
 

@@ -37,7 +37,7 @@
  *  highlight-end       | Called when an element is unhighlighted
  *  label-click         | Called when a annotation label is clicked
  */
-export default class Events {
+class Events {
 
   constructor() {
     this._handlers = {};
@@ -159,5 +159,7 @@ const parseNamespace = function(event) {
   const result = event.match(/\.(.*)/);
   return result ? result[1] : undefined;
 };
+
+export default Events;
 
 

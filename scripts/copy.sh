@@ -4,18 +4,18 @@
 CGVIEW_DIR=~/workspace/cgview-js
 CGVIEW_SERVER_DIR=~/workspace/proksee-server
 
-CGVIEW_JS=${CGVIEW_DIR}/src/CGView.js
+CGVIEW_JS=${CGVIEW_DIR}/dist/cgview.esm.js
 
 # Join src files into one file
 echo "Building CGView.js"
 # ls ${CGVIEW_DIR}/dev/* | sort -r | xargs cat > ${CGVIEW_DIR}/src/CGView.js
 
-echo "import * as d3 from 'd3';" > ${CGVIEW_JS}
-cat ${CGVIEW_DIR}/dev/Viewer.js >> ${CGVIEW_JS}
-cat ${CGVIEW_DIR}/dev/Events.js >> ${CGVIEW_JS}
-cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_JS}
-find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name Events.js ! -name CGObject.js | xargs cat >> ${CGVIEW_JS}
-echo "export default CGView;" >> ${CGVIEW_JS}
+# echo "import * as d3 from 'd3';" > ${CGVIEW_JS}
+# cat ${CGVIEW_DIR}/dev/Viewer.js >> ${CGVIEW_JS}
+# cat ${CGVIEW_DIR}/dev/Events.js >> ${CGVIEW_JS}
+# cat ${CGVIEW_DIR}/dev/CGObject.js >> ${CGVIEW_JS}
+# find ${CGVIEW_DIR}/dev ! -name Viewer.js ! -name Events.js ! -name CGObject.js | xargs cat >> ${CGVIEW_JS}
+# echo "export default CGView;" >> ${CGVIEW_JS}
 
 # Code for minimizing CGView
 # echo "Convert ES6 to ES5..."

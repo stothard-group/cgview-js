@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 import utils from './Utils';
+import * as d3 from 'd3';
 
 // NOTE: this method is now directly in Viewer
 // CGV.Viewer.prototype._updateZoomMax = function() {

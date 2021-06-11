@@ -12,7 +12,7 @@ import utils from './Utils';
  * A Slot is a single ring on the Map.
  * @extends CGObject
  */
-export default class Slot extends CGObject {
+class Slot extends CGObject {
 
   /**
    * Slot
@@ -303,5 +303,7 @@ export default class Slot extends CGObject {
 
 
 }
+
+export default Slot;
 
 

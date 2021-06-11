@@ -12,7 +12,7 @@ import utils from './Utils';
  * Anchors are typically used to describe the focal point on a box or where to
  * draw an attachemnt line.
  */
-export default class Anchor {
+class Anchor {
 
   /**
    * Creating an Anchor. The default value for Anchor will be 'top-left' ({xPercent: 0, yPercent: 0}).
@@ -168,5 +168,7 @@ export default class Anchor {
   }
 
 }
+
+export default Anchor;
 
 

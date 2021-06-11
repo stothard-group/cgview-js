@@ -5,8 +5,9 @@
 import CGObject from './CGObject';
 import CGArray from './CGArray';
 import utils from './Utils';
+import * as d3 from 'd3';
 
-export default class Plot extends CGObject {
+class Plot extends CGObject {
 
   /**
    * Draw a plot consisting of arcs
@@ -563,6 +564,8 @@ export default class Plot extends CGObject {
   }
 
 }
+
+export default Plot;
 
 
 // NOTE: radialDiff

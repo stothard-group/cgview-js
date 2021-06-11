@@ -3,8 +3,9 @@
 
 import Color from './Color';
 import utils from './Utils';
+import * as d3 from 'd3';
 
-export default class ColorPicker {
+class ColorPicker {
 
 
   /**
@@ -426,5 +427,7 @@ function mousePosition(element) {
   }
   return mouse;
 }
+
+export default ColorPicker;
 
 

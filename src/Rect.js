@@ -7,7 +7,7 @@
  * A Rect consists of an x and y point (the upper-left corner) and
  * a width and height.
  */
-export default class Rect {
+class Rect {
 
   /**
    * A Rect
@@ -175,4 +175,4 @@ export default class Rect {
 
 }
 
-
+export default Rect;

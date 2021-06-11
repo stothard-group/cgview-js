@@ -17,7 +17,7 @@ import Events from './Events';
  *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
  *
  */
-export default class Font extends Events  {
+class Font extends Events  {
 // class Font {
 
   /**
@@ -275,5 +275,7 @@ Font.calculateWidths = function(ctx, fonts, strings) {
   ctx.restore();
   return widths;
 };
+
+export default Font;
 
 

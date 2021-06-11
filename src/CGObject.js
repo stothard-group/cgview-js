@@ -18,7 +18,7 @@ const generateID = function() {
  * Any object can be easily returned using the cgvID and [Viewer.objects](Viewer.html#objects).
  */
 // class CGObject extends CGV.Events {
-export default class CGObject {
+class CGObject {
 
   /**
    * @param {Viewer} viewer - The viewer object.
@@ -110,5 +110,6 @@ export default class CGObject {
 
 }
 
+export default CGObject;
 
 

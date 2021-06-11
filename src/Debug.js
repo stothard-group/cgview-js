@@ -4,7 +4,7 @@
 
 import utils from './Utils';
 
-export default class Debug {
+class Debug {
 
   constructor(viewer, options = {}) {
     this.viewer = viewer;
@@ -64,5 +64,7 @@ export default class Debug {
   }
 
 }
+
+export default Debug;
 
 

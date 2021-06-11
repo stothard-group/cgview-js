@@ -7,6 +7,7 @@
 import LayoutCircular from './LayoutCircular';
 import LayoutLinear from './LayoutLinear';
 import utils from './Utils';
+import * as d3 from 'd3';
 
 /**
  * <br />
@@ -21,7 +22,7 @@ import utils from './Utils';
  *      - proportions are updated
  *      - every draw loop only if the zoom level has changed
  */
-export default class Layout {
+class Layout {
 
   /**
    * Create a Layout
@@ -1003,5 +1004,7 @@ export default class Layout {
 
 
 }
+
+export default Layout;
 
 

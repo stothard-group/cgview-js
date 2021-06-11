@@ -3,12 +3,13 @@
 //////////////////////////////////////////////////////////////////////////////
 
 import utils from './Utils';
+import * as d3 from 'd3';
 
 /**
  * <br />
  *
  */
-export default class Messenger {
+class Messenger {
 
   /**
    * Class to shoe message on viewer
@@ -147,5 +148,7 @@ export default class Messenger {
   }
 
 }
+
+export default Messenger;
 
 

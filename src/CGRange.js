@@ -13,7 +13,7 @@ import utils from './Utils';
  * (i.e., Sequence.hasMultipleContigs is false) it's possibe for the range to
  * loop around (i.e., that stop can be less than the start).
  */
-export default class CGRange {
+class CGRange {
 
   /**
    * Create a CGRange
@@ -282,5 +282,7 @@ export default class CGRange {
   }
 
 }
+
+export default CGRange;
 
 

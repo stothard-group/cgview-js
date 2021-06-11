@@ -4,7 +4,7 @@
 
 import Font from './Font';
 
-export default class Label {
+class Label {
 
   constructor(feature, options = {}) {
     this._feature = feature;
@@ -181,4 +181,5 @@ export default class Label {
 
 }
 
+export default Label;
 

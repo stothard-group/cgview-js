@@ -33,7 +33,7 @@ import utils from './Utils';
  *
  * To set the color using any of the above formats, use the [setColor]{@link Color#setColor} method.
  */
-export default class Color {
+class Color {
 
   /**
    * Create a Color using a string or object as described above.
@@ -760,5 +760,7 @@ Color.names = function() {
     yellowgreen: '#9acd32'
   };
 };
+
+export default Color;
 
 

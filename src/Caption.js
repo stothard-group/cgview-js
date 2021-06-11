@@ -7,13 +7,14 @@ import Box from './Box';
 import Font from './Font';
 import Color from './Color';
 import utils from './Utils';
+import * as d3 from 'd3';
 
 /**
  * <br />
  * The *Caption* object can be used to add additional annotation to
  * the map. A *Caption* contain one or more [CaptionItem]{@link CaptionItem} elements
  */
-export default class Caption extends CGObject {
+class Caption extends CGObject {
 
   /**
    * Create a new Caption.
@@ -351,5 +352,7 @@ export default class Caption extends CGObject {
   }
 
 }
+
+export default Caption;
 
 

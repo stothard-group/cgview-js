@@ -13,7 +13,7 @@ import utils from './Utils';
  * <br />
  * The CGView Contig class contains details for a single contig.
  */
-export default class Contig extends CGObject {
+class Contig extends CGObject {
 
   /**
    * Create a Contig
@@ -346,5 +346,7 @@ export default class Contig extends CGObject {
   }
 
 }
+
+export default Contig;
 
 

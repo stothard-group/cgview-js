@@ -9,7 +9,7 @@ import utils from './Utils';
  * <br />
  * This Layout is in control of handling and drawing the map as a circle
  */
-export default class LayoutCircular {
+class LayoutCircular {
 
   /**
    * Create a Layout
@@ -238,4 +238,5 @@ export default class LayoutCircular {
 
 }
 
+export default LayoutCircular;
 
