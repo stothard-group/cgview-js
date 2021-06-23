@@ -47,7 +47,8 @@ $(function () {
         var height = $(window).height();
         var $el = $('.navigation');
 
-        $el.height(height).find('.list').height(height - 183);
+        // $el.height(height).find('.list').height(height - 183);
+        $el.height(height).find('.list').height(height - 180); // JRG - Change height of side nav bar
     };
 
     $(window).on('resize', _onResize);

@@ -20,14 +20,30 @@
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <script src="scripts/jquery.min.js"></script>
-    <script src="scripts/bootstrap.min.js"></script>
+    <!-- <script src="scripts/bootstrap.min.js"></script> -->
+
+    <!-- NOTE:
+      I've removed the bootstrap (3.0.3) CSS and JS that came with jaguar
+      and updated to version 5.0.1. I have only added the CSS. Not sure if JS
+      is required.
+      - JRG (20210623)
+    -->
+    <!-- JRG -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../tables.css" />
+
+
+
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <!--<link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">-->
     <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
-    
+
+
+
     <?js if (env.conf.templates) { ?>
     <script>
     var config = <?js= JSON.stringify(env.conf.templates) ?>;
@@ -49,6 +65,8 @@
     <?js } ?>
 </head>
 <body>
+
+<?js= this.partial('jrg_test.tmpl', this) ?>
 
 <div id="wrap" class="clearfix">
     <?js= this.partial('navigation.tmpl', this) ?>

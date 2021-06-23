@@ -7,7 +7,10 @@
 		"cleverLinks": true,
 		"monospaceLinks": true,
 		"default": {
-			"outputSourceFiles" : true
+			"outputSourceFiles" : true,
+      "staticFiles": {
+        "include": ["./tutorials/static"]
+      }
 		},
 		"applicationName": "CGView.js",
 		"disqus": "",

@@ -1,0 +1,235 @@
+/* Some of the CSS is dependent on the Output template. Check the bottom of */
+/* the following CSS files: */
+/*   - docs/dash-jsdoc/static/styles/jsdoc-default.css */
+/*   - docs/jaguarjs-jsdoc/static/styles/jaguar.css */
+
+a.json-link span{
+  color: rgb(100, 100, 250) !important;
+  cursor: pointer;
+}
+
+
+
+/* NEW STUFF */
+
+#main {
+  position: fixed;
+  top: 50px;
+}
+
+
+/******************************/
+/* Sidebar Formatting         */
+/******************************/
+
+.nav-side-container {
+  background-color: rgb(26, 26, 26);
+  padding-top: 20px;
+}
+
+.nav-side {
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  overflow: auto;
+  flex-wrap: nowrap;
+}
+
+.nav-side .nav-link,
+.nav-side p {
+  font-size: 13px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  color: rgb(225, 225, 225);
+  padding: .2rem 0.5rem;
+  margin-left: 15px;
+}
+.nav-side p {
+  color: rgb(175, 175, 175);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.nav-side .nav-link.indent {
+  padding-left: 1.5rem;
+}
+
+.nav-side .nav-link.active {
+  /* font-weight: bold; */
+  color: orange;
+  background-color: rgb(33, 37, 41);
+  border-radius: 5px;
+}
+
+
+/******************************/
+/* Specific Table Formatting  */
+/******************************/
+/* Makes every column but the last a specific width */
+thead tr th,
+tbody tr td {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  word-break: break-all;
+}
+thead tr th:last-child,
+tbody tr td:last-child {
+  width: auto;
+  min-width: auto;
+  max-width: none;
+  word-break: break-all;
+}
+
+
+/******************************/
+/* General formatting         */
+/******************************/
+
+body {
+  font-size: 14.5px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  line-height: normal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+h1, h2 {
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+}
+
+a {
+  color: #428bca;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: #2a6496;
+  text-decoration: underline;
+}
+
+p {
+  line-height: 1.3;
+}
+
+/******************************/
+/* Markdown Output formatting */
+/******************************/
+
+#main-column {
+  height: calc(100vh - 40px);
+  overflow: auto;
+  position: relative;
+  padding: 10px;
+}
+
+#markdown-out ul {
+  margin-left: 25px;
+  margin-bottom: 10px;
+  padding-left: 0;
+}
+#markdown-out ul > li {
+  list-style-type: disc;
+}
+
+/* #markdown-out table { */
+/*   font-size: 12px; */
+/*   /* margin-left: 10px; */ */
+/*   margin-bottom: 15px; */
+/*   /* border: rgb(26, 26, 26) solid 1px; */ */
+/*  */
+/*   border-collapse: separate; */
+/*   /* border-radius: 4px; */ */
+/*   /* border-spacing: 1px 0; */ */
+/*   border-spacing: 0; */
+/*  */
+/*   width: 100%; */
+/* } */
+/* #markdown-out table th { */
+/*   height: 20px; */
+/*   /* Match Sidebar */ */
+/*   background-color: rgb(26, 26, 26); */
+/*   color: rgb(225, 225, 225); */
+/* } */
+/*  */
+/* th:first-of-type { */
+/*   border-top-left-radius: 4px; */
+/* } */
+/* th:last-of-type { */
+/*   border-top-right-radius: 4px; */
+/* } */
+/* tr:last-of-type td:first-of-type { */
+/*   border-bottom-left-radius: 4px; */
+/* } */
+/* tr:last-of-type td:last-of-type { */
+/*   border-bottom-right-radius: 4px; */
+/* } */
+/*  */
+/* tr td:first-of-type { */
+/*   border-left: rgb(26, 26, 26) solid 1px; */
+/* } */
+/* tr td:last-of-type { */
+/*   border-right: rgb(26, 26, 26) solid 1px; */
+/* } */
+/* tr:last-of-type td { */
+/*   border-bottom: rgb(26, 26, 26) solid 1px; */
+/* } */
+/*  */
+/* #markdown-out table th, */
+/* #markdown-out table td { */
+/* /*  padding: 3px 5px; */ */
+/*  padding: 4px 5px; */
+/* } */
+/*  */
+/* #markdown-out table tr:nth-child(even) { */
+/*   /* background-color: #f2f2f2; */ */
+/*   /* background-color: #e2e2e2; */ */
+/*   /* background-color: #e9e9e9; */ */
+/*   /* background-color: #efefef; */ */
+/*   background-color: #f4f4f4; */
+/* } */
+/*  */
+/* #markdown-out table tr:nth-child(odd) { */
+/*   /* background-color: #f2f2f2; */ */
+/*   /* background-color: #f8f8f8; */ */
+/* } */
+
+
+/**********************************/
+/* Code formatting (in Markdown)  */
+/**********************************/
+code[class*="language-"],
+pre[class*="language-"] {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+pre[class*="language-"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+
+/**********************************/
+/* Jaguar stuff I want site wide  */
+/**********************************/
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 4px;
+}

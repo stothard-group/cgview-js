@@ -2,10 +2,12 @@
 var self = this;
 ?>
 <div class="navigation">
-    <h3 class="applicationName"><a href="index.html"><?js= env.conf.templates.applicationName ?></a> <a href='../viewer.html' style='margin-left: 20px;font-size: 14px;'>Demo</a></h3>
+    <!-- <h3 class="applicationName"><a href="index.html"><?js= env.conf.templates.applicationName ?></a></h3> -->
+
+    <a id='nav-title-link' href='index.html'>API Home</a>
 
     <div class="search">
-        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search API">
     </div>
     <ul class="list">
     <?js

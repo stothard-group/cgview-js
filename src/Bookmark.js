@@ -88,7 +88,7 @@ class Bookmark extends CGObject {
 
   /**
    * Return the class name as a string.
-   * @return {String} - 'Bookmark'
+   * @return {String} 'Bookmark'
    */
   toString() {
     return 'Bookmark';
@@ -121,7 +121,7 @@ class Bookmark extends CGObject {
   }
 
   /**
-   * @member {Number} - Get or set the *bp*
+   * @member {Number} - Get or set the basepair position for the bookmark.
    */
   get bp() {
     return this._bp;
