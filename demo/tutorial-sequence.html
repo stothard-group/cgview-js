@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="bootstrap.min.css" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
+    <link rel="stylesheet" href="jaguar.css" />
+    <link rel="stylesheet" href="prism.css" />
+    <link rel="stylesheet" href="tutorial.css" />
+    <script src='tutorial.js'></script>
+
+
+
+    <!-- D3 -->
+    <script src="javascript/d3.v4.min.js"></script>
+    <!-- CGView -->
+    <script src='dist/cgview.min.js'></script>
+    <link rel="stylesheet" href="stylesheets/cgview.css" />
+
+    <title>CGview.js - Tutorials</title>
+  </head>
+  <body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">CGView.js</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <div class="navbar-nav">
+            <a class="nav-link active" aria-current="page" href="tutorial-basic.html">Tutorials</a>
+            <a class="nav-link" href="docs.html">Docs</a>
+            <a class="nav-link" href="api.html">API</a>
+            <a class="nav-link" href="#">JSON</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div id='main'>
+      <div class='row'>
+        <!-- Docs Side Nav -->
+        <div class='col-3 nav-side-container'>
+          <nav id="navbar-api" class="nav nav-side">
+            <p>Tutorials</p>
+            <a class="nav-link indent" href="tutorial-basic.html">Basic Map</a>
+            <a class="nav-link indent active" href="tutorial-sequence.html">Sequence Map</a>
+            <a class="nav-link indent" href="tutorial-json.html">JSON Map</a>
+            <br />
+            <p>Examples</p>
+            <a class="nav-link indent" href="#">Plasmid?</a>
+            <a class="nav-link indent" href="#">E. coli?</a>
+            <a class="nav-link indent" href="#">Contigs?</a>
+          </nav>
+        </div>
+
+        <div id='main-column' class='col-9'>
+          <!-- Processed Markdown will be inserted here -->
+          <div id='markdown-out'></div>
+          <div>
+          <!-- Generated CGView Map will be inserted here -->
+            <div id='my-viewer'></div>
+          </div>
+          <!-- Compiled final code will be inserted here -->
+          <div id='final-code'>
+            <h2>Complete Code without Comments:</h2>
+            <pre class='prettyprint'><code class='lang-js final'></code></pre>
+          </div>
+        </div>
+      </div>
+    <div>
+
+
+
+    <div id='markdown-in' style='display:none;'>
+
+# Sequence Map
+
+Maps that have a sequence provided have two main benefits: 1) when zoomed in far enough
+you will be able to see the sequence on the map; and 2) additional tracks can be easily
+created with plots (e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs)
+extracted from the directly from the sequence.
+
+## Create a new [Viewer](Viewer.html) ##
+
+In this example we will provide a random sequence using the [Sequence#random](Sequence.html#random) method.
+
+```js
+// The first argument is the id of the container that will hold the viewer.
+cgv = new CGV.Viewer('#my-viewer', {
+  height: 500,
+  width: 500,
+  sequence: {
+    // Provide the sequence.
+    seq: CGV.Sequence.random(10000)
+  }
+});
+```
+
+## Create a [Track](Track.html) with ORFs extracted from the seqeunce ##
+
+```js
+cgv.addTracks({
+  // Name for the track.
+  name: 'ORFs',
+  // Draw the features separated into 1 or more slots.
+  // Options:
+  //   - 'none': 1 slot for all features.
+  //   - 'strand': 2 slots (one for each strand).
+  //   - 'readingFrame: 6 slots (one for each reading frame).
+  separateFeaturesBy: 'readingFrame',
+  // Where to draw the track in relation to the backbone.
+  // Options: 'inside', 'outside', 'both'.
+  position: 'both',
+  // The data* properties describe what features or plot will be in the track.
+  // Type of track. Options: 'feature', 'plot'
+  // The type is set automatically when extracting from the sequence.
+  dataType: 'feature',
+  // Methods used to extract the features/plot. Options:
+  //  - 'source'   : the source property of the features/plots will be used for selection
+  //  - 'sequence' : the features/plot will be generated from the sequence
+  dataMethod: 'sequence',
+  // Key values used to extract the features/plot.
+  // For 'source', the dataKeys can be a single value or an array of values.
+  // For 'sequence', the dataKeys can be one of the following:
+  //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
+  // e.g. In this example, the ORF features will be extracted from the seqeunce.
+  dataKeys: 'orfs',
+  // Additional options may be passed to the data extractor
+  // The following are the default options
+  dataOptions: {
+    start: 'ATG',
+    stop: 'TAA,TAG,TGA',
+    minORFLength: 100
+  }
+});
+```
+
+## Create a [Track](Track.html) with a GC Skew plot extracted from the seqeunce ##
+
+```js
+cgv.addTracks({
+  name: 'GC Skew',
+  position: 'inside',
+  dataType: 'feature',
+  dataMethod: 'sequence',
+  // e.g. In this example, GC Skew plot will be extracted from the seqeunce.
+  dataKeys: 'gc-skew',
+  // By default, the step and window values are calculated based on the sequence length,
+  // but they can be overridden here.
+  dataOptions: {
+    step: 1,
+    window: 100
+  }
+});
+```
+
+## Create a [Track](Track.html) with a GC Content plot extracted from the seqeunce ##
+
+```js
+cgv.addTracks({
+  name: 'GC Content',
+  position: 'inside',
+  dataType: 'feature',
+  dataMethod: 'sequence',
+  // e.g. In this example, GC Content plot will be extracted from the seqeunce.
+  dataKeys: 'gc-content',
+  // By default, the step and window values are calculated based on the sequence length,
+  // but they can be overridden here.
+  dataOptions: {
+    step: 1,
+    window: 100
+  }
+});
+```
+
+## TODO
+* Have image of map and parts (e.g. track, slot, caption, ruler, etc)
+
+
+## Draw the Map ##
+
+```js
+cgv.draw();
+```
+
+The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
+You can zoom, using your mouse scroll wheel. The Legend colors can be changed by clicking on the swatches in the Legend.
+If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
+
+
+    </div> <!-- End of markdown in -->
+
+    <script>
+      tutorialMarkdown(marked, true);
+    </script>
+
+    <script src="prism.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    </script>
+  </body>
+</html>

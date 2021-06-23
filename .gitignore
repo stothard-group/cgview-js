@@ -12,3 +12,6 @@ OLD/
 node_modules/
 dist/
 demo/dist
+demo/api
+demo/prism.*
+demo/*.css

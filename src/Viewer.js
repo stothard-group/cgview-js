@@ -145,6 +145,12 @@ class Viewer {
 
     this.layout.updateScales();
 
+
+    // TEMP adding
+    if (options.features) {
+      this.addFeatures(options.features);
+    }
+
     // TEMP TESTING FOR EDIT MODE
     this.shiftSet = false;
     const shiftTest = (e) => {if (e.shiftKey) {console.log(e);}}

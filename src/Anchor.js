@@ -7,7 +7,7 @@ import utils from './Utils';
 
 /**
  * <br />
- * A Anchor is simply a point on a box/rect that can be described in words ('top-left')
+ * An Anchor is simply a point on a box/rect that can be described in words ('top-left')
  * or as x/y percents where 0 is the top/left and 100 is the bottom/right.
  * Anchors are typically used to describe the focal point on a box or where to
  * draw an attachemnt line.

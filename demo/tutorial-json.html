@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="bootstrap.min.css" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
+    <link rel="stylesheet" href="jaguar.css" />
+    <link rel="stylesheet" href="prism.css" />
+    <link rel="stylesheet" href="tutorial.css" />
+    <script src='tutorial.js'></script>
+
+    <!-- D3 -->
+    <script src="javascript/d3.v4.min.js"></script>
+    <!-- CGView -->
+    <script src='dist/cgview.min.js'></script>
+    <link rel="stylesheet" href="stylesheets/cgview.css" />
+
+    <title>CGview.js - Tutorials</title>
+  </head>
+  <body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">CGView.js</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <div class="navbar-nav">
+            <a class="nav-link active" aria-current="page" href="tutorial-basic.html">Tutorials</a>
+            <a class="nav-link" href="docs.html">Docs</a>
+            <a class="nav-link" href="api.html">API</a>
+            <a class="nav-link" href="#">JSON</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div id='main'>
+      <div class='row'>
+        <!-- Docs Side Nav -->
+        <div class='col-3 nav-side-container'>
+          <nav id="navbar-api" class="nav nav-side">
+            <p>Tutorials</p>
+            <a class="nav-link indent" href="tutorial-basic.html">Basic Map</a>
+            <a class="nav-link indent" href="tutorial-sequence.html">Sequence Map</a>
+            <a class="nav-link indent active" href="tutorial-json.html">JSON Map</a>
+            <br />
+            <p>Examples</p>
+            <a class="nav-link indent" href="#">Plasmid?</a>
+            <a class="nav-link indent" href="#">E. coli?</a>
+            <a class="nav-link indent" href="#">Contigs?</a>
+          </nav>
+        </div>
+
+        <div id='main-column' class='col-9'>
+          <!-- Processed Markdown will be inserted here -->
+          <div id='markdown-out'></div>
+          <div>
+          <!-- Generated CGView Map will be inserted here -->
+            <div id='my-viewer'></div>
+          </div>
+          <!-- Compiled final code will be inserted here -->
+          <div id='final-code'>
+            <h2>Complete Code without Comments:</h2>
+            <pre class='prettyprint'><code class='lang-js final'></code></pre>
+          </div>
+        </div>
+      </div>
+    <div>
+
+
+
+    <div id='markdown-in' style='display:none;'>
+
+# Map Created from JSON Data
+
+Maps can be loaded from JSON data using the [IO.loadJSON](IO.html#loadJSON).
+Typically this JSON file will have been created by CGView using the 
+[IO.downloadJSON](IO.html#downloadJSON) method. Details about the format
+can be found in the [CGView JSON](json_format.html) section.
+
+## Create a new [Viewer](Viewer.html) ##
+
+There are 2 ways to load JSON data into CGView. The first is provide the JSON
+object when initially creating the viewer (NOT IMPLEMENTED YET). The second method
+is to load the data after creating the viewer. The example below uses JSON data
+found [here](../data/tests/mito.json).
+
+NOTE: need a way to load the JSON file in demo.
+
+```js
+// First create the viewer
+cgv = new CGV.Viewer('#my-viewer', {
+  height: 500,
+  width: 500
+});
+```
+
+
+## Draw the Map ##
+
+```js
+cgv.drawFull();
+```
+
+The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
+You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
+If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
+
+    </div> <!-- End of markdown in -->
+
+    <script>
+      tutorialMarkdown(marked, true);
+    </script>
+
+    <script src="prism.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    </script>
+  </body>
+</html>
