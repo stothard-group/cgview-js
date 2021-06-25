@@ -48,17 +48,9 @@
         <!-- Docs Side Nav -->
         <div id='cgv-docs-nav' class='col-sm-3'>
           <nav id="sidebar-nav" class="nav nav-side">
-
-
+            <!-- THIS NAV CONTENT IS REPLACED BY SCRIPT BELOW -->
             <a class="nav-link" href="#lines.2">cgview</a>
             <a class="nav-link indent" href="#lines.8-12">settings</a>
-            <a class="nav-link indent" href="#lines.13-17">backbone</a>
-            <a class="nav-link indent" href="#lines.18-21">ruler</a>
-            <a class="nav-link indent" href="#lines.22-24">annotation</a>
-            <a class="nav-link indent" href="#lines.25-36">dividers</a>
-            <a class="nav-link indent" href="#lines.37-53">captions</a>
-            <!-- UPDATE JSON FIRST -->
-
             <!-- Playing with ScrollSpy. Doesn't seem to work with "." in ids -->
             <!-- <a class="nav&#45;link" href="#my&#45;cgview">cgview</a> -->
             <!-- <a class="nav&#45;link" href="#my&#45;settings">settings</a> -->
@@ -203,7 +195,8 @@ to store user/app-defined data.
                 "legend": "CDS"
             }
         ],
-        "plots": [],
+        "plots": [
+        ],
         "tracks": [
             {
                 "name": "Features",
@@ -287,20 +280,55 @@ to store user/app-defined data.
       // Convert Markdown to HTML
       var marked_ = marked;
       var marked = function(text) {
-          var tok = marked_.lexer(text);
-          text = marked_.parser(tok);
-          text = text.replace(/<pre>/ig, '<pre class="line-numbers" id="lines">');
-          return text;
-        };
+        var tok = marked_.lexer(text);
+        text = marked_.parser(tok);
+        text = text.replace(/<pre>/ig, '<pre class="line-numbers" id="lines">');
+        return text;
+      };
       var inEl = document.querySelector('#markdown-in');
       var outEl = document.querySelector('#markdown-out');
       outEl.innerHTML = marked( inEl.innerHTML );
     </script>
 
     <script>
+      // Get line number for each sidebar nav link property
+      const properties = ['settings', 'backbone', 'ruler', 'annotation', 'dividers',
+				'captions', 'legend', 'sequence', 'bookmarks', 'features', 'plots', 'tracks',
+      ];
+      const json = outEl.innerHTML.replace(/[\s\S]*"cgview"/, '"cgview"')
+      const lines = json.split(/\r?\n/);
+      const pLines = {};
+      const offset = 2;
+      properties.forEach( (property) => {
+        pLines[property] = {};
+        const re = new RegExp('(\\s*)"' + property + '": [\\{\\[]')
+        lines.forEach( (line, linenum) => {
+          if (!pLines[property].start) {
+            const match = line.match(re);
+            if (match) {
+              pLines[property].start = linenum + offset;
+              pLines[property].padding = match[1].length;
+              pLines[property].paddingRegex = new RegExp('^\\s{' + match[1].length + '}[\\}\\]]');
+            }
+          } else if (!pLines[property].stop) {
+            const paddingMatch = line.match(pLines[property].paddingRegex);
+            if (paddingMatch) {
+              pLines[property].stop = linenum + offset;
+            }
+          }
+        });
+      });
+      console.log(pLines);
       // Add line numbers to sidebar anchor links
-      console.log(outEl.innerHTML)
-     
+      const sideNav = document.querySelector('#sidebar-nav');
+      let links = '<a class="nav-link" href="#lines.2">cgview</a>'
+      properties.forEach( (property) => {
+       const pLine = pLines[property];
+        if (pLines[property]) {
+          links += `<a class="nav-link indent" href="#lines.${pLine.start}-${pLine.stop}">${property}</a>`
+        }
+      });
+      sideNav.innerHTML = links;
     </script>
 
     <!-- Bootstrap JavaScript -->
