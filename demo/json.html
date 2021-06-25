@@ -6,42 +6,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="bootstrap.min.css" /> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
     <link rel="stylesheet" href="styles/prism.css" />
     <!-- <link rel="stylesheet" href="styles/tables.css" /> -->
-    <link rel="stylesheet" href="styles/tutorial.css" />
+    <link rel="stylesheet" href="styles/general.css" />
+    <script src='scripts/marked.min.js'></script>
+    <script src='scripts/general.js'></script>
 
-    <title>CGview.js - Docs</title>
+    <title>CGview.js - JSON</title>
   </head>
   <body>
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.html">CGView.js</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">CGView.js</a>
+        <!-- Docs Toggle -->
+        <button class="btn cgv-sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cgv-docs-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <div class="navbar-nav">
             <a class="nav-link" href="tutorials/tutorial-basic.html">Tutorials</a>
             <a class="nav-link" href="docs.html">Docs</a>
             <a class="nav-link" href="api/index.html">API</a>
-            <a class="nav-link active" aria-current="page" href="json.html">JSON</a>
+            <a class="nav-link active" href="json.html">JSON</a>
           </div>
         </div>
       </div>
     </nav>
 
-  <div id='main' class='cgv-tutorial'>
-    <div id='main-column'>
-      <div id='markdown-out'></div>
-    </div>
-  </div>
 
-<div id='markdown-in' style='display:none;'>
+
+
+    <div id='main'>
+      <div class='row'>
+        <!-- Docs Side Nav -->
+        <div id='cgv-docs-nav' class='col-sm-3'>
+          <nav id="sidebar-nav" class="nav nav-side">
+
+
+            <a class="nav-link" href="#lines.2">cgview</a>
+            <a class="nav-link indent" href="#lines.8-12">settings</a>
+            <a class="nav-link indent" href="#lines.13-17">backbone</a>
+            <a class="nav-link indent" href="#lines.18-21">ruler</a>
+            <a class="nav-link indent" href="#lines.22-24">annotation</a>
+            <a class="nav-link indent" href="#lines.25-36">dividers</a>
+            <a class="nav-link indent" href="#lines.37-53">captions</a>
+            <!-- UPDATE JSON FIRST -->
+
+            <!-- Playing with ScrollSpy. Doesn't seem to work with "." in ids -->
+            <!-- <a class="nav&#45;link" href="#my&#45;cgview">cgview</a> -->
+            <!-- <a class="nav&#45;link" href="#my&#45;settings">settings</a> -->
+            <!-- <a class="nav&#45;link" href="#lines.2">cgview</a> -->
+            <!-- <a class="nav&#45;link" href="#lines.8&#45;12">settings</a> -->
+          </nav>
+        </div>
+
+        <!-- <div id='main&#45;column' class='col' data&#45;bs&#45;spy="scroll" data&#45;bs&#45;target="#sidebar&#45;nav" data&#45;bs&#45;offset="20"> -->
+        <div id='main-column' class='col'>
+          <!-- Processed Markdown will be inserted here -->
+          <div id='markdown-out' >
+          </div>
+        </div>
+      </div>
+    <div>
+
+
+
+    <div id='markdown-in' style='display:none;'>
+
+# JSON
 
 Data can be loaded from a JavaScript object literal or a JSON string using [IO.loadJSON](IO.html#loadJSON).
 The two formats are very similar and can be converted using JSON.parse and JSON.stringify.
@@ -50,14 +89,15 @@ Click on a key (e.g. backbone, captions, etc) for options and defaults. There ar
 for most sections of the JSON: _visible_ (Default: true) and _meta_ (Default: {}). The _meta_ key is a place
 to store user/app-defined data.
 
-```js
+```json
 {
     "cgview": {
         "version": "0.2",
         "created": "2017-06-21 13:29:07",
         "updated": "2017-06-21 13:29:07",
-        "id": "f078a696a89c4c97d526f588933ddcbafd6ba037",
         "name": "My Cool Map",
+        "id": "f078a696a89c4c97d526f588933ddcbafd6ba037",
+        "geneticCode": "11",
         "settings": {
             "backgroundColor": "rgba(255,255,255,1)",
             "showShading": true,
@@ -89,54 +129,63 @@ to store user/app-defined data.
         },
         "captions": [
             {
-                "name": "Title",
+                "name": "Escherichia coli B171 plasmid pB171_90",
                 "position": "lower-center",
                 "textAlignment": "left",
                 "font": "sans-serif,plain,24",
-                "backgroundColor": "rgba(255,255,255,0.4)",
-                "items": [
-                    {
-                        "name": "Reclinomonas americana mitochondrion, complete genome.",
-                        "font": "sans-serif,plain,24",
-                        "fontColor": "rgba(255,165,0,1)",
-                        "textAlignment": "left"
-                    }
-                ]
+                "fontColor": "rgba(255,165,0,1)",
+                "backgroundColor": "rgba(255,255,255,0.4)"
             }
         ],
         "legend": {
-            "name": "Legend",
             "position": "upper-right",
             "textAlignment": "left",
-            "font": "sans-serif,plain,14",
+            "defaultFont": "sans-serif,plain,14",
+            "defaultFontColor": "rgba(0,0,0,1)",
             "backgroundColor": "rgba(255,255,255,0.75)",
             "items": [
                 {
                     "name": "CDS",
-                    "font": "sans-serif,plain,14",
-                    "fontColor": "rgba(0,0,0,1)",
-                    "textAlignment": "left",
-                    "swatchColor": "rgba(0,0,153,0.5)",
                     "decoration": "arrow"
+                    "swatchColor": "rgba(0,0,153,0.5)",
                 },
                 {
                     "name": "rRNA",
-                    "font": "sans-serif,plain,14",
-                    "fontColor": "rgba(0,0,0,1)",
-                    "textAlignment": "left",
-                    "swatchColor": "rgba(0,153,53,0.5)",
                     "decoration": "arrow"
+                    "swatchColor": "rgba(0,153,53,0.5)",
+                    "font": "sans-serif,plain,16",
+                    "fontColor": "rgba(100,0,0,1)",
+                    "textAlignment": "left",
                 }
             ]
         },
         "sequence": {
-            "font": "sans-serif,plain,10",
             "color": "rgb(0,0,0)",
-            "seq": "TAAAAAAATCGGTATAATTAAGAATTTTTTTCTTAAATATGCAATAAAAATATTATAAA..."
+            "font": "sans-serif,plain,14",
+            "contigs": [
+                {
+                    "id": "CP021212",
+                    "length": 90229,
+                    "name": "CP021212",
+                    "orientation": "+",
+                    "seq": "ATGCCAACTTCATTATCTGTGCCCAGAGACAGCGCATTCAGCAGT..."
+                }
+            ]
         },
+        "bookmarks": [
+            {
+                "bbOffset": 86.75,
+                "bp": 5617,
+                "favorite": false,
+                "format": "circular",
+                "name": "Bookmark-1",
+                "shortcut": "1",
+                "zoom": 1.685
+            }
+        ],
         "features": [
             {
-                "label": "rnl",
+                "name": "rnl",
                 "type": "rRNA",
                 "start": 56,
                 "stop": 2806,
@@ -145,7 +194,7 @@ to store user/app-defined data.
                 "legend": "rRNA"
             },
             {
-                "label": "nad8",
+                "name": "nad8",
                 "type": "CDS",
                 "start": 3252,
                 "stop": 3740,
@@ -160,7 +209,8 @@ to store user/app-defined data.
                 "name": "Features",
                 "separateFeaturesBy": "strand",
                 "position": "both",
-                "ataType": "feature",
+                "thicknessRatio": 1,
+                "dataType": "feature",
                 "dataMethod": "source",
                 "dataKeys": "sequence-features"
             }
@@ -169,50 +219,93 @@ to store user/app-defined data.
 }
 ```
 
-</div>
+<br /><br />
+
+    </div> <!-- End of markdown in -->
+    <script>
+      tutorialMarkdown(marked);
+    </script>
 
     <script src="scripts/prism.js"></script>
-<script>
-	// Convert Markdown to HTML
-  // https://github.com/chjj/marked
-  //marked.setOptions({
-  //  sanitize: true
-  //});
-	var marked_ = marked;
-	var marked = function(text) {
-			var tok = marked_.lexer(text);
-			text = marked_.parser(tok);
-			text = text.replace(/<pre>/ig, '<pre class="prettyprint">');
-      text = text.replace(/&amp;gt;/g, '>');
-      text = text.replace(/&amp;lt;/g, '<');
-      // var re = /\[(.*?)\]\((.*?)\)/g;
-      // text = text.replace(re, "<a href='$2'>$1</a>");
+    <script>
+      const convertPropertiesToLinks = (content) => {
+        switch(content) {
+          case '"cgview"':      return `<a class="json-link" href="api/Viewer.html">${content}</a>`;
+          case '"settings"':    return `<a class="json-link" href="api/Settings.html">${content}</a>`;
+          case '"backbone"':    return `<a class="json-link" href="api/Backbone.html">${content}</a>`;
+          case '"bookmarks"':   return `<a class="json-link" href="api/Bookmark.html">${content}</a>`;
+          case '"ruler"':       return `<a class="json-link" href="api/Ruler.html">${content}</a>`;
+          case '"annotation"':  return `<a class="json-link" href="api/Annotation.html">${content}</a>`;
+          case '"dividers"':    return `<a class="json-link" href="api/Dividers.html">${content}</a>`;
+          case '"captions"':    return `<a class="json-link" href="api/Caption.html">${content}</a>`;
+          case '"legend"':      return `<a class="json-link" href="api/Legend.html">${content}</a>`;
+          case '"items"':       return `<a class="json-link" href="api/LegendItem.html">${content}</a>`;
+          case '"sequence"':    return `<a class="json-link" href="api/Sequence.html">sequence"</a>`;
+          case '"contigs"':     return `<a class="json-link" href="api/Contig.html">${content}</a>`;
+          case '"features"':    return `<a class="json-link" href="api/Feature.html">${content}</a>`;
+          case '"plots"':       return `<a class="json-link" href="api/Plot.html">${content}</a>`;
+          case '"tracks"':      return `<a class="json-link" href="api/Track.html">${content}</a>`;
 
-      text = text.replace('cgview:', "<a class='json-link' href='Viewer.html'>cgview</a>:");
-      text = text.replace('settings:', "<a class='json-link' href='Settings.html'>settings</a>:");
-      text = text.replace('backbone:', "<a class='json-link' href='Backbone.html'>backbone</a>:");
-      text = text.replace('ruler:', "<a class='json-link' href='Ruler.html'>ruler</a>:");
-      text = text.replace('annotation:', "<a class='json-link' href='Annotation.html'>annotation</a>:");
-      text = text.replace('dividers:', "<a class='json-link' href='Divider.html'>dividers</a>:");
-      text = text.replace('captions:', "<a class='json-link' href='Caption.html'>captions</a>:");
-      text = text.replace('items:', "<a class='json-link' href='CaptionItem.html'>items</a>:");
-      text = text.replace('legend:', "<a class='json-link' href='Legend.html'>legend</a>:");
-      text = text.replace('items:', "<a class='json-link' href='LegendItem.html'>items</a>:");
-      text = text.replace('sequence:', "<a class='json-link' href='Sequence.html'>sequence</a>:");
-      text = text.replace('features:', "<a class='json-link' href='Feature.html'>features</a>:");
-      text = text.replace('plots:', "<a class='json-link' href='Plot.html'>plots</a>:");
-      text = text.replace('tracks:', "<a class='json-link' href='Track.html'>tracks</a>:");
-      text = text.replace(/color:/g, "<a class='json-link' href='Color.html'>color</a>:");
-      text = text.replace(/font:/g, "<a class='json-link' href='Font.html'>font</a>:");
-      text = text.replace(/track:/g, "<a class='json-link' href='Divider.html'>track</a>:");
-      text = text.replace(/slot:/g, "<a class='json-link' href='Divider.html'>slot</a>:");
+          case '"color"':
+          case '"fontColor"':
+          case '"backgroundColor"':
+          case '"defaultFontColor"':
+          case '"swatchColor"': return `<a class="json-link" href="api/Color.html">${content}</a>`;
 
-			return text;
-		};
-  var inEl = document.querySelector('#markdown-in');
-  var outEl = document.querySelector('#markdown-out');
-  outEl.innerHTML = marked( inEl.innerHTML.replace(/"(.*)":/g, '$1:') );
+          case '"font"':
+          case '"defaultFont"':        return `<a class="json-link" href="api/Font.html">${content}</a>`;
 
-</script>
+          case '"track"':       return `<a class="json-link" href="api/Divider.html">${content}</a>`;
+          case '"slot"':        return `<a class="json-link" href="api/Divider.html">${content}</a>`;
+          case '"position"':    return `<a class="json-link" href="api/Position.html">${content}</a>`;
 
+          // Playing with scrollspy
+          // case '"cgview"': return '<a id="my-cgview" class="json-link" href="api/Viewer.html">"cgview"</a>';
+          // case '"settings"': return '<a id="my-settings" class="json-link" href="api/Settings.html">"settings"</a>';
+          // case '"cgview"': return '<div class="my-test" id="my-cgview"></div><a id="lines-bob" class="json-link" href="api/Viewer.html">"cgview"</a>';
+          // case '"settings"': return '<div class="my-test" id="my-settings"></div><a id="lines-bob" class="json-link" href="api/Settings.html">"settings"</a>';
+          // case '"cgview"': return '<div class="my-test" id="lines.2"></div><a id="lines-bob" class="json-link" href="api/Viewer.html">"cgview"</a>';
+          // case '"settings"': return '<div class="my-test" id="lines.8-12"></div><a id="lines-bob" class="json-link" href="api/Settings.html">"settings"</a>';
+
+        }
+      }
+
+      // The following links were helpful:
+      // https://prismjs.com/extending.html#writing-plugins
+      // https://gordonlesti.com/prism-hooks-list/
+      Prism.hooks.add('wrap', function(env) {
+        if (env.type === 'property') {
+          const link = convertPropertiesToLinks(env.content);
+          if (link) {
+            env.content = link;
+          }
+        }
+      });
+    </script>
+
+    <script>
+      // Convert Markdown to HTML
+      var marked_ = marked;
+      var marked = function(text) {
+          var tok = marked_.lexer(text);
+          text = marked_.parser(tok);
+          text = text.replace(/<pre>/ig, '<pre class="line-numbers" id="lines">');
+          return text;
+        };
+      var inEl = document.querySelector('#markdown-in');
+      var outEl = document.querySelector('#markdown-out');
+      outEl.innerHTML = marked( inEl.innerHTML );
+    </script>
+
+    <script>
+      // Add line numbers to sidebar anchor links
+      console.log(outEl.innerHTML)
+     
+    </script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+  </body>
 </html>
+

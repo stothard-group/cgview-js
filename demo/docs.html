@@ -6,15 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="bootstrap.min.css" /> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.1/marked.min.js"></script>
-    <!-- <link rel="stylesheet" href="jaguar.css" /> -->
     <link rel="stylesheet" href="styles/prism.css" />
     <link rel="stylesheet" href="styles/tables.css" />
-    <link rel="stylesheet" href="styles/tutorial.css" />
-    <script src='scripts/tutorial.js'></script>
+    <link rel="stylesheet" href="styles/general.css" />
+    <script src='scripts/marked.min.js'></script>
+    <script src='scripts/general.js'></script>
 
     <title>CGview.js - Docs</title>
   </head>
@@ -22,14 +20,19 @@
     <!-- Nav Bar -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.html">CGView.js</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">CGView.js</a>
+        <!-- Docs Toggle -->
+        <button class="btn cgv-sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cgv-docs-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <div class="navbar-nav">
             <a class="nav-link" href="tutorials/tutorial-basic.html">Tutorials</a>
-            <a class="nav-link active" aria-current="page" href="docs.html">Docs</a>
+            <a class="nav-link active" href="docs.html">Docs</a>
             <a class="nav-link" href="api/index.html">API</a>
             <a class="nav-link" href="json.html">JSON</a>
           </div>
@@ -37,11 +40,12 @@
       </div>
     </nav>
 
+
     <div id='main'>
       <div class='row'>
         <!-- Docs Side Nav -->
-        <div class='col-3 nav-side-container'>
-          <nav id="navbar-api" class="nav nav-side">
+        <div id='cgv-docs-nav' class='col-sm-3'>
+          <nav id="sidebar-nav" class="nav nav-side">
             <a class="nav-link" href="#overview">Overview</a>
             <a class="nav-link" href="#record-actions">Record Actions</a>
             <a class="nav-link indent" href="#adding-records">Add</a>
@@ -71,7 +75,7 @@
           </nav>
         </div>
 
-        <div id='main-column' class='col-9' data-bs-spy="scroll" data-bs-target="#navbar-api" data-bs-offset="20">
+        <div id='main-column' class='col' data-bs-spy="scroll" data-bs-target="#sidebar-nav" data-bs-offset="20">
           <!-- Processed Markdown will be inserted here -->
           <div id='markdown-out' >
           </div>
@@ -613,72 +617,8 @@ Attribute                          | Type      | Description
 
     <script src="scripts/prism.js"></script>
 
-
-
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
-    <script>
-
-      function hotfixScrollSpy() {
-        var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
-        let curScroll = getCurrentScroll();
-        dataSpyList.forEach(function (dataSpyEl) {
-          let offsets = bootstrap.ScrollSpy.getInstance(dataSpyEl)['_offsets'];
-          for(let i = 0; i < offsets.length; i++){
-            offsets[i] += curScroll;
-          }
-        })
-      }
-
-      function getCurrentScroll() {
-        return window.pageYOffset || document.documentElement.scrollTop;
-      }
-
-      window.onload = function () {
-        // new bootstrap.ScrollSpy(document.body, {
-        //   target: '#nameOfScrollSpyTargetClass'
-        // });  hotfixScrollSpy();
-        setTimeout( () => {
-          hotfixScrollSpy();
-          window.scrollBy(0,1);
-          }, 50);
-        // hotfixScrollSpy();
-        // window.scrollBy(0,1);
-      }
-
-      window.onresize = function () {
-        setTimeout( () => {
-          hotfixScrollSpy();
-          window.scrollBy(0,1);
-          }, 50);
-        // hotfixScrollSpy();
-        // window.scrollBy(0,1);
-      }
-      // $(window).resize(function() {
-      // window.onresize = function () {
-      //   'use strict';
-      //   const dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'));
-      //   dataSpyList.forEach(function(dataSpyEl) {
-      //     bootstrap.ScrollSpy.getInstance(dataSpyEl).refresh();
-      //   });
-      //   hotfixScrollSpy();
-      //   window.scrollBy(0, 1);
-      // });
-      // function reportWindowSize() {
-      //   var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
-      //   // heightOutput.textContent = window.innerHeight;
-      //   // widthOutput.textContent = window.innerWidth;
-      //   console.log('resize...')
-      //   dataSpyList.forEach(function (dataSpyEl) {
-      //     bootstrap.ScrollSpy.getInstance(dataSpyEl)
-      //       .refresh()
-      //    console.log('here')
-      //   });
-      // }
-      //
-      // window.onresize = reportWindowSize;
-
-    </script>
   </body>
 </html>

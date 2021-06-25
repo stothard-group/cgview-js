@@ -20,8 +20,8 @@
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <script src="scripts/jquery.min.js"></script>
-    <!-- <script src="scripts/bootstrap.min.js"></script> -->
 
+    <!-- <script src="scripts/bootstrap.min.js"></script> -->
     <!-- NOTE:
       I've removed the bootstrap (3.0.3) CSS and JS that came with jaguar
       and updated to version 5.0.1. I have only added the CSS. Not sure if JS
@@ -31,8 +31,9 @@
     <!-- JRG -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../tables.css" />
-
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/general.js'></script>
 
 
     <!--[if lt IE 9]>
@@ -66,11 +67,16 @@
 </head>
 <body>
 
-<?js= this.partial('jrg_test.tmpl', this) ?>
+<?js= this.partial('cgv_navbar.tmpl', this) ?>
 
-<div id="wrap" class="clearfix">
-    <?js= this.partial('navigation.tmpl', this) ?>
-    <div class="main">
+<!-- Add 'jaguar' class to provide API-specific styling - JRG -->
+<div id="wrap" class="clearfix jaguar">
+    <div id="main">
+        <div class="row">
+          <?js= this.partial('cgv_sidebar.tmpl', this) ?>
+
+        <div id='main-column' class='main col'>
+
         <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
         <?js= content ?>
 
@@ -87,6 +93,10 @@
         </footer>
     </div>
 </div>
+</div>
+</div>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script>prettyPrint();</script>
 <script src="scripts/linenumber.js"></script>
 <script src="scripts/main.js"></script>
