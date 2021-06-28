@@ -50,7 +50,7 @@ function tutorialMarkdown(marked, addFinalCode) {
 
 // Collapse Side Nav if narrow enough on window resize 
 function sideNavCheck() {
-  const sidenav = document.getElementById('cgv-docs-nav');
+  const sidenav = document.getElementById('sidebar-nav');
   if (window.innerWidth < 576) {
     sidenav.classList.add("collapse");
   } else {
@@ -63,62 +63,37 @@ window.addEventListener("resize", sideNavCheck)
 setTimeout(sideNavCheck);
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Bootstrap Scroll Spy fix
-////////////////////////////////////////////////////////////////////////////////
-
-// Scroll Spy messes up if a link in the side nav has been clicked
-// ie. The page is now an anchor    ..../some_page.html#my_anchor
-function hotfixScrollSpy() {
-  var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
-  let curScroll = getCurrentScroll();
-  dataSpyList.forEach(function (dataSpyEl) {
-    let offsets = bootstrap.ScrollSpy.getInstance(dataSpyEl)['_offsets'];
-    for(let i = 0; i < offsets.length; i++){
-      offsets[i] += curScroll;
-    }
-  })
-}
-function getCurrentScroll() {
-  return window.pageYOffset || document.documentElement.scrollTop;
-}
-window.onload = function () {
-  setTimeout( () => {
-    hotfixScrollSpy();
-    window.scrollBy(0,1);
-  }, 50);
-}
-window.onresize = function () {
-  setTimeout( () => {
-    hotfixScrollSpy();
-    window.scrollBy(0,1);
-  }, 50);
-}
-// $(window).resize(function() {
-// window.onresize = function () {
-//   'use strict';
-//   const dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'));
-//   dataSpyList.forEach(function(dataSpyEl) {
-//     bootstrap.ScrollSpy.getInstance(dataSpyEl).refresh();
-//   });
-//   hotfixScrollSpy();
-//   window.scrollBy(0, 1);
-// });
-// function reportWindowSize() {
-//   var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
-//   // heightOutput.textContent = window.innerHeight;
-//   // widthOutput.textContent = window.innerWidth;
-//   console.log('resize...')
-//   dataSpyList.forEach(function (dataSpyEl) {
-//     bootstrap.ScrollSpy.getInstance(dataSpyEl)
-//       .refresh()
-//    console.log('here')
-//   });
-// }
+// ////////////////////////////////////////////////////////////////////////////////
+// // Bootstrap Scroll Spy fix
+// ////////////////////////////////////////////////////////////////////////////////
 //
-// window.onresize = reportWindowSize;
-
-
+// // Scroll Spy messes up if a link in the side nav has been clicked
+// // ie. The page is now an anchor    ..../some_page.html#my_anchor
+// function hotfixScrollSpy() {
+//   var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
+//   let curScroll = getCurrentScroll();
+//   dataSpyList.forEach(function (dataSpyEl) {
+//     let offsets = bootstrap.ScrollSpy.getInstance(dataSpyEl)['_offsets'];
+//     for(let i = 0; i < offsets.length; i++){
+//       offsets[i] += curScroll;
+//     }
+//   })
+// }
+// function getCurrentScroll() {
+//   return window.pageYOffset || document.documentElement.scrollTop;
+// }
+// window.onload = function () {
+//   setTimeout( () => {
+//     hotfixScrollSpy();
+//     window.scrollBy(0,1);
+//   }, 50);
+// }
+// window.onresize = function () {
+//   setTimeout( () => {
+//     hotfixScrollSpy();
+//     window.scrollBy(0,1);
+//   }, 50);
+// }
 
 
 

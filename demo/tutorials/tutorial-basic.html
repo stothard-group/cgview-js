@@ -31,7 +31,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">CGView.js</a>
         <!-- Docs Toggle -->
-        <button class="btn cgv-sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cgv-docs-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+        <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
         </button>
@@ -46,41 +46,34 @@
       </div>
     </nav>
 
+    <!-- Side Nav -->
+    <nav id='sidebar-nav'>
+      <ul id='gumshoe-list' class='sidebar-list'>
+        <p>Tutorials</p>
+        <li class='active'><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
+        <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
+        <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
+        <br />
+        <p>Examples</p>
+        <li><a class="side-link indent" href="#">Plasmi?</a></li>
+        <li><a class="side-link indent" href="#">E. coli?</a></li>
+        <li><a class="side-link indent" href="#">Contigs?</a></li>
+      </ul>
+    </nav>
 
-    <div id='main'>
-      <div class='row'>
-        <!-- Docs Side Nav -->
-        <div id='cgv-docs-nav' class='col-sm-3'>
-          <nav id="sidebar-nav" class="nav nav-side">
-            <p>Tutorials</p>
-            <a class="nav-link indent active" href="tutorial-basic.html">Basic Map</a>
-            <a class="nav-link indent" href="tutorial-sequence.html">Sequence Map</a>
-            <a class="nav-link indent" href="tutorial-json.html">JSON Map</a>
-            <br />
-            <p>Examples</p>
-            <a class="nav-link indent" href="#">Plasmid?</a>
-            <a class="nav-link indent" href="#">E. coli?</a>
-            <a class="nav-link indent" href="#">Contigs?</a>
-          </nav>
-        </div>
-
-        <div id='main-column' class='col'>
-          <!-- Processed Markdown will be inserted here -->
-          <div id='markdown-out'></div>
-          <div>
-          <!-- Generated CGView Map will be inserted here -->
-            <div id='my-viewer'></div>
-          </div>
-          <!-- Compiled final code will be inserted here -->
-          <div id='final-code'>
-            <h2>Complete Code without Comments:</h2>
-            <pre class='prettyprint'><code class='lang-js final'></code></pre>
-          </div>
-        </div>
+    <main>
+      <!-- Processed Markdown will be inserted here -->
+      <div id='markdown-out' >
       </div>
-    <div>
-
-
+      <!-- Generated CGView Map will be inserted here -->
+        <div id='my-viewer'></div>
+      </div>
+      <!-- Compiled final code will be inserted here -->
+      <div id='final-code'>
+        <h2>Complete Code without Comments:</h2>
+        <pre class='prettyprint'><code class='lang-js final'></code></pre>
+      </div>
+    </main>
 
     <div id='markdown-in' style='display:none;'>
 

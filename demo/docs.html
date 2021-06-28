@@ -12,12 +12,13 @@
     <link rel="stylesheet" href="styles/tables.css" />
     <link rel="stylesheet" href="styles/general.css" />
     <script src='scripts/marked.min.js'></script>
+    <script src='scripts/gumshoe.min.js'></script>
     <script src='scripts/general.js'></script>
 
     <title>CGview.js - Docs</title>
   </head>
   <body>
-    <!-- Nav Bar -->
+    <!-- Menu Nav Bar -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +26,7 @@
         </button>
         <a class="navbar-brand" href="index.html">CGView.js</a>
         <!-- Docs Toggle -->
-        <button class="btn cgv-sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cgv-docs-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+        <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav"  aria-expanded="false" aria-label="Toggle docs navigation">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
         </button>
@@ -40,52 +41,48 @@
       </div>
     </nav>
 
+    <!-- Side Nav -->
+    <nav id='sidebar-nav'>
+      <ul id='gumshoe-list' class='sidebar-list'>
+        <li><a class="side-link" href="#section-overview">Overview</a></li>
+        <li><a class="side-link" href="#section-record-actions">Record Actions</a></li>
+        <li><a class="side-link indent" href="#section-adding-records">Add</a></li>
+        <li><a class="side-link indent" href="#section-removing-records">Remove</a></li>
+        <li><a class="side-link indent" href="#section-updating-records">Update</a></li>
+        <li><a class="side-link indent" href="#section-reordering-records">Reorder</a></li>
+        <li><a class="side-link indent" href="#section-reading-records">Read</a></li>
+        <li><a class="side-link" href="#section-record-action-advantages">Advantages</a></li>
+        <li><a class="side-link" href="#section-events">Events</a></li>
+        <li><a class="side-link" href="#section-dirty-data">Dirty Data</a></li>
+        <li><a class="side-link" href="#section-details-by-record-type">Record Types</a></li>
+        <li><a class="side-link indent" href="#section-viewer">Viewer</a></li>
+        <li><a class="side-link indent" href="#section-features">Features</a></li>
+        <li><a class="side-link indent" href="#section-plots">Plots</a></li>
+        <li><a class="side-link indent" href="#section-tracks">Tracks</a></li>
+        <li><a class="side-link indent" href="#section-settings">Settings</a></li>
+        <li><a class="side-link indent" href="#section-legend">Legend</a></li>
+        <li><a class="side-link indent" href="#section-legend-items">Legend Items</a></li>
+        <li><a class="side-link indent" href="#section-captions">Captions</a></li>
+        <li><a class="side-link indent" href="#section-annotation">Annotation</a></li>
+        <li><a class="side-link indent" href="#section-bookmarks">Bookmarks</a></li>
+        <li><a class="side-link indent" href="#section-backbone">Backbone</a></li>
+        <li><a class="side-link indent" href="#section-sequence">Sequence</a></li>
+        <li><a class="side-link indent" href="#section-contigs">Contigs</a></li>
+        <li><a class="side-link indent" href="#section-ruler">Ruler</a></li>
+        <li><a class="side-link indent" href="#section-dividers">Dividers</a></li>
+      </ul>
+    </nav>
 
-    <div id='main'>
-      <div class='row'>
-        <!-- Docs Side Nav -->
-        <div id='cgv-docs-nav' class='col-sm-3'>
-          <nav id="sidebar-nav" class="nav nav-side">
-            <a class="nav-link" href="#overview">Overview</a>
-            <a class="nav-link" href="#record-actions">Record Actions</a>
-            <a class="nav-link indent" href="#adding-records">Add</a>
-            <a class="nav-link indent" href="#removing-records">Remove</a>
-            <a class="nav-link indent" href="#updating-records">Update</a>
-            <a class="nav-link indent" href="#reordering-records">Reorder</a>
-            <a class="nav-link indent" href="#reading-records">Read</a>
-            <a class="nav-link" href="#record-action-advantages">Advantages</a>
-            <a class="nav-link" href="#events">Events</a>
-            <a class="nav-link" href="#dirty-data">Dirty Data</a>
-            <a class="nav-link" href="#details-by-record-type">Record Types</a>
-            <a class="nav-link indent" href="#viewer">Viewer</a>
-            <a class="nav-link indent" href="#features">Features</a>
-            <a class="nav-link indent" href="#plots">Plots</a>
-            <a class="nav-link indent" href="#tracks">Tracks</a>
-            <a class="nav-link indent" href="#settings-general-">Settings</a>
-            <a class="nav-link indent" href="#legend">Legend</a>
-            <a class="nav-link indent" href="#legend-items">Legend Items</a>
-            <a class="nav-link indent" href="#captions">Captions</a>
-            <a class="nav-link indent" href="#annotation">Annotation</a>
-            <a class="nav-link indent" href="#bookmarks">Bookmarks</a>
-            <a class="nav-link indent" href="#backbone">Backbone</a>
-            <a class="nav-link indent" href="#sequence">Sequence</a>
-            <a class="nav-link indent" href="#contigs">Contigs</a>
-            <a class="nav-link indent" href="#ruler">Ruler</a>
-            <a class="nav-link indent" href="#dividers">Dividers</a>
-          </nav>
-        </div>
 
-        <div id='main-column' class='col' data-bs-spy="scroll" data-bs-target="#sidebar-nav" data-bs-offset="20">
-          <!-- Processed Markdown will be inserted here -->
-          <div id='markdown-out' >
-          </div>
-        </div>
+    <main>
+      <!-- Processed Markdown will be inserted here -->
+      <div id='markdown-out' >
       </div>
-    <div>
-
-
+    </main>
 
     <div id='markdown-in' style='display:none;'>
+
+<section id="section-overview">
 
 # Overview
 
@@ -98,7 +95,13 @@ it is not recommended. The action descriptions below use Features and
 Tracks for the examples.  Action details by record type are also provided.
 All the examples use a Viewer instance: <em>cgv</em>.
 
+</section>
+<section id="section-record-actions">
+
 # Record Actions
+
+</section>
+<section id="section-adding-records">
 
 ## Adding Records
 Adding records is done through methods on the Viewer Instance (e.g.
@@ -132,6 +135,9 @@ cgv.addFeatures(featureData);
 new CGV.Feature(cgv, featureData);
 ```
 
+</section>
+<section id="section-removing-records">
+
 ## Removing Records
 Removing records is done through methods on the Viewer Instance (e.g. removeFeatures)
 or directly on the record. Removing records will trigger a single event (e.g. features-remove).
@@ -146,6 +152,9 @@ feature.remove();
 features = [feature_1, feature_2, features_3];
 cgv.removeFeatures(features);
 ```
+
+</section>
+<section id="section-updating-records">
 
 ## Updating Records
 Updating records is done through methods on the Viewer Instance (e.g. updateFeatures)
@@ -174,6 +183,9 @@ const updates = {
 cgv.updateFeatures(updates);
 ```
 
+</section>
+<section id="section-reordering-records">
+
 ## Reordering Records
 For some records, the order is important (e.g. Tracks, Contigs, etc).
 Changing the order is done through methods on the Viewer Instance (e.g. moveTracks)
@@ -188,6 +200,9 @@ cgv.moveTrack(track.index, newIndex)
 track.move(newIndex);
 ```
 
+</section>
+<section id="section-reading-records">
+
 ## Reading Records
 Accessing records is done through methods on the Viewer Instance.
 
@@ -200,6 +215,8 @@ viewer.features(1)
 viewer.features('my_feature')
 ```
 
+</section>
+<section id="section-record-action-advantages">
 
 # Record Action Advantages
 
@@ -213,7 +230,7 @@ However, there are several advantages of using record actions:
 
 - More than one property can be changed at once.
 ```js
-feature.update({start: 1234, end: 2345});
+feature.update({start: 1234, stop: 2345});
 ```
 - An error will be returned if the property does not exist.
 ```js
@@ -239,6 +256,8 @@ cgv.undo();
 cgv.redo();
 ```
 
+</section>
+<section id="section-events">
 
 # Events
 ## Triggering Events
@@ -250,6 +269,9 @@ feature.update();
 // Same as
 cgv.trigger('features-update');
 ```
+
+</section>
+<section id="section-dirty-data">
 
 # Dirty Data
 
@@ -267,6 +289,8 @@ cgv.dataHasChanged
 // => true
 ```
 
+</section>
+<section id="section-details-by-record-type">
 
 # Details by Record Type
 
@@ -274,13 +298,16 @@ For each record type, two tables are shown. The top table shows the actions
 available for a record, including the methods to call the actions and the
 events that are triggered. The bottom table shows all the attributes that can
 be used for creating and updating records. Note, that some attribtues are
-required on creation and others are ignored on creation and updating. For these
+required on creation and others are ignored on creation or updating. For these
 special cases, the attribute will be identified with one or more of the
 following superscripts:
 
 - <sup>rc</sup> Required on Record creation
 - <sup>ic</sup> Ignored on Record creation
 - <sup>iu</sup> Ignored on Record update
+
+</section>
+<section id="section-viewer">
 
 ## [Viewer](Viewer.html)
 
@@ -296,6 +323,8 @@ Attribute                          | Type      | Description
 [height](Viewer.html#height)       | Number    | Height of map in pixels
 [dataHasChanged](Viewer.html#dataHasChanged) | Boolean    | Has data been update/added to map?
 
+</section>
+<section id="section-features">
 
 ## [Features](Feature.html)
 
@@ -325,6 +354,8 @@ Attribute                      | Type     | Description
 
 <sup>rc</sup> Required on Feature creation
 
+</section>
+<section id="section-plots">
 
 ## [Plots](Plot.html)
 
@@ -354,6 +385,8 @@ Attribute                      | Type     | Description
 <sup>rc</sup> Required on Plot creation
 <sup>iu</sup> Ignored on Plot update
 
+</section>
+<section id="section-tracks">
 
 ## [Tracks](Track.html)
 
@@ -379,6 +412,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Track is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Track
 
+</section>
+<section id="section-settings">
 
 ## [Settings (General)](Settings.html)
 
@@ -392,6 +427,8 @@ Attribute                          | Type      | Description
 [showShading](Settings.html#showShading) | Boolean   | Should a shading effect be drawn on the features [Default: true]
 [arrowHeadLength](Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
 
+</section>
+<section id="section-legend">
 
 ## [Legend](Legend.html)
 
@@ -416,6 +453,8 @@ Attribute                          | Type      | Description
 <sup>ic</sup> Ignored on Legend creation
 <sup>iu</sup> Ignored on Legend update
 
+</section>
+<section id="section-legend-items">
 
 ## [Legend Items](LegendItem.html)
 
@@ -439,6 +478,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | LegendItem is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for LegendItem
 
+</section>
+<section id="section-captions">
 
 ## [Captions](Caption.html)
 
@@ -465,6 +506,8 @@ Attribute                          | Type      | Description
 
 <sup>ic</sup> Ignored on Caption creation
 
+</section>
+<section id="section-annotation">
 
 ## [Annotation](Annotation.html)
 
@@ -481,6 +524,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Labels are visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Annotation
 
+</section>
+<section id="section-bookmarks">
 
 ## [Bookmarks](Bookmark.html)
 
@@ -503,6 +548,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Bookmark is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Bookmark
 
+</section>
+<section id="section-backbone">
 
 ## [Backbone](Backbone.html)
 
@@ -520,6 +567,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Backbone is visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Backbone
 
+</section>
+<section id="section-sequence">
 
 ## [Sequence](Sequence.html)
 
@@ -542,6 +591,8 @@ Attribute                          | Type      | Description
 
 <sup>iu</sup> Ignored on Sequence update
 
+</section>
+<section id="section-contigs">
 
 ## [Contigs](Contig.html)
 
@@ -565,6 +616,8 @@ Attribute                          | Type      | Description
 
 <sup>iu</sup> Ignored on Contig update
 
+</section>
+<section id="section-ruler">
 
 ## [Ruler](Ruler.html)
 
@@ -580,6 +633,8 @@ Attribute                          | Type      | Description
 [visible](CGObject.html#visible)   | Boolean   | Rulers are visible [Default: true]
 [meta](CGObject.html#meta)         | Object    | [Meta data](tutorial-meta.html) for Ruler
 
+</section>
+<section id="section-dividers">
 
 ## [Dividers](Dividers.html)
 
@@ -607,10 +662,10 @@ Attribute                          | Type      | Description
 
 <sup>ic</sup> Ignored on Record creation
 
-
-<br /><br />
+</section>
 
     </div> <!-- End of markdown in -->
+
     <script>
       tutorialMarkdown(marked);
     </script>
@@ -619,6 +674,11 @@ Attribute                          | Type      | Description
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <script>
+      var spy = new Gumshoe('#gumshoe-list a', { offset: 50 });
+        // reflow: true,
+    </script>
 
   </body>
 </html>
