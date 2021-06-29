@@ -370,23 +370,23 @@ footer {
   padding-top: 20px;
 }
 
-.cgv-tutorial p {
-  margin: 10px 0;
-  line-height: 1.3;
-}
-
-.cgv-tutorial h2 {
-  padding-top: 10px;
-  padding-bottom: 5px;
-}
-
-.cgv-tutorial pre {
-  margin: 10px 0;
-}
-
-.cgv-tutorial .prettyprint code {
-  font-size: 12px;
-}
+/* .cgv-tutorial p { */
+/*   margin: 10px 0; */
+/*   line-height: 1.3; */
+/* } */
+/*  */
+/* .cgv-tutorial h2 { */
+/*   padding-top: 10px; */
+/*   padding-bottom: 5px; */
+/* } */
+/*  */
+/* .cgv-tutorial pre { */
+/*   margin: 10px 0; */
+/* } */
+/*  */
+/* .cgv-tutorial .prettyprint code { */
+/*   font-size: 12px; */
+/* } */
 
 .class-description p:first-child {
   margin-top: 10px;
