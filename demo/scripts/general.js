@@ -81,7 +81,7 @@ function autoResizeMyViewer() {
   window.onload = function () {
     setTimeout( () => {
       myResize();
-    }, 50);
+    }, 100);
   }
 }
 

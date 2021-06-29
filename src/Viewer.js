@@ -41,12 +41,29 @@ import initializeZooming from './Viewer-Zoom';
 import * as d3 from 'd3';
 
 /**
- * <br />
- * The *Viewer* is the main container class for CGView. It controls the
+ * The Viewer is the main container class for CGView. It controls the
  * overal appearance of the map (e.g. width, height, etc).
  * It also contains all the major components of the map (e.g. [Layout](Layout.html),
  * [Sequence](Sequence.html), [Ruler](Ruler.html), etc). Many
  * of component options can be set during construction of the Viewer.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                        | Event
+ * ----------------------------------------|--------------------------------------|-----
+ * [Update](../docs.html#updating-records) | [update()](Viewer.html#update)       | viewer-update
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                         | Type      | Description
+ * ----------------------------------|-----------|------------
+ * [name](#name)                     | String    | Name for the map
+ * [id](#id)                         | String    | ID for the map [Default: random 20 character HexString]
+ * [width](#width)                   | Number    | Width of map in pixels
+ * [height](#height)                 | Number    | Height of map in pixels
+ * [dataHasChanged](#dataHasChanged) | Boolean   | Has data been update/added to map?
+ *
  */
 class Viewer {
 

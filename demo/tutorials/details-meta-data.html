@@ -15,10 +15,10 @@
     <script src='../scripts/general.js'></script>
 
     <!-- D3 -->
-    <script src="../scripts/d3.v4.min.js"></script>
+    <!-- <script src="../scripts/d3.v4.min.js"></script> -->
     <!-- CGView -->
-    <script src='../dist/cgview.min.js'></script>
-    <link rel="stylesheet" href="../dist/cgview.css" />
+    <!-- <script src='../dist/cgview.min.js'></script> -->
+    <!-- <link rel="stylesheet" href="../dist/cgview.css" /> -->
 
     <title>CGview.js - Tutorials</title>
   </head>
@@ -52,10 +52,10 @@
         <p>Tutorials</p>
         <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
         <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
-        <li class='active'><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
+        <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
         <br />
         <p>Details</p>
-        <li><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
+        <li class='active'><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
         <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
         <br />
         <p>Examples</p>
@@ -69,61 +69,34 @@
       <!-- Processed Markdown will be inserted here -->
       <div id='markdown-out' >
       </div>
-      <!-- Generated CGView Map will be inserted here -->
-        <div id='my-viewer'></div>
-      </div>
-      <!-- Compiled final code will be inserted here -->
-      <div id='final-code'>
-        <h2>Complete Code without Comments:</h2>
-        <pre class='prettyprint'><code class='lang-js final'></code></pre>
-      </div>
     </main>
 
     <div id='markdown-in' style='display:none;'>
 
-# Map Created from JSON Data
+# Meta Data
 
-Maps can be loaded from JSON data using the [IO.loadJSON](IO.html#loadJSON).
-Typically this JSON file will have been created by CGView using the 
-[IO.downloadJSON](IO.html#downloadJSON) method. Details about the format
-can be found in the [CGView JSON](json_format.html) section.
+All the data driven components in CGView have the ability to contain meta data.
+Meta data (i.e. user-defined key:value pairs) can be stored simply as an object
+property named <em>meta</em> on most objects.
 
-## Create a new [Viewer](Viewer.html) ##
-
-There are 2 ways to load JSON data into CGView. The first is provide the JSON
-object when initially creating the viewer (NOT IMPLEMENTED YET). The second method
-is to load the data after creating the viewer. The example below uses JSON data
-found [here](../data/tests/mito.json).
-
-NOTE: need a way to load the JSON file in demo.
-
-```js
-// First create the viewer
-cgv = new CGV.Viewer('#my-viewer', {
-  height: 500,
-  width: 500
-});
-```
-
-
-## Draw the Map ##
-
-```js
-cgv.drawFull();
-```
-
-The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
-You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
-If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
+TODO:
+* examples
+* adding through constructor
+* adding though add actions (e.g. addFeatures(data, meta))
+  * meta can be in data for per obejct data
+  * can also be added as second argument to be added  all features (NOT IMPLEMENTED YET)
+* meta data is never used by CGView
+* good place to store extra data for external projects (e.g. proksee)
+  * example would be extra qualifier tag data for features
+* only if meta data exists for an object, will it be exported in json
+* meta data will also be imported from json
+* HOW will meta data merge options.meta and constructor meta argument. Is the meta argument needed?
 
     </div> <!-- End of markdown in -->
 
     <script>
-      tutorialMarkdown(marked, true);
-      autoResizeMyViewer();
+      tutorialMarkdown(marked);
     </script>
-
-    <script src="../scripts/prism.js"></script>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
@@ -131,3 +104,4 @@ If you want play around with the viewer object, open your browser web inspector.
     </script>
   </body>
 </html>
+

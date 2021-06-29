@@ -11,14 +11,46 @@ import utils from './Utils';
 //         will point to features or a plot.
 
 /**
- * <br />
- * The Track is used for layout information
+ * The Track is used for layout information...
+ *
+ * ### Action and Events
+ *
+ * Action                                    | Viewer Method                              | Track Method        | Event
+ * ------------------------------------------|--------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-tracks)         | [addTracks()](Viewer.html#addTracks)       | -                   | tracks-add
+ * [Update](../docs.html#updating-tracks)    | [updateTracks()](Viewer.html#updateTracks) | [update()](#update) | tracks-update
+ * [Remove](../docs.html#removing-tracks)    | [removeTracks()](Viewer.html#removeTracks) | [remove()](#remove) | tracks-remove
+ * [Reorder](../docs.html#reordering-tracks) | [moveTrack()](Viewer.html#moveTrack)       | [move()](#move)     | tracks-reorder
+ * [Read](../docs.html#reading-tracks)       | [tracks()](Viewer.html#tracks)             | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                         | Type      | Description
+ * ----------------------------------|-----------|------------
+ * [name](#name)                     | String    | Name of track [Default: "Unknown"]
+ * [dataType](#dataType)             | String    | Type of data shown by the track: plot, feature [Default: feature]
+ * [dataMethod](#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type [Default: source]
+ * [dataKeys](#dataKeys)             | String    | Values used by dataMethod to extract features or a plot.
+ * [position](#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
+ * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
+ * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
+ * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used interanlly by workers.
+ * [favorite](#favorite)             | Boolean   | Track is a favorite [Default: false]
+ * [visible](CGObject.html#visible)  | Boolean   | Track is visible [Default: true]
+ * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html) for Track
+ *
+ * ### Examples
+ *
  * @extends CGObject
  */
 class Track extends CGObject {
 
   /**
    * Create a new track.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the track.
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the track.
    */
   constructor(viewer, data = {}, meta = {}) {
     super(viewer, data, meta);

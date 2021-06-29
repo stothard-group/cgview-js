@@ -15,26 +15,27 @@ import utils from './Utils';
  *
  * ### Action and Events
  *
- * Action                                       | Viewer Method                                    | Bookmark Method                  | Event
- * ---------------------------------------------|--------------------------------------------------|----------------------------------|-----
- * [Add](tutorial-api.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                                | bookmarks-add
- * [Update](tutorial-api.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](Bookmark.html#update) | bookmarks-update
- * [Remove](tutorial-api.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](Bookmark.html#remove) | bookmarks-remove
- * [Read](tutorial-api.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                                | -
+ * Action                                  | Viewer Method                                    | Bookmark Method     | Event
+ * ----------------------------------------|--------------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                   | bookmarks-add
+ * [Update](../docs.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](#update) | bookmarks-update
+ * [Remove](../docs.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](#remove) | bookmarks-remove
+ * [Read](../docs.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                   | -
  *
- *<a name="attributes"></a>
+ * <a name="attributes"></a>
  * ### Attributes
  *
- * Attribute                          | Type     | Description
- * -----------------------------------|----------|------------
- * [name](Bookmark.html#name)         | String   | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
- * [bp](Bookmark.html#bp)             | Number   | Base pair to center the map position [Default: Current bp]
- * [zoom](Bookmark.html#zoom)         | Number   | Zoom factor [Default: Current zoomFactor]
- * [format](Bookmark.html#format)     | String   | Map format [Default: Current map format]
- * [bbOffset](Bookmark.html#bbOffset) | Number   | Distance from the backbone to the center of the canvas [Default: 0]
- * [shortcut](Bookmark.html#shortcut) | String   | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
- * [favorite](Bookmark.html#favorite) | Boolean  | Bookmark is a favorite [Default: false]
- * [visible](Bookmark.html#visible)   | Boolean  | Bookmark is visible [Default: true]
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Name of bookmark [Default: "Bookmark-N" where N is the number of the bookmark]
+ * [bp](#bp)                        | Number    | Base pair to center the map position [Default: Current bp]
+ * [zoom](#zoom)                    | Number    | Zoom factor [Default: Current zoomFactor]
+ * [format](#format)                | String    | Map format [Default: Current map format]
+ * [bbOffset](#bbOffset)            | Number    | Distance from the backbone to the center of the canvas [Default: 0]
+ * [shortcut](#shortcut)            | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
+ * [favorite](#favorite)            | Boolean   | Bookmark is a favorite [Default: false]
+ * [visible](CGObject.html#visible) | Boolean   | Bookmark is visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html) for Bookmark
  *
  * ### Examples
  * ```js
@@ -56,6 +57,8 @@ import utils from './Utils';
  * viewer.bookmarks().length;
  * // => 0
  * ```
+ *
+ * @extends CGObject
  */
 class Bookmark extends CGObject {
 
@@ -64,10 +67,10 @@ class Bookmark extends CGObject {
   //  - Bookmarks need to handle contigs. How?
 
   /**
-   * Create a new bookmark. 
+   * Create a new bookmark.
    * @param {Viewer} viewer - The viewer
-   * @param {Object} options - [Attributes](Bookmark.html#attributes) used to create the bookmark
-   * @param {Object} [meta] - User-defined {@tutorial meta} to add to the bookmark.
+   * @param {Object} options - [Attributes](#attributes) used to create the bookmark
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the bookmark.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);

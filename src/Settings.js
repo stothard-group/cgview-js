@@ -6,25 +6,34 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * <br />
  * The CGView Settings contain general settings for the viewer.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method   | Settings Method     | Event
+ * ----------------------------------------|-----------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -               | [update()](#update) | settings-update
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                           | Type      | Description
+ * ------------------------------------|-----------|------------
+ * [backgroundColor](#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
+ * [showShading](#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
+ * [arrowHeadLength](#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
+ *
+ * ### Examples
+ *
  */
 class Settings {
 
   /**
-   * Create a the Settings
-   *
+   * Initialize Settings.
    * @param {Viewer} viewer - The viewer
-   * @param {Object} options - Settings values to override the defaults
-   * <br />
-   *
-   * Name         | Type   | Description
-   * -------------|--------|------------
-   * backgroundColor | Color  | Background [Color](Color.html) of viewer (Default: 'white')
-   * arrowHeadLength | Number | Arrow head length as a fraction (0-1) of the slot width (Default: 0.3)
-   * showShading     | Boolean | Should arrows and other components be drawn with shading (Default: true)
+   * @param {Object} options - [Attributes](#attributes) used to initialize settings.
    */
-  constructor(viewer, options = {}, meta = {}) {
+  constructor(viewer, options = {}) {
     this.viewer = viewer;
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);

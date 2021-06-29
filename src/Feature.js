@@ -8,22 +8,61 @@ import CGRange from './CGRange';
 import Label from './Label';
 import utils from './Utils';
 
+/**
+ * A Feature is a region on the map and must have a start and stop position.
+ * MORE...
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                                  | Feature Method      | Event
+ * ----------------------------------------|------------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-records)      | [addFeatures()](Viewer.html#addFeatures)       | -                   | features-add
+ * [Update](../docs.html#updating-records) | [updateFeatures()](Viewer.html#updateFeatures) | [update()](#update) | features-update
+ * [Remove](../docs.html#removing-records) | [removeFeatures()](Viewer.html#removeFeatures) | [remove()](#remove) | features-remove
+ * [Read](../docs.html#reading-records)    | [features()](Viewer.html#features)             | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type     | Description
+ * ---------------------------------|----------|------------
+ * [name](#name)                    | String   | Name of feature
+ * [type](#type)                    | String   | Feature type (e.g. CDS, rRNA, etc)
+ * [legend](#legend)                | String\|LegendItem | Name of legendItem or the legendItem itself
+ * [source](#source)                | String   | Source of the feature
+ * [contig](#contig)                | String\|Contig | Name of contig or the contig itself
+ * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig
+ * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
+ * [mapStart](#mapStart)            | Number   | Start base pair on the map (converted to contig position)
+ * [mapStop](#mapStop)              | Number   | Stop base pair on the map (converted to contig position)
+ * [strand](#strand)                | String   | Strand the features is on [Default: 1]
+ * [score](#score)                  | Number   | Score associated with the feature
+ * [favorite](#favorite)            | Boolean  | Feature is a favorite [Default: false]
+ * [visible](CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object   | [Meta data](../tutorials/details-meta-data.html) for Feature
+ *
+ * <sup>rc</sup> Required on Feature creation
+ *
+ * Implementation notes:
+ *   - The feature range is the range on the contig
+ *   - Feature.mapRange is the range on the Sequence.mapContig
+ *   - If there is only one contig in the map, then Feature.mapRange === Feature.range
+ *   - Feature.start/stop are positions on the contig
+ *   - Feature mapStart/mapStop are position on Sequence.mapContig
+ *   - If no contig is provided, the default contig will be Sequence.mapContig
+ *     - Whenever mapContig is updated/regenerated the feature will be moved to the new mapContig
+ *     - Features on the mapContig are able to span contigs
+ *     - If contigs are rearranged, a mapContig feature will stay at the same position (start/stop)
+ *
+ * @extends CGObject
+ */
 class Feature extends CGObject {
 
   /**
-   * A Feature
-   *
-   *
-   * Implementation notes:
-   *   - The feature range is the range on the contig
-   *   - Feature.mapRange is the range on the Sequence.mapContig
-   *   - If there is only one contig in the map, then Feature.mapRange === Feature.range
-   *   - Feature.start/stop are positions on the contig
-   *   - Feature mapStart/mapStop are position on Sequence.mapContig
-   *   - If no contig is provided, the default contig will be Sequence.mapContig
-   *     - Whenever mapContig is updated/regenerated the feature will be moved to the new mapContig
-   *     - Features on the mapContig are able to span contigs
-   *     - If contigs are rearranged, a mapContig feature will stay at the same position (start/stop)
+   * Create a new feature.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the feature
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the feature.
    */
   constructor(viewer, data = {}, meta = {}) {
     super(viewer, data, meta);

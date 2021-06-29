@@ -14,12 +14,6 @@
     <script src='../scripts/marked.min.js'></script>
     <script src='../scripts/general.js'></script>
 
-    <!-- D3 -->
-    <script src="../scripts/d3.v4.min.js"></script>
-    <!-- CGView -->
-    <script src='../dist/cgview.min.js'></script>
-    <link rel="stylesheet" href="../dist/cgview.css" />
-
     <title>CGview.js - Tutorials</title>
   </head>
   <body>
@@ -52,11 +46,11 @@
         <p>Tutorials</p>
         <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
         <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
-        <li class='active'><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
+        <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
         <br />
         <p>Details</p>
         <li><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
-        <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
+        <li class='active'><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
         <br />
         <p>Examples</p>
         <li><a class="side-link indent" href="#">Plasmi?</a></li>
@@ -69,52 +63,36 @@
       <!-- Processed Markdown will be inserted here -->
       <div id='markdown-out' >
       </div>
-      <!-- Generated CGView Map will be inserted here -->
-        <div id='my-viewer'></div>
-      </div>
-      <!-- Compiled final code will be inserted here -->
-      <div id='final-code'>
-        <h2>Complete Code without Comments:</h2>
-        <pre class='prettyprint'><code class='lang-js final'></code></pre>
-      </div>
     </main>
 
     <div id='markdown-in' style='display:none;'>
 
-# Map Created from JSON Data
+# Map Scales
 
-Maps can be loaded from JSON data using the [IO.loadJSON](IO.html#loadJSON).
-Typically this JSON file will have been created by CGView using the 
-[IO.downloadJSON](IO.html#downloadJSON) method. Details about the format
-can be found in the [CGView JSON](json_format.html) section.
+CGView uses 3 different scales (x, y, bp) to keep track of map coordinates and basepair position.
+The scales are [d3.scaleLinear](https://github.com/d3/d3-scale#linear-scales) objects
+and map a continuous input domain to a continuous output range.
 
-## Create a new [Viewer](Viewer.html) ##
+The x and y scales relate the canvas (range) to the map coordindates (domain).
+The canvas origin is in the top left of the viewer and the coordinates move
+in a positive direction towards the bottom-right.
+The map origin in the center of the map (0,0) and the coordinates move
+in a positive direction towards the top-right.
+The bp scale differs depending on the layout:
+   - Circular: the bp scale converts the circle angle to a basepair. This scale is not zoom depedent.
+   - Linear: the bp scale converts basepair to distance on the x axis. This distance is zoom dependent.
 
-There are 2 ways to load JSON data into CGView. The first is provide the JSON
-object when initially creating the viewer (NOT IMPLEMENTED YET). The second method
-is to load the data after creating the viewer. The example below uses JSON data
-found [here](../data/tests/mito.json).
+The scales are accessed directly through the viewer...
 
-NOTE: need a way to load the JSON file in demo.
-
-```js
-// First create the viewer
-cgv = new CGV.Viewer('#my-viewer', {
-  height: 500,
-  width: 500
-});
-```
+<img src='../images/scale_circular.png' width='100%'>
+<img src='../images/scale_linear.png' width='100%'>
 
 
-## Draw the Map ##
+
+## STUFF ##
 
 ```js
-cgv.drawFull();
 ```
-
-The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
-You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
-If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
 
     </div> <!-- End of markdown in -->
 
@@ -131,3 +109,5 @@ If you want play around with the viewer object, open your browser web inspector.
     </script>
   </body>
 </html>
+
+

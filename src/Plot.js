@@ -7,10 +7,52 @@ import CGArray from './CGArray';
 import utils from './Utils';
 import * as d3 from 'd3';
 
+/**
+ * Plot draw lines and stuff...
+   * Draw a plot consisting of arcs
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                            | Plot Method         | Event
+ * ----------------------------------------|------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-records)      | [addPlots()](Viewer.html#addPlots)       | -                   | plots-add
+ * [Update](../docs.html#updating-records) | [updatePlots()](Viewer.html#updatePlots) | [update()](#update) | plots-update
+ * [Remove](../docs.html#removing-records) | [removePlots()](Viewer.html#removePlots) | [remove()](#remove) | plots-remove
+ * [Read](../docs.html#reading-records)    | [plots()](Viewer.html#plots)             | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                         | Type     | Description
+ * ----------------------------------|----------|------------
+ * [name](#name)                     | String   | Name of plot
+ * [legend](#legend)                 | String\|LegendItem | Name of legendItem or the legendItem itself (sets positive and negative legend)
+ * [legendNegative](#legendNegative) | String\|LegendItem | Name of legendItem or the legendItem itself for the plot above the baseline
+ * [legendPositive](#legendPositive) | String\|LegendItem | Name of legendItem or the legendItem itself for the plot below the baseline
+ * [source](#source)                 | String   | Source of the plot
+ * [positions](#positions)<sup>rc,iu</sup> | Array   | Array of base pair position on contig
+ * [scores](#scores)<sup>rc,iu</sup> | Array    | Array of scores
+ * [baseline](#baseline)             | Number   | Score where the plot goes from negative to positive (in terms of legend)
+ * [axisMax](#axisMax)               | Number   | Maximum value for the plot axis
+ * [axisMin](#axisMin)               | Number   | Minimum value for the plot axis
+ * [favorite](#favorite)             | Boolean  | Plot is a favorite [Default: false]
+ * [visible](CGObject.html#visible)  | Boolean  | Plot is visible [Default: true]
+ * [meta](CGObject.html#meta)        | Object   | [Meta data](../tutorials/details-meta-data.html) for Plot
+ * 
+ * <sup>rc</sup> Required on Plot creation
+ * <sup>iu</sup> Ignored on Plot update
+ *
+ * ### Examples
+ *
+ * @extends CGObject
+ */
 class Plot extends CGObject {
 
   /**
-   * Draw a plot consisting of arcs
+   * Create a new Plot.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the plot
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the plot.
    */
   constructor(viewer, data = {}, meta = {}) {
     super(viewer, data, meta);
