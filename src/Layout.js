@@ -10,7 +10,6 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * <br />
  * The Layout is in control of creating slots from tracks and drawing the map.
  *
  * NOTES:

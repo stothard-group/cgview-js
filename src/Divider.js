@@ -8,17 +8,49 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * <br />
- * The CGView Divider is a line that separates tracks or slots.
+ * A divider is the line and spacing that separate tracks and slot.
+ *
+ * There are two type of dividers: slot and track. They are accessed from the
+ * viewer [dividers](Dividers.html) object:
+ * - Viewer.dividers.track - controlls spacing/lines between tracks.
+ * - Viewer.dividers.slot - controls spacing/lines betweens slots within a track.
+ *
+ * If either track or slot has their mirror set to true, then both dividers will be treated as the same.
+ * In addition, if only settings for one of the dividers is provided on Viewer creation, then it will be mirrored.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                    | Divider Method      | Event
+ * ----------------------------------------|----------------------------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -                                | [update()](#update) | divider-update
+ * [Read](../docs.html#reading-records)    | [dividers](Viewer.html#dividers) | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [color](#color)                  | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+ * [thickness](#thickness)          | Number    | Thickness of divider [Default: 1]
+ * [spacing](#spacing)              | Number    | Spacing between divider and track/slot content [Default: 1]
+ * [mirror](#mirror)<sup>ic</sup>   | Boolean   | If true, the other dividers will use the same settings as this divider.
+ * [visible](CGObject.html#visible) | Boolean   | Dividers are visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html) for divider
+ * 
+ * <sup>ic</sup> Ignored on Record creation
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Divider extends CGObject {
 
   /**
    * Create a divider
-   *
-   * @param {Viewer} viewer - The viewer that contains the divider
-   * @param {String} name - The name for the divider. One of track, slot, or mirrored.
-   * @param {Object} options - Options and stuff
+   * @param {Viewer} viewer - The viewer
+   * @param {String} name - The name for the divider. One of: track, slot, or mirrored.
+   * @param {Object} options - [Attributes](#attributes) used to create the divider
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the divider
    */
   constructor(viewer, name, options = {}, meta = {}) {
     super(viewer, options, meta);

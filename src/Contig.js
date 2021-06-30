@@ -10,21 +10,44 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * <br />
  * The CGView Contig class contains details for a single contig.
+ *
+ * ### Action and Events
+ *
+ * Action                                     | Sequence Method                                | Contig Method       | Event
+ * -------------------------------------------|------------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-records)         | [addContigs()](Sequence.html#addContigs)       | -                   | contigs-add
+ * [Update](../docs.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs) | [update()](#update) | contigs-update
+ * [Remove](../docs.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs) | [remove()](#remove) | contigs-remove
+ * [Reorder](../docs.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)      | [move()](#move)     | contigs-reorder
+ * [Read](../docs.html#reading-records)       | [contigs()](Sequence.html#items)               | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Contig name.
+ * [id](#id)                        | String    | Contig ID.
+ * [seq](#seq)<sup>iu</sup>         | String    | The contig sequence.
+ * [length](#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided.
+ * [orientation](#orientation)      | String    | '+' for forward orientation and '-' for the reverse.
+ * [visible](CGObject.html#visible) | Boolean   | Contig is visible [Default: true].
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html)
+ * 
+ * <sup>iu</sup> Ignored on Contig update
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Contig extends CGObject {
 
   /**
    * Create a Contig
-   *
-   * @param {Sequence} sequence - The sequence that contains the contig
-   * @param {Object} options - Options used to create the contig
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *
-   * @param {Object=} meta - User-defined key:value pairs to add to the caption.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the contig
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the contig
    */
   constructor(sequence, options = {}, meta = {}) {
     super(sequence.viewer, options, meta);

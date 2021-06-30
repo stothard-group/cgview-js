@@ -7,7 +7,6 @@ import WorkerBaseContent from './WorkerPlotExtraction';
 import utils from './Utils';
 
 /**
- * <br />
  * The Extractor creates features or plots based on the sequence
  */
 class SequenceExtractor {

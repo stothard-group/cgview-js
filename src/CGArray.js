@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * <br />
  * CGArray is essentially an array for holding CGV Objects. Any method
  * that works on an Array will also work on a CGArray.
  *

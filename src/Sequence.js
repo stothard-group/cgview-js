@@ -12,7 +12,6 @@ import Font from './Font';
 import utils from './Utils';
 
 /**
- * <br />
  * The CGView Sequence represents the sequence that makes up the map. The essential
  * proptery of the Sequence is the length. The length must be known in order to draw
  * a map of the correct size. There are 3 ways to set the Sequence length on map
@@ -29,25 +28,42 @@ import utils from './Utils';
  * Sequence Coordinates:
  * CGView uses two coordinate systems: Contig space and map space. For features and plot, positions are relative to contigs. However, when drawing we use positions relative to the entire map.
  * [Image of map with contigs. Show contig/map space]
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                    | Sequence Method     | Event
+ * ----------------------------------------|----------------------------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -                                | [update()](#update) | sequence-update
+ * [Read](../docs.html#reading-records)    | [sequence](Viewer.html#sequence) | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Sequence name. [TODO]
+ * [id](S#id)                       | String    | Sequence ID. [TODO]
+ * [seq](#seq)<sup>iu</sup>         | String    | The map sequence.
+ * [length](#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided. [Default: 1000]
+ * [contigs](#contigs)<sup>iu</sup> | Array     | Array of contigs. Contigs are ignored if a seq is provided.
+ * [font](#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
+ * [color](#color)                  | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
+ * [visible](CGObject.html#visible) | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html)
+ * 
+ * <sup>iu</sup> Ignored on Sequence update
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Sequence extends CGObject {
 
   /**
    * Create a Sequence
-   * REPLACE WITH API
-   *
-   * @param {Viewer} viewer - The viewer that contains the backbone
-   * @param {Object} options - Options used to create the sequence
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *  font                  | "sans-serif,plain,14" | A string describing the font. See {@link Font} for details.
-   *  color                 | "black"          | A string describing the color. See {@link Color} for details.
-   *  seq                   | undefined        | The sequence as a string.
-   *  length                | seq length or 1000 | If no sequence is provided, the length can be used to set up the map.
-   *  contigs               | undefined        | An array of ...
-   *
-   * @param {Object=} meta - User-defined key:value pairs to add to the caption.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the sequence
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the sequence
    *
    * Implementation notes:
    *   - Internally contigs are always used. If 'seq' is provided, it will be converted to a single contig.
@@ -56,7 +72,6 @@ class Sequence extends CGObject {
    *   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
    *   - Make note in update/updateContig methods that if only one contig is provided (or the sequence seq), they are treated the same internally. Therefore, if the contig name is changed, so is the sequence name.
    *   - Note for toJSON: will output single contigs as attributes of the sequence (so no contigs property)
-   *
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);

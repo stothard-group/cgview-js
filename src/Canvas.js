@@ -6,10 +6,14 @@ import Color from './Color';
 import utils from './Utils';
 import * as d3 from 'd3';
 
+/**
+ * The canvas controls drawing and the map layers.
+ */
 class Canvas {
 
   /**
    * - Adds several layers (canvases) for drawing
+   * - NO THE SCLAES ARE ACCESSED THROUGH the viewer
    * - Contains the x, y, bp scales
    * - has methods for for determining visible regions of the circle at a particular centerOffset
    * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas

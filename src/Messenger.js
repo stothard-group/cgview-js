@@ -6,7 +6,6 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * <br />
  *
  */
 class Messenger {

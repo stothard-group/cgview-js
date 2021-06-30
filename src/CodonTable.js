@@ -5,7 +5,6 @@
 // FIXME: should this be 2 files!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 /**
- * <br />
  * Holder for CodonTables.
  * This class will be populated with each CodonTable as it's required.
  */

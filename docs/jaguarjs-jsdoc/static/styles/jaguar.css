@@ -389,9 +389,17 @@ footer {
 /*   font-size: 12px; */
 /* } */
 
-.class-description p:first-child {
+/* .class-description p:first-child { */
+.class-description p,
+.class-description ul {
   margin-top: 10px;
   font-size: 14px;
+}
+.class-description ul {
+  padding-left: 20px;
+}
+.class-description li {
+  list-style-type: disc;
 }
 
 .main table td {

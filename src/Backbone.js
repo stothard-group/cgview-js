@@ -7,17 +7,39 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * <br />
  * The CGView Backbone is the ring that separates the direct and reverse slots
  * of the map.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                   | Backbone Method      | Event
+ * ----------------------------------------|--------------------------------- |---------------------|-----
+ * [Update](../docs.html#updating-records) | -                                | [update()](#update) | backbone-update
+ * [Read](../docs.html#reading-records)    | [backbone](Viewer.html#backbone) | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                         | Type      | Description
+ * ----------------------------------|-----------|------------
+ * [thickness](#thickness)           | Number    | Thickness of backbone [Default: 5]
+ * [color](#color)                   | String    | A string describing the main backbone color [Default: 'grey']. See {@link Color} for details.
+ * [colorAlternate](#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See {@link Color} for details.
+ * [decoration](#decoration)         | String    | How the bakcbone should be drawn. Choices: 'arc', 'arrow' [Default: arc for single contig, arrow for muliple contigs]
+ * [visible](CGObject.html#visible)  | Boolean   | Backbone is visible [Default: true]
+ * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html)
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Backbone extends CGObject {
 
   /**
-   * Create a Backbone
-   *
-   * @param {Viewer} viewer - The viewer that contains the backbone
-   * @param {Object} options - Options and stuff
+   * Create the Backbone.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the backbone
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the backbone.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);

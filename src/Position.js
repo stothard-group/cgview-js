@@ -5,7 +5,6 @@
 import utils from './Utils';
 
 /**
- * <br />
  * Position gives a precise location on the canvas or map.
  */
 class Position {

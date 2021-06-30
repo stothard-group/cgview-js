@@ -8,8 +8,8 @@ import NCList from './NCList';
 import utils from './Utils';
 
 /**
- * <br />
  * A Slot is a single ring on the Map.
+ *
  * @extends CGObject
  */
 class Slot extends CGObject {

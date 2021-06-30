@@ -15,12 +15,38 @@ import Color from './Color';
 import CGRange from './CGRange';
 
 /**
- * <br />
  * Annotation controls the drawing and layout of features labels
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                        | Annotation Method                  | Event
+ * ----------------------------------------|--------------------------------------|------------  -------|-----
+ * [Update](../docs.html#updating-records) | -                                    | [update()](#update) | annotation-update
+ * [Read](../docs.html#reading-records)    | [annotation](Viewer.html#annotation) | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [font](#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See {@link Font} for details.
+ * [color](#color)                  | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
+ * [onlyDrawFavorites](#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
+ * [visible](CGObject.html#visible) | Boolean   | Labels are visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Annotation
+ *
+ * ### Examples
+ *
  * @extends CGObject
  */
 class Annotation extends CGObject {
 
+  /**
+   * Create the annotation.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the annotation
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the annotation.
+   */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
     this._labels = new CGArray();

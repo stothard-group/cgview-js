@@ -10,29 +10,47 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * <br />
- * The *Caption* object can be used to add additional annotation to
- * the map. A *Caption* contain one or more [CaptionItem]{@link CaptionItem} elements
+ * Captions are used to add additional annotation to the map.
+ *
+ * ### Action and Events
+ *
+ * Action                                     | Viewer Method                                  | Caption Method       | Event
+ * -------------------------------------------|------------------------------------------------|----------------------|-----
+ * [Add](../docs.html#adding-records)         | [addCaptions()](Viewer.html#addCaptions)       | -                    | captions-add
+ * [Update](../docs.html#updating-records)    | [updateCaptions()](Viewer.html#updateCaptions) | [update()](#update)  | captions-update
+ * [Remove](../docs.html#removing-records)    | [removeCaptions()](Viewer.html#removeCaptions) | [remove()](C#remove) | captions-remove
+ * [Reorder](../docs.html#reordering-records) | [moveCaption()](Viewer.html#moveCaption)       | [move()](#move)      | captions-reorder
+ * [Read](../docs.html#reading-records)       | [captions()](Viewer.html#captions)             | -                    | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Text of the caption
+ * [position](#position)            | String\|Object | Where to draw the caption [Default: 'middle-center']. See {@link Position} for details.
+ * [anchor](#anchor)                | String\|Object | Where to anchor the caption box to the position [Default: 'middle-center']. See {@link Anchor} for details.
+ * [font](#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+ * [fontColor](#fontColor)          | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+ * [textAlignment](#textAlignment)  | String    | Alignment of caption text: *left*, *center*, or *right* [Default: 'left']
+ * [backgroundColor](#font)         | String    | A string describing the background color of the caption [Default: 'white']. See {@link Color} for details.
+ * [on](#on)<sup>ic</sup>           | String    | Place the caption relative to the 'canvas' or 'map' [Default: 'canvas']
+ * [visible](CGObject.html#visible) | Boolean   | Caption is visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Caption
+ * 
+ * <sup>ic</sup> Ignored on Caption creation
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Caption extends CGObject {
 
   /**
    * Create a new Caption.
-   *
-   * @param {Viewer} viewer - The parent *Viewer* for the *Caption*.
-   * @param {Object} options - Options used to create the caption.
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *  position              | "upper-right"    | Where to draw the caption. See {@link Position}
-   *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
-   *  font                  | "sans-serif,plain,8" | A string describing the font. See {@link Font} for details.
-   *  fontColor             | "black"          | A string describing the color. See {@link Color} for details.
-   *  textAlignment         | "left"           | *left*, *center*, or *right*
-   *  backgroundColor       | Viewer backgroundColor | A string describing the color. See {@link Color} for details.
-   *  name                  | ""               | String to display as the Caption
-   *
-   * @param {Object=} meta - User-defined key:value pairs to add to the caption.
+   * @param {Viewer} viewer - The viewer.
+   * @param {Object} options - [Attributes](#attributes) used to create the caption.
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the caption.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);

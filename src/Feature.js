@@ -40,7 +40,7 @@ import utils from './Utils';
  * [favorite](#favorite)            | Boolean  | Feature is a favorite [Default: false]
  * [visible](CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
  * [meta](CGObject.html#meta)       | Object   | [Meta data](../tutorials/details-meta-data.html) for Feature
- *
+ * 
  * <sup>rc</sup> Required on Feature creation
  *
  * Implementation notes:
@@ -143,8 +143,8 @@ class Feature extends CGObject {
   }
 
   /**
-   * @member {Boolean} - Get or set the *extractedFromSequence*. These features are
-   * generated directly from the sequence and do not have to be saved when exported JSON.
+   * @member {Boolean} - Get or set the *extractedFromSequence*. If true, this feature was
+   * generated directly from the sequence and will not be saved when exported to JSON.
    */
   get extractedFromSequence() {
     return this._extractedFromSequence;

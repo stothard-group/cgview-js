@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * <br />
  * A Rect consists of an x and y point (the upper-left corner) and
  * a width and height.
  */

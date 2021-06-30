@@ -6,7 +6,6 @@ import Divider from './Divider';
 import CGArray from './CGArray';
 
 /**
- * <br />
  * The CGView Divider is a line that separates tracks or slots.
  */
 class Dividers {

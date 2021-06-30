@@ -5,7 +5,6 @@
 import CGRange from './CGRange';
 
 /**
- * <br />
  * This Layout is in control of handling and drawing the map as a line
  */
 class LayoutLinear {

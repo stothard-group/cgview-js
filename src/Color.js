@@ -5,7 +5,6 @@
 import utils from './Utils';
 
 /**
- * <br />
  * The Color class is meant to represent a color and opacity in a consistant manner
  * Colors are stored internally as an RGBA string (CSS/Canvas compatible) for quick access.
  * The color can be provided or generated in the following formats:

@@ -8,30 +8,46 @@ import Font from './Font';
 import utils from './Utils';
 
 /**
- * <br />
- * A *legendItem* is used to add text to a map *legend*. Individual
- * *Features* and *Plots* can be linked to a *legendItem*, so that the feature
- * or plot color will use the swatchColor of *legendItem*.
- * @extends CaptionItem
+ * A legendItem is used to add text to a map legend. Individual
+ * Features and Plots can be linked to a legendItem, so that the feature
+ * or plot color will use the swatchColor of legendItem.
+ *
+ * ### Action and Events
+ *
+ * Action                                     | Legend Method                            | LegendItem Method   | Event
+ * -------------------------------------------|------------------------------------------|---------------------|-----
+ * [Add](../docs.html#adding-records)         | [addItems()](Legend.html#addItems)       | -                   | legendItems-add
+ * [Update](../docs.html#updating-records)    | [updateItems()](Legend.html#updateItems) | [update()](#update) | legendItems-update
+ * [Remove](../docs.html#removing-records)    | [removeItems()](Legend.html#removeItems) | [remove()](#remove) | legendItems-remove
+ * [Reorder](../docs.html#reordering-records) | [moveItem()](Legend.html#moveItem)       | [move()](#move)     | legendItems-reorder
+ * [Read](../docs.html#reading-records)       | [items()](Legend.html#items)             | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Name to diplay for legendItem 
+ * [font](#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+ * [fontColor](#fontColor)          | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
+ * [decoration](#decoration)        | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
+ * [swatchColor](#swatchColor)      | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
+ * [drawSwatch](#drawSwatch)        | Boolean   | Draw the swatch beside the legendItem name [Default: true]
+ * [favorite](#favorite)            | Boolean   | LegendItem is a favorite [Default: false]
+ * [visible](CGObject.html#visible) | Boolean   | LegendItem is visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html)
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class LegendItem extends CGObject {
 
   /**
-   * Create a new LegendItem. By default a legendItem will use its parent legend font, and fontColor.
-   *
-   * @param {Legend} legend - The parent *Legend* for the *LegendItem*.
-   * @param {Object} options - Data used to create the legendItem:
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *  name                  | ""               | Text to display
-   *  drawSwatch            | false            | Should a swatch be drawn beside the text
-   *  font                  | Legend font      | A string describing the font. See {@link Font} for details.
-   *  fontColor             | Legend fontColor | A string describing the color. See {@link Color} for details.
-   *  swatchColor           | 'black'          | A string describing the color. See {@link Color} for details.
-   *  decoration            | 'arc'            | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none'.
-   *
-   * @param {Object=} meta - User-defined key:value pairs to add to the legendItem.
+   * Create a new legendItem. By default a legendItem will use its parent legend defaultFont, and defaultFontColor.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the legendItem
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the legendItem.
    */
   constructor(legend, options = {}, meta = {}) {
     super(legend.viewer, options, meta);

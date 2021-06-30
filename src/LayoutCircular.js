@@ -6,7 +6,6 @@ import CGRange from './CGRange';
 import utils from './Utils';
 
 /**
- * <br />
  * This Layout is in control of handling and drawing the map as a circle
  */
 class LayoutCircular {

@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * <br />
  * Events is a system to plug in callbacks to specific events in CGV.
  * Use [on](#on) to add a callback and [off](#off) to remove it.
  * Here are a list of events supported in CGV:

@@ -5,7 +5,6 @@
 import utils from './Utils';
 
 /**
- * <br />
  * A CGRange contains a start, stop on a sequence contig.
  * Ranges are always in a clockise direction.
  * The start is always less than the stop position with following exception.

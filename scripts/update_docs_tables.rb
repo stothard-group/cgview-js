@@ -1,19 +1,28 @@
+# This script replaces the record type tables and side navbar
+# in docs.html with the attribute ans action tables from 
+# the major classes. See 'klasses' below.
+
 this_script_dir = File.expand_path(File.dirname(__FILE__))
 CGVIEW_JS_DIR = this_script_dir.sub(/scripts.*/, '')
 
 src_dir = File.join(CGVIEW_JS_DIR, 'src')
-docs_path = File.join(CGVIEW_JS_DIR, 'demo', 'test.html')
+docs_path = File.join(CGVIEW_JS_DIR, 'demo', 'docs.html')
 
-klasses = ['Viewer', 'Feature', 'Plot', 'Track', 'Settings', 'Bookmark']
+klasses = ['Viewer', 'Feature', 'Plot', 'Track', 'Settings', 'Legend', 'LegendItem',
+           'Caption', 'Annotation', 'Bookmark', 'Backbone', 'Sequence', 'Contig',
+           'Ruler', 'Divider']
 
 # Read tables from CGV classes
-text = "\n"
+tables_replacement = "\n"
+nav_replacement = ""
 klasses.each do |klass| 
   puts "Updating #{klass}..."
   klass_path = File.join(src_dir, "#{klass}.js")
   if File.exist?(klass_path)
+    # Add html section start
+    tables_replacement += "<section id='section-#{klass}'>\n"
     # Add Heading and link to class
-    text += "\n## [#{klass}](api/#{klass}.html)\n"
+    tables_replacement += "\n## [#{klass}](api/#{klass}.html)\n\n"
     file = File.read(klass_path)
     # Actions and Events
     if file =~ /### Action and Events\n \*\n(.*?)\n \*\n/m
@@ -26,7 +35,7 @@ klasses.each do |klass|
       # Replace docs links
       table.gsub!('../docs.html', '')
       # puts table
-      text += table + "\n\n"
+      tables_replacement += table + "\n\n"
     else
       puts "- #{klass}: Actions not found!"
     end
@@ -39,30 +48,51 @@ klasses.each do |klass|
       table.gsub!('(#', "(api/#{klass}.html#")
       # Add api directory to other Class links
       table.gsub!(/\]\(([A-Z])/, '](api/\1')
+      # Replace meta-data link
+      table.gsub!('../tutorials/details-meta-data.html', 'tutorials/details-meta-data.html')
       # puts table
-      # Add super scripts
-      text += table + "\n\n"
-      text += "#{$1}\n" if file =~ /(<sup>ic<\/sup>.*)$/
+      tables_replacement += table + "\n\n"
+      # NOTE: keep space after comment "*" to include with copied table
+      # e.g. keeping the superscipts legends
     else
       puts "- #{klass}: Attributes not found!"
     end
+    # Add html section end
+    tables_replacement += "</section>\n"
+    nav_replacement += "        <li><a class='side-link indent' href='#section-#{klass}'>#{klass}</a></li>\n"
   else
     puts "File does not exist: '#{klass_path}'"
   end
 end
 
 # Put tables in doc.html
-# puts text
+# puts tables_replacement
 docs_file = File.read(docs_path)
-if docs_file =~ /<!-- REPLACE START -->.*<!-- REPLACE END -->/m
+
+tables_found = false
+if docs_file =~ /<!-- REPLACE_TABLES START -->.*<!-- REPLACE_TABLES END -->/m
   puts "Replacing Tables in docs"
-  docs_file.sub!(/<!-- REPLACE START -->.*<!-- REPLACE END -->/m, "<!-- REPLACE START -->#{text}<!-- REPLACE END -->")
-  docs_path = File.join(CGVIEW_JS_DIR, 'demo', 'test.html')
-  File.write("#{docs_path}.OUT.html", docs_file)
+  docs_file.sub!(/<!-- REPLACE_TABLES START -->.*<!-- REPLACE_TABLES END -->/m, "<!-- REPLACE_TABLES START -->\n#{tables_replacement}\n<!-- REPLACE_TABLES END -->")
+  tables_found = true
 else
-  puts "No REPLACE line found"
+  puts "No REPLACE_TABLES line found"
 end
 
+nav_found = false
+if docs_file =~ /<!-- REPLACE_NAV START -->.*<!-- REPLACE_NAV END -->/m
+  puts "Replacing Nav in docs"
+  docs_file.sub!(/<!-- REPLACE_NAV START -->.*<!-- REPLACE_NAV END -->/m, "<!-- REPLACE_NAV START -->\n#{nav_replacement}\n        <!-- REPLACE_NAV END -->")
+  nav_found = true
+else
+  puts "No REPLACE_NAV line found"
+end
+
+if tables_found && nav_found
+  puts "Updating File: '#{docs_path}'"
+  File.write(docs_path, docs_file)
+else
+  puts "FILE WAS NOT CHANGED"
+end
 
 
 

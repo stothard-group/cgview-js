@@ -8,9 +8,10 @@ import utils from './Utils';
 // FIXME: There are 2 clasess here
 
 /**
- * <br />
  * The Highlighter object controls highlighting and popovers of features,
  * plots and other elements on the Viewer when the mouse hovers over them.
+ *
+ * @extends CGObject
  */
 class Highlighter extends CGObject {
 

@@ -12,28 +12,45 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * <br />
- * The *Legend* is a subclass of Caption with the ability to draw swatches beside items.
- * @extends Caption
+ * The Legend contains the legendItems for the maps and can be places anywhere on the canvas orcontains the legendItems for the maps and can be places anywhere on the canvas or map.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                | Legend Method                  | Event
+ * ----------------------------------------|------------------------------|--------------------------------|-----
+ * [Update](../docs.html#updating-records) | -                            | [update()](Legend.html#update) | legends-update
+ * [Read](../docs.html#reading-records)    | [legend](Viewer.html#legend) | -                              | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                          | Type      | Description
+ * -----------------------------------|-----------|------------
+ * [position](#position)              | String\|Object | Where to draw the legend [Default: 'top-right']. See {@link Position} for details.
+ * [anchor](#anchor)                  | String\|Object | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
+ * [defaultFont](#defaultFont)        | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
+ * [defaultFontColor](#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
+ * [textAlignment](#textAlignment)    | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
+ * [backgroundColor](#font)           | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
+ * [on](#on)<sup>ic</sup>             | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
+ * [items](#items)<sup>iu</sup>       | Array     | Array of legend item data.
+ * [visible](CGObject.html#visible)   | Boolean   | Legend is visible [Default: true]
+ * [meta](CGObject.html#meta)         | Object    | [Meta data](../tutorials/details-meta-data.html)
+ * 
+ * <sup>ic</sup> Ignored on Legend creation
+ * <sup>iu</sup> Ignored on Legend update
+ *
+ * ### Examples
+ *
+ * @extends CGObject
  */
 class Legend extends CGObject {
 
   /**
    * Create a new Legend.
-   *
-   * @param {Legend} viewer - The parent *Viewer* for the *Legend*.
-   * @param {Object} options - Options used to create the legend.
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *  position              | "upper-right"    | Where to draw the legend. One of "upper-left", "upper-center", "upper-right", "middle-left", "middle-center", "middle-right", "bottom-left", "bottom-center", or "bottom-right".
-   *  anchor                |                  | Where to anchor the caption box to the position {@link Anchor}
-   *  defaultFont           | "SansSerif,plain,8" | A string describing the font. See {@link Font} for details.
-   *  defaultFontColor      | "black"          | A string describing the color. See {@link Color} for details.
-   *  textAlignment         | "left"           | *left*, *center*, or *right*
-   *  backgroundColor       | Viewer backgroundColor | A string describing the color. See {@link Color} for details.
-   *
-   * @param {Object=} meta - User-defined key:value pairs to add to the legend.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the legend
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the legend.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);

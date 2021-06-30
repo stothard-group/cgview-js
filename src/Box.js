@@ -7,7 +7,6 @@ import Anchor from './Anchor';
 import utils from './Utils';
 
 /**
- * <br />
  * A Box consists of an x and y point (the top-left corner) and
  * a width and height. The Box position can be relative to the
  * canvas where the position stays static or to the map in which

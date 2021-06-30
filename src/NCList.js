@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * <br />
  * The NCList is a container for intervals that allows fast searching of overlaping regions.
  *
  * Nested Containment List (NCList): A new algorithm for accelerating

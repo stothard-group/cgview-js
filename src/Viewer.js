@@ -60,9 +60,28 @@ import * as d3 from 'd3';
  * ----------------------------------|-----------|------------
  * [name](#name)                     | String    | Name for the map
  * [id](#id)                         | String    | ID for the map [Default: random 20 character HexString]
- * [width](#width)                   | Number    | Width of map in pixels
- * [height](#height)                 | Number    | Height of map in pixels
- * [dataHasChanged](#dataHasChanged) | Boolean   | Has data been update/added to map?
+ * [width](#width)                   | Number    | Width of the viewer map in pixels [Default: 600]
+ * [height](#height)                 | Number    | Height of the viewer map in pixels [Default: 600]
+ * [dataHasChanged](#dataHasChanged) | Boolean   | Indicates that data been update/added since this attribute was reset
+ * ----------------------------------|-----------|------------
+ * [sequence](#sequence)<sup>iu</sup>        | Object | [Sequence](Sequence.html) options
+ * [settings](#settings)<sup>iu</sup>        | Object | [Settings](Settings.html) options
+ * [legend](#legend)<sup>iu</sup>          | Object | [Legend](Legend.html) options
+ * [backbone](#backbone)<sup>iu</sup>        | Object | [Backbone](Backbone.html) options
+ * [layout](#layout)<sup>iu</sup>          | Object | [Layout](Layout.html) options
+ * [ruler](#ruler)<sup>iu</sup>           | Object | [Ruler](Ruler.html) options
+ * [dividers](#dividers)<sup>iu</sup>        | Object | [Dividers](Dividers.html) options
+ * [annotation](#annotation)<sup>iu</sup>      | Object | [Annotation](Annotation.html) options
+ * [highlighter](#highlighter)<sup>iu</sup>     | Object | [Highlighter](Highlighter.html) options
+ * 
+ * <sup>iu</sup> Ignored on Viewer update
+ *
+ * <a name="creation-options"></a>
+ * ### Options on Creation
+ *
+ * - Link to tutorials
+ * - Add options below to table above and add super script
+ * - have table of accessors from API readme here. This table could be auto copied to docs as well
  *
  */
 class Viewer {

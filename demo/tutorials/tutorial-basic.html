@@ -187,9 +187,9 @@ var plot = new CGV.Plot(cgv, {
   baseline: 0.5,
   source: 'genome-plot',
   // Values above the baseline wil be blue
-  legendPositive: new CGV.LegendItem(cgv.legend, {swatchColor: 'blue', text: 'Plot +'}),
+  legendPositive: new CGV.LegendItem(cgv.legend, {swatchColor: 'blue', name: 'Plot +'}),
   // Values below will be red
-  legendNegative: new CGV.LegendItem(cgv.legend, {swatchColor: 'red', text: 'Plot -'})
+  legendNegative: new CGV.LegendItem(cgv.legend, {swatchColor: 'red', name: 'Plot -'})
 });
 ```
 

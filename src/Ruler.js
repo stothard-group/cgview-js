@@ -8,10 +8,37 @@ import Font from './Font';
 import utils from './Utils';
 import * as d3 from 'd3';
 
+/**
+ * The Ruler controls and draws the sequence ruler in bp.
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method              | Ruler Method        | Event
+ * ----------------------------------------|----------------------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -                          | [update()](#update) | ruler-update
+ * [Read](../docs.html#reading-records)    | [ruler](Viewer.html#ruler) | -                   | -
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [font](#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See {@link Font} for details.
+ * [color](#color)                  | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+ * [visible](CGObject.html#visible) | Boolean   | Rulers are visible [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html) for ruler
+ *
+ * ### Examples
+ *
+ * @extends CGObject
+ */
 class Ruler extends CGObject {
 
   /**
-   * The *Ruler* controls and draws the sequence ruler in bp.
+   * Create a new ruler
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the ruler
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the ruler.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
