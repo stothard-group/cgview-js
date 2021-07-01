@@ -56,12 +56,15 @@
 
 # JSON
 
-Data can be loaded from a JavaScript object literal or a JSON string using [IO.loadJSON](IO.html#loadJSON).
+Data can be loaded from a JavaScript object literal or a JSON string using [IO.loadJSON](api/IO.html#loadJSON).
 The two formats are very similar and can be converted using JSON.parse and JSON.stringify.
 The example below is shown as an object literal and only shows some of the possible options for each key.
-Click on a key (e.g. backbone, captions, etc) for options and defaults. There are 2 options that are available
-for most sections of the JSON: _visible_ (Default: true) and _meta_ (Default: {}). The _meta_ key is a place
-to store user/app-defined data.
+Click on a key (e.g. backbone, captions, etc) for options and defaults.
+
+The following two options are available for most sections of the JSON but are
+only present when they have non-default values (see the first [feature](#lines.95-107) for an example with non-default values):
+- _visible_ [Default: true]
+- _meta_ [Default: {}].  The _meta_ key is a place to store [user/app-defined meta data](tutorials/details-meta-data.html).
 
 ```json
 {
@@ -166,6 +169,10 @@ to store user/app-defined data.
                 "strand": 1,
                 "source": "sequence-features",
                 "legend": "rRNA"
+                "visible": false,
+                "meta": {
+                  "score": 1234
+                }
             },
             {
                 "name": "nad8",
@@ -318,6 +325,8 @@ to store user/app-defined data.
         };
       }
 
+      // Make sidebar link active if present.
+      // Also scroll window to better center the highlighted code
       const makeLinkActive = () => {
         if (window.location.hash) {
           // Activate the appropriate link
@@ -344,9 +353,9 @@ to store user/app-defined data.
       }
 
       window.onload = makeLinkActive;
-      sidebar.onclick = (event) => {
+      window.addEventListener('popstate', function (event) {
         setTimeout(makeLinkActive, 100)
-      }
+      });
 
     </script>
 

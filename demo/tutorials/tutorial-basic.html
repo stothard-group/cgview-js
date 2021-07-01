@@ -83,21 +83,21 @@
 
 # Basic Map
 
-CGView Maps consist of [features](Feature.html) and/or [plots](Plot.html). How the features
-and plots are organized on the map is through the viewer [Layout](Layout.html).
-The [Layout](Layout.html) consists of one or more [Tracks](Track.html) where each
-[Track](Track.html) describes which features/plots it consists of and how they should be displayed.
-[Tracks](Track.html) are drawn as one or more [Slots](Slot.html) on the map.
-Each [Slot](Slot.html) represents a single ring on the map.
-For example a [Track](Track.html) can draw [Features](Feature.html) separated by strand as two
-[Slots](Slot.html) or combined as a single [Slot](Slot.html).
+CGView Maps consist of [features](../api/Feature.html) and/or [plots](../api/Plot.html). How the features
+and plots are organized on the map is through the viewer [Layout](../api/Layout.html).
+The [Layout](../api/Layout.html) consists of one or more [Tracks](../api/Track.html) where each
+Track describes which features/plots it consists of and how they should be displayed.
+Tracks are drawn as one or more [Slots](../api/Slot.html) on the map.
+Each Slot represents a single ring on the map.
+For example a Track can draw Features separated by strand as two
+Slots or combined as a single Slot.
 
-## Create a new [Viewer](Viewer.html) ##
+## Create a new [Viewer](../api/Viewer.html) ##
 
 The *Viewer* is the main object in CGView.js. While many options can be
 provided when creating the viewer, the most important is the sequence option.
 For the sequence, you can provide the length or the sequence itself. In this
-example, we will simply use the length. See the [Sequence Map](sequence_map.html)
+example, we will simply use the length. See the [Sequence Map](tutorial-sequence.html)
 tutorial to see the benefits of using the sequence.
 
 ```js
@@ -112,7 +112,7 @@ cgv = new CGV.Viewer('#my-viewer', {
 });
 ```
 
-## Create a [Feature](Feature.html) on the forward strand. ##
+## Create a [Feature](../api/Feature.html) on the forward strand. ##
 
 ```js
 // The addFeatures() method can accept an array of objects or a single object of data
@@ -140,7 +140,7 @@ cgv.addFeatures({
 });
 ```
 
-## Create a [Feature](Feature.html) on the reverse strand. ##
+## Create a [Feature](../api/Feature.html) on the reverse strand. ##
 
 ```js
 cgv.addFeatures({
@@ -155,9 +155,9 @@ cgv.addFeatures({
 ```
 
 ## Change the color and decoration of the Features
-The [color](Color.html) and decoration of features is altered through the [LegendItem](LegendItem.html).
+The [color](../api/Color.html) and decoration of features is altered through the [LegendItem](../api/LegendItem.html).
 When a feature is created, the _legend_ attribute is used to find any
-previously created [LegendItem](LegendItem.html) with the same name.
+previously created LegendItem with the same name.
 If no LegendItem is found, one will be created with the default settings.
 Here we find the generated LegendItem and change it's color and decoration.
 
@@ -173,9 +173,9 @@ legendItem.decoration = 'arrow';
 ```
 
 
-## Create a [Plot](Plot.html). ##
+## Create a [Plot](../api/Plot.html). ##
 
-Now we'll create a [plot](Plot.html). Plots consist of an array of positions (in bp) and a
+Now we'll create a plot. Plots consist of an array of positions (in bp) and a
 matching array of scores with values between 0 and 1. An optional baseline can be provided (default 0.5).
 Values above the baseline are positive and values below the baseline are negative.
 
@@ -194,7 +194,7 @@ var plot = new CGV.Plot(cgv, {
 ```
 
 
-## Create a [Track](Track.html) for the features. ##
+## Create a [Track](../api/Track.html) for the features. ##
 
 Each Track can contain one or more Features or a single Plot.
 
@@ -230,7 +230,7 @@ cgv.addTracks({
 });
 ```
 
-## Create a [Track](Track.html) for the plot. ##
+## Create a [Track](../api/Track.html) for the plot. ##
 
 ```js
 // Add Plot Track

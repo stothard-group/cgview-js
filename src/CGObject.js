@@ -11,23 +11,37 @@ const generateID = function() {
 };
 
 /**
- * The CGObject is the base class of many CGV Classes. In particular, any class that
+ * The CGObject is the base class of many CGView Classes. In particular, any class that
  * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
  * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
+ *
+ * Any subclass instances will be given a unique temporary cgvID.
+ * This id is not saved to JSON and should not be used across CGView sessions
+ * (i.e. don't expect a feature to have the same cgvID if it's loaded in the viewer again).
  * Any object can be easily returned using the cgvID and [Viewer.objects](Viewer.html#objects).
+ *
+ * Classes that extend CGObject will have access to several commonly accessed viewer objects:
+ * - viewer
+ * - sequence
+ * - canvas
+ * - layout
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute           | Type      | Description
+ * --------------------|-----------|------------
+ * [visible](#visible) | Boolean   | Object is visible [Default: true]
+ * [meta](#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html) [Default: {}]
+ *
  */
-// class CGObject extends CGV.Events {
 class CGObject {
 
   /**
-   * @param {Viewer} viewer - The viewer object.
-   * @param {Object} options -
-   *
-   *  Option                | Default          | Description
-   *  ----------------------|-------------------------------------------------
-   *  visible               | true             | Whether to draw the object or not.
-   *
-   * @param {Obejct} meta -
+   * Create a new CGObject.
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the bookmark
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the bookmark.
    */
   constructor(viewer, options = {}, meta = {}) {
     // super();
@@ -90,7 +104,7 @@ class CGObject {
   }
 
   /**
-   * @member {Boolean} - Get or Set the meta data of this object. See the {@tutorial meta} tutorial.
+   * @member {Boolean} - Get or Set the meta data of this object. See the [meta data](../tutorials/details-meta-data.html) tutorial for details.
    */
   get meta() {
     return this._meta;

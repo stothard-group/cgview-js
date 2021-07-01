@@ -1,5 +1,5 @@
 # This script replaces the record type tables and side navbar
-# in docs.html with the attribute ans action tables from 
+# in docs.html with the attribute and action tables from 
 # the major classes. See 'klasses' below.
 
 this_script_dir = File.expand_path(File.dirname(__FILE__))
@@ -24,6 +24,7 @@ klasses.each do |klass|
     # Add Heading and link to class
     tables_replacement += "\n## [#{klass}](api/#{klass}.html)\n\n"
     file = File.read(klass_path)
+
     # Actions and Events
     if file =~ /### Action and Events\n \*\n(.*?)\n \*\n/m
       table = $1
@@ -39,6 +40,7 @@ klasses.each do |klass|
     else
       puts "- #{klass}: Actions not found!"
     end
+
     # Attributes
     # if file =~ /### Attributes\n \*\n(.*?)\n \*\n/m
     if file =~ /### Attributes\n \*\n(.*?)\n \*\n/m
@@ -51,12 +53,16 @@ klasses.each do |klass|
       # Replace meta-data link
       table.gsub!('../tutorials/details-meta-data.html', 'tutorials/details-meta-data.html')
       # puts table
+      # Replace @links
+      table.gsub!(/\{@link (.*?)\}/, '<a href="api/\1.html"><code>\1</code></a>')
+      # Add table to output
       tables_replacement += table + "\n\n"
       # NOTE: keep space after comment "*" to include with copied table
       # e.g. keeping the superscipts legends
     else
       puts "- #{klass}: Attributes not found!"
     end
+
     # Add html section end
     tables_replacement += "</section>\n"
     nav_replacement += "        <li><a class='side-link indent' href='#section-#{klass}'>#{klass}</a></li>\n"

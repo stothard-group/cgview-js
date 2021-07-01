@@ -278,8 +278,8 @@ cgv.trigger('features-update');
 
 # Dirty Data
 
-If the Record Actions are used to change data, the viewer property [Viewer.dataHasChanged](Viewer.html#dataHasChanged) will be set to true.
-This value is set to false automatically only when new data is read in via [IO.loadJSON()](IO.html#loadJSON).
+If the Record Actions are used to change data, the viewer property [Viewer.dataHasChanged](api/Viewer.html#dataHasChanged) will be set to true.
+This value is set to false automatically only when new data is read in via [IO.loadJSON()](api/IO.html#loadJSON).
 Otherwise it can be manually set to false.
 This could be used by a site to see if the data has changed and thus should be saved.
 Once saved, the site would manually set this property to false.
@@ -441,7 +441,7 @@ Action                                  | Viewer Method   | Settings Method     
 
 Attribute                           | Type      | Description
 ------------------------------------|-----------|------------
-[backgroundColor](api/Settings.html#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
+[backgroundColor](api/Settings.html#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [showShading](api/Settings.html#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
 [arrowHeadLength](api/Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
 
@@ -457,12 +457,12 @@ Action                                  | Viewer Method                | Legend 
 
 Attribute                          | Type      | Description
 -----------------------------------|-----------|------------
-[position](api/Legend.html#position)              | String\|Object | Where to draw the legend [Default: 'top-right']. See {@link Position} for details.
-[anchor](api/Legend.html#anchor)                  | String\|Object | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
-[defaultFont](api/Legend.html#defaultFont)        | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
-[defaultFontColor](api/Legend.html#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
+[position](api/Legend.html#position)              | String\|Object | Where to draw the legend [Default: 'top-right']. See <a href="api/Position.html"><code>Position</code></a> for details.
+[anchor](api/Legend.html#anchor)                  | String\|Object | Where to anchor the legend box to the position [Default: 'auto']. See <a href="api/Anchor.html"><code>Anchor</code></a> for details.
+[defaultFont](api/Legend.html#defaultFont)        | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[defaultFontColor](api/Legend.html#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [textAlignment](api/Legend.html#textAlignment)    | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
-[backgroundColor](api/Legend.html#font)           | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
+[backgroundColor](api/Legend.html#font)           | String    | A string describing the background color of the legend [Default: 'white']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [on](api/Legend.html#on)<sup>ic</sup>             | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
 [items](api/Legend.html#items)<sup>iu</sup>       | Array     | Array of legend item data.
 [visible](api/CGObject.html#visible)   | Boolean   | Legend is visible [Default: true]
@@ -487,10 +487,10 @@ Action                                     | Legend Method                      
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
 [name](api/LegendItem.html#name)                    | String    | Name to diplay for legendItem 
-[font](api/LegendItem.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
-[fontColor](api/LegendItem.html#fontColor)          | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
+[font](api/LegendItem.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[fontColor](api/LegendItem.html#fontColor)          | String    | A string describing the font color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [decoration](api/LegendItem.html#decoration)        | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
-[swatchColor](api/LegendItem.html#swatchColor)      | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
+[swatchColor](api/LegendItem.html#swatchColor)      | String    | A string describing the legendItem display color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [drawSwatch](api/LegendItem.html#drawSwatch)        | Boolean   | Draw the swatch beside the legendItem name [Default: true]
 [favorite](api/LegendItem.html#favorite)            | Boolean   | LegendItem is a favorite [Default: false]
 [visible](api/CGObject.html#visible) | Boolean   | LegendItem is visible [Default: true]
@@ -512,12 +512,12 @@ Action                                     | Viewer Method                      
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
 [name](api/Caption.html#name)                    | String    | Text of the caption
-[position](api/Caption.html#position)            | String\|Object | Where to draw the caption [Default: 'middle-center']. See {@link Position} for details.
-[anchor](api/Caption.html#anchor)                | String\|Object | Where to anchor the caption box to the position [Default: 'middle-center']. See {@link Anchor} for details.
-[font](api/Caption.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
-[fontColor](api/Caption.html#fontColor)          | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[position](api/Caption.html#position)            | String\|Object | Where to draw the caption [Default: 'middle-center']. See <a href="api/Position.html"><code>Position</code></a> for details.
+[anchor](api/Caption.html#anchor)                | String\|Object | Where to anchor the caption box to the position [Default: 'middle-center']. See <a href="api/Anchor.html"><code>Anchor</code></a> for details.
+[font](api/Caption.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 8']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[fontColor](api/Caption.html#fontColor)          | String    | A string describing the color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [textAlignment](api/Caption.html#textAlignment)  | String    | Alignment of caption text: *left*, *center*, or *right* [Default: 'left']
-[backgroundColor](api/Caption.html#font)         | String    | A string describing the background color of the caption [Default: 'white']. See {@link Color} for details.
+[backgroundColor](api/Caption.html#font)         | String    | A string describing the background color of the caption [Default: 'white']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [on](api/Caption.html#on)<sup>ic</sup>           | String    | Place the caption relative to the 'canvas' or 'map' [Default: 'canvas']
 [visible](api/CGObject.html#visible) | Boolean   | Caption is visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Caption
@@ -536,8 +536,8 @@ Action                                  | Viewer Method                        |
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
-[font](api/Annotation.html#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See {@link Font} for details.
-[color](api/Annotation.html#color)                  | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
+[font](api/Annotation.html#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[color](api/Annotation.html#color)                  | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See <a href="api/Color.html"><code>Color</code></a> for details.
 [onlyDrawFavorites](api/Annotation.html#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
 [visible](api/CGObject.html#visible) | Boolean   | Labels are visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Annotation
@@ -579,8 +579,8 @@ Action                                  | Viewer Method                   | Back
 Attribute                         | Type      | Description
 ----------------------------------|-----------|------------
 [thickness](api/Backbone.html#thickness)           | Number    | Thickness of backbone [Default: 5]
-[color](api/Backbone.html#color)                   | String    | A string describing the main backbone color [Default: 'grey']. See {@link Color} for details.
-[colorAlternate](api/Backbone.html#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See {@link Color} for details.
+[color](api/Backbone.html#color)                   | String    | A string describing the main backbone color [Default: 'grey']. See <a href="api/Color.html"><code>Color</code></a> for details.
+[colorAlternate](api/Backbone.html#alternateColor) | String    | A string describing the alternate color used for contigs [Default: 'rgb(200,200,200)']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [decoration](api/Backbone.html#decoration)         | String    | How the bakcbone should be drawn. Choices: 'arc', 'arrow' [Default: arc for single contig, arrow for muliple contigs]
 [visible](api/CGObject.html#visible)  | Boolean   | Backbone is visible [Default: true]
 [meta](api/CGObject.html#meta)        | Object    | [Meta data](tutorials/details-meta-data.html)
@@ -602,8 +602,8 @@ Attribute                        | Type      | Description
 [seq](api/Sequence.html#seq)<sup>iu</sup>         | String    | The map sequence.
 [length](api/Sequence.html#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided. [Default: 1000]
 [contigs](api/Sequence.html#contigs)<sup>iu</sup> | Array     | Array of contigs. Contigs are ignored if a seq is provided.
-[font](api/Sequence.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
-[color](api/Sequence.html#color)                  | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
+[font](api/Sequence.html#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[color](api/Sequence.html#color)                  | String    | A string describing the sequence color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [visible](api/CGObject.html#visible) | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html)
 
@@ -646,8 +646,8 @@ Action                                  | Viewer Method              | Ruler Met
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
-[font](api/Ruler.html#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See {@link Font} for details.
-[color](api/Ruler.html#color)                  | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[font](api/Ruler.html#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 10']. See <a href="api/Font.html"><code>Font</code></a> for details.
+[color](api/Ruler.html#color)                  | String    | A string describing the color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [visible](api/CGObject.html#visible) | Boolean   | Rulers are visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html) for ruler
 
@@ -663,7 +663,7 @@ Action                                  | Viewer Method                    | Div
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
-[color](api/Divider.html#color)                  | String    | A string describing the color [Default: 'black']. See {@link Color} for details.
+[color](api/Divider.html#color)                  | String    | A string describing the color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [thickness](api/Divider.html#thickness)          | Number    | Thickness of divider [Default: 1]
 [spacing](api/Divider.html#spacing)              | Number    | Spacing between divider and track/slot content [Default: 1]
 [mirror](api/Divider.html#mirror)<sup>ic</sup>   | Boolean   | If true, the other dividers will use the same settings as this divider.

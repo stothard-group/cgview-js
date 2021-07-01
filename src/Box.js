@@ -11,44 +11,43 @@ import utils from './Utils';
  * a width and height. The Box position can be relative to the
  * canvas where the position stays static or to the map in which
  * case the position moves with the map.
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ * Attribute             | Type          | Description
+ * ----------------------|---------------|------------
+ * [width](#width)       | Number        | Width of box (Default: 100)
+ * [height](#height)     | Number        | Height of box (Default: 100)
+ * [padding](#padding)   | Number        | Sets paddedX and paddedY values (Default: 0)
+ * [position](#position) | String\|Object | Where to place the box. See {@link Position} for details.
+ * [anchor](#anchor)     | String\|Object | Where the position should be anchored to the box.
+ * [color](#color)       | String\|Color  | A string describing the color. See {@link Color} for details. (DOESN'T DO ANYTHING YET)
+ *
+ * Position:
+ * If the position is on (i.e. relativeTo) the 'canvas', the box will be in a static position
+ * and will not move as the map is panned. String values (e.g. top-right, bottom-middle, etc)
+ * position the box appropriately. An object with xPercent and yPercent values between
+ * 0 and 100 will position the box along the x and y axes starting from the top-left.
+ * The string values are associated with specific offsets. For example,
+ *   - top-left = {xPercent: 0, yPercent: 0}
+ *   - middle-center = {xPercent: 50, yPercent: 50}
+ *   - bottom-right = {xPercent: 100, yPercent: 100}
+ *
+ * If position is on (i.e. relativeTo) the 'map', the box will move with the map as it's panned.
+ * The position will consist of
+ *   - lengthPercent: 0 - start of map; 50 - middle of map; 100 - end of map
+ *   - mapOffset or bbOffsetPercent: distance from the thbackbone
+ *
+ * ### Examples
+ *
  */
 class Box {
 
   /**
-   * Create a Box
-   *
+   * Create a Box.
    * @param {Viewer} viewer - The viewer this box will be associated with.
-   * @param {Object} options - Options for creating the box.
-   * @param {Object} meta - Meta data...
-   *
-   * ### Options
-   *
-   * Name         | Type   | Description
-   * -------------|--------|------------
-   * width        | Number | Width of box (Default: 100)
-   * height       | Number | Height of box (Default: 100)
-   * padding      | Number | Sets paddedX and paddedY values (Default: 0)
-   * position     | String|Object | Where to place the box. See {@link Position} for details.
-   * anchor       | String|Object | Where the position should be anchored to the box.
-   * color        | String|Color | A string describing the color. See {@link Color} for details. (DOESN'T DO ANYTHING YET)
-   *
-   *   Position:
-   *   If the position is on (i.e. relativeTo) the 'canvas', the box will be in a static position
-   *   and will not move as the map is panned. String values (e.g. top-right, bottom-middle, etc)
-   *   position the box appropriately. An object with xPercent and yPercent values between
-   *   0 and 100 will position the box along the x and y axes starting from the top-left.
-   *   The string values are associated with specific offsets. For example,
-   *     - top-left = {xPercent: 0, yPercent: 0}
-   *     - middle-center = {xPercent: 50, yPercent: 50}
-   *     - bottom-right = {xPercent: 100, yPercent: 100}
-   *
-   *   If position is on (i.e. relativeTo) the 'map', the box will move with the map as it's panned.
-   *   The position will consist of
-   *     - lengthPercent: 0 - start of map; 50 - middle of map; 100 - end of map
-   *     - mapOffset or bbOffsetPercent: distance from the thbackbone
-   *
-   *   Anchor:
-   *   The anchor is where the position is attached to the box.
+   * @param {Object} options - [Attributes](#attributes) used to create the box.
    */
   constructor(viewer, options = {}) {
     this._viewer = viewer;

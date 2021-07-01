@@ -10,30 +10,34 @@ import utils from './Utils';
  * or as x/y percents where 0 is the top/left and 100 is the bottom/right.
  * Anchors are typically used to describe the focal point on a box or where to
  * draw an attachemnt line.
+ *
+ * <a name="anchor-names"></a>
+ * ### Anchor Names
+ *
+ * String           | xPercent | yPercent
+ * -----------------|----------|---------
+ * top-left         | 0        | 0
+ * top-center       | 50       | 0
+ * top-right        | 100      | 0
+ * middle-left      | 0        | 50
+ * middle-center    | 50       | 50
+ * middle-right     | 100      | 50
+ * bottom-left      | 0        | 100
+ * bottom-center    | 50       | 100
+ * bottom-right     | 100      | 100
+ *
+ *
  */
 class Anchor {
 
   /**
    * Creating an Anchor. The default value for Anchor will be 'top-left' ({xPercent: 0, yPercent: 0}).
-   *
    * @param {String|Object} value - A string describing the position or
    *   an object with 2 properties: xPercent, yPercent.
    *   The percent values should be between 0 (top/left) and 100 (bottom/right).
    *   Percents below 0 will become 0 and values abouve 100 will become 100.
-   *   The following tables show the possible string values and their corresponding
+   *   See the [Anchor Names](#anchor-names) table for possible string values and their corresponding
    *   x/y Percents.
-   *
-   *   String           | xPercent | yPercent
-   *   -----------------|----------|---------
-   *   top-left         | 0        | 0
-   *   top-center       | 50       | 0
-   *   top-right        | 100      | 0
-   *   middle-left      | 0        | 50
-   *   middle-center    | 50       | 50
-   *   middle-right     | 100      | 50
-   *   bottom-left      | 0        | 100
-   *   bottom-center    | 50       | 100
-   *   bottom-right     | 100      | 100
    */
   constructor(value) {
     if (typeof value === 'string') {

@@ -88,9 +88,9 @@ you will be able to see the sequence on the map; and 2) additional tracks can be
 created with plots (e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs)
 extracted directly from the sequence.
 
-## Create a new [Viewer](Viewer.html) ##
+## Create a new [Viewer](../api/Viewer.html) ##
 
-In this example we will provide a random sequence using the [Sequence#random](Sequence.html#random) method.
+In this example we will provide a random sequence using the [Sequence#random](../api/Sequence.html#random) method.
 
 ```js
 // The first argument is the id of the container that will hold the viewer.
@@ -104,7 +104,7 @@ cgv = new CGV.Viewer('#my-viewer', {
 });
 ```
 
-## Create a [Track](Track.html) with ORFs extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with ORFs extracted from the seqeunce ##
 
 ```js
 cgv.addTracks({
@@ -143,7 +143,7 @@ cgv.addTracks({
 });
 ```
 
-## Create a [Track](Track.html) with a GC Skew plot extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with a GC Skew plot extracted from the seqeunce ##
 
 ```js
 cgv.addTracks({
@@ -162,7 +162,7 @@ cgv.addTracks({
 });
 ```
 
-## Create a [Track](Track.html) with a GC Content plot extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with a GC Content plot extracted from the seqeunce ##
 
 ```js
 cgv.addTracks({
