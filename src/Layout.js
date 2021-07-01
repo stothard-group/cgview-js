@@ -316,14 +316,12 @@ class Layout {
    * @param {Number} startBp - The start position in basepairs.
    * @param {Number} stopBp - The stop position in basepairs.
    * @param {Boolean} [anticlockwise=false] - For circular maps the default direction is clockwise. Set this to true to draw arcs, anticlockwise.
-   * @param {String} [startType='moveTo'] - How the path should be started.
-   * <br />
+   * @param {String} [startType='moveTo'] - How the path should be started. Allowed values:
+   * <br /><br />
+   *  - moveTo:  *moveTo* start; *lineTo* stop
+   *  - lineTo: *lineTo* start; *lineTo* stop
+   *  - noMoveTo:  ingore start; *lineTo* stop
    *
-   * Value     | Description
-   * ----------|-------------
-   * moveTo    | *moveTo* start; *lineTo* stop
-   * lineTo    | *lineTo* start; *lineTo* stop
-   * noMoveTo  | ingore start; *lineTo* stop
    */
   path(...args) {
     this.delegate.path(...args);

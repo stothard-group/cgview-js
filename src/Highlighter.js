@@ -11,23 +11,23 @@ import utils from './Utils';
  * The Highlighter object controls highlighting and popovers of features,
  * plots and other elements on the Viewer when the mouse hovers over them.
  *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ *  Option                        | Default                    | Description
+ *  ------------------------------|----------------------------|--------------------------
+ *  [feature](#feature)           | {@link HighlighterElement} | Describes the highlightling options for features.
+ *  [plot](#plot)                 | {@link HighlighterElement} | Describes the highlightling options for plots.
+ *  [showMetaData](#showMetaData) | true                       | Should meta data be shown in popovers
+ *
  * @extends CGObject
  */
 class Highlighter extends CGObject {
 
   /**
    * Create a Highlighter
-   *
-   * @param {Viewer} viewer - The parent *Viewer* for the *Highligher*.
-   * @param {Object} options - Options for how highlighting should work. Described below.
-   *
-   *  Option     | Default              | Description
-   *  -----------|----------------------|--------------------------
-   *  feature    | HighlighterElement   | Describes the highlightling options for features.
-   *  plot       | HighlighterElement   | Describes the highlightling options for plots.
-   *  showMetaData | true                | Should meta data be shown in popovers
-   *
-   * @return {Highlighter}
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the highlighter.
    */
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
@@ -215,20 +215,25 @@ class Highlighter extends CGObject {
 // Highlighter Element
 //////////////////////////////////////////////////////////////////////////////
 /**
- * Create a Highlighter element.
+ * A HighlighterElement indicates whether highlighting and popovers should appear.
  *
- * @param {String} type - The element type: 'feature' or 'plot'.
- * @param {Object} options - Options for how highlighting should work. Described below.
+ * <a name="attributes"></a>
+ * ### Attributes
  *
- *  Option          | Default     | Description
- *  ----------------|-------------------------------------------------
- *  highlighting    | true        | Highlight a element when the mouse is over it
- *  popovers        | true        | Show a popover for the element when the mouse is over it
- *  popoverContents | undefined   | Function to create html for the popover
+ *  Option                              | Default     | Description
+ *  ------------------------------------|-------------|-----------------------------------
+ *  [highlighting](#highlighting)       | true        | Highlight a element when the mouse is over it
+ *  [popovers](#popovers)               | true        | Show a popover for the element when the mouse is over it
+ *  [popoverContents](#popoverContents) | undefined   | Function to create html for the popover
  *
- * @return {Highlighter}
  */
 class HighlighterElement {
+
+  /**
+   * Create a HighlighterElement
+   * @param {String} type - The element type: 'feature' or 'plot'.
+   * @param {Object} options - [Attributes](#attributes) used to create the highlighter element.
+   */
   constructor(type, options = {}) {
     this.type = type;
     this.highlighting = utils.defaultFor(options.highlighting, true);

@@ -5,66 +5,89 @@
 import utils from './Utils';
 
 /**
- * Position gives a precise location on the canvas or map.
+ * A Position gives a precise location on the canvas or map. Map-based
+ * positions move with the map while cavas-based-position do not.
+ *
+ * Positions on the canvas are described using [position names](#position-names)
+ * or x/yPercents.
+ *
+ * <a name="position-names"></a>
+ * ### Position Names
+ *
+ * String           | xPercent | yPercent
+ * -----------------|----------|---------
+ * top-left         | 0        | 0
+ * top-center       | 50       | 0
+ * top-right        | 100      | 0
+ * middle-left      | 0        | 50
+ * middle-center    | 50       | 50
+ * middle-right     | 100      | 50
+ * bottom-left      | 0        | 100
+ * bottom-center    | 50       | 100
+ * bottom-right     | 100      | 100
+ *
+ * Canvas-based position examples:
+ * - value: { xPercent: 50, yPercent: 40 }
+ * - value: 'top-left'
+ *
+ * For map-based positions are described with an object contained a lengthPercent
+ * BETTER DESCRIPTION NEEDED
+ *
+ * Map-based position examples:
+ * - value: { lengthPercent: 23, mapOffset: 10 }
+ * - value: { lengthPercent: 23, bbOffsetPercent: 10 }
+ * - value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
+ *
+ *
+ *  Order of priority for value:
+ *  Value                           | Assumes On |
+ *  --------------------------------|------------|------------
+ *  "top-left"                      | Canvas     |
+ *  {xPercent, yPercent,...}        | Canvas     |
+ *  {lengthPercent,...}             | Map        |
+ *  {contig, bp,...}                | Map        |
+ *  {bp,...}                        | Map        |
+ *
+ *  For offsets on the map: mapOffset > bbOffsetPercent > default [mapOffset: 20]
+ *
+ *  Positions create a point in canvas space based on the supplied values.
+ *  The position (on the map) can be updated by called refresh, if the map pans or zooms.
+ *  The type of position can be changed by altering the position properties:
+ *     - on: map, canvas
+ *     - offsetType: backbone, map // NOT IMPLEMENTED
+ *     - value:
+ *        - 'top-left'
+ *        - {bp: 1, contig: 'c-1'}
+ *        - {lengthPercent: 23, mapOffset: 23}
+ *        - {xPercent: 20, yPercent: 30}
+ *
+ * mapOffset values are the pixel distance from the map:
+ *   -  >=0: Add to outside edge of map
+ *   -   <0: Subtract from inside edge of map
+ *
+ * bbOffsetPercent values are the percentage distance from the backbone
+ * to the outside/upper edge or the inside/botom edge of the map:
+ *   -    0: center of backbone
+ *   -  100: outside edge of map
+ *   - -100: inside edge of map
+ *
  */
 class Position {
 
   /**
-   * Creating a Position. The default value for Position will be 'middel-center'.
+   * Creating a Position. The default value for Position will be 'middle-center'.
    *
    * @param {String|Object} value - A string describing the position or
    *   an object. The object properties will depend on the position type.
-   *
-   *   String           | xPercent | yPercent
-   *   -----------------|----------|---------
-   *   top-left         | 0        | 0
-   *   top-center       | 50       | 0
-   *   top-right        | 100      | 0
-   *   middle-left      | 0        | 50
-   *   middle-center    | 50       | 50
-   *   middle-right     | 100      | 50
-   *   bottom-left      | 0        | 100
-   *   bottom-center    | 50       | 100
-   *   bottom-right     | 100      | 100
-   *
+   *   NOTE: see examples above.  LINK
+   *   <br /><br />
    *   Examples:
-   *    value: { lengthPercent: 23, mapOffset: 10 }
-   *    value: { lengthPercent: 23, bbOffsetPercent: 10 }
-   *    value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
-   *    value: { xPercent: 50, yPercent: 40 }
-   *    value: 'top-left'
+   *   - value: { lengthPercent: 23, mapOffset: 10 }
+   *   - value: { lengthPercent: 23, bbOffsetPercent: 10 }
+   *   - value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
+   *   - value: { xPercent: 50, yPercent: 40 }
+   *   - value: 'top-left'
    *
-   *   Order of priority for value:
-   *   Value                           | Assumes On |
-   *   --------------------------------|------------|------------
-   *   "top-left"                      | Canvas     |
-   *   {xPercent, yPercent,...}        | Canvas     |
-   *   {lengthPercent,...}             | Map        |
-   *   {contig, bp,...}                | Map        |
-   *   {bp,...}                        | Map        |
-   *
-   *   For offsets on the map: mapOffset > bbOffsetPercent > default [mapOffset: 20]
-   *
-   *   Positions create a point in canvas space based on the supplied values.
-   *   The position (on the map) can be updated by called refresh, if the map pans or zooms.
-   *   The type of position can be changed by altering the position properties:
-   *      - on: map, canvas
-   *      - offsetType: backbone, map // NOT IMPLEMENTED
-   *      - value:
-   *         - 'top-left'
-   *         - {bp: 1, contig: 'c-1'}
-   *         - {lengthPercent: 23, mapOffset: 23}
-   *         - {xPercent: 20, yPercent: 30}
-   *
-   * mapOffset values are the pixel distance from the map:
-   *   -  >=0: Add to outside edge of map
-   *   -   <0: Subtract from inside edge of map
-   *
-   * bbOffsetPercent values are the percentage distance from the backbone
-   * to the outside/upper edge or the inside/botom edge of the map:
-   *   -    0: center of backbone
-   *   -  100: outside edge of map
-   *   - -100: inside edge of map
    */
   constructor(viewer, value) {
     this._viewer = viewer;

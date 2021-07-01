@@ -91,23 +91,6 @@ class Viewer {
    * @param {String} containerId - The ID (with or without '#') of the element to contain the viewer.
    * @param {Object} options - Options for setting up the viewer. Component
    * options will be passed to the contructor of that component.
-   *
-   * <br />
-   *
-   * Name         | Type   | Description
-   * -------------|--------|------------
-   * width           | Number | Width of viewer in pixels (Default: 600)
-   * height          | Number | Height of viewer in pixels (Default: 600)
-   * sequence        | Object | [Sequence](Sequence.html) options
-   * settings        | Object | [Settings](Settings.html) options
-   * legend          | Object | [Legend](Legend.html) options
-   * backbone        | Object | [Backbone](Backbone.html) options
-   * layout          | Object | [Layout](Layout.html) options
-   * ruler           | Object | [Ruler](Ruler.html) options
-   * dividers        | Object | [Dividers](Dividers.html) options
-   * annotation      | Object | [Annotation](Annotation.html) options
-   * highlighter     | Object | [Highlighter](Highlighter.html) options
-   *
    */
   constructor(containerId, options = {}) {
     this.containerId = containerId.replace('#', '');

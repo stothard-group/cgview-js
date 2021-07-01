@@ -6,7 +6,7 @@ import Position from './Position';
 import utils from './Utils';
 
 /**
- * An Anchor is simply a point on a box/rect that can be described in words ('top-left')
+ * An Anchor is a point on a box/rect that can be described in words ('top-left')
  * or as x/y percents where 0 is the top/left and 100 is the bottom/right.
  * Anchors are typically used to describe the focal point on a box or where to
  * draw an attachemnt line.
@@ -25,7 +25,6 @@ import utils from './Utils';
  * bottom-left      | 0        | 100
  * bottom-center    | 50       | 100
  * bottom-right     | 100      | 100
- *
  *
  */
 class Anchor {
