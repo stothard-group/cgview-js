@@ -63,16 +63,16 @@ import * as d3 from 'd3';
  * [width](#width)                   | Number    | Width of the viewer map in pixels [Default: 600]
  * [height](#height)                 | Number    | Height of the viewer map in pixels [Default: 600]
  * [dataHasChanged](#dataHasChanged) | Boolean   | Indicates that data been update/added since this attribute was reset
- * ----------------------------------|-----------|------------
- * [sequence](#sequence)<sup>iu</sup>        | Object | [Sequence](Sequence.html) options
- * [settings](#settings)<sup>iu</sup>        | Object | [Settings](Settings.html) options
- * [legend](#legend)<sup>iu</sup>          | Object | [Legend](Legend.html) options
- * [backbone](#backbone)<sup>iu</sup>        | Object | [Backbone](Backbone.html) options
- * [layout](#layout)<sup>iu</sup>          | Object | [Layout](Layout.html) options
- * [ruler](#ruler)<sup>iu</sup>           | Object | [Ruler](Ruler.html) options
- * [dividers](#dividers)<sup>iu</sup>        | Object | [Dividers](Dividers.html) options
- * [annotation](#annotation)<sup>iu</sup>      | Object | [Annotation](Annotation.html) options
- * [highlighter](#highlighter)<sup>iu</sup>     | Object | [Highlighter](Highlighter.html) options
+ * -                                 | -         | -
+ * [sequence](#sequence)<sup>iu</sup>    | Object | [Sequence](Sequence.html) options
+ * [settings](#settings)<sup>iu</sup>    | Object | [Settings](Settings.html) options
+ * [legend](#legend)<sup>iu</sup>        | Object | [Legend](Legend.html) options
+ * [backbone](#backbone)<sup>iu</sup>    | Object | [Backbone](Backbone.html) options
+ * [layout](#layout)<sup>iu</sup>        | Object | [Layout](Layout.html) options
+ * [ruler](#ruler)<sup>iu</sup>          | Object | [Ruler](Ruler.html) options
+ * [dividers](#dividers)<sup>iu</sup>    | Object | [Dividers](Dividers.html) options
+ * [annotation](#annotation)<sup>iu</sup> | Object | [Annotation](Annotation.html) options
+ * [highlighter](#highlighter)<sup>iu</sup> | Object | [Highlighter](Highlighter.html) options
  * 
  * <sup>iu</sup> Ignored on Viewer update
  *
@@ -89,8 +89,8 @@ class Viewer {
   /**
    * Create a viewer
    * @param {String} containerId - The ID (with or without '#') of the element to contain the viewer.
-   * @param {Object} options - Options for setting up the viewer. Component
-   * options will be passed to the contructor of that component.
+   * @param {Object} options - [Attributes](#attributes) used to create the viewer.
+   *    Component options will be passed to the contructor of that component.
    */
   constructor(containerId, options = {}) {
     this.containerId = containerId.replace('#', '');

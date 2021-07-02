@@ -62,6 +62,7 @@ p {
 /* Main Page Stuff                                                           */
 /*****************************************************************************/
 
+
 main {
   margin-left: 175px;
   margin-top: 50px;
@@ -69,6 +70,65 @@ main {
   padding: 0px 20px 50px 20px;
 }
 
+main.welcome {
+  background-color: transparent;
+}
+
+
+/*****************************************************************************/
+/* Welcome Page Stuff                                                        */
+/*****************************************************************************/
+
+.logo-sm {
+  height: 21px;
+  width: 18px;
+  margin-right: 15px;
+  vertical-align: text-bottom;
+}
+
+.welcome-bg {
+  position: fixed;
+  z-index: -1;
+  background-color: rgb(32, 32, 32);
+  width: 100%;
+}
+
+.header-map-bg {
+  width: calc(100vw - 175px);
+  min-width: 200px;
+  max-width: 600px;
+  height: calc(100vw - 175px);
+  min-height: 200px;
+  max-height: 600px;
+}
+
+.welcome-section {
+  color: white;
+  height: calc(100vw - 175px);
+  min-height: 200px;
+  max-height: 600px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.welcome-text {
+  line-height: 1;
+}
+.welcome-text p {
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 7px;
+  font-size: 1.5rem;
+}
+
+.over-content {
+  background-color: white;
+  margin: 0 -20px;
+  padding: 0 20px;
+  padding-bottom: 20px;
+}
 
 /*****************************************************************************/
 /* Sidebar Formatting                                                        */
@@ -153,6 +213,10 @@ ul#gumshoe-list {
     margin-left: 10px;
     padding-left: 10px;
     padding-right: 10px;
+  }
+
+  .welcome-text p {
+    font-size: 1rem;
   }
 }
 
