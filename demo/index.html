@@ -15,6 +15,14 @@
     <script src='scripts/gumshoe.min.js'></script>
     <script src='scripts/general.js'></script>
 
+    <!-- D3 -->
+    <script src="scripts/d3.v4.min.js"></script>
+    <!-- CGView -->
+    <script src='dist/cgview.min.js'></script>
+    <link rel="stylesheet" href="dist/cgview.css" />
+    <!-- CGView Daya -->
+    <script src='data/NZ_CP010546.js'></script>
+
     <title>CGview.js</title>
   </head>
   <body>
@@ -46,9 +54,10 @@
       <ul id='gumshoe-list' class='sidebar-list'>
         <li><a class="side-link" href="#section-welcome">Welcome</a></li>
         <li><a class="side-link" href="#section-features">Features</a></li>
+        <li><a class="side-link" href="#section-starting">Getting Started</a></li>
         <li><a class="side-link" href="#section-citation">Citation</a></li>
         <li><a class="side-link" href="#section-contact">Contact</a></li>
-        <li><a class="side-link" href="#section-plasmid">Plasmid</a></li>
+        <li><a class="side-link" href="#section-example">Example</a></li>
       </ul>
     </nav>
 
@@ -83,6 +92,14 @@
             <li>Fully documented API for interacting with CGView.js maps</li>
           </ul>
         </section>
+        <section id="section-starting">
+          <h1 id='starting'>Getting Started</h1>
+          <p>Install with npm...</p>
+          <p>LINK: See here for more options for installation.</p>
+          <p>See the tutorials...</p>
+          <p>See the docs for an important overview...</p>
+          <p>See the api for additional details...</p>
+        </section>
         <section id="section-citation">
           <h1 id='citation'>Citing CGView</h1>
           <p>Publication in progress...</p>
@@ -91,8 +108,13 @@
           <h1 id='contact'>Contact</h1>
           <p>CGView was written by Jason Grant</p>
         </section>
-        <section id="section-plasmid">
-          <h1 id='plasmid'>Plasmid Example on Home page</h1>
+        <section id="section-example">
+          <h1 id='plasmid'>Example</h1>
+          <p>
+            Map of Mycoplasma pneumoniae FH (<a href=''https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP010546.1>NZ_CP010546</a>).
+            See the tutorial (LINK) for how this map was generated.
+          </p>
+          <div id='my-viewer'></div>
         </section>
       </div>
     </main>
@@ -103,6 +125,17 @@
     <script>
       var spy = new Gumshoe('#gumshoe-list a', { offset: 50 });
         // reflow: true,
+    </script>
+
+    <script>
+      // Add CGView
+      cgv = new CGV.Viewer('#my-viewer', {
+        height: 500,
+        width: 500
+      });
+      cgv.io.loadJSON(NZ_CP010546.cgview);
+      cgv.draw();
+      autoResizeMyViewer();
     </script>
 
   </body>
