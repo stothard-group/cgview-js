@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Icon -->
+    <link rel="shortcut icon" type="image/png" href="images/logo-tab.png">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
@@ -37,10 +40,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="tutorial-basic.html">Tutorials</a>
+            <a class="nav-link active" aria-current="page" href="index.html">Tutorials</a>
             <a class="nav-link" href="../docs.html">Docs</a>
             <a class="nav-link" href="../api/index.html">API</a>
             <a class="nav-link" href="../json.html">JSON</a>
+            <a class="nav-link github-logo" href="https://github.com/stothard-group/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
           </div>
         </div>
       </div>
@@ -49,15 +53,14 @@
     <!-- Side Nav -->
     <nav id='sidebar-nav'>
       <ul id='gumshoe-list' class='sidebar-list'>
+        <li><a class="side-link nav-index" href="index.html">Index</a></li>
         <p>Tutorials</p>
         <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
         <li class='active'><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
         <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
-        <br />
         <p>Details</p>
         <li><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
         <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
-        <br />
         <p>Examples</p>
         <li><a class="side-link indent" href="#">Plasmi?</a></li>
         <li><a class="side-link indent" href="#">E. coli?</a></li>
@@ -67,8 +70,7 @@
 
     <main>
       <!-- Processed Markdown will be inserted here -->
-      <div id='markdown-out' >
-      </div>
+      <div id='markdown-out'></div>
       <!-- Generated CGView Map will be inserted here -->
         <div id='my-viewer'></div>
       </div>

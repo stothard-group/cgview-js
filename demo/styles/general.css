@@ -8,7 +8,9 @@
 /*****************************************************************************/
 
 body {
-  font-size: 14.5px;
+  /* font-size: 14.5px; */
+  /* This needs to match API for navbar to llok the same */
+  font-size: 1rem;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
   line-height: normal;
   /* This color will fill in the letterbox on iPhone landscape mode */
@@ -55,6 +57,7 @@ p {
 
 #my-viewer {
   text-align: center;
+  position: relative;
 }
 
 
@@ -80,10 +83,19 @@ main.welcome {
 /*****************************************************************************/
 
 .logo-sm {
-  height: 24px;
-  width: 24px;
+  height: 34px;
+  width: 34px;
   margin-right: 10px;
+  margin-top: -5px;
+  margin-bottom: -5px;
   vertical-align: text-bottom;
+}
+
+.github-logo img {
+  width: 20px;
+  height: 20px;
+  margin-top: -5px;
+  margin-bottom: -1px;
 }
 
 .welcome-bg {
@@ -142,9 +154,15 @@ main.welcome {
   overflow: auto;
   z-index: 1000;
 }
+#sidebar-nav p,
 #sidebar-nav li {
   margin: 0 5px;
   padding-bottom: 2px;
+}
+
+#sidebar-nav a.nav-index {
+  padding-top: 10px;
+  padding-bottom: 8px;
 }
 
 #sidebar-nav .side-link,
@@ -157,7 +175,7 @@ main.welcome {
 }
 #sidebar-nav p {
   color: rgb(175, 175, 175);
-  margin-top: 0;
+  margin-top: 10px;
   margin-bottom: 0;
 }
 

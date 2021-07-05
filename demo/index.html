@@ -5,10 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Icon -->
+    <link rel="shortcut icon" type="image/png" href="images/logo-tab.png">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
-    <!-- <link rel="stylesheet" href="styles/prism.css" /> -->
+    <link rel="stylesheet" href="styles/prism.css" />
     <!-- <link rel="stylesheet" href="styles/tables.css" /> -->
     <link rel="stylesheet" href="styles/general.css" />
     <script src='scripts/marked.min.js'></script>
@@ -39,11 +42,12 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <div class="navbar-nav">
-            <a class="nav-link" href="tutorials/tutorial-basic.html">Tutorials</a>
+          <div class="navbar-nav  justify-content-between">
+            <a class="nav-link" href="tutorials/index.html">Tutorials</a>
             <a class="nav-link" href="docs.html">Docs</a>
             <a class="nav-link" href="api/index.html">API</a>
             <a class="nav-link" href="json.html">JSON</a>
+            <a class="nav-link github-logo" href="https://github.com/stothard-group/cgview-js"><img src='images/GitHub-Mark-Light-64px.png' /></a>
           </div>
         </div>
       </div>
@@ -72,53 +76,89 @@
           <p>Welcome</p><p>to</p><p>CGView.js</p>
         </div>
       </section>
+      <!-- Processed Markdown will be inserted here -->
       <div class='over-content'>
-        <section id="section-welcome">
-          <!-- <h1 id='developers'>Developers</h1> -->
-          <br />
-          <p>
-            CGView.js is a <strong>C</strong>ircular <strong>G</strong>enome <strong>View</strong>ing
-            tool for visualizing and interacting with small genomes. 
-          </p>
-        </section>
-        <section id="section-features">
-          <h1 id='citation'>Features</h1>
-          <ul>
-            <li>Circular and linear views of genomes</li>
-            <li>Capable of drawing genomes upto 10 Mbp with 1000's of features</li>
-            <li>Smooth zooming down to the sequence level</li>
-            <li>Easily generate features and plots directly form the sequence (e.g. ORFs, GC-content and GC-Skew)</li>
-            <li>Save high resolution maps upto 8000x8000px</li>
-            <li>Fully documented API for interacting with CGView.js maps</li>
-          </ul>
-        </section>
-        <section id="section-starting">
-          <h1 id='starting'>Getting Started</h1>
-          <p>Install with npm...</p>
-          <p>LINK: See here for more options for installation.</p>
-          <p>See the tutorials...</p>
-          <p>See the CGViewBuilder to see build maps from GenBank files...</p>
-          <p>See the docs for an important overview...</p>
-          <p>See the api for additional details...</p>
-        </section>
-        <section id="section-citation">
-          <h1 id='citation'>Citing CGView</h1>
-          <p>Publication in progress...</p>
-        </section>
-        <section id="section-contact">
-          <h1 id='contact'>Contact</h1>
-          <p>CGView was written by Jason Grant</p>
-        </section>
-        <section id="section-example">
-          <h1 id='plasmid'>Example</h1>
-          <p>
-            Map of Mycoplasma pneumoniae FH (<a href=''https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP010546.1>NZ_CP010546</a>).
-            See the tutorial (LINK) for how this map was generated. More examples can be found here (link).
-          </p>
-          <div id='my-viewer'></div>
-        </section>
-      </div>
+        <br />
+        <div id='markdown-out'></div>
+			</div>
     </main>
+
+    <div id='markdown-in' style='display:none;'>
+
+<section id="section-welcome">
+
+CGView.js is a **C**ircular **G**enome **View**ing
+tool for visualizing and interacting with small genomes. 
+</section>
+<section id="section-features">
+
+# Features
+
+- Circular and linear views of genomes
+- Capable of drawing genomes upto 10 Mbp with 1000's of features
+- Smooth zooming down to the sequence level
+- Easily generate features and plots directly form the sequence (e.g. ORFs, GC-content and GC-Skew)
+- Save high resolution maps upto 8000x8000px
+- Fully documented API for interacting with CGView.js maps
+
+</section>
+<section id="section-starting">
+
+# Getting Started
+
+- Install with npm:
+```bash
+npm install --save cgview
+```
+
+- See [Installation Instructions](docs.html#section-setup)
+for additional ways to setup CGView.js.
+
+- See the [tutorials](tutorials/index.html) for how to create maps.
+
+- See the CGViewBuilder (LINK) to build maps directly from GenBank files.
+
+- See the [docs](docs.html) for how to programmatically interact with maps.
+
+- See the [API](api/index.html) for additional details.
+
+</section>
+<section id="section-citation">
+
+# Citing CGView
+
+Publication in progress...
+
+</section>
+<section id="section-contact">
+
+# Contact
+
+CGView was written by Jason Grant
+
+</section>
+<section id="section-example">
+
+# Example
+
+Map of Mycoplasma pneumoniae FH (<a href='https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP010546.1'>NZ_CP010546</a>).
+See the tutorial (LINK) for how this map was generated. More examples can be found here (link).
+
+<div id='my-viewer'></div>
+
+</section>
+
+    </div> <!-- End of markdown in -->
+    <script>
+      tutorialMarkdown(marked, true);
+    </script>
+
+    <script>
+      tutorialMarkdown(marked, true);
+      autoResizeMyViewer();
+    </script>
+
+    <script src="scripts/prism.js"></script>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

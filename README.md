@@ -1,38 +1,48 @@
-## CGView.js
+# [CGView.js](http://js.cgview.ca)
 
-CGView.js is a JavaScript adaptation of the Java program [CGView](http://wishart.biology.ualberta.ca/cgview/index.html).
-While CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
-interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
-with resolutions upto 8000x8000 pixels.
+CGView.js is a <strong>C</strong>ircular <strong>G</strong>enome <strong>View</strong>ing
+tool for visualizing and interacting with small genomes. 
 
-See the [CGView.js](https://js.cgview.ca) home page for tutorials, examples, and documentation.
+## Resources
 
+- [CGView.js Home](http://js.cgview.ca)
+- [Tutorials](http://js.cgview.ca/tutorials)
+- [Examples](http://js.cgview.ca/examples)
+- [Documentation](http://js.cgview.ca/docs.html)
 
-### Dependencies
-* [D3](http://d3js.org) (Version 4)
+## Install
 
-### Setup ###
+```bash
+npm install --save cgview
+```
+See [Installation Instructions](http://js.cgview.ca/docs.html#section-setup)
+for additional ways to setup CGView.js.
 
-* For the D3 dependency add the following to your html:
+## Usage
 
-```html
-<script src="https://d3js.org/d3.v4.min.js"></script>
+```js
+import CGV from from 'cgview';
+
+cgv = new CGV.Viewer('#my-viewer', {
+  height: 500,
+  width: 500,
+  sequence: {
+    // The length of the sequence
+    length: 1000
+    // Or, you can provide a sequence
+    // seq: 'ATGTAGCATGCATCAGTAGCTA...'
+  }
+});
+
+// Draw the map
+cgv.draw()
 ```
 
-* Copy *cgview.js* to your javascript folder and add a script tag to your html:
+See the [tutorials](http://js.cgview.ca/tutorials/index.html) for how to add features and plots.
 
-```html
-<script src='javascript/cgview.min.js'></script>
-```
+## License
 
-* Copy *cgview.css* to your stylesheets folder and add a link to the file in your html:
-
-```html
-<link rel="stylesheet" href="stylesheets/cgview.css" />
-```
-
-### Overview ###
-
+CGView.js is Apache v2 (LINK) licensed.
 
 
 
