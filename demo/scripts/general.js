@@ -68,14 +68,15 @@ setTimeout(sideNavCheck);
 ////////////////////////////////////////////////////////////////////////////////
 
 function autoResizeMyViewer() {
-  const setWidth = 500;
+  const setHeight = 500;
   const mainPadding = 20 * 2;
   function myResize() {
     const myViewer = document.querySelector('#my-viewer');
-    var main = document.getElementsByTagName('main')[0];
+    const main = document.getElementsByTagName('main')[0];
     const mainWidth = main.clientWidth - mainPadding;
-    var width = Math.min(mainWidth, setWidth);
-    cgv.resize(width, width);
+    const height = Math.min(mainWidth, setHeight);
+    // const width = Math.min(mainWidth, setWidth);
+    cgv.resize(mainWidth, height);
   }
   window.onresize = myResize;
   window.onload = function () {

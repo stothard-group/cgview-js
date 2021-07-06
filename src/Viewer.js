@@ -63,7 +63,6 @@ import * as d3 from 'd3';
  * [width](#width)                   | Number    | Width of the viewer map in pixels [Default: 600]
  * [height](#height)                 | Number    | Height of the viewer map in pixels [Default: 600]
  * [dataHasChanged](#dataHasChanged) | Boolean   | Indicates that data been update/added since this attribute was reset
- * -                                 | -         | -
  * [sequence](#sequence)<sup>iu</sup>    | Object | [Sequence](Sequence.html) options
  * [settings](#settings)<sup>iu</sup>    | Object | [Settings](Settings.html) options
  * [legend](#legend)<sup>iu</sup>        | Object | [Legend](Legend.html) options
