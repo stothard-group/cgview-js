@@ -8,6 +8,7 @@ CGVIEW_JS_DIR = this_script_dir.sub(/scripts.*/, '')
 src_dir = File.join(CGVIEW_JS_DIR, 'src')
 docs_path = File.join(CGVIEW_JS_DIR, 'demo', 'docs.html')
 
+# Tables and Sideav will follow this order
 klasses = ['Viewer', 'Feature', 'Plot', 'Track', 'Settings', 'Legend', 'LegendItem',
            'Caption', 'Annotation', 'Bookmark', 'Backbone', 'Sequence', 'Contig',
            'Ruler', 'Divider']
