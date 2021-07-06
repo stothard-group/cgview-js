@@ -1,0 +1,273 @@
+<html>
+<head>
+  <title>CGView</title>
+  <meta charset="UTF-8">
+  <script src="javascript/jquery-1.11.1.min.js"></script>
+  <!-- Local d3 V4.4-->
+  <!-- <script src="javascript/d3.v4.min.js"></script> -->
+  <!-- Remote d3 V5.10 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.10.0/d3.js"></script>
+  <!-- Canvas To SVG -->
+  <script src="javascript/canvas2svg.js"></script>
+
+  <!-- CGView ES5 -->
+  <!-- <script src='src/CGView.min.js'></script> -->
+  <!-- CGView CONCATENATED -->
+  <!-- <script src='src/CGView.js'></script> -->
+  <!-- CGView DEV -->
+  <script src='dist/cgview.js'></script>
+  <!-- <script src='dist/cgview.min.js'></script> -->
+
+  <!-- OLD CGView DEV -->
+  <!-- <script src='dev/Viewer.js'></script> -->
+  <!-- <script src='dev/Viewer&#45;Zoom.js'></script> -->
+  <!-- <script src='dev/Events.js'></script> -->
+  <!-- <script src='dev/CGObject.js'></script> -->
+  <!-- <script src='dev/Sequence.js'></script> -->
+  <!-- <script src='dev/CodonTable.js'></script> -->
+  <!-- <script src='dev/SequenceExtractor.js'></script> -->
+  <!-- <script src='dev/Contig.js'></script> -->
+  <!-- <script src='dev/EventMonitor.js'></script> -->
+  <!-- <script src='dev/Canvas.js'></script> -->
+  <!-- <script src='dev/Backbone.js'></script> -->
+  <!-- <script src='dev/Ruler.js'></script> -->
+  <!-- <script src='dev/IO.js'></script> -->
+  <!-- <script src='dev/Layout.js'></script> -->
+  <!-- <script src='dev/LayoutCircular.js'></script> -->
+  <!-- <script src='dev/LayoutLinear.js'></script> -->
+  <!-- <script src='dev/CGArray.js'></script> -->
+  <!-- <script src='dev/CGRange.js'></script> -->
+  <!-- <script src='dev/NCList.js'></script> -->
+  <!-- <script src='dev/Slot.js'></script> -->
+  <!-- <script src='dev/Track.js'></script> -->
+  <!-- <script src='dev/Settings.js'></script> -->
+  <!-- <script src='dev/Dividers.js'></script> -->
+  <!-- <script src='dev/Divider.js'></script> -->
+  <!-- <script src='dev/Feature.js'></script> -->
+  <!-- <script src='dev/Messenger.js'></script> -->
+  <!-- <script src='dev/Highlighter.js'></script> -->
+  <!-- <script src='dev/Label.js'></script> -->
+  <!-- <script src='dev/Annotation.js'></script> -->
+  <!-- <script src='dev/Plot.js'></script> -->
+  <!-- <script src='dev/Caption.js'></script> -->
+  <!-- <!&#45;&#45; <script src='dev/Caption2.js'></script> &#45;&#45;> -->
+  <!-- <!&#45;&#45; <script src='dev/CaptionItem.js'></script> &#45;&#45;> -->
+  <!-- <script src='dev/Legend.js'></script> -->
+  <!-- <script src='dev/LegendItem.js'></script> -->
+  <!-- <!&#45;&#45; <script src='dev/Legend2.js'></script> &#45;&#45;> -->
+  <!-- <!&#45;&#45; <script src='dev/LegendItem2.js'></script> &#45;&#45;> -->
+  <!-- <script src='dev/Bookmark.js'></script> -->
+  <!-- <script src='dev/Debug.js'></script> -->
+  <!-- <script src='dev/Color.js'></script> -->
+  <!-- <script src='dev/ColorPicker.js'></script> -->
+  <!-- <script src='dev/Font.js'></script> -->
+  <!-- <script src='dev/Rect.js'></script> -->
+  <!-- <script src='dev/Box.js'></script> -->
+  <!-- <script src='dev/Position.js'></script> -->
+  <!-- <script src='dev/Anchor.js'></script> -->
+  <!-- <script src='dev/Utils.js'></script> -->
+  <!-- <script src='dev/WorkerFeatureExtraction.js'></script> -->
+  <!-- <script src='dev/WorkerPlotExtraction.js'></script> -->
+
+  <script src='cgv_performance.js'></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0&#45;alpha.6/css/bootstrap.min.css" integrity="sha384&#45;rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="stylesheets/cgview.css" />
+  <style>
+    div#main {
+      margin-top: 55px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav" aria-expanded="false">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">CGView.js</a>
+			</div>
+			<div class="collapse navbar-collapse" id="main-nav">
+				<ul class="nav navbar-nav">
+					<li class='active'><a href="#">Demo</a></li>
+					<li><a href="docs/index.html">Docs</a></li>
+					<li><a href="docs/tutorial-json_format.html">JSON</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="docs/tutorial-basic_map.html">Basic Map</a></li>
+              <li><a href="docs/tutorial-sequence_map.html">Sequence Map</a></li>
+              <li><a href="#">JSON Map</a></li>
+              <li><a href="docs/tutorial-scales.html">Scales</a></li>
+            </ul>
+          </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id='main'>
+    <div id='color-picker-testing'></div>
+    <div style='float: right'>
+      <input id='test-draw-range' type='checkbox' /> Test Draw Range
+    </div>
+    <div style='float: left'>
+      Map: <select id='data-select'></select>
+      <button id='reset-map'>Reset Map</button>
+      <button id='performance-start'>Performance Test</button>
+      Iterations:
+      <select id='iterations-select'>
+        <option value='1'>1</option>
+        <option value='3' selected>3</option>
+        <option value='5'>5</option>
+      </select>
+      <button id='toggle-layout'>Linear</button>
+    </div>
+
+		<div id='cgview' style='clear:both;'></div>
+    <button id='download-svg'>Download SVG</button>
+    <div id='results'></div>
+  </div>
+
+  <script>
+    const cgvExample = false; // Ignores defaultMap
+    const colorPickerTest = false;
+    const defaultMap = 'small';
+    // const defaultMap = 'builder';
+    // const defaultMap = 'ecoli_pa2_contigs';
+
+    const maps = {
+      small: {
+        name: 'Mitochondia [69,034 bp]',
+        url: 'data/tests/mito.json',
+      },
+      medium: {
+        name: 'E. coli [4,641,652 bp]',
+        url: 'data/tests/ecoli.json',
+      },
+      large: {
+        name: 'L. guizhouensis [9,997,872 bp]',
+        url: 'data/tests/lentzea.json',
+      },
+      large_noplots: {
+        name: 'L. guizhouensis No Plots [9,997,872 bp]',
+        url: 'data/tests/lentzea_noplots.json',
+      },
+      small_contigs: {
+        name: 'Contigs: MNHM01000001 [133,342 bp]',
+        url: 'data/tests/small_contigs.json',
+      },
+      ecoli_pa2_contigs: {
+        name: 'Contigs: Ecoli PA2 [5,246,924 bp]',
+        url: 'data/tests/ecoli_pa2_contigs.json',
+      },
+      builder: {
+        name: 'Builder',
+        url: 'data/tests/builder.json',
+      },
+    }
+
+    if (colorPickerTest) {
+      var cp = new CGV.ColorPicker('color-picker-testing', {colorString: 'rgb(100,100,200)'});
+      cp.open();
+    }
+
+    if (cgvExample) {
+      let head = document.getElementsByTagName('head')[0];
+      let js = document.createElement("script");
+      js.type = "text/javascript";
+      js.src = "cgv_example.js";
+      head.appendChild(js);
+    } else {
+      var cgv = new CGV.Viewer('#cgview', {
+        width: 600,
+        height: 600,
+        // debug: {sections: ['time', 'position']}
+      });
+
+      window.cgv = cgv;
+      cgv.flash('Loading...');
+      loadMapFromID(defaultMap);
+    }
+
+    const $dataSelect = $('#data-select');
+    for (const map of Object.keys(maps)) {
+      const selected = (map === defaultMap) ? 'selected' : '';
+      $dataSelect.append(`<option value='${map}' ${selected}>${maps[map].name}</option>`)
+    }
+
+    $dataSelect.on('change', function() {
+      loadMapFromID($(this).val());
+    });
+
+    $('#reset-map').on('click', function() {
+      cgv.zoomTo(0,1);
+    });
+
+    $('#performance-start').on('click', function() {
+      const iterations = Number($('#iterations-select').val());
+      let performance = new CGVPerformance(cgv, cgv.name, iterations);
+      console.log(performance.results);
+      setTimeout(function() {
+        $('#results').html(performance.report());
+      }, 1000);
+    });
+
+    $('#test-draw-range').on('click', function() {
+      cgv.canvas._testDrawRange = $(this).is(':checked');
+      cgv.drawFull();
+    });
+
+    function loadMapFromID(id) {
+      const url = maps[id].url
+      console.log(`Loading Map: ${url}`);
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.onload = function() {
+        const json = JSON.parse(request.responseText);
+        cgv.io.loadJSON(json.cgview);
+        // console.log(json)
+        cgv.name = maps[id].name;
+        // cgv.zoomTo(0,1);
+        cgv.drawFull();
+      };
+      request.send();
+    }
+
+    $('#toggle-layout').on('click', function() {
+      if ($(this).html() == 'Linear') {
+        $(this).html('Circular');
+        cgv.format = 'linear';
+      } else {
+        $(this).html('Linear');
+        cgv.format = 'circular';
+      }
+      // cgv.canvas._testDrawRange = $(this).is(':checked');
+      // console.log(`Changed to ${cgv.format}`)
+      cgv.drawFull();
+    });
+
+    $('#download-svg').on('click', function() { cgv.io.downloadImage(600,600); return false });
+
+    // $('#save-600').on('click', function() { cgv.io.exportImage(600,600); return false });
+    // $('#save-1200').on('click', function() { cgv.io.exportImage(1200,1200); return false });
+    // $('#save-3000').on('click', function() { cgv.io.exportImage(3000,3000); return false });
+
+    // Resizing
+    // TURN OFF RESIZE FOR PERFORMANCE TESTS
+     {/* $(window).resize(function() { */}
+     {/*   var width = window.innerWidth - 20; */}
+     {/*   var height = window.innerHeight - 100; */}
+     {/*   var dimension = Math.min(width, height); */}
+     {/*   cgv.resize(dimension, dimension); */}
+     {/* }); */}
+
+  </script>
+</body>

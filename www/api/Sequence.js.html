@@ -1,0 +1,3054 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CGView.js</title>
+    
+    
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+
+    <!-- <script src="scripts/bootstrap.min.js"></script> -->
+    <!-- NOTE:
+      I've removed the bootstrap (3.0.3) CSS and JS that came with jaguar
+      and updated to version 5.0.1. I have only added the CSS. Not sure if JS
+      is required.
+      - JRG (20210623)
+    -->
+    <!-- JRG -->
+    <link rel="shortcut icon" type="image/png" href="images/logo-tab.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/general.js'></script>
+
+
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <!--<link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">-->
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+
+
+
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"CGView.js","disqus":"","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"CGView.js","description":"","keyword":""},"linenums":false};
+    </script>
+    
+
+    
+</head>
+<body>
+
+
+
+<!-- Nav Bar -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="../index.html"><img class='logo-sm' src='../images/logo.png' />CGView.js</a>
+    <!-- Docs Toggle -->
+      <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="navbar-nav">
+        <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
+        <a class="nav-link" href="../docs.html">Docs</a>
+        <a class="nav-link active" aria-current="page" href="index.html">API</a>
+        <a class="nav-link" href="../json.html">JSON</a>
+        <a class="nav-link github-logo" href="https://github.com/stothard-group/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+<nav id='sidebar-nav'>
+  
+<div class="navigation">
+    <!-- <h3 class="applicationName"><a href="index.html">CGView.js</a></h3> -->
+
+    <a id='nav-title-link' href='index.html'>API Home</a>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search API">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="Anchor">
+            <span class="title">
+                <a href="Anchor.html">Anchor</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Anchor#name"><a href="Anchor.html#name">name</a></li>
+            
+                <li data-name="Anchor#xPercent"><a href="Anchor.html#xPercent">xPercent</a></li>
+            
+                <li data-name="Anchor#yPercent"><a href="Anchor.html#yPercent">yPercent</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Annotation">
+            <span class="title">
+                <a href="Annotation.html">Annotation</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Annotation#canvas"><a href="Annotation.html#canvas">canvas</a></li>
+            
+                <li data-name="Annotation#color"><a href="Annotation.html#color">color</a></li>
+            
+                <li data-name="Annotation#font"><a href="Annotation.html#font">font</a></li>
+            
+                <li data-name="Annotation#labelLineLength"><a href="Annotation.html#labelLineLength">labelLineLength</a></li>
+            
+                <li data-name="Annotation#layout"><a href="Annotation.html#layout">layout</a></li>
+            
+                <li data-name="Annotation#length"><a href="Annotation.html#length">length</a></li>
+            
+                <li data-name="Annotation#meta"><a href="Annotation.html#meta">meta</a></li>
+            
+                <li data-name="Annotation#priorityMax"><a href="Annotation.html#priorityMax">priorityMax</a></li>
+            
+                <li data-name="Annotation#sequence"><a href="Annotation.html#sequence">sequence</a></li>
+            
+                <li data-name="Annotation#viewer"><a href="Annotation.html#viewer">viewer</a></li>
+            
+                <li data-name="Annotation#visible"><a href="Annotation.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Annotation#addLabel"><a href="Annotation.html#addLabel">addLabel</a></li>
+            
+                <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
+            
+                <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
+            
+                <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Backbone">
+            <span class="title">
+                <a href="Backbone.html">Backbone</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Backbone#adjustedCenterOffset"><a href="Backbone.html#adjustedCenterOffset">adjustedCenterOffset</a></li>
+            
+                <li data-name="Backbone#adjustedThickness"><a href="Backbone.html#adjustedThickness">adjustedThickness</a></li>
+            
+                <li data-name="Backbone#bpThicknessAddition"><a href="Backbone.html#bpThicknessAddition">bpThicknessAddition</a></li>
+            
+                <li data-name="Backbone#canvas"><a href="Backbone.html#canvas">canvas</a></li>
+            
+                <li data-name="Backbone#centerOffset"><a href="Backbone.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Backbone#color"><a href="Backbone.html#color">color</a></li>
+            
+                <li data-name="Backbone#colorAlternate"><a href="Backbone.html#colorAlternate">colorAlternate</a></li>
+            
+                <li data-name="Backbone#decoration"><a href="Backbone.html#decoration">decoration</a></li>
+            
+                <li data-name="Backbone#layout"><a href="Backbone.html#layout">layout</a></li>
+            
+                <li data-name="Backbone#maxThickness"><a href="Backbone.html#maxThickness">maxThickness</a></li>
+            
+                <li data-name="Backbone#meta"><a href="Backbone.html#meta">meta</a></li>
+            
+                <li data-name="Backbone#sequence"><a href="Backbone.html#sequence">sequence</a></li>
+            
+                <li data-name="Backbone#thickness"><a href="Backbone.html#thickness">thickness</a></li>
+            
+                <li data-name="Backbone#viewer"><a href="Backbone.html#viewer">viewer</a></li>
+            
+                <li data-name="Backbone#visible"><a href="Backbone.html#visible">visible</a></li>
+            
+                <li data-name="Backbone#visibleRange"><a href="Backbone.html#visibleRange">visibleRange</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Backbone#containsCenterOffset"><a href="Backbone.html#containsCenterOffset">containsCenterOffset</a></li>
+            
+                <li data-name="Backbone#deleteFromObjects"><a href="Backbone.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Backbone#maxZoomFactor"><a href="Backbone.html#maxZoomFactor">maxZoomFactor</a></li>
+            
+                <li data-name="Backbone#pixelsPerBp"><a href="Backbone.html#pixelsPerBp">pixelsPerBp</a></li>
+            
+                <li data-name="Backbone#toString"><a href="Backbone.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Bookmark">
+            <span class="title">
+                <a href="Bookmark.html">Bookmark</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Bookmark#bp"><a href="Bookmark.html#bp">bp</a></li>
+            
+                <li data-name="Bookmark#canvas"><a href="Bookmark.html#canvas">canvas</a></li>
+            
+                <li data-name="Bookmark#favorite"><a href="Bookmark.html#favorite">favorite</a></li>
+            
+                <li data-name="Bookmark#format"><a href="Bookmark.html#format">format</a></li>
+            
+                <li data-name="Bookmark#layout"><a href="Bookmark.html#layout">layout</a></li>
+            
+                <li data-name="Bookmark#meta"><a href="Bookmark.html#meta">meta</a></li>
+            
+                <li data-name="Bookmark#name"><a href="Bookmark.html#name">name</a></li>
+            
+                <li data-name="Bookmark#sequence"><a href="Bookmark.html#sequence">sequence</a></li>
+            
+                <li data-name="Bookmark#shortcut"><a href="Bookmark.html#shortcut">shortcut</a></li>
+            
+                <li data-name="Bookmark#viewer"><a href="Bookmark.html#viewer">viewer</a></li>
+            
+                <li data-name="Bookmark#visible"><a href="Bookmark.html#visible">visible</a></li>
+            
+                <li data-name="Bookmark#zoom"><a href="Bookmark.html#zoom">zoom</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Bookmark#deleteFromObjects"><a href="Bookmark.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Bookmark#moveTo"><a href="Bookmark.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Bookmark#remove"><a href="Bookmark.html#remove">remove</a></li>
+            
+                <li data-name="Bookmark#toString"><a href="Bookmark.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Box">
+            <span class="title">
+                <a href="Box.html">Box</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Box#anchor"><a href="Box.html#anchor">anchor</a></li>
+            
+                <li data-name="Box#bottom"><a href="Box.html#bottom">bottom</a></li>
+            
+                <li data-name="Box#bottomPadded"><a href="Box.html#bottomPadded">bottomPadded</a></li>
+            
+                <li data-name="Box#centerX"><a href="Box.html#centerX">centerX</a></li>
+            
+                <li data-name="Box#centerY"><a href="Box.html#centerY">centerY</a></li>
+            
+                <li data-name="Box#height"><a href="Box.html#height">height</a></li>
+            
+                <li data-name="Box#left"><a href="Box.html#left">left</a></li>
+            
+                <li data-name="Box#leftPadded"><a href="Box.html#leftPadded">leftPadded</a></li>
+            
+                <li data-name="Box#paddedX"><a href="Box.html#paddedX">paddedX</a></li>
+            
+                <li data-name="Box#paddedY"><a href="Box.html#paddedY">paddedY</a></li>
+            
+                <li data-name="Box#padding"><a href="Box.html#padding">padding</a></li>
+            
+                <li data-name="Box#position"><a href="Box.html#position">position</a></li>
+            
+                <li data-name="Box#right"><a href="Box.html#right">right</a></li>
+            
+                <li data-name="Box#rightPadded"><a href="Box.html#rightPadded">rightPadded</a></li>
+            
+                <li data-name="Box#top"><a href="Box.html#top">top</a></li>
+            
+                <li data-name="Box#topPadded"><a href="Box.html#topPadded">topPadded</a></li>
+            
+                <li data-name="Box#width"><a href="Box.html#width">width</a></li>
+            
+                <li data-name="Box#x"><a href="Box.html#x">x</a></li>
+            
+                <li data-name="Box#y"><a href="Box.html#y">y</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Box#containsPt"><a href="Box.html#containsPt">containsPt</a></li>
+            
+                <li data-name="Box#toString"><a href="Box.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Canvas">
+            <span class="title">
+                <a href="Canvas.html">Canvas</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+            
+                <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
+            
+                <li data-name="Canvas#layout"><a href="Canvas.html#layout">layout</a></li>
+            
+                <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
+            
+                <li data-name="Canvas#viewer"><a href="Canvas.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
+            
+                <li data-name="Canvas#context"><a href="Canvas.html#context">context</a></li>
+            
+                <li data-name="Canvas#layers"><a href="Canvas.html#layers">layers</a></li>
+            
+                <li data-name="Canvas#node"><a href="Canvas.html#node">node</a></li>
+            
+                <li data-name="Canvas#path"><a href="Canvas.html#path">path</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Caption">
+            <span class="title">
+                <a href="Caption.html">Caption</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Caption#backgroundColor"><a href="Caption.html#backgroundColor">backgroundColor</a></li>
+            
+                <li data-name="Caption#canvas"><a href="Caption.html#canvas">canvas</a></li>
+            
+                <li data-name="Caption#ctx"><a href="Caption.html#ctx">ctx</a></li>
+            
+                <li data-name="Caption#font"><a href="Caption.html#font">font</a></li>
+            
+                <li data-name="Caption#fontColor"><a href="Caption.html#fontColor">fontColor</a></li>
+            
+                <li data-name="Caption#layout"><a href="Caption.html#layout">layout</a></li>
+            
+                <li data-name="Caption#lines"><a href="Caption.html#lines">lines</a></li>
+            
+                <li data-name="Caption#meta"><a href="Caption.html#meta">meta</a></li>
+            
+                <li data-name="Caption#name"><a href="Caption.html#name">name</a></li>
+            
+                <li data-name="Caption#sequence"><a href="Caption.html#sequence">sequence</a></li>
+            
+                <li data-name="Caption#textAlignment"><a href="Caption.html#textAlignment">textAlignment</a></li>
+            
+                <li data-name="Caption#viewer"><a href="Caption.html#viewer">viewer</a></li>
+            
+                <li data-name="Caption#visible"><a href="Caption.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Caption#deleteFromObjects"><a href="Caption.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Caption#refresh"><a href="Caption.html#refresh">refresh</a></li>
+            
+                <li data-name="Caption#toString"><a href="Caption.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CGArray">
+            <span class="title">
+                <a href="CGArray.html">CGArray</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CGArray#first"><a href="CGArray.html#first">first</a></li>
+            
+                <li data-name="CGArray#last"><a href="CGArray.html#last">last</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CGArray.arrayerize"><a href="CGArray.html#.arrayerize">arrayerize</a></li>
+            
+                <li data-name="CGArray#attr"><a href="CGArray.html#attr">attr</a></li>
+            
+                <li data-name="CGArray#each"><a href="CGArray.html#each">each</a></li>
+            
+                <li data-name="CGArray#empty"><a href="CGArray.html#empty">empty</a></li>
+            
+                <li data-name="CGArray#get"><a href="CGArray.html#get">get</a></li>
+            
+                <li data-name="CGArray#move"><a href="CGArray.html#move">move</a></li>
+            
+                <li data-name="CGArray#present"><a href="CGArray.html#present">present</a></li>
+            
+                <li data-name="CGArray#remove"><a href="CGArray.html#remove">remove</a></li>
+            
+                <li data-name="CGArray#toString"><a href="CGArray.html#toString">toString</a></li>
+            
+                <li data-name="CGArray#unique"><a href="CGArray.html#unique">unique</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CGObject">
+            <span class="title">
+                <a href="CGObject.html">CGObject</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CGObject#canvas"><a href="CGObject.html#canvas">canvas</a></li>
+            
+                <li data-name="CGObject#layout"><a href="CGObject.html#layout">layout</a></li>
+            
+                <li data-name="CGObject#meta"><a href="CGObject.html#meta">meta</a></li>
+            
+                <li data-name="CGObject#sequence"><a href="CGObject.html#sequence">sequence</a></li>
+            
+                <li data-name="CGObject#viewer"><a href="CGObject.html#viewer">viewer</a></li>
+            
+                <li data-name="CGObject#visible"><a href="CGObject.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CGObject#deleteFromObjects"><a href="CGObject.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="CGObject#toString"><a href="CGObject.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CGRange">
+            <span class="title">
+                <a href="CGRange.html">CGRange</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CGRange#contig"><a href="CGRange.html#contig">contig</a></li>
+            
+                <li data-name="CGRange#length"><a href="CGRange.html#length">length</a></li>
+            
+                <li data-name="CGRange#mapStart"><a href="CGRange.html#mapStart">mapStart</a></li>
+            
+                <li data-name="CGRange#mapStop"><a href="CGRange.html#mapStop">mapStop</a></li>
+            
+                <li data-name="CGRange#middle"><a href="CGRange.html#middle">middle</a></li>
+            
+                <li data-name="CGRange#sequence"><a href="CGRange.html#sequence">sequence</a></li>
+            
+                <li data-name="CGRange#start"><a href="CGRange.html#start">start</a></li>
+            
+                <li data-name="CGRange#stop"><a href="CGRange.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CGRange#containsMapBp"><a href="CGRange.html#containsMapBp">containsMapBp</a></li>
+            
+                <li data-name="CGRange#copy"><a href="CGRange.html#copy">copy</a></li>
+            
+                <li data-name="CGRange#getStartPlus"><a href="CGRange.html#getStartPlus">getStartPlus</a></li>
+            
+                <li data-name="CGRange#getStopPlus"><a href="CGRange.html#getStopPlus">getStopPlus</a></li>
+            
+                <li data-name="CGRange#isMapLength"><a href="CGRange.html#isMapLength">isMapLength</a></li>
+            
+                <li data-name="CGRange#isWrapped"><a href="CGRange.html#isWrapped">isWrapped</a></li>
+            
+                <li data-name="CGRange#isWrappingAllowed"><a href="CGRange.html#isWrappingAllowed">isWrappingAllowed</a></li>
+            
+                <li data-name="CGRange#mergeWithRange"><a href="CGRange.html#mergeWithRange">mergeWithRange</a></li>
+            
+                <li data-name="CGRange#normalize"><a href="CGRange.html#normalize">normalize</a></li>
+            
+                <li data-name="CGRange#overHalfMapLength"><a href="CGRange.html#overHalfMapLength">overHalfMapLength</a></li>
+            
+                <li data-name="CGRange#overlapsMapRange"><a href="CGRange.html#overlapsMapRange">overlapsMapRange</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CodonTable">
+            <span class="title">
+                <a href="CodonTable.html">CodonTable</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CodonTable#toString"><a href="CodonTable.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="CodonTables">
+            <span class="title">
+                <a href="CodonTables.html">CodonTables</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Color">
+            <span class="title">
+                <a href="Color.html">Color</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Color#hsv"><a href="Color.html#hsv">hsv</a></li>
+            
+                <li data-name="Color#opacity"><a href="Color.html#opacity">opacity</a></li>
+            
+                <li data-name="Color#rgb"><a href="Color.html#rgb">rgb</a></li>
+            
+                <li data-name="Color#rgba"><a href="Color.html#rgba">rgba</a></li>
+            
+                <li data-name="Color#rgbaString"><a href="Color.html#rgbaString">rgbaString</a></li>
+            
+                <li data-name="Color#rgbString"><a href="Color.html#rgbString">rgbString</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Color.hsl2rgb"><a href="Color.html#.hsl2rgb">hsl2rgb</a></li>
+            
+                <li data-name="Color.rgb2hsl"><a href="Color.html#.rgb2hsl">rgb2hsl</a></li>
+            
+                <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
+            
+                <li data-name="Color#toString"><a href="Color.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ColorPicker">
+            <span class="title">
+                <a href="ColorPicker.html">ColorPicker</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="ColorPicker#object"><a href="ColorPicker.html#object">object</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="ColorPicker#_configureView"><a href="ColorPicker.html#_configureView">_configureView</a></li>
+            
+                <li data-name="ColorPicker#alphaListener"><a href="ColorPicker.html#alphaListener">alphaListener</a></li>
+            
+                <li data-name="ColorPicker#dialogListener"><a href="ColorPicker.html#dialogListener">dialogListener</a></li>
+            
+                <li data-name="ColorPicker#doneListener"><a href="ColorPicker.html#doneListener">doneListener</a></li>
+            
+                <li data-name="ColorPicker#enableDragging"><a href="ColorPicker.html#enableDragging">enableDragging</a></li>
+            
+                <li data-name="ColorPicker#originalColorListener"><a href="ColorPicker.html#originalColorListener">originalColorListener</a></li>
+            
+                <li data-name="ColorPicker#pickerListener"><a href="ColorPicker.html#pickerListener">pickerListener</a></li>
+            
+                <li data-name="ColorPicker#slideListener"><a href="ColorPicker.html#slideListener">slideListener</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Contig">
+            <span class="title">
+                <a href="Contig.html">Contig</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Contig#canvas"><a href="Contig.html#canvas">canvas</a></li>
+            
+                <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
+            
+                <li data-name="Contig#index"><a href="Contig.html#index">index</a></li>
+            
+                <li data-name="Contig#layout"><a href="Contig.html#layout">layout</a></li>
+            
+                <li data-name="Contig#length"><a href="Contig.html#length">length</a></li>
+            
+                <li data-name="Contig#lengthOffset"><a href="Contig.html#lengthOffset">lengthOffset</a></li>
+            
+                <li data-name="Contig#mapRange"><a href="Contig.html#mapRange">mapRange</a></li>
+            
+                <li data-name="Contig#mapStart"><a href="Contig.html#mapStart">mapStart</a></li>
+            
+                <li data-name="Contig#mapStop"><a href="Contig.html#mapStop">mapStop</a></li>
+            
+                <li data-name="Contig#meta"><a href="Contig.html#meta">meta</a></li>
+            
+                <li data-name="Contig#name"><a href="Contig.html#name">name</a></li>
+            
+                <li data-name="Contig#orientation"><a href="Contig.html#orientation">orientation</a></li>
+            
+                <li data-name="Contig#seq"><a href="Contig.html#seq">seq</a></li>
+            
+                <li data-name="Contig#sequence"><a href="Contig.html#sequence">sequence</a></li>
+            
+                <li data-name="Contig#viewer"><a href="Contig.html#viewer">viewer</a></li>
+            
+                <li data-name="Contig#visible"><a href="Contig.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Contig.removeFeatures"><a href="Contig.html#.removeFeatures">removeFeatures</a></li>
+            
+                <li data-name="Contig#_updateLengthOffset"><a href="Contig.html#_updateLengthOffset">_updateLengthOffset</a></li>
+            
+                <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
+            
+                <li data-name="Contig#moveTo"><a href="Contig.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Contig#remove"><a href="Contig.html#remove">remove</a></li>
+            
+                <li data-name="Contig#toString"><a href="Contig.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Divider">
+            <span class="title">
+                <a href="Divider.html">Divider</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Divider#adjustedSpacing"><a href="Divider.html#adjustedSpacing">adjustedSpacing</a></li>
+            
+                <li data-name="Divider#adjustedThickness"><a href="Divider.html#adjustedThickness">adjustedThickness</a></li>
+            
+                <li data-name="Divider#canvas"><a href="Divider.html#canvas">canvas</a></li>
+            
+                <li data-name="Divider#color"><a href="Divider.html#color">color</a></li>
+            
+                <li data-name="Divider#layout"><a href="Divider.html#layout">layout</a></li>
+            
+                <li data-name="Divider#meta"><a href="Divider.html#meta">meta</a></li>
+            
+                <li data-name="Divider#sequence"><a href="Divider.html#sequence">sequence</a></li>
+            
+                <li data-name="Divider#spacing"><a href="Divider.html#spacing">spacing</a></li>
+            
+                <li data-name="Divider#thickness"><a href="Divider.html#thickness">thickness</a></li>
+            
+                <li data-name="Divider#viewer"><a href="Divider.html#viewer">viewer</a></li>
+            
+                <li data-name="Divider#visible"><a href="Divider.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Divider#deleteFromObjects"><a href="Divider.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Divider#toString"><a href="Divider.html#toString">toString</a></li>
+            
+                <li data-name="Divider#update"><a href="Divider.html#update">update</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Dividers">
+            <span class="title">
+                <a href="Dividers.html">Dividers</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Dividers#bbOffsets"><a href="Dividers.html#bbOffsets">bbOffsets</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Dividers#toString"><a href="Dividers.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="EventMonitor">
+            <span class="title">
+                <a href="EventMonitor.html">EventMonitor</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="EventMonitor#canvas"><a href="EventMonitor.html#canvas">canvas</a></li>
+            
+                <li data-name="EventMonitor#viewer"><a href="EventMonitor.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Events">
+            <span class="title">
+                <a href="Events.html">Events</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Events#off"><a href="Events.html#off">off</a></li>
+            
+                <li data-name="Events#on"><a href="Events.html#on">on</a></li>
+            
+                <li data-name="Events#trigger"><a href="Events.html#trigger">trigger</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Feature">
+            <span class="title">
+                <a href="Feature.html">Feature</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Feature#canvas"><a href="Feature.html#canvas">canvas</a></li>
+            
+                <li data-name="Feature#codonStart"><a href="Feature.html#codonStart">codonStart</a></li>
+            
+                <li data-name="Feature#color"><a href="Feature.html#color">color</a></li>
+            
+                <li data-name="Feature#contig"><a href="Feature.html#contig">contig</a></li>
+            
+                <li data-name="Feature#decoration"><a href="Feature.html#decoration">decoration</a></li>
+            
+                <li data-name="Feature#extractedFromSequence"><a href="Feature.html#extractedFromSequence">extractedFromSequence</a></li>
+            
+                <li data-name="Feature#favorite"><a href="Feature.html#favorite">favorite</a></li>
+            
+                <li data-name="Feature#geneticCode"><a href="Feature.html#geneticCode">geneticCode</a></li>
+            
+                <li data-name="Feature#label"><a href="Feature.html#label">label</a></li>
+            
+                <li data-name="Feature#layout"><a href="Feature.html#layout">layout</a></li>
+            
+                <li data-name="Feature#legend"><a href="Feature.html#legend">legend</a></li>
+            
+                <li data-name="Feature#legendItem"><a href="Feature.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Feature#mapRange"><a href="Feature.html#mapRange">mapRange</a></li>
+            
+                <li data-name="Feature#mapStart"><a href="Feature.html#mapStart">mapStart</a></li>
+            
+                <li data-name="Feature#mapStop"><a href="Feature.html#mapStop">mapStop</a></li>
+            
+                <li data-name="Feature#meta"><a href="Feature.html#meta">meta</a></li>
+            
+                <li data-name="Feature#name"><a href="Feature.html#name">name</a></li>
+            
+                <li data-name="Feature#range"><a href="Feature.html#range">range</a></li>
+            
+                <li data-name="Feature#score"><a href="Feature.html#score">score</a></li>
+            
+                <li data-name="Feature#seq"><a href="Feature.html#seq">seq</a></li>
+            
+                <li data-name="Feature#sequence"><a href="Feature.html#sequence">sequence</a></li>
+            
+                <li data-name="Feature#start"><a href="Feature.html#start">start</a></li>
+            
+                <li data-name="Feature#stop"><a href="Feature.html#stop">stop</a></li>
+            
+                <li data-name="Feature#type"><a href="Feature.html#type">type</a></li>
+            
+                <li data-name="Feature#viewer"><a href="Feature.html#viewer">viewer</a></li>
+            
+                <li data-name="Feature#visible"><a href="Feature.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Feature#deleteFromObjects"><a href="Feature.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Feature#highlight"><a href="Feature.html#highlight">highlight</a></li>
+            
+                <li data-name="Feature#moveTo"><a href="Feature.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Feature#remove"><a href="Feature.html#remove">remove</a></li>
+            
+                <li data-name="Feature#slots"><a href="Feature.html#slots">slots</a></li>
+            
+                <li data-name="Feature#toString"><a href="Feature.html#toString">toString</a></li>
+            
+                <li data-name="Feature#tracks"><a href="Feature.html#tracks">tracks</a></li>
+            
+                <li data-name="Feature#translate"><a href="Feature.html#translate">translate</a></li>
+            
+                <li data-name="Feature#updateRanges"><a href="Feature.html#updateRanges">updateRanges</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Font">
+            <span class="title">
+                <a href="Font.html">Font</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Font#bold"><a href="Font.html#bold">bold</a></li>
+            
+                <li data-name="Font#css"><a href="Font.html#css">css</a></li>
+            
+                <li data-name="Font#family"><a href="Font.html#family">family</a></li>
+            
+                <li data-name="Font#height"><a href="Font.html#height">height</a></li>
+            
+                <li data-name="Font#italic"><a href="Font.html#italic">italic</a></li>
+            
+                <li data-name="Font#size"><a href="Font.html#size">size</a></li>
+            
+                <li data-name="Font#string"><a href="Font.html#string">string</a></li>
+            
+                <li data-name="Font#style"><a href="Font.html#style">style</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Font.calculateWidths"><a href="Font.html#.calculateWidths">calculateWidths</a></li>
+            
+                <li data-name="Font#cssScaled"><a href="Font.html#cssScaled">cssScaled</a></li>
+            
+                <li data-name="Font#toString"><a href="Font.html#toString">toString</a></li>
+            
+                <li data-name="Font#width"><a href="Font.html#width">width</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Highlighter">
+            <span class="title">
+                <a href="Highlighter.html">Highlighter</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Highlighter#canvas"><a href="Highlighter.html#canvas">canvas</a></li>
+            
+                <li data-name="Highlighter#layout"><a href="Highlighter.html#layout">layout</a></li>
+            
+                <li data-name="Highlighter#meta"><a href="Highlighter.html#meta">meta</a></li>
+            
+                <li data-name="Highlighter#sequence"><a href="Highlighter.html#sequence">sequence</a></li>
+            
+                <li data-name="Highlighter#viewer"><a href="Highlighter.html#viewer">viewer</a></li>
+            
+                <li data-name="Highlighter#visible"><a href="Highlighter.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Highlighter#deleteFromObjects"><a href="Highlighter.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Highlighter#toString"><a href="Highlighter.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="HighlighterElement">
+            <span class="title">
+                <a href="HighlighterElement.html">HighlighterElement</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="IO">
+            <span class="title">
+                <a href="IO.html">IO</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="IO#allowDragAndDrop"><a href="IO.html#allowDragAndDrop">allowDragAndDrop</a></li>
+            
+                <li data-name="IO#viewer"><a href="IO.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Layout">
+            <span class="title">
+                <a href="Layout.html">Layout</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Layout#backbone"><a href="Layout.html#backbone">backbone</a></li>
+            
+                <li data-name="Layout#bbInsideOffset"><a href="Layout.html#bbInsideOffset">bbInsideOffset</a></li>
+            
+                <li data-name="Layout#bbOutsideOffset"><a href="Layout.html#bbOutsideOffset">bbOutsideOffset</a></li>
+            
+                <li data-name="Layout#canvas"><a href="Layout.html#canvas">canvas</a></li>
+            
+                <li data-name="Layout#centerInsideOffset"><a href="Layout.html#centerInsideOffset">centerInsideOffset</a></li>
+            
+                <li data-name="Layout#centerOutsideOffset"><a href="Layout.html#centerOutsideOffset">centerOutsideOffset</a></li>
+            
+                <li data-name="Layout#height"><a href="Layout.html#height">height</a></li>
+            
+                <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
+            
+                <li data-name="Layout#minSlotThickness"><a href="Layout.html#minSlotThickness">minSlotThickness</a></li>
+            
+                <li data-name="Layout#scale"><a href="Layout.html#scale">scale</a></li>
+            
+                <li data-name="Layout#sequence"><a href="Layout.html#sequence">sequence</a></li>
+            
+                <li data-name="Layout#slotProportionStats"><a href="Layout.html#slotProportionStats">slotProportionStats</a></li>
+            
+                <li data-name="Layout#slotThicknessRatioStats"><a href="Layout.html#slotThicknessRatioStats">slotThicknessRatioStats</a></li>
+            
+                <li data-name="Layout#type"><a href="Layout.html#type">type</a></li>
+            
+                <li data-name="Layout#viewer"><a href="Layout.html#viewer">viewer</a></li>
+            
+                <li data-name="Layout#width"><a href="Layout.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Layout#_adjustProportions"><a href="Layout.html#_adjustProportions">_adjustProportions</a></li>
+            
+                <li data-name="Layout#_calculateSlotThickness"><a href="Layout.html#_calculateSlotThickness">_calculateSlotThickness</a></li>
+            
+                <li data-name="Layout#adjustBpScaleRange"><a href="Layout.html#adjustBpScaleRange">adjustBpScaleRange</a></li>
+            
+                <li data-name="Layout#adjustedBackboneCenterOffset"><a href="Layout.html#adjustedBackboneCenterOffset">adjustedBackboneCenterOffset</a></li>
+            
+                <li data-name="Layout#bpForPoint"><a href="Layout.html#bpForPoint">bpForPoint</a></li>
+            
+                <li data-name="Layout#centerOffsetForPoint"><a href="Layout.html#centerOffsetForPoint">centerOffsetForPoint</a></li>
+            
+                <li data-name="Layout#clockPositionForBp"><a href="Layout.html#clockPositionForBp">clockPositionForBp</a></li>
+            
+                <li data-name="Layout#domainsFor"><a href="Layout.html#domainsFor">domainsFor</a></li>
+            
+                <li data-name="Layout#initialWorkingSpace"><a href="Layout.html#initialWorkingSpace">initialWorkingSpace</a></li>
+            
+                <li data-name="Layout#maxMapThickness"><a href="Layout.html#maxMapThickness">maxMapThickness</a></li>
+            
+                <li data-name="Layout#path"><a href="Layout.html#path">path</a></li>
+            
+                <li data-name="Layout#pixelsPerBp"><a href="Layout.html#pixelsPerBp">pixelsPerBp</a></li>
+            
+                <li data-name="Layout#pointForBp"><a href="Layout.html#pointForBp">pointForBp</a></li>
+            
+                <li data-name="Layout#updateInitialBackboneCenterOffset"><a href="Layout.html#updateInitialBackboneCenterOffset">updateInitialBackboneCenterOffset</a></li>
+            
+                <li data-name="Layout#updateLayout"><a href="Layout.html#updateLayout">updateLayout</a></li>
+            
+                <li data-name="Layout#visibleRangeForCenterOffset"><a href="Layout.html#visibleRangeForCenterOffset">visibleRangeForCenterOffset</a></li>
+            
+                <li data-name="Layout#zoomFactorForLength"><a href="Layout.html#zoomFactorForLength">zoomFactorForLength</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LayoutCircular">
+            <span class="title">
+                <a href="LayoutCircular.html">LayoutCircular</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="LayoutCircular#_maximumVisibleRadius"><a href="LayoutCircular.html#_maximumVisibleRadius">_maximumVisibleRadius</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LayoutLinear">
+            <span class="title">
+                <a href="LayoutLinear.html">LayoutLinear</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Legend">
+            <span class="title">
+                <a href="Legend.html">Legend</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Legend#backgroundColor"><a href="Legend.html#backgroundColor">backgroundColor</a></li>
+            
+                <li data-name="Legend#canvas"><a href="Legend.html#canvas">canvas</a></li>
+            
+                <li data-name="Legend#ctx"><a href="Legend.html#ctx">ctx</a></li>
+            
+                <li data-name="Legend#defaultFont"><a href="Legend.html#defaultFont">defaultFont</a></li>
+            
+                <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
+            
+                <li data-name="Legend#highlightedSwatchedItem"><a href="Legend.html#highlightedSwatchedItem">highlightedSwatchedItem</a></li>
+            
+                <li data-name="Legend#items"><a href="Legend.html#items">items</a></li>
+            
+                <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
+            
+                <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
+            
+                <li data-name="Legend#selectedSwatchedItem"><a href="Legend.html#selectedSwatchedItem">selectedSwatchedItem</a></li>
+            
+                <li data-name="Legend#sequence"><a href="Legend.html#sequence">sequence</a></li>
+            
+                <li data-name="Legend#textAlignment"><a href="Legend.html#textAlignment">textAlignment</a></li>
+            
+                <li data-name="Legend#viewer"><a href="Legend.html#viewer">viewer</a></li>
+            
+                <li data-name="Legend#visible"><a href="Legend.html#visible">visible</a></li>
+            
+                <li data-name="Legend#visibleItems"><a href="Legend.html#visibleItems">visibleItems</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Legend#deleteFromObjects"><a href="Legend.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Legend#refresh"><a href="Legend.html#refresh">refresh</a></li>
+            
+                <li data-name="Legend#toString"><a href="Legend.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="LegendItem">
+            <span class="title">
+                <a href="LegendItem.html">LegendItem</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="LegendItem#canvas"><a href="LegendItem.html#canvas">canvas</a></li>
+            
+                <li data-name="LegendItem#color"><a href="LegendItem.html#color">color</a></li>
+            
+                <li data-name="LegendItem#decoration"><a href="LegendItem.html#decoration">decoration</a></li>
+            
+                <li data-name="LegendItem#drawSwatch"><a href="LegendItem.html#drawSwatch">drawSwatch</a></li>
+            
+                <li data-name="LegendItem#font"><a href="LegendItem.html#font">font</a></li>
+            
+                <li data-name="LegendItem#fontColor"><a href="LegendItem.html#fontColor">fontColor</a></li>
+            
+                <li data-name="LegendItem#height"><a href="LegendItem.html#height">height</a></li>
+            
+                <li data-name="LegendItem#layout"><a href="LegendItem.html#layout">layout</a></li>
+            
+                <li data-name="LegendItem#legend"><a href="LegendItem.html#legend">legend</a></li>
+            
+                <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
+            
+                <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
+            
+                <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
+            
+                <li data-name="LegendItem#swatchColor"><a href="LegendItem.html#swatchColor">swatchColor</a></li>
+            
+                <li data-name="LegendItem#swatchHighlighted"><a href="LegendItem.html#swatchHighlighted">swatchHighlighted</a></li>
+            
+                <li data-name="LegendItem#swatchSelected"><a href="LegendItem.html#swatchSelected">swatchSelected</a></li>
+            
+                <li data-name="LegendItem#textAlignment"><a href="LegendItem.html#textAlignment">textAlignment</a></li>
+            
+                <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
+            
+                <li data-name="LegendItem#visible"><a href="LegendItem.html#visible">visible</a></li>
+            
+                <li data-name="LegendItem#width"><a href="LegendItem.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="LegendItem#deleteFromObjects"><a href="LegendItem.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="LegendItem#toString"><a href="LegendItem.html#toString">toString</a></li>
+            
+                <li data-name="LegendItem#update"><a href="LegendItem.html#update">update</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Messenger">
+            <span class="title">
+                <a href="Messenger.html">Messenger</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Messenger#fadeTime"><a href="Messenger.html#fadeTime">fadeTime</a></li>
+            
+                <li data-name="Messenger#viewer"><a href="Messenger.html#viewer">viewer</a></li>
+            
+                <li data-name="Messenger#visible"><a href="Messenger.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Messenger#close"><a href="Messenger.html#close">close</a></li>
+            
+                <li data-name="Messenger#open"><a href="Messenger.html#open">open</a></li>
+            
+                <li data-name="Messenger#toString"><a href="Messenger.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="NCList">
+            <span class="title">
+                <a href="NCList.html">NCList</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="NCList#length"><a href="NCList.html#length">length</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="NCList#_normalize"><a href="NCList.html#_normalize">_normalize</a></li>
+            
+                <li data-name="NCList#end"><a href="NCList.html#end">end</a></li>
+            
+                <li data-name="NCList#fill"><a href="NCList.html#fill">fill</a></li>
+            
+                <li data-name="NCList#start"><a href="NCList.html#start">start</a></li>
+            
+                <li data-name="NCList#sublist"><a href="NCList.html#sublist">sublist</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Plot">
+            <span class="title">
+                <a href="Plot.html">Plot</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Plot#axisMax"><a href="Plot.html#axisMax">axisMax</a></li>
+            
+                <li data-name="Plot#axisMin"><a href="Plot.html#axisMin">axisMin</a></li>
+            
+                <li data-name="Plot#baseline"><a href="Plot.html#baseline">baseline</a></li>
+            
+                <li data-name="Plot#canvas"><a href="Plot.html#canvas">canvas</a></li>
+            
+                <li data-name="Plot#color"><a href="Plot.html#color">color</a></li>
+            
+                <li data-name="Plot#extractedFromSequence"><a href="Plot.html#extractedFromSequence">extractedFromSequence</a></li>
+            
+                <li data-name="Plot#layout"><a href="Plot.html#layout">layout</a></li>
+            
+                <li data-name="Plot#legend"><a href="Plot.html#legend">legend</a></li>
+            
+                <li data-name="Plot#legendItem"><a href="Plot.html#legendItem">legendItem</a></li>
+            
+                <li data-name="Plot#legendItemNegative"><a href="Plot.html#legendItemNegative">legendItemNegative</a></li>
+            
+                <li data-name="Plot#legendItemPositive"><a href="Plot.html#legendItemPositive">legendItemPositive</a></li>
+            
+                <li data-name="Plot#legendNegative"><a href="Plot.html#legendNegative">legendNegative</a></li>
+            
+                <li data-name="Plot#legendPositive"><a href="Plot.html#legendPositive">legendPositive</a></li>
+            
+                <li data-name="Plot#length"><a href="Plot.html#length">length</a></li>
+            
+                <li data-name="Plot#meta"><a href="Plot.html#meta">meta</a></li>
+            
+                <li data-name="Plot#name"><a href="Plot.html#name">name</a></li>
+            
+                <li data-name="Plot#positions"><a href="Plot.html#positions">positions</a></li>
+            
+                <li data-name="Plot#score"><a href="Plot.html#score">score</a></li>
+            
+                <li data-name="Plot#sequence"><a href="Plot.html#sequence">sequence</a></li>
+            
+                <li data-name="Plot#type"><a href="Plot.html#type">type</a></li>
+            
+                <li data-name="Plot#viewer"><a href="Plot.html#viewer">viewer</a></li>
+            
+                <li data-name="Plot#visible"><a href="Plot.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Plot#deleteFromObjects"><a href="Plot.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Plot#highlight"><a href="Plot.html#highlight">highlight</a></li>
+            
+                <li data-name="Plot#remove"><a href="Plot.html#remove">remove</a></li>
+            
+                <li data-name="Plot#toString"><a href="Plot.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Position">
+            <span class="title">
+                <a href="Position.html">Position</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Position#point"><a href="Position.html#point">point</a></li>
+            
+                <li data-name="Position#x"><a href="Position.html#x">x</a></li>
+            
+                <li data-name="Position#y"><a href="Position.html#y">y</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Position#toString"><a href="Position.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Rect">
+            <span class="title">
+                <a href="Rect.html">Rect</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Rect#bottom"><a href="Rect.html#bottom">bottom</a></li>
+            
+                <li data-name="Rect#height"><a href="Rect.html#height">height</a></li>
+            
+                <li data-name="Rect#left"><a href="Rect.html#left">left</a></li>
+            
+                <li data-name="Rect#right"><a href="Rect.html#right">right</a></li>
+            
+                <li data-name="Rect#top"><a href="Rect.html#top">top</a></li>
+            
+                <li data-name="Rect#width"><a href="Rect.html#width">width</a></li>
+            
+                <li data-name="Rect#x"><a href="Rect.html#x">x</a></li>
+            
+                <li data-name="Rect#y"><a href="Rect.html#y">y</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Rect#containsPt"><a href="Rect.html#containsPt">containsPt</a></li>
+            
+                <li data-name="Rect#overlap"><a href="Rect.html#overlap">overlap</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Ruler">
+            <span class="title">
+                <a href="Ruler.html">Ruler</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Ruler#canvas"><a href="Ruler.html#canvas">canvas</a></li>
+            
+                <li data-name="Ruler#color"><a href="Ruler.html#color">color</a></li>
+            
+                <li data-name="Ruler#layout"><a href="Ruler.html#layout">layout</a></li>
+            
+                <li data-name="Ruler#majorTicks"><a href="Ruler.html#majorTicks">majorTicks</a></li>
+            
+                <li data-name="Ruler#majorTickStep"><a href="Ruler.html#majorTickStep">majorTickStep</a></li>
+            
+                <li data-name="Ruler#meta"><a href="Ruler.html#meta">meta</a></li>
+            
+                <li data-name="Ruler#minorTicks"><a href="Ruler.html#minorTicks">minorTicks</a></li>
+            
+                <li data-name="Ruler#minorTickStep"><a href="Ruler.html#minorTickStep">minorTickStep</a></li>
+            
+                <li data-name="Ruler#sequence"><a href="Ruler.html#sequence">sequence</a></li>
+            
+                <li data-name="Ruler#tickFormater"><a href="Ruler.html#tickFormater">tickFormater</a></li>
+            
+                <li data-name="Ruler#viewer"><a href="Ruler.html#viewer">viewer</a></li>
+            
+                <li data-name="Ruler#visible"><a href="Ruler.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Ruler#_createTickFormatter"><a href="Ruler.html#_createTickFormatter">_createTickFormatter</a></li>
+            
+                <li data-name="Ruler#deleteFromObjects"><a href="Ruler.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Ruler#toString"><a href="Ruler.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Sequence">
+            <span class="title">
+                <a href="Sequence.html">Sequence</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Sequence#bpMargin"><a href="Sequence.html#bpMargin">bpMargin</a></li>
+            
+                <li data-name="Sequence#bpSpacing"><a href="Sequence.html#bpSpacing">bpSpacing</a></li>
+            
+                <li data-name="Sequence#canvas"><a href="Sequence.html#canvas">canvas</a></li>
+            
+                <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
+            
+                <li data-name="Sequence#font"><a href="Sequence.html#font">font</a></li>
+            
+                <li data-name="Sequence#hasSeq"><a href="Sequence.html#hasSeq">hasSeq</a></li>
+            
+                <li data-name="Sequence#layout"><a href="Sequence.html#layout">layout</a></li>
+            
+                <li data-name="Sequence#length"><a href="Sequence.html#length">length</a></li>
+            
+                <li data-name="Sequence#mapContig"><a href="Sequence.html#mapContig">mapContig</a></li>
+            
+                <li data-name="Sequence#meta"><a href="Sequence.html#meta">meta</a></li>
+            
+                <li data-name="Sequence#seq"><a href="Sequence.html#seq">seq</a></li>
+            
+                <li data-name="Sequence#sequence"><a href="Sequence.html#sequence">sequence</a></li>
+            
+                <li data-name="Sequence#sequenceExtractor"><a href="Sequence.html#sequenceExtractor">sequenceExtractor</a></li>
+            
+                <li data-name="Sequence#thickness"><a href="Sequence.html#thickness">thickness</a></li>
+            
+                <li data-name="Sequence#viewer"><a href="Sequence.html#viewer">viewer</a></li>
+            
+                <li data-name="Sequence#visible"><a href="Sequence.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Sequence.complement"><a href="Sequence.html#.complement">complement</a></li>
+            
+                <li data-name="Sequence.random"><a href="Sequence.html#.random">random</a></li>
+            
+                <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
+            
+                <li data-name="Sequence#bpForContig"><a href="Sequence.html#bpForContig">bpForContig</a></li>
+            
+                <li data-name="Sequence#constrain"><a href="Sequence.html#constrain">constrain</a></li>
+            
+                <li data-name="Sequence#contigForBp"><a href="Sequence.html#contigForBp">contigForBp</a></li>
+            
+                <li data-name="Sequence#contigsForMapRange"><a href="Sequence.html#contigsForMapRange">contigsForMapRange</a></li>
+            
+                <li data-name="Sequence#deleteFromObjects"><a href="Sequence.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
+            
+                <li data-name="Sequence#forRange"><a href="Sequence.html#forRange">forRange</a></li>
+            
+                <li data-name="Sequence#subtractBp"><a href="Sequence.html#subtractBp">subtractBp</a></li>
+            
+                <li data-name="Sequence#toString"><a href="Sequence.html#toString">toString</a></li>
+            
+                <li data-name="Sequence#updateContigs"><a href="Sequence.html#updateContigs">updateContigs</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="SequenceExtractor">
+            <span class="title">
+                <a href="SequenceExtractor.html">SequenceExtractor</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="SequenceExtractor#length"><a href="SequenceExtractor.html#length">length</a></li>
+            
+                <li data-name="SequenceExtractor#sequence"><a href="SequenceExtractor.html#sequence">sequence</a></li>
+            
+                <li data-name="SequenceExtractor#viewer"><a href="SequenceExtractor.html#viewer">viewer</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Settings">
+            <span class="title">
+                <a href="Settings.html">Settings</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Settings#arrowHeadLength"><a href="Settings.html#arrowHeadLength">arrowHeadLength</a></li>
+            
+                <li data-name="Settings#backgroundColor"><a href="Settings.html#backgroundColor">backgroundColor</a></li>
+            
+                <li data-name="Settings#format"><a href="Settings.html#format">format</a></li>
+            
+                <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Settings#toString"><a href="Settings.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Slot">
+            <span class="title">
+                <a href="Slot.html">Slot</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Slot#bbOffset"><a href="Slot.html#bbOffset">bbOffset</a></li>
+            
+                <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
+            
+                <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
+            
+                <li data-name="Slot#layout"><a href="Slot.html#layout">layout</a></li>
+            
+                <li data-name="Slot#meta"><a href="Slot.html#meta">meta</a></li>
+            
+                <li data-name="Slot#outside"><a href="Slot.html#outside">outside</a></li>
+            
+                <li data-name="Slot#position"><a href="Slot.html#position">position</a></li>
+            
+                <li data-name="Slot#proportionOfMap"><a href="Slot.html#proportionOfMap">proportionOfMap</a></li>
+            
+                <li data-name="Slot#sequence"><a href="Slot.html#sequence">sequence</a></li>
+            
+                <li data-name="Slot#thickness"><a href="Slot.html#thickness">thickness</a></li>
+            
+                <li data-name="Slot#thicknessRatio"><a href="Slot.html#thicknessRatio">thicknessRatio</a></li>
+            
+                <li data-name="Slot#track"><a href="Slot.html#track">track</a></li>
+            
+                <li data-name="Slot#type"><a href="Slot.html#type">type</a></li>
+            
+                <li data-name="Slot#viewer"><a href="Slot.html#viewer">viewer</a></li>
+            
+                <li data-name="Slot#visible"><a href="Slot.html#visible">visible</a></li>
+            
+                <li data-name="Slot#visibleRange"><a href="Slot.html#visibleRange">visibleRange</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Slot#containsCenterOffset"><a href="Slot.html#containsCenterOffset">containsCenterOffset</a></li>
+            
+                <li data-name="Slot#deleteFromObjects"><a href="Slot.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Slot#findFeaturesForBp"><a href="Slot.html#findFeaturesForBp">findFeaturesForBp</a></li>
+            
+                <li data-name="Slot#pixelsPerBp"><a href="Slot.html#pixelsPerBp">pixelsPerBp</a></li>
+            
+                <li data-name="Slot#removeFeatures"><a href="Slot.html#removeFeatures">removeFeatures</a></li>
+            
+                <li data-name="Slot#removePlot"><a href="Slot.html#removePlot">removePlot</a></li>
+            
+                <li data-name="Slot#toString"><a href="Slot.html#toString">toString</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Track">
+            <span class="title">
+                <a href="Track.html">Track</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Track#canvas"><a href="Track.html#canvas">canvas</a></li>
+            
+                <li data-name="Track#dataKeys"><a href="Track.html#dataKeys">dataKeys</a></li>
+            
+                <li data-name="Track#dataMethod"><a href="Track.html#dataMethod">dataMethod</a></li>
+            
+                <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
+            
+                <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#id"><a href="Track.html#id">id</a></li>
+            
+                <li data-name="Track#itemCount"><a href="Track.html#itemCount">itemCount</a></li>
+            
+                <li data-name="Track#layout"><a href="Track.html#layout">layout</a></li>
+            
+                <li data-name="Track#loadProgress"><a href="Track.html#loadProgress">loadProgress</a></li>
+            
+                <li data-name="Track#meta"><a href="Track.html#meta">meta</a></li>
+            
+                <li data-name="Track#name"><a href="Track.html#name">name</a></li>
+            
+                <li data-name="Track#plot"><a href="Track.html#plot">plot</a></li>
+            
+                <li data-name="Track#position"><a href="Track.html#position">position</a></li>
+            
+                <li data-name="Track#separateFeaturesBy"><a href="Track.html#separateFeaturesBy">separateFeaturesBy</a></li>
+            
+                <li data-name="Track#sequence"><a href="Track.html#sequence">sequence</a></li>
+            
+                <li data-name="Track#thicknessRatio"><a href="Track.html#thicknessRatio">thicknessRatio</a></li>
+            
+                <li data-name="Track#type"><a href="Track.html#type">type</a></li>
+            
+                <li data-name="Track#viewer"><a href="Track.html#viewer">viewer</a></li>
+            
+                <li data-name="Track#visible"><a href="Track.html#visible">visible</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Track#deleteFromObjects"><a href="Track.html#deleteFromObjects">deleteFromObjects</a></li>
+            
+                <li data-name="Track#features"><a href="Track.html#features">features</a></li>
+            
+                <li data-name="Track#removeFeatures"><a href="Track.html#removeFeatures">removeFeatures</a></li>
+            
+                <li data-name="Track#removePlot"><a href="Track.html#removePlot">removePlot</a></li>
+            
+                <li data-name="Track#toString"><a href="Track.html#toString">toString</a></li>
+            
+                <li data-name="Track#uniqueFeatures"><a href="Track.html#uniqueFeatures">uniqueFeatures</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="Viewer">
+            <span class="title">
+                <a href="Viewer.html">Viewer</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
+            
+                <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
+            
+                <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
+            
+                <li data-name="Viewer#geneticCode"><a href="Viewer.html#geneticCode">geneticCode</a></li>
+            
+                <li data-name="Viewer#height"><a href="Viewer.html#height">height</a></li>
+            
+                <li data-name="Viewer#id"><a href="Viewer.html#id">id</a></li>
+            
+                <li data-name="Viewer#layout"><a href="Viewer.html#layout">layout</a></li>
+            
+                <li data-name="Viewer#loading"><a href="Viewer.html#loading">loading</a></li>
+            
+                <li data-name="Viewer#maxDimension"><a href="Viewer.html#maxDimension">maxDimension</a></li>
+            
+                <li data-name="Viewer#maxZoomFactor"><a href="Viewer.html#maxZoomFactor">maxZoomFactor</a></li>
+            
+                <li data-name="Viewer#minDimension"><a href="Viewer.html#minDimension">minDimension</a></li>
+            
+                <li data-name="Viewer#minZoomFactor"><a href="Viewer.html#minZoomFactor">minZoomFactor</a></li>
+            
+                <li data-name="Viewer#name"><a href="Viewer.html#name">name</a></li>
+            
+                <li data-name="Viewer#scale"><a href="Viewer.html#scale">scale</a></li>
+            
+                <li data-name="Viewer#sequence"><a href="Viewer.html#sequence">sequence</a></li>
+            
+                <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
+            
+                <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="Viewer#addBookmarks"><a href="Viewer.html#addBookmarks">addBookmarks</a></li>
+            
+                <li data-name="Viewer#addCaptions"><a href="Viewer.html#addCaptions">addCaptions</a></li>
+            
+                <li data-name="Viewer#addFeatures"><a href="Viewer.html#addFeatures">addFeatures</a></li>
+            
+                <li data-name="Viewer#addPlots"><a href="Viewer.html#addPlots">addPlots</a></li>
+            
+                <li data-name="Viewer#addTracks"><a href="Viewer.html#addTracks">addTracks</a></li>
+            
+                <li data-name="Viewer#bookmarks"><a href="Viewer.html#bookmarks">bookmarks</a></li>
+            
+                <li data-name="Viewer#captions"><a href="Viewer.html#captions">captions</a></li>
+            
+                <li data-name="Viewer#clear"><a href="Viewer.html#clear">clear</a></li>
+            
+                <li data-name="Viewer#contigs"><a href="Viewer.html#contigs">contigs</a></li>
+            
+                <li data-name="Viewer#features"><a href="Viewer.html#features">features</a></li>
+            
+                <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
+            
+                <li data-name="Viewer#moveTo"><a href="Viewer.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
+            
+                <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
+            
+                <li data-name="Viewer#recordsWithChangedAttributes"><a href="Viewer.html#recordsWithChangedAttributes">recordsWithChangedAttributes</a></li>
+            
+                <li data-name="Viewer#removeBookmarks"><a href="Viewer.html#removeBookmarks">removeBookmarks</a></li>
+            
+                <li data-name="Viewer#resize"><a href="Viewer.html#resize">resize</a></li>
+            
+                <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
+            
+                <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
+            
+                <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
+            
+                <li data-name="Viewer#updateFeatures"><a href="Viewer.html#updateFeatures">updateFeatures</a></li>
+            
+                <li data-name="Viewer#updatePlots"><a href="Viewer.html#updatePlots">updatePlots</a></li>
+            
+                <li data-name="Viewer#updateTracks"><a href="Viewer.html#updateTracks">updateTracks</a></li>
+            
+                <li data-name="Viewer#zoomTo"><a href="Viewer.html#zoomTo">zoomTo</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+
+</nav>
+
+
+<main>
+<!-- Add 'jaguar' class to provide API-specific styling - JRG -->
+<div id="wrap" class="clearfix jaguar">
+    <div class="main">
+
+        <h1 class="page-title" data-filename="Sequence.js.html">Source: Sequence.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
+// Sequence
+//////////////////////////////////////////////////////////////////////////////
+
+import CGObject from './CGObject';
+import CGArray from './CGArray';
+import CGRange from './CGRange';
+import Contig from './Contig';
+import SequenceExtractor from './SequenceExtractor';
+import Color from './Color';
+import Font from './Font';
+import utils from './Utils';
+
+/**
+ * The CGView Sequence represents the sequence that makes up the map. The essential
+ * proptery of the Sequence is the length. The length must be known in order to draw
+ * a map of the correct size. There are 3 ways to set the Sequence length on map
+ * creation.
+ * - seq: provide the sequence. The length will be set directly from the sequence.
+ * - length: provide the sequence length without sequence
+ * - contigs: an array of contigs. Each contig must then include its length or sequence.
+ *
+ * The seq and length propteries are read only and cannot be changed unless a new
+ * map is loaded (see IO.loadJSON). With contigs, the updateContigs and
+ * moveContigs methods can be used to change the name, orienation, visbility and
+ * order, however, the seq and length property of each contig is still read only.
+ *
+ * Sequence Coordinates:
+ * CGView uses two coordinate systems: Contig space and map space. For features and plot, positions are relative to contigs. However, when drawing we use positions relative to the entire map.
+ * [Image of map with contigs. Show contig/map space]
+ *
+ * ### Action and Events
+ *
+ * Action                                  | Viewer Method                    | Sequence Method     | Event
+ * ----------------------------------------|----------------------------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -                                | [update()](#update) | sequence-update
+ * [Read](../docs.html#reading-records)    | [sequence](Viewer.html#sequence) | -                   | -
+ *
+ * &lt;a name="attributes">&lt;/a>
+ * ### Attributes
+ *
+ * Attribute                        | Type      | Description
+ * ---------------------------------|-----------|------------
+ * [name](#name)                    | String    | Sequence name. [TODO]
+ * [id](S#id)                       | String    | Sequence ID. [TODO]
+ * [seq](#seq)&lt;sup>iu&lt;/sup>         | String    | The map sequence.
+ * [length](#length)&lt;sup>iu&lt;/sup>   | Number    | The length of the sequence. This is ignored if a seq is provided. [Default: 1000]
+ * [contigs](#contigs)&lt;sup>iu&lt;/sup> | Array     | Array of contigs. Contigs are ignored if a seq is provided.
+ * [font](#font)                    | String    | A string describing the font [Default: 'SansSerif, plain, 14']. See {@link Font} for details.
+ * [color](#color)                  | String    | A string describing the sequence color [Default: 'black']. See {@link Color} for details.
+ * [visible](CGObject.html#visible) | Boolean   | Sequence sequence is visible when zoomed in enough [Default: true]
+ * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html)
+ * 
+ * &lt;sup>iu&lt;/sup> Ignored on Sequence update
+ *
+ * ### Examples
+ *
+ * @extends CGObject
+ */
+class Sequence extends CGObject {
+
+  /**
+   * Create a Sequence
+   * @param {Viewer} viewer - The viewer
+   * @param {Object} options - [Attributes](#attributes) used to create the sequence
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the sequence
+   *
+   * Implementation notes:
+   *   - Internally contigs are always used. If 'seq' is provided, it will be converted to a single contig.
+   *   - All the contigs are concatenated into a single contig called mapContig.
+   *     -  Sequence.seq === Sequence.mapContig.seq
+   *   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
+   *   - Make note in update/updateContig methods that if only one contig is provided (or the sequence seq), they are treated the same internally. Therefore, if the contig name is changed, so is the sequence name.
+   *   - Note for toJSON: will output single contigs as attributes of the sequence (so no contigs property)
+   */
+  constructor(viewer, options = {}, meta = {}) {
+    super(viewer, options, meta);
+    this._viewer = viewer;
+    this.bpMargin = 2;
+    this.color = utils.defaultFor(options.color, 'black');
+    this.font = utils.defaultFor(options.font, 'sans-serif, plain, 14');
+
+    this._contigs = new CGArray();
+
+    this.createMapContig(options);
+
+    this.viewer.trigger('sequence-update', { attributes: this.toJSON({includeDefaults: true}) });
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // STATIC CLASSS METHODS
+  //////////////////////////////////////////////////////////////////////////
+  // Common method for extracting sequence based on a range
+  // range can be a CGRange or any object with a start and stop attribute.
+  static forRange(seq, range, revComp=false) {
+    const start = range &amp;&amp; range.start;
+    const stop = range &amp;&amp; range.stop;
+    if (!seq || !start || !stop) {return;}
+    let extract = ''
+    if (stop &lt; start) {
+      // Range wraps around
+      extract = seq.substring(start - 1) + seq.substring(0, stop);
+    } else {
+      extract = seq.substring(start - 1, stop);
+    }
+    if (revComp) {
+      extract = Sequence.reverseComplement(extract);
+    }
+    return extract;
+  }
+
+  // TODO: Take into account lower case letters
+  /**
+   * Return the Complement the sequence
+   * @return {String} - 'Sequence'
+   * @static
+   */
+  static complement(seq) {
+    let compSeq = '';
+    let char, compChar;
+    for (let i = 0, len = seq.length; i &lt; len; i++) {
+      char = seq.charAt(i);
+      switch (char) {
+      case 'A':
+        compChar = 'T';
+        break;
+      case 'T':
+        compChar = 'A';
+        break;
+      case 'G':
+        compChar = 'C';
+        break;
+      case 'C':
+        compChar = 'G';
+        break;
+      case 'U':
+        compChar = 'A';
+        break;
+      case 'Y':
+        compChar = 'R';
+        break;
+      case 'S':
+        compChar = 'S';
+        break;
+      case 'W':
+        compChar = 'W';
+        break;
+      case 'K':
+        compChar = 'M';
+        break;
+      case 'M':
+        compChar = 'K';
+        break;
+      case 'B':
+        compChar = 'V';
+        break;
+      case 'D':
+        compChar = 'H';
+        break;
+      case 'H':
+        compChar = 'D';
+        break;
+      case 'V':
+        compChar = 'B';
+        break;
+      case 'N':
+        compChar = 'N';
+        break;
+      }
+      compSeq = compSeq + compChar;
+    }
+    return compSeq;
+  }
+
+  static baseCalculation(type, seq) {
+    if (type === 'gc-content') {
+      return Sequence.calcGCContent(seq);
+    } else if (type === 'gc-skew') {
+      return Sequence.calcGCSkew(seq);
+    }
+  }
+
+  static calcGCContent(seq) {
+    if (seq.length === 0) { return  0.5; }
+    const g = Sequence.count(seq, 'g');
+    const c = Sequence.count(seq, 'c');
+    return ( (g + c) / seq.length );
+  }
+
+  static calcGCSkew(seq) {
+    const g = Sequence.count(seq, 'g');
+    const c = Sequence.count(seq, 'c');
+    if ( (g + c) === 0 ) { return 0.5; }
+    // Gives value between -1 and 1
+    const value = (g - c) / (g + c);
+    // Scale to a value between 0 and 1
+    return  0.5 + (value / 2);
+  }
+
+  static reverseComplement(seq) {
+    return Sequence.complement( seq.split('').reverse().join('') );
+  }
+
+  static count(seq, pattern) {
+    return (seq.match(new RegExp(pattern, 'gi')) || []).length;
+  }
+
+  /**
+   * Create a random sequence of the specified length
+   * @param {Number} length - The length of the sequence to create
+   * @return {String}
+   */
+  static random(length) {
+    let seq = '';
+    let num;
+    for (let i = 0; i &lt; length; i++) {
+      num = Math.floor(Math.random() * 4);
+      switch (num % 4) {
+      case 0:
+        seq += 'A';
+        break;
+      case 1:
+        seq += 'T';
+        break;
+      case 2:
+        seq += 'G';
+        break;
+      case 3:
+        seq += 'C';
+      }
+    }
+    return seq;
+  }
+
+  reverseComplement() {
+    return Sequence.reverseComplement(this.seq);
+  }
+
+  count(pattern) {
+    return Sequence.count(this.seq, pattern);
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // MEMBERS
+  //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Return the class name as a string.
+   * @return {String} - 'Sequence'
+   */
+  toString() {
+    return 'Sequence';
+  }
+
+  /**
+   * @member {String} - Get or set the seqeunce.
+   */
+  get seq() {
+    // return this._seq;
+    return this.mapContig.seq;
+  }
+
+  // set seq(value) {
+  //   this._seq = value;
+  //   if (this._seq) {
+  //     this._seq = this._seq.toUpperCase();
+  //     this._length = value.length;
+  //     this._updateScale();
+  //     this._sequenceExtractor = new SequenceExtractor(this);
+  //   } else {
+  //     this._sequenceExtractor = undefined;
+  //   }
+  // }
+
+  /**
+   * @member {Contig} - This is used internally to represent the entire map sequence.
+   *   It is generated by the supplied seq or the concatenation of all the contigs.
+   *   The Sequence.seq (or length) is the same as Sequence.mapContig.seq (or length).
+   */
+  get mapContig() {
+    return this._mapContig;
+  }
+
+  /**
+   * @member {Number} - Get the SeqeunceExtractor. Only available if the *seq* property is set.
+   */
+  get sequenceExtractor() {
+    return this._sequenceExtractor;
+  }
+
+  /**
+   * @member {Number} - Get or set the seqeunce length. If the *seq* property is set, the length can not be adjusted.
+   */
+  get length() {
+    // return this._length;
+    return this.mapContig.length;
+  }
+
+  // set length(value) {
+  //   if (value) {
+  //     if (!this.seq) {
+  //       this._length = Number(value);
+  //       this._updateScale();
+  //     } else {
+  //       console.error('Can not change the sequence length if *seq* is set.');
+  //     }
+  //   }
+  // }
+
+  _updateScale() {
+    // this.viewer.layout.updateBPScale(this.length);
+    this.viewer.layout.updateScales();
+    // this.canvas.scale.bp = d3.scaleLinear()
+    //   .domain([1, this.length])
+    //   .range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
+    // this.viewer._updateZoomMax();
+    // console.log(this.canvas.scale)
+  }
+
+  /**
+   * @member {Color} - Get or set the backbone color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+   */
+  get color() {
+    return this._color;
+  }
+
+  set color(value) {
+    if (value.toString() === 'Color') {
+      this._color = value;
+    } else {
+      this._color = new Color(value);
+    }
+  }
+
+  /**
+   * @member {Font} - Get or set sequence font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+   */
+  get font() {
+    return this._font;
+  }
+
+  set font(value) {
+    if (value.toString() === 'Font') {
+      this._font = value;
+    } else {
+      this._font = new Font(value);
+    }
+    this.bpSpacing = this.font.size;
+  }
+
+  /**
+   * @member {Number} - Get or set the basepair spacing.
+   */
+  get bpSpacing() {
+    return this._bpSpacing;
+  }
+
+  set bpSpacing(value) {
+    this._bpSpacing = value;
+    this.viewer._updateZoomMax();
+  }
+
+  /**
+   * @member {Number} - Get or set the margin around sequence letters.
+   */
+  get bpMargin() {
+    return this._bpMargin;
+  }
+
+  set bpMargin(value) {
+    this._bpMargin = value;
+  }
+
+  /**
+   * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
+   */
+  get thickness() {
+    return (this.bpSpacing * 2) + (this.bpMargin * 8);
+  }
+
+  get isLinear() {
+    return false;
+  }
+
+  get isCircular() {
+    return true;
+  }
+
+  /**
+   * @member {Boolean} - Return true of a sequence is available. Returns false if there is only a length.
+   */
+  get hasSeq() {
+    return typeof this.seq === 'string';
+  }
+
+  get hasMultipleContigs() {
+    return this._contigs.length > 1;
+  }
+
+
+  // loadContigs(contigs) {
+  //   // Create contigs
+  //   for (const contigData of contigs) {
+  //     const contig = new Contig(this, contigData);
+  //     this._contigs.push(contig);
+  //   }
+  //   this.updateFromContigs();
+  // }
+
+  addContigs(contigData = []) {
+    contigData = CGArray.arrayerize(contigData);
+    const contigs = contigData.map( (data) => {
+      const contig = new Contig(this, data);
+      this._contigs.push(contig);
+      return contig;
+    });
+    this.updateMapContig();
+    this.viewer.trigger('contigs-add', contigs);
+    // this.updateFromContigs();
+    return contigs;
+    // Check for sequence or length
+    // Can probably just add the sequence or length, instead of calling updateFromContigs
+    // Update Plots
+    // this.updateFromContigs()
+  }
+
+  // Removing contigs, will remove the features associated with the contig
+  // This will only work with contigs in Sequence.contigs(). It will
+  // not remove the mapContig.
+  // Will not remove last contig. If removing all contigs, the last contig will not be removed.
+  // TODO: deal with plots
+  removeContigs(contigs) {
+    contigs = CGArray.arrayerize(contigs).slice();
+    // Do not remove last contig
+    if (contigs.length === this._contigs.length) {
+      const lastContig = contigs.pop();
+      console.error('The last contig can not be removed. Keeping:', lastContig);
+    }
+    if (contigs.length > 0) {
+      // First remove features
+      const features = contigs.map( c => c.features() ).flat();
+      this.viewer.removeFeatures(features);
+      // Remove contigs
+      this._contigs = this._contigs.filter( c => !contigs.includes(c) );
+      // Remove from Objects
+      contigs.forEach( c => c.deleteFromObjects() );
+      this.updateMapContig();
+    }
+
+    this.viewer.trigger('contigs-remove', contigs);
+  }
+
+  /**
+   * Update contige properties.
+   */
+  updateContigs(contigsOrUpdates, attributes) {
+    const { records: contigs, updates } = this.viewer.updateRecords(contigsOrUpdates, attributes, {
+      recordClass: 'Contig',
+      validKeys: ['name', 'orientation', 'color', 'visible']
+    });
+
+    // FIXME: this should only update if orientation, order or visible changes
+    this.updateMapContig();
+    // TRYING THIS OUT
+    for (const track of this.viewer.tracks()) {
+      track.refresh();
+    }
+    this.viewer.annotation.refresh();
+    // FIXME: Only trigger contigs if visibiliy changes
+    this.viewer.trigger('tracks-update', { tracks: this.viewer.tracks() });
+    // TODO: refresh sequence, features, etc
+    this.viewer.trigger('contigs-update', { contigs, attributes, updates });
+  }
+
+  moveContig(oldIndex, newIndex) {
+    this._contigs.move(oldIndex, newIndex);
+    // FIXME: UPDATE OFFSET AND RANGES
+    // FIXME: UPDATE Sequence Plot Extractors
+    this.updateMapContig();
+
+    // TRYING THIS OUT
+    for (const track of this.viewer.tracks()) {
+      track.refresh();
+    }
+    this.viewer.annotation.refresh();
+
+    this.viewer.trigger('contigs-moved', {oldIndex: oldIndex, newIndex: newIndex});
+
+    // Calling contigs-update as well.
+    // Because each contig between oldIndex and newIndex will have there order/index changed
+    const contigs = [];
+    const start = Math.min(oldIndex, newIndex);
+    const len = Math.max(oldIndex, newIndex);
+    for (let i = start; i &lt;= len; i++) {
+      contigs.push(this._contigs[i]);
+    }
+    this.viewer.trigger('contigs-update', { contigs, attributes: {} });
+
+
+  }
+
+
+  // Order of importance:
+  // 1) seq
+  // 2) contigs
+  //   a) seq
+  //   b) length
+  // 3) length
+  // 4) Default: length 1000 bp
+  createMapContig(data) {
+    if (data.seq) {
+      // this._mapContig = new Contig(this, data);
+      // FIXME: name and id stuff
+      this.addContigs([{seq: data.seq}]);
+    } else if (data.contigs) {
+      this.addContigs(data.contigs);
+    } else if (data.length) {
+      this.addContigs([{length: data.length}]);
+    } else {
+      // console.error('A "seq", "contigs", or "length" must be provided');
+      this.addContigs([{length: 1000}]);
+    }
+  }
+
+  updateMapContig() {
+    if (this._contigs.length === 1) {
+      this._mapContig = this._contigs[0];
+      this._mapContig._index = 1;
+      this._mapContig._updateLengthOffset(0);
+    } else {
+      // Concatenate contigs
+      // The contigs can't have a mixture of sequence and length
+      // Check first contig to see if it contains a sequence or length
+      const useSeq = this._contigs[0].hasSeq;
+      let seq = '';
+      let length = 0;
+      for (let i = 0, len = this._contigs.length; i &lt; len; i++) {
+        const contig = this._contigs[i];
+        contig._index = i + 1;
+        if (!contig.visible) {continue;}
+
+        contig._updateLengthOffset(length);
+
+        if (useSeq) {
+          if (contig.hasSeq) {
+            seq += contig.seq;
+            length += contig.seq.length;
+          } else {
+            console.error(`Expecting Sequence but Contig ${contig.name} [${contig.id}] has no sequence !`)
+          }
+        } else {
+          if (contig.length) {
+            length += contig.length;
+          } else {
+            console.error(`Expecting Length but Contig ${contig.name} [${contig.id}] has no length!`)
+          }
+        }
+      }
+      const oldMapContig = this.mapContig;
+      // Create new mapContig
+      const data = (useSeq) ? {seq} : {length};
+      this._mapContig = new Contig(this, data);
+      // Move features from previous mapContig to new mapContig
+      if (oldMapContig) {
+        oldMapContig.features().forEach( f => f.contig = this.mapContig  );
+        oldMapContig.deleteFromObjects();
+      }
+    }
+    this._sequenceExtractor = (this.hasSeq) ? new SequenceExtractor(this) : undefined;
+    this._updateScale();
+  }
+
+  // updateFromContigs() {
+  //   if (this._contigs.length === 0) {
+  //     this.seq = '';
+  //     return;
+  //   }
+  //   // Check first contig to see if it contains a sequence or length
+  //   const useSeq = this._contigs[0].hasSeq;
+  //   let seq = '';
+  //   let length = 0;
+  //   for (let i = 0, len = this._contigs.length; i &lt; len; i++) {
+  //     const contig = this._contigs[i];
+  //     contig._index = i + 1;
+  //     contig._updateLengthBefore(length);
+  //
+  //     if (useSeq) {
+  //       if (contig.hasSeq) {
+  //         seq += contig.seq;
+  //         length += contig.seq.length;
+  //       } else {
+  //         console.error(`Expecting Sequence but Contig ${this.name} [${this.id}] has no sequence !`)
+  //       }
+  //     } else {
+  //       if (contig.length) {
+  //         length += contig.length;
+  //       } else {
+  //         console.error(`Expecting Length but Contig ${this.name} [${this.id}] has no length!`)
+  //       }
+  //     }
+  //   }
+  //   // Create sequence
+  //   if (useSeq) {
+  //     this.seq = seq;
+  //   } else {
+  //     this.length = length;
+  //   }
+  // }
+
+  contigs(term) {
+    return this._contigs.get(term);
+  }
+
+  /**
+   * Returns all the visible contigs that overlap the given range using map coordinates.
+   * @param {CGRange} range - Range to find overlapping contigs.
+   *
+   * @return {CGArray} CGArray of Contigs
+   */
+  contigsForMapRange(range) {
+    const contigs = new CGArray();
+    for (let i = 1, len = this.sequence.contigs().length; i &lt;= len; i++) {
+      const contig = this.sequence.contigs(i);
+      if (contig.visible &amp;&amp; range.overlapsMapRange(contig.mapRange)) {
+        contigs.push(contig);
+      }
+    }
+    return contigs;
+  }
+
+  /**
+   * Return the map bp position given a local *bp* on the given *contig*.
+   * @param {Contig} contig - Contig object
+   * @param {Number} bp - bp position on the contig
+   *
+   * @return {Number} map position.
+   */
+  bpForContig(contig, bp = 1) {
+    // FIXME: contig can be contig or contig ID
+    return contig.mapStart + bp - 1;
+  }
+
+  /**
+   * Return the contig for the given map bp.
+   *
+   * @return {Contig}
+   */
+  contigForBp(bp) {
+    // FIXME: could be sped up with a binary search
+    if (this.hasMultipleContigs) {
+      for (let i = 0, len = this._contigs.length; i &lt; len; i++) {
+        if (bp &lt;= this._contigs[i].lengthOffset) {
+          return this._contigs[i - 1];
+        }
+      }
+      // Must be in last contig
+      return this._contigs[this._contigs.length - 1];
+    }
+  }
+
+  // id is not used if there are multiple contigs and we are not concatenating them
+  asFasta(id, options = {}) {
+    const concatenate = options.concatenateContigs;
+    if (concatenate || !this.hasMultipleContigs) {
+      const name = id || this.contigs(1).id;
+      return `>${name}\n${this.seq}`;
+    } else {
+      let fasta = '';
+      for (const contig of this._contigs) {
+        fasta += `${contig.asFasta()}\n`;
+      }
+      return fasta;
+    }
+  }
+
+  lengthOfRange(start, stop) {
+    if (stop >= start) {
+      return stop - start;
+    } else {
+      return this.length + (stop - start);
+    }
+  }
+
+  /**
+   * Subtract *bpToSubtract* from *position*, taking into account the sequence length
+   * @param {Number} position - position (in bp) to subtract from
+   * @param {Number} bpToSubtract - number of bp to subtract
+   */
+  subtractBp(position, bpToSubtract) {
+    if (bpToSubtract &lt; position) {
+      return position - bpToSubtract;
+    } else {
+      return this.length + position - bpToSubtract;
+    }
+  }
+
+  /**
+   * Add *bpToAdd* to *position*, taking into account the sequence length
+   * @param {Number} position - position (in bp) to add to
+   * @param {Number} bpToAdd - number of bp to add
+   */
+  addBp(position, bpToAdd) {
+    if (this.length >= (bpToAdd + position)) {
+      return bpToAdd + position;
+    } else {
+      return position - this.length + bpToAdd;
+    }
+  }
+
+  /**
+   * Constrains the supplied *bp* to be between 1 and the sequence length.
+   *  - If the bp is less than 1: 1 is returned.
+   *  - If greater than the sequence length: sequence length is returned.
+   *  - Otherwise the supplied bp is returned.
+   * @param {Number} bp - position (in bp)
+   */
+  constrain(bp) {
+    return utils.constrain(bp, 1, this.length);
+  }
+
+  /**
+   * Return the sequence for the *range*
+   *
+   * @param {Range} range - the range for which to return the sequence
+   * @param {Boolean} revComp - If true return the reverse complement sequence
+   * @return {String}
+   */
+  forRange(range, revComp) {
+    let seq;
+    if (this.seq) {
+      seq = Sequence.forRange(this.seq, range, revComp);
+      // if (range.isWrapped()) {
+      //   // seq = this.seq.substr(range.start - 1) + this.seq.substr(0, range.stop);
+      //   seq = this.seq.substring(range.start - 1) + this.seq.substring(0, range.stop);
+      // } else {
+      //   // seq = this.seq.substr(range.start - 1, range.length + 1);
+      //   seq = this.seq.substring(range.start - 1, range.stop);
+      // }
+    } else {
+      // FIXME: For now return fake sequence
+      seq = this._fakeSequenceForRange(range);
+    }
+    return seq;
+  }
+
+  // FAKE method to get sequence
+  _fakeSequenceForRange(range) {
+    let seq = '';
+    let bp = range.start;
+    for (let i = 0, len = range.length; i &lt; len; i++) {
+      switch (bp % 4) {
+      case 0:
+        seq += 'A';
+        break;
+      case 1:
+        seq += 'T';
+        break;
+      case 2:
+        seq += 'G';
+        break;
+      case 3:
+        seq += 'C';
+      }
+      bp++;
+    }
+    return seq;
+  }
+
+  /**
+   * Returns an array of Ranges where the pattern was located. The pattern can be a RegEx or a String.
+   * This method will return overlapping matches.
+   * @param {String} pattern - RegEx or String Pattern to search for.
+   * @return {Array)
+   */
+  findPattern(pattern, strand = 1) {
+    const re = new RegExp(pattern, 'g');
+    const ranges = [];
+    let match, start;
+    const seq = (strand === 1) ? this.seq : this.reverseComplement();
+    while ( (match = re.exec(seq)) !== null) {
+      start = (strand === 1) ? (match.index + 1) : (this.length - match.index - match[0].length + 1);
+      ranges.push( new CGRange(this.mapContig, start, start + match[0].length - 1 ) );
+      re.lastIndex = match.index + 1;
+    }
+    return ranges;
+  }
+
+
+  featuresByReadingFrame(features) {
+    const featuresByRF = {
+      rfPlus1: new CGArray(),
+      rfPlus2: new CGArray(),
+      rfPlus3: new CGArray(),
+      rfMinus1: new CGArray(),
+      rfMinus2: new CGArray(),
+      rfMinus3: new CGArray()
+    };
+    let rf;
+    features.each( (i, feature) => {
+      if (feature.strand === -1) {
+        rf = (this.length - feature.stop + 1) % 3;
+        if (rf === 0) { rf = 3; }
+        featuresByRF[`rfMinus${rf}`].push(feature);
+      } else {
+        rf = feature.start % 3;
+        if (rf === 0) { rf = 3; }
+        featuresByRF[`rfPlus${rf}`].push(feature);
+      }
+    });
+    return featuresByRF;
+  }
+
+  _emptySequence(length) {
+    // ES6
+    // return '•'.repeat(length);
+    return Array(length + 1).join('•');
+  }
+
+  draw() {
+    if (!this.visible) { return; }
+    const ctx = this.canvas.context('map');
+    const backbone = this.viewer.backbone;
+    const pixelsPerBp = backbone.pixelsPerBp();
+    const seqZoomFactor = 0.25; // The scale at which the sequence will first appear.
+    if (pixelsPerBp &lt; (this.bpSpacing - this.bpMargin) * seqZoomFactor) { return; }
+
+    const scaleFactor = Math.min(1, pixelsPerBp / (this.bpSpacing - this.bpMargin));
+
+    const centerOffset = backbone.adjustedCenterOffset;
+    const range = backbone.visibleRange;
+    let seq, complement;
+    if (range) {
+      if (this.seq) {
+        seq = this.forRange(range);
+        complement = Sequence.complement(seq);
+      } else {
+        seq = this._emptySequence(range.length);
+        complement = this._emptySequence(range.length);
+      }
+      let bp = range.start;
+      ctx.save();
+      ctx.fillStyle = this.color.rgbaString;
+      ctx.font = this.font.cssScaled(scaleFactor);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // Distance from the center of the backbone to place sequence text
+      const centerOffsetDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
+      for (let i = 0, len = range.length; i &lt; len; i++) {
+        let origin = this.canvas.pointForBp(bp, centerOffset + centerOffsetDiff);
+        // if (i == 0) { console.log(bp, origin)}
+        ctx.fillText(seq[i], origin.x, origin.y);
+        origin = this.canvas.pointForBp(bp, centerOffset - centerOffsetDiff);
+        ctx.fillText(complement[i], origin.x, origin.y);
+        bp++;
+      }
+      ctx.restore();
+    }
+  }
+
+  invertColors() {
+    this.update({
+      color: this.color.invert().rgbaString
+    });
+  }
+
+  update(attributes) {
+    this.viewer.updateRecords(this, attributes, {
+      recordClass: 'Sequence',
+      validKeys: ['color', 'font', 'visible']
+    });
+    this.viewer.trigger('sequence-update', { attributes });
+  }
+
+  toJSON(options = {}) {
+    const json = {
+      font: this.font.string,
+      color: this.color.rgbString,
+      contigs: this._contigs.map( c => c.toJSON(options) )
+    };
+    // Optionally add default values
+    if (!this.visible || options.includeDefaults) {
+      json.visible = this.visible;
+    }
+    return json;
+  }
+
+}
+
+export default Sequence;
+
+
+// testRF(features) {
+//   let startTime, rf;
+//   startTime = new Date().getTime();
+//   let rf1 = this.featuresByReadingFrame(features);
+//   console.log("READING FRAME Normal Creation Time: " + CGV.elapsedTime(startTime) );
+//   // SETUP
+//   features.each( (i, feature) => {
+//     if (feature.strand === -1) {
+//       rf = (this.length - feature.stop + 1) % 3;
+//       if (rf === 0) { rf = 3; }
+//       feature.rf = rf;
+//     } else {
+//       rf = feature.start % 3;
+//       if (rf === 0) { rf = 3; }
+//       feature.rf = rf;
+//     }
+//   });
+//   startTime = new Date().getTime();
+//   let rf2 = {
+//     rfPlus1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  &amp;&amp; f.strand === 1})),
+//     rfPlus2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  &amp;&amp; f.strand === 1})),
+//     rfPlus3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  &amp;&amp; f.strand === 1})),
+//     rfMinus1: new CGV.CGArray( features.filter( (f) => { return f.rf === 1  &amp;&amp; f.strand === -1})),
+//     rfMinus2: new CGV.CGArray( features.filter( (f) => { return f.rf === 2  &amp;&amp; f.strand === -1})),
+//     rfMinus3: new CGV.CGArray( features.filter( (f) => { return f.rf === 3  &amp;&amp; f.strand === -1}))
+//   };
+//   console.log("READING FRAME NEW Creation Time: " + CGV.elapsedTime(startTime) );
+//   return rf2;
+// }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 06 2021 10:53:54 GMT-0600 (Mountain Daylight Time)
+        </footer>
+    </div>
+</div>
+</main>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
