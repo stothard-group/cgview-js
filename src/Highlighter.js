@@ -59,6 +59,8 @@ class Highlighter extends CGObject {
     // if (this.viewer._container.style('position') !== 'fixed') {
     //   viewerRect = this.viewer._container.node().getBoundingClientRect();
     // }
+    viewerRect = this.viewer._container.node().getBoundingClientRect();
+
     const originX = e.canvasX + viewerRect.left + window.pageXOffset;
     const originY = e.canvasY + viewerRect.top + window.pageYOffset;
     return { x: originX + this._offsetLeft, y: originY + this._offsetTop };

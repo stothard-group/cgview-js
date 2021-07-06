@@ -60,7 +60,7 @@ function sideNavCheck() {
 
 // Adjust side nav on window resize
 window.addEventListener("resize", sideNavCheck)
-setTimeout(sideNavCheck);
+setTimeout(sideNavCheck, 100);
 
 
 ////////////////////////////////////////////////////////////////////////////////

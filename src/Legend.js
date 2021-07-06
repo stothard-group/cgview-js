@@ -362,6 +362,9 @@ class Legend extends CGObject {
     // if (this.viewer._container.style('position') !== 'fixed') {
     //   viewerRect = this.viewer._container.node().getBoundingClientRect();
     // }
+
+    viewerRect = this.viewer._container.node().getBoundingClientRect();
+
     const originX = this.box.x + viewerRect.left + window.pageXOffset;
     const originY = this.box.y + viewerRect.top + window.pageYOffset;
     const legendWidth = this.width;
