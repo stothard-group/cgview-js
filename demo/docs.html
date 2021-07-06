@@ -48,8 +48,9 @@
     <!-- Side Nav -->
     <nav id='sidebar-nav'>
       <ul id='gumshoe-list' class='sidebar-list'>
-        <li><a class="side-link" href="#section-overview">Overview</a></li>
+        <li><a class="side-link" href="#section-intro">Introduction</a></li>
         <li><a class="side-link" href="#section-setup">Setup</a></li>
+        <li><a class="side-link" href="#section-overview">Overview</a></li>
         <li><a class="side-link" href="#section-components">Components</a></li>
         <li><a class="side-link" href="#section-record-actions">Record Actions</a></li>
         <li><a class="side-link indent" href="#section-adding-records">Add</a></li>
@@ -90,6 +91,62 @@
 
     <div id='markdown-in' style='display:none;'>
 
+
+<section id="section-setup">
+
+# Introduction
+
+This is a JavaScript adaption of the Java program [CGView](https://paulstothard.github.io/cgview/).
+While CGView is meant to create static maps as PNG, JPG or SVG files, CGView.js can be used to create
+interactive maps for the web that can be easily panned, zoomed and altered. The maps can be saved as PNG files
+with resolutions up to 8000 x 8000 pixels.
+
+</section>
+<section id="section-setup">
+
+# Setup
+
+### TODO TEST DIFFERENT TYPES OF INSTALLAION...
+
+CGView.js has only one dependency: [D3](http://d3js.org) (Version 4).
+When using CGView via script tags, D3 will have to be sourced first (see below).
+
+### Install via [npm](https://npmjs.com) or [yarn](https://yarnpkg.com)
+
+- Install:
+```bash
+# npm
+npm install --save cgview
+# yarn
+yarn add cgview
+```
+
+- Source CGView.js files (JavaScript and CSS):
+```html
+<!-- Javscript -->
+<script src='dist/cgview.min.js'></script>
+<!-- CSS -->
+<link rel="stylesheet" href="dist/cgview.css" />
+```
+
+- Or import as an ES6 module:
+```js
+import CGV from 'dist/cgview.es.min.js'
+```
+
+### Install via [jsDelivr](https://www.jsdelivr.com)
+
+- Install (See jsDelivr for specfying specific versions):
+```html
+<!-- Javscript -->
+<!-- Source D3 before CGView -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/cgview/cgview.min.js'></script>
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cgview/cgview.css" />
+```
+
+</section>
 <section id="section-overview">
 
 # Overview
@@ -110,34 +167,6 @@ Slots | Description
  1    | All the Features are drawn on a single Slot
  2    | Features are drawn separated by strand
  6    | Features are drawn separated by reading frame
-
-</section>
-
-<section id="section-setup">
-
-# Setup
-
-### Dependencies
-* [D3](http://d3js.org) (Version 4)
-
-* For the D3 dependency add the following to your html:
-
-```html
-<script src="https://d3js.org/d3.v4.min.js"></script>
-```
-
-* Copy *cgview.js* to your javascript folder and add a script tag to your html:
-
-```html
-<script src='javascript/cgview.js'></script>
-```
-
-* Copy *cgview.css* to your stylesheets folder and add a link to the file in your html:
-
-```html
-<link rel="stylesheet" href="stylesheets/cgview.css" />
-```
-
 
 </section>
 <section id="section-components">

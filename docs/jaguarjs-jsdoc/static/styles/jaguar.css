@@ -419,10 +419,8 @@ a:hover {
   line-height: normal;
   font-size: 0.8rem;
 }
-.main,
+/* .main, */
 .navigation {
-  /* position: fixed; */
-  /* top: 50px; */
   height: calc(100vh - 50px);
   overflow: auto;
 }
@@ -460,4 +458,14 @@ pre[class*="lang-"] {
   padding: 3px 0;
 }
 
+table.quick-links {
+  padding-top: 20px;
+  font-size: 16px;
+}
+table.quick-links th,
+table.quick-links td {
+  width: 33%;
+  text-align: center;
+  padding: 5px 5px;
+}
 

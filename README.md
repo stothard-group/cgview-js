@@ -42,7 +42,7 @@ See the [tutorials](http://js.cgview.ca/tutorials/index.html) for how to add fea
 
 ## License
 
-CGView.js is Apache v2 (LINK) licensed.
+CGView.js is distrubuted under the [Apache Version 2.0 License](https://github.com/stothard-group/cgview-js/blob/main/LICENSE).
 
 
 

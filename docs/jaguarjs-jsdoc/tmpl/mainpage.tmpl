@@ -9,6 +9,31 @@ var self = this;
 
 <?js if (data.readme) { ?>
     <section>
-        <article class="readme"><?js= data.readme ?></article>
+        <article class="readme">
+            <table class='quick-links'>
+              <tr><th></th><th>Quick Links</th><th></th></tr>
+              <tr>
+                  <td><a href='Viewer.html'>Viewer</a></td>
+                  <td><a href='Feature.html'>Feature</a></td>
+                  <td><a href='Plot.html'>Plot</a></td>
+              </tr>
+              <tr>
+                  <td><a href='Track.html'>Track</a></td>
+                  <td><a href='Sequence.html'>Sequence</a></td>
+                  <td><a href='Contig.html'>Contig</a></td>
+              </tr>
+              <tr>
+                  <td><a href='Legend.html'>Legend</a></td>
+                  <td><a href='LegendItem.html'>LegendItem</a></td>
+                  <td><a href='Caption.html'>Caption</a></td>
+              </tr>
+              <tr>
+                  <td><a href='Settings.html'>Settings</a></td>
+                  <td><a href='Backbone.html'>Backbone</a></td>
+                  <td><a href='Divider.html'>Divider</a></td>
+              </tr>
+            </table>
+            <?js= data.readme ?>
+        </article>
     </section>
 <?js } ?>
