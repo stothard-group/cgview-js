@@ -110,21 +110,29 @@ class IO {
   }
 
   /**
-   * Load data from object literal or JSON string ([Format details](json_format.html)).
+   * Load data from object literal or JSON string ([Format details](../json.html)).
+   * The map data must be contained within a top level "cgview" property.
    * Removes any previous viewer data and overrides options that are already set.
    * @param {Object} data - JSON string or Object Literal
    */
-  loadJSON(data) {
+  loadJSON(json) {
+
+    let data = json;
+    if (typeof json === 'string') {
+      data = JSON.parse(json);
+    }
+
+    data = data && data.cgview;
+
+    if (!data) {
+      throw new Error("No 'cgview' property found in JSON.");
+    }
+
     const viewer = this._viewer;
     viewer.clear('all');
 
-
     // Reset objects
     viewer._objects = {};
-
-    if (typeof data === 'string') {
-      data = JSON.parse(data);
-    }
 
     viewer.trigger('cgv-json-load', data);
     // In events this should mention how everything is reset (e.g. tracks, features, etc)
