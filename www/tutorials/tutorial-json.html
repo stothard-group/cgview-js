@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Icon -->
-    <link rel="shortcut icon" type="image/png" href="images/logo-tab.png">
+    <link rel="shortcut icon" type="image/png" href="../images/logo-tab.png">
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -58,7 +58,9 @@
         <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
         <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
         <li class='active'><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
+        <li><a class="side-link indent" href="tutorial-cgview-builder.html">CGViewBuilder</a></li>
         <p>Details</p>
+        <li><a class="side-link indent" href="details-json-files.html">JSON Files</a></li>
         <li><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
         <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
         <p>Examples</p>
@@ -72,8 +74,7 @@
       <!-- Processed Markdown will be inserted here -->
       <div id='markdown-out'></div>
       <!-- Generated CGView Map will be inserted here -->
-        <div id='my-viewer'></div>
-      </div>
+      <div id='my-viewer'></div>
       <!-- Compiled final code will be inserted here -->
       <div id='final-code'>
         <h2>Complete Code without Comments:</h2>
@@ -85,33 +86,100 @@
 
 # Map Created from JSON Data
 
-Maps can be loaded from JSON data using the [IO.loadJSON](../api/IO.html#loadJSON).
-Typically this JSON file will have been created by CGView using the 
+Maps can be loaded from JSON data using [IO.loadJSON](../api/IO.html#loadJSON).
+Typically, the JSON data will have been created by CGView using the 
 [IO.downloadJSON](../api/IO.html#downloadJSON) method. Details about the format
 can be found in the [CGView JSON](../json.html) section.
 
-## Create a new [Viewer](../api/Viewer.html) ##
+## Generate JSON
 
-There are 2 ways to load JSON data into CGView. The first is provide the JSON
-object when initially creating the viewer (NOT IMPLEMENTED YET). The second method
-is to load the data after creating the viewer. The example below uses JSON data
-found [here](../data/tests/mito.json)[NEED LINK].
-
-NOTE: need a way to load the JSON file in demo.
+This tutorial uses a simple JSON object literal, however, the JSON could also
+be loaded first from a file using XMLHttpRequest or the Fetch API (see [JSON
+Files](details-json-files.html) for more information).
 
 ```js
-// First create the viewer
-cgv = new CGV.Viewer('#my-viewer', {
-  height: 500,
-  width: 500
-});
+// First create the JSON describing the map
+json = {
+  "cgview": {
+    "sequence": {
+      "length": 10000
+    },
+    "features": [
+      {
+        "start": 100,
+        "stop": 3000,
+        "name": "F1",
+        "source": "json-feature",
+        "legend": "CDS"
+      },
+      {
+        "start": 4000,
+        "stop": 8000,
+        "name": "R1",
+        "source": "json-feature",
+        "legend": "CDS",
+        "strand": -1
+      },
+      {
+        "start": 6000,
+        "stop": 9000,
+        "name": "F2",
+        "source": "json-feature",
+        "legend": "Other"
+      }
+    ],
+    "legend": {
+      "items": [
+        {
+          "name": "CDS",
+          "swatchColor": "rgb(230, 50, 60)",
+          "decoration": "arrow"
+        },
+        {
+          "name": "Other",
+          "swatchColor": "rgb(60, 150, 210)",
+          "decoration": "arrow"
+        }
+      ]
+    },
+    "tracks": [
+      {
+        "name": "Features",
+        "dataType": 'feature',
+        "dataMethod": 'source',
+        "dataKeys": 'json-feature'
+      }
+    ]
+  }
+}
 ```
 
+## Create [Viewer](../api/Viewer.html) and Load JSON
+
+After creating the viewer, JSON data is loaded with using the
+[IO.loadJSON](../api/IO.html#loadJSON) method.
+
+<!-- There are two ways to load JSON data into CGView. The first is provide the JSON -->
+<!-- object when initially creating the viewer (commented out below). The second method -->
+<!-- is to load the data after creating the viewer. -->
+
+  <!-- // The JSON can be provided during initalization -->
+  <!-- // json: json -->
+```js
+// Create the viewer
+cgv = new CGV.Viewer('#my-viewer', {
+  height: 500,
+  width: 500,
+});
+
+// Load the JSON
+cgv.io.loadJSON(json);
+```
 
 ## Draw the Map ##
 
 ```js
-cgv.drawFull();
+cgv.draw();
 ```
 
 The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.

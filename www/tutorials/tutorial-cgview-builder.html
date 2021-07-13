@@ -56,9 +56,9 @@
         <li><a class="side-link nav-index" href="index.html">Index</a></li>
         <p>Tutorials</p>
         <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
-        <li class='active'><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
+        <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
         <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
-        <li><a class="side-link indent" href="tutorial-cgview-builder.html">CGViewBuilder</a></li>
+        <li class='active'><a class="side-link indent" href="tutorial-cgview-builder.html">CGViewBuilder</a></li>
         <p>Details</p>
         <li><a class="side-link indent" href="details-json-files.html">JSON Files</a></li>
         <li><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
@@ -84,120 +84,73 @@
 
     <div id='markdown-in' style='display:none;'>
 
-# Sequence Map
+# Using CGViewBuilder
 
-Maps that have a sequence provided have two main benefits: 1) when zoomed in far enough
-you will be able to see the sequence on the map; and 2) additional tracks can be easily
-created with plots (e.g. GC Skew, GC Content) or features (e.g. start/stop codons, ORFs)
-extracted directly from the sequence.
+[CGViewBuilder](https://github.com/stothard-group/cgview-builder) is a ruby
+script that converts a sequence file (e.g. GenBank, EMBL, FASTA) into JSON that
+can be loaded into CGView.js.
 
-## Create a new [Viewer](../api/Viewer.html) ##
+## Download CGViewBuilder
 
-In this example we will provide a random sequence using the [Sequence#random](../api/Sequence.html#random) method.
+[Download](https://github.com/stothard-group/cgview-builder) CGViewBuilder from GitHub.
+
+## Create JSON from a GenBank file
+
+First download a GenBanke file from NCBI. For this example, we are using
+
+Genus species 
+
+Simpliest
+
+```bash
+ruby cgview_builder_cli.rb --sequence NC_0000001.gbk --outfile NC_000001.json
+```
+
+A config file can also be provided. The config...
+
+```bash
+ruby cgview_builder_cli.rb --sequence NC_0000001.gbk --outfile NC_000001.json --config config.yaml
+```
+
+LINK to config example (maybe use the one in CGviewBuilder)
+
+## Load JSON into CGView.js
+
+See [JSON Map](tutorial-json.html) and [JSON Files](details-json-files.html) for more details on loading JSON files into CGview.js.
 
 ```js
-// The first argument is the id of the container that will hold the viewer.
+// First create the viewer
 cgv = new CGV.Viewer('#my-viewer', {
   height: 500,
-  width: 500,
-  sequence: {
-    // Provide the sequence.
-    seq: CGV.Sequence.random(10000)
-  }
+  width: 500
 });
 ```
 
-## Create a [Track](../api/Track.html) with ORFs extracted from the seqeunce ##
-
 ```js
-cgv.addTracks({
-  // Name for the track.
-  name: 'ORFs',
-  // Draw the features separated into 1 or more slots.
-  // Options:
-  //   - 'none': 1 slot for all features.
-  //   - 'strand': 2 slots (one for each strand).
-  //   - 'readingFrame: 6 slots (one for each reading frame).
-  separateFeaturesBy: 'readingFrame',
-  // Where to draw the track in relation to the backbone.
-  // Options: 'inside', 'outside', 'both'.
-  position: 'both',
-  // The data* properties describe what features or plot will be in the track.
-  // Type of track. Options: 'feature', 'plot'
-  // The type is set automatically when extracting from the sequence.
-  dataType: 'feature',
-  // Methods used to extract the features/plot. Options:
-  //  - 'source'   : the source property of the features/plots will be used for selection
-  //  - 'sequence' : the features/plot will be generated from the sequence
-  dataMethod: 'sequence',
-  // Key values used to extract the features/plot.
-  // For 'source', the dataKeys can be a single value or an array of values.
-  // For 'sequence', the dataKeys can be one of the following:
-  //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
-  // e.g. In this example, the ORF features will be extracted from the seqeunce.
-  dataKeys: 'orfs',
-  // Additional options may be passed to the data extractor
-  // The following are the default options
-  dataOptions: {
-    start: 'ATG',
-    stop: 'TAA,TAG,TGA',
-    minORFLength: 100
-  }
-});
+// Load the JSON file
+var request = new XMLHttpRequest();
+request.open('GET', '../data/json/NZ_CP010546.json', true);
+request.onload = function() {
+  var response = request.response;
+  const json = JSON.parse(response);
+  cgv.io.loadJSON(json);
+  cgv.draw()
+};
+request.send();
+
 ```
 
-## Create a [Track](../api/Track.html) with a GC Skew plot extracted from the seqeunce ##
+## More Examples
 
-```js
-cgv.addTracks({
-  name: 'GC Skew',
-  position: 'inside',
-  dataType: 'feature',
-  dataMethod: 'sequence',
-  // e.g. In this example, GC Skew plot will be extracted from the seqeunce.
-  dataKeys: 'gc-skew',
-  // By default, the step and window values are calculated based on the sequence length,
-  // but they can be overridden here.
-  dataOptions: {
-    step: 1,
-    window: 100
-  }
-});
-```
+See the other CGView.js examples [LINK}] to see more maps created by
+CGViewBuilder. Each example, contains the origianl GenBank file, the
+CGViewBuilder command, CGviewBuilder config file and the resulting JSON file.
 
-## Create a [Track](../api/Track.html) with a GC Content plot extracted from the seqeunce ##
-
-```js
-cgv.addTracks({
-  name: 'GC Content',
-  position: 'inside',
-  dataType: 'feature',
-  dataMethod: 'sequence',
-  // e.g. In this example, GC Content plot will be extracted from the seqeunce.
-  dataKeys: 'gc-content',
-  // By default, the step and window values are calculated based on the sequence length,
-  // but they can be overridden here.
-  dataOptions: {
-    step: 1,
-    window: 100
-  }
-});
-```
-
-## TODO
-* Have image of map and parts (e.g. track, slot, caption, ruler, etc)
-
-
-## Draw the Map ##
-
-```js
-cgv.draw();
-```
+## Map
 
 The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
-You can zoom, using your mouse scroll wheel. The Legend colors can be changed by clicking on the swatches in the Legend.
+You can zoom, using your mouse scroll wheel. The Lenged colors can be changed by clicking on the swatches in the Legend.
 If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
-
 
     </div> <!-- End of markdown in -->
 
