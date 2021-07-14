@@ -1,0 +1,11 @@
+.cgv-controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cgv-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgb(221, 221, 221);
+  cursor: pointer;
+}

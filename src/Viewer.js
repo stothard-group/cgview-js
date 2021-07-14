@@ -1130,7 +1130,6 @@ class Viewer {
   zoomTo(bp, zoomFactor, options = {}) {
     const self = this;
 
-
     const {
       bbOffset = utils.defaultFor(options.bbOffset, 0),
       duration = utils.defaultFor(options.duration, 1000),

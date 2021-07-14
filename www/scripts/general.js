@@ -33,9 +33,9 @@ function tutorialMarkdown(marked, addFinalCode) {
     var codeEls = document.querySelectorAll('code.language-js:not(.final)');
     codeEls.forEach( function(el) {
       var code = el.innerHTML.replace(/\s*\/\/.*/g, '');
-      code = code.replace('&lt;', '<');
-      code = code.replace('&gt;', '>');
-      // console.log(code);
+      code = code.replaceAll('&lt;', '<');
+      code = code.replaceAll('&gt;', '>');
+      console.log(code);
       eval( code );
       var textNode = document.createTextNode( code + "\n" );
       finalCode.appendChild(textNode);
