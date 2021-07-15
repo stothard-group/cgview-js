@@ -79,16 +79,16 @@
       <!-- Generated CGView Map will be inserted here -->
       <div id='my-viewer'></div>
       <div class='cgv-controls'>
-        <div class='cgv-btn' id='btn-reset'>R</div>
-        <div class='cgv-btn' id='btn-zoom-in'>ZI</div>
-        <div class='cgv-btn' id='btn-zoom-out'>ZO</div>
-        <div class='cgv-btn' id='btn-move-left'>ML</div>
-        <div class='cgv-btn' id='btn-move-right'>MR</div>
-        <div class='cgv-btn' id='btn-toggle-format'>TF</div>
-        <div class='cgv-btn' id='btn-invert-colors'>IC</div>
-        <div class='cgv-btn' id='btn-random-feature'>RF</div>
-        <div class='cgv-btn' id='btn-download'>DL</div>
-        <div class='cgv-btn' id='btn-toggle-labels'>TL</div>
+        <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+        <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+        <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+        <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+        <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+        <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+        <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+        <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
+        <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+        <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
       </div>
 
       <!-- Compiled final code will be inserted here -->
@@ -105,11 +105,8 @@
 CGView.js does not provide any interface controls for interacting with a map
 (with the exception of the color picker when a legend swatch is clicked). 
 
-Everyone using CGView.js will probably have specific interactions.
-Users of CGView.js will have their own style to bring to the controls.
-
-Adding controls is easy, as this tutorial will show. And the code used to
-generate these controls can be used as a strating point.
+Adding controls is easy, as this tutorial will show. And the code used here to
+generate controls can be used as a starting point in other projects.
 
 All the examples [LINK] use the controls created here.
 
@@ -121,19 +118,21 @@ Here is the HTML
 ```html
   <div id='my-viewer'></div>
   <div class='cgv-controls'>
-    <div class='cgv-btn' id='btn-reset'>R</div>
-    <div class='cgv-btn' id='btn-zoom-in'>ZI</div>
-    <div class='cgv-btn' id='btn-zoom-out'>ZO</div>
-    <div class='cgv-btn' id='btn-move-left'>ML</div>
-    <div class='cgv-btn' id='btn-move-right'>MR</div>
-    <div class='cgv-btn' id='btn-toggle-format'>TF</div>
-    <div class='cgv-btn' id='btn-invert-colors'>IC</div>
-    <div class='cgv-btn' id='btn-random-feature'>RF</div>
-    <div class='cgv-btn' id='btn-download'>DL</div>
-    <div class='cgv-btn' id='btn-toggle-labels'>TL</div>
+    <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+    <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+    <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+    <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+    <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+    <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+    <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+    <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
+    <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+    <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
   </div>
 ```
-The CSS for the controls is available here: [controls.css](../styles/controls.css)
+The SVG images are embedded in the CSS for simplicity. The CSS for the example controls is available here: [controls.css](../styles/controls.css)
+
+The complete JavaScript for the controls (described below) can be downloaded here: [controls.js](../scripts/controls.js)
 
 ## Create [Viewer](../api/Viewer.html)
 
@@ -160,91 +159,133 @@ request.send();
 
 ## Adding JavaScript for Controls
 
-Here is code in add actions to the controls
+First let's make a helper method to simplify addin click handlers to the buttons.
 
 ```js
-
-// First let's make a helper to simplify to listening for button clicks
-const onClick = (id, func) => {
+// Helper to add click handlers to buttons
+onClick = function(id, func) {
   const btn = document.getElementById(id);
   btn.addEventListener('click', func);
 }
+```
 
+### Reset Button
+The [reset()](../api/Viewer.html#reset) method centers the map and set the zoom level to 1.
+
+```js
 // Reset Map Button
 onClick('btn-reset', () => {
   cgv.reset();
 });
+```
 
+### Zoom In/Out
 
+The [zoomIn()](../api/Viewer.html#zoomIn) and
+[zoomOut()](../api/Viewer.html#zoomOut) methods zoom the map in or out by a
+factor. The default factor is 2.
+
+```js
 // Zoom In Button
 onClick('btn-zoom-in', () => {
-  const bp = CGV.utils.constrain(cgv.canvas.bpForCanvasCenter(), 1, cgv.sequence.length);
-  cgv.zoomTo(bp, cgv.zoomFactor * 2);
+   cgv.zoomIn()
 });
 
 // Zoom Out Button
 onClick('btn-zoom-out', () => {
-  const bp = CGV.utils.constrain(cgv.canvas.bpForCanvasCenter(), 1, cgv.sequence.length);
-  cgv.zoomTo(bp, cgv.zoomFactor / 2);
+   cgv.zoomOut()
 });
+```
 
-// Move
-const move = (direction) => {
-  const currentBp = cgv.canvas.bpForCanvasCenter();
-  const length = cgv.sequence.length;
-  let bpChange = length * 0.2 / cgv.zoomFactor;
+### Move Left/Right
 
-  if (direction !== 'right') {
-    bpChange *= -1;
-  }
-  let newBp = currentBp + bpChange;
-  if (cgv.format === 'linear') {
-    newBp = (CGV.utils.constrain((currentBp + bpChange), 1, cgv.sequence.length));
-  }
-  cgv.moveTo(newBp, null);
+The [moveLeft()](../api/Viewer.html#moveLeft) and
+[moveRight()](../api/Viewer.html#moveRight) methods move the map
+left/counterclockwise or right/clockwise by a factor of the visible map (the
+deafult is 0.5). This allows moving the same visible amount independent of the
+zoom level. For example, if 1000 bp are currently visible then the default move
+would be 500 bp. Moving to a specific region can be performed with the
+[moveTo()](../api/Viewer.html#moveTo) method.
 
-}
+```js
 // Move Left/Counter-Clockwise
 onClick('btn-move-left', () => {
-  move();
-});
-// Move Right/Clockwise
-onClick('btn-move-right', () => {
-  move('right');
+  cgv.moveLeft();
 });
 
+// Move Right/Clockwise
+onClick('btn-move-right', () => {
+  cgv.moveRight();
+});
+```
+
+### Change Map Format
+
+The map format (circular or linear) is changed via settings
+[update()](../api/Settings.html#update).
+
+```js
 // Change Map Format Linear <-> Circular
 onClick('btn-toggle-format', () => {
   const format = (cgv.format == 'circular') ? 'linear' : 'circular';
   cgv.settings.update({ format: format });
   cgv.draw();
 });
+```
+### Inver Map Colors
 
+All the colors on the map (e.g. features, background, captions) can be changed
+with a single viewer command:
+[invertColors()](../api/Viewer.html#invertColors).
+
+```js
 // Invert the Map Colors
 onClick('btn-invert-colors', () => {
   cgv.invertColors();
 });
+```
 
+### Move to a Random Feature
+
+This button show how easy it is to move to a feature using the feature
+[moveTo()](../api/Feature.html#moveTo).
+
+```js
 // Move to Random Feature
 onClick('btn-random-feature', () => {
+  // Choose a random feature
   const number = Math.ceil(Math.random() * cgv.features().length);
   const feature = cgv.features(number);
-  feature.moveTo();
+  // Take 1.5 seconds to move to the feature (the default is 1 second)
+  feature.moveTo(1500);
 });
+```
+### Download PNG Button
 
+Download the currently visible map using the IO
+[downloadImage()](../api/IO.html#downloadImage) method.
+Images up to 8000 x 8000 px can be downloaded.
+
+```js
 // Download PNG
 onClick('btn-download', () => {
   const height = 2000;
+  // Here we adjust the width to be proportional to the height
   const width = cgv.width / cgv.height * height;
   cgv.io.downloadImage(width, height, 'cgview_map.png');
 });
+```
 
+### Toggle Feature Labels
+
+This button toggles the visibility of the labels using annotation [update()](../api/annotation.html#update).
+
+```js
 // Toggle Labels
 onClick('btn-toggle-labels', () => {
   cgv.annotation.update({visible: !cgv.annotation.visible});
   cgv.draw();
 });
-
 ```
 
 ## Draw the Map ##

@@ -281,7 +281,22 @@ pre[class*="language-"] {
 
 
 /*****************************************************************************/
-/* Note Sure Yet  (Everything below here may need to be incorporated)        */ 
+/* Styles for Viewer Help                                                    */
+/*****************************************************************************/
+
+.viewer-help {
+  border: 1px solid #bee5eb;
+  background-color: #d1ecf1;
+  color: #0c5460;
+  font-size: 12px;
+  margin: 5px 0;
+  padding: 5px;
+  /* border-radius: 5px; */
+}
+
+
+/*****************************************************************************/
+/* Note Sure Yet  (Everything below here may need to be incorporated)        */
 /*****************************************************************************/
 
 /* a.json-link span{ */

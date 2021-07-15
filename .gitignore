@@ -7,7 +7,7 @@ OLD/
 node_modules/
 dist/
 demo/dist
-demo/api
-demo/inProgress/
-demo/formatting_example.*
+www/api
+www/inProgress/
+www/formatting_example.*
 

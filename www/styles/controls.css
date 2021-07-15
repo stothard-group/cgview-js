@@ -1,11 +1,64 @@
 .cgv-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .cgv-btn {
   width: 30px;
   height: 30px;
-  border: 1px solid rgb(221, 221, 221);
+  border: 1px solid black;
   cursor: pointer;
+  margin: 0 3px 6px 0;
+  filter: invert(39%) sepia(11%) saturate(1202%) hue-rotate(165deg) brightness(95%) contrast(92%);
+  transition: filter 0.4s;
 }
+
+.cgv-btn:hover {
+  filter: none;
+}
+
+
+/* The CSS below embeds SVG images for the buttons */
+/* This could be easily replaced with custom images */
+
+#btn-reset {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 3px;'%3E%3Cpath d='M3 10 V3 H10 M20 3 H27 V10 M27 20 V27 H20 M10 27 H3 V20'/%3E%3C/svg%3E");
+}
+
+#btn-zoom-in {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 4px;'%3E%3Cpath d='M5 15 H25 M15 5 V25'/%3E%3C/svg%3E");
+}
+
+#btn-zoom-out {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 4px;'%3E%3Cpath d='M5 15 H25'/%3E%3C/svg%3E");
+}
+
+#btn-move-left {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 4px;'%3E%3Cpath d='M5 17 A4 2 0 0 1 25 17 M5.5 8.5 L5 16 L11 18.5'/%3E%3C/svg%3E");
+}
+
+#btn-move-right {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 4px;'%3E%3Cpath d='M5 17 A4 2 0 0 1 25 17 M24.5 8.5 L25 16 L19 18.5'/%3E%3C/svg%3E");
+}
+
+#btn-toggle-format {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 2.5px;'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5'/%3E %3Cpath d='M15 21 h12'/%3E %3Cpath d='M25 5 L5 25' stroke-width='1.5'/%3E %3C/svg%3E");
+}
+
+#btn-invert-colors {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 1px;'%3E%3Cpath d='M15 5 A 10 10 0 0 0 15 25' strok-linecap='square' fill='black'/%3E %3Cpath d='M15 5 A 10 10 0 0 1 15 25 Z'/%3E%3C/svg%3E");
+}
+
+#btn-random-feature {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 3px;'%3E %3Ctext x='10' y='16' stroke-width='1' fill='black' font-family='sans-serif' font-size='18px'%3E ? %3C/text%3E E%3Cpath d='M5 22 H25 M21 18 L25 22 L21 26'/%3E %3C/svg%3E");
+}
+
+#btn-download {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 3px; stroke-linecap: round'%3E%3Cpath d='M15 5 V20 m-4 -5 l4 5 l4 -5 M5 25 h20'/%3E%3C/svg%3E");
+}
+
+#btn-toggle-labels {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 1px;'%3E%3Ccircle cx='12' cy='18' r='5.5'/%3E %3Cpath d='M18 13 l3 -3 M12 11 l0 -4 M18 21 l3 1'/%3E %3Cpath d='M18 8 h9 M8 5 h8 M20 24 h7' stroke-width='1.5'/%3E %3C/svg%3E");
+}
+

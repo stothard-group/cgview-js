@@ -23,6 +23,7 @@
     <!-- CGView -->
     <script src='dist/cgview.min.js'></script>
     <link rel="stylesheet" href="dist/cgview.css" />
+    <link rel="stylesheet" href="styles/controls.css" />
     <!-- CGView Daya -->
     <script src='data/js/NZ_CP010546.js'></script>
 
@@ -98,7 +99,7 @@ This software is an adpation of the Java program [CGView](https://paulstothard.g
 
 - Circular and linear views of genomes
 
-- Capable of drawing genomes up to 10 Mbp with 1000's of features
+- Capable of drawing genomes up to 10 Mbp with 1000's of features and many contigs
 
 - Smooth zooming down to the sequence level
 
@@ -153,7 +154,28 @@ For any problems, issues or questions about life please contact Paul Stothard: p
 Map of _Mycoplasma pneumoniae_ FH [NZ_CP010546](https://www.ncbi.nlm.nih.gov/nuccore/NZ_CP010546.1).
 See the example/tutorial (LINK) for how this map was generated. More examples can be found here (link).
 
+<div class='viewer-help'>
+The map below can be moved around by dragging and zoomed by using your
+touchpad/mouse scroll. The legend colors can be changed by clicking on the
+swatches. The viewer object for this map can be accessed in your browser
+JavaScript console as <em>cgv</em>.  Note, that the controls below the map are
+custom controls created in the tutorial <a href='tutorials/tutorial-controls.html'>Map
+Controls</a>.
+
+</div>
 <div id='my-viewer'></div>
+<div class='cgv-controls'>
+  <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+  <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+  <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+  <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+  <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+  <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+  <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+  <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
+  <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+  <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+</div>
 
 </section>
 
@@ -187,6 +209,7 @@ See the example/tutorial (LINK) for how this map was generated. More examples ca
       cgv.draw();
       autoResizeMyViewer();
     </script>
+    <script src='scripts/controls.js'></script>
 
   </body>
 </html>

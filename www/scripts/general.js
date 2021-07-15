@@ -35,7 +35,7 @@ function tutorialMarkdown(marked, addFinalCode) {
       var code = el.innerHTML.replace(/\s*\/\/.*/g, '');
       code = code.replaceAll('&lt;', '<');
       code = code.replaceAll('&gt;', '>');
-      console.log(code);
+      // console.log(code);
       eval( code );
       var textNode = document.createTextNode( code + "\n" );
       finalCode.appendChild(textNode);

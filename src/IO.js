@@ -216,7 +216,12 @@ class IO {
     viewer.zoomTo(0, 1, {duration: 0});
   }
 
-  // downloadImage(size, filename = 'image.png') {
+  /**
+   * Download the currently visible map as a PNG image.
+   * @param {Number} width - Width of image
+   * @param {Number} height - Height of image
+   * @param {String} filename - Name to save image file as
+   */
   downloadImage(width, height, filename = 'image.png') {
     const viewer = this._viewer;
     const canvas = viewer.canvas;

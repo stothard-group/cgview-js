@@ -1111,6 +1111,59 @@ class Viewer {
       });
   }
 
+  _moveLeftRight(factor=0.5, direction, options = {}) {
+    const currentBp = this.canvas.bpForCanvasCenter();
+    const length = this.sequence.length;
+    let bpChange = length * factor / this.zoomFactor;
+    console.log(factor)
+
+    if (direction !== 'right') {
+      bpChange *= -1;
+    }
+
+    let newBp = currentBp + bpChange;
+    if (this.format === 'linear') {
+      newBp = (utils.constrain((currentBp + bpChange), 1, this.sequence.length));
+    }
+    this.moveTo(newBp, null, options);
+  }
+
+  /**
+   * Moves the map left or counterclockwise by factor, where the factor is the fraction of the current visable range.
+   * For example, if 1000 bp are currently visible then the default (factor = 0.5) move
+   * would be 500 bp.
+   * @param {Number} factor - the fraction of the current visible region to move [Default: 0.5]
+   * @param {Object} options - Options for the moving:
+   * <br />
+   * Name         | Type   | Description
+   * -------------|--------|------------
+   * bbOffset     | Number | Distance the map backbone should be moved from center [Default: 0]
+   * duration     | Number | The animation duration in milliseconds [Default: 1000]
+   * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
+   * callback     | Function | Function called after the animation is complete.
+   */
+  moveLeft(factor, options = {}) {
+    this._moveLeftRight(factor, 'left', options);
+  }
+
+  /**
+   * Moves the map right or clockwise by factor, where the factor is the fraction of the current visable range.
+   * For example, if 1000 bp are currently visible then the default (factor = 0.5) move
+   * would be 500 bp.
+   * @param {Number} factor - the fraction of the current visible region to move [Default: 0.5]
+   * @param {Object} options - Options for the moving:
+   * <br />
+   * Name         | Type   | Description
+   * -------------|--------|------------
+   * bbOffset     | Number | Distance the map backbone should be moved from center [Default: 0]
+   * duration     | Number | The animation duration in milliseconds [Default: 1000]
+   * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
+   * callback     | Function | Function called after the animation is complete.
+   */
+  moveRight(factor, options = {}) {
+    this._moveLeftRight(factor, 'right', options);
+  }
+
 
   /**
    * Move the viewer to *bp* position at the provided *zoomFactor*.
@@ -1172,14 +1225,32 @@ class Viewer {
       });
   }
 
-  /*
+  /**
+   * Zoom in on the current bp a factor
+   * @param {Number} - Amount to zoom in by [Default: 2]
+   */
+  zoomIn(factor=2) {
+    const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
+    this.zoomTo(bp, this.zoomFactor * factor);
+  }
+
+  /**
+   * Zoom out on the current bp a factor
+   * @param {Number} - Amount to zoom out by [Default: 2]
+   */
+  zoomOut(factor=2) {
+    const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
+    this.zoomTo(bp, this.zoomFactor / factor);
+  }
+
+  /**
    * Set zoom level to 1 and centers map
    */
   reset(duration = 1000, ease) {
     this.zoomTo(0, 1, {duration, ease});
   }
 
-  /*
+  /**
    * Recenter the map tracks at the current bp position
    */
   recenterTracks(duration = 0) {
@@ -1194,6 +1265,9 @@ class Viewer {
   };
 
   // FIXME: Each object must use update API
+  /**
+   * Inverts the colors of all map elements (e.g. legendItems, backbone, background).
+   */
   invertColors() {
     this.settings.update({backgroundColor: this.settings.backgroundColor.invert().rgbaString});
 

@@ -19,7 +19,7 @@
     "dev": "echo \"Error: no dev specified\" && exit 1",
     "test": "jest --watch",
     "build": "rollup --config --watch",
-    "api": "jsdoc --configure ./docs/jsdoc_conf.json --template ./docs/jaguarjs-jsdoc --destination ./demo/api --readme ./README.md ./src/*"
+    "api": "jsdoc --configure ./docs/jsdoc_conf.json --template ./docs/jaguarjs-jsdoc --destination ./www/api --readme ./README.md ./src/*"
 
   },
   "jest": {
