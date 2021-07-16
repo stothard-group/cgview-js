@@ -1,4 +1,4 @@
-This directory is contains the [CGView.js Homepage](http://js.cgview.ca).
+This directory contains the [CGView.js Homepage](http://js.cgview.ca).
 
 Two steps are required to update the API:
 
