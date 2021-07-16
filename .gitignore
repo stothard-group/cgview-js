@@ -6,7 +6,7 @@ data
 OLD/
 node_modules/
 dist/
-demo/dist
+www/dist
 www/api
 www/inProgress/
 www/formatting_example.*
