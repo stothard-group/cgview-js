@@ -56,9 +56,11 @@
       <ul id='gumshoe-list' class='sidebar-list'>
         <li class='active'><a class="side-link nav-index" href="index.html">Index</a></li>
         <p>Examples</p>
-        <li><a class="side-link indent" href="#">Plasmi?</a></li>
-        <li><a class="side-link indent" href="#">E. coli?</a></li>
-        <li><a class="side-link indent" href="#">Contigs?</a></li>
+        <li><a class="side-link indent" href="example-plasmid.html">Plasmid<span class='subtitle'>E. coli pB171_90</span></a></li>
+        <li><a class="side-link indent" href="example-mito.html">Mitochondiron <span class='subtitle'>R. americana</span></a></li>
+        <li><a class="side-link indent" href="example-small.html">Small Bacteria <span class='subtitle'>M. gentalia</span></a></li>
+        <li><a class="side-link indent" href="example-contigs.html">Contigs <span class='subtitle'>E. coli PA2</span></a></li>
+        <li><a class="side-link indent" href="example-large.html">Large Bacteria <span class='subtitle'>L. guizhouensis</span></a></li>
       </ul>
     </nav>
 
@@ -71,21 +73,29 @@
 
 # Examples
 
-Example                                  | Description
------------------------------------------|--------------------------------------------
-[Plasmid](example-plasmid.html)          | Create a simple map with features and a plot.
-[Mitochondrion](example-mito.html)       | Create a simple map with features and a plot.
-[Contigs](example-contigs.html)       | Create a simple map with features and a plot.
-[Blast](example-blast.html)       | Create a simple map with features and a plot.
-[Large](example-large.html)       | Create a simple map with features and a plot.
+Example                              | Species                  | Size (bp) | Description
+-------------------------------------|--------------------------| --------: |-------------------------------------------
+[Plasmid](example-plasmid.html)      | _Escherichia coli B171_  |    90,229 | Map of a bacterial plasmid
+[Mitochondrion](example-mito.html)   | _Reclinomonas americana_ |    69,034 | Map of a mitochondrial genome
+[Small Bacteria](example-small.html) | _Mycoplasma genitalium_  |   580,076 | Map of a small bacterial genome
+[Contigs](example-contigs.html)      | _Escherichia coli PA2_   | 5,246,924 | Map of bacterial genome with 109 contigs
+[Large Bacteria](example-large.html) | _Lentzea guizhouensis_   | 9,997,872 | Map of a large bacterial genome
 
+<!-- [Blast](example&#45;blast.html)          | _???_                    |           | Map showing BLAST comparison -->
+
+## How Examples were Created
+
+All the examples were created with
+[CGViewBuilder](https://github.com/stothard-group/cgview-builder) (see the
+[CGViewBuilder tutorial](../tutorials/tutorial-builder.html) for details).
+Each example contains links to the GenBank and config file used to generate the
+map as well as the resulting JSON file.
 
 
     </div> <!-- End of markdown in -->
 
     <script>
-      tutorialMarkdown(marked, true);
-      autoResizeMyViewer();
+      tutorialMarkdown(marked);
     </script>
 
     <script src="../scripts/prism.js"></script>
@@ -93,6 +103,5 @@ Example                                  | Description
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
-    </script>
   </body>
 </html>

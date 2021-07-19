@@ -55,11 +55,14 @@
     <!-- Side Nav -->
     <nav id='sidebar-nav'>
       <ul id='gumshoe-list' class='sidebar-list'>
-        <li class='active'><a class="side-link nav-index" href="index.html">Index</a></li>
+        <li><a class="side-link nav-index" href="index.html">Index</a></li>
         <p>Examples</p>
-        <li><a class="side-link indent" href="#">Plasmi?</a></li>
-        <li><a class="side-link indent" href="#">E. coli?</a></li>
-        <li><a class="side-link indent" href="#">Contigs?</a></li>
+        <li><a class="side-link indent" href="example-plasmid.html">Plasmid<span class='subtitle'>E. coli pB171_90</span></a></li>
+        <li class='active'><a class="side-link indent" href="example-mito.html">Mitochondiron <span class='subtitle'>R. americana</span></a></li>
+        <li><a class="side-link indent" href="example-small.html">Small Bacteria <span class='subtitle'>M. gentalia</span></a></li>
+        <li><a class="side-link indent" href="example-contigs.html">Contigs <span class='subtitle'>E. coli PA2</span></a></li>
+        <li><a class="side-link indent" href="example-large.html">Large Bacteria <span class='subtitle'>L. guizhouensis</span></a></li>
+        <li><a class="side-link indent" href="#">Plasmid<span class='subtitle'>E. coli pB171_90</span></a></li>
       </ul>
     </nav>
 
@@ -70,7 +73,7 @@
 
     <div id='markdown-in' style='display:none;'>
 
-# Mitochondiron
+# Mitochondrion
 
 <div id='my-viewer'></div>
 <div class='cgv-controls'>
@@ -86,10 +89,22 @@
   <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
 </div>
 
+<div id='example-tables'></div>
+
+<div class='viewer-help'>
+The map above can be moved around by dragging and zoomed by using your
+touchpad/mouse scroll. The legend colors can be changed by clicking on the
+swatches. The viewer object for this map can be accessed in your browser
+JavaScript console as <em>cgv</em>.  Note, that the controls below the map are
+custom controls created in the tutorial <a href='tutorials/tutorial-controls.html'>Map
+Controls</a>.
+</div>
+
     </div> <!-- End of markdown in -->
 
     <script>
       tutorialMarkdown(marked);
+      addExampleTables('NC_001823', 'Reclinomonas americana', '69,034');
     </script>
 
     <script src="../scripts/prism.js"></script>
@@ -98,26 +113,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
     <script>
-      // Add CGView
-      cgv = new CGV.Viewer('#my-viewer', {
-        height: 500,
-        width: 500
-      });
-
-      var request = new XMLHttpRequest();
-      request.open('GET', '../data/json/NZ_CP010546.json', true);
-      request.onload = function() {
-        var response = request.response;
-        const json = JSON.parse(response);
-        cgv.io.loadJSON(json);
-        cgv.draw()
-      };
-      request.send();
-
-      autoResizeMyViewer();
+      createViewerAndLoadJSON('../data/json/NC_001823.json');
     </script>
     <script src='../scripts/controls.js'></script>
 
-    </script>
   </body>
 </html>

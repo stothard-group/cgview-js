@@ -64,7 +64,7 @@ setTimeout(sideNavCheck, 100);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Side Nav Collapse
+// Auto Resize My Viewer
 ////////////////////////////////////////////////////////////////////////////////
 
 function autoResizeMyViewer() {
@@ -87,37 +87,67 @@ function autoResizeMyViewer() {
 }
 
 
-// ////////////////////////////////////////////////////////////////////////////////
-// // Bootstrap Scroll Spy fix
-// ////////////////////////////////////////////////////////////////////////////////
-//
-// // Scroll Spy messes up if a link in the side nav has been clicked
-// // ie. The page is now an anchor    ..../some_page.html#my_anchor
-// function hotfixScrollSpy() {
-//   var dataSpyList = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'))
-//   let curScroll = getCurrentScroll();
-//   dataSpyList.forEach(function (dataSpyEl) {
-//     let offsets = bootstrap.ScrollSpy.getInstance(dataSpyEl)['_offsets'];
-//     for(let i = 0; i < offsets.length; i++){
-//       offsets[i] += curScroll;
-//     }
-//   })
-// }
-// function getCurrentScroll() {
-//   return window.pageYOffset || document.documentElement.scrollTop;
-// }
-// window.onload = function () {
-//   setTimeout( () => {
-//     hotfixScrollSpy();
-//     window.scrollBy(0,1);
-//   }, 50);
-// }
-// window.onresize = function () {
-//   setTimeout( () => {
-//     hotfixScrollSpy();
-//     window.scrollBy(0,1);
-//   }, 50);
-// }
+////////////////////////////////////////////////////////////////////////////////
+// Create CGView and Load Data
+////////////////////////////////////////////////////////////////////////////////
+
+function createViewerAndLoadJSON(path) {
+  // Create Viewer in default div: #my-viewer
+  const cgv = new CGV.Viewer('#my-viewer', {height: 500});
+
+  // Auto resize viewer
+  autoResizeMyViewer();
+
+  // Add viewer as global variable 'cgv'
+  window.cgv = cgv;
+
+  // Request data and draw map
+  var request = new XMLHttpRequest();
+  request.open('GET', path, true);
+  request.onload = function() {
+    var response = request.response;
+    const json = JSON.parse(response);
+    cgv.io.loadJSON(json);
+    cgv.draw()
+  };
+  request.send();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add tables to example
+////////////////////////////////////////////////////////////////////////////////
+
+function addExampleTables(id, name, size) {
+  // Source Table
+  const sourceTable = `
+    <table>
+      <tr><th>Species</th><th>Size (bp)</th><th>NCBI Link</th></tr>
+      <tr>
+        <td><em>${name}</em></td>
+        <td>${size}</td>
+        <td><a href='https://www.ncbi.nlm.nih.gov/nuccore/${id}'>NCBI</a></td>
+      </tr>
+    </table>`;
+
+  // Files Table
+  const filesTable = `
+    <table>
+      <tr><th>GenBank</th><th>Config</th><th>JSON</th></tr>
+      <tr>
+        <td><a href='../data/seq/${id}.gbk'>${id}.gbk</a></td>
+        <td><a href='../data/config/${id}.yaml'>${id}.yaml</a></td>
+        <td><a href='../data/json/${id}.json'>${id}.json</a></td>
+      </tr>
+    </table>`;
+
+  // Replace tables
+  const tableDiv = document.getElementById('example-tables');
+  tableDiv.innerHTML = `
+    <h3>Source</h3>
+    ${sourceTable}
+    <h3>Files</h3>
+    ${filesTable}`;
+}
 
 
 
