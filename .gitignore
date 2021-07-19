@@ -1,7 +1,8 @@
 .DS_Store
 template/dash
 template/dash-jsdoc/node_modules
-data
+template/jaguarjs-jsdoc/node_modules
+old_data/
 OLD/
 node_modules/
 # dist/
