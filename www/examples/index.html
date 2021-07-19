@@ -12,18 +12,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
     <link rel="stylesheet" href="../styles/prism.css" />
-    <!-- <link rel="stylesheet" href="../styles/tables.css" /> -->
+    <link rel="stylesheet" href="../styles/tables.css" />
     <link rel="stylesheet" href="../styles/general.css" />
     <script src='../scripts/marked.min.js'></script>
     <script src='../scripts/general.js'></script>
 
     <!-- D3 -->
-    <!-- <script src="../scripts/d3.v4.min.js"></script> -->
+    <script src="../scripts/d3.v4.min.js"></script>
     <!-- CGView -->
-    <!-- <script src='../dist/cgview.min.js'></script> -->
-    <!-- <link rel="stylesheet" href="../dist/cgview.css" /> -->
+    <script src='../dist/cgview.min.js'></script>
+    <link rel="stylesheet" href="../dist/cgview.css" />
 
-    <title>CGView.js - Tutorials</title>
+    <title>CGView.js - Examples</title>
   </head>
   <body>
     <!-- Nav Bar -->
@@ -40,8 +40,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <div class="navbar-nav">
-            <a class="nav-link" href="../examples/index.html">Examples</a>
-            <a class="nav-link active" aria-current="page" href="index.html">Tutorials</a>
+            <a class="nav-link active" aria-current="page"  href="index.html">Examples</a>
+            <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
             <a class="nav-link" href="../docs.html">Docs</a>
             <a class="nav-link" href="../api/index.html">API</a>
             <a class="nav-link" href="../json.html">JSON</a>
@@ -54,17 +54,7 @@
     <!-- Side Nav -->
     <nav id='sidebar-nav'>
       <ul id='gumshoe-list' class='sidebar-list'>
-        <li><a class="side-link nav-index" href="index.html">Index</a></li>
-        <p>Tutorials</p>
-        <li><a class="side-link indent" href="tutorial-basic.html">Basic Map</a></li>
-        <li><a class="side-link indent" href="tutorial-sequence.html">Sequence Map</a></li>
-        <li><a class="side-link indent" href="tutorial-json.html">JSON Map</a></li>
-        <li><a class="side-link indent" href="tutorial-builder.html">CGViewBuilder</a></li>
-        <li><a class="side-link indent" href="tutorial-controls.html">Map Controls</a></li>
-        <p>Details</p>
-        <li><a class="side-link indent" href="details-json-files.html">JSON Files</a></li>
-        <li class='active'><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
-        <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
+        <li class='active'><a class="side-link nav-index" href="index.html">Index</a></li>
         <p>Examples</p>
         <li><a class="side-link indent" href="#">Plasmi?</a></li>
         <li><a class="side-link indent" href="#">E. coli?</a></li>
@@ -79,30 +69,26 @@
 
     <div id='markdown-in' style='display:none;'>
 
-# Meta Data
+# Examples
 
-All the data driven components in CGView have the ability to contain meta data.
-Meta data (i.e. user-defined key:value pairs) can be stored simply as an object
-property named <em>meta</em> on most objects.
+Example                                  | Description
+-----------------------------------------|--------------------------------------------
+[Plasmid](example-plasmid.html)          | Create a simple map with features and a plot.
+[Mitochondrion](example-mito.html)       | Create a simple map with features and a plot.
+[Contigs](example-contigs.html)       | Create a simple map with features and a plot.
+[Blast](example-blast.html)       | Create a simple map with features and a plot.
+[Large](example-large.html)       | Create a simple map with features and a plot.
 
-TODO:
-* examples
-* adding through constructor
-* adding though add actions (e.g. addFeatures(data, meta))
-  * meta can be in data for per obejct data
-  * can also be added as second argument to be added  all features (NOT IMPLEMENTED YET)
-* meta data is never used by CGView
-* good place to store extra data for external projects (e.g. proksee)
-  * example would be extra qualifier tag data for features
-* only if meta data exists for an object, will it be exported in json
-* meta data will also be imported from json
-* HOW will meta data merge options.meta and constructor meta argument. Is the meta argument needed?
+
 
     </div> <!-- End of markdown in -->
 
     <script>
-      tutorialMarkdown(marked);
+      tutorialMarkdown(marked, true);
+      autoResizeMyViewer();
     </script>
+
+    <script src="../scripts/prism.js"></script>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
@@ -110,4 +96,3 @@ TODO:
     </script>
   </body>
 </html>
-
