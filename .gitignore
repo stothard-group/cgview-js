@@ -1,13 +1,12 @@
 .DS_Store
-docs/dash
-docs/node_modules
-docs/dash-jsdoc/node_modules
+template/dash
+template/dash-jsdoc/node_modules
 data
 OLD/
 node_modules/
-dist/
-www/dist
-www/api
-www/inProgress/
-www/formatting_example.*
+# dist/
+# docs/dist
+# docs/api
+docs/inProgress/
+docs/formatting_example.*
 
