@@ -1,0 +1,11 @@
+.dev-title {
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  right: 10px;
+}
+
+main {
+  margin-left: 0;
+  padding-top: 15px;
+}

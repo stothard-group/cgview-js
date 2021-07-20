@@ -2236,13 +2236,22 @@ of component options can be set during construction of the Viewer.</p>
 </tbody>
 </table>
 <p><sup>iu</sup> Ignored on Viewer update</p>
-<p><a name="creation-options"></a></p>
-<h3>Options on Creation</h3>
-<ul>
-<li>Link to tutorials</li>
-<li>Add options below to table above and add super script</li>
-<li>have table of accessors from API readme here. This table could be auto copied to docs as well</li>
-</ul></div>
+<h3>Examples</h3>
+<pre class="prettyprint source lang-js"><code>cgv = new CGV.Viewer('#my-viewer', {
+  height: 500,
+  width: 500,
+  sequence: {
+    // The length of the sequence
+    length: 1000
+    // Or, you can provide a sequence
+    // seq: 'ATGTAGCATGCATCAGTAGCTA...'
+  }
+});
+
+// Draw the map
+cgv.draw()
+</code></pre>
+<p>See <a href="../tutorials/index.html">tutorials</a> to learn more about making maps.</p></div>
     
 </header>  
 
@@ -2261,7 +2270,7 @@ of component options can be set during construction of the Viewer.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line94">line 94</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line105">line 105</a>
         </div>
         
     </div>
@@ -3240,7 +3249,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line921">line 921</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line932">line 932</a>
         </div>
         
     </div>
@@ -3311,7 +3320,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line640">line 640</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line651">line 651</a>
         </div>
         
     </div>
@@ -3382,7 +3391,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line798">line 798</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line809">line 809</a>
         </div>
         
     </div>
@@ -3455,7 +3464,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line858">line 858</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line869">line 869</a>
         </div>
         
     </div>
@@ -3526,7 +3535,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line527">line 527</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line538">line 538</a>
         </div>
         
     </div>
@@ -3597,7 +3606,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line914">line 914</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line925">line 925</a>
         </div>
         
     </div>
@@ -3748,7 +3757,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line629">line 629</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line640">line 640</a>
         </div>
         
     </div>
@@ -3899,7 +3908,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line957">line 957</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line968">line 968</a>
         </div>
         
     </div>
@@ -3970,7 +3979,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line487">line 487</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line498">line 498</a>
         </div>
         
     </div>
@@ -4121,7 +4130,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line478">line 478</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line489">line 489</a>
         </div>
         
     </div>
@@ -4272,7 +4281,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line964">line 964</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line975">line 975</a>
         </div>
         
     </div>
@@ -4343,7 +4352,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1271">line 1271</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1282">line 1282</a>
         </div>
         
     </div>
@@ -4414,7 +4423,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1145">line 1145</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1156">line 1156</a>
         </div>
         
     </div>
@@ -4587,7 +4596,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1163">line 1163</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1174">line 1174</a>
         </div>
         
     </div>
@@ -4760,7 +4769,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1067">line 1067</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1078">line 1078</a>
         </div>
         
     </div>
@@ -4956,7 +4965,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line444">line 444</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line455">line 455</a>
         </div>
         
     </div>
@@ -5153,7 +5162,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line678">line 678</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line689">line 689</a>
         </div>
         
     </div>
@@ -5304,7 +5313,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1256">line 1256</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1267">line 1267</a>
         </div>
         
     </div>
@@ -5375,7 +5384,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line769">line 769</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line780">line 780</a>
         </div>
         
     </div>
@@ -5448,7 +5457,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line931">line 931</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line942">line 942</a>
         </div>
         
     </div>
@@ -5519,7 +5528,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1249">line 1249</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1260">line 1260</a>
         </div>
         
     </div>
@@ -5590,7 +5599,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line416">line 416</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line427">line 427</a>
         </div>
         
     </div>
@@ -5795,7 +5804,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line465">line 465</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line476">line 476</a>
         </div>
         
     </div>
@@ -5946,7 +5955,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line690">line 690</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line701">line 701</a>
         </div>
         
     </div>
@@ -6097,7 +6106,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line520">line 520</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line531">line 531</a>
         </div>
         
     </div>
@@ -6248,7 +6257,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line946">line 946</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line957">line 957</a>
         </div>
         
     </div>
@@ -6319,7 +6328,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line830">line 830</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line841">line 841</a>
         </div>
         
     </div>
@@ -6390,7 +6399,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line883">line 883</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line894">line 894</a>
         </div>
         
     </div>
@@ -6461,7 +6470,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line587">line 587</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line598">line 598</a>
         </div>
         
     </div>
@@ -6532,7 +6541,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1232">line 1232</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1243">line 1243</a>
         </div>
         
     </div>
@@ -6656,7 +6665,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1241">line 1241</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1252">line 1252</a>
         </div>
         
     </div>
@@ -6780,7 +6789,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1183">line 1183</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1194">line 1194</a>
         </div>
         
     </div>
@@ -6981,7 +6990,7 @@ If <em>bp</em> is falsy (inc. 0), the map is centered.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Mon Jul 19 2021 08:57:07 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:33 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

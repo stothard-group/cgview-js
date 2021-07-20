@@ -40,9 +40,9 @@ import utils from './Utils';
  * ### Examples
  * ```js
  * // Create a new bookmark for the current map postion
- * let bookmark = viewer.addBookmarks();
+ * let bookmark = cgv.addBookmarks();
  * // => Bookmark {name: 'Bookmark-1', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
- * viewer.bookmarks().length;
+ * cgv.bookmarks().length;
  * // => 1
  *
  * // Edit the bookmark
@@ -54,7 +54,7 @@ import utils from './Utils';
  *
  * // Remove the bookmark
  * bookmark.remove();
- * viewer.bookmarks().length;
+ * cgv.bookmarks().length;
  * // => 0
  * ```
  *

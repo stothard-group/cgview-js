@@ -77,27 +77,22 @@ import * as d3 from 'd3';
  *
  * ### Examples
  * ```js
- * // Create a new bookmark for the current map postion
- * let bookmark = viewer.addBookmarks();
- * // => Bookmark {name: 'Bookmark-1', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
- * viewer.bookmarks().length;
- * // => 1
- *
- * // Edit the bookmark
- * bookmark.update({name: 'my gene'});
- * // => Bookmark {name: 'my gene', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
- *
- * // Move to the bookmark position
- * bookmark.moveTo()
- *
- * // Remove the bookmark
- * bookmark.remove();
- * viewer.bookmarks().length;
- * // => 0
+ * cgv = new CGV.Viewer('#my-viewer', {
+ *   height: 500,
+ *   width: 500,
+ *   sequence: {
+ *     // The length of the sequence
+ *     length: 1000
+ *     // Or, you can provide a sequence
+ *     // seq: 'ATGTAGCATGCATCAGTAGCTA...'
+ *   }
+ * });
+ * 
+ * // Draw the map
+ * cgv.draw()
  * ```
  *
- * See [tutorials](../tutorials/index.html to learn more about making maps.
- *
+ * See the [tutorials](../tutorials/index.html) to learn more about making maps.
  */
 class Viewer {
 
