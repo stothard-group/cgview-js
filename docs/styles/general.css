@@ -306,6 +306,47 @@ pre[class*="language-"] {
   /* border-radius: 5px; */
 }
 
+/*****************************************************************************/
+/* Prokse Notice and Button
+/*****************************************************************************/
+
+.proksee-notice {
+  border: 1px solid #bee5eb;
+  border-radius: 5px;
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+  text-align: center;
+  font-size: 14px;
+  margin: 8px 20px;
+  padding: 10px;
+}
+
+.proksee-notice p {
+  margin-bottom: 10px;
+}
+
+.btn-proksee {
+  width: 120px;
+  height: 45px;
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 0 3px 6px 0;
+  filter: none;
+  transition:  0.6s;
+  background-color: rgb(30, 30, 30);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(../images/proksee_logo.png);
+  background-size: 102px 24px;
+  margin: auto;
+}
+
+.btn-proksee:hover {
+  filter: invert(89%) sepia(11%) saturate(1202%) hue-rotate(165deg) brightness(95%) contrast(92%);
+}
+
 
 /*****************************************************************************/
 /* Note Sure Yet  (Everything below here may need to be incorporated)        */

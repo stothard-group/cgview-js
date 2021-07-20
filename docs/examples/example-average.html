@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Icon -->
+    <link rel="shortcut icon" type="image/png" href="../images/logo-tab.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../styles/prism.css" />
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/marked.min.js'></script>
+    <script src='../scripts/general.js'></script>
+
+    <!-- D3 -->
+    <script src="../scripts/d3.v4.min.js"></script>
+    <!-- CGView -->
+    <script src='../dist/cgview.min.js'></script>
+    <link rel="stylesheet" href="../dist/cgview.css" />
+    <link rel="stylesheet" href="../styles/controls.css" />
+
+    <title>CGView.js - Examples</title>
+  </head>
+  <body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html"><img class='logo-sm' src='../images/logo.png' />CGView.js</a>
+        <!-- Docs Toggle -->
+        <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="cgv-docs-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <div class="navbar-nav">
+            <a class="nav-link active" aria-current="page"  href="index.html">Examples</a>
+            <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
+            <a class="nav-link" href="../docs.html">Docs</a>
+            <a class="nav-link" href="../api/index.html">API</a>
+            <a class="nav-link" href="../json.html">JSON</a>
+            <a class="nav-link github-logo" href="https://github.com/stothard-group/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Side Nav -->
+    <nav id='sidebar-nav'>
+      <ul id='gumshoe-list' class='sidebar-list'>
+        <li><a class="side-link nav-index" href="index.html">Index</a></li>
+        <p>Examples</p>
+        <li><a class="side-link indent" href="example-plasmid.html">Plasmid<span class='subtitle'>E. coli pB171_90</span></a></li>
+        <li><a class="side-link indent" href="example-mito.html">Mitochondiron <span class='subtitle'>R. americana</span></a></li>
+        <li><a class="side-link indent" href="example-small.html">Small Bacteria <span class='subtitle'>M. gentalia</span></a></li>
+        <li class='active'><a class="side-link indent" href="example-average.html">Average Bacteria <span class='subtitle'>C. botulinum</span></a></li>
+        <li><a class="side-link indent" href="example-contigs.html">Contigs <span class='subtitle'>E. coli PA2</span></a></li>
+        <li><a class="side-link indent" href="example-large.html">Large Bacteria <span class='subtitle'>L. guizhouensis</span></a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <!-- Processed Markdown will be inserted here -->
+      <div id='markdown-out'></div>
+    </main>
+
+    <div id='markdown-in' style='display:none;'>
+
+# Average Bacterial Genome
+
+<div id='my-viewer'></div>
+<div class='cgv-controls'>
+  <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+  <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+  <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+  <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+  <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+  <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+  <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+  <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
+  <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+  <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+</div>
+
+<div id='example-tables'></div>
+
+<div class='viewer-help'>
+The map above can be moved around by dragging and zoomed by using your
+touchpad/mouse scroll. The legend colors can be changed by clicking on the
+swatches. The viewer object for this map can be accessed in your browser
+JavaScript console as <em>cgv</em>.  Note, that the controls below the map are
+custom controls created in the tutorial <a href='tutorials/tutorial-controls.html'>Map
+Controls</a>.
+</div>
+
+    </div> <!-- End of markdown in -->
+
+    <script>
+      tutorialMarkdown(marked);
+      addExampleTables('NZ_CP028842', 'Clostridium botulinum', '3,858,511');
+    </script>
+
+    <script src="../scripts/prism.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <script>
+      createViewerAndLoadJSON('../data/json/NZ_CP028842.json');
+    </script>
+    <script src='../scripts/controls.js'></script>
+
+  </body>
+</html>

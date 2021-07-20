@@ -117,7 +117,8 @@ function createViewerAndLoadJSON(path) {
 // Add tables to example
 ////////////////////////////////////////////////////////////////////////////////
 
-function addExampleTables(id, name, size) {
+function addExampleTables(id, name, size, link) {
+  const ncbiLink = link ? link : `https://www.ncbi.nlm.nih.gov/nuccore/${id}`;
   // Source Table
   const sourceTable = `
     <table>
@@ -125,7 +126,7 @@ function addExampleTables(id, name, size) {
       <tr>
         <td><em>${name}</em></td>
         <td>${size}</td>
-        <td><a href='https://www.ncbi.nlm.nih.gov/nuccore/${id}'>NCBI</a></td>
+        <td><a href='${ncbiLink}'>NCBI</a></td>
       </tr>
     </table>`;
 

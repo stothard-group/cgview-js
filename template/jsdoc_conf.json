@@ -34,7 +34,7 @@
 	},
   "docset": {
     "name": "CGView",
-    "icon": "logo.png",
+    "icon": "docs/images/logo.png",
     "enableJavascript": true
   }
 }

@@ -11,7 +11,7 @@ PWD=$(pwd)
 DIR=$(dirname $0)
 cd $DIR || exit
 
-IDs=('NC_001823' 'CP021212' 'NC_000908' 'GCF_000335355' 'NZ_CP016793')
+IDs=('NC_001823' 'CP021212' 'NC_000908' 'GCF_000335355' 'NZ_CP016793' 'NZ_CP028842')
 
 for id in ${IDs[@]}; do
   echo "Running CGView Builder for '${id}'"

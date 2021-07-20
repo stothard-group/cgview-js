@@ -155,20 +155,20 @@ import CGV from 'dist/cgview.es.min.js'
 
 # Overview
 
-CGView.js draws maps as a series of [Tracks](Track.html) around the [Backbone](Backbone.html).
+CGView.js draws maps as a series of [tracks](api/Track.html) around the [backbone](api/Backbone.html).
 The Backbone represents the sequence and if the sequence is provided to
 CGView.js, then you can zoom in far enough to see the sequence in the
-backbone. Tracks contain either a [Plot](Plot.html) or a set of
-[Features](Feature.html). Tracks are drawn as as one or more
-[Slots](Slot.html) where each Slot is a single ring on the map. Slots outside
+backbone. Tracks contain either a [plot](api/Plot.html) or a set of
+[features](api/Feature.html). Tracks are drawn as as one or more
+[slots](api/Slot.html) where each Slot is a single ring on the map. Slots outside
 of the backbone show features on the forward strand, while inside slots show
 features on the reverse strand. Tracks containing a Plot are always drawn
-as a single slot, however, Feature Tracks can be drawn in 3 different
+as a single slot, however, feature tracks can be drawn in 3 different
 configurations:
 
 Slots | Description
 ------|------------
- 1    | All the Features are drawn on a single Slot
+ 1    | All the features are drawn on a single Slot
  2    | Features are drawn separated by strand
  6    | Features are drawn separated by reading frame
 
@@ -177,12 +177,12 @@ Slots | Description
 
 # Components
 
-The [Viewer](Viewer.html) is the main class in CGView.js and contains several components
+The [viewer](api/Viewer.html) is the main class in CGView.js and contains several components
 which control the look and feel of the Map. These components can be accessed through accessor
 members or methods. Members (or properties) provide access in cases where there
 is only a single component (e.g Sequence). Methods allow selection of one or
 more objects in cases where there can be more than one component (e.g. Features).
-See [CGArray.get](CGArray.html#get) for details.
+See [CGArray.get](api/CGArray.html#get) for details.
 
 ```js
 // Access the sequence object
@@ -197,23 +197,23 @@ viewer.features('my_feature')
 
 Component                        | Accessor                                   | Description
 ---------------------------------|--------------------------------------------|------------
-[Sequence](Sequence.html)        | [sequence](Viewer.html#sequence)           | The Sequence object contains the sequence itself or at the very least the length of the sequence.
-[Canvas](Canvas.html)            | [canvas](Viewer.html#canvas)               | The Canvas object contains the canvas layers, scale and various drawing methods.
-[IO](IO.html)                    | [io](Viewer.html#io)                       | The IO object has methods for reading and writing data to and from the Viewer.
-[Legend](Legend.html)            | [legend](Viewer.html#legend)               | The Legend object contains the [LegendItems](LegendItem.html) which are used to color the features and plots.
-[Backbone](Backbone.html)        | [backbone](Viewer.html#backbone)           | The Backbone represents the sequence. Slots outside of the backbone show features on the forward strand, while inside slots show features on the reverse strand.
-[Layout](Layout.html)            | [layout](Viewer.html#layout)               | The Layout describes what's in each Track and how to lay them out.
-[Ruler](Ruler.html)              | [ruler](Viewer.html#ruler)                 | The Ruler controls how the sequence ruler is drawn.
-[Annotation](Annotation.html)    | [annotation](Viewer.html#annotation)       | Annotation controls how feature labels are drawn.
-[Settings](Settings.html)        | [settings](Viewer.html#settings)           | Settings store general options for the viewer.
-[Messenger](Messenger.html)      | [messenger](Viewer.html#messenger)         | Messenger provides the interface for showing messages.
-[Divider](Dividers.html)         | [dividers](Viewer.html#dividers)           | Controls the space and lines between each track and slot.
-[Highlighter](Highlighter.html)  | [highlighter](Viewer.html#highlighter)     | Highlighter controls what happens when mousing over features/plots.
-[Track](Track.html)              | [tracks()](Viewer.html#tracks)             | Returns one or more Tracks.
-[Feature](Feature.html)          | [features()](Viewer.html#features)         | Returns one or more Features.
-[Plot](Plot.html)                | [plots()](Viewer.html#plots)               | Returns one or more Plots.
-[Caption](Caption.html)          | [captions()](Viewer.html#captions)         | Returns one or more Captions.
-[FeatureType](FeatureType.html)  | [featureType()](Viewer.html#featureTypes)  | Returns one or more FeatureTypes.
+[Sequence](api/Sequence.html)        | [sequence](api/Viewer.html#sequence)           | The Sequence object contains the sequence itself or at the very least the length of the sequence.
+[Canvas](api/Canvas.html)            | [canvas](api/Viewer.html#canvas)               | The Canvas object contains the canvas layers, scale and various drawing methods.
+[IO](api/IO.html)                    | [io](api/Viewer.html#io)                       | The IO object has methods for reading and writing data to and from the Viewer.
+[Legend](api/Legend.html)            | [legend](api/Viewer.html#legend)               | The Legend object contains the [LegendItems](api/LegendItem.html) which are used to color the features and plots.
+[Backbone](api/Backbone.html)        | [backbone](api/Viewer.html#backbone)           | The Backbone represents the sequence. Slots outside of the backbone show features on the forward strand, while inside slots show features on the reverse strand.
+[Layout](api/Layout.html)            | [layout](api/Viewer.html#layout)               | The Layout describes what's in each Track and how to lay them out.
+[Ruler](api/Ruler.html)              | [ruler](api/Viewer.html#ruler)                 | The Ruler controls how the sequence ruler is drawn.
+[Annotation](api/Annotation.html)    | [annotation](api/Viewer.html#annotation)       | Annotation controls how feature labels are drawn.
+[Settings](api/Settings.html)        | [settings](api/Viewer.html#settings)           | Settings store general options for the viewer.
+[Messenger](api/Messenger.html)      | [messenger](api/Viewer.html#messenger)         | Messenger provides the interface for showing messages.
+[Divider](api/Dividers.html)         | [dividers](api/Viewer.html#dividers)           | Controls the space and lines between each track and slot.
+[Highlighter](api/Highlighter.html)  | [highlighter](api/Viewer.html#highlighter)     | Highlighter controls what happens when mousing over features/plots.
+[Track](api/Track.html)              | [tracks()](api/Viewer.html#tracks)             | Returns one or more Tracks.
+[Feature](api/Feature.html)          | [features()](api/Viewer.html#features)         | Returns one or more Features.
+[Plot](api/Plot.html)                | [plots()](api/Viewer.html#plots)               | Returns one or more Plots.
+[Caption](api/Caption.html)          | [captions()](api/Viewer.html#captions)         | Returns one or more Captions.
+FeatureType                          | [featureType()](api/Viewer.html#featureTypes)  | Returns one or more FeatureTypes.
 
 </section>
 <section id="section-record-actions">

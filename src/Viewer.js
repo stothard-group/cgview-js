@@ -75,12 +75,28 @@ import * as d3 from 'd3';
  * 
  * <sup>iu</sup> Ignored on Viewer update
  *
- * <a name="creation-options"></a>
- * ### Options on Creation
+ * ### Examples
+ * ```js
+ * // Create a new bookmark for the current map postion
+ * let bookmark = viewer.addBookmarks();
+ * // => Bookmark {name: 'Bookmark-1', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
+ * viewer.bookmarks().length;
+ * // => 1
  *
- * - Link to tutorials
- * - Add options below to table above and add super script
- * - have table of accessors from API readme here. This table could be auto copied to docs as well
+ * // Edit the bookmark
+ * bookmark.update({name: 'my gene'});
+ * // => Bookmark {name: 'my gene', bp: 1, zoom: 1, format: 'linear', bbOffset: 0, shortcut: 1}
+ *
+ * // Move to the bookmark position
+ * bookmark.moveTo()
+ *
+ * // Remove the bookmark
+ * bookmark.remove();
+ * viewer.bookmarks().length;
+ * // => 0
+ * ```
+ *
+ * See [tutorials](../tutorials/index.html to learn more about making maps.
  *
  */
 class Viewer {

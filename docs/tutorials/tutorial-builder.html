@@ -104,12 +104,14 @@ Run CGViewBuilder to generate the CGView JSON from the GenBank file.
 
 ```bash
 ruby cgview_builder_cli.rb \
-  --sequence NC_0000001.gbk \   # Input GenBank file
-  --outfile NC_000001.json \    # Output CGView JSON
+  --sequence NZ_CP010546.gbk \   # Input GenBank file
+  --outfile NZ_CP010546.json \    # Output CGView JSON
   --config config_example.yaml  # Optional config file
 ```
 
 An optional config file can be provided to adjust the map ([config_example.yaml](../data/config/config_example.yaml))
+
+JSON Output: [NZ_CP010546.json](../data/json/NZ_CP010546.json)
 
 ## Load JSON into CGView.js
 
@@ -139,7 +141,7 @@ request.send();
 
 ## More Examples
 
-See the CGView.js examples [LINK] for more maps created by
+See the CGView.js [examples](../examples/index.html) for more maps created by
 CGViewBuilder. Each example, contains the original GenBank file, CGViewBuilder
 config file and the resulting JSON file.
 
