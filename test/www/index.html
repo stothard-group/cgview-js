@@ -23,10 +23,12 @@
     <link rel="stylesheet" href="dist/cgview.css" />
     <link rel="stylesheet" href="styles/controls.css" />
     <!-- CGView Daya -->
-    <script src='data/js/NZ_CP010546.js'></script>
 
     <!-- Dev Page -->
+    <script src='cgv_performance.js'></script>
     <link rel="stylesheet" href="dev.css" />
+    <!-- Test Map Data -->
+    <script src='maps.js'></script>
 
     <title>CGView.js</title>
   </head>
@@ -52,36 +54,117 @@
             <a class="nav-link" href="../../docs/json.html">JSON</a>
             <a class="nav-link github-logo" href="https://github.com/stothard-group/cgview-js"><img src='images/GitHub-Mark-Light-64px.png' /></a>
           </div>
-          <div class='dev-title'>DEV PAGE</div>
+          <div class='dev-title'>TEST PAGE</div>
         </div>
       </div>
     </nav>
 
     <main>
-      <div id='my-viewer'></div>
-      <div class='cgv-controls'>
-        <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
-        <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
-        <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
-        <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
-        <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
-        <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
-        <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
-        <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
-        <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
-        <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+      <div class='row'>
+        <div class='map-area'>
+          <div id='my-viewer'></div>
+          <div class='cgv-controls'>
+            <div class='cgv-btn' id='btn-reset' title='Reset Map'></div>
+            <div class='cgv-btn' id='btn-zoom-in' title='Zoom In'></div>
+            <div class='cgv-btn' id='btn-zoom-out' title='Zoom Out'></div>
+            <div class='cgv-btn' id='btn-move-left' title='Move Left/Counterclockwise'></div>
+            <div class='cgv-btn' id='btn-move-right' title='Move Right/Clockwise'></div>
+            <div class='cgv-btn' id='btn-toggle-format' title='Toggle Linear/Circular Format'></div>
+            <div class='cgv-btn' id='btn-invert-colors' title='Invert Map Colors'></div>
+            <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
+            <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
+            <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+          </div>
+        </div>
+        <div class='test-options'>
+          <div class='map-select-section'>
+            Map: <select id='map-select'></select>
+          </div>
+          <div class='performance-section'>
+            <button id='performance-start'>Performance Test</button>
+            Iterations:
+            <select id='iterations-select'>
+              <option value='1'>1</option>
+              <option value='3' selected>3</option>
+              <option value='5'>5</option>
+            </select>
+            <div id='results' data-placeholder='Results...'></div>
+          </div>
+          <div class='more-options'>
+            <input id='test-draw-range' type='checkbox' /> Test Draw Range
+          </div>
+        </div>
       </div>
     </main>
 
     <script>
+      // Settings
+      const defaultMap = 'small';
+      // From maps.js: maps = {}
+      console.log(maps)
+
       // Add CGView
       cgv = new CGV.Viewer('#my-viewer', {
-        height: 500,
-        width: 500
+        height: 600,
+        width: 600,
+        // debug: {sections: ['time', 'position']}
       });
-      cgv.io.loadJSON(NZ_CP010546);
-      cgv.draw();
-      autoResizeMyViewer();
+      loadMapFromID(defaultMap);
+
+      // Add maps from maps.js to Select
+      // Using global variable 'maps' from maps.js
+      const mapSelect = document.getElementById('map-select');
+      let options = '';
+      for (const map of Object.keys(maps)) {
+        const selected = (map === defaultMap) ? 'selected' : '';
+        options += `<option value='${map}' ${selected}>${maps[map].name}</option>`;
+      }
+      mapSelect.innerHTML = options;
+
+      // Load map when select changes
+      mapSelect.addEventListener('change', (e) => {
+        const id = e.target.value;
+        loadMapFromID(id);
+      });
+
+      // Start Performance Test
+      const resultsDiv = document.getElementById('results');
+      const perfBtn = document.getElementById('performance-start');
+      perfBtn.addEventListener('click', (e) => {
+        const iterationSelect = document.getElementById('iterations-select');
+        const iterations = Number(iterationSelect.value);
+        let performance = new CGVPerformance(cgv, cgv.name, iterations);
+        console.log(performance.results);
+        setTimeout(function() {
+          resultsDiv.innerHTML = performance.report();
+        }, 1000);
+      });
+
+      // Load map method
+      function loadMapFromID(id) {
+        const url = maps[id].url
+        console.log(`Loading Map: ${url}`);
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function() {
+          const json = JSON.parse(request.responseText);
+          cgv.io.loadJSON(json);
+          cgv.name = maps[id].name;
+          cgv.drawFull();
+        };
+        request.send();
+      }
+
+      const drawRange = document.getElementById('test-draw-range');
+      drawRange.addEventListener('click', (e) => {
+        const testOn = e.target.checked;
+        cgv.canvas._testDrawRange = testOn;
+        cgv.drawFull();
+      });
+
+      // SVG Test (Not done)
+      // $('#download-svg').on('click', function() { cgv.io.downloadImage(600,600); return false });
+
     </script>
     <script src='scripts/controls.js'></script>
 

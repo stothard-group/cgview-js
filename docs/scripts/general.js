@@ -51,6 +51,7 @@ function tutorialMarkdown(marked, addFinalCode) {
 // Collapse Side Nav if narrow enough on window resize 
 function sideNavCheck() {
   const sidenav = document.getElementById('sidebar-nav');
+  if (!sidenav) {return}
   if (window.innerWidth < 576) {
     sidenav.classList.add("collapse");
   } else {

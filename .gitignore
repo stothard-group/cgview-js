@@ -1,13 +1,9 @@
 .DS_Store
 template/dash
-template/dash-jsdoc/node_modules
-template/jaguarjs-jsdoc/node_modules
-old_data/
 OLD/
 node_modules/
+docs/formatting_example.*
 # dist/
 # docs/dist
 # docs/api
-docs/inProgress/
-docs/formatting_example.*
 

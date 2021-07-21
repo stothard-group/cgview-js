@@ -6,10 +6,12 @@ import Color from './Color';
 import utils from './Utils';
 import * as d3 from 'd3';
 
+
 /**
  * The canvas controls drawing and the map layers.
  */
 class Canvas {
+
 
   /**
    * - Adds several layers (canvases) for drawing
@@ -36,6 +38,9 @@ class Canvas {
     this.determinePixelRatio(container);
     this._layerNames = ['background', 'map', 'foreground', 'canvas', 'debug', 'ui'];
     this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
+
+    // This value is used to restrict the draw range for testing (see _testDrawRange)
+    this._drawRange = 0.4;
   }
 
   get pixelRatio() {
@@ -199,14 +204,16 @@ class Canvas {
       }
     } else if (layerName === 'background') {
       const ctx = this.context('background');
-      // ctx.clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       ctx.clearRect(0, 0, this.width, this.height);
       ctx.fillStyle = this.viewer.settings.backgroundColor.rgbaString;
-      // ctx.fillRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
       ctx.fillRect(0, 0, this.width, this.height);
     } else {
-      // this.context(layerName).clearRect(0, 0, CGV.pixel(this.width), CGV.pixel(this.height));
-      this.context(layerName).clearRect(0, 0, this.width, this.height);
+      // this.context(layerName).clearRect(0, 0, this.width, this.height);
+      if (this._testDrawRange) {
+        this.context(layerName).clearRect(0, 0, this.width / this._drawRange, this.height / this._drawRange);
+      } else {
+        this.context(layerName).clearRect(0, 0, this.width, this.height);
+      }
     }
   }
 
@@ -461,12 +468,13 @@ class Canvas {
 
   set _testDrawRange(value) {
     this.__testDrawRange = value;
+    console.log(this._drawRange);
     if (value) {
-      this.width = this.width * 0.4;
-      this.height = this.height * 0.4;
+      this.width = this.width * this._drawRange;
+      this.height = this.height * this._drawRange;
     } else {
-      this.width = this.width / 0.4;
-      this.height = this.height / 0.4;
+      this.width = this.width / this._drawRange;
+      this.height = this.height / this._drawRange;
     }
     this.viewer.drawFull();
   }
