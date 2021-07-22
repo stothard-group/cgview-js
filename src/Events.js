@@ -6,7 +6,7 @@
  * Events is a system to plug in callbacks to specific events in CGView.
  * Use [on](#on) to add a callback and [off](#off) to remove it.
  *
- * See individual [record types](../docs.html#section-details-by-record-type) for a list of event names.
+ * See individual [record types](../docs.html#s.details-by-record-type) for a list of event names.
  *
  * Here are a list of additional events supported in CGView:
  *

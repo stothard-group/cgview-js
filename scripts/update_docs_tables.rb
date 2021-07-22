@@ -21,7 +21,7 @@ klasses.each do |klass|
   klass_path = File.join(src_dir, "#{klass}.js")
   if File.exist?(klass_path)
     # Add html section start
-    tables_replacement += "<section id='section-#{klass}'>\n"
+    tables_replacement += "<section id='s.#{klass}'>\n"
     # Add Heading and link to class
     tables_replacement += "\n## [#{klass}](api/#{klass}.html)\n\n"
     file = File.read(klass_path)
@@ -66,7 +66,7 @@ klasses.each do |klass|
 
     # Add html section end
     tables_replacement += "</section>\n"
-    nav_replacement += "        <li><a class='side-link indent' href='#section-#{klass}'>#{klass}</a></li>\n"
+    nav_replacement += "        <li><a class='side-link indent' href='#s.#{klass}'>#{klass}</a></li>\n"
   else
     puts "File does not exist: '#{klass_path}'"
   end

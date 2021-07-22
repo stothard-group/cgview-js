@@ -49,19 +49,19 @@
     <!-- Side Nav -->
     <nav id='sidebar-nav'>
       <ul id='gumshoe-list' class='sidebar-list'>
-        <li><a class="side-link" href="#section-setup">Setup</a></li>
-        <li><a class="side-link" href="#section-overview">Overview</a></li>
-        <li><a class="side-link" href="#section-components">Components</a></li>
-        <li><a class="side-link" href="#section-record-actions">Record Actions</a></li>
-        <li><a class="side-link indent" href="#section-adding-records">Add</a></li>
-        <li><a class="side-link indent" href="#section-removing-records">Remove</a></li>
-        <li><a class="side-link indent" href="#section-updating-records">Update</a></li>
-        <li><a class="side-link indent" href="#section-reordering-records">Reorder</a></li>
-        <li><a class="side-link indent" href="#section-reading-records">Read</a></li>
-        <li><a class="side-link" href="#section-record-action-advantages">Advantages</a></li>
-        <li><a class="side-link" href="#section-events">Events</a></li>
-        <li><a class="side-link" href="#section-dirty-data">Dirty Data</a></li>
-        <li><a class="side-link" href="#section-details-by-record-type">Record Types</a></li>
+        <li><a class="side-link" href="#s.setup">Setup</a></li>
+        <li><a class="side-link" href="#s.overview">Overview</a></li>
+        <li><a class="side-link" href="#s.components">Components</a></li>
+        <li><a class="side-link" href="#s.record-actions">Record Actions</a></li>
+        <li><a class="side-link indent" href="#s.adding-records">Add</a></li>
+        <li><a class="side-link indent" href="#s.removing-records">Remove</a></li>
+        <li><a class="side-link indent" href="#s.updating-records">Update</a></li>
+        <li><a class="side-link indent" href="#s.reordering-records">Reorder</a></li>
+        <li><a class="side-link indent" href="#s.reading-records">Read</a></li>
+        <li><a class="side-link" href="#s.record-action-advantages">Advantages</a></li>
+        <li><a class="side-link" href="#s.events">Events</a></li>
+        <li><a class="side-link" href="#s.dirty-data">Dirty Data</a></li>
+        <li><a class="side-link" href="#s.details-by-record-type">Record Types</a></li>
         <!-- REPLACE_NAV START -->
         <li><a class='side-link indent' href='#section-Viewer'>Viewer</a></li>
         <li><a class='side-link indent' href='#section-Feature'>Feature</a></li>
@@ -91,7 +91,7 @@
 
     <div id='markdown-in' style='display:none;'>
 
-<section id="section-setup">
+<section id="s.setup">
 
 # Setup
 
@@ -151,7 +151,7 @@ import CGV from 'dist/cgview.es.min.js'
 <!-- ``` -->
 
 </section>
-<section id="section-overview">
+<section id="s.overview">
 
 # Overview
 
@@ -173,7 +173,7 @@ Slots | Description
  6    | Features are drawn separated by reading frame
 
 </section>
-<section id="section-components">
+<section id="s.components">
 
 # Components
 
@@ -202,7 +202,7 @@ Component                        | Accessor                                   | 
 [IO](api/IO.html)                    | [io](api/Viewer.html#io)                       | The IO object has methods for reading and writing data to and from the Viewer.
 [Legend](api/Legend.html)            | [legend](api/Viewer.html#legend)               | The Legend object contains the [LegendItems](api/LegendItem.html) which are used to color the features and plots.
 [Backbone](api/Backbone.html)        | [backbone](api/Viewer.html#backbone)           | The Backbone represents the sequence. Slots outside of the backbone show features on the forward strand, while inside slots show features on the reverse strand.
-[Layout](api/Layout.html)            | [layout](api/Viewer.html#layout)               | The Layout describes what's in each Track and how to lay them out.
+[Layout](api/Layout.html)            | [layout](api/Viewer.html#layout)               | The Layout handles drawing the map in different formats (e.g. circular, linear).
 [Ruler](api/Ruler.html)              | [ruler](api/Viewer.html#ruler)                 | The Ruler controls how the sequence ruler is drawn.
 [Annotation](api/Annotation.html)    | [annotation](api/Viewer.html#annotation)       | Annotation controls how feature labels are drawn.
 [Settings](api/Settings.html)        | [settings](api/Viewer.html#settings)           | Settings store general options for the viewer.
@@ -216,13 +216,13 @@ Component                        | Accessor                                   | 
 FeatureType                          | [featureType()](api/Viewer.html#featureTypes)  | Returns one or more FeatureTypes.
 
 </section>
-<section id="section-record-actions">
+<section id="s.record-actions">
 
 # Record Actions
 
 There are several actions that can be used to manipulate and access
 the different types of records (e.g. features, tracks, etc) in CGView:
-read, add, remove, update, and reorder.
+<em>read</em>, <em>add</em>, <em>remove</em>, <em>update</em>, and <em>reorder</em>.
 While it is possible to change record properties directly, see
 [Record Action Advantages](#record-action-advantages) to learn why
 it is not recommended. The action descriptions below use Features and
@@ -230,7 +230,7 @@ Tracks for the examples.  Action details by record type are also provided.
 All the examples use a Viewer instance: <em>cgv</em>.
 
 </section>
-<section id="section-adding-records">
+<section id="s.adding-records">
 
 ## Adding Records
 Adding records is done through methods on the Viewer Instance (e.g.
@@ -265,7 +265,7 @@ new CGV.Feature(cgv, featureData);
 ```
 
 </section>
-<section id="section-removing-records">
+<section id="s.removing-records">
 
 ## Removing Records
 Removing records is done through methods on the Viewer Instance (e.g. removeFeatures)
@@ -283,7 +283,7 @@ cgv.removeFeatures(features);
 ```
 
 </section>
-<section id="section-updating-records">
+<section id="s.updating-records">
 
 ## Updating Records
 Updating records is done through methods on the Viewer Instance (e.g. updateFeatures)
@@ -313,7 +313,7 @@ cgv.updateFeatures(updates);
 ```
 
 </section>
-<section id="section-reordering-records">
+<section id="s.reordering-records">
 
 ## Reordering Records
 For some records, the order is important (e.g. Tracks, Contigs, etc).
@@ -330,7 +330,7 @@ track.move(newIndex);
 ```
 
 </section>
-<section id="section-reading-records">
+<section id="s.reading-records">
 
 ## Reading Records
 Accessing records is done through methods on the Viewer Instance.
@@ -345,7 +345,7 @@ viewer.features('my_feature')
 ```
 
 </section>
-<section id="section-record-action-advantages">
+<section id="s.record-action-advantages">
 
 # Record Action Advantages
 
@@ -366,9 +366,9 @@ feature.update({start: 1234, stop: 2345});
 feature.update({strt: 1234});
 // => Error: Feature does not contain a 'strt' property.
 ```
-- The update methods trigger [events](#events) (e.g. 'features-update') that can be used as hooks.
+- The update methods trigger [events](#s.events) (e.g. 'features-update') that can be used as hooks.
 ```js
-cgv.on('features-update', (features) => {
+cgv.on('features-update', ({features}) => {
     const names = features.map( f => f.name );
     console.log(`The following features have been updated: ${names.join(', ')}`)
 });
@@ -386,21 +386,72 @@ cgv.redo();
 ```
 
 </section>
-<section id="section-events">
+<section id="s.events">
 
 # Events
-## Triggering Events
 
-Update events can also be triggered without changing properties.
-This can be useful if something beside the properties have changed (e.g. new features have been added to a track).
+Record actions (as described above) trigger events that can be used as hooks for callback functions. 
+
+Record Action | Event Name | Callback Arguments
+--------------|------------|---------------------------------------
+Add           | *-add      | Array of records added
+Remove        | *-remove   | Array of records removed
+Update        | *-update   | Object { <em>records</em><sup>1</sup>, attributes<sup>2</sup>, updates<sup>3</sup> }
+Reorder       | *-reorder  | Object { oldIndex, newIndex }
+
+- <sup>1</sup>Records: will be the name of the record type (e.g. features, tracks, etc).
+- <sup>2</sup>Attibutes: object of attributes used to change all of the records.
+- <sup>3</sup>Updates: object of attributes chagnes for individual records (see [Updating Records](#s.updating-records)).
+
+See individual [record types](#s.details-by-record-type) for a list of event names.
+
+## On
+
+Add a callback function to an event using [on()](api/Viewer.html#on).
+
 ```js
-feature.update();
-// Same as
-cgv.trigger('features-update');
+cgv.on('features-add', (features) => {
+  console.log(`Features added: ${features.length}`);
+});
 ```
 
+## Off
+
+Remove callbacks for an event using [off()](Viewer.html#off).
+
+```js
+cgv.off('features-add').
+```
+
+## Trigger
+
+Events can be triggered without changes to execute callback function.
+
+```js
+cgv.trigger('features-update', [feature]);
+// Same as
+feature.update();
+```
+
+## Other Events
+
+There are addtional events not associated with record actions.
+
+Event             | Description
+------------------|-----------------------------------------------------
+cgv-load-json     | Called when [IO.loadJSON()](api/IO.html#loadJSON) is executed
+mousemove         | Called when mouse moves on the Viewer. Returns [event-like object](api/EventMonitor.html)
+click             | Called when mouse clicks on the Viewer. Returns [event-like object](api/EventMonitor.html)
+zoom-start        | Called once before the viewer is zoomed or moved
+zoom              | Called every frame of the zoom or move
+zoom-end          | Called once after the viewer is zoomed or moved
+click             | Called when a click occurs in the viewer
+mousemove         | Calleed when the mouse moves in the viewer
+bookmark-shortcut | Called when a bookmark shortcur key is clicked
+
+
 </section>
-<section id="section-dirty-data">
+<section id="s.dirty-data">
 
 # Dirty Data
 
@@ -419,7 +470,7 @@ cgv.dataHasChanged
 ```
 
 </section>
-<section id="section-details-by-record-type">
+<section id="s.details-by-record-type">
 
 # Details by Record Type
 

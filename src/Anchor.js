@@ -156,7 +156,7 @@ class Anchor {
   }
 
   /**
-   * Returns JSON represtening this anchor, either as a name or an object with
+   * Returns JSON representing this anchor, either as a name or an object with
    * xPercent and yPercent properties.
    */
   toJSON() {

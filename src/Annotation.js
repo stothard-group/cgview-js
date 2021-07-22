@@ -15,10 +15,10 @@ import utils from './Utils';
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method                        | Annotation Method   | Event
- * ----------------------------------------|--------------------------------------|---------------------|-----
- * [Update](../docs.html#updating-records) | -                                    | [update()](#update) | annotation-update
- * [Read](../docs.html#reading-records)    | [annotation](Viewer.html#annotation) | -                   | -
+ * Action                                    | Viewer Method                        | Annotation Method   | Event
+ * ------------------------------------------|--------------------------------------|---------------------|-----
+ * [Update](../docs.html#s.updating-records) | -                                    | [update()](#update) | annotation-update
+ * [Read](../docs.html#s.reading-records)    | [annotation](Viewer.html#annotation) | -                   | -
  *
  * <a name="attributes"></a>
  * ### Attributes
@@ -418,7 +418,7 @@ class Annotation extends CGObject {
   }
 
   /**
-   * Update annotation [attributes](#attributes) as described in [Docs](../docs.html#section-updating-records)
+   * Update annotation [attributes](#attributes) as described in [Docs](../docs.html#s.-updating-records)
    */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
