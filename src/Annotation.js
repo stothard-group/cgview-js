@@ -32,6 +32,11 @@ import utils from './Utils';
  * [meta](CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Annotation
  *
  * ### Examples
+ * ```js
+ * cgv.annotation.update({
+ *   onlyDrawFavorites: true
+ * });
+ * ```
  *
  * @extends CGObject
  */
@@ -418,7 +423,9 @@ class Annotation extends CGObject {
   }
 
   /**
-   * Update annotation [attributes](#attributes) as described in [Docs](../docs.html#s.-updating-records)
+   * Update annotation [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
    */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
@@ -429,7 +436,7 @@ class Annotation extends CGObject {
   }
 
   /**
-   * Returns JSON representing the annotation
+   * Returns JSON representing the object
    */
   toJSON(options = {}) {
     const json = {

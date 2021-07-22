@@ -247,7 +247,11 @@
             
                 <li data-name="Backbone#pixelsPerBp"><a href="Backbone.html#pixelsPerBp">pixelsPerBp</a></li>
             
+                <li data-name="Backbone#toJSON"><a href="Backbone.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Backbone#toString"><a href="Backbone.html#toString">toString</a></li>
+            
+                <li data-name="Backbone#update"><a href="Backbone.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -302,7 +306,11 @@
             
                 <li data-name="Bookmark#remove"><a href="Bookmark.html#remove">remove</a></li>
             
+                <li data-name="Bookmark#toJSON"><a href="Bookmark.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Bookmark#toString"><a href="Bookmark.html#toString">toString</a></li>
+            
+                <li data-name="Bookmark#update"><a href="Bookmark.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -2162,25 +2170,25 @@ in a input field, the map will move to the bookmark position.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../docs.html#adding-records">Add</a></td>
+<td><a href="../docs.html#s.adding-records">Add</a></td>
 <td><a href="Viewer.html#addBookmarks">addBookmarks()</a></td>
 <td>-</td>
 <td>bookmarks-add</td>
 </tr>
 <tr>
-<td><a href="../docs.html#updating-records">Update</a></td>
+<td><a href="../docs.html#s.updating-records">Update</a></td>
 <td><a href="Viewer.html#updateBookmarks">updateBookmarks()</a></td>
 <td><a href="#update">update()</a></td>
 <td>bookmarks-update</td>
 </tr>
 <tr>
-<td><a href="../docs.html#removing-records">Remove</a></td>
+<td><a href="../docs.html#s.removing-records">Remove</a></td>
 <td><a href="Viewer.html#removeBookmarks">removeBookmarks()</a></td>
 <td><a href="#remove">remove()</a></td>
 <td>bookmarks-remove</td>
 </tr>
 <tr>
-<td><a href="../docs.html#reading-records">Read</a></td>
+<td><a href="../docs.html#s.reading-records">Read</a></td>
 <td><a href="Viewer.html#bookmarks">bookmarks()</a></td>
 <td>-</td>
 <td>-</td>
@@ -2234,11 +2242,6 @@ in a input field, the map will move to the bookmark position.</p>
 <td>Bookmark is a favorite [Default: false]</td>
 </tr>
 <tr>
-<td><a href="CGObject.html#visible">visible</a></td>
-<td>Boolean</td>
-<td>Bookmark is visible [Default: true]</td>
-</tr>
-<tr>
 <td><a href="CGObject.html#meta">meta</a></td>
 <td>Object</td>
 <td><a href="../tutorials/details-meta-data.html">Meta data</a> for Bookmark</td>
@@ -2282,7 +2285,7 @@ cgv.bookmarks().length;
     
         
         <div class="tag-source">
-            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line75">line 75</a>
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line73">line 73</a>
         </div>
         
     </div>
@@ -3097,12 +3100,12 @@ cgv.bookmarks().length;
     <div class="nameContainer">
         <h4 class="name" id="moveTo">
             
-            moveTo<span class="signature">()</span>
+            moveTo<span class="signature">(duration)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line195">line 195</a>
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line200">line 200</a>
         </div>
         
     </div>
@@ -3121,6 +3124,59 @@ cgv.bookmarks().length;
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1000
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                <p>length of time for the animation</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3173,7 +3229,7 @@ cgv.bookmarks().length;
     
         
         <div class="tag-source">
-            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line188">line 188</a>
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line192">line 192</a>
         </div>
         
     </div>
@@ -3184,7 +3240,79 @@ cgv.bookmarks().length;
     
     
     <div class="description">
-        <p>Remove bookmark...</p>
+        <p>Remove bookmark.
+See <a href="../docs.html#s.removing-records">removing records</a> for details.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="toJSON">
+            
+            toJSON<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line225">line 225</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns JSON representing the object</p>
     </div>
     
 
@@ -3244,7 +3372,7 @@ cgv.bookmarks().length;
     
         
         <div class="tag-source">
-            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line96">line 96</a>
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line94">line 94</a>
         </div>
         
     </div>
@@ -3333,6 +3461,123 @@ cgv.bookmarks().length;
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            
+            update<span class="signature">(attributes)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Bookmark.js.html">Bookmark.js</a>, <a href="Bookmark.js.html#line184">line 184</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Update bookmark <a href="#attributes">attributes</a>.
+See <a href="../docs.html#s.updating-records">updating records</a> for details.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Object describing the properties to change</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3350,7 +3595,8 @@ cgv.bookmarks().length;
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 16:41:58 GMT-0600 (Mountain Daylight Time) -->
+           Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
 </div>

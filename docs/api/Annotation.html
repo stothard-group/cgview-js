@@ -247,7 +247,11 @@
             
                 <li data-name="Backbone#pixelsPerBp"><a href="Backbone.html#pixelsPerBp">pixelsPerBp</a></li>
             
+                <li data-name="Backbone#toJSON"><a href="Backbone.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Backbone#toString"><a href="Backbone.html#toString">toString</a></li>
+            
+                <li data-name="Backbone#update"><a href="Backbone.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -302,7 +306,11 @@
             
                 <li data-name="Bookmark#remove"><a href="Bookmark.html#remove">remove</a></li>
             
+                <li data-name="Bookmark#toJSON"><a href="Bookmark.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Bookmark#toString"><a href="Bookmark.html#toString">toString</a></li>
+            
+                <li data-name="Bookmark#update"><a href="Bookmark.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -2157,13 +2165,13 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../docs.html#updating-records">Update</a></td>
+<td><a href="../docs.html#s.updating-records">Update</a></td>
 <td>-</td>
 <td><a href="#update">update()</a></td>
 <td>annotation-update</td>
 </tr>
 <tr>
-<td><a href="../docs.html#reading-records">Read</a></td>
+<td><a href="../docs.html#s.reading-records">Read</a></td>
 <td><a href="Viewer.html#annotation">annotation</a></td>
 <td>-</td>
 <td>-</td>
@@ -2208,7 +2216,11 @@
 </tr>
 </tbody>
 </table>
-<h3>Examples</h3></div>
+<h3>Examples</h3>
+<pre class="prettyprint source lang-js"><code>cgv.annotation.update({
+  onlyDrawFavorites: true
+});
+</code></pre></div>
     
 </header>  
 
@@ -2227,7 +2239,7 @@
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line46">line 46</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line51">line 51</a>
         </div>
         
     </div>
@@ -2938,7 +2950,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line156">line 156</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line161">line 161</a>
         </div>
         
     </div>
@@ -3127,7 +3139,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line317">line 317</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line322">line 322</a>
         </div>
         
     </div>
@@ -3198,7 +3210,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line148">line 148</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line153">line 153</a>
         </div>
         
     </div>
@@ -3349,7 +3361,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line164">line 164</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line169">line 169</a>
         </div>
         
     </div>
@@ -3468,7 +3480,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line434">line 434</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line441">line 441</a>
         </div>
         
     </div>
@@ -3479,7 +3491,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
     
     <div class="description">
-        <p>Returns JSON representing the annotation</p>
+        <p>Returns JSON representing the object</p>
     </div>
     
 
@@ -3539,7 +3551,7 @@ be drawn and then the 40 largest features will be drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line68">line 68</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line73">line 73</a>
         </div>
         
     </div>
@@ -3636,12 +3648,12 @@ be drawn and then the 40 largest features will be drawn.</p>
     <div class="nameContainer">
         <h4 class="name" id="update">
             
-            update<span class="signature">()</span>
+            update<span class="signature">(attributes)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line423">line 423</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line430">line 430</a>
         </div>
         
     </div>
@@ -3652,7 +3664,8 @@ be drawn and then the 40 largest features will be drawn.</p>
     
     
     <div class="description">
-        <p>Update annotation <a href="#attributes">attributes</a> as described in <a href="../docs.html#section-updating-records">Docs</a></p>
+        <p>Update annotation <a href="#attributes">attributes</a>.
+See <a href="../docs.html#s.updating-records">updating records</a> for details.</p>
     </div>
     
 
@@ -3660,6 +3673,51 @@ be drawn and then the 40 largest features will be drawn.</p>
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Object describing the properties to change</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3718,7 +3776,8 @@ be drawn and then the 40 largest features will be drawn.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 16:41:58 GMT-0600 (Mountain Daylight Time) -->
+           Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
 </div>

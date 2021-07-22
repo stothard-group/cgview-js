@@ -300,6 +300,7 @@ li {
 }
 .main table .type {
   width: 60px;
+  /* max-width: 110px; /*JRG*/ */
   color: #aaa;
   font-size: 11px;
 }

@@ -15,12 +15,12 @@ import utils from './Utils';
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method                                    | Bookmark Method     | Event
- * ----------------------------------------|--------------------------------------------------|---------------------|-----
- * [Add](../docs.html#adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                   | bookmarks-add
- * [Update](../docs.html#updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](#update) | bookmarks-update
- * [Remove](../docs.html#removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](#remove) | bookmarks-remove
- * [Read](../docs.html#reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                   | -
+ * Action                                    | Viewer Method                                    | Bookmark Method     | Event
+ * ------------------------------------------|--------------------------------------------------|---------------------|-----
+ * [Add](../docs.html#s.adding-records)      | [addBookmarks()](Viewer.html#addBookmarks)       | -                   | bookmarks-add
+ * [Update](../docs.html#s.updating-records) | [updateBookmarks()](Viewer.html#updateBookmarks) | [update()](#update) | bookmarks-update
+ * [Remove](../docs.html#s.removing-records) | [removeBookmarks()](Viewer.html#removeBookmarks) | [remove()](#remove) | bookmarks-remove
+ * [Read](../docs.html#s.reading-records)    | [bookmarks()](Viewer.html#bookmarks)             | -                   | -
  *
  * <a name="attributes"></a>
  * ### Attributes
@@ -34,7 +34,6 @@ import utils from './Utils';
  * [bbOffset](#bbOffset)            | Number    | Distance from the backbone to the center of the canvas [Default: 0]
  * [shortcut](#shortcut)            | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
  * [favorite](#favorite)            | Boolean   | Bookmark is a favorite [Default: false]
- * [visible](CGObject.html#visible) | Boolean   | Bookmark is visible [Default: true]
  * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html) for Bookmark
  *
  * ### Examples
@@ -64,7 +63,6 @@ class Bookmark extends CGObject {
 
   // TODO:
   //  - Offsets of 0 do not need to be saved to json as they will be the default
-  //  - Bookmarks need to handle contigs. How?
 
   /**
    * Create a new bookmark.
@@ -178,12 +176,18 @@ class Bookmark extends CGObject {
     this._shortcut = ([undefined, null, ''].includes(value)) ? undefined : String(value).charAt(0);
   }
 
+  /**
+   * Update bookmark [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateBookmarks(this, attributes);
   }
 
   /**
-   * Remove bookmark...
+   * Remove bookmark.
+   * See [removing records](../docs.html#s.removing-records) for details.
    */
   remove() {
     this.viewer.removeBookmarks(this);
@@ -191,6 +195,7 @@ class Bookmark extends CGObject {
 
   /**
    * Move and zoom the map to this Bookmarks position.
+   * @param {Number} duration - length of time for the animation
    */
   moveTo(duration = 1000) {
     if (this.viewer.format !== this.format) {
@@ -214,6 +219,9 @@ class Bookmark extends CGObject {
   }
 
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       name: this.name,

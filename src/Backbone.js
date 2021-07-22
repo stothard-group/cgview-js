@@ -7,15 +7,16 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * The CGView Backbone is the ring that separates the direct and reverse slots
- * of the map.
+ * The CGView Backbone represents the sequence of the map. When zoomed in far
+ * enough the sequence will be shown on the backbone. If contigs are present,
+ * they will be represented as arcs or arrows on the backbone.
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method                   | Backbone Method      | Event
- * ----------------------------------------|--------------------------------- |---------------------|-----
- * [Update](../docs.html#updating-records) | -                                | [update()](#update) | backbone-update
- * [Read](../docs.html#reading-records)    | [backbone](Viewer.html#backbone) | -                   | -
+ * Action                                    | Viewer Method                   | Backbone Method      | Event
+ * ------------------------------------------|--------------------------------- |---------------------|-----
+ * [Update](../docs.html#s.updating-records) | -                                | [update()](#update) | backbone-update
+ * [Read](../docs.html#s.reading-records)    | [backbone](Viewer.html#backbone) | -                   | -
  *
  * <a name="attributes"></a>
  * ### Attributes
@@ -30,6 +31,10 @@ import utils from './Utils';
  * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html)
  *
  * ### Examples
+ * ```js
+ * cgv.backbone.update({
+ *   thickness: 20
+ * });
  *
  * @extends CGObject
  */
@@ -294,6 +299,11 @@ class Backbone extends CGObject {
     }
   }
 
+  /**
+   * Update backbone [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Backbone',
@@ -302,6 +312,9 @@ class Backbone extends CGObject {
     this.viewer.trigger('backbone-update', { attributes });
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       color: this.color.rgbaString,

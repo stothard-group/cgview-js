@@ -247,7 +247,11 @@
             
                 <li data-name="Backbone#pixelsPerBp"><a href="Backbone.html#pixelsPerBp">pixelsPerBp</a></li>
             
+                <li data-name="Backbone#toJSON"><a href="Backbone.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Backbone#toString"><a href="Backbone.html#toString">toString</a></li>
+            
+                <li data-name="Backbone#update"><a href="Backbone.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -302,7 +306,11 @@
             
                 <li data-name="Bookmark#remove"><a href="Bookmark.html#remove">remove</a></li>
             
+                <li data-name="Bookmark#toJSON"><a href="Bookmark.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Bookmark#toString"><a href="Bookmark.html#toString">toString</a></li>
+            
+                <li data-name="Bookmark#update"><a href="Bookmark.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -2144,8 +2152,9 @@
     Backbone
     </h2>
     
-        <div class="class-description"><p>The CGView Backbone is the ring that separates the direct and reverse slots
-of the map.</p>
+        <div class="class-description"><p>The CGView Backbone represents the sequence of the map. When zoomed in far
+enough the sequence will be shown on the backbone. If contigs are present,
+they will be represented as arcs or arrows on the backbone.</p>
 <h3>Action and Events</h3>
 <table>
 <thead>
@@ -2158,13 +2167,13 @@ of the map.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../docs.html#updating-records">Update</a></td>
+<td><a href="../docs.html#s.updating-records">Update</a></td>
 <td>-</td>
 <td><a href="#update">update()</a></td>
 <td>backbone-update</td>
 </tr>
 <tr>
-<td><a href="../docs.html#reading-records">Read</a></td>
+<td><a href="../docs.html#s.reading-records">Read</a></td>
 <td><a href="Viewer.html#backbone">backbone</a></td>
 <td>-</td>
 <td>-</td>
@@ -2214,7 +2223,10 @@ of the map.</p>
 </tr>
 </tbody>
 </table>
-<h3>Examples</h3></div>
+<h3>Examples</h3>
+<pre class="prettyprint source lang-js"><code>cgv.backbone.update({
+  thickness: 20
+});</code></pre></div>
     
 </header>  
 
@@ -2233,7 +2245,7 @@ of the map.</p>
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line44">line 44</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line49">line 49</a>
         </div>
         
     </div>
@@ -3161,7 +3173,7 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line210">line 210</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line215">line 215</a>
         </div>
         
     </div>
@@ -3379,7 +3391,7 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line220">line 220</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line225">line 225</a>
         </div>
         
     </div>
@@ -3479,7 +3491,7 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line228">line 228</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line233">line 233</a>
         </div>
         
     </div>
@@ -3572,6 +3584,77 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="toJSON">
+            
+            toJSON<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line318">line 318</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns JSON representing the object</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="toString">
             
             toString<span class="signature">()</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{String}</span>
@@ -3579,7 +3662,7 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
     
         
         <div class="tag-source">
-            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line61">line 61</a>
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line66">line 66</a>
         </div>
         
     </div>
@@ -3670,6 +3753,123 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            
+            update<span class="signature">(attributes)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Backbone.js.html">Backbone.js</a>, <a href="Backbone.js.html#line307">line 307</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Update backbone <a href="#attributes">attributes</a>.
+See <a href="../docs.html#s.updating-records">updating records</a> for details.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Object describing the properties to change</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3687,7 +3887,8 @@ The first contigs will be use <em>color</em>, the second will use <em>colorAlter
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 16:41:58 GMT-0600 (Mountain Daylight Time) -->
+           Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
 </div>

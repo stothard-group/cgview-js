@@ -234,7 +234,7 @@ class Viewer {
   }
 
   /**
-   * @member {Layout} - Get the map [annotation](Annotation.html) object
+   * @member {Annotation} - Get the map [annotation](Annotation.html) object
    */
   get annotation() {
     return this._annotation;
@@ -926,16 +926,20 @@ class Viewer {
   }
 
   /**
-   * Returns an [CGArray](CGArray.html) of Bookmarks or a single Bookmark from all the Bookmarks in the viewer.
+   * Returns a [CGArray](CGArray.html) of Bookmarks or a single Bookmark.
+   * See [reading records](../docs.html#s.reading-records) for details.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-   * @return {CGArray}
+   * @return {Bookmark|CGArray<Bookmark>}
    */
   bookmarks(term) {
     return this._bookmarks.get(term);
   }
 
   /**
-   * Adds bookmarks to the viewer...
+   * Add one or more [Bookmarks](Bookmark.html) (see [attributes](Bookmark.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the bookmarks
+   * @return {CGArray<Bookmark>} CGArray of added bookmarks
    */
   addBookmarks(bookmarkData = []) {
     bookmarkData = CGArray.arrayerize(bookmarkData);
@@ -945,7 +949,9 @@ class Viewer {
   }
 
   /**
-   * Remove bookmarks...
+   * Remove bookmarks.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * @param {Bookmark | Array} bookmarks - Bookmark or a array of bookmarks to remove
    */
   removeBookmarks(bookmarks) {
     bookmarks = CGArray.arrayerize(bookmarks);
@@ -960,7 +966,10 @@ class Viewer {
   }
 
   /**
-   * Update bookmark properties to the viewer.
+   * Update [attributes](Bookmark.html#attributes) for one or more bookmarks.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Bookmark | Array| Object } bookmarksOrUpdates - Bookmark, array of bookmarks or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
    */
   updateBookmarks(bookmarksOrUpdates, attributes) {
     const { records: bookmarks, updates } = this.updateRecords(bookmarksOrUpdates, attributes, {
