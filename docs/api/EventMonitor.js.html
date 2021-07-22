@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2133,11 +2147,44 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * &lt;br />
- * EventMonitor monitor events on the CGView Canvas and triggers events.
+ * EventMonitor sets up mouse click and movement event handlers on the CGView canvas.
+ *
+ * CGView event contents (based on mouse position):
+ *
+ * Property   | Description
+ * -----------|-----------------------------------------------
+ *  bp        | Base pair
+ *  centerOffset | Distance from center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
+ *  elementType | One of: 'legendItem', 'caption', 'feature', 'plot', 'backbone', 'contig', 'label', or undefined
+ *  element   | The element (e.g, a feature), if there is one.
+ *  slot      | Slot (if there is one). Track can be accessed from the slot (&lt;em>slot.track&lt;/em>).
+ *  score     | Score for element (e.g. feature, plot), if available.
+ *  canvasX   | Position on the canvas X axis, where the origin is the top-left. See [scales](../tutorials/details-map-scales.html) for details.
+ *  canvasY   | Position on the canvas Y axis, where the origin is the top-left. See [scales](../tutorials/details-map-scales.html) for details.
+ *  mapX      | Position on the map domain X axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
+ *  mapY      | Position on the map domain Y axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
+ *  d3        | The d3 event object.
+ *
+ * ### Examples
+ * ```js
+ * // Log the feature name when clicked
+ * cgv.on('click', (event) => {
+ *   if (event.elementType === 'feature') {
+ *     console.log(`Feature '${event.element.name}' was clicked`);
+ *   }
+ * });
+ *
+ * // Log the base pair position of the mouse as it moves
+ * cgv.on('mousemove', (event) => {
+ *   console.log(`BP: ${event.bp}`);
+ * });
+ * ```
  */
 class EventMonitor {
 
+  /**
+   * Adds event handlers for mouse clicks and movement
+   */
   constructor(viewer) {
     this._viewer = viewer;
 
@@ -2148,7 +2195,7 @@ class EventMonitor {
     this._initializeClick();
     this._initializeBookmarkShortcuts();
     // this.events.on('mousemove', (e) => {console.log(e.bp)})
-    this.events.on('click', (e) => {console.log(e);});
+    // this.events.on('click', (e) => {console.log(e);});
     // MoveTo On click
     // this.events.on('click', (e) => {
     //   if (e.feature) {
@@ -2185,6 +2232,10 @@ class EventMonitor {
     return this.viewer.canvas;
   }
 
+  /**
+   * Initialize mouse move events under 'cgv' namespace.
+   * @private
+   */
   _initializeMousemove() {
     const viewer = this.viewer;
     d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
@@ -2192,6 +2243,11 @@ class EventMonitor {
       this.events.trigger('mousemove', this._createEvent(d3.event));
     });
   }
+
+  /**
+   * Initialize clicks events under 'cgv' namespace.
+   * @private
+   */
   _initializeClick() {
     d3.select(this.canvas.node('ui')).on('click.cgv', () => {
       // event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
@@ -2214,6 +2270,11 @@ class EventMonitor {
     });
   }
 
+  /**
+   * Create an event object that will be return on mouse clicks and movement
+   * @param {Object} d3Event - a d3 event object
+   * @private
+   */
   _createEvent(d3Event) {
     if (this.viewer.loading) { return {}; }
     const scale = this.viewer.layout.scale;
@@ -2257,6 +2318,7 @@ class EventMonitor {
    * @param {Number}  centerOffset - the centerOffset for the event.
    *
    * @returns {Object} Obejct with properties: element and elementType
+   * @private
    */
   _getElement(slot, bp, centerOffset, canvasX, canvasY) {
     let elementType, element;
@@ -2405,7 +2467,7 @@ export default EventMonitor;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:32 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

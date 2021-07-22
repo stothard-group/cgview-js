@@ -84,17 +84,22 @@ The bp scale differs depending on the layout:
    - Circular: the bp scale converts the circle angle to a basepair. This scale is not zoom depedent.
    - Linear: the bp scale converts basepair to distance on the x axis. This distance is zoom dependent.
 
-The scales are accessed directly through the viewer object:
+The scales are accessed directly through the viewer object, here shown as <em>cgv</em>.
 
 ```js
-viewer.scale
+cgv.scale
 // => {bp: function, x: function, y: function}
 
 ```
 
 
-<img src='../images/scale_circular.png' width='100%'>
-<img src='../images/scale_linear.png' width='100%'>
+## Circular Layout
+<img src='../images/scale_circular.png' width='100%' style="max-width:700px;display:block;margin:auto">
+
+---
+
+## Linear Layout
+<img src='../images/scale_linear.png' width='100%' style="max-width:700px;display:block;margin:auto">
 
 
 

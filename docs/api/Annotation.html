@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2132,10 +2146,30 @@
     
         <div class="class-description"><p>Annotation controls the drawing and layout of features labels</p>
 <h3>Action and Events</h3>
-<p>Action                                  | Viewer Method                        | Annotation Method                  | Event
-----------------------------------------|--------------------------------------|------------  -------|-----
-<a href="../docs.html#updating-records">Update</a> | -                                    | <a href="#update">update()</a> | annotation-update
-<a href="../docs.html#reading-records">Read</a>    | <a href="Viewer.html#annotation">annotation</a> | -                   | -</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Viewer Method</th>
+<th>Annotation Method</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../docs.html#updating-records">Update</a></td>
+<td>-</td>
+<td><a href="#update">update()</a></td>
+<td>annotation-update</td>
+</tr>
+<tr>
+<td><a href="../docs.html#reading-records">Read</a></td>
+<td><a href="Viewer.html#annotation">annotation</a></td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
 <p><a name="attributes"></a></p>
 <h3>Attributes</h3>
 <table>
@@ -2193,7 +2227,7 @@
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line50">line 50</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line46">line 46</a>
         </div>
         
     </div>
@@ -2440,7 +2474,9 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the label color. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
+        <p>Get or set the label color. When setting the color, a
+string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For
+details see <a href="Color.html"><code>Color</code></a>.</p>
     </div>
     
     
@@ -2485,7 +2521,9 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the font. When setting the font, a string representing the font or a <a href="Font.html"><code>Font</code></a> object can be used. For details see <a href="Font.html"><code>Font</code></a>.</p>
+        <p>Get or set the font. When setting the font, a string
+representing the font or a <a href="Font.html"><code>Font</code></a> object can be used. For details
+see <a href="Font.html"><code>Font</code></a>.</p>
     </div>
     
     
@@ -2710,11 +2748,12 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the number of priority labels that will be drawn for sure.
-If they overlap the label will be moved until they no longer overlap.
-Priority is defined as features that are marked as a &quot;favorite&quot;. After favorites,
-features are sorted by size. For example, if priorityMax is 50 and there are 10 &quot;favorite&quot;
-features. The favorites will be drawn and then the 40 largest features will be drawn.</p>
+        <p>Get or set the number of priority labels that will be
+drawn for sure. If they overlap the label will be moved until they no
+longer overlap. Priority is defined as features that are marked as a
+&quot;favorite&quot;. After favorites, features are sorted by size. For example, if
+priorityMax is 50 and there are 10 &quot;favorite&quot; features. The favorites will
+be drawn and then the 40 largest features will be drawn.</p>
     </div>
     
     
@@ -3081,6 +3120,77 @@ features. The favorites will be drawn and then the 40 largest features will be d
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="invertColors">
+            
+            invertColors<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line317">line 317</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Invert color</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="labels">
             
             labels<span class="signature">(term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
@@ -3088,7 +3198,7 @@ features. The favorites will be drawn and then the 40 largest features will be d
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line147">line 147</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line148">line 148</a>
         </div>
         
     </div>
@@ -3239,7 +3349,7 @@ features. The favorites will be drawn and then the 40 largest features will be d
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line165">line 165</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line164">line 164</a>
         </div>
         
     </div>
@@ -3351,6 +3461,77 @@ features. The favorites will be drawn and then the 40 largest features will be d
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="toJSON">
+            
+            toJSON<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line434">line 434</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns JSON representing the annotation</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="toString">
             
             toString<span class="signature">()</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{String}</span>
@@ -3358,7 +3539,7 @@ features. The favorites will be drawn and then the 40 largest features will be d
     
         
         <div class="tag-source">
-            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line72">line 72</a>
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line68">line 68</a>
         </div>
         
     </div>
@@ -3449,6 +3630,77 @@ features. The favorites will be drawn and then the 40 largest features will be d
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            
+            update<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Annotation.js.html">Annotation.js</a>, <a href="Annotation.js.html#line423">line 423</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Update annotation <a href="#attributes">attributes</a> as described in <a href="../docs.html#section-updating-records">Docs</a></p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3466,7 +3718,7 @@ features. The favorites will be drawn and then the 40 largest features will be d
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:32 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

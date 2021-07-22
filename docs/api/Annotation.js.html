@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2132,22 +2146,18 @@
 import CGObject from './CGObject';
 import CGArray from './CGArray';
 import Font from './Font';
+import Color from './Color';
 import NCList from './NCList';
 import Rect from './Rect';
 import utils from './Utils';
-
-// TEMP
-import Box from './Box';
-import Color from './Color';
-import CGRange from './CGRange';
 
 /**
  * Annotation controls the drawing and layout of features labels
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method                        | Annotation Method                  | Event
- * ----------------------------------------|--------------------------------------|------------  -------|-----
+ * Action                                  | Viewer Method                        | Annotation Method   | Event
+ * ----------------------------------------|--------------------------------------|---------------------|-----
  * [Update](../docs.html#updating-records) | -                                    | [update()](#update) | annotation-update
  * [Read](../docs.html#reading-records)    | [annotation](Viewer.html#annotation) | -                   | -
  *
@@ -2201,7 +2211,9 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Color} - Get or set the label color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+   * @member {Color} - Get or set the label color. When setting the color, a
+   * string representing the color or a {@link Color} object can be used. For
+   * details see {@link Color}.
    */
   get color() {
     return this._color;
@@ -2227,11 +2239,12 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Number} - Get or set the number of priority labels that will be drawn for sure.
-   *    If they overlap the label will be moved until they no longer overlap.
-   *    Priority is defined as features that are marked as a "favorite". After favorites,
-   *    features are sorted by size. For example, if priorityMax is 50 and there are 10 "favorite"
-   *    features. The favorites will be drawn and then the 40 largest features will be drawn.
+   * @member {Number} - Get or set the number of priority labels that will be
+   * drawn for sure. If they overlap the label will be moved until they no
+   * longer overlap. Priority is defined as features that are marked as a
+   * "favorite". After favorites, features are sorted by size. For example, if
+   * priorityMax is 50 and there are 10 "favorite" features. The favorites will
+   * be drawn and then the 40 largest features will be drawn.
    */
   get priorityMax() {
     return this._priorityMax;
@@ -2242,7 +2255,9 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+   * @member {Font} - Get or set the font. When setting the font, a string
+   * representing the font or a {@link Font} object can be used. For details
+   * see {@link Font}.
    */
   get font() {
     return this._font;
@@ -2277,7 +2292,6 @@ class Annotation extends CGObject {
 
   /**
    * Add a new label to the set.
-   *
    * @param {Label} label - The Label to add to the set.
    */
   addLabel(label) {
@@ -2286,7 +2300,6 @@ class Annotation extends CGObject {
 
   /**
    * Remove a label or an array of labels from the set.
-   *
    * @param {Label|Array} labels - The Label(s) to remove from the set.
    */
   removeLabels(labels) {
@@ -2416,7 +2429,6 @@ class Annotation extends CGObject {
     return labelArray;
   }
 
-
   // Labels must already be sorted so favorite are first
   _onlyFavoriteLabels(labels) {
     labels = labels || this._labels;
@@ -2440,6 +2452,9 @@ class Annotation extends CGObject {
     return labels;
   }
 
+  /**
+   * Invert color
+   */
   invertColors() {
     if (this.color) {
       this.update({ color: this.color.invert().rgbaString });
@@ -2543,6 +2558,9 @@ class Annotation extends CGObject {
     }
   }
 
+  /**
+   * Update annotation [attributes](#attributes) as described in [Docs](../docs.html#section-updating-records)
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Annotation',
@@ -2551,6 +2569,9 @@ class Annotation extends CGObject {
     this.viewer.trigger('annotation-update', { attributes });
   }
 
+  /**
+   * Returns JSON representing the annotation
+   */
   toJSON(options = {}) {
     const json = {
       font: this.font.string,
@@ -2583,7 +2604,7 @@ export default Annotation;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:32 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2130,14 +2144,6 @@
  * @version 0.2
  * @requires D3
  */
-
-// const CGView = {};
-//
-// CGView.version = '0.2';
-// console.log(`CGView Version: ${CGView.version}`);
-//
-// if (window.CGV === undefined) window.CGV = CGView;
-
 import utils from './Utils';
 import CGArray from './CGArray';
 import Canvas from './Canvas';
@@ -2219,7 +2225,7 @@ import * as d3 from 'd3';
  * cgv.draw()
  * ```
  *
- * See [tutorials](../tutorials/index.html) to learn more about making maps.
+ * See the [tutorials](../tutorials/index.html) to learn more about making maps.
  */
 class Viewer {
 
@@ -2271,7 +2277,7 @@ class Viewer {
     // Initialize DragAndDrop
     this.allowDragAndDrop = utils.defaultFor(options.allowDragAndDrop, true);
     // Initialize Events
-    this.events = new Events();
+    this._events = new Events();
     // Initialize Sequence
     this._sequence = new Sequence(this, options.sequence);
     // Initialize Backbone
@@ -2289,7 +2295,7 @@ class Viewer {
     // Initialize Slot Divider
     this.dividers = new Dividers(this, options.dividers);
     // Initialize Annotation
-    this.annotation = new Annotation(this, options.annotation);
+    this._annotation = new Annotation(this, options.annotation);
     // Initialize Ruler
     this.ruler = new Ruler(this, options.ruler);
     // Initialize Highlighter
@@ -2362,11 +2368,20 @@ class Viewer {
   }
 
   /**
-   * @member {Layout} - Get the map layout object.
+   * @member {Layout} - Get the map [layout](Layout.html) object
    */
   get layout() {
     return this._layout;
   }
+
+  /**
+   * @member {Layout} - Get the map [annotation](Annotation.html) object
+   */
+  get annotation() {
+    return this._annotation;
+  }
+
+
 
   /**
    * @member {String} - Get or set the map name
@@ -2536,6 +2551,13 @@ class Viewer {
   set dataHasChanged(value) {
     // console.log('DATA', value)
     this._dataHasChanged = value;
+  }
+
+  /**
+   * Get the [Events](Events.html) object.
+   */
+  get events() {
+    return this._events;
   }
 
 
@@ -3420,14 +3442,23 @@ class Viewer {
     this.draw();
   }
 
+  /**
+   * See [Events.on()](Events.html#on) 
+   */
   on(event, callback) {
     this.events.on(event, callback);
   }
 
+  /**
+   * See [Events.off()](Events.html#off) 
+   */
   off(event, callback) {
     this.events.off(event, callback);
   }
 
+  /**
+   * See [Events.trigger()](Events.html#trigger) 
+   */
   trigger(event, object) {
     this.events.trigger(event, object);
     // Almost all events will results in data changing with the following exceptions
@@ -3457,7 +3488,7 @@ export default Viewer;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:32 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

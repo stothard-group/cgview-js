@@ -25,7 +25,6 @@ import utils from './Utils';
  * bottom-left      | 0        | 100
  * bottom-center    | 50       | 100
  * bottom-right     | 100      | 100
- *
  */
 class Anchor {
 
@@ -156,6 +155,10 @@ class Anchor {
     }
   }
 
+  /**
+   * Returns JSON represtening this anchor, either as a name or an object with
+   * xPercent and yPercent properties.
+   */
   toJSON() {
     if (this.auto) {
       return 'auto';

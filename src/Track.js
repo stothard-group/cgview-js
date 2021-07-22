@@ -35,7 +35,7 @@ import utils from './Utils';
  * [position](#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
  * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
  * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
- * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used interanlly by workers.
+ * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
  * [favorite](#favorite)             | Boolean   | Track is a favorite [Default: false]
  * [visible](CGObject.html#visible)  | Boolean   | Track is visible [Default: true]
  * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html) for Track

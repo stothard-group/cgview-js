@@ -170,7 +170,7 @@ class IO {
     // Backbone
     viewer.backbone = new Backbone(viewer, data.backbone);
     // Annotation
-    viewer.annotation = new Annotation(viewer, data.annotation);
+    viewer._annotation = new Annotation(viewer, data.annotation);
     // Slot Dividers
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer.dividers = new Dividers(viewer, data.dividers);

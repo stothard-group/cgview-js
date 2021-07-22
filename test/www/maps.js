@@ -9,7 +9,7 @@ maps = {
   },
   large: {
     name: 'L. guizhouensis [9,997,872 bp]',
-    url: 'map/lentzea.json',
+    url: 'maps/lentzea.json',
   },
   large_noplots: {
     name: 'L. guizhouensis No Plots [9,997,872 bp]',

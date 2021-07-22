@@ -3,14 +3,6 @@
  * @version 0.2
  * @requires D3
  */
-
-// const CGView = {};
-//
-// CGView.version = '0.2';
-// console.log(`CGView Version: ${CGView.version}`);
-//
-// if (window.CGV === undefined) window.CGV = CGView;
-
 import utils from './Utils';
 import CGArray from './CGArray';
 import Canvas from './Canvas';
@@ -144,7 +136,7 @@ class Viewer {
     // Initialize DragAndDrop
     this.allowDragAndDrop = utils.defaultFor(options.allowDragAndDrop, true);
     // Initialize Events
-    this.events = new Events();
+    this._events = new Events();
     // Initialize Sequence
     this._sequence = new Sequence(this, options.sequence);
     // Initialize Backbone
@@ -162,7 +154,7 @@ class Viewer {
     // Initialize Slot Divider
     this.dividers = new Dividers(this, options.dividers);
     // Initialize Annotation
-    this.annotation = new Annotation(this, options.annotation);
+    this._annotation = new Annotation(this, options.annotation);
     // Initialize Ruler
     this.ruler = new Ruler(this, options.ruler);
     // Initialize Highlighter
@@ -235,11 +227,20 @@ class Viewer {
   }
 
   /**
-   * @member {Layout} - Get the map layout object.
+   * @member {Layout} - Get the map [layout](Layout.html) object
    */
   get layout() {
     return this._layout;
   }
+
+  /**
+   * @member {Layout} - Get the map [annotation](Annotation.html) object
+   */
+  get annotation() {
+    return this._annotation;
+  }
+
+
 
   /**
    * @member {String} - Get or set the map name
@@ -409,6 +410,13 @@ class Viewer {
   set dataHasChanged(value) {
     // console.log('DATA', value)
     this._dataHasChanged = value;
+  }
+
+  /**
+   * Get the [Events](Events.html) object.
+   */
+  get events() {
+    return this._events;
   }
 
 
@@ -1293,14 +1301,23 @@ class Viewer {
     this.draw();
   }
 
+  /**
+   * See [Events.on()](Events.html#on) 
+   */
   on(event, callback) {
     this.events.on(event, callback);
   }
 
+  /**
+   * See [Events.off()](Events.html#off) 
+   */
   off(event, callback) {
     this.events.off(event, callback);
   }
 
+  /**
+   * See [Events.trigger()](Events.html#trigger) 
+   */
   trigger(event, object) {
     this.events.trigger(event, object);
     // Almost all events will results in data changing with the following exceptions

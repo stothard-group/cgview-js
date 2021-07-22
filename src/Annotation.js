@@ -5,22 +5,18 @@
 import CGObject from './CGObject';
 import CGArray from './CGArray';
 import Font from './Font';
+import Color from './Color';
 import NCList from './NCList';
 import Rect from './Rect';
 import utils from './Utils';
-
-// TEMP
-import Box from './Box';
-import Color from './Color';
-import CGRange from './CGRange';
 
 /**
  * Annotation controls the drawing and layout of features labels
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method                        | Annotation Method                  | Event
- * ----------------------------------------|--------------------------------------|------------  -------|-----
+ * Action                                  | Viewer Method                        | Annotation Method   | Event
+ * ----------------------------------------|--------------------------------------|---------------------|-----
  * [Update](../docs.html#updating-records) | -                                    | [update()](#update) | annotation-update
  * [Read](../docs.html#reading-records)    | [annotation](Viewer.html#annotation) | -                   | -
  *
@@ -74,7 +70,9 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Color} - Get or set the label color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+   * @member {Color} - Get or set the label color. When setting the color, a
+   * string representing the color or a {@link Color} object can be used. For
+   * details see {@link Color}.
    */
   get color() {
     return this._color;
@@ -100,11 +98,12 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Number} - Get or set the number of priority labels that will be drawn for sure.
-   *    If they overlap the label will be moved until they no longer overlap.
-   *    Priority is defined as features that are marked as a "favorite". After favorites,
-   *    features are sorted by size. For example, if priorityMax is 50 and there are 10 "favorite"
-   *    features. The favorites will be drawn and then the 40 largest features will be drawn.
+   * @member {Number} - Get or set the number of priority labels that will be
+   * drawn for sure. If they overlap the label will be moved until they no
+   * longer overlap. Priority is defined as features that are marked as a
+   * "favorite". After favorites, features are sorted by size. For example, if
+   * priorityMax is 50 and there are 10 "favorite" features. The favorites will
+   * be drawn and then the 40 largest features will be drawn.
    */
   get priorityMax() {
     return this._priorityMax;
@@ -115,7 +114,9 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+   * @member {Font} - Get or set the font. When setting the font, a string
+   * representing the font or a {@link Font} object can be used. For details
+   * see {@link Font}.
    */
   get font() {
     return this._font;
@@ -150,7 +151,6 @@ class Annotation extends CGObject {
 
   /**
    * Add a new label to the set.
-   *
    * @param {Label} label - The Label to add to the set.
    */
   addLabel(label) {
@@ -159,7 +159,6 @@ class Annotation extends CGObject {
 
   /**
    * Remove a label or an array of labels from the set.
-   *
    * @param {Label|Array} labels - The Label(s) to remove from the set.
    */
   removeLabels(labels) {
@@ -289,7 +288,6 @@ class Annotation extends CGObject {
     return labelArray;
   }
 
-
   // Labels must already be sorted so favorite are first
   _onlyFavoriteLabels(labels) {
     labels = labels || this._labels;
@@ -313,6 +311,9 @@ class Annotation extends CGObject {
     return labels;
   }
 
+  /**
+   * Invert color
+   */
   invertColors() {
     if (this.color) {
       this.update({ color: this.color.invert().rgbaString });
@@ -416,6 +417,9 @@ class Annotation extends CGObject {
     }
   }
 
+  /**
+   * Update annotation [attributes](#attributes) as described in [Docs](../docs.html#section-updating-records)
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Annotation',
@@ -424,6 +428,9 @@ class Annotation extends CGObject {
     this.viewer.trigger('annotation-update', { attributes });
   }
 
+  /**
+   * Returns JSON representing the annotation
+   */
   toJSON(options = {}) {
     const json = {
       font: this.font.string,

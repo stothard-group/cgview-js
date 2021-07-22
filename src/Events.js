@@ -3,55 +3,47 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * Events is a system to plug in callbacks to specific events in CGV.
+ * Events is a system to plug in callbacks to specific events in CGView.
  * Use [on](#on) to add a callback and [off](#off) to remove it.
- * Here are a list of events supported in CGV:
  *
- *  Event               | Description
- *  --------------------|-------------
- *  legend-update       | Called after legend items removed or added
- *  caption-update      | Called after caption items removed or added
- *  track-update        | Called when track is updated
- *  resize              | Called when the Viewer size is changed
- *  font-update         | Called when the font is changed (e.g. size, family, etc)
- *  zoom-start          | Called once before viewer starts zoom animation
- *  zoom                | Called every frame of the zoom animation
- *  zoom-end            | Called after zooming is complete
- *  mousemove           | Called when the mouse moves on the map
- *  click               | Called after the mouse is clicked
+ * See individual [record types](../docs.html#section-details-by-record-type) for a list of event names.
  *
- *  track-load-progress-changed: needs better name
+ * Here are a list of additional events supported in CGView:
  *
- *
- *  NOTE: from JSpectraViewer - May use some of these still
- *  drag-start          | Called once before viewer starts drag animation
- *  drag                | Called every frame of the drag animation
- *  drag-end            | Called after dragging is complete
- *  domain-change       | Called after the viewer domains have changed
- *  selection-add       | Called when an element is added to the selection
- *  selection-remove    | Called after an element is removed from the selection
- *  selection-clear     | Called before the selection is cleared
- *  selection-empty     | Called after the selection becomes empty
- *  highlight-start     | Called when an element is highlighted
- *  highlight-end       | Called when an element is unhighlighted
- *  label-click         | Called when a annotation label is clicked
+ * Event             | Description
+ * ------------------|-----------------------------------------------------
+ * cgv-load-json     | Called when [IO.loadJSON()](IO.html#loadJSON) is executed
+ * mousemove         | Called when mouse moves on the Viewer. Returns [event-like object](EventMonitor.html)
+ * click             | Called when mouse clicks on the Viewer. Returns [event-like object](EventMonitor.html)
+ * zoom-start        | Called once before the viewer is zoomed or moved
+ * zoom              | Called every frame of the zoom or move
+ * zoom-end          | Called once after the viewer is zoomed or moved
+ * click             | Called when a click occurs in the viewer
+ * mousemove         | Calleed when the mouse moves in the viewer
+ * bookmark-shortcut | Called when a bookmark shortcur key is clicked
  */
 class Events {
 
+  /**
+   * Creats holder for events.
+   * Accessible via [Viewer.events](Viewer.html#events).
+   */
   constructor() {
     this._handlers = {};
   }
 
-
   /**
-   * Attach a callback function to a specific JSV event.
+   * Attach a callback function to a specific CGView event.
+   * Accessible via [Viewer.on()](Viewer.html#on).
+   *
    * ```js
-   * sv = new JSV.SpectraViewer('#my-spectra');
-   * sv.on('drag-start', function() { console.log('Dragging has begun!') };
+   * cgv = new CGV.Viewer('#my-viewer');
+   * cgv.on('zoom-start', function() { console.log('Zooming has begun!') };
    *
    * // The event can be namespaced for easier removal later
-   * sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
+   * cgv.on('zoom-start.my_plugin', function() { console.log('Zooming has begun!') };
    * ```
+   *
    * @param {String} event Name of event. Events can be namespaced.
    * @param {Function} callback Function to call when event is triggered
    */
@@ -64,22 +56,25 @@ class Events {
   }
 
   /**
-   * Remove a callback function from a specific JSV event. If no __callback__ is provided,
+   * Remove a callback function from a specific CGView event. If no callback is provided,
    * then all callbacks for the event will be removed. Namespaced events can and should be used
    * to avoid unintentionally removing callbacks attached by other plugins.
+   * Accessible via [Viewer.off()](Viewer.html#off).
+   *
    * ```js
    * // Remove all callbacks attached to the 'drag-start' event.
    * // This includes any namespaced events.
-   * sv.off('drag-start');
+   * cgv.off('zoom-start');
    *
    * // Remove all callbacks attached to the 'drag-start' event namespaced to 'my_plugin'
-   * sv.off('drag-start.my_plugin');
+   * cgv.off('zoom-start.my_plugin');
    *
    * // Remove all callbacks attached to any events namespaced to 'my_plugin'
-   * sv.off('.my_plugin');
+   * cgv.off('.my_plugin');
    * ```
-   * @param {String} event Name of event. Events can be namespaced.
-   * @param {Function} callback Specfic function to remove
+   *
+   * @param {String} event -  Name of event. Events can be namespaced.
+   * @param {Function} callback - Specfic function to remove
    */
   off(event, callback) {
     const handlers = this._handlers;
@@ -108,13 +103,16 @@ class Events {
 
   /**
    * Trigger a callback function for a specific event.
+   * Accessible via [Viewer.trigger()](Viewer.html#trigger).
+   *
    * ```js
-   * // Triggers all callback functions associated with drag-start
-   * sv.trigger('drag-start');
+   * // Triggers all callback functions associated with zoom-start
+   * cgv.trigger('zoom-start');
    *
    * // Triggers can also be namespaced
-   * sv.trigger('drag-start.my_plugin');
+   * cgv.trigger('zoom-start.my_plugin');
    * ```
+   *
    * @param {String} event Name of event. Events can be namespaced.
    * @param {Object} object Object to be passed back to 'on'.
    */

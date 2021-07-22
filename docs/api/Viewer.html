@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2251,7 +2265,7 @@ of component options can be set during construction of the Viewer.</p>
 // Draw the map
 cgv.draw()
 </code></pre>
-<p>See <a href="../tutorials/index.html">tutorials</a> to learn more about making maps.</p></div>
+<p>See the <a href="../tutorials/index.html">tutorials</a> to learn more about making maps.</p></div>
     
 </header>  
 
@@ -2270,7 +2284,7 @@ cgv.draw()
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line105">line 105</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line97">line 97</a>
         </div>
         
     </div>
@@ -2419,6 +2433,51 @@ Component options will be passed to the contructor of that component.</p></td>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="annotation">annotation<span class="type-signature type layout"><a href="Layout.html">Layout</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get the map <a href="Annotation.html">annotation</a> object</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="bbOffset">bbOffset<span class="type-signature type number">Number</span> </h4>
     </div>
     
@@ -2521,6 +2580,51 @@ Component options will be passed to the contructor of that component.</p></td>
 set to false, anytime the data API (add, update, remove, reorder) is
 used. It is reset to false automatically when a new JSON is loaded via
 <a href="IO.html#loadJSON">IO.loadJSON()</a>.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="events">events</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get the <a href="Events.html">Events</a> object.</p>
     </div>
     
     
@@ -2747,7 +2851,7 @@ Default: 11</p>
 <dd>
     
     <div class="description">
-        <p>Get the map layout object.</p>
+        <p>Get the map <a href="Layout.html">layout</a> object</p>
     </div>
     
     
@@ -3249,7 +3353,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line932">line 932</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line940">line 940</a>
         </div>
         
     </div>
@@ -3320,7 +3424,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line651">line 651</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line659">line 659</a>
         </div>
         
     </div>
@@ -3391,7 +3495,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line809">line 809</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line817">line 817</a>
         </div>
         
     </div>
@@ -3464,7 +3568,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line869">line 869</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line877">line 877</a>
         </div>
         
     </div>
@@ -3535,7 +3639,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line538">line 538</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line546">line 546</a>
         </div>
         
     </div>
@@ -3606,7 +3710,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line925">line 925</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line933">line 933</a>
         </div>
         
     </div>
@@ -3757,7 +3861,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line640">line 640</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line648">line 648</a>
         </div>
         
     </div>
@@ -3908,7 +4012,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line968">line 968</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line976">line 976</a>
         </div>
         
     </div>
@@ -3979,7 +4083,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line498">line 498</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line506">line 506</a>
         </div>
         
     </div>
@@ -4130,7 +4234,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line489">line 489</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line497">line 497</a>
         </div>
         
     </div>
@@ -4281,7 +4385,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line975">line 975</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line983">line 983</a>
         </div>
         
     </div>
@@ -4352,7 +4456,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1282">line 1282</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1290">line 1290</a>
         </div>
         
     </div>
@@ -4423,7 +4527,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1156">line 1156</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1164">line 1164</a>
         </div>
         
     </div>
@@ -4596,7 +4700,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1174">line 1174</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1182">line 1182</a>
         </div>
         
     </div>
@@ -4769,7 +4873,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1078">line 1078</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1086">line 1086</a>
         </div>
         
     </div>
@@ -4965,7 +5069,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line455">line 455</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line463">line 463</a>
         </div>
         
     </div>
@@ -5155,6 +5259,148 @@ the viewer will center the image on that bp with the current zoom level.</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="off">
+            
+            off<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1314">line 1314</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>See <a href="Events.html#off">Events.off()</a></p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="on">
+            
+            on<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1307">line 1307</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>See <a href="Events.html#on">Events.on()</a></p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="plots">
             
             plots<span class="signature">(term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
@@ -5162,7 +5408,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line689">line 689</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line697">line 697</a>
         </div>
         
     </div>
@@ -5313,7 +5559,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1267">line 1267</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1275">line 1275</a>
         </div>
         
     </div>
@@ -5384,7 +5630,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line780">line 780</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line788">line 788</a>
         </div>
         
     </div>
@@ -5457,7 +5703,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line942">line 942</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line950">line 950</a>
         </div>
         
     </div>
@@ -5528,7 +5774,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1260">line 1260</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1268">line 1268</a>
         </div>
         
     </div>
@@ -5599,7 +5845,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line427">line 427</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line435">line 435</a>
         </div>
         
     </div>
@@ -5804,7 +6050,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line476">line 476</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line484">line 484</a>
         </div>
         
     </div>
@@ -5955,7 +6201,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line701">line 701</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line709">line 709</a>
         </div>
         
     </div>
@@ -6106,7 +6352,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line531">line 531</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line539">line 539</a>
         </div>
         
     </div>
@@ -6250,6 +6496,77 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="trigger">
+            
+            trigger<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1321">line 1321</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>See <a href="Events.html#trigger">Events.trigger()</a></p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="updateBookmarks">
             
             updateBookmarks<span class="signature">()</span>
@@ -6257,7 +6574,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line957">line 957</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line965">line 965</a>
         </div>
         
     </div>
@@ -6328,7 +6645,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line841">line 841</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line849">line 849</a>
         </div>
         
     </div>
@@ -6399,7 +6716,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line894">line 894</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line902">line 902</a>
         </div>
         
     </div>
@@ -6470,7 +6787,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line598">line 598</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line606">line 606</a>
         </div>
         
     </div>
@@ -6541,7 +6858,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1243">line 1243</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1251">line 1251</a>
         </div>
         
     </div>
@@ -6665,7 +6982,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1252">line 1252</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1260">line 1260</a>
         </div>
         
     </div>
@@ -6789,7 +7106,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1194">line 1194</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1202">line 1202</a>
         </div>
         
     </div>
@@ -6990,7 +7307,7 @@ If <em>bp</em> is falsy (inc. 0), the map is centered.</p>
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:33 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>

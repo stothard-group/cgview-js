@@ -6,11 +6,44 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * <br />
- * EventMonitor monitor events on the CGView Canvas and triggers events.
+ * EventMonitor sets up mouse click and movement event handlers on the CGView canvas.
+ *
+ * CGView event contents (based on mouse position):
+ *
+ * Property   | Description
+ * -----------|-----------------------------------------------
+ *  bp        | Base pair
+ *  centerOffset | Distance from center of the map. For a circular map, this is the radius, while for a linear map, it's the distance from the backbone.
+ *  elementType | One of: 'legendItem', 'caption', 'feature', 'plot', 'backbone', 'contig', 'label', or undefined
+ *  element   | The element (e.g, a feature), if there is one.
+ *  slot      | Slot (if there is one). Track can be accessed from the slot (<em>slot.track</em>).
+ *  score     | Score for element (e.g. feature, plot), if available.
+ *  canvasX   | Position on the canvas X axis, where the origin is the top-left. See [scales](../tutorials/details-map-scales.html) for details.
+ *  canvasY   | Position on the canvas Y axis, where the origin is the top-left. See [scales](../tutorials/details-map-scales.html) for details.
+ *  mapX      | Position on the map domain X axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
+ *  mapY      | Position on the map domain Y axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
+ *  d3        | The d3 event object.
+ *
+ * ### Examples
+ * ```js
+ * // Log the feature name when clicked
+ * cgv.on('click', (event) => {
+ *   if (event.elementType === 'feature') {
+ *     console.log(`Feature '${event.element.name}' was clicked`);
+ *   }
+ * });
+ *
+ * // Log the base pair position of the mouse as it moves
+ * cgv.on('mousemove', (event) => {
+ *   console.log(`BP: ${event.bp}`);
+ * });
+ * ```
  */
 class EventMonitor {
 
+  /**
+   * Adds event handlers for mouse clicks and movement
+   */
   constructor(viewer) {
     this._viewer = viewer;
 
@@ -21,7 +54,7 @@ class EventMonitor {
     this._initializeClick();
     this._initializeBookmarkShortcuts();
     // this.events.on('mousemove', (e) => {console.log(e.bp)})
-    this.events.on('click', (e) => {console.log(e);});
+    // this.events.on('click', (e) => {console.log(e);});
     // MoveTo On click
     // this.events.on('click', (e) => {
     //   if (e.feature) {
@@ -58,6 +91,10 @@ class EventMonitor {
     return this.viewer.canvas;
   }
 
+  /**
+   * Initialize mouse move events under 'cgv' namespace.
+   * @private
+   */
   _initializeMousemove() {
     const viewer = this.viewer;
     d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
@@ -65,6 +102,11 @@ class EventMonitor {
       this.events.trigger('mousemove', this._createEvent(d3.event));
     });
   }
+
+  /**
+   * Initialize clicks events under 'cgv' namespace.
+   * @private
+   */
   _initializeClick() {
     d3.select(this.canvas.node('ui')).on('click.cgv', () => {
       // event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
@@ -87,6 +129,11 @@ class EventMonitor {
     });
   }
 
+  /**
+   * Create an event object that will be return on mouse clicks and movement
+   * @param {Object} d3Event - a d3 event object
+   * @private
+   */
   _createEvent(d3Event) {
     if (this.viewer.loading) { return {}; }
     const scale = this.viewer.layout.scale;
@@ -130,6 +177,7 @@ class EventMonitor {
    * @param {Number}  centerOffset - the centerOffset for the event.
    *
    * @returns {Object} Obejct with properties: element and elementType
+   * @private
    */
   _getElement(slot, bp, centerOffset, canvasX, canvasY) {
     let elementType, element;

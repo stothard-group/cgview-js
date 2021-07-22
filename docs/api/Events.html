@@ -119,6 +119,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Anchor#toJSON"><a href="Anchor.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Anchor#toString"><a href="Anchor.html#toString">toString</a></li>
             
             </ul>
@@ -170,11 +172,17 @@
             
                 <li data-name="Annotation#deleteFromObjects"><a href="Annotation.html#deleteFromObjects">deleteFromObjects</a></li>
             
+                <li data-name="Annotation#invertColors"><a href="Annotation.html#invertColors">invertColors</a></li>
+            
                 <li data-name="Annotation#labels"><a href="Annotation.html#labels">labels</a></li>
             
                 <li data-name="Annotation#removeLabels"><a href="Annotation.html#removeLabels">removeLabels</a></li>
             
+                <li data-name="Annotation#toJSON"><a href="Annotation.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Annotation#toString"><a href="Annotation.html#toString">toString</a></li>
+            
+                <li data-name="Annotation#update"><a href="Annotation.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -903,10 +911,6 @@
             
             </ul>
             <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="EventMonitor#_getElement"><a href="EventMonitor.html#_getElement">_getElement</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1993,11 +1997,15 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Viewer#annotation"><a href="Viewer.html#annotation">annotation</a></li>
+            
                 <li data-name="Viewer#bbOffset"><a href="Viewer.html#bbOffset">bbOffset</a></li>
             
                 <li data-name="Viewer#bp"><a href="Viewer.html#bp">bp</a></li>
             
                 <li data-name="Viewer#dataHasChanged"><a href="Viewer.html#dataHasChanged">dataHasChanged</a></li>
+            
+                <li data-name="Viewer#events"><a href="Viewer.html#events">events</a></li>
             
                 <li data-name="Viewer#format"><a href="Viewer.html#format">format</a></li>
             
@@ -2069,6 +2077,10 @@
             
                 <li data-name="Viewer#objects"><a href="Viewer.html#objects">objects</a></li>
             
+                <li data-name="Viewer#off"><a href="Viewer.html#off">off</a></li>
+            
+                <li data-name="Viewer#on"><a href="Viewer.html#on">on</a></li>
+            
                 <li data-name="Viewer#plots"><a href="Viewer.html#plots">plots</a></li>
             
                 <li data-name="Viewer#recenterTracks"><a href="Viewer.html#recenterTracks">recenterTracks</a></li>
@@ -2086,6 +2098,8 @@
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
+            
+                <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
             
                 <li data-name="Viewer#updateBookmarks"><a href="Viewer.html#updateBookmarks">updateBookmarks</a></li>
             
@@ -2130,9 +2144,10 @@
     Events
     </h2>
     
-        <div class="class-description"><p>Events is a system to plug in callbacks to specific events in CGV.
-Use <a href="#on">on</a> to add a callback and <a href="#off">off</a> to remove it.
-Here are a list of events supported in CGV:</p>
+        <div class="class-description"><p>Events is a system to plug in callbacks to specific events in CGView.
+Use <a href="#on">on</a> to add a callback and <a href="#off">off</a> to remove it.</p>
+<p>See individual <a href="../docs.html#section-details-by-record-type">record types</a> for a list of event names.</p>
+<p>Here are a list of additional events supported in CGView:</p>
 <table>
 <thead>
 <tr>
@@ -2142,60 +2157,43 @@ Here are a list of events supported in CGV:</p>
 </thead>
 <tbody>
 <tr>
-<td>legend-update</td>
-<td>Called after legend items removed or added</td>
-</tr>
-<tr>
-<td>caption-update</td>
-<td>Called after caption items removed or added</td>
-</tr>
-<tr>
-<td>track-update</td>
-<td>Called when track is updated</td>
-</tr>
-<tr>
-<td>resize</td>
-<td>Called when the Viewer size is changed</td>
-</tr>
-<tr>
-<td>font-update</td>
-<td>Called when the font is changed (e.g. size, family, etc)</td>
-</tr>
-<tr>
-<td>zoom-start</td>
-<td>Called once before viewer starts zoom animation</td>
-</tr>
-<tr>
-<td>zoom</td>
-<td>Called every frame of the zoom animation</td>
-</tr>
-<tr>
-<td>zoom-end</td>
-<td>Called after zooming is complete</td>
+<td>cgv-load-json</td>
+<td>Called when <a href="IO.html#loadJSON">IO.loadJSON()</a> is executed</td>
 </tr>
 <tr>
 <td>mousemove</td>
-<td>Called when the mouse moves on the map</td>
+<td>Called when mouse moves on the Viewer. Returns <a href="EventMonitor.html">event-like object</a></td>
 </tr>
 <tr>
 <td>click</td>
-<td>Called after the mouse is clicked</td>
+<td>Called when mouse clicks on the Viewer. Returns <a href="EventMonitor.html">event-like object</a></td>
+</tr>
+<tr>
+<td>zoom-start</td>
+<td>Called once before the viewer is zoomed or moved</td>
+</tr>
+<tr>
+<td>zoom</td>
+<td>Called every frame of the zoom or move</td>
+</tr>
+<tr>
+<td>zoom-end</td>
+<td>Called once after the viewer is zoomed or moved</td>
+</tr>
+<tr>
+<td>click</td>
+<td>Called when a click occurs in the viewer</td>
+</tr>
+<tr>
+<td>mousemove</td>
+<td>Calleed when the mouse moves in the viewer</td>
+</tr>
+<tr>
+<td>bookmark-shortcut</td>
+<td>Called when a bookmark shortcur key is clicked</td>
 </tr>
 </tbody>
-</table>
-<p>track-load-progress-changed: needs better name</p>
-<p>NOTE: from JSpectraViewer - May use some of these still
-drag-start          | Called once before viewer starts drag animation
-drag                | Called every frame of the drag animation
-drag-end            | Called after dragging is complete
-domain-change       | Called after the viewer domains have changed
-selection-add       | Called when an element is added to the selection
-selection-remove    | Called after an element is removed from the selection
-selection-clear     | Called before the selection is cleared
-selection-empty     | Called after the selection becomes empty
-highlight-start     | Called when an element is highlighted
-highlight-end       | Called when an element is unhighlighted
-label-click         | Called when a annotation label is clicked</p></div>
+</table></div>
     
 </header>  
 
@@ -2214,7 +2212,7 @@ label-click         | Called when a annotation label is clicked</p></div>
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line41">line 41</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line31">line 31</a>
         </div>
         
     </div>
@@ -2223,6 +2221,11 @@ label-click         | Called when a annotation label is clicked</p></div>
 </dt>
 <dd>
     
+    
+    <div class="description">
+        <p>Creats holder for events.
+Accessible via <a href="Viewer.html#events">Viewer.events</a>.</p>
+    </div>
     
 
     
@@ -2299,7 +2302,7 @@ label-click         | Called when a annotation label is clicked</p></div>
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line84">line 84</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line79">line 79</a>
         </div>
         
     </div>
@@ -2310,18 +2313,19 @@ label-click         | Called when a annotation label is clicked</p></div>
     
     
     <div class="description">
-        <p>Remove a callback function from a specific JSV event. If no <strong>callback</strong> is provided,
+        <p>Remove a callback function from a specific CGView event. If no callback is provided,
 then all callbacks for the event will be removed. Namespaced events can and should be used
-to avoid unintentionally removing callbacks attached by other plugins.</p>
+to avoid unintentionally removing callbacks attached by other plugins.
+Accessible via <a href="Viewer.html#off">Viewer.off()</a>.</p>
 <pre class="prettyprint source lang-js"><code>// Remove all callbacks attached to the 'drag-start' event.
 // This includes any namespaced events.
-sv.off('drag-start');
+cgv.off('zoom-start');
 
 // Remove all callbacks attached to the 'drag-start' event namespaced to 'my_plugin'
-sv.off('drag-start.my_plugin');
+cgv.off('zoom-start.my_plugin');
 
 // Remove all callbacks attached to any events namespaced to 'my_plugin'
-sv.off('.my_plugin');
+cgv.off('.my_plugin');
 </code></pre>
     </div>
     
@@ -2450,7 +2454,7 @@ sv.off('.my_plugin');
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line58">line 58</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line50">line 50</a>
         </div>
         
     </div>
@@ -2461,12 +2465,13 @@ sv.off('.my_plugin');
     
     
     <div class="description">
-        <p>Attach a callback function to a specific JSV event.</p>
-<pre class="prettyprint source lang-js"><code>sv = new JSV.SpectraViewer('#my-spectra');
-sv.on('drag-start', function() { console.log('Dragging has begun!') };
+        <p>Attach a callback function to a specific CGView event.
+Accessible via <a href="Viewer.html#on">Viewer.on()</a>.</p>
+<pre class="prettyprint source lang-js"><code>cgv = new CGV.Viewer('#my-viewer');
+cgv.on('zoom-start', function() { console.log('Zooming has begun!') };
 
 // The event can be namespaced for easier removal later
-sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
+cgv.on('zoom-start.my_plugin', function() { console.log('Zooming has begun!') };
 </code></pre>
     </div>
     
@@ -2595,7 +2600,7 @@ sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
     
         
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line121">line 121</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line119">line 119</a>
         </div>
         
     </div>
@@ -2606,12 +2611,13 @@ sv.on('drag-start.my_plugin', function() { console.log('Dragging has begun!') };
     
     
     <div class="description">
-        <p>Trigger a callback function for a specific event.</p>
-<pre class="prettyprint source lang-js"><code>// Triggers all callback functions associated with drag-start
-sv.trigger('drag-start');
+        <p>Trigger a callback function for a specific event.
+Accessible via <a href="Viewer.html#trigger">Viewer.trigger()</a>.</p>
+<pre class="prettyprint source lang-js"><code>// Triggers all callback functions associated with zoom-start
+cgv.trigger('zoom-start');
 
 // Triggers can also be namespaced
-sv.trigger('drag-start.my_plugin');
+cgv.trigger('zoom-start.my_plugin');
 </code></pre>
     </div>
     
@@ -2746,7 +2752,7 @@ sv.trigger('drag-start.my_plugin');
         
 
         <footer>
-            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jul 20 2021 13:52:32 GMT-0600 (Mountain Daylight Time)
+            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 13:41:52 GMT-0600 (Mountain Daylight Time)
         </footer>
     </div>
 </div>
