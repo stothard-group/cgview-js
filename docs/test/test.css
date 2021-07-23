@@ -1,3 +1,6 @@
+body {
+  background-color: white;
+}
 main {
   margin-left: 0;
   padding-top: 10px;
@@ -10,12 +13,13 @@ main {
 }
 
 .test-options {
-  /* width: calc(100vw - 620px); */
-  padding-top: 10px;
+  position: absolute;
+  right: 10px;
+  top: 60px;
+  padding: 10px;
   border: solid #DDD 1px;
-  margin-left: 20px;
   width: 400px;
-  height: 600px;
+  bottom: 40px;
 }
 
 .dev-title {
@@ -27,6 +31,7 @@ main {
 
 .map-area {
   /* width: 600px; */
+  display: inline-block;
 }
 
 #my-viewer {
@@ -42,7 +47,7 @@ hr {
   text-align: center;
   font-weight: bold;
   font-size: smaller;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .performance-section {
