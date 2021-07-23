@@ -49,7 +49,9 @@ class Debug {
     const sections = this._sections;
 
     ctx.font = '10pt Sans-Serif';
-    ctx.fillStyle = 'black';
+    const color = this.viewer.settings.backgroundColor.copy();
+
+    ctx.fillStyle = color.invert().rgbaString;
     const lineHeight = 18;
     ctx.textAlign = 'left';
     // const section_keys = this.debug === true ? Object.keys(data) : this.debug;

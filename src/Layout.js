@@ -774,12 +774,13 @@ class Layout {
     // Progess
     this.drawProgress();
 
-    if (canvas._testDrawRange) {
-      const ctx = canvas.context('canvas');
-      ctx.strokeStyle = 'grey';
-      ctx.rect(0, 0, canvas.width, canvas.height);
-      ctx.stroke();
-    }
+    // Note: now done in Canvas
+    // if (canvas._testDrawRange) {
+    //   const ctx = canvas.context('canvas');
+    //   ctx.strokeStyle = 'grey';
+    //   ctx.rect(0, 0, canvas.width, canvas.height);
+    //   ctx.stroke();
+    // }
 
     // Slots timout
     this._slotIndex = 0;

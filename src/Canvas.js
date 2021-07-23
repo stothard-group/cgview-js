@@ -468,13 +468,23 @@ class Canvas {
 
   set _testDrawRange(value) {
     this.__testDrawRange = value;
-    console.log(this._drawRange);
     if (value) {
+      // Change canvas dimensions
       this.width = this.width * this._drawRange;
       this.height = this.height * this._drawRange;
+      // Draw Rect around test area
+      const ctx = this.context('canvas');
+      ctx.strokeStyle = 'grey';
+      ctx.rect(0, 0, this.width, this.height);
+      ctx.stroke();
+      // ctx.translate(100, 100);
     } else {
+      // Return canvas dimensions to normal
       this.width = this.width / this._drawRange;
       this.height = this.height / this._drawRange;
+      // Clear rect around test area
+      const ctx = this.context('canvas');
+      ctx.clearRect(0, 0, this.width, this.height);
     }
     this.viewer.drawFull();
   }
