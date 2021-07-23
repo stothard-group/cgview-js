@@ -78,20 +78,33 @@
         </div>
         <div class='test-options'>
           <div class='map-select-section'>
-            Map: <select id='map-select'></select>
+            <div class='test-heading'>Choose Map</div>
+            <select id='map-select' class='form-select form-select-sm'></select>
           </div>
+          <hr />
           <div class='performance-section'>
-            <button id='performance-start'>Performance Test</button>
-            Iterations:
-            <select id='iterations-select'>
-              <option value='1'>1</option>
-              <option value='3' selected>3</option>
-              <option value='5'>5</option>
-            </select>
+            <div class='test-heading'>Performanace Test</div>
+            <div class='my-row'>
+              <div>
+                Iterations:
+                <select id='iterations-select' class='form-select form-select-sm'>
+                  <option value='1'>1</option>
+                  <option value='3' selected>3</option>
+                  <option value='5'>5</option>
+                  <option value='10'>10</option>
+                </select>
+              </div>
+              <button id='performance-start' type="button" class="btn btn-sm btn-outline-success">Run Test</button>
+              <button id='performance-clear' type="button" class="btn btn-sm btn-outline-secondary">Clear</button>
+            </div>
             <div id='results' data-placeholder='Results...'></div>
           </div>
+          <hr />
           <div class='more-options'>
-            <input id='test-draw-range' type='checkbox' /> Test Draw Range
+            <div class='test-heading'>Options</div>
+            <div><input id='test-draw-range' type='checkbox' /> Test Draw Range</div>
+            <div><input id='option-full-size' type='checkbox' /> Full Size</div>
+            <div><input id='option-debug' type='checkbox' /> Debug Print</div>
           </div>
         </div>
       </div>
@@ -100,13 +113,14 @@
     <script>
       // Settings
       const defaultMap = 'small';
+      const defaultSize = 600; // 6oo is the size to run perfance test at
       // From maps.js: maps = {}
       console.log(maps)
 
       // Add CGView
       cgv = new CGV.Viewer('#my-viewer', {
-        height: 600,
-        width: 600,
+        height: defaultSize,
+        width: defaultSize,
         // debug: {sections: ['time', 'position']}
       });
       loadMapFromID(defaultMap);
@@ -139,6 +153,11 @@
           resultsDiv.innerHTML = performance.report();
         }, 1000);
       });
+      // Clear Test Results
+      const clearBtn = document.getElementById('performance-clear');
+      clearBtn.addEventListener('click', (e) => {
+        resultsDiv.innerHTML = '';
+      });
 
       // Load map method
       function loadMapFromID(id) {
@@ -155,10 +174,47 @@
         request.send();
       }
 
+
+      // const setHeight = 500;
+      // const mainPadding = 20 * 2;
+      function myResize() {
+        const myViewer = document.querySelector('#my-viewer');
+        const main = document.getElementsByTagName('main')[0];
+        // const mainWidth = main.clientWidth - mainPadding;
+        // const height = Math.min(mainWidth, setHeight);
+
+        const width = main.clientWidth;
+        const height = main.clientHeight;
+        // const width = Math.min(mainWidth, setWidth);
+        cgv.resize(width-400, height-100);
+      }
+      // window.onresize = myResize;
+
+      const fullSize = document.getElementById('option-full-size');
+      fullSize.addEventListener('click', (e) => {
+        if (e.target.checked) {
+          window.addEventListener('resize', myResize)
+        } else {
+          window.removeEventListener('resize', myResize)
+          cgv.resize(defaultSize, defaultSize);
+        }
+      });
+
       const drawRange = document.getElementById('test-draw-range');
       drawRange.addEventListener('click', (e) => {
         const testOn = e.target.checked;
         cgv.canvas._testDrawRange = testOn;
+        cgv.drawFull();
+      });
+
+      const debugMode = document.getElementById('option-debug');
+      debugMode.addEventListener('click', (e) => {
+        if (e.target.checked) {
+          cgv.debug = true;
+        } else {
+          cgv.debug = false;
+          cgv.canvas.clear('debug');
+        }
         cgv.drawFull();
       });
 
