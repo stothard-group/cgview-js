@@ -101,6 +101,9 @@ class Caption extends CGObject {
     // this.refresh();
   }
 
+  /**
+   * @member {String} - Get or set where the caption will be relative to. Values: 'map', 'canvas'
+   */
   get on() {
     return this.box.on;
   }
@@ -111,6 +114,9 @@ class Caption extends CGObject {
     this.refresh();
   }
 
+  /**
+   * @member {String} - Get or set the caption [anchor](Anchor.html) position. 
+   */
   get anchor() {
     return this.box.anchor;
   }
@@ -121,22 +127,32 @@ class Caption extends CGObject {
     this.refresh();
   }
 
+  /**
+   * @member {Boolean} - Returns true if the caption is positioned on the map
+   */
   get onMap() {
     return this.position.onMap;
   }
 
+  /**
+   * @member {Boolean} - Returns true if the caption is positioned on the canvas
+   */
   get onCanvas() {
     return this.position.onCanvas;
   }
 
   /**
-   * @member {Context} - Get the *Context* for drawing.
+   * @member {Context} - Get the Context for drawing.
+   * @private
    */
   get ctx() {
     const layer = (this.onMap) ? 'foreground' : 'canvas';
     return this.canvas.context(layer);
   }
 
+  /**
+   * @member {String} - Get or set the caption [position](Position.html). 
+   */
   get position() {
     return this.box.position;
   }
@@ -153,7 +169,6 @@ class Caption extends CGObject {
    * @member {Color} - Get or set the backgroundColor. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
    */
   get backgroundColor() {
-    // TODO set to cgview background color if not defined
     return this._backgroundColor;
   }
 
@@ -217,7 +232,7 @@ class Caption extends CGObject {
   }
 
   /**
-   * @member {String} - Get or set the caption name.
+   * @member {String} - Get or set the text shown for this caption.
    */
   get name() {
     return this._name || '';
@@ -230,21 +245,33 @@ class Caption extends CGObject {
 
   /**
    * @member {String} - Get the name split into an array of lines.
+   * @private
    */
   get lines() {
     return this.name.split('\n');
   }
 
+  /**
+   * Update caption [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateCaptions(this, attributes);
   }
 
-  moveTo(duration) {
+  /**
+   * Move the map to center the caption. Only works with caption positioned on
+   * the map (not the canvas).
+   * @param {Number} duration - Duration of move animation
+   */
+  moveTo(duration=1000) {
     this.position.moveTo(duration);
   }
 
   /**
    * Recalculates the *Caption* size and position.
+   * @private
    */
   refresh() {
     const box = this.box;
@@ -270,6 +297,10 @@ class Caption extends CGObject {
     this.draw();
   }
 
+  /**
+   * Fill the background of the caption with the background color.
+   * @private
+   */
   fillBackground() {
     const box = this.box;
     this.ctx.fillStyle = this.backgroundColor.rgbaString;
@@ -277,6 +308,9 @@ class Caption extends CGObject {
     this.ctx.fillRect(box.x, box.y, box.width, box.height);
   }
 
+  /**
+   * Invert the colors of the caption (i.e. backgroundColor and fontColor).
+   */
   invertColors() {
     this.update({
       backgroundColor: this.backgroundColor.invert().rgbaString,
@@ -284,6 +318,10 @@ class Caption extends CGObject {
     });
   }
 
+  /**
+   * Highlight the caption by drawing a box around it.
+   * @param {Color} color - Color of the highlighting outline
+   */
   highlight(color = this.fontColor) {
     if (!this.visible) { return; }
     // let ctx = this.canvas.context('background');
@@ -297,6 +335,10 @@ class Caption extends CGObject {
 
   }
 
+  /**
+   * Returns the x position for drawing the caption text. Depnds on the textAlignment.
+   * @private
+   */
   textX() {
     const box = this.box;
     if (this.textAlignment === 'left') {
@@ -308,10 +350,16 @@ class Caption extends CGObject {
     }
   }
 
+  /**
+   * Clear the box containing this caption.
+   */
   clear() {
     this.box.clear(this.ctx);
   }
 
+  /**
+   * Draw the caption
+   */
   draw() {
     if (!this.visible) { return; }
     const ctx = this.ctx;
@@ -336,6 +384,10 @@ class Caption extends CGObject {
     }
   }
 
+
+  /**
+   * Remove caption
+   */
   remove() {
     // const viewer = this.viewer;
     // viewer._captions = viewer._captions.remove(this);
@@ -344,11 +396,20 @@ class Caption extends CGObject {
     this.viewer.removeCaptions(this);
   }
 
+
+  /**
+   * Move this caption to a new index in the array of Viewer captions.
+   * @param {Number} newIndex - New index for this caption (0-based)
+   */
   move(newIndex) {
     const currentIndex = this.viewer.captions().indexOf(this);
     this.viewer.moveCaption(currentIndex, newIndex);
   }
 
+
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       name: this.name,

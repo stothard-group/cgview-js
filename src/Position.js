@@ -214,6 +214,9 @@ class Position {
     return this._yPercent;
   }
 
+  /**
+   * Get or set where this position is relative to. Values: 'canvas' or 'map'.
+   */
   get on() {
     return this._on;
   }

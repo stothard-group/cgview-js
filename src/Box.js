@@ -76,6 +76,9 @@ class Box {
     return this.viewer.canvas;
   }
 
+  /**
+   * Alias for [Position on](Position.html#on). Values: 'map', 'campus'.
+   */
   get on() {
     return this.position.on;
   }
@@ -290,6 +293,10 @@ class Box {
     this._y = this.position.y - (this.height * this.anchor.yPercent / 100);
   }
 
+  /**
+   * Clear the rect area described by this box using the provided context.
+   * @param {Context}  ctx - Context used to clear the rect.
+   */
   clear(ctx) {
     // Added margin of 1 to remove thin lines of previous background that were not being removed
     ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);

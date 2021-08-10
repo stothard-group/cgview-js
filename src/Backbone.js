@@ -122,12 +122,12 @@ class Backbone extends CGObject {
   }
 
   /**
-   * @member {Number} - Set or get the backbone centerOffset. This is the unzoomed centerOffset.
+   * @member {Number} - Get or set the backbone centerOffset. This is the unzoomed centerOffset.
    */
   set centerOffset(value) {
     if (utils.isNumeric(value)) {
       this._centerOffset = value;
-      // FIXME: zoommax will be based on map thickness, insteat of bacbone radius
+      // FIXME: zoommax will be based on map thickness, instead of backbone radius
       this.viewer._updateZoomMax();
     }
   }
@@ -144,7 +144,7 @@ class Backbone extends CGObject {
   }
 
   /**
-   * @member {Number} - Set or get the backbone thickness. This is the unzoomed thickness.
+   * @member {Number} - Get or set the backbone thickness. This is the unzoomed thickness.
    */
   set thickness(value) {
     if (utils.isNumeric(value)) {
@@ -187,7 +187,7 @@ class Backbone extends CGObject {
   }
 
   /**
-   * A factor used to increase backbone thickness when approaching the ability to see BP.
+   * Get the factor used to increase backbone thickness when approaching the ability to see the sequence.
    * @member {number}
    */
   get bpThicknessAddition() {

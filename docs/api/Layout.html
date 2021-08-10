@@ -343,6 +343,8 @@
             
                 <li data-name="Box#leftPadded"><a href="Box.html#leftPadded">leftPadded</a></li>
             
+                <li data-name="Box#on"><a href="Box.html#on">on</a></li>
+            
                 <li data-name="Box#paddedX"><a href="Box.html#paddedX">paddedX</a></li>
             
                 <li data-name="Box#paddedY"><a href="Box.html#paddedY">paddedY</a></li>
@@ -373,6 +375,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Box#clear"><a href="Box.html#clear">clear</a></li>
+            
                 <li data-name="Box#containsPt"><a href="Box.html#containsPt">containsPt</a></li>
             
                 <li data-name="Box#toString"><a href="Box.html#toString">toString</a></li>
@@ -392,15 +396,21 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+                <li data-name="Canvas#cursor"><a href="Canvas.html#cursor">cursor</a></li>
+            
+                <li data-name="Canvas#height"><a href="Canvas.html#height">height</a></li>
             
                 <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
             
                 <li data-name="Canvas#layout"><a href="Canvas.html#layout">layout</a></li>
             
+                <li data-name="Canvas#pixelRatio"><a href="Canvas.html#pixelRatio">pixelRatio</a></li>
+            
                 <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
             
                 <li data-name="Canvas#viewer"><a href="Canvas.html#viewer">viewer</a></li>
+            
+                <li data-name="Canvas#width"><a href="Canvas.html#width">width</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -412,13 +422,7 @@
             
                 <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
             
-                <li data-name="Canvas#context"><a href="Canvas.html#context">context</a></li>
-            
-                <li data-name="Canvas#layers"><a href="Canvas.html#layers">layers</a></li>
-            
-                <li data-name="Canvas#node"><a href="Canvas.html#node">node</a></li>
-            
-                <li data-name="Canvas#path"><a href="Canvas.html#path">path</a></li>
+                <li data-name="Canvas#resize"><a href="Canvas.html#resize">resize</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -435,11 +439,11 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Caption#anchor"><a href="Caption.html#anchor">anchor</a></li>
+            
                 <li data-name="Caption#backgroundColor"><a href="Caption.html#backgroundColor">backgroundColor</a></li>
             
                 <li data-name="Caption#canvas"><a href="Caption.html#canvas">canvas</a></li>
-            
-                <li data-name="Caption#ctx"><a href="Caption.html#ctx">ctx</a></li>
             
                 <li data-name="Caption#font"><a href="Caption.html#font">font</a></li>
             
@@ -447,11 +451,17 @@
             
                 <li data-name="Caption#layout"><a href="Caption.html#layout">layout</a></li>
             
-                <li data-name="Caption#lines"><a href="Caption.html#lines">lines</a></li>
-            
                 <li data-name="Caption#meta"><a href="Caption.html#meta">meta</a></li>
             
                 <li data-name="Caption#name"><a href="Caption.html#name">name</a></li>
+            
+                <li data-name="Caption#on"><a href="Caption.html#on">on</a></li>
+            
+                <li data-name="Caption#onCanvas"><a href="Caption.html#onCanvas">onCanvas</a></li>
+            
+                <li data-name="Caption#onMap"><a href="Caption.html#onMap">onMap</a></li>
+            
+                <li data-name="Caption#position"><a href="Caption.html#position">position</a></li>
             
                 <li data-name="Caption#sequence"><a href="Caption.html#sequence">sequence</a></li>
             
@@ -469,11 +479,27 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Caption#clear"><a href="Caption.html#clear">clear</a></li>
+            
                 <li data-name="Caption#deleteFromObjects"><a href="Caption.html#deleteFromObjects">deleteFromObjects</a></li>
             
-                <li data-name="Caption#refresh"><a href="Caption.html#refresh">refresh</a></li>
+                <li data-name="Caption#draw"><a href="Caption.html#draw">draw</a></li>
+            
+                <li data-name="Caption#highlight"><a href="Caption.html#highlight">highlight</a></li>
+            
+                <li data-name="Caption#invertColors"><a href="Caption.html#invertColors">invertColors</a></li>
+            
+                <li data-name="Caption#move"><a href="Caption.html#move">move</a></li>
+            
+                <li data-name="Caption#moveTo"><a href="Caption.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Caption#remove"><a href="Caption.html#remove">remove</a></li>
+            
+                <li data-name="Caption#toJSON"><a href="Caption.html#toJSON">toJSON</a></li>
             
                 <li data-name="Caption#toString"><a href="Caption.html#toString">toString</a></li>
+            
+                <li data-name="Caption#update"><a href="Caption.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1593,6 +1619,8 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Position#on"><a href="Position.html#on">on</a></li>
+            
                 <li data-name="Position#point"><a href="Position.html#point">point</a></li>
             
                 <li data-name="Position#x"><a href="Position.html#x">x</a></li>
@@ -2152,23 +2180,7 @@
     Layout
     </h2>
     
-        <div class="class-description"><p>The Layout is in control of creating slots from tracks and drawing the map.</p>
-<p>NOTES:</p>
-<ul>
-<li>_adjustProportions is called when components: dividers, backbone, tracks/slots
-<ul>
-<li>change in number, visibility or thickness</li>
-<li>layout format changes</li>
-<li>max/min slot thickness change</li>
-</ul>
-</li>
-<li>updateLayout is called when
-<ul>
-<li>proportions are updated</li>
-<li>every draw loop only if the zoom level has changed</li>
-</ul>
-</li>
-</ul></div>
+        <div class="class-description"><p>NOTE: Add Table and notes about scales, link to details-scales</p></div>
     
 </header>  
 
@@ -2187,7 +2199,7 @@
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line29">line 29</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line58">line 58</a>
         </div>
         
     </div>
@@ -3000,7 +3012,7 @@
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line524">line 524</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line553">line 553</a>
         </div>
         
     </div>
@@ -3072,7 +3084,7 @@ the number of slots.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line913">line 913</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line943">line 943</a>
         </div>
         
     </div>
@@ -3148,7 +3160,7 @@ As the viewer is zoomed the slot thickness increases until</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line219">line 219</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line248">line 248</a>
         </div>
         
     </div>
@@ -3266,7 +3278,7 @@ initializing the bp scale.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line306">line 306</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line335">line 335</a>
         </div>
         
     </div>
@@ -3411,7 +3423,7 @@ initializing the bp scale.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line186">line 186</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line215">line 215</a>
         </div>
         
     </div>
@@ -3558,7 +3570,7 @@ initializing the bp scale.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line198">line 198</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line227">line 227</a>
         </div>
         
     </div>
@@ -3707,7 +3719,7 @@ For a circular map, this is the radius, while for a linear map, it's the distanc
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line263">line 263</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line292">line 292</a>
         </div>
         
     </div>
@@ -3879,7 +3891,7 @@ the right side of a circular map will be 3.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line209">line 209</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line238">line 238</a>
         </div>
         
     </div>
@@ -4073,7 +4085,7 @@ the right side of a circular map will be 3.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line284">line 284</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line313">line 313</a>
         </div>
         
     </div>
@@ -4174,7 +4186,7 @@ This is usually some fraction of the viewer dimensions.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line241">line 241</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line270">line 270</a>
         </div>
         
     </div>
@@ -4274,7 +4286,7 @@ This is usually some fraction of the viewer dimensions.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line326">line 326</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line355">line 355</a>
         </div>
         
     </div>
@@ -4576,7 +4588,7 @@ commands to the context for the given <em>layer</em>.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line250">line 250</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line279">line 279</a>
         </div>
         
     </div>
@@ -4738,7 +4750,7 @@ commands to the context for the given <em>layer</em>.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line176">line 176</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line205">line 205</a>
         </div>
         
     </div>
@@ -4932,7 +4944,7 @@ commands to the context for the given <em>layer</em>.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line296">line 296</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line325">line 325</a>
         </div>
         
     </div>
@@ -5074,7 +5086,7 @@ the backbone up (linear) or towards the outside (circular).</p></td>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line893">line 893</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line923">line 923</a>
         </div>
         
     </div>
@@ -5145,7 +5157,7 @@ the backbone up (linear) or towards the outside (circular).</p></td>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line233">line 233</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line262">line 262</a>
         </div>
         
     </div>
@@ -5317,7 +5329,7 @@ calculating the CGRange.</p>
     
         
         <div class="tag-source">
-            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line274">line 274</a>
+            <a href="Layout.js.html">Layout.js</a>, <a href="Layout.js.html#line303">line 303</a>
         </div>
         
     </div>
@@ -5471,7 +5483,7 @@ as a portion of the total length.</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 16:41:59 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Aug 10 2021 15:36:57 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

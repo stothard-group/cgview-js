@@ -8,26 +8,29 @@ import * as d3 from 'd3';
 
 
 /**
- * The canvas controls drawing and the map layers.
+ * The canvas object controls the map layers and has methods for drawing and erasing on the layers.
+ * Each layer is an HTML canvas element.
+ *
+ * <a name="layers"></a>
+ * ### Layers
+ *
+ * Layer             | Description
+ * ------------------|---------------
+ * background        | for drawing behind the map
+ * map               | main layer, where the map is drawn
+ * forground         | for drawing in front of the map (e.g. map based captions)
+ * canvas            | layer for traning static components (e.g. canvas based captions and legend)
+ * debug             | layer to draw debug information
+ * ui                | layer for captuing interactions
  */
 class Canvas {
 
 
   /**
-   * - Adds several layers (canvases) for drawing
-   * - NO THE SCLAES ARE ACCESSED THROUGH the viewer
-   * - Contains the x, y, bp scales
-   * - has methods for for determining visible regions of the circle at a particular centerOffset
-   * - TODO: Have image describing the circle (center at 0,0) and how it relates to the canvas
-   *
-   * Layers:
-   *  - background: for drawing behind the map
-   *  - map: main layer, where the map is drawn
-   *  - forground: for drawing in front of the map (e.g. map based captions)
-   *  - canvas: layer for traning static components (e.g. canvas based captions and legend)
-   *  - debug: layer to draw debug information
-   *  - ui: layer for captuing interactions
-   *
+   * Create the Canvas object.
+   * @param {Viewer} viewer - The viewer
+   * @param {d3Element} container - D3 Element where canvas layers will be added
+   * @param {Object} options - Possible properties: width [Default: 600], height [Default: 600]
    */
   constructor(viewer, container, options = {}) {
     this._viewer = viewer;
@@ -43,10 +46,18 @@ class Canvas {
     this._drawRange = 0.4;
   }
 
+  /**
+   * @member {Number} - Get the pixel ratio for the canvas.
+   */
   get pixelRatio() {
     return this._pixelRatio;
   }
 
+  /**
+   * Determines the pixel ratio for the provided d3 element.
+   * @param {d3Element} container - D3 Element
+   * @private
+   */
   determinePixelRatio(container) {
     const testNode = container.append('canvas')
       .style('position',  'absolute')
@@ -65,6 +76,15 @@ class Canvas {
     d3.select(testNode).remove();
   }
 
+  /**
+   * Creates a layer for each element in layerNames.
+   * @param {d3Element} container - D3 Element
+   * @param {Array} layerNames - Array of layer names
+   * @param {Number} width - Width of each layer
+   * @param {Number} height - Height of each layer
+   * @param {Boolean} scaleLayer - Sclaes the layers basedon the pixel ratio [Default: true]
+   * @private
+   */
   createLayers(container, layerNames, width, height, scaleLayers = true) {
     const layers = {};
 
@@ -93,6 +113,11 @@ class Canvas {
     return layers;
   }
 
+  /**
+   * Resize all layers to a new width and height.
+   * @param {Number} width - New width for each layer
+   * @param {Number} height - New height for each layer
+   */
   resize(width, height) {
     this.width = width;
     this.height = height;
@@ -125,38 +150,6 @@ class Canvas {
   }
 
   /**
-   * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
-   *
-   * Scale | Description
-   * ------|------------
-   *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
-   *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
-   *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
-   *
-   * ```js
-   * // Examples:
-   * // For a map with canvas width and height of 600. Before moving or zooming the map.
-   * canvas.scale.x(0)          // 300
-   * canvas.scale.y(0)          // 300
-   * canvas.scale.x.invert(300) // 0
-   * canvas.scale.y.invert(300) // 0
-   * // For a map with a length of 1000
-   * canvas.scale.bp(1)        // -π/2
-   * canvas.scale.bp(250)      // 0
-   * canvas.scale.bp(500)      // π/2
-   * canvas.scale.bp(750)      // π
-   * canvas.scale.bp(1000)     // 3π/2
-   * canvas.scale.bp(1000)     // 3π/2
-   * canvas.scale.bp.invert(π) // 750
-   * ```
-   *
-   */
-  // get scale() {
-  //   return this._scale;
-  //   // return this.layout.scale;
-  // }
-
-  /**
    * @member {Array} - Get the names of the layers.
    */
   get layerNames() {
@@ -170,6 +163,9 @@ class Canvas {
     return this.viewer.sequence;
   }
 
+  /**
+   * @member {Number} - Get the width of the canvas. Changing this value will not resize the layers. Use [resize](#resize) instead.
+   */
   get width() {
     return this._width;
   }
@@ -178,6 +174,9 @@ class Canvas {
     this._width = width;
   }
 
+  /**
+   * @member {Number} - Get the width of the canvas. Changing this value will not resize the layers. Use [resize](#resize) instead.
+   */
   get height() {
     return this._height;
   }
@@ -186,6 +185,9 @@ class Canvas {
     this._height = height;
   }
 
+  /**
+   * @member {String} - Get or set the cursor style for the mouse when it's on the canvas.
+   */
   get cursor() {
     return d3.select(this.node('ui')).style('cursor');
   }
@@ -195,7 +197,8 @@ class Canvas {
   }
 
   /**
-   * Clear the viewer canvas
+   * Clear the viewer canvas.
+   * @param {String} layerName - Name of layer to clear [Default: 'map']. A special value of 'all' will clear all the layers.
    */
   clear(layerName = 'map') {
     if (layerName === 'all') {
@@ -217,35 +220,47 @@ class Canvas {
     }
   }
 
+  /**
+   * Draws an arc or arrow on the map.
+   * @param {String} layer - Name of layer to draw element on
+   * @param {Number} start - Start position (bp) of element
+   * @param {Number} stop - Stop position (bp) of element
+   * @param {Number} centerOffset - Distance form center of map to draw element
+   * @param {Color} color - A string describing the color. {@link Color} for details.
+   * @param {Number} width - Width of element
+   * @param {String} decoration - How the element should be drawn. Values: 'arc', 'clockwise-arrow', 'counterclockwise-arrow', 'none'
+   * @param {Boolean} showShading - Should the elment be drawn with shading [Default: value from settings [showShading](Settings.html#showShading)]
+   * @private
+   */
   // Decoration: arc, clockwise-arrow, counterclockwise-arrow, none
   //
-  //  clockwise-arrow (drawn clockwise from arcStartBp; direction = 1):
+  // - clockwise-arrow (drawn clockwise from arcStartBp; direction = 1):
   //
-  //    arcStartBp (feature start)      arcStopBp
-  //           |                        |
-  //           --------------------------  arrowTipBp
-  //           |                          \|
-  //           |                           x - arrowTipPt (feature stop)
-  //           |                          /
-  //           -------------------------x
-  //                                    |
-  //                                    innerArcStartPt
+  //       arcStartBp (feature start)      arcStopBp
+  //              |                        |
+  //              --------------------------  arrowTipBp
+  //              |                          \|
+  //              |                           x - arrowTipPt (feature stop)
+  //              |                          /
+  //              -------------------------x
+  //                                       |
+  //                                       innerArcStartPt
   //
-  //  counterclockwise-arrow (drawn counterclockwise from arcStartBp; direction = -1):
+  // - counterclockwise-arrow (drawn counterclockwise from arcStartBp; direction = -1):
   //
-  //                arcStopBp                      arcStartBp (feature stop)
-  //                       |                        |
-  //           arrowTipBp   -------------------------
-  //                    | /                         |
-  //       arrowTipPt - x                           |
-  //  (feature start)    \                          |
-  //                       x-------------------------
-  //                       |
-  //                       innerArcStartPt
+  //                     arcStopBp                      arcStartBp (feature stop)
+  //                            |                        |
+  //                arrowTipBp   -------------------------
+  //                         | /                         |
+  //            arrowTipPt - x                           |
+  //       (feature start)    \                          |
+  //                            x-------------------------
+  //                            |
+  //                            innerArcStartPt
   //
   // If the zoomFactor gets too large, the arc drawing becomes unstable.
   // (ie the arc wiggle in the map as zooming)
-  // So when the zoomFactor is large, switch to drawing lines (path handles this).
+  // So when the zoomFactor is large, switch to drawing lines ([path](#path) handles this).
   drawElement(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
     if (decoration === 'none') { return; }
     const ctx = this.context(layer);
@@ -365,8 +380,20 @@ class Canvas {
   }
 
   /**
-   * The method add an arc to the path. However, if the zoomFactor is very large,
+   * This method adds a path to the canvas and uses the underlying Layout for the actual drawing.
+   * For circular layouts the path is usually an arc, however, if the zoomFactor is very large,
    * the arc is added as a straight line.
+   * @param {String} layer - Name of layer to draw the path on
+   * @param {Number} centerOffset - Distance form center of map to draw path
+   * @param {Number} startBp - Start position (bp) of path
+   * @param {Number} stopBp - Stop position (bp) of path
+   * @param {Boolean} anticlockwise - Should the elment be drawn in an anticlockwise direction
+   * @param {String} startType - How the path should be started. Allowed values:
+   * <br /><br />
+   *  - moveTo:  *moveTo* start; *lineTo* stop
+   *  - lineTo: *lineTo* start; *lineTo* stop
+   *  - noMoveTo:  ingore start; *lineTo* stop
+   * @private
    */
   // FIXME: try calling layout.path with object parameters and compare speed
   // e.g. path({layer: 'map', offset = radius, etc})
@@ -374,6 +401,16 @@ class Canvas {
     this.layout.path(layer, centerOffset, startBp, stopBp, anticlockwise, startType);
   }
 
+  /**
+   * Draw a line radiating from the map at a particular basepair position.
+   * @param {String} layer - Name of layer to draw the path on
+   * @param {Number} bp - Basepair position of the line
+   * @param {Number} centerOffset - Distance form center of map to start the line
+   * @param {Number} length - Length of line
+   * @param {Color} color - A string describing the color. {@link Color} for details.
+   * @param {String} cap - The stroke linecap for the starting and ending points for the line. Values: 'butt', 'square', 'round'
+   * @private
+   */
   radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt') {
     const innerPt = this.pointForBp(bp, centerOffset);
     const outerPt = this.pointForBp(bp, centerOffset + length);
@@ -391,40 +428,65 @@ class Canvas {
   }
 
 
+  /**
+   * Alias for Layout [pointForBp](Layout.html#pointForBp)
+   * @private
+   */
   pointForBp(bp, centerOffset) {
     return this.layout.pointForBp(bp, centerOffset);
   }
 
-  // Return the bp for the mouse position on the canvas
+  /**
+   * Returns the bp for the current mouse position on the canvas
+   * @private
+   */
   bpForMouse() {
     const pos = d3.mouse(this.node('ui'));
     return this.bpForPoint({x: pos[0], y: pos[1]});
   }
 
-  // Return the bp for the center of the canvas.
+  /**
+   * Returns the bp for the center of the canvas.
+   * @private
+   */
   bpForCanvasCenter() {
     return this.bpForPoint({x: this.width / 2, y: this.height / 2});
   }
 
-  // FIXME: this should be removed and everywhere should call layout method
+  /**
+   * Alias for Layout [bpForPoint](Layout.html#bpForPoint)
+   * FIXME: this should be removed and everywhere should call layout method
+   * @private
+   */
   bpForPoint(point) {
     return this.layout.bpForPoint(point);
   }
 
 
-  // TODO if undefined, see if centerOffset is visible
+  /**
+   * Alias for Layout [visibleRangeForCenterOffset](Layout.html#visibleRangeForCenterOffset)
+   * @private
+   */
   visibleRangeForCenterOffset(centerOffset, margin = 0) {
     return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
   }
 
+  /**
+   * At the current zoom level, how many pixels are there per basepair.
+   * @param {Number} centerOffset - Distance from map center to calculate. This
+   * makes no difference for linear maps.
+   * @private
+   */
   pixelsPerBp(centerOffset = this.viewer.backbone.adjustedCenterOffset) {
     return this.layout.pixelsPerBp(centerOffset);
   }
 
   /**
-   * Return the layer with the specified name (defaults to map layer)
+   * Returns the layer with the specified name (defaults to map layer)
+   * @param {String} layer - Name of layer to return
+   * @private
    */
-  layers(layer) {
+  layers(layer='map') {
     if (this._layerNames.includes(layer)) {
       return this._layers[layer];
     } else {
@@ -434,7 +496,9 @@ class Canvas {
   }
 
   /**
-   * Return the context for the specified layer (defaults to map layer)
+   * Returns the context for the specified layer (defaults to map layer)
+   * @param {String} layer - Name of layer to return context
+   * @private
    */
   context(layer) {
     if (this._layerNames.includes(layer)) {
@@ -447,6 +511,8 @@ class Canvas {
 
   /**
    * Return the node for the specified layer (defaults to map layer)
+   * @param {String} layer - Name of layer to return node element
+   * @private
    */
   node(layer) {
     if (this._layerNames.includes(layer)) {
@@ -461,6 +527,8 @@ class Canvas {
    * This test method reduces the canvas width and height so
    * you can see how the features are reduced (not drawn) as
    * you move the map out of the visible range.
+   * @member {Boolean}
+   * @private
    */
   get _testDrawRange() {
     return this.__testDrawRange;

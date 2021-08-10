@@ -343,6 +343,8 @@
             
                 <li data-name="Box#leftPadded"><a href="Box.html#leftPadded">leftPadded</a></li>
             
+                <li data-name="Box#on"><a href="Box.html#on">on</a></li>
+            
                 <li data-name="Box#paddedX"><a href="Box.html#paddedX">paddedX</a></li>
             
                 <li data-name="Box#paddedY"><a href="Box.html#paddedY">paddedY</a></li>
@@ -373,6 +375,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Box#clear"><a href="Box.html#clear">clear</a></li>
+            
                 <li data-name="Box#containsPt"><a href="Box.html#containsPt">containsPt</a></li>
             
                 <li data-name="Box#toString"><a href="Box.html#toString">toString</a></li>
@@ -392,15 +396,21 @@
             
             <span class="subtitle">Members</span>
             
-                <li data-name="Canvas#_testDrawRange"><a href="Canvas.html#_testDrawRange">_testDrawRange</a></li>
+                <li data-name="Canvas#cursor"><a href="Canvas.html#cursor">cursor</a></li>
+            
+                <li data-name="Canvas#height"><a href="Canvas.html#height">height</a></li>
             
                 <li data-name="Canvas#layerNames"><a href="Canvas.html#layerNames">layerNames</a></li>
             
                 <li data-name="Canvas#layout"><a href="Canvas.html#layout">layout</a></li>
             
+                <li data-name="Canvas#pixelRatio"><a href="Canvas.html#pixelRatio">pixelRatio</a></li>
+            
                 <li data-name="Canvas#sequence"><a href="Canvas.html#sequence">sequence</a></li>
             
                 <li data-name="Canvas#viewer"><a href="Canvas.html#viewer">viewer</a></li>
+            
+                <li data-name="Canvas#width"><a href="Canvas.html#width">width</a></li>
             
             </ul>
             <ul class="typedefs itemMembers">
@@ -412,13 +422,7 @@
             
                 <li data-name="Canvas#clear"><a href="Canvas.html#clear">clear</a></li>
             
-                <li data-name="Canvas#context"><a href="Canvas.html#context">context</a></li>
-            
-                <li data-name="Canvas#layers"><a href="Canvas.html#layers">layers</a></li>
-            
-                <li data-name="Canvas#node"><a href="Canvas.html#node">node</a></li>
-            
-                <li data-name="Canvas#path"><a href="Canvas.html#path">path</a></li>
+                <li data-name="Canvas#resize"><a href="Canvas.html#resize">resize</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -435,11 +439,11 @@
             
             <span class="subtitle">Members</span>
             
+                <li data-name="Caption#anchor"><a href="Caption.html#anchor">anchor</a></li>
+            
                 <li data-name="Caption#backgroundColor"><a href="Caption.html#backgroundColor">backgroundColor</a></li>
             
                 <li data-name="Caption#canvas"><a href="Caption.html#canvas">canvas</a></li>
-            
-                <li data-name="Caption#ctx"><a href="Caption.html#ctx">ctx</a></li>
             
                 <li data-name="Caption#font"><a href="Caption.html#font">font</a></li>
             
@@ -447,11 +451,17 @@
             
                 <li data-name="Caption#layout"><a href="Caption.html#layout">layout</a></li>
             
-                <li data-name="Caption#lines"><a href="Caption.html#lines">lines</a></li>
-            
                 <li data-name="Caption#meta"><a href="Caption.html#meta">meta</a></li>
             
                 <li data-name="Caption#name"><a href="Caption.html#name">name</a></li>
+            
+                <li data-name="Caption#on"><a href="Caption.html#on">on</a></li>
+            
+                <li data-name="Caption#onCanvas"><a href="Caption.html#onCanvas">onCanvas</a></li>
+            
+                <li data-name="Caption#onMap"><a href="Caption.html#onMap">onMap</a></li>
+            
+                <li data-name="Caption#position"><a href="Caption.html#position">position</a></li>
             
                 <li data-name="Caption#sequence"><a href="Caption.html#sequence">sequence</a></li>
             
@@ -469,11 +479,27 @@
             
             <span class="subtitle">Methods</span>
             
+                <li data-name="Caption#clear"><a href="Caption.html#clear">clear</a></li>
+            
                 <li data-name="Caption#deleteFromObjects"><a href="Caption.html#deleteFromObjects">deleteFromObjects</a></li>
             
-                <li data-name="Caption#refresh"><a href="Caption.html#refresh">refresh</a></li>
+                <li data-name="Caption#draw"><a href="Caption.html#draw">draw</a></li>
+            
+                <li data-name="Caption#highlight"><a href="Caption.html#highlight">highlight</a></li>
+            
+                <li data-name="Caption#invertColors"><a href="Caption.html#invertColors">invertColors</a></li>
+            
+                <li data-name="Caption#move"><a href="Caption.html#move">move</a></li>
+            
+                <li data-name="Caption#moveTo"><a href="Caption.html#moveTo">moveTo</a></li>
+            
+                <li data-name="Caption#remove"><a href="Caption.html#remove">remove</a></li>
+            
+                <li data-name="Caption#toJSON"><a href="Caption.html#toJSON">toJSON</a></li>
             
                 <li data-name="Caption#toString"><a href="Caption.html#toString">toString</a></li>
+            
+                <li data-name="Caption#update"><a href="Caption.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1592,6 +1618,8 @@
             <ul class="members itemMembers">
             
             <span class="subtitle">Members</span>
+            
+                <li data-name="Position#on"><a href="Position.html#on">on</a></li>
             
                 <li data-name="Position#point"><a href="Position.html#point">point</a></li>
             
@@ -3361,7 +3389,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line944">line 944</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line948">line 948</a>
         </div>
         
     </div>
@@ -3510,7 +3538,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line659">line 659</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line663">line 663</a>
         </div>
         
     </div>
@@ -3581,7 +3609,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line817">line 817</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line821">line 821</a>
         </div>
         
     </div>
@@ -3654,7 +3682,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line877">line 877</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line881">line 881</a>
         </div>
         
     </div>
@@ -3725,7 +3753,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line546">line 546</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line550">line 550</a>
         </div>
         
     </div>
@@ -3796,7 +3824,7 @@ not just feature data. That way they don't have to be reinitialized and they kee
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line934">line 934</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line938">line 938</a>
         </div>
         
     </div>
@@ -3951,7 +3979,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line648">line 648</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line652">line 652</a>
         </div>
         
     </div>
@@ -4102,7 +4130,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line985">line 985</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line989">line 989</a>
         </div>
         
     </div>
@@ -4173,7 +4201,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line506">line 506</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line510">line 510</a>
         </div>
         
     </div>
@@ -4324,7 +4352,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line497">line 497</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line501">line 501</a>
         </div>
         
     </div>
@@ -4475,7 +4503,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line992">line 992</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line996">line 996</a>
         </div>
         
     </div>
@@ -4546,7 +4574,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1299">line 1299</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1303">line 1303</a>
         </div>
         
     </div>
@@ -4617,7 +4645,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1173">line 1173</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1177">line 1177</a>
         </div>
         
     </div>
@@ -4790,7 +4818,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1191">line 1191</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1195">line 1195</a>
         </div>
         
     </div>
@@ -4963,7 +4991,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1095">line 1095</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1099">line 1099</a>
         </div>
         
     </div>
@@ -5154,12 +5182,12 @@ the viewer will center the image on that bp with the current zoom level.</p>
     <div class="nameContainer">
         <h4 class="name" id="objects">
             
-            objects<span class="signature">(term, term, term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>|or|<a href="CGObject.html">CGObject</a>}</span>
+            objects<span class="signature">(term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>|or|<a href="CGObject.html">CGObject</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line463">line 463</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line467">line 467</a>
         </div>
         
     </div>
@@ -5171,6 +5199,28 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
     <div class="description">
         <p>Returns an <a href="CGArray.html">CGArray</a> of CGObjects or a single CGObject from all the CGObejcts in the viewer.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>undefined</td>
+<td>All objects</td>
+</tr>
+<tr>
+<td>String</td>
+<td>CGObject with a cgvID equal to the string or undefined</td>
+</tr>
+<tr>
+<td>Array</td>
+<td>CGArray of CGObjects with with matching cgvIDs</td>
+</tr>
+</tbody>
+</table>
     </div>
     
 
@@ -5207,52 +5257,9 @@ the viewer will center the image on that bp with the current zoom level.</p>
             <td class="type">
             
                 
-<span class="param-type">Undefined</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Returns all objects</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>term</code></td>
-            
-            
-            <td class="type">
-            
-                
 <span class="param-type">String</span>
+|
 
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Returns the CGObject with a cgvID equal to the string.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>term</code></td>
-            
-            
-            <td class="type">
-            
-                
 <span class="param-type">Array</span>
 
 
@@ -5263,7 +5270,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
             
             <td class="description last">
                 
-                <p>Returns an CGArray of CGObjects with with matching cgvIDs.</p></td>
+                <p>The values returned depend on the term (see above table).</p></td>
         </tr>
 	
 	
@@ -5356,7 +5363,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1323">line 1323</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1327">line 1327</a>
         </div>
         
     </div>
@@ -5427,7 +5434,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1316">line 1316</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1320">line 1320</a>
         </div>
         
     </div>
@@ -5498,7 +5505,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line697">line 697</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line701">line 701</a>
         </div>
         
     </div>
@@ -5649,7 +5656,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1284">line 1284</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1288">line 1288</a>
         </div>
         
     </div>
@@ -5720,7 +5727,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line788">line 788</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line792">line 792</a>
         </div>
         
     </div>
@@ -5793,7 +5800,7 @@ Otherwise any record in updates that has an attributesOfInterest of changed is r
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line956">line 956</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line960">line 960</a>
         </div>
         
     </div>
@@ -5913,7 +5920,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1277">line 1277</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1281">line 1281</a>
         </div>
         
     </div>
@@ -6189,7 +6196,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line484">line 484</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line488">line 488</a>
         </div>
         
     </div>
@@ -6340,7 +6347,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line709">line 709</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line713">line 713</a>
         </div>
         
     </div>
@@ -6491,7 +6498,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line539">line 539</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line543">line 543</a>
         </div>
         
     </div>
@@ -6642,7 +6649,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1330">line 1330</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1334">line 1334</a>
         </div>
         
     </div>
@@ -6713,7 +6720,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line974">line 974</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line978">line 978</a>
         </div>
         
     </div>
@@ -6859,7 +6866,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line849">line 849</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line853">line 853</a>
         </div>
         
     </div>
@@ -6930,7 +6937,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line902">line 902</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line906">line 906</a>
         </div>
         
     </div>
@@ -7001,7 +7008,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line606">line 606</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line610">line 610</a>
         </div>
         
     </div>
@@ -7072,7 +7079,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1260">line 1260</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1264">line 1264</a>
         </div>
         
     </div>
@@ -7196,7 +7203,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1269">line 1269</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1273">line 1273</a>
         </div>
         
     </div>
@@ -7320,7 +7327,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1211">line 1211</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1215">line 1215</a>
         </div>
         
     </div>
@@ -7521,7 +7528,7 @@ If <em>bp</em> is falsy (inc. 0), the map is centered.</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jul 22 2021 16:41:59 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Aug 10 2021 15:36:57 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

@@ -454,10 +454,14 @@ class Viewer {
   }
 
   /**
-   * Returns an [CGArray](CGArray.html) of CGObjects or a single CGObject from all the CGObejcts in the viewer.
-   * @param {Undefined} term Returns all objects
-   * @param {String}    term Returns the CGObject with a cgvID equal to the string.
-   * @param {Array}     term Returns an CGArray of CGObjects with with matching cgvIDs.
+   * Returns an [CGArray](CGArray.html) of CGObjects or a single CGObject from all the CGObjects in the viewer.
+   * Term      | Returns
+   * ----------|----------------
+   * undefined | All objects
+   * String    | CGObject with a cgvID equal to the string or undefined
+   * Array     | CGArray of CGObjects with matching cgvIDs
+   *
+   * @param {String|Array} term - The values returned depend on the term (see above table).
    * @return {CGArray|or|CGObject}
    */
   objects(term) {

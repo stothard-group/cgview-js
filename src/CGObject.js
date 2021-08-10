@@ -11,7 +11,7 @@ const generateID = function() {
 };
 
 /**
- * The CGObject is the base class of many CGView Classes. In particular, any class that
+ * The CGObject is the base class of many CGView Classes. In particular, any class
  * that is drawn on the map will be a subclass of CGObject (e.g. [Track](Track.html),
  * [Slot](Slot.html), [Feature](Feature.html), [Plot](Plot.html), etc).
  *

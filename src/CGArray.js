@@ -8,6 +8,15 @@
  *
  * If a single array is provided it will be converted to an CGArray.
  * If mulitple elements are provided, they will be added to the new CGArray.
+ *
+ * ### Examples
+ * ```js
+ * const a1 = new CGArray(1, 2, 3);
+ * => CGArray [1,2,3]
+ *
+ * const a2 = new CGArray([1,2,3])
+ * => CGArray [1,2,3]
+ * ```
  */
 class CGArray extends Array {
 
@@ -115,6 +124,9 @@ class CGArray extends Array {
     return new CGArray(res);
   }
 
+  /**
+   * @private
+   */
   // FIXME: return an CGArray with a single element of 0 when it should be empty
   // FIXME: Using Polyfill for now
   // https://github.com/jonathantneal/array-flat-polyfill/blob/master/src/flat.js
@@ -132,15 +144,18 @@ class CGArray extends Array {
     }, []) : Array.prototype.slice.call(this);
   }
 
+  /**
+   * @private
+   */
   map(...rest) {
     return (this.length === 0) ? this : super.map(...rest);
   }
 
   /**
- * Move the an item from oldIndex to newIndex.
- * @param {Number} oldIndex - index of element to move
- * @param {Number} newIndex - move element to this index
- */
+   * Move the an item from oldIndex to newIndex.
+   * @param {Number} oldIndex - index of element to move
+   * @param {Number} newIndex - move element to this index
+   */
   move(oldIndex, newIndex) {
     if (newIndex >= this.length) {
       let k = newIndex - this.length;
@@ -153,48 +168,52 @@ class CGArray extends Array {
   }
 
   /**
- * Retrieve subset of CGArray or an individual element from CGArray depending on term provided.
- * To find elements by cgvID use [Viewer.objects](Viewer.html#objects) instead.
- * @param {Undefined} term Return full CGArray
- * @param {Integer}   term Return element at that index (base-1)
- * @param {String}    term Return first element with an id property same as string.
- * @param {Array}     term Return CGArray with elements with matching ids
- * @return {CGArray|or|Element}
- */
+   * Retrieve subset of CGArray or an individual element from CGArray depending on term provided.
+   * To find elements by cgvID use [Viewer.objects](Viewer.html#objects) instead.
+   * Term      | Returns
+   * ----------|----------------
+   * undefined | Full CGArray
+   * Ingeter   | The element at the index (base-1)
+   * String    | First element with an 'name' property same as string or undefined
+   * Array     | CGArray with elements with matching 'name' property
+   *
+   * @param {Integer|String|Array} term - The values returned depend on the term (see above table).
+   * @return {CGArray|or|Element}
+   */
   get(term) {
     if (term === undefined) {
       return this;
     } else if (Number.isInteger(term)) {
       return this[term - 1];
     } else if (typeof term === 'string') {
-      return this.filter( element => element.id && element.id.toLowerCase() === term.toLowerCase() )[0];
+      return this.filter( element => element.name && element.name.toLowerCase() === term.toLowerCase() )[0];
     } else if (Array.isArray(term)) {
-      return this.filter( element => term.some( id => element.id === id ) );
+      return this.filter( element => term.some( name => element.name === name ) );
     } else {
       return new CGArray();
     }
   }
 
   /**
- * Return new CGArray with no duplicated values.
- * @return {CGArray}
- */
+   * Return new CGArray with no duplicated values.
+   * @return {CGArray}
+   */
   unique() {
   // return new CGArray(this.filter( onlyUnique ));
     return CGArray.from(new Set(this));
   }
 
   /**
- * Change one or more properties of each element of the CGArray.
- * ```javascript
- * my_cgarray.attr(property, value)
- * my_cgarray.attr( {property1: value1, property2: value2} )
- * ```
- *
- * @param {Property|Value} attributes A property name and the new value.
- * @param {Object}     attributes An object properties and their new values.
- * @return {CGArray}
- */
+   * Change one or more properties of each element of the CGArray.
+   * ```javascript
+   * my_cgarray.attr(property, value)
+   * my_cgarray.attr( {property1: value1, property2: value2} )
+   * ```
+   *
+   * @param {Property|Value} attributes A property name and the new value.
+   * @param {Object}     attributes An object properties and their new values.
+   * @return {CGArray}
+   */
   attr(attributes) {
     if ( (arguments.length === 1) && (typeof attributes === 'object') ) {
       const keys = Object.keys(attributes);
