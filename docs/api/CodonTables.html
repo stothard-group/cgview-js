@@ -638,8 +638,6 @@
             
                 <li data-name="CGRange#isWrapped"><a href="CGRange.html#isWrapped">isWrapped</a></li>
             
-                <li data-name="CGRange#isWrappingAllowed"><a href="CGRange.html#isWrappingAllowed">isWrappingAllowed</a></li>
-            
                 <li data-name="CGRange#mergeWithRange"><a href="CGRange.html#mergeWithRange">mergeWithRange</a></li>
             
                 <li data-name="CGRange#normalize"><a href="CGRange.html#normalize">normalize</a></li>
@@ -661,6 +659,24 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTable.availableGeneticCodeIDs"><a href="CodonTable.html#.availableGeneticCodeIDs">availableGeneticCodeIDs</a></li>
+            
+                <li data-name="CodonTable.definitions"><a href="CodonTable.html#.definitions">definitions</a></li>
+            
+                <li data-name="CodonTable#codons"><a href="CodonTable.html#codons">codons</a></li>
+            
+                <li data-name="CodonTable#geneticCodeID"><a href="CodonTable.html#geneticCodeID">geneticCodeID</a></li>
+            
+                <li data-name="CodonTable#name"><a href="CodonTable.html#name">name</a></li>
+            
+                <li data-name="CodonTable#starts"><a href="CodonTable.html#starts">starts</a></li>
+            
+                <li data-name="CodonTable#stops"><a href="CodonTable.html#stops">stops</a></li>
+            
+                <li data-name="CodonTable#table"><a href="CodonTable.html#table">table</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -670,6 +686,8 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="CodonTable#toString"><a href="CodonTable.html#toString">toString</a></li>
+            
+                <li data-name="CodonTable#translate"><a href="CodonTable.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -684,11 +702,23 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTables#tables"><a href="CodonTables.html#tables">tables</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
             </ul>
             <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CodonTables#byID"><a href="CodonTables.html#byID">byID</a></li>
+            
+                <li data-name="CodonTables#names"><a href="CodonTables.html#names">names</a></li>
+            
+                <li data-name="CodonTables#translate"><a href="CodonTables.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -725,9 +755,13 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Color.hsl2rgb"><a href="Color.html#.hsl2rgb">hsl2rgb</a></li>
+                <li data-name="Color.names"><a href="Color.html#.names">names</a></li>
             
-                <li data-name="Color.rgb2hsl"><a href="Color.html#.rgb2hsl">rgb2hsl</a></li>
+                <li data-name="Color#copy"><a href="Color.html#copy">copy</a></li>
+            
+                <li data-name="Color#equals"><a href="Color.html#equals">equals</a></li>
+            
+                <li data-name="Color#invert"><a href="Color.html#invert">invert</a></li>
             
                 <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
             
@@ -2181,7 +2215,21 @@
     </h2>
     
         <div class="class-description"><p>Holder for CodonTables.
-This class will be populated with each CodonTable as it's required.</p></div>
+This class will be populated with each <a href="CodonTable.html">CodonTable</a> as it's required.</p>
+<h3>Examples:</h3>
+<pre class="prettyprint source lang-js"><code>// Initially this class will have no
+const codonTables = new CodonTables();
+codonTables.tables;
+// => {}
+
+Tables are accessed via byID
+codonTables.byID(1)
+// => CodonTable {name: 'Standard', ...}
+
+// This will also add the table to tables:
+codonTables.tables;
+// => { 1: {name: 'Standard', ...} }
+</code></pre></div>
     
 </header>  
 
@@ -2200,7 +2248,7 @@ This class will be populated with each CodonTable as it's required.</p></div>
     
         
         <div class="tag-source">
-            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line13">line 13</a>
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line30">line 30</a>
         </div>
         
     </div>
@@ -2209,6 +2257,10 @@ This class will be populated with each CodonTable as it's required.</p></div>
 </dt>
 <dd>
     
+    
+    <div class="description">
+        <p>Create an empty container to lazy load codon tables as needed</p>
+    </div>
     
 
     
@@ -2270,7 +2322,431 @@ This class will be populated with each CodonTable as it's required.</p></div>
     
     
     
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="tables">tables</h4>
+    </div>
     
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the current tables</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="byID">
+            
+            byID<span class="signature">(id)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line45">line 45</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Return the table for provided code</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>ID of the Codon Table (e.g. 1, '1')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="names">
+            
+            names<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line67">line 67</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns object with table codes as the keys and the values as the table names</p>
+<pre class="prettyprint source lang-js"><code>codonTables.names()
+// => {1: 'Standard', 2: 'Vertebrate Mitochondrial', ...}
+</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="translate">
+            
+            translate<span class="signature">(seq, geneticCodeID, startCodon)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line80">line 80</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Translate a sequence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>seq</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                <p>The sequence to translate</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>geneticCodeID</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                <p>The genetic code ID (e.g. 1)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>startCodon</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                <p>Position (bp) of the first codon</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -2287,7 +2763,7 @@ This class will be populated with each CodonTable as it's required.</p></div>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Aug 10 2021 15:36:57 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

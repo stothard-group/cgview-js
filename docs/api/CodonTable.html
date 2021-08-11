@@ -638,8 +638,6 @@
             
                 <li data-name="CGRange#isWrapped"><a href="CGRange.html#isWrapped">isWrapped</a></li>
             
-                <li data-name="CGRange#isWrappingAllowed"><a href="CGRange.html#isWrappingAllowed">isWrappingAllowed</a></li>
-            
                 <li data-name="CGRange#mergeWithRange"><a href="CGRange.html#mergeWithRange">mergeWithRange</a></li>
             
                 <li data-name="CGRange#normalize"><a href="CGRange.html#normalize">normalize</a></li>
@@ -661,6 +659,24 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTable.availableGeneticCodeIDs"><a href="CodonTable.html#.availableGeneticCodeIDs">availableGeneticCodeIDs</a></li>
+            
+                <li data-name="CodonTable.definitions"><a href="CodonTable.html#.definitions">definitions</a></li>
+            
+                <li data-name="CodonTable#codons"><a href="CodonTable.html#codons">codons</a></li>
+            
+                <li data-name="CodonTable#geneticCodeID"><a href="CodonTable.html#geneticCodeID">geneticCodeID</a></li>
+            
+                <li data-name="CodonTable#name"><a href="CodonTable.html#name">name</a></li>
+            
+                <li data-name="CodonTable#starts"><a href="CodonTable.html#starts">starts</a></li>
+            
+                <li data-name="CodonTable#stops"><a href="CodonTable.html#stops">stops</a></li>
+            
+                <li data-name="CodonTable#table"><a href="CodonTable.html#table">table</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -670,6 +686,8 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="CodonTable#toString"><a href="CodonTable.html#toString">toString</a></li>
+            
+                <li data-name="CodonTable#translate"><a href="CodonTable.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -684,11 +702,23 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTables#tables"><a href="CodonTables.html#tables">tables</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
             </ul>
             <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CodonTables#byID"><a href="CodonTables.html#byID">byID</a></li>
+            
+                <li data-name="CodonTables#names"><a href="CodonTables.html#names">names</a></li>
+            
+                <li data-name="CodonTables#translate"><a href="CodonTables.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -725,9 +755,13 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Color.hsl2rgb"><a href="Color.html#.hsl2rgb">hsl2rgb</a></li>
+                <li data-name="Color.names"><a href="Color.html#.names">names</a></li>
             
-                <li data-name="Color.rgb2hsl"><a href="Color.html#.rgb2hsl">rgb2hsl</a></li>
+                <li data-name="Color#copy"><a href="Color.html#copy">copy</a></li>
+            
+                <li data-name="Color#equals"><a href="Color.html#equals">equals</a></li>
+            
+                <li data-name="Color#invert"><a href="Color.html#invert">invert</a></li>
             
                 <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
             
@@ -2180,9 +2214,8 @@
     CodonTable
     </h2>
     
-        <div class="class-description"><br />
-This class contains all the codon tables and has the ability to translate
-DNA seqeunces to protein.</div>
+        <div class="class-description"><p>This class contains all the codon table definitions and has the ability to translate
+DNA seqeunces to protein.</p></div>
     
 </header>  
 
@@ -2196,12 +2229,12 @@ DNA seqeunces to protein.</div>
     <div class="nameContainer">
         <h4 class="name" id="CodonTable">
             
-            new CodonTable<span class="signature">()</span>
+            new CodonTable<span class="signature">(geneticCodeID)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line60">line 60</a>
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line98">line 98</a>
         </div>
         
     </div>
@@ -2211,11 +2244,60 @@ DNA seqeunces to protein.</div>
 <dd>
     
     
+    <div class="description">
+        <p>Create a new codon table</p>
+    </div>
+    
 
     
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>geneticCodeID</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>ID for the genetic code (e.g. 1 for 'Standard' code)</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2271,6 +2353,370 @@ DNA seqeunces to protein.</div>
     
     
     
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".availableGeneticCodeIDs"><span class="type-signature static">static</span>CodonTable.availableGeneticCodeIDs</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return array of all the available genetic code IDs</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".definitions"><span class="type-signature static">static</span>CodonTable.definitions</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Returns all the available codon table definitions</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="codons">codons</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return a list of the 64 codons, sorted in the following order: T, C, A, G</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="geneticCodeID">geneticCodeID</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the genetic code for this codon table</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="name">name</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the name for this codon table</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="starts">starts</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the start codons for this codon table</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="stops">stops</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the stop codons for this codon table</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="table">table</h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return the table for this codon table</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
     
     
         <h3 class="subsection-title">Methods</h3>
@@ -2286,7 +2732,7 @@ DNA seqeunces to protein.</div>
     
         
         <div class="tag-source">
-            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line70">line 70</a>
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line108">line 108</a>
         </div>
         
     </div>
@@ -2377,6 +2823,145 @@ DNA seqeunces to protein.</div>
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="translate">
+            
+            translate<span class="signature">(seq, startCodon)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="CodonTable.js.html">CodonTable.js</a>, <a href="CodonTable.js.html#line314">line 314</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Translate a sequence using this codon table</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>seq</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>The sequence to translate</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>startCodon</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Position (bp) of the first codon</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -2394,7 +2979,7 @@ DNA seqeunces to protein.</div>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Aug 10 2021 15:36:57 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

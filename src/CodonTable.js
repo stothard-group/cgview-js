@@ -1,24 +1,47 @@
 //////////////////////////////////////////////////////////////////////////////
-// Codon Table
+// CodonTable and CodonTables
 //////////////////////////////////////////////////////////////////////////////
-
-// FIXME: should this be 2 files!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 /**
  * Holder for CodonTables.
- * This class will be populated with each CodonTable as it's required.
+ * This class will be populated with each [CodonTable](CodonTable.html) as it's required.
+ *
+ * ### Examples:
+ * ```js
+ * // Initially this class will have no
+ * const codonTables = new CodonTables();
+ * codonTables.tables;
+ * // => {}
+ *
+ * Tables are accessed via byID
+ * codonTables.byID(1)
+ * // => CodonTable {name: 'Standard', ...}
+ *
+ * // This will also add the table to tables:
+ * codonTables.tables;
+ * // => { 1: {name: 'Standard', ...} }
+ * ```
  */
 class CodonTables {
 
-  constructor(font) {
+  /**
+   * Create an empty container to lazy load codon tables as needed
+   */
+  constructor() {
     this._tables = {};
   }
 
+  /**
+   * Return the current tables
+   */
   get tables() {
     return this._tables;
   }
 
-  // ID can be a number or a string of a number
+  /**
+   * Return the table for provided code
+   * @param {Number|String} id - ID of the Codon Table (e.g. 1, '1')
+   */
   byID(id) {
     const availableIDs = CodonTable.availableGeneticCodeIDs;
     const idString = id.toString();
@@ -34,6 +57,13 @@ class CodonTables {
     return table;
   }
 
+  /**
+   * Returns object with table codes as the keys and the values as the table names
+   * ```js
+   * codonTables.names()
+   * // => {1: 'Standard', 2: 'Vertebrate Mitochondrial', ...}
+   * ```
+   */
   names() {
     const codes = {};
     const ids = Object.keys(CodonTable.definitions);
@@ -41,6 +71,12 @@ class CodonTables {
     return codes
   }
 
+  /**
+   * Translate a sequence
+   * @param {String} seq - The sequence to translate
+   * @param {Number} geneticCodeID - The genetic code ID (e.g. 1)
+   * @param {Number} startCodon - Position (bp) of the first codon
+   */
   translate(seq, geneticCodeID, startCodon=1) {
     const table = this.byID(geneticCodeID);
     if (table) {
@@ -50,13 +86,15 @@ class CodonTables {
 }
 
 /**
- * <br />
- * This class contains all the codon tables and has the ability to translate
+ * This class contains all the codon table definitions and has the ability to translate
  * DNA seqeunces to protein.
- *
  */
 class CodonTable {
 
+  /**
+   * Create a new codon table
+   * @param {Number} geneticCodeID - ID for the genetic code (e.g. 1 for 'Standard' code)
+   */
   constructor(geneticCodeID) {
     this._codons = this.generateCodons();
     this._geneticCodeID = geneticCodeID && geneticCodeID.toString();
@@ -71,34 +109,59 @@ class CodonTable {
     return 'CodonTable';
   }
 
+  /**
+   * Return array of all the available genetic code IDs
+   */
   static get availableGeneticCodeIDs() {
     return Object.keys(CodonTable.definitions);
   }
 
+  /**
+   * Return a list of the 64 codons, sorted in the following order: T, C, A, G
+   */
   get codons() {
     return this._codons;
   }
 
+  /**
+   * Return the genetic code for this codon table
+   */
   get geneticCodeID() {
     return this._geneticCodeID;
   }
 
+  /**
+   * Return the name for this codon table
+   */
   get name() {
     return this._name;
   }
 
+  /**
+   * Return the table for this codon table
+   */
   get table() {
     return this._table;
   }
 
+  /**
+   * Return the start codons for this codon table
+   */
   get starts() {
     return this._starts;
   }
 
+  /**
+   * Return the stop codons for this codon table
+   */
   get stops() {
     return this._stops;
   }
 
+  /**
+   * Creates the table for this codon table
+   * @private
+   */
   _generateTable() {
     const codeID = this.geneticCodeID;
     if (CodonTable.availableGeneticCodeIDs.includes(codeID)) {
@@ -126,7 +189,10 @@ class CodonTable {
     }
   }
 
-
+  /**
+   * Generate the codons using the nucleotides sorted by: T, C, A, G
+   * @private
+   */
   generateCodons() {
     // Base1 = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
     // Base2 = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
@@ -143,6 +209,9 @@ class CodonTable {
     return codons;
   }
 
+  /**
+   * Returns all the available codon table definitions
+   */
   static get definitions() {
     //   Base1 = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
     //   Base2 = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
@@ -237,6 +306,11 @@ class CodonTable {
     return definitions;
   }
 
+  /**
+   * Translate a sequence using this codon table
+   * @param {String} seq - The sequence to translate
+   * @param {Number} startCodon - Position (bp) of the first codon
+   */
   translate(rawSeq, codonStart=1) {
     const codonSize = 3;
     const seq = rawSeq.toUpperCase();

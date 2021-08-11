@@ -9,7 +9,7 @@ import utils from './Utils';
  * Colors are stored internally as an RGBA string (CSS/Canvas compatible) for quick access.
  * The color can be provided or generated in the following formats:
  *
- * *String*:
+ * ### String
  *
  * Type    | Example
  * --------|--------
@@ -21,8 +21,7 @@ import utils from './Utils';
  * HSLA    | not implemented yet
  *
  *
- * <br />
- * *Object*:
+ * ### Object
  *
  * Type    | Example
  * --------|--------
@@ -148,9 +147,17 @@ class Color {
     this.rgba = rgba;
   }
 
+  /**
+   * NIY
+   * @private
+   */
   get hex() {
   }
 
+  /**
+   * @member {Object} - Get or set the color using a HSL object.
+   * @private
+   */
   get hsl() {
     return Color.rgb2hsl(this.rgb);
   }
@@ -161,10 +168,18 @@ class Color {
     this.rgba = rgba;
   }
 
+  /**
+   * Returns a copy of this color object
+   */
   copy() {
     return new Color(this.rgbaString);
   }
 
+  /**
+   * Returns true if this color has the same value as the provided color
+   * @param {Color} color - This color to compare with
+   * @param {Boolean} ignoreAlpha - Should opacity be considered in the comparison
+   */
   equals(color, ignoreAlpha = false) {
     const rgb1 = this.rgba;
     const rgb2 = color.rgba;
@@ -175,6 +190,12 @@ class Color {
     }
   }
 
+  /**
+   * Tests if this color in the provided array of colors
+   * @param {Array} colors - List of colors for the comparison
+   * @param {Boolean} ignoreAlpha - Should opacity be considered in the comparison
+   * @private
+   */
   inArray(colors, ignoreAlpha) {
     let present = false;
     for (const color of colors) {
@@ -186,12 +207,22 @@ class Color {
     return present;
   }
 
+  /**
+   * Alters the color. Useful for highlighting.
+   * @param {Number} colorAdjustment - Amount to change the color by
+   * @private
+   */
   highlight(colorAdjustment = 0.25) {
     const hsv = this.hsv;
     hsv.v += (hsv.v < 0.5) ? colorAdjustment : -colorAdjustment;
     this.hsv = hsv;
   }
 
+  /**
+   * Lightens the color.
+   * @param {Number} fraction - Amount to lighten the color by
+   * @private
+   */
   lighten(fraction) {
     const hsl = this.hsl;
     hsl.l += utils.constrain(fraction, 0, 1);
@@ -200,6 +231,11 @@ class Color {
     return this;
   }
 
+  /**
+   * Darkens the color.
+   * @param {Number} fraction - Amount to darken the color by
+   * @private
+   */
   darken(fraction) {
     const hsl = this.hsl;
     hsl.l -= utils.constrain(fraction, 0, 1);
@@ -208,6 +244,9 @@ class Color {
     return this;
   }
 
+  /**
+   * Inverts the color
+   */
   invert() {
     const rgb = this.rgb;
     this.rgb = {
@@ -450,6 +489,7 @@ Color.hexString2rgba = function(hex, opacity = 1) {
  * @param   Number  g       The green color value
  * @param   Number  b       The blue color value
  * @return  Array           The HSL representation
+ * @private
  */
 Color.rgb2hsl = function(rgb) {
   const r = rgb.r / 255;
@@ -484,11 +524,11 @@ Color.rgb2hsl = function(rgb) {
  * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
  * Assumes h, s, and l are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
- *
  * @param   Number  h       The hue
  * @param   Number  s       The saturation
  * @param   Number  l       The lightness
  * @return  Array           The RGB representation
+ * @private
  */
 Color.hsl2rgb = function(hsl) {
   const h = hsl.h;
@@ -572,12 +612,15 @@ Color.name2HexString = function(name) {
 };
 
 
-// Returns a color with RGB values centered around *center* and upto *width* away from the center.
-// If *notColors* is provided, the method makes sure not to return one of those colors.
-// Internally getColor creates an array of colors double the size of *notColors* plus 1 and then checks
-// the color from array starting at the index of *notColors* length (ie if *colors* is an array of 4,
-// the methods creates an array of 9 colors and starts at color number 5). This prevents always returning
-// the first few colors, if they are being changed by the user.
+/**
+ * Returns a color with RGB values centered around *center* and upto *width* away from the center.
+ * If *notColors* is provided, the method makes sure not to return one of those colors.
+ * Internally getColor creates an array of colors double the size of *notColors* plus 1 and then checks
+ * the color from array starting at the index of *notColors* length (ie if *colors* is an array of 4,
+ * the methods creates an array of 9 colors and starts at color number 5). This prevents always returning
+ * the first few colors, if they are being changed by the user.
+ * @private
+ */
 Color.getColor = function(notColors = [], center = 128, width = 127, alpha = 1) {
   const colors = [];
   const len = (notColors.length * 2) + 1;
@@ -607,6 +650,9 @@ Color.getColor = function(notColors = [], center = 128, width = 127, alpha = 1) 
   return colors[colorIndex];
 };
 
+/**
+ * Return a object of color names and their HEX values
+ */
 Color.names = function() {
   return {
     aliceblue: '#f0f8ff',

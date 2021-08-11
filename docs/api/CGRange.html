@@ -638,8 +638,6 @@
             
                 <li data-name="CGRange#isWrapped"><a href="CGRange.html#isWrapped">isWrapped</a></li>
             
-                <li data-name="CGRange#isWrappingAllowed"><a href="CGRange.html#isWrappingAllowed">isWrappingAllowed</a></li>
-            
                 <li data-name="CGRange#mergeWithRange"><a href="CGRange.html#mergeWithRange">mergeWithRange</a></li>
             
                 <li data-name="CGRange#normalize"><a href="CGRange.html#normalize">normalize</a></li>
@@ -661,6 +659,24 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTable.availableGeneticCodeIDs"><a href="CodonTable.html#.availableGeneticCodeIDs">availableGeneticCodeIDs</a></li>
+            
+                <li data-name="CodonTable.definitions"><a href="CodonTable.html#.definitions">definitions</a></li>
+            
+                <li data-name="CodonTable#codons"><a href="CodonTable.html#codons">codons</a></li>
+            
+                <li data-name="CodonTable#geneticCodeID"><a href="CodonTable.html#geneticCodeID">geneticCodeID</a></li>
+            
+                <li data-name="CodonTable#name"><a href="CodonTable.html#name">name</a></li>
+            
+                <li data-name="CodonTable#starts"><a href="CodonTable.html#starts">starts</a></li>
+            
+                <li data-name="CodonTable#stops"><a href="CodonTable.html#stops">stops</a></li>
+            
+                <li data-name="CodonTable#table"><a href="CodonTable.html#table">table</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -670,6 +686,8 @@
             <span class="subtitle">Methods</span>
             
                 <li data-name="CodonTable#toString"><a href="CodonTable.html#toString">toString</a></li>
+            
+                <li data-name="CodonTable#translate"><a href="CodonTable.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -684,11 +702,23 @@
             </span>
             <ul class="members itemMembers">
             
+            <span class="subtitle">Members</span>
+            
+                <li data-name="CodonTables#tables"><a href="CodonTables.html#tables">tables</a></li>
+            
             </ul>
             <ul class="typedefs itemMembers">
             
             </ul>
             <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="CodonTables#byID"><a href="CodonTables.html#byID">byID</a></li>
+            
+                <li data-name="CodonTables#names"><a href="CodonTables.html#names">names</a></li>
+            
+                <li data-name="CodonTables#translate"><a href="CodonTables.html#translate">translate</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -725,9 +755,13 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Color.hsl2rgb"><a href="Color.html#.hsl2rgb">hsl2rgb</a></li>
+                <li data-name="Color.names"><a href="Color.html#.names">names</a></li>
             
-                <li data-name="Color.rgb2hsl"><a href="Color.html#.rgb2hsl">rgb2hsl</a></li>
+                <li data-name="Color#copy"><a href="Color.html#copy">copy</a></li>
+            
+                <li data-name="Color#equals"><a href="Color.html#equals">equals</a></li>
+            
+                <li data-name="Color#invert"><a href="Color.html#invert">invert</a></li>
             
                 <li data-name="Color#setColor"><a href="Color.html#setColor">setColor</a></li>
             
@@ -2180,12 +2214,16 @@
     CGRange
     </h2>
     
-        <div class="class-description"><p>A CGRange contains a start, stop on a sequence contig.
+        <div class="class-description"><p>A CGRange contains a start and stop position (in base pair) on a sequence contig.
 Ranges are always in a clockise direction.
 The start is always less than the stop position with following exception.
 Since the genomes are circular, if the genome contains a single contig
 (i.e., Sequence.hasMultipleContigs is false) it's possibe for the range to
-loop around (i.e., that stop can be less than the start).</p></div>
+loop around (i.e., that stop can be less than the start).</p>
+<h3>Ranges and Map Coordinates</h3>
+<p>Range start and stop positions are in relation to the contig the range is
+on. To get the positions in relation to the entire map, use
+<a href="#mapStart">mapStart</a> and <a href="#mapStop">mapStop</a>.</p></div>
     
 </header>  
 
@@ -2204,7 +2242,7 @@ loop around (i.e., that stop can be less than the start).</p></div>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line24">line 24</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line31">line 31</a>
         </div>
         
     </div>
@@ -2754,7 +2792,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line225">line 225</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line233">line 233</a>
         </div>
         
     </div>
@@ -2899,7 +2937,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line239">line 239</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line247">line 247</a>
         </div>
         
     </div>
@@ -2999,7 +3037,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line181">line 181</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line188">line 188</a>
         </div>
         
     </div>
@@ -3144,7 +3182,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line190">line 190</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line197">line 197</a>
         </div>
         
     </div>
@@ -3289,7 +3327,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line198">line 198</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line205">line 205</a>
         </div>
         
     </div>
@@ -3300,7 +3338,7 @@ contig length.</p>
     
     
     <div class="description">
-        <p>Return true if the range length is the same as the sequence length</p>
+        <p>Return true if the range length is the same as the map sequence length</p>
     </div>
     
 
@@ -3389,7 +3427,7 @@ contig length.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line216">line 216</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line224">line 224</a>
         </div>
         
     </div>
@@ -3482,107 +3520,6 @@ contig length.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="isWrappingAllowed">
-            
-            isWrappingAllowed<span class="signature">()</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{Boolean}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line207">line 207</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Return true if the contig length is the same as the sequence length.
-If so, then the range can wrap around (i.e., that stop position can be less than the start).</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        Boolean
-                        
-                    
-            </td>
-            <td class="description last"></td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="mergeWithRange">
             
             mergeWithRange<span class="signature">(range2)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{Range}</span>
@@ -3590,7 +3527,7 @@ If so, then the range can wrap around (i.e., that stop position can be less than
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line263">line 263</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line271">line 271</a>
         </div>
         
     </div>
@@ -3738,7 +3675,7 @@ this method will be returned.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line157">line 157</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line164">line 164</a>
         </div>
         
     </div>
@@ -3887,7 +3824,7 @@ a value of 200 will be returned.</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line144">line 144</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line151">line 151</a>
         </div>
         
     </div>
@@ -3988,7 +3925,7 @@ sequence length</p>
     
         
         <div class="tag-source">
-            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line248">line 248</a>
+            <a href="CGRange.js.html">CGRange.js</a>, <a href="CGRange.js.html#line256">line 256</a>
         </div>
         
     </div>
@@ -4139,7 +4076,7 @@ sequence length</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Aug 10 2021 15:36:57 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

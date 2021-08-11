@@ -5,12 +5,19 @@
 import utils from './Utils';
 
 /**
- * A CGRange contains a start, stop on a sequence contig.
+ * A CGRange contains a start and stop position (in base pair) on a sequence contig.
  * Ranges are always in a clockise direction.
  * The start is always less than the stop position with following exception.
  * Since the genomes are circular, if the genome contains a single contig
  * (i.e., Sequence.hasMultipleContigs is false) it's possibe for the range to
  * loop around (i.e., that stop can be less than the start).
+ *
+ * ### Ranges and Map Coordinates
+ *
+ * Range start and stop positions are in relation to the contig the range is
+ * on. To get the positions in relation to the entire map, use
+ * [mapStart](#mapStart) and [mapStop](#mapStop).
+ *
  */
 class CGRange {
 
@@ -192,7 +199,7 @@ class CGRange {
   }
 
   /**
-   * Return true if the range length is the same as the sequence length
+   * Return true if the range length is the same as the map sequence length
    * @return {Boolean}
    */
   isMapLength() {
@@ -203,6 +210,7 @@ class CGRange {
    * Return true if the contig length is the same as the sequence length.
    * If so, then the range can wrap around (i.e., that stop position can be less than the start).
    * @return {Boolean}
+   * @private
    */
   isWrappingAllowed() {
     // return (!this.sequence.hasMultipleContigs && this.contig.length === this.sequence.length);
