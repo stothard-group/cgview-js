@@ -773,47 +773,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="ColorPicker">
-            <span class="title">
-                <a href="ColorPicker.html">ColorPicker</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="ColorPicker#object"><a href="ColorPicker.html#object">object</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="ColorPicker#_configureView"><a href="ColorPicker.html#_configureView">_configureView</a></li>
-            
-                <li data-name="ColorPicker#alphaListener"><a href="ColorPicker.html#alphaListener">alphaListener</a></li>
-            
-                <li data-name="ColorPicker#dialogListener"><a href="ColorPicker.html#dialogListener">dialogListener</a></li>
-            
-                <li data-name="ColorPicker#doneListener"><a href="ColorPicker.html#doneListener">doneListener</a></li>
-            
-                <li data-name="ColorPicker#enableDragging"><a href="ColorPicker.html#enableDragging">enableDragging</a></li>
-            
-                <li data-name="ColorPicker#originalColorListener"><a href="ColorPicker.html#originalColorListener">originalColorListener</a></li>
-            
-                <li data-name="ColorPicker#pickerListener"><a href="ColorPicker.html#pickerListener">pickerListener</a></li>
-            
-                <li data-name="ColorPicker#slideListener"><a href="ColorPicker.html#slideListener">slideListener</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="Contig">
             <span class="title">
                 <a href="Contig.html">Contig</a>
@@ -824,6 +783,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Contig#canvas"><a href="Contig.html#canvas">canvas</a></li>
+            
+                <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
                 <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
             
@@ -863,19 +824,27 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Contig.removeFeatures"><a href="Contig.html#.removeFeatures">removeFeatures</a></li>
-            
-                <li data-name="Contig#_updateLengthOffset"><a href="Contig.html#_updateLengthOffset">_updateLengthOffset</a></li>
+                <li data-name="Contig#asFasta"><a href="Contig.html#asFasta">asFasta</a></li>
             
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
             
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
+            
+                <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
+            
                 <li data-name="Contig#moveTo"><a href="Contig.html#moveTo">moveTo</a></li>
             
                 <li data-name="Contig#remove"><a href="Contig.html#remove">remove</a></li>
             
+                <li data-name="Contig#reverseComplement"><a href="Contig.html#reverseComplement">reverseComplement</a></li>
+            
+                <li data-name="Contig#toJSON"><a href="Contig.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Contig#toString"><a href="Contig.html#toString">toString</a></li>
+            
+                <li data-name="Contig#update"><a href="Contig.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1828,11 +1797,15 @@
             
                 <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
             
+                <li data-name="Sequence#addContigs"><a href="Sequence.html#addContigs">addContigs</a></li>
+            
                 <li data-name="Sequence#bpForContig"><a href="Sequence.html#bpForContig">bpForContig</a></li>
             
                 <li data-name="Sequence#constrain"><a href="Sequence.html#constrain">constrain</a></li>
             
                 <li data-name="Sequence#contigForBp"><a href="Sequence.html#contigForBp">contigForBp</a></li>
+            
+                <li data-name="Sequence#contigs"><a href="Sequence.html#contigs">contigs</a></li>
             
                 <li data-name="Sequence#contigsForMapRange"><a href="Sequence.html#contigsForMapRange">contigsForMapRange</a></li>
             
@@ -1841,6 +1814,10 @@
                 <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
             
                 <li data-name="Sequence#forRange"><a href="Sequence.html#forRange">forRange</a></li>
+            
+                <li data-name="Sequence#moveContig"><a href="Sequence.html#moveContig">moveContig</a></li>
+            
+                <li data-name="Sequence#removeContigs"><a href="Sequence.html#removeContigs">removeContigs</a></li>
             
                 <li data-name="Sequence#subtractBp"><a href="Sequence.html#subtractBp">subtractBp</a></li>
             
@@ -2139,6 +2116,8 @@
             
                 <li data-name="Viewer#invertColors"><a href="Viewer.html#invertColors">invertColors</a></li>
             
+                <li data-name="Viewer#moveCaption"><a href="Viewer.html#moveCaption">moveCaption</a></li>
+            
                 <li data-name="Viewer#moveLeft"><a href="Viewer.html#moveLeft">moveLeft</a></li>
             
                 <li data-name="Viewer#moveRight"><a href="Viewer.html#moveRight">moveRight</a></li>
@@ -2214,7 +2193,7 @@
     Contig
     </h2>
     
-        <div class="class-description"><p>The CGView Contig class contains details for a single contig.</p>
+        <div class="class-description"><p>The Contig class contains details for a single contig.</p>
 <h3>Action and Events</h3>
 <table>
 <thead>
@@ -2252,7 +2231,7 @@
 </tr>
 <tr>
 <td><a href="../docs.html#reading-records">Read</a></td>
-<td><a href="Sequence.html#items">contigs()</a></td>
+<td><a href="Sequence.html#contigs">contigs()</a></td>
 <td>-</td>
 <td>-</td>
 </tr>
@@ -2295,6 +2274,11 @@
 <td>'+' for forward orientation and '-' for the reverse.</td>
 </tr>
 <tr>
+<td><a href="#color">color</a></td>
+<td>Color</td>
+<td>A string describing the color [Default: 'black']. See <a href="Color.html"><code>Color</code></a> for details.</td>
+</tr>
+<tr>
 <td><a href="CGObject.html#visible">visible</a></td>
 <td>Boolean</td>
 <td>Contig is visible [Default: true].</td>
@@ -2306,8 +2290,7 @@
 </tr>
 </tbody>
 </table>
-<p><sup>iu</sup> Ignored on Contig update</p>
-<h3>Examples</h3></div>
+<p><sup>iu</sup> Ignored on Contig update</p></div>
     
 </header>  
 
@@ -2326,7 +2309,7 @@
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line52">line 52</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line51">line 51</a>
         </div>
         
     </div>
@@ -2529,6 +2512,51 @@
     
     <div class="description">
         <p>Get the canvas.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="color">color<span class="type-signature type color"><a href="Color.html">Color</a></span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the color. When setting the color, a string representing the color or a <a href="Color.html"><code>Color</code></a> object can be used. For details see <a href="Color.html"><code>Color</code></a>.</p>
     </div>
     
     
@@ -3252,14 +3280,14 @@ adjust all the features on this contig.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id=".removeFeatures">
+        <h4 class="name" id="asFasta">
             
-            <span class="type-signature static">static</span>Contig.removeFeatures<span class="signature">()</span>
+            asFasta<span class="signature">()</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line81">line 81</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line360">line 360</a>
         </div>
         
     </div>
@@ -3270,7 +3298,7 @@ adjust all the features on this contig.</p>
     
     
     <div class="description">
-        <p>Removes supplied features from their contigs</p>
+        <p>Returns sequence of this contig in fasta format</p>
     </div>
     
 
@@ -3278,122 +3306,6 @@ adjust all the features on this contig.</p>
     
     
     
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="_updateLengthOffset">
-            
-            _updateLengthOffset<span class="signature">(length)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line257">line 257</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Updates the lengthOffset for this contig and also update the mapRange.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>length</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">length</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>Total length of all the contigs before this one.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -3519,7 +3431,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line279">line 279</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line294">line 294</a>
         </div>
         
     </div>
@@ -3663,6 +3575,193 @@ adjust all the features on this contig.</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="hasSeq">
+            
+            hasSeq<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line285">line 285</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns true if this contig has a sequence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            
+            move<span class="signature">(newIndex)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line309">line 309</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Move this contig to a new index in the array of Sequence contigs.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>newIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>New index for this caption (0-based)</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="moveTo">
             
             moveTo<span class="signature">(duration, ease)</span>
@@ -3670,7 +3769,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line296">line 296</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line319">line 319</a>
         </div>
         
     </div>
@@ -3809,7 +3908,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line286">line 286</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line301">line 301</a>
         </div>
         
     </div>
@@ -3821,6 +3920,148 @@ adjust all the features on this contig.</p>
     
     <div class="description">
         <p>Remove the Contig from the Sequence</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="reverseComplement">
+            
+            reverseComplement<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line269">line 269</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Reverse complement the sequence of this contig</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="toJSON">
+            
+            toJSON<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line394">line 394</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns JSON representing the object</p>
     </div>
     
 
@@ -3971,6 +4212,123 @@ adjust all the features on this contig.</p>
     
 </dd>
 
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            
+            update<span class="signature">(attributes)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line278">line 278</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Update contig <a href="#attributes">attributes</a>.
+See <a href="../docs.html#s.updating-records">updating records</a> for details.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>attributes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Object describing the properties to change</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -3988,7 +4346,7 @@ adjust all the features on this contig.</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Aug 12 2021 15:42:31 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

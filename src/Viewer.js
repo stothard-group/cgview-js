@@ -687,6 +687,11 @@ class Viewer {
     this.trigger('captions-remove', captions);
   }
 
+  /**
+   * Move a caption from one index to a new one
+   * @param {Number} oldIndex - Index of caption to move (0-based)
+   * @param {Number} newIndex - New index for the caption (0-based)
+   */
   moveCaption(oldIndex, newIndex) {
     this._captions.move(oldIndex, newIndex);
     this.refreshCanvasLayer();

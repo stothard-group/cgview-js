@@ -5,13 +5,16 @@ import Color from './Color';
 import utils from './Utils';
 import * as d3 from 'd3';
 
+/**
+ * @private
+ */
 class ColorPicker {
 
 
   /**
-   * The ColorPicker
-   * Based on Flexi Color Picker: http://www.daviddurman.com/flexi-color-picker/
+   * The ColorPicker is based on the [Flexi Color Picker](http://www.daviddurman.com/flexi-color-picker).
    * Color is stored internally as HSV, as well as a Color object.
+   * @private
    */
   constructor(containerId, options = {}) {
     this.containerId = containerId;
@@ -74,6 +77,7 @@ class ColorPicker {
 
   /**
    * Get or set the object currently associated with the color picker
+   * @private
    */
   get object() {
     return this._object;
@@ -176,6 +180,7 @@ class ColorPicker {
   /**
    * Create slide, picker, and alpha markup
    * The container ID is used to make unique ids for the SVG defs
+   * @private
    */
   _configureView() {
     const containerId = this.containerId;
@@ -259,6 +264,7 @@ class ColorPicker {
   * @param {object} ctx ColorPicker instance.
   * @param {DOMElement} element HSV slide element or HSV picker element.
   * @param {Function} listener Function that will be called whenever mouse is dragged over the element with event object as argument.
+   * @private
   */
   enableDragging(ctx, element, listener) {
     d3.select(element).on('mousedown', function() {
@@ -282,6 +288,7 @@ class ColorPicker {
   /**
    * Return click event handler for the slider.
    * Sets picker background color and calls ctx.callback if provided.
+   * @private
    */
   slideListener() {
     const cp = this;
@@ -298,6 +305,7 @@ class ColorPicker {
   /**
    * Return click event handler for the picker.
    * Calls ctx.callback if provided.
+   * @private
    */
   pickerListener() {
     const cp = this;
@@ -315,6 +323,7 @@ class ColorPicker {
   /**
    * Return click event handler for the alpha.
    * Sets alpha background color and calls ctx.callback if provided.
+   * @private
    */
   alphaListener() {
     const cp = this;
@@ -329,6 +338,7 @@ class ColorPicker {
 
   /**
    * Return click event handler for the dialog.
+   * @private
    */
   dialogListener() {
     const cp = this;
@@ -345,6 +355,7 @@ class ColorPicker {
 
   /**
    * Return click event handler for the original color.
+   * @private
    */
   originalColorListener() {
     const cp = this;
@@ -355,6 +366,7 @@ class ColorPicker {
 
   /**
    * Return click event handler for the done button.
+   * @private
    */
   doneListener() {
     const cp = this;
@@ -396,6 +408,7 @@ class ColorPicker {
 
 /**
  * Create SVG element.
+ * @private
  */
 function $el(el, attrs, children) {
   el = document.createElementNS('http://www.w3.org/2000/svg', el);
@@ -408,6 +421,7 @@ function $el(el, attrs, children) {
 
 /**
  * Return mouse position relative to the element el.
+ * @private
  */
 function mousePosition(element) {
   const width = element.offsetWidth;

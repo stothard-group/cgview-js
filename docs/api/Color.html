@@ -773,47 +773,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="ColorPicker">
-            <span class="title">
-                <a href="ColorPicker.html">ColorPicker</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="ColorPicker#object"><a href="ColorPicker.html#object">object</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="ColorPicker#_configureView"><a href="ColorPicker.html#_configureView">_configureView</a></li>
-            
-                <li data-name="ColorPicker#alphaListener"><a href="ColorPicker.html#alphaListener">alphaListener</a></li>
-            
-                <li data-name="ColorPicker#dialogListener"><a href="ColorPicker.html#dialogListener">dialogListener</a></li>
-            
-                <li data-name="ColorPicker#doneListener"><a href="ColorPicker.html#doneListener">doneListener</a></li>
-            
-                <li data-name="ColorPicker#enableDragging"><a href="ColorPicker.html#enableDragging">enableDragging</a></li>
-            
-                <li data-name="ColorPicker#originalColorListener"><a href="ColorPicker.html#originalColorListener">originalColorListener</a></li>
-            
-                <li data-name="ColorPicker#pickerListener"><a href="ColorPicker.html#pickerListener">pickerListener</a></li>
-            
-                <li data-name="ColorPicker#slideListener"><a href="ColorPicker.html#slideListener">slideListener</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="Contig">
             <span class="title">
                 <a href="Contig.html">Contig</a>
@@ -824,6 +783,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Contig#canvas"><a href="Contig.html#canvas">canvas</a></li>
+            
+                <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
                 <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
             
@@ -863,19 +824,27 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Contig.removeFeatures"><a href="Contig.html#.removeFeatures">removeFeatures</a></li>
-            
-                <li data-name="Contig#_updateLengthOffset"><a href="Contig.html#_updateLengthOffset">_updateLengthOffset</a></li>
+                <li data-name="Contig#asFasta"><a href="Contig.html#asFasta">asFasta</a></li>
             
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
             
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
+            
+                <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
+            
                 <li data-name="Contig#moveTo"><a href="Contig.html#moveTo">moveTo</a></li>
             
                 <li data-name="Contig#remove"><a href="Contig.html#remove">remove</a></li>
             
+                <li data-name="Contig#reverseComplement"><a href="Contig.html#reverseComplement">reverseComplement</a></li>
+            
+                <li data-name="Contig#toJSON"><a href="Contig.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Contig#toString"><a href="Contig.html#toString">toString</a></li>
+            
+                <li data-name="Contig#update"><a href="Contig.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1828,11 +1797,15 @@
             
                 <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
             
+                <li data-name="Sequence#addContigs"><a href="Sequence.html#addContigs">addContigs</a></li>
+            
                 <li data-name="Sequence#bpForContig"><a href="Sequence.html#bpForContig">bpForContig</a></li>
             
                 <li data-name="Sequence#constrain"><a href="Sequence.html#constrain">constrain</a></li>
             
                 <li data-name="Sequence#contigForBp"><a href="Sequence.html#contigForBp">contigForBp</a></li>
+            
+                <li data-name="Sequence#contigs"><a href="Sequence.html#contigs">contigs</a></li>
             
                 <li data-name="Sequence#contigsForMapRange"><a href="Sequence.html#contigsForMapRange">contigsForMapRange</a></li>
             
@@ -1841,6 +1814,10 @@
                 <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
             
                 <li data-name="Sequence#forRange"><a href="Sequence.html#forRange">forRange</a></li>
+            
+                <li data-name="Sequence#moveContig"><a href="Sequence.html#moveContig">moveContig</a></li>
+            
+                <li data-name="Sequence#removeContigs"><a href="Sequence.html#removeContigs">removeContigs</a></li>
             
                 <li data-name="Sequence#subtractBp"><a href="Sequence.html#subtractBp">subtractBp</a></li>
             
@@ -2138,6 +2115,8 @@
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#invertColors"><a href="Viewer.html#invertColors">invertColors</a></li>
+            
+                <li data-name="Viewer#moveCaption"><a href="Viewer.html#moveCaption">moveCaption</a></li>
             
                 <li data-name="Viewer#moveLeft"><a href="Viewer.html#moveLeft">moveLeft</a></li>
             
@@ -3297,7 +3276,7 @@ as described above.</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Aug 12 2021 15:42:31 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

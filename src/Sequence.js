@@ -407,6 +407,12 @@ class Sequence extends CGObject {
   //   this.updateFromContigs();
   // }
 
+  /**
+   * Add one or more [contigs](Contig.html) (see [attributes](Contig.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the contigs
+   * @return {CGArray<Contig>} CGArray of added contigs
+   */
   addContigs(contigData = []) {
     contigData = CGArray.arrayerize(contigData);
     const contigs = contigData.map( (data) => {
@@ -424,10 +430,15 @@ class Sequence extends CGObject {
     // this.updateFromContigs()
   }
 
-  // Removing contigs, will remove the features associated with the contig
-  // This will only work with contigs in Sequence.contigs(). It will
-  // not remove the mapContig.
-  // Will not remove last contig. If removing all contigs, the last contig will not be removed.
+  /**
+   * Remove contigs.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * Notes:
+   * - Removing contigs, will remove the features associated with the contig
+   * - This will only work with contigs in Sequence.contigs(). It will not remove the mapContig.
+   * - Will not remove last contig. If removing all contigs, the last contig will not be removed.
+   * @param {Contig|Array} contigs - Contig or a array of contigs to remove
+   */
   // TODO: deal with plots
   removeContigs(contigs) {
     contigs = CGArray.arrayerize(contigs).slice();
@@ -451,7 +462,10 @@ class Sequence extends CGObject {
   }
 
   /**
-   * Update contige properties.
+   * Update [attributes](Contig.html#attributes) for one or more contigs.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Contig|Array|Object} contigsOrUpdates - Contig, array of contigs or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
    */
   updateContigs(contigsOrUpdates, attributes) {
     const { records: contigs, updates } = this.viewer.updateRecords(contigsOrUpdates, attributes, {
@@ -472,6 +486,11 @@ class Sequence extends CGObject {
     this.viewer.trigger('contigs-update', { contigs, attributes, updates });
   }
 
+  /**
+   * Move a contig from one index to a new one
+   * @param {Number} oldIndex - Index of contig to move (0-based)
+   * @param {Number} newIndex - New index for the contig (0-based)
+   */
   moveContig(oldIndex, newIndex) {
     this._contigs.move(oldIndex, newIndex);
     // FIXME: UPDATE OFFSET AND RANGES
@@ -495,8 +514,6 @@ class Sequence extends CGObject {
       contigs.push(this._contigs[i]);
     }
     this.viewer.trigger('contigs-update', { contigs, attributes: {} });
-
-
   }
 
 
@@ -607,6 +624,12 @@ class Sequence extends CGObject {
   //   }
   // }
 
+  /**
+   * Returns a [CGArray](CGArray.html) of contigs or a single contig.
+   * See [reading records](../docs.html#s.reading-records) for details.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {Contig|CGArray}
+   */
   contigs(term) {
     return this._contigs.get(term);
   }

@@ -773,47 +773,6 @@
             </ul>
         </li>
     
-        <li class="item" data-name="ColorPicker">
-            <span class="title">
-                <a href="ColorPicker.html">ColorPicker</a>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="ColorPicker#object"><a href="ColorPicker.html#object">object</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="ColorPicker#_configureView"><a href="ColorPicker.html#_configureView">_configureView</a></li>
-            
-                <li data-name="ColorPicker#alphaListener"><a href="ColorPicker.html#alphaListener">alphaListener</a></li>
-            
-                <li data-name="ColorPicker#dialogListener"><a href="ColorPicker.html#dialogListener">dialogListener</a></li>
-            
-                <li data-name="ColorPicker#doneListener"><a href="ColorPicker.html#doneListener">doneListener</a></li>
-            
-                <li data-name="ColorPicker#enableDragging"><a href="ColorPicker.html#enableDragging">enableDragging</a></li>
-            
-                <li data-name="ColorPicker#originalColorListener"><a href="ColorPicker.html#originalColorListener">originalColorListener</a></li>
-            
-                <li data-name="ColorPicker#pickerListener"><a href="ColorPicker.html#pickerListener">pickerListener</a></li>
-            
-                <li data-name="ColorPicker#slideListener"><a href="ColorPicker.html#slideListener">slideListener</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
         <li class="item" data-name="Contig">
             <span class="title">
                 <a href="Contig.html">Contig</a>
@@ -824,6 +783,8 @@
             <span class="subtitle">Members</span>
             
                 <li data-name="Contig#canvas"><a href="Contig.html#canvas">canvas</a></li>
+            
+                <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
                 <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
             
@@ -863,19 +824,27 @@
             
             <span class="subtitle">Methods</span>
             
-                <li data-name="Contig.removeFeatures"><a href="Contig.html#.removeFeatures">removeFeatures</a></li>
-            
-                <li data-name="Contig#_updateLengthOffset"><a href="Contig.html#_updateLengthOffset">_updateLengthOffset</a></li>
+                <li data-name="Contig#asFasta"><a href="Contig.html#asFasta">asFasta</a></li>
             
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
             
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
+            
+                <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
+            
                 <li data-name="Contig#moveTo"><a href="Contig.html#moveTo">moveTo</a></li>
             
                 <li data-name="Contig#remove"><a href="Contig.html#remove">remove</a></li>
             
+                <li data-name="Contig#reverseComplement"><a href="Contig.html#reverseComplement">reverseComplement</a></li>
+            
+                <li data-name="Contig#toJSON"><a href="Contig.html#toJSON">toJSON</a></li>
+            
                 <li data-name="Contig#toString"><a href="Contig.html#toString">toString</a></li>
+            
+                <li data-name="Contig#update"><a href="Contig.html#update">update</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1828,11 +1797,15 @@
             
                 <li data-name="Sequence#addBp"><a href="Sequence.html#addBp">addBp</a></li>
             
+                <li data-name="Sequence#addContigs"><a href="Sequence.html#addContigs">addContigs</a></li>
+            
                 <li data-name="Sequence#bpForContig"><a href="Sequence.html#bpForContig">bpForContig</a></li>
             
                 <li data-name="Sequence#constrain"><a href="Sequence.html#constrain">constrain</a></li>
             
                 <li data-name="Sequence#contigForBp"><a href="Sequence.html#contigForBp">contigForBp</a></li>
+            
+                <li data-name="Sequence#contigs"><a href="Sequence.html#contigs">contigs</a></li>
             
                 <li data-name="Sequence#contigsForMapRange"><a href="Sequence.html#contigsForMapRange">contigsForMapRange</a></li>
             
@@ -1841,6 +1814,10 @@
                 <li data-name="Sequence#findPattern"><a href="Sequence.html#findPattern">findPattern</a></li>
             
                 <li data-name="Sequence#forRange"><a href="Sequence.html#forRange">forRange</a></li>
+            
+                <li data-name="Sequence#moveContig"><a href="Sequence.html#moveContig">moveContig</a></li>
+            
+                <li data-name="Sequence#removeContigs"><a href="Sequence.html#removeContigs">removeContigs</a></li>
             
                 <li data-name="Sequence#subtractBp"><a href="Sequence.html#subtractBp">subtractBp</a></li>
             
@@ -2138,6 +2115,8 @@
                 <li data-name="Viewer#flash"><a href="Viewer.html#flash">flash</a></li>
             
                 <li data-name="Viewer#invertColors"><a href="Viewer.html#invertColors">invertColors</a></li>
+            
+                <li data-name="Viewer#moveCaption"><a href="Viewer.html#moveCaption">moveCaption</a></li>
             
                 <li data-name="Viewer#moveLeft"><a href="Viewer.html#moveLeft">moveLeft</a></li>
             
@@ -2618,6 +2597,12 @@ class Sequence extends CGObject {
   //   this.updateFromContigs();
   // }
 
+  /**
+   * Add one or more [contigs](Contig.html) (see [attributes](Contig.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the contigs
+   * @return {CGArray&lt;Contig>} CGArray of added contigs
+   */
   addContigs(contigData = []) {
     contigData = CGArray.arrayerize(contigData);
     const contigs = contigData.map( (data) => {
@@ -2635,10 +2620,15 @@ class Sequence extends CGObject {
     // this.updateFromContigs()
   }
 
-  // Removing contigs, will remove the features associated with the contig
-  // This will only work with contigs in Sequence.contigs(). It will
-  // not remove the mapContig.
-  // Will not remove last contig. If removing all contigs, the last contig will not be removed.
+  /**
+   * Remove contigs.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * Notes:
+   * - Removing contigs, will remove the features associated with the contig
+   * - This will only work with contigs in Sequence.contigs(). It will not remove the mapContig.
+   * - Will not remove last contig. If removing all contigs, the last contig will not be removed.
+   * @param {Contig|Array} contigs - Contig or a array of contigs to remove
+   */
   // TODO: deal with plots
   removeContigs(contigs) {
     contigs = CGArray.arrayerize(contigs).slice();
@@ -2662,7 +2652,10 @@ class Sequence extends CGObject {
   }
 
   /**
-   * Update contige properties.
+   * Update [attributes](Contig.html#attributes) for one or more contigs.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Contig|Array|Object} contigsOrUpdates - Contig, array of contigs or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
    */
   updateContigs(contigsOrUpdates, attributes) {
     const { records: contigs, updates } = this.viewer.updateRecords(contigsOrUpdates, attributes, {
@@ -2683,6 +2676,11 @@ class Sequence extends CGObject {
     this.viewer.trigger('contigs-update', { contigs, attributes, updates });
   }
 
+  /**
+   * Move a contig from one index to a new one
+   * @param {Number} oldIndex - Index of contig to move (0-based)
+   * @param {Number} newIndex - New index for the contig (0-based)
+   */
   moveContig(oldIndex, newIndex) {
     this._contigs.move(oldIndex, newIndex);
     // FIXME: UPDATE OFFSET AND RANGES
@@ -2706,8 +2704,6 @@ class Sequence extends CGObject {
       contigs.push(this._contigs[i]);
     }
     this.viewer.trigger('contigs-update', { contigs, attributes: {} });
-
-
   }
 
 
@@ -2818,6 +2814,12 @@ class Sequence extends CGObject {
   //   }
   // }
 
+  /**
+   * Returns a [CGArray](CGArray.html) of contigs or a single contig.
+   * See [reading records](../docs.html#s.reading-records) for details.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {Contig|CGArray}
+   */
   contigs(term) {
     return this._contigs.get(term);
   }
@@ -3141,7 +3143,7 @@ export default Sequence;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Aug 11 2021 15:48:14 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Aug 12 2021 15:42:31 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

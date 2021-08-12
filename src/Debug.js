@@ -4,6 +4,15 @@
 
 import utils from './Utils';
 
+/**
+ * The debug class draws helpful info to the canvas.
+ * Sections:
+ *  - time: time for drawing
+ *  - zoom: zoom and drag info
+ *  - position: position of mouse, etc
+ *  - n: number of features in slots, etc
+ * @private
+ */
 class Debug {
 
   constructor(viewer, options = {}) {

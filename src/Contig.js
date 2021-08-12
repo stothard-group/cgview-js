@@ -10,7 +10,7 @@ import Color from './Color';
 import utils from './Utils';
 
 /**
- * The CGView Contig class contains details for a single contig.
+ * The Contig class contains details for a single contig.
  *
  * ### Action and Events
  *
@@ -20,7 +20,7 @@ import utils from './Utils';
  * [Update](../docs.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs) | [update()](#update) | contigs-update
  * [Remove](../docs.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs) | [remove()](#remove) | contigs-remove
  * [Reorder](../docs.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)      | [move()](#move)     | contigs-reorder
- * [Read](../docs.html#reading-records)       | [contigs()](Sequence.html#items)               | -                   | -
+ * [Read](../docs.html#reading-records)       | [contigs()](Sequence.html#contigs)             | -                   | -
  *
  * <a name="attributes"></a>
  * ### Attributes
@@ -32,12 +32,11 @@ import utils from './Utils';
  * [seq](#seq)<sup>iu</sup>         | String    | The contig sequence.
  * [length](#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided.
  * [orientation](#orientation)      | String    | '+' for forward orientation and '-' for the reverse.
+ * [color](#color)                  | Color     | A string describing the color [Default: 'black']. See {@link Color} for details.
  * [visible](CGObject.html#visible) | Boolean   | Contig is visible [Default: true].
  * [meta](CGObject.html#meta)       | Object    | [Meta data](../tutorials/details-meta-data.html)
  * 
  * <sup>iu</sup> Ignored on Contig update
- *
- * ### Examples
  *
  * @extends CGObject
  */
@@ -77,6 +76,7 @@ class Contig extends CGObject {
 
   /**
    * Removes supplied features from their contigs
+   * @private
    */
   static removeFeatures(features) {
     features = CGArray.arrayerize(features);
@@ -209,6 +209,9 @@ class Contig extends CGObject {
     return this._lengthOffset;
   }
 
+  /**
+   * @member {Color} - Get or set the color. When setting the color, a string representing the color or a {@link Color} object can be used. For details see {@link Color}.
+   */
   get color() {
     return this._color;
   }
@@ -253,20 +256,32 @@ class Contig extends CGObject {
   /**
    * Updates the lengthOffset for this contig and also update the mapRange.
    * @param {length} - Total length of all the contigs before this one.
+   * @private
    */
   _updateLengthOffset(length) {
     this._lengthOffset = length;
     // this._mapRange = new CGV.CGRange(this.sequence.mapContig, length + 1, length + this.length);
   }
 
+  /**
+   * Reverse complement the sequence of this contig
+   */
   reverseComplement() {
     return Sequence.reverseComplement(this.seq);
   }
 
+  /**
+   * Update contig [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.sequence.updateContigs(this, attributes);
   }
 
+  /**
+   * Returns true if this contig has a sequence
+   */
   hasSeq() {
     return typeof this.seq === 'string';
   }
@@ -288,8 +303,16 @@ class Contig extends CGObject {
   }
 
   /**
+   * Move this contig to a new index in the array of Sequence contigs.
+   * @param {Number} newIndex - New index for this caption (0-based)
+   */
+  move(newIndex) {
+    const currentIndex = this.sequence.contigs().indexOf(this);
+    this.sequence.moveContig(currentIndex, newIndex);
+  }
+
+  /**
    * Zoom and pan map to show the contig
-   *
    * @param {Number} duration - Length of animation
    * @param {Object} ease - The d3 animation ease [Default: d3.easeCubic]
    */
@@ -304,6 +327,10 @@ class Contig extends CGObject {
     }
   }
 
+  /**
+   * Reverse the orientations of the features on this contig
+   * @private
+   */
   reverseFeatureOrientations() {
     const updates = {};
     for (let i = 0, len = this._features.length; i < len; i++) {
@@ -317,15 +344,28 @@ class Contig extends CGObject {
     this.viewer.updateFeatures(updates);
   }
 
+  /**
+   * Return the sequence for a range on this contig
+   * @param {Range} range - The range of the sequence
+   * @param {Boolean} revComp - If true, returns the reverse complement sequence
+   * @private
+   */
   forRange(range, revComp) {
     return Sequence.forRange(this.seq, range, revComp);
   }
 
-  // TODO: options for id
+  /**
+   * Returns sequence of this contig in fasta format
+   */
   asFasta() {
     return `>${this.id}\n${this.seq}`;
   }
 
+  /**
+   * Highlight the contig.
+   * @param {Color} color - Color of the highlight
+   * @private
+   */
   highlight(color) {
     const backbone = this.viewer.backbone;
     const canvas = this.viewer.canvas;
@@ -348,6 +388,9 @@ class Contig extends CGObject {
     }
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       id: this.id,
