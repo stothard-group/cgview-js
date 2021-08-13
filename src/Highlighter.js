@@ -16,8 +16,10 @@ import utils from './Utils';
  *
  *  Option                        | Default                    | Description
  *  ------------------------------|----------------------------|--------------------------
- *  [feature](#feature)           | {@link HighlighterElement} | Describes the highlightling options for features.
- *  [plot](#plot)                 | {@link HighlighterElement} | Describes the highlightling options for plots.
+ *  [feature](#feature)           | {@link HighlighterElement} | Describes the highlightling options for features
+ *  [plot](#plot)                 | {@link HighlighterElement} | Describes the highlightling options for plots
+ *  [contig](#plot)               | {@link HighlighterElement} | Describes the highlightling options for contigs
+ *  [backbone](#plot)             | {@link HighlighterElement} | Describes the highlightling options for the backbone
  *  [showMetaData](#showMetaData) | true                       | Should meta data be shown in popovers
  *
  * @extends CGObject
@@ -34,10 +36,10 @@ class Highlighter extends CGObject {
     this._viewer = viewer;
     this.showMetaData = utils.defaultFor(options.showMetaData, true);
     this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
-    this.feature = new HighlighterElement('feature', options.feature);
-    this.plot = new HighlighterElement('plot', options.plot);
-    this.contig = new HighlighterElement('contig', options.contig);
-    this.backbone = new HighlighterElement('backbone', options.contig);
+    this._feature = new HighlighterElement('feature', options.feature);
+    this._plot = new HighlighterElement('plot', options.plot);
+    this._contig = new HighlighterElement('contig', options.contig);
+    this._backbone = new HighlighterElement('backbone', options.contig);
     this.initializeEvents();
 
     // Set up position constants
@@ -51,6 +53,34 @@ class Highlighter extends CGObject {
    */
   get viewer() {
     return this._viewer;
+  }
+
+  /**
+   * @member {HighlighterElement} - Get the feature HighlighterElement
+   */
+  get feature() {
+    return this._feature;
+  }
+
+  /**
+   * @member {HighlighterElement} - Get the plot HighlighterElement
+   */
+  get plot() {
+    return this._plot;
+  }
+
+  /**
+   * @member {HighlighterElement} - Get the contig HighlighterElement
+   */
+  get contig() {
+    return this._contig;
+  }
+
+  /**
+   * @member {HighlighterElement} - Get the backbone HighlighterElement
+   */
+  get backbone() {
+    return this._backbone;
   }
 
   position(e) {
@@ -233,7 +263,7 @@ class HighlighterElement {
 
   /**
    * Create a HighlighterElement
-   * @param {String} type - The element type: 'feature' or 'plot'.
+   * @param {String} type - The element type: 'feature', 'plot', 'contig', 'backbone'.
    * @param {Object} options - [Attributes](#attributes) used to create the highlighter element.
    */
   constructor(type, options = {}) {
@@ -243,6 +273,9 @@ class HighlighterElement {
     this.popoverContents = options.popoverContents;
   }
 
+  /**
+   * @member {String} - Get or set the type (e.g. 'feature', 'plot', 'contig', 'backbone')
+   */
   get type() {
     return this._type;
   }
@@ -251,6 +284,9 @@ class HighlighterElement {
     this._type = value;
   }
 
+  /**
+   * @member {Boolean} - Get or set whether highlighting should occur
+   */
   get highlighting() {
     return this._highlighting;
   }
@@ -259,6 +295,9 @@ class HighlighterElement {
     this._highlighting = value;
   }
 
+  /**
+   * @member {Boolean} - Get or set whether popovers should occur
+   */
   get popover() {
     return this._popover;
   }
@@ -267,6 +306,10 @@ class HighlighterElement {
     this._popover = value;
   }
 
+  /**
+   * @member {Function} - Get or set the function to call to produce HTML for the popover.
+   * The provided function will be called with one argument: an [event-like object](EventMonitor.html).
+   */
   get popoverContents() {
     return this._popoverContents;
   }

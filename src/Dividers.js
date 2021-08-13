@@ -6,15 +6,26 @@ import Divider from './Divider';
 import CGArray from './CGArray';
 
 /**
- * The CGView Divider is a line that separates tracks or slots.
+ * Dividers is a container for the track and slot [divider](Divider.html).
+ * They are accessed from the viewer object (e.g. cgv):
+ * - cgv.dividers.track - controls spacing/lines between tracks.
+ * - cgv.dividers.slot - controls spacing/lines betweens slots within a track.
+ *
+ * <a name="attributes"></a>
+ * ### Attributes
+ *
+ *  Option                        | Description
+ *  ------------------------------|----------------------------
+ *  [track](#track)               |  [Divider attributes](Divider.html#attributes) for tracks
+ *  [slot](#slot)                 |  [Divider attributes](Divider.html#attributes) for slots
  */
 class Dividers {
 
   /**
-   * Create a divider
-   *
-   * @param {Viewer} viewer - The viewer that contains the divider
-   * @param {Object} options - Options and stuff
+   * Create the dividers container
+   * @param {Viewer} viewer - The viewer that contains the dividers
+   * @param {Object} options - [Attributes](#attributes) used to create the dividers. Passed on slot and track divider.
+   * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the dividers
    */
   constructor(viewer, options = {}, meta = {}) {
     this.viewer = viewer;
@@ -39,9 +50,6 @@ class Dividers {
       }
     }
 
-    // if (options.slotMirrorsTrack) {
-    //   this.slot = this.track;
-    // }
     this.clearBbOffsets();
     // this.viewer.trigger('settings-update', {attributes: this.toJSON({includeDefaults: true})});
   }
@@ -54,24 +62,32 @@ class Dividers {
     return 'Dividers';
   }
 
+  /**
+   * Returns the track divider
+   */
   get track() {
     return this._track;
   }
 
+  /**
+   * Returns the slot divider
+   */
   get slot() {
     return this._slot;
   }
 
+  /**
+   * Returns true if the slot and track divider are mirrored
+   */
   get dividersMirrored() {
     return this.slot === this.track;
   }
 
-  // get slotMirrorsTrack() {
-  //   return this._slotMirrorsTrack;
-  // }
-
-  // If a dividier is provided, the other divider will be mirroed to the provide one.
-  // If no divider is provided, the dividers will no longer be mirrored.
+  /**
+   * If a dividier is provided, the other divider will be mirroed to the provide one.
+   * If no divider is provided, the dividers will no longer be mirrored.
+   * @private
+   */
   mirrorDivider(divider) {
     if (divider) {
       // Mirror other divider to the one provided
@@ -88,23 +104,25 @@ class Dividers {
     }
 
   }
-  // set slotMirrorsTrack(value) {
-  //   this._slotMirrorsTrack = value;
-  //   this._slot = value ? this._track : new Divider(this, this._track.toJSON());
-  //   this.viewer.layout._adjustProportions();
-  // }
 
   /**
    * @member {Number} - Returns a CGArray where each element is an object with 2 properties: distance, type. The 'distance' is the divider distance from the backbone. The 'type' is the divider type (e.g. 'slot' or 'track').
+   * @private
    */
   get bbOffsets() {
     return this._bbOffsets;
   }
 
+  /**
+   * @private
+   */
   clearBbOffsets() {
     this._bbOffsets = new CGArray();
   }
 
+  /**
+   * @private
+   */
   addBbOffset(bbOffset, type) {
     if (['track', 'slot'].includes(type)) {
       this._bbOffsets.push({distance: bbOffset, type: type});
@@ -113,6 +131,9 @@ class Dividers {
     }
   }
 
+  /**
+   * Invert colors of the dividers
+   */
   invertColors() {
     if (this.track.mirror) {
       this.track.update({ color: this.track.color.invert().rgbaString });
@@ -122,6 +143,10 @@ class Dividers {
     }
   }
 
+  /**
+   * Draw the dividers
+   * @private
+   */
   draw() {
     const canvas = this.viewer.canvas;
     const backboneOffset = this.viewer.backbone.adjustedCenterOffset;
@@ -137,6 +162,9 @@ class Dividers {
     }
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     if (this.slot === this.track) {
       return {

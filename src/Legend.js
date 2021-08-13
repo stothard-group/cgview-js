@@ -12,7 +12,7 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * The Legend contains the legendItems for the maps and can be places anywhere on the canvas orcontains the legendItems for the maps and can be places anywhere on the canvas or map.
+ * The Legend contains the [legendItems](LegendItem.html) for the maps and can be placed anywhere on the canvas or map.
  *
  * ### Action and Events
  *
@@ -96,6 +96,7 @@ class Legend extends CGObject {
 
   /**
    * @member {Context} - Get the *Context* for drawing.
+   * @private
    */
   // FIXME: 
   // - if this is slow we could be set when setting "on" (e.g. this._ctx = ...)
@@ -112,6 +113,9 @@ class Legend extends CGObject {
   //   return this.position;
   // }
 
+  /**
+   * @member {Position} - Get or set the position
+   */
   get position() {
     return this.box.position;
   }
@@ -123,6 +127,9 @@ class Legend extends CGObject {
     // this.refresh();
   }
 
+  /**
+   * @member {String} - Get or set where the legend should be position: 'canvas', 'map'
+   */
   get on() {
     return this.box.on;
   }
@@ -133,6 +140,9 @@ class Legend extends CGObject {
     this.refresh();
   }
 
+  /**
+   * @member {Anchor} - Get or set legend anchor
+   */
   get anchor() {
     return this.box.anchor;
   }
@@ -230,6 +240,7 @@ class Legend extends CGObject {
 
   /**
    * @member {LegendItem} - Get or set the selected swatch legendItem
+   * @private
    */
   get selectedSwatchedItem() {
     return this._selectedSwatchedItem;
@@ -241,6 +252,7 @@ class Legend extends CGObject {
 
   /**
    * @member {LegendItem} - Get or set the highlighted swatch legendItem
+   * @private
    */
   get highlightedSwatchedItem() {
     return this._highlightedSwatchedItem;
@@ -250,6 +262,11 @@ class Legend extends CGObject {
     this._highlightedSwatchedItem = value;
   }
 
+  /**
+   * Update legend [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Legend',
@@ -259,19 +276,32 @@ class Legend extends CGObject {
   }
 
   /**
-   * @member {CGArray} - Get the *CaptionItems*
+   * @member {CGArray} - Get the 
+   */
+  /**
+   * Returns a [CGArray](CGArray.html) of legendItems or a single legendItem.
+   * See [reading records](../docs.html#s.reading-records) for details.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {LegendItem|CGArray}
    */
   items(term) {
     return this._items.get(term);
   }
 
   /**
-   * @member {CGArray} - Get the *CaptionItems*
+   * @member {CGArray} - Get the vidible legendItems
+   * @private
    */
   visibleItems(term) {
     return this._items.filter( i => i.visible ).get(term);
   }
 
+  /**
+   * Add one or more [legendItems](LegendItem.html) (see [attributes](LegendItem.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details
+   * @param {Object|Array} data - Object or array of objects describing the legendItems
+   * @return {CGArray<LegendItem>} CGArray of added legendItems
+   */
   addItems(itemData = []) {
     itemData = CGArray.arrayerize(itemData);
     const items = itemData.map( (data) => new LegendItem(this, data));
@@ -279,6 +309,11 @@ class Legend extends CGObject {
     return items;
   }
 
+  /**
+   * Remove legendItems.
+   * See [removing records](../docs.html#s.removing-records) for details
+   * @param {LegendItem|Array} items - legendItem or a array of legendItems to remove
+   */
   removeItems(items) {
     items = CGArray.arrayerize(items);
     this._items = this._items.filter( i => !items.includes(i) );
@@ -289,6 +324,12 @@ class Legend extends CGObject {
     this.viewer.trigger('legendItems-remove', items);
   }
 
+  /**
+   * Update [attributes](LegendItem.html#attributes) for one or more legendItems.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {LegendItem|Array|Object} itemsOrUpdates - legendItem, array of legendItems or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
+   */
   updateItems(itemsOrUpdates, attributes) {
     const { records: items, updates } = this.viewer.updateRecords(itemsOrUpdates, attributes, {
       recordClass: 'LegendItem',
@@ -297,18 +338,28 @@ class Legend extends CGObject {
     this.viewer.trigger('legendItems-update', { items, attributes, updates });
   }
 
+  /**
+   * Move a legendItem from one index to a new one
+   * @param {Number} oldIndex - Index of legendItem to move (0-based)
+   * @param {Number} newIndex - New index for the legendItem (0-based)
+   */
   moveItem(oldIndex, newIndex) {
     this._items.move(oldIndex, newIndex);
     this.viewer.trigger('legendItems-moved', {oldIndex: oldIndex, newIndex: newIndex});
     this.refresh();
   }
 
+  /**
+   * Move to the Legend position (if it's position on the map)
+   * @param {Number} duration - Duration of the animation
+   */
   moveTo(duration) {
     this.position.moveTo(duration);
   }
 
   /**
    * Recalculates the *Legend* size and position.
+   * @private
    */
   refresh() {
     const box = this.box;
@@ -353,7 +404,10 @@ class Legend extends CGObject {
     this.draw();
   }
 
-  // Legend is in Canvas space (need to consider pixel ratio) but colorPicker is not.
+  /**
+   * Sets the position of the [ColorPicker](ColorPicker.html).
+   * @private
+   */
   setColorPickerPosition(cp) {
     const margin = 5;
     let pos;
@@ -376,10 +430,18 @@ class Legend extends CGObject {
     cp.setPosition(pos);
   }
 
+  /**
+   * @member {Number} - Get the swatch padding
+   * @private
+   */
   get swatchPadding() {
     return this.box.padding / 2;
   }
 
+  /**
+   * Fills the legend background color
+   * @private
+   */
   fillBackground() {
     const box = this.box;
     this.ctx.fillStyle = this.backgroundColor.rgbaString;
@@ -387,6 +449,9 @@ class Legend extends CGObject {
     this.ctx.fillRect(box.x, box.y, box.width, box.height);
   }
 
+  /**
+   * Invert colors of all legendItems
+   */
   invertColors() {
     this.update({
       backgroundColor: this.backgroundColor.invert().rgbaString,
@@ -395,12 +460,25 @@ class Legend extends CGObject {
     this.items().each( (i, item) => item.invertColors() );
   }
 
+  /**
+   * Find the legendItem with the provided name or return undefined.
+   * @param {String} name - Name of legendItem
+   * @return {LegendItem} Returns undefined if not found
+   */
   findLegendItemByName(name) {
     if (!name) { return; }
     // console.log(name)
     return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );
   }
 
+  /**
+   * Find the legendItem with the provided name or create a new legendItem.
+   * @param {String} name - Name of legendItem
+   * @param {Color} color - Use this color if creating a new legendItem
+   * @param {String} decoration - Use this decoration if creating a new legendItem
+   * @return {LegendItem}
+   *
+   */
   findLegendItemOrCreate(name = 'Unknown', color = null, decoration = 'arc') {
     let item = this.findLegendItemByName(name);
     if (!item) {
@@ -424,9 +502,12 @@ class Legend extends CGObject {
     return item;
   }
 
-  // Returns a CGArray of LegendItems that only occur for the supplied features.
-  // (i.e. the returned LegendItems are not being used for any features (or plots) not provided.
-  // This is useful for determining if LegendItems should be deleted after deleting features.
+  /**
+   * Returns a CGArray of LegendItems that only occur for the supplied features.
+   * (i.e. the returned LegendItems are not being used for any features (or plots) not provided.
+   * This is useful for determining if LegendItems should be deleted after deleting features.
+   * @private
+   */
   uniqueLegendsItemsFor(options = {}) {
     const selectedFeatures = new Set(options.features || []);
     const selectedPlots = new Set(options.plots || []);
@@ -469,10 +550,17 @@ class Legend extends CGObject {
     return Array.from(uniqueItems);
   }
 
+  /**
+   * Clear the box containing the legend
+   */
   clear() {
     this.box.clear(this.ctx);
   }
 
+  /**
+   * Draw the legend
+   * @private
+   */
   draw() {
     if (!this.visible) { return; }
     const ctx = this.ctx;
@@ -515,6 +603,9 @@ class Legend extends CGObject {
     }
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       name: this.name,

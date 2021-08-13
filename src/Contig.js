@@ -19,7 +19,7 @@ import utils from './Utils';
  * [Add](../docs.html#adding-records)         | [addContigs()](Sequence.html#addContigs)       | -                   | contigs-add
  * [Update](../docs.html#updating-records)    | [updateContigs()](Sequence.html#updateContigs) | [update()](#update) | contigs-update
  * [Remove](../docs.html#removing-records)    | [removeContigs()](Sequence.html#removeContigs) | [remove()](#remove) | contigs-remove
- * [Reorder](../docs.html#reordering-records) | [moveContigs()](Sequence.html#moveContig)      | [move()](#move)     | contigs-reorder
+ * [Reorder](../docs.html#reordering-records) | [moveContig()](Sequence.html#moveContig)       | [move()](#move)     | contigs-reorder
  * [Read](../docs.html#reading-records)       | [contigs()](Sequence.html#contigs)             | -                   | -
  *
  * <a name="attributes"></a>

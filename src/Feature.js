@@ -9,8 +9,7 @@ import Label from './Label';
 import utils from './Utils';
 
 /**
- * A Feature is a region on the map and must have a start and stop position.
- * MORE...
+ * A Feature is a region on the map with a start and stop position.
  *
  * ### Action and Events
  *
@@ -33,8 +32,8 @@ import utils from './Utils';
  * [contig](#contig)                | String\|Contig | Name of contig or the contig itself
  * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig
  * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
- * [mapStart](#mapStart)            | Number   | Start base pair on the map (converted to contig position)
- * [mapStop](#mapStop)              | Number   | Stop base pair on the map (converted to contig position)
+ * [mapStart](#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position)
+ * [mapStop](#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position)
  * [strand](#strand)                | String   | Strand the features is on [Default: 1]
  * [score](#score)                  | Number   | Score associated with the feature
  * [favorite](#favorite)            | Boolean  | Feature is a favorite [Default: false]
@@ -42,6 +41,7 @@ import utils from './Utils';
  * [meta](CGObject.html#meta)       | Object   | [Meta data](../tutorials/details-meta-data.html) for Feature
  * 
  * <sup>rc</sup> Required on Feature creation
+ * <sup>ic</sup> Ignored on Record creation
  *
  * Implementation notes:
  *   - The feature range is the range on the contig
@@ -144,7 +144,7 @@ class Feature extends CGObject {
 
   /**
    * @member {Boolean} - Get or set the *extractedFromSequence*. If true, this feature was
-   * generated directly from the sequence and will not be saved when exported to JSON.
+   * generated directly from the sequence and will not be saved when exporting to JSON.
    */
   get extractedFromSequence() {
     return this._extractedFromSequence;
@@ -398,6 +398,11 @@ class Feature extends CGObject {
     }
   }
 
+  /**
+   * Update feature [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateFeatures(this, attributes);
   }
@@ -405,9 +410,9 @@ class Feature extends CGObject {
   /**
    * Updates the feature range using the given *start* and *stop* positions.
    * If the feature is on a contig, the positions should be in relation to the contig.
-   *
    * @param {Number} start - Start position (bp).
    * @param {Number} stop - Stop position (bp).
+   * @private
    */
   // updateRanges(start, stop) {
   //   start = Number(start);
@@ -557,7 +562,7 @@ class Feature extends CGObject {
   }
 
   /**
-   * Remove the Feature from the viewer, tracks and slots
+   * Remove the feature from the viewer, tracks and slots
    */
   remove() {
     this.viewer.removeFeatures(this);

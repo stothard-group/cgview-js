@@ -94,7 +94,7 @@ class LegendItem extends CGObject {
   }
 
   /**
-   * @member {String} - Alias for text
+   * @member {String} - Get or set the name. The name is the text shown for the legendItem.
    */
   get name() {
     return this._name;
@@ -107,6 +107,7 @@ class LegendItem extends CGObject {
 
   /**
    * @member {String} - Get the text alignment of the parent *Legend* text alignment. Possible values are *left*, *center*, or *right*.
+   * @private
    */
   get textAlignment() {
     return this.legend.textAlignment;
@@ -124,10 +125,6 @@ class LegendItem extends CGObject {
    */
   get height() {
     return this.font.height;
-  }
-
-  get swatchWidth() {
-    return this.height;
   }
 
   /**
@@ -162,6 +159,9 @@ class LegendItem extends CGObject {
     this.refresh();
   }
 
+  /**
+   * @member {Boolean} - Returns true if using the default legend font
+   */
   get usingDefaultFont() {
     return this.font === this.legend.defaultFont;
   }
@@ -216,6 +216,9 @@ class LegendItem extends CGObject {
     this.refresh();
   }
 
+  /**
+   * @member {Number} - Get the swatch width (same as legendItem height).
+   */
   get swatchWidth() {
     return this.height;
   }
@@ -251,6 +254,7 @@ class LegendItem extends CGObject {
 
   /**
    * @member {Color} - Alias for  [swatchColor](LegendItem.html#swatchColor).
+   * @private
    */
   get color() {
     return this.swatchColor;
@@ -262,6 +266,7 @@ class LegendItem extends CGObject {
 
   /**
    * @member {Boolean} - Get or set whether this item is selected
+   * @private
    */
   get swatchSelected() {
     return this.legend.selectedSwatchedItem === this;
@@ -279,6 +284,7 @@ class LegendItem extends CGObject {
 
   /**
    * @member {Boolean} - Get or set whether this item is highlighted
+   * @private
    */
   get swatchHighlighted() {
     return this.legend.highlightedSwatchedItem === this;
@@ -294,12 +300,20 @@ class LegendItem extends CGObject {
     }
   }
 
+  /**
+   * Refresh parent legend
+   * @private
+   */
   refresh() {
     if (this._initializationComplete) {
       this.legend.refresh();
     }
   }
 
+  /**
+   * Returns the text x position
+   * @private
+   */
   textX() {
     const box = this.box;
     const legend = this.legend;
@@ -312,6 +326,10 @@ class LegendItem extends CGObject {
     }
   }
 
+  /**
+   * Returns the text y position
+   * @private
+   */
   textY() {
     const legend = this.legend;
     // let y = legend.originY + legend.padding;
@@ -326,6 +344,10 @@ class LegendItem extends CGObject {
   }
 
 
+  /**
+   * Returns the swatch x position
+   * @private
+   */
   swatchX() {
     const box = this.legend.box;
     if (this.textAlignment === 'left') {
@@ -337,10 +359,18 @@ class LegendItem extends CGObject {
     }
   }
 
+  /**
+   * Returns the swatch y position
+   * @private
+   */
   swatchY() {
     return this.textY();
   }
 
+  /**
+   * Returns true if the swatch contains the provided point
+   * @private
+   */
   _swatchContainsPoint(pt) {
     const x = this.swatchX();
     const y = this.swatchY();
@@ -349,6 +379,10 @@ class LegendItem extends CGObject {
     }
   }
 
+  /**
+   * Returns true if the text contains the provided point
+   * @private
+   */
   _textContainsPoint(pt) {
     const textX = this.textX();
     const textY = this.textY();
@@ -357,6 +391,10 @@ class LegendItem extends CGObject {
     }
   }
 
+  /**
+   * Highlight this legendItem
+   * @param {Color} color - Color for the highlight
+   */
   highlight(color = this.fontColor) {
     if (!this.visible || !this.legend.visible) { return; }
     // let ctx = this.canvas.context('background');
@@ -374,6 +412,9 @@ class LegendItem extends CGObject {
     ctx.strokeRect(x, this.textY(), this.width, this.height);
   }
 
+  /**
+   * Invert the swatch color
+   */
   invertColors() {
     const attributes = {
       swatchColor: this.swatchColor.invert().rgbaString
@@ -384,30 +425,52 @@ class LegendItem extends CGObject {
     this.update(attributes);
   }
 
+  /**
+   * Remove legendItem
+   */
   remove() {
     this.legend.removeItems(this);
   }
 
+  /**
+   * Move this legendItem to a new index in the array of Legend legendItems.
+   * @param {Number} newIndex - New index for this caption (0-based)
+   */
   move(newIndex) {
     const currentIndex = this.legend.items().indexOf(this);
     this.legend.moveItem(currentIndex, newIndex);
   }
 
   /**
-   * Update item properties.
+   * Update legendItem [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
    */
   update(attributes) {
     this.legend.updateItems(this, attributes);
   }
 
+  /**
+   * Returns the features that have this legendItem
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {Feature|CGArray}
+   */
   features(term) {
     return this.viewer._features.filter( f => f.legendItem === this ).get(term);
   }
 
+  /**
+   * Returns the plots that have this legendItem
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {Feature|CGArray}
+   */
   plots(term) {
     return this.viewer._plots.filter( p => p.legendItem.includes(this) ).get(term);
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       name: this.name,

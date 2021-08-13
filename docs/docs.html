@@ -63,21 +63,21 @@
         <li><a class="side-link" href="#s.dirty-data">Dirty Data</a></li>
         <li><a class="side-link" href="#s.details-by-record-type">Record Types</a></li>
         <!-- REPLACE_NAV START -->
-        <li><a class='side-link indent' href='#section-Viewer'>Viewer</a></li>
-        <li><a class='side-link indent' href='#section-Feature'>Feature</a></li>
-        <li><a class='side-link indent' href='#section-Plot'>Plot</a></li>
-        <li><a class='side-link indent' href='#section-Track'>Track</a></li>
-        <li><a class='side-link indent' href='#section-Settings'>Settings</a></li>
-        <li><a class='side-link indent' href='#section-Legend'>Legend</a></li>
-        <li><a class='side-link indent' href='#section-LegendItem'>LegendItem</a></li>
-        <li><a class='side-link indent' href='#section-Caption'>Caption</a></li>
-        <li><a class='side-link indent' href='#section-Annotation'>Annotation</a></li>
-        <li><a class='side-link indent' href='#section-Bookmark'>Bookmark</a></li>
-        <li><a class='side-link indent' href='#section-Backbone'>Backbone</a></li>
-        <li><a class='side-link indent' href='#section-Sequence'>Sequence</a></li>
-        <li><a class='side-link indent' href='#section-Contig'>Contig</a></li>
-        <li><a class='side-link indent' href='#section-Ruler'>Ruler</a></li>
-        <li><a class='side-link indent' href='#section-Divider'>Divider</a></li>
+        <li><a class='side-link indent' href='#s.Viewer'>Viewer</a></li>
+        <li><a class='side-link indent' href='#s.Feature'>Feature</a></li>
+        <li><a class='side-link indent' href='#s.Plot'>Plot</a></li>
+        <li><a class='side-link indent' href='#s.Track'>Track</a></li>
+        <li><a class='side-link indent' href='#s.Settings'>Settings</a></li>
+        <li><a class='side-link indent' href='#s.Legend'>Legend</a></li>
+        <li><a class='side-link indent' href='#s.LegendItem'>LegendItem</a></li>
+        <li><a class='side-link indent' href='#s.Caption'>Caption</a></li>
+        <li><a class='side-link indent' href='#s.Annotation'>Annotation</a></li>
+        <li><a class='side-link indent' href='#s.Bookmark'>Bookmark</a></li>
+        <li><a class='side-link indent' href='#s.Backbone'>Backbone</a></li>
+        <li><a class='side-link indent' href='#s.Sequence'>Sequence</a></li>
+        <li><a class='side-link indent' href='#s.Contig'>Contig</a></li>
+        <li><a class='side-link indent' href='#s.Ruler'>Ruler</a></li>
+        <li><a class='side-link indent' href='#s.Divider'>Divider</a></li>
 
         <!-- REPLACE_NAV END -->
       </ul>
@@ -488,7 +488,7 @@ following superscripts:
 
 <!-- REPLACE_TABLES START -->
 
-<section id='section-Viewer'>
+<section id='s.Viewer'>
 
 ## [Viewer](api/Viewer.html)
 
@@ -516,7 +516,7 @@ Attribute                         | Type      | Description
 <sup>iu</sup> Ignored on Viewer update
 
 </section>
-<section id='section-Feature'>
+<section id='s.Feature'>
 
 ## [Feature](api/Feature.html)
 
@@ -536,8 +536,8 @@ Attribute                        | Type     | Description
 [contig](api/Feature.html#contig)                | String\|Contig | Name of contig or the contig itself
 [start](api/Feature.html#start)<sup>rc</sup>     | Number   | Start base pair on the contig
 [stop](api/Feature.html#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
-[mapStart](api/Feature.html#mapStart)            | Number   | Start base pair on the map (converted to contig position)
-[mapStop](api/Feature.html#mapStop)              | Number   | Stop base pair on the map (converted to contig position)
+[mapStart](api/Feature.html#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position)
+[mapStop](api/Feature.html#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position)
 [strand](api/Feature.html#strand)                | String   | Strand the features is on [Default: 1]
 [score](api/Feature.html#score)                  | Number   | Score associated with the feature
 [favorite](api/Feature.html#favorite)            | Boolean  | Feature is a favorite [Default: false]
@@ -545,9 +545,10 @@ Attribute                        | Type     | Description
 [meta](api/CGObject.html#meta)       | Object   | [Meta data](tutorials/details-meta-data.html) for Feature
 
 <sup>rc</sup> Required on Feature creation
+<sup>ic</sup> Ignored on Record creation
 
 </section>
-<section id='section-Plot'>
+<section id='s.Plot'>
 
 ## [Plot](api/Plot.html)
 
@@ -578,7 +579,7 @@ Attribute                         | Type     | Description
 <sup>iu</sup> Ignored on Plot update
 
 </section>
-<section id='section-Track'>
+<section id='s.Track'>
 
 ## [Track](api/Track.html)
 
@@ -599,13 +600,13 @@ Attribute                         | Type      | Description
 [position](api/Track.html#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
 [separateFeaturesBy](api/Track.html#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
 [thicknessRatio](api/Track.html#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
-[loadProgress](api/Track.html#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used interanlly by workers.
+[loadProgress](api/Track.html#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
 [favorite](api/Track.html#favorite)             | Boolean   | Track is a favorite [Default: false]
 [visible](api/CGObject.html#visible)  | Boolean   | Track is visible [Default: true]
 [meta](api/CGObject.html#meta)        | Object    | [Meta data](tutorials/details-meta-data.html) for Track
 
 </section>
-<section id='section-Settings'>
+<section id='s.Settings'>
 
 ## [Settings](api/Settings.html)
 
@@ -620,7 +621,7 @@ Attribute                           | Type      | Description
 [arrowHeadLength](api/Settings.html#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
 
 </section>
-<section id='section-Legend'>
+<section id='s.Legend'>
 
 ## [Legend](api/Legend.html)
 
@@ -646,7 +647,7 @@ Attribute                          | Type      | Description
 <sup>iu</sup> Ignored on Legend update
 
 </section>
-<section id='section-LegendItem'>
+<section id='s.LegendItem'>
 
 ## [LegendItem](api/LegendItem.html)
 
@@ -671,7 +672,7 @@ Attribute                        | Type      | Description
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html)
 
 </section>
-<section id='section-Caption'>
+<section id='s.Caption'>
 
 ## [Caption](api/Caption.html)
 
@@ -699,14 +700,14 @@ Attribute                        | Type      | Description
 <sup>ic</sup> Ignored on Caption creation
 
 </section>
-<section id='section-Annotation'>
+<section id='s.Annotation'>
 
 ## [Annotation](api/Annotation.html)
 
-Action                                  | Viewer Method                        | Annotation Method                  | Event
-----------------------------------------|--------------------------------------|------------  -------|-----
-[Update](#updating-records) | -                                    | [update()](api/Annotation.html#update) | annotation-update
-[Read](#reading-records)    | [annotation](api/Viewer.html#annotation) | -                   | -
+Action                                    | Viewer Method                        | Annotation Method   | Event
+------------------------------------------|--------------------------------------|---------------------|-----
+[Update](#s.updating-records) | -                                    | [update()](api/Annotation.html#update) | annotation-update
+[Read](#s.reading-records)    | [annotation](api/Viewer.html#annotation) | -                   | -
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
@@ -717,16 +718,16 @@ Attribute                        | Type      | Description
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Annotation
 
 </section>
-<section id='section-Bookmark'>
+<section id='s.Bookmark'>
 
 ## [Bookmark](api/Bookmark.html)
 
-Action                                  | Viewer Method                                    | Bookmark Method     | Event
-----------------------------------------|--------------------------------------------------|---------------------|-----
-[Add](#adding-records)      | [addBookmarks()](api/Viewer.html#addBookmarks)       | -                   | bookmarks-add
-[Update](#updating-records) | [updateBookmarks()](api/Viewer.html#updateBookmarks) | [update()](api/Bookmark.html#update) | bookmarks-update
-[Remove](#removing-records) | [removeBookmarks()](api/Viewer.html#removeBookmarks) | [remove()](api/Bookmark.html#remove) | bookmarks-remove
-[Read](#reading-records)    | [bookmarks()](api/Viewer.html#bookmarks)             | -                   | -
+Action                                    | Viewer Method                                    | Bookmark Method     | Event
+------------------------------------------|--------------------------------------------------|---------------------|-----
+[Add](#s.adding-records)      | [addBookmarks()](api/Viewer.html#addBookmarks)       | -                   | bookmarks-add
+[Update](#s.updating-records) | [updateBookmarks()](api/Viewer.html#updateBookmarks) | [update()](api/Bookmark.html#update) | bookmarks-update
+[Remove](#s.removing-records) | [removeBookmarks()](api/Viewer.html#removeBookmarks) | [remove()](api/Bookmark.html#remove) | bookmarks-remove
+[Read](#s.reading-records)    | [bookmarks()](api/Viewer.html#bookmarks)             | -                   | -
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
@@ -737,18 +738,17 @@ Attribute                        | Type      | Description
 [bbOffset](api/Bookmark.html#bbOffset)            | Number    | Distance from the backbone to the center of the canvas [Default: 0]
 [shortcut](api/Bookmark.html#shortcut)            | Character | Single character shortcut that when pressed moves the map to this position [Default: N (see name) up to 9]
 [favorite](api/Bookmark.html#favorite)            | Boolean   | Bookmark is a favorite [Default: false]
-[visible](api/CGObject.html#visible) | Boolean   | Bookmark is visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html) for Bookmark
 
 </section>
-<section id='section-Backbone'>
+<section id='s.Backbone'>
 
 ## [Backbone](api/Backbone.html)
 
-Action                                  | Viewer Method                   | Backbone Method      | Event
-----------------------------------------|--------------------------------- |---------------------|-----
-[Update](#updating-records) | -                                | [update()](api/Backbone.html#update) | backbone-update
-[Read](#reading-records)    | [backbone](api/Viewer.html#backbone) | -                   | -
+Action                                    | Viewer Method                   | Backbone Method      | Event
+------------------------------------------|--------------------------------- |---------------------|-----
+[Update](#s.updating-records) | -                                | [update()](api/Backbone.html#update) | backbone-update
+[Read](#s.reading-records)    | [backbone](api/Viewer.html#backbone) | -                   | -
 
 Attribute                         | Type      | Description
 ----------------------------------|-----------|------------
@@ -760,7 +760,7 @@ Attribute                         | Type      | Description
 [meta](api/CGObject.html#meta)        | Object    | [Meta data](tutorials/details-meta-data.html)
 
 </section>
-<section id='section-Sequence'>
+<section id='s.Sequence'>
 
 ## [Sequence](api/Sequence.html)
 
@@ -784,7 +784,7 @@ Attribute                        | Type      | Description
 <sup>iu</sup> Ignored on Sequence update
 
 </section>
-<section id='section-Contig'>
+<section id='s.Contig'>
 
 ## [Contig](api/Contig.html)
 
@@ -793,8 +793,8 @@ Action                                     | Sequence Method                    
 [Add](#adding-records)         | [addContigs()](api/Sequence.html#addContigs)       | -                   | contigs-add
 [Update](#updating-records)    | [updateContigs()](api/Sequence.html#updateContigs) | [update()](api/Contig.html#update) | contigs-update
 [Remove](#removing-records)    | [removeContigs()](api/Sequence.html#removeContigs) | [remove()](api/Contig.html#remove) | contigs-remove
-[Reorder](#reordering-records) | [moveContigs()](api/Sequence.html#moveContig)      | [move()](api/Contig.html#move)     | contigs-reorder
-[Read](#reading-records)       | [contigs()](api/Sequence.html#items)               | -                   | -
+[Reorder](#reordering-records) | [moveContig()](api/Sequence.html#moveContig)       | [move()](api/Contig.html#move)     | contigs-reorder
+[Read](#reading-records)       | [contigs()](api/Sequence.html#contigs)             | -                   | -
 
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
@@ -803,13 +803,14 @@ Attribute                        | Type      | Description
 [seq](api/Contig.html#seq)<sup>iu</sup>         | String    | The contig sequence.
 [length](api/Contig.html#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided.
 [orientation](api/Contig.html#orientation)      | String    | '+' for forward orientation and '-' for the reverse.
+[color](api/Contig.html#color)                  | Color     | A string describing the color [Default: 'black']. See <a href="api/Color.html"><code>Color</code></a> for details.
 [visible](api/CGObject.html#visible) | Boolean   | Contig is visible [Default: true].
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html)
 
 <sup>iu</sup> Ignored on Contig update
 
 </section>
-<section id='section-Ruler'>
+<section id='s.Ruler'>
 
 ## [Ruler](api/Ruler.html)
 
@@ -826,7 +827,7 @@ Attribute                        | Type      | Description
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html) for ruler
 
 </section>
-<section id='section-Divider'>
+<section id='s.Divider'>
 
 ## [Divider](api/Divider.html)
 

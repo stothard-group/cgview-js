@@ -87,6 +87,7 @@ class Font extends Events  {
    * Return the font as a CSS string with the size first scaled by multiplying by the *scale* factor.
    * @param {Number} scale - Scale factor.
    * @return {String} - Return the font as CSS usable string.
+   * @private
    */
   cssScaled(scale) {
     if (scale && scale !== 1) {
@@ -242,6 +243,7 @@ class Font extends Events  {
  * @param {Font[]} fonts - An array of fonts. Must be the same length as *strings*.
  * @param {String[]} strings - An array of strings. Must be the same length as *fonts*.
  * @return {Number[]} - An array of widths.
+ * @private
  */
 Font.calculateWidths = function(ctx, fonts, strings) {
   ctx.save();

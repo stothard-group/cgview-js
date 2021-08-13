@@ -150,9 +150,9 @@ class Viewer {
     // Initialize General Setttings
     this.settings = new Settings(this, options.settings);
     // Initial Legend
-    this.legend = new Legend(this, options.legend);
+    this._legend = new Legend(this, options.legend);
     // Initialize Slot Divider
-    this.dividers = new Dividers(this, options.dividers);
+    this._dividers = new Dividers(this, options.dividers);
     // Initialize Annotation
     this._annotation = new Annotation(this, options.annotation);
     // Initialize Ruler
@@ -234,10 +234,24 @@ class Viewer {
   }
 
   /**
+   * @member {Legend} - Get the map [legend](Legend.html) object
+   */
+  get legend() {
+    return this._legend;
+  }
+
+  /**
    * @member {Annotation} - Get the map [annotation](Annotation.html) object
    */
   get annotation() {
     return this._annotation;
+  }
+
+  /**
+   * @member {Dividers} - Get the map [dividers](Dividers.html) object
+   */
+  get dividers() {
+    return this._dividers;
   }
 
 
@@ -494,9 +508,10 @@ class Viewer {
   }
 
   /**
-   * Returns an [CGArray](CGArray.html) of Features or a single Feature from all the features in the viewer.
+   * Returns a [CGArray](CGArray.html) of features or a single feature.
+   * See [reading records](../docs.html#s.reading-records) for details.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-   * @return {CGArray}
+   * @return {Feature|CGArray}
    */
   features(term) {
     return this._features.get(term);
@@ -819,10 +834,13 @@ class Viewer {
   }
 
   /**
-   * Adds features to the viewer. See
-   * // FIXME: for History, we will want to be able to handle passing an array of features
-   *           not just feature data. That way they don't have to be reinitialized and they keep the same cgvIDs.
+   * Add one or more [features](Feature.html) (see [attributes](Feature.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the features
+   * @return {CGArray<Feature>} CGArray of added features
    */
+  // FIXME: for History, we will want to be able to handle passing an array of features
+  //  not just feature data. That way they don't have to be reinitialized and they keep the same cgvIDs.
   addFeatures(featureData = []) {
     featureData = CGArray.arrayerize(featureData);
     const features = featureData.map( (data) => new Feature(this, data));
@@ -834,6 +852,11 @@ class Viewer {
     return features;
   }
 
+  /**
+   * Remove features.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * @param {Feature|Array} features - Feature or a array of features to remove
+   */
   removeFeatures(features) {
     features = CGArray.arrayerize(features);
     this._features = this._features.filter( f => !features.includes(f) );
@@ -853,7 +876,10 @@ class Viewer {
   }
 
   /**
-   * Update feature properties to the viewer.
+   * Update [attributes](Feature.html#attributes) for one or more features.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Feature|Array|Object} featuresOrUpdates - Feature, array of features or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
    */
   updateFeatures(featuresOrUpdates, attributes) {
     const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {

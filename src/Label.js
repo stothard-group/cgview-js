@@ -4,8 +4,18 @@
 
 import Font from './Font';
 
+/**
+ * Labels are used by [Annotation](Annotation.html) to control drawing
+ * [feature](Feature.html) names on the map.
+ * @private
+ */
 class Label {
 
+  /**
+   * Create a new label
+   * @param {Feature} feature - Feature this label is associated with
+   * @param {Object} options - ...
+   */
   constructor(feature, options = {}) {
     this._feature = feature;
     this.name = options.name;
@@ -139,20 +149,6 @@ class Label {
     return this._feature;
   }
 
-  // /**
-  //  * @member {Number} - Get the start position of the feature
-  //  */
-  // get start() {
-  //   return this.feature.start;
-  // }
-  //
-  // /**
-  //  * @member {Number} - Get the stop position of the feature
-  //  */
-  // get stop() {
-  //   return this.feature.stop;
-  // }
-
   /**
    * @member {Number} - Get the mapStart position of the feature
    */
@@ -167,6 +163,9 @@ class Label {
     return this.feature.mapStop;
   }
 
+  /**
+   * Highlgith this label
+   */
   highlight() {
     const canvas = this.viewer.canvas;
     canvas.clear('ui');

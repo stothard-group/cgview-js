@@ -681,6 +681,11 @@ class Sequence extends CGObject {
     }
   }
 
+  /**
+   * Create FASTA string for the sequence.
+   * @param {String} id - ID line for FASTA (i.e. text after '>'). Only used if there is one contig or concatenateContigs is true.
+   * @param {Object} options - Options: concatenateContigs
+   */
   // id is not used if there are multiple contigs and we are not concatenating them
   asFasta(id, options = {}) {
     const concatenate = options.concatenateContigs;

@@ -21,11 +21,12 @@ class IO {
 
   /**
    * Interface for reading and writing data to and from CGView
-   * @param {Viewer} viewer - Viewer stuff...
+   * @param {Viewer} viewer - Viewer
    */
   constructor(viewer) {
     this._viewer = viewer;
   }
+
   /**
    * @member {Viewer} - Get the viewer.
    */
@@ -35,6 +36,7 @@ class IO {
 
   /**
    * @member {Number} - Get or set the ability to drag-n-drop JSON files on to viewer
+   * @private
    */
   get allowDragAndDrop() {
     return this._allowDragAndDrop;
@@ -50,12 +52,21 @@ class IO {
     }
   }
 
+  /**
+   * Format the date from created and updated JSON attributes.
+   * @param {Date} d - Date to format
+   * @private
+   */
   formatDate(d) {
     // return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
     const timeformat = d3.timeFormat('%Y-%m-%d %H:%M:%S');
     return timeformat(d);
   }
 
+  /**
+   * Return the CGView map as a JSON object. The JSON can later be loaded using [loadJSON](#loadJSON).
+   * See the [JSON page](../json.html) for details on the JSON structure.
+   */
   toJSON(options = {}) {
     const v = this.viewer;
     const jsonInfo = v._jsonInfo || {};
@@ -173,7 +184,7 @@ class IO {
     viewer._annotation = new Annotation(viewer, data.annotation);
     // Slot Dividers
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
-    viewer.dividers = new Dividers(viewer, data.dividers);
+    viewer._dividers = new Dividers(viewer, data.dividers);
     // Highlighter
     viewer.highlighter = new Highlighter(viewer, data.highlighter);
 
@@ -282,17 +293,35 @@ class IO {
     }
   }
 
+  /**
+   * Download the map sequence in FASTA format.
+   * @param {String} fastaId - ID line for FASTA (i.e. text after '>')
+   * @param {String} filename - Name for saved file
+   * @param {Object} options - Options for FASTA (see [Sequence.asFasta](Sequence.html#asFasta))
+   */
   downloadFasta(fastaId, filename = 'sequence.fa', options = {}) {
     const fasta = this.viewer.sequence.asFasta(fastaId, options);
     this.download(fasta, filename, 'text/plain');
   }
 
+  /**
+   * Download the map as a JSON object
+   * @param {String} filename - Name for saved file
+   * @param {Object} options - Options passed to toJSON
+   */
   downloadJSON(filename = 'cgview.json', options = {}) {
     const json = this.viewer.io.toJSON(options);
     this.download(JSON.stringify(json), filename, 'text/json');
   }
 
   // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
+  /**
+   * Download data to a file
+   * @param {Object} data - Data to download
+   * @param {String} filename - Name for saved file
+   * @param {String} type - Mime type for the file
+   * @private
+   */
   download(data, filename, type = 'text/plain') {
     const file = new Blob([data], {type: type});
     if (window.navigator.msSaveOrOpenBlob) {

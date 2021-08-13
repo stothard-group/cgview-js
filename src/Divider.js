@@ -12,8 +12,8 @@ import utils from './Utils';
  *
  * There are two type of dividers: slot and track. They are accessed from the
  * viewer [dividers](Dividers.html) object:
- * - Viewer.dividers.track - controlls spacing/lines between tracks.
- * - Viewer.dividers.slot - controls spacing/lines betweens slots within a track.
+ * - cgv.dividers.track - controlls spacing/lines between tracks.
+ * - cgv.dividers.slot - controls spacing/lines betweens slots within a track.
  *
  * If either track or slot has their mirror set to true, then both dividers will be treated as the same.
  * In addition, if only settings for one of the dividers is provided on Viewer creation, then it will be mirrored.
@@ -70,10 +70,16 @@ class Divider extends CGObject {
     return 'Divider';
   }
 
+  /**
+   * Return name of divider (e.g. 'track' or 'slot')
+   */
   get name() {
     return this._name;
   }
 
+  /**
+   * @member {Boolean} - Get or Set the visibility of this object.
+   */
   get visible() {
     return this._visible;
   }
@@ -136,13 +142,17 @@ class Divider extends CGObject {
   }
 
   /**
-   * @member {Number} - Get the divider spacing adjusted for zoom level. Even the divider
+   * @member {Number} - Get the divider spacing adjusted for zoom level. Even if the divider
    * is not visible, there can still be spacing between the slots/tracks.
    */
   get adjustedSpacing() {
     return (this.viewer.zoomFactor < 1) ? (this._spacing * this.viewer.zoomFactor) : this._spacing;
   }
 
+  /**
+   * @member {Boolean} - Get or set the mirroring for this divider.
+   * When setting to true, the other divider will be mirrored to this one.
+   */
   get mirror() {
     return this.viewer.dividers.dividersMirrored;
   }
@@ -159,7 +169,9 @@ class Divider extends CGObject {
   }
 
   /**
-   * Update divider
+   * Update divider [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
    */
   update(attributes) {
     const { records: dividers, updates } = this.viewer.updateRecords(this, attributes, {
@@ -168,47 +180,6 @@ class Divider extends CGObject {
     });
     this.viewer.trigger('divider-update', { divider: this, attributes, updates });
   }
-
-
-  // /**
-  //  * @member {Number} - Set or get the array of divider positions based on the distance from the backbone.
-  //  */
-  // set bbOffsets(value) {
-  //   if (value && value.toString() === 'CGArray') {
-  //     this._bbOffsets = value;
-  //   }
-  // }
-  //
-  // get bbOffsets() {
-  //   return this._bbOffsets;
-  // }
-  //
-  // /**
-  //  * The visible range
-  //  * @member {Range}
-  //  */
-  // get visibleRange() {
-  //   return this._visibleRange;
-  // }
-  //
-  // clearBbOffsets() {
-  //   this.bbOffsets = new CGV.CGArray();
-  // }
-  //
-  // addBbOffset(bbOffset) {
-  //   this._bbOffsets.push(bbOffset);
-  // }
-  //
-  // draw() {
-  //   if (!this.visible || this.thickness === 0) { return; }
-  //   for (let i = 0, len = this._bbOffsets.length; i < len; i++) {
-  //     const bbOffset = this._bbOffsets[i];
-  //     this._visibleRange = this.canvas.visibleRangeForCenterOffset(bbOffset, 100);
-  //     if (this.visibleRange) {
-  //       this.viewer.canvas.drawElement('map', this.visibleRange.start, this.visibleRange.stop, bbOffset, this.color.rgbaString, this.adjustedThickness);
-  //     }
-  //   }
-  // }
 
   toJSON() {
     return {
