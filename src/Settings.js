@@ -10,9 +10,10 @@ import utils from './Utils';
  *
  * ### Action and Events
  *
- * Action                                  | Viewer Method   | Settings Method     | Event
- * ----------------------------------------|-----------------|---------------------|-----
- * [Update](../docs.html#updating-records) | -               | [update()](#update) | settings-update
+ * Action                                  | Viewer Method                    | Settings Method     | Event
+ * ----------------------------------------|----------------------------------|---------------------|-----
+ * [Update](../docs.html#updating-records) | -                                | [update()](#update) | settings-update
+ * [Read](../docs.html#reading-records)    | [settings](Viewer.html#settings) | -                   | -
  *
  * <a name="attributes"></a>
  * ### Attributes
@@ -101,6 +102,11 @@ class Settings {
     this.viewer.drawFull();
   }
 
+  /**
+   * Update settings [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
@@ -109,7 +115,9 @@ class Settings {
     this.viewer.trigger('settings-update', { attributes });
   }
 
-
+  /**
+   * Returns JSON representing the object
+   */
   toJSON() {
     return {
       backgroundColor: this.backgroundColor.rgbaString,

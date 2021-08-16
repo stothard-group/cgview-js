@@ -87,6 +87,7 @@ class Slot extends CGObject {
 
   /**
    * @member {Viewer} - Get or set the track size as a proportion of the map thickness 
+   * @private
    */
   get proportionOfMap() {
     return this._proportionOfMap;
@@ -98,6 +99,7 @@ class Slot extends CGObject {
 
   /**
    * @member {Viewer} - Get the track size as a ratio to all other tracks
+   * @private
    */
   get thicknessRatio() {
     return this.track.thicknessRatio;
@@ -157,6 +159,7 @@ class Slot extends CGObject {
   /**
    * The number of pixels per basepair along the feature track circumference.
    * @return {Number}
+   * @private
    */
   pixelsPerBp() {
     return this.layout.pixelsPerBp(this.centerOffset);
@@ -284,8 +287,8 @@ class Slot extends CGObject {
 
   /**
    * Remove a feature or array of features from the slot.
-   *
    * @param {Feature|Array} features - The Feature(s) to remove.
+   * @private
    */
   removeFeatures(features) {
     features = (features.toString() === 'CGArray') ? features : new CGArray(features);
@@ -295,6 +298,7 @@ class Slot extends CGObject {
 
   /**
    * Remove the plot from the slot.
+   * @private
    */
   removePlot() {
     this._plot = undefined;

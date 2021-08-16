@@ -5,23 +5,22 @@
 /**
  * The NCList is a container for intervals that allows fast searching of overlaping regions.
  *
- * Nested Containment List (NCList): A new algorithm for accelerating
- * interval query of genome alignment and interval databases.
- * Alekseyenko, A., and Lee, C. (2007).
- * Bioinformatics, doi:10.1093/bioinformatics/btl647
- * https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
- *
- * Code adapted from
- * https://searchcode.com/codesearch/view/17093141
+ * - Nested Containment List (NCList): A new algorithm for accelerating
+ * - interval query of genome alignment and interval databases.
+ * - Alekseyenko, A., and Lee, C. (2007).
+ * - Bioinformatics, doi:10.1093/bioinformatics/btl647
+ * - https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
+ * - Code adapted from
+ *   https://searchcode.com/codesearch/view/17093141
  */
 class NCList {
 
   /**
    * Each interval should have a start and stop property.
-   *
    * @param {Array} intervals - Array of Intervals used to create the NCList.
    * @param {Object} options -
    * @return {NCList}
+   * @private
    */
   constructor(intervals = [], options = {}) {
     this.intervals = [];

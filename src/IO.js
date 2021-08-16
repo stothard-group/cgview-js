@@ -175,11 +175,11 @@ class IO {
     // Load Settings
     // const settings = data.settings || {};
     // General Settings
-    viewer.settings = new Settings(viewer, data.settings);
+    viewer._settings = new Settings(viewer, data.settings);
     // Ruler
-    viewer.ruler = new Ruler(viewer, data.ruler);
+    viewer._ruler = new Ruler(viewer, data.ruler);
     // Backbone
-    viewer.backbone = new Backbone(viewer, data.backbone);
+    viewer._backbone = new Backbone(viewer, data.backbone);
     // Annotation
     viewer._annotation = new Annotation(viewer, data.annotation);
     // Slot Dividers

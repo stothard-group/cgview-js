@@ -12,7 +12,7 @@ class Messenger {
 
   /**
    * Class to shoe message on viewer
-   *
+   * @private
    */
   constructor(viewer, options = {}) {
     this._viewer = viewer;

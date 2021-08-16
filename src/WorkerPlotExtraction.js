@@ -1,3 +1,6 @@
+/**
+ * Worker to extract plot data from the sequence (e.g. gc-content, gc-skew)
+ */
 export default function WorkerBaseContent() {
   onmessage = function(e) {
     console.log(`Starting ${e.data.type}`);

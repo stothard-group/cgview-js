@@ -1,3 +1,6 @@
+/**
+ * Worker to extract features from the sequence (e.g. orfs, start-stop codons)
+ */
 export default function WorkerFeatureExtraction() {
   onmessage = function(e) {
     const featureDataArray = processSequence(e.data);

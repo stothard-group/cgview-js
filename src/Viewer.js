@@ -140,7 +140,7 @@ class Viewer {
     // Initialize Sequence
     this._sequence = new Sequence(this, options.sequence);
     // Initialize Backbone
-    this.backbone = new Backbone(this, options.backbone);
+    this._backbone = new Backbone(this, options.backbone);
     // this.initializeDragging();
     initializeZooming(this);
     // Initial Event Monitor
@@ -148,7 +148,7 @@ class Viewer {
     // Initial Messenger
     this.messenger = new Messenger(this, options.messenger);
     // Initialize General Setttings
-    this.settings = new Settings(this, options.settings);
+    this._settings = new Settings(this, options.settings);
     // Initial Legend
     this._legend = new Legend(this, options.legend);
     // Initialize Slot Divider
@@ -156,7 +156,7 @@ class Viewer {
     // Initialize Annotation
     this._annotation = new Annotation(this, options.annotation);
     // Initialize Ruler
-    this.ruler = new Ruler(this, options.ruler);
+    this._ruler = new Ruler(this, options.ruler);
     // Initialize Highlighter
     this.highlighter = new Highlighter(this, options.highlighter);
     // Initialize Codon Tables
@@ -254,6 +254,33 @@ class Viewer {
     return this._dividers;
   }
 
+  /**
+   * @member {Ruler} - Get the map [ruler](Ruler.html) object
+   */
+  get ruler() {
+    return this._ruler;
+  }
+
+  /**
+   * @member {Settings} - Get the map [settings](Settings.html) object
+   */
+  get settings() {
+    return this._settings;
+  }
+
+  /**
+   * @member {Sequence} - Get the [Sequence](Sequence.html)
+   */
+  get sequence() {
+    return this._sequence;
+  }
+
+  /**
+   * @member {Backbone} - Get the [Backbone](Backbone.html)
+   */
+  get backbone() {
+    return this._backbone;
+  }
 
 
   /**
@@ -395,13 +422,6 @@ class Viewer {
     } else {
       this._debug = undefined;
     }
-  }
-
-  /**
-   * @member {Sequence} - Get the [Sequence](Sequence.html)
-   */
-  get sequence() {
-    return this._sequence;
   }
 
   /**
@@ -551,16 +571,20 @@ class Viewer {
 
 
   /**
-   * Returns an [CGArray](CGArray.html) of Tracks or a single Track from all the Tracks in the viewer.
+   * Returns a [CGArray](CGArray.html) of tracks or a single track.
+   * See [reading records](../docs.html#s.reading-records) for details.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-   * @return {CGArray}
+   * @return {Track|CGArray}
    */
   tracks(term) {
     return this._tracks.get(term);
   }
 
   /**
-   * Adds tracks to the viewer. See
+   * Add one or more [tracks](Track.html) (see [attributes](Track.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the tracks
+   * @return {CGArray<Track>} CGArray of added tracks
    */
   addTracks(trackData = []) {
     trackData = CGArray.arrayerize(trackData);
@@ -577,6 +601,11 @@ class Viewer {
     return tracks;
   }
 
+  /**
+   * Remove tracks.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * @param {Track|Array} tracks - Track or a array of tracks to remove
+   */
   removeTracks(tracks) {
     tracks = CGArray.arrayerize(tracks);
     this._tracks = this._tracks.filter( t => !tracks.includes(t) );
@@ -622,6 +651,12 @@ class Viewer {
   //   }
   //   this.trigger('tracks-update', { tracks, attributes });
   // }
+  /**
+   * Update [attributes](Track.html#attributes) for one or more tracks.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Track|Array|Object} tracksOrUpdates - Track, array of tracks or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
+   */
   updateTracks(tracksOrUpdates, attributes) {
     const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
       recordClass: 'Track',
@@ -653,6 +688,11 @@ class Viewer {
     this.trigger('tracks-update', { tracks, attributes, updates });
   }
 
+  /**
+   * Move a track from one index to a new one
+   * @param {Number} oldIndex - Index of track to move (0-based)
+   * @param {Number} newIndex - New index for the track (0-based)
+   */
   moveTrack(oldIndex, newIndex) {
     this._tracks.move(oldIndex, newIndex);
     this.layout._adjustProportions();
@@ -714,9 +754,10 @@ class Viewer {
   }
 
   /**
-   * Returns an [CGArray](CGArray.html) of Plots or a single Plot from all the Tracks in the viewer.
+   * Returns a [CGArray](CGArray.html) of plots or a single plot.
+   * See [reading records](../docs.html#s.reading-records) for details.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
-   * @return {CGArray}
+   * @return {Plot|CGArray}
    */
   plots(term) {
     return this._plots.get(term);
@@ -907,7 +948,10 @@ class Viewer {
   }
 
   /**
-   * Adds plots to the viewer.
+   * Add one or more [plots](Plot.html) (see [attributes](Plot.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the plots
+   * @return {CGArray<Plot>} CGArray of added plots
    */
   addPlots(plotData = []) {
     plotData = CGArray.arrayerize(plotData);
@@ -917,6 +961,11 @@ class Viewer {
     return plots;
   }
 
+  /**
+   * Remove plots.
+   * See [removing records](../docs.html#s.removing-records) for details.
+   * @param {Plot|Array} plots - Plot or a array of plots to remove
+   */
   removePlots(plots) {
     plots = CGArray.arrayerize(plots);
     this._plots = this._plots.filter( p => !plots.includes(p) );
@@ -932,7 +981,10 @@ class Viewer {
   }
 
   /**
-   * Update plot properties to the viewer.
+   * Update [attributes](Plot.html#attributes) for one or more plot.
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Plot|Array|Object} plotsOrUpdates - Plot, array of plot or object describing updates
+   * @param {Object} attributes - Object describing the properties to change
    */
   updatePlots(plotsOrUpdates, attributes) {
     const { records: plots, updates } = this.updateRecords(plotsOrUpdates, attributes, {

@@ -12,6 +12,7 @@ class LayoutCircular {
 
   /**
    * Create a Layout
+   * @private
    */
   constructor(layout) {
     this._layout = layout;

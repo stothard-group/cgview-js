@@ -8,8 +8,7 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * Plot draw lines and stuff...
-   * Draw a plot consisting of arcs
+ * Plots are drawn as a series of arcs.
  *
  * ### Action and Events
  *
@@ -264,9 +263,6 @@ class Plot extends CGObject {
   /**
    * @member {Number} - Get or set the plot baseline. This is a value between the axisMin and axisMax
    * and indicates where where the baseline will be drawn. By default this is 0.
-   *
-   * DELETE OLD - Get or set the plot baseline. This is a value between 0 and 1 and indicates where
-   *  where the baseline will be drawn. By default this is 0.5 (i.e. the center of the slot).
    */
   get baseline() {
     return this._baseline;
@@ -357,6 +353,11 @@ class Plot extends CGObject {
     }
   }
 
+  /**
+   * Update plot [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updatePlots(this, attributes);
   }
@@ -568,6 +569,9 @@ class Plot extends CGObject {
     }
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   // Options:
   // - excludeData: if true, the scores and positions are not included
   toJSON(options = {}) {

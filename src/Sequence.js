@@ -12,22 +12,25 @@ import Font from './Font';
 import utils from './Utils';
 
 /**
- * The CGView Sequence represents the sequence that makes up the map. The essential
- * proptery of the Sequence is the length. The length must be known in order to draw
- * a map of the correct size. There are 3 ways to set the Sequence length on map
- * creation.
+ * The CGView Sequence represents the sequence that makes up the map.
+ *
+ * ### Sequence Length
+ * The essential proptery of the Sequence is the length. The length must be
+ * known in order to draw a map of the correct size. There are 3 ways to set
+ * the Sequence length on map creation.
  * - seq: provide the sequence. The length will be set directly from the sequence.
  * - length: provide the sequence length without sequence
  * - contigs: an array of contigs. Each contig must then include its length or sequence.
  *
  * The seq and length propteries are read only and cannot be changed unless a new
- * map is loaded (see IO.loadJSON). With contigs, the updateContigs and
+ * map is loaded (see [IO.loadJSON](IO.html#loadJson). With contigs, the updateContigs and
  * moveContigs methods can be used to change the name, orienation, visbility and
  * order, however, the seq and length property of each contig is still read only.
  *
- * Sequence Coordinates:
- * CGView uses two coordinate systems: Contig space and map space. For features and plot, positions are relative to contigs. However, when drawing we use positions relative to the entire map.
- * [Image of map with contigs. Show contig/map space]
+ * ### Sequence Coordinates:
+ * CGView uses two coordinate systems: Contig space and map space. For features
+ * and plot, positions are relative to contigs. However, when drawing we use
+ * positions relative to the entire map.
  *
  * ### Action and Events
  *
@@ -57,6 +60,7 @@ import utils from './Utils';
  *
  * @extends CGObject
  */
+ // TODO: Add Image of map with contigs. Show contig/map space
 class Sequence extends CGObject {
 
   /**
@@ -65,14 +69,14 @@ class Sequence extends CGObject {
    * @param {Object} options - [Attributes](#attributes) used to create the sequence
    * @param {Object} [meta] - User-defined [Meta data](../tutorials/details-meta-data.html) to add to the sequence
    *
-   * Implementation notes:
-   *   - Internally contigs are always used. If 'seq' is provided, it will be converted to a single contig.
-   *   - All the contigs are concatenated into a single contig called mapContig.
-   *     -  Sequence.seq === Sequence.mapContig.seq
-   *   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
-   *   - Make note in update/updateContig methods that if only one contig is provided (or the sequence seq), they are treated the same internally. Therefore, if the contig name is changed, so is the sequence name.
-   *   - Note for toJSON: will output single contigs as attributes of the sequence (so no contigs property)
    */
+  // Implementation notes:
+  //   - Internally contigs are always used. If 'seq' is provided, it will be converted to a single contig.
+  //   - All the contigs are concatenated into a single contig called mapContig.
+  //     -  Sequence.seq === Sequence.mapContig.seq
+  //   - If there is only one contig then Sequence.mapContig === Sequence.contigs(1)
+  //   - Make note in update/updateContig methods that if only one contig is provided (or the sequence seq), they are treated the same internally. Therefore, if the contig name is changed, so is the sequence name.
+  //   - Note for toJSON: will output single contigs as attributes of the sequence (so no contigs property)
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
     this._viewer = viewer;
@@ -90,8 +94,15 @@ class Sequence extends CGObject {
   //////////////////////////////////////////////////////////////////////////
   // STATIC CLASSS METHODS
   //////////////////////////////////////////////////////////////////////////
-  // Common method for extracting sequence based on a range
-  // range can be a CGRange or any object with a start and stop attribute.
+  /**
+   * Common method for extracting sequence based on a range
+   * range can be a CGRange or any object with a start and stop attribute.
+   * @param {String} seq - The sequence as a string
+   * @param {Range} range - Range to extract seqence for
+   * @param {Boolean} revComp - If true, the returned sequence will be the reverse compliment
+   * @return {String}
+   * @private
+   */
   static forRange(seq, range, revComp=false) {
     const start = range && range.start;
     const stop = range && range.stop;
@@ -283,6 +294,7 @@ class Sequence extends CGObject {
 
   /**
    * @member {Number} - Get the SeqeunceExtractor. Only available if the *seq* property is set.
+   * @private
    */
   get sequenceExtractor() {
     return this._sequenceExtractor;
@@ -350,6 +362,7 @@ class Sequence extends CGObject {
 
   /**
    * @member {Number} - Get or set the basepair spacing.
+   * @private
    */
   get bpSpacing() {
     return this._bpSpacing;
@@ -362,6 +375,7 @@ class Sequence extends CGObject {
 
   /**
    * @member {Number} - Get or set the margin around sequence letters.
+   * @private
    */
   get bpMargin() {
     return this._bpMargin;
@@ -373,6 +387,7 @@ class Sequence extends CGObject {
 
   /**
    * @member {Number} - Get the thick required to draw the sequence. Based on bpMargin and bpSpacing.
+   * @private
    */
   get thickness() {
     return (this.bpSpacing * 2) + (this.bpMargin * 8);
@@ -637,8 +652,8 @@ class Sequence extends CGObject {
   /**
    * Returns all the visible contigs that overlap the given range using map coordinates.
    * @param {CGRange} range - Range to find overlapping contigs.
-   *
    * @return {CGArray} CGArray of Contigs
+   * @private
    */
   contigsForMapRange(range) {
     const contigs = new CGArray();
@@ -655,8 +670,8 @@ class Sequence extends CGObject {
    * Return the map bp position given a local *bp* on the given *contig*.
    * @param {Contig} contig - Contig object
    * @param {Number} bp - bp position on the contig
-   *
    * @return {Number} map position.
+   * @private
    */
   bpForContig(contig, bp = 1) {
     // FIXME: contig can be contig or contig ID
@@ -665,8 +680,8 @@ class Sequence extends CGObject {
 
   /**
    * Return the contig for the given map bp.
-   *
    * @return {Contig}
+   * @private
    */
   contigForBp(bp) {
     // FIXME: could be sped up with a binary search
@@ -713,6 +728,7 @@ class Sequence extends CGObject {
    * Subtract *bpToSubtract* from *position*, taking into account the sequence length
    * @param {Number} position - position (in bp) to subtract from
    * @param {Number} bpToSubtract - number of bp to subtract
+   * @private
    */
   subtractBp(position, bpToSubtract) {
     if (bpToSubtract < position) {
@@ -726,6 +742,7 @@ class Sequence extends CGObject {
    * Add *bpToAdd* to *position*, taking into account the sequence length
    * @param {Number} position - position (in bp) to add to
    * @param {Number} bpToAdd - number of bp to add
+   * @private
    */
   addBp(position, bpToAdd) {
     if (this.length >= (bpToAdd + position)) {
@@ -741,6 +758,7 @@ class Sequence extends CGObject {
    *  - If greater than the sequence length: sequence length is returned.
    *  - Otherwise the supplied bp is returned.
    * @param {Number} bp - position (in bp)
+   * @private
    */
   constrain(bp) {
     return utils.constrain(bp, 1, this.length);
@@ -799,6 +817,7 @@ class Sequence extends CGObject {
    * This method will return overlapping matches.
    * @param {String} pattern - RegEx or String Pattern to search for.
    * @return {Array)
+   * @private
    */
   findPattern(pattern, strand = 1) {
     const re = new RegExp(pattern, 'g');
@@ -891,6 +910,11 @@ class Sequence extends CGObject {
     });
   }
 
+  /**
+   * Update sequence [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Sequence',
@@ -899,6 +923,9 @@ class Sequence extends CGObject {
     this.viewer.trigger('sequence-update', { attributes });
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       font: this.font.string,

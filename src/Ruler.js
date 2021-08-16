@@ -62,6 +62,9 @@ class Ruler extends CGObject {
     return 'Ruler';
   }
 
+  /**
+   * @member {Font} - Get or set the font. When setting the font, a string representing the font or a {@link Font} object can be used. For details see {@link Font}.
+   */
   get font() {
     return this._font;
   }
@@ -169,6 +172,7 @@ class Ruler extends CGObject {
    * Create d3 tickFormat based on the distance between ticks
    * @param {Number} tickStep - Distance between ticks
    * @return {Object}
+   * @private
    */
   _createTickFormatter(tickStep) {
     let tickFormat, tickPrecision;
@@ -339,6 +343,11 @@ class Ruler extends CGObject {
     });
   }
 
+  /**
+   * Update ruler [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Ruler',
@@ -347,6 +356,9 @@ class Ruler extends CGObject {
     this.viewer.trigger('ruler-update', { attributes });
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       font: this.font.string,

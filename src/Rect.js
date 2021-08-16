@@ -98,7 +98,6 @@ class Rect {
   /**
    * Check if any of the Rect overlaps with any Rects in the array.
    * If there is an overlap the first overlapping Rect is returned.
-   *
    * @param {Array} rectArray - Array of Rects
    * @return {Boolean}
    */
@@ -121,7 +120,6 @@ class Rect {
 
   /**
    * Check if the Rect conains the point
-   *
    * @param {Number} x - X coordinate of the point
    * @param {Number} y - Y coordinate of the point
    * @return {Boolean}
@@ -130,6 +128,11 @@ class Rect {
     return ( x >= this.x && x <= (this.x + this.width) && y >= this.y && y <= (this.y + this.height) );
   }
 
+  /**
+   * Return the point for the provided clock position (i.e. 1-12)
+   * @param {Number} clockPosition - Hour hand clock position (i.e. a number between 1 and 12)
+   * @private
+   */
   ptForClockPosition(clockPosition) {
     let x, y;
     switch (clockPosition) {

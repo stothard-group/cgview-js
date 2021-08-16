@@ -11,6 +11,7 @@ class LayoutLinear {
 
   /**
    * Create a Layout
+   * @private
    */
   constructor(layout) {
     this._layout = layout;

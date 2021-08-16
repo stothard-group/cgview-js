@@ -9,51 +9,25 @@ import LayoutLinear from './LayoutLinear';
 import utils from './Utils';
 import * as d3 from 'd3';
 
-/**
- * The Layout is in control of creating slots from tracks and drawing the map.
- *
- * NOTES:
- *  - _adjustProportions is called when components: dividers, backbone, tracks/slots
- *      - change in number, visibility or thickness
- *      - layout format changes
- *      - max/min slot thickness change
- *  - updateLayout is called when
- *      - proportions are updated
- *      - every draw loop only if the zoom level has changed
- */
+// NOTES:
+//  - _adjustProportions is called when components: dividers, backbone, tracks/slots
+//      - change in number, visibility or thickness
+//      - layout format changes
+//      - max/min slot thickness change
+//  - updateLayout is called when
+//      - proportions are updated
+//      - every draw loop only if the zoom level has changed
+
   /**
-   * NOTE: Add Table and notes about scales, link to details-scales
-   *
-   * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
-   *
-   * Scale | Description
-   * ------|------------
-   *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of circle).
-   *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of circle).
-   *  bp   | Convert between bp and radians (Top of map is 1 bp and -π/2).
-   *
-   * ```js
-   * // Examples:
-   * // For a map with canvas width and height of 600. Before moving or zooming the map.
-   * canvas.scale.x(0)          // 300
-   * canvas.scale.y(0)          // 300
-   * canvas.scale.x.invert(300) // 0
-   * canvas.scale.y.invert(300) // 0
-   * // For a map with a length of 1000
-   * canvas.scale.bp(1)        // -π/2
-   * canvas.scale.bp(250)      // 0
-   * canvas.scale.bp(500)      // π/2
-   * canvas.scale.bp(750)      // π
-   * canvas.scale.bp(1000)     // 3π/2
-   * canvas.scale.bp(1000)     // 3π/2
-   * canvas.scale.bp.invert(π) // 750
-   * ```
-   *
+   * Layout controls how everything is draw on the map.
+   * It also determines the best size for the tracks so they fit on the map.
+   * See [Map Scales](../tutorials/details-map-scales.html) for details on
+   * circular and linear layouts.
    */
 class Layout {
 
   /**
-   * Create a Layout
+   * Create a the Layout
    */
   constructor(viewer) {
     this._viewer = viewer;
@@ -116,10 +90,34 @@ class Layout {
     return this.viewer.backbone;
   }
 
-  /** * @member {Object} - Return the scales...
+  /**
+   * @member {Object} - Return an object that contains the 3 [D3 Continuous Scales](https://github.com/d3/d3-scale#continuous-scales) used by CGView.
+   * See [Map Scales](../tutorials/details-map-scales.html) for details.
+   *
+   * Scale | Description
+   * ------|------------
+   *  x    | Convert between the canvas x position (0 is left side of canvas) and map x position (center of map).
+   *  y    | Convert between the canvas y position (0 is top side of canvas) and map y position (center of map).
+   *  bp - circular | Convert between bp and radians (Top of map is 1 bp and -π/2).
+   *  bp - linear   | Convert between bp and distance on x-axis
    */
+  // ```js
+  // // Examples:
+  // // For a map with canvas width and height of 600. Before moving or zooming the map.
+  // canvas.scale.x(0)          // 300
+  // canvas.scale.y(0)          // 300
+  // canvas.scale.x.invert(300) // 0
+  // canvas.scale.y.invert(300) // 0
+  // // For a map with a length of 1000
+  // canvas.scale.bp(1)        // -π/2
+  // canvas.scale.bp(250)      // 0
+  // canvas.scale.bp(500)      // π/2
+  // canvas.scale.bp(750)      // π
+  // canvas.scale.bp(1000)     // 3π/2
+  // canvas.scale.bp(1000)     // 3π/2
+  // canvas.scale.bp.invert(π) // 750
+  // ```
   get scale() {
-    // return this.canvas.scale;
     return this._scale;
   }
 
@@ -174,12 +172,14 @@ class Layout {
   }
 
   /** * @member {Number} - Get an object with stats about slot thickness ratios.
+   * @private
    */
   get slotThicknessRatioStats() {
     return this._slotThicknessRatioStats;
   }
 
   /** * @member {Number} - Get an object with stats about slot proportion of map thickness.
+   * @private
    */
   get slotProportionStats() {
     return this._slotProportionStats;
@@ -244,6 +244,7 @@ class Layout {
    * when ever the zoomFactor is changed. For circular maps, it only needs to be called when
    * initializing the bp scale.
    * @param {Boolean} initialize - Only used by Circular maps.
+   * @private
    */
   adjustBpScaleRange(...args) {
     return this.delegate.adjustBpScaleRange(...args);
@@ -266,6 +267,7 @@ class Layout {
   /**
    * Return the maximum thickness of the map. Depends on the dimensions of the Canvas.
    * @returns {Number}
+   * @private
    */
   maxMapThickness() {
     return this.delegate.maxMapThickness();
@@ -297,8 +299,8 @@ class Layout {
    * Estimate of the zoom factor, if the viewer was only showing the given *bpLength*
    * as a portion of the total length.
    * @param {Number} bpLength - Length in basepairs.
-   *
    * @returns {Number} - Zoom Factor
+   * @private
    */
   zoomFactorForLength(...args) {
     return this.delegate.zoomFactorForLength(...args);
@@ -307,8 +309,8 @@ class Layout {
   /**
    * Return the initial maximum space/thickness to draw the map around the backbone.
    * This is usually some fraction of the viewer dimensions.
-   *
    * @returns {Number}
+   * @private
    */
   initialWorkingSpace() {
     return this.delegate.initialWorkingSpace();
@@ -321,6 +323,7 @@ class Layout {
    *   the backbone down (linear) or towards the center (circular).
    * @param {Number} outsideThickness - The thickness of the outside of the map. From
    *   the backbone up (linear) or towards the outside (circular).
+   *   @private
    */
   updateInitialBackboneCenterOffset(...args) {
     this.delegate.updateInitialBackboneCenterOffset(...args);
@@ -329,7 +332,6 @@ class Layout {
   /**
    * Return an the backbone center offset adjusted for the zoom level.
    * @param {Number} centerOffset - The backbone initial centerOffset.
-   *
    * @returns {Number} adjustedCenterOffset
    */
   adjustedBackboneCenterOffset(...args) {
@@ -350,7 +352,6 @@ class Layout {
    *  - moveTo:  *moveTo* start; *lineTo* stop
    *  - lineTo: *lineTo* start; *lineTo* stop
    *  - noMoveTo:  ingore start; *lineTo* stop
-   *
    */
   path(...args) {
     this.delegate.path(...args);
@@ -549,6 +550,7 @@ class Layout {
   /**
    * Calculate the backbone centerOffset and slot proportions based on the Viewer size and
    * the number of slots.
+   * @private
    */
   _adjustProportions() {
     const viewer = this.viewer;
@@ -919,6 +921,7 @@ class Layout {
 
   /**
    * Updates the bbOffset and thickness of every slot, divider and ruler, only if the zoom level has changed
+   * @private
    */
   updateLayout(force) {
     const viewer = this.viewer;
@@ -939,6 +942,7 @@ class Layout {
    * As the viewer is zoomed the slot thickness increases until
    *  - The max map thickness is reached, or
    *  - The slot thickness is greater than the maximum allowed slot thickness
+   *  @private
    */
   _calculateSlotThickness(proportionOfMap) {
     const viewer = this.viewer;

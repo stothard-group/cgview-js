@@ -261,14 +261,26 @@ class Track extends CGObject {
     this.layout._adjustProportions();
   }
 
+  /**
+   * Update track [attributes](#attributes).
+   * See [updating records](../docs.html#s.updating-records) for details.
+   * @param {Object} attributes - Object describing the properties to change
+   */
   update(attributes) {
     this.viewer.updateTracks(this, attributes);
   }
 
+  /**
+   * Remove track
+   */
   remove() {
     this.viewer.removeTracks(this);
   }
 
+  /**
+   * Move this track to a new index in the array of Viewer tracks.
+   * @param {Number} newIndex - New index for this track (0-based)
+   */
   move(newIndex) {
     const currentIndex = this.viewer.tracks().indexOf(this);
     this.viewer.moveTrack(currentIndex, newIndex);
@@ -293,6 +305,7 @@ class Track extends CGObject {
    * Unique features are ones that only appear in this track.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
    * @return {CGArray}
+   * @private
    */
   uniqueFeatures(term) {
     const features = new CGArray();
@@ -450,6 +463,9 @@ class Track extends CGObject {
     }
   }
 
+  /**
+   * Returns JSON representing the object
+   */
   toJSON(options = {}) {
     const json = {
       name: this.name,

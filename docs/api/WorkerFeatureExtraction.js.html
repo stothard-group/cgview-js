@@ -2090,309 +2090,302 @@
 <div id="wrap" class="clearfix jaguar">
     <div class="main">
 
-        <h1 class="page-title" data-filename="NCList.js.html">Source: NCList.js</h1>
+        <h1 class="page-title" data-filename="WorkerFeatureExtraction.js.html">Source: WorkerFeatureExtraction.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source "><code>//////////////////////////////////////////////////////////////////////////////
-// NCList
-//////////////////////////////////////////////////////////////////////////////
-
-/**
- * The NCList is a container for intervals that allows fast searching of overlaping regions.
- *
- * - Nested Containment List (NCList): A new algorithm for accelerating
- * - interval query of genome alignment and interval databases.
- * - Alekseyenko, A., and Lee, C. (2007).
- * - Bioinformatics, doi:10.1093/bioinformatics/btl647
- * - https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
- * - Code adapted from
- *   https://searchcode.com/codesearch/view/17093141
+            <pre class="prettyprint source "><code>/**
+ * Worker to extract features from the sequence (e.g. orfs, start-stop codons)
  */
-class NCList {
+export default function WorkerFeatureExtraction() {
+  onmessage = function(e) {
+    const featureDataArray = processSequence(e.data);
+    // let progressState;
+    // const type = e.data.type;
+    // console.log(`Starting ${type}`);
+    // let featureDataArray = [];
+    // if (type === 'start-stop-codons') {
+    //   progressState = { start: 0, stop: 50 };
+    //   featureDataArray = extractStartStopCodons(1, e.data, progressState);
+    //   progressState = { start: 50, stop: 100 };
+    //   featureDataArray = featureDataArray.concat( extractStartStopCodons(-1, e.data, progressState) );
+    // } else if (type === 'orfs') {
+    //   featureDataArray = extractORFs(e.data);
+    // }
+    // // Sort the features by start
+    // featureDataArray.sort( (a, b) => {
+    //   return a.start - b.start;
+    // });
+    // Return results
+    postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
+    console.log(`Done ${e.data.type}`);
+  };
+  onerror = function(e) {
+    console.error(`Oops. Problem with ${e.data.type}`);
+  };
 
-  /**
-   * Each interval should have a start and stop property.
-   * @param {Array} intervals - Array of Intervals used to create the NCList.
-   * @param {Object} options -
-   * @return {NCList}
-   * @private
-   */
-  constructor(intervals = [], options = {}) {
-    this.intervals = [];
-    this.circularLength = options.circularLength;
-    this.startProperty = options.startProperty || 'start';
-    this.stopProperty = options.stopProperty || 'stop';
-    this.fill(intervals);
+  const processSequence = function(data) {
+    let progressState;
+    const type = data.type;
+    const seqType = data.seqType;
+    const seqData = data.seqData;
+    const seqTotalLength = data.seqTotalLength;
+    const options = data.options;
+    console.log(`Starting ${type}`);
+    let featureDataArray = [];
+    let seqLengthCompleted = 0;
+    let progressStart = 0;
+
+
+    let seq, progressForStep, progressStop
+    for (var i = 0, len = seqData.length; i &lt; len; i++) {
+      seq = seqData[i].seq;
+
+      // Percentage of sequence processed in this iteration.
+      progressForStep = Math.round(seq.length / seqTotalLength * 100);
+      progressStart = Math.round(seqLengthCompleted / seqTotalLength * 100);
+      progressStop = progressStart + progressForStep;
+      // console.log(progressForStep)
+
+      if (seqType === 'contigs') {
+        options.contigID = seqData[i].id;
+      }
+      if (type === 'start-stop-codons') {
+        progressState = { start: progressStart, stop: progressStart + (progressForStep / 2)};
+        featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, 1, options, progressState) );
+        progressState = { start: progressState.stop, stop: progressStop };
+        featureDataArray = featureDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
+      } else if (type === 'orfs') {
+        progressState = { start: progressStart, stop: progressStop};
+        featureDataArray = featureDataArray.concat( extractORFs(seq, options, progressState) );
+      }
+      // console.log( `${i}: ${(new Date().getTime()) - testStartTime} ms`);
+
+      // Sort the features by start
+      // FIXME: this needs to be done contig by contig. Do we need to sort??
+      // featureDataArray.sort( (a, b) => {
+      //   return a.start - b.start;
+      // });
+      seqLengthCompleted += seq.length;
+    }
+    return featureDataArray;
   }
 
-  /**
-   * @member {Number} - The number of intervals in the NCList
-   */
-  get length() {
-    return this._length;
-  }
+  const extractStartStopCodons = function(seq, strand, options, progressState = {}) {
+    let progress = 0;
+    let savedProgress = 0;
+    const source = 'start-stop-codons';
+    seq = (strand === 1) ? seq : reverseComplement(seq);
+    const startPattern = options.startPattern.toUpperCase().split(',').map( s => s.trim() ).join('|');
+    const stopPattern = options.stopPattern.toUpperCase().split(',').map( s => s.trim() ).join('|');
+    const totalPattern = `${startPattern}|${stopPattern}`;
+    const startPatternArray = startPattern.split('|');
+    const stopPatternArray = stopPattern.split('|');
 
+    const re = new RegExp(totalPattern, 'g');
+    let match, start, featureData, type;
+    const seqLength = seq.length;
+    const featureDataArray = [];
 
-  /**
-   * Splits intervals that span the Origin of cicular sequences
-   */
-  _normalize(intervals) {
-    let interval;
-    const nomalizedIntervals = [];
-    for (let i = 0, len = intervals.length; i &lt; len; i++) {
-      interval = intervals[i];
-      // if (interval.start &lt;= interval.stop) {
-      if (interval[this.startProperty] &lt;= interval[this.stopProperty]) {
-        nomalizedIntervals.push( {interval: interval, index: i});
-      } else {
-        nomalizedIntervals.push({
-          interval: interval,
-          index: i,
-          // start: interval.start,
-          start: this.start(interval),
-          stop: this.circularLength,
-          crossesOrigin: true
-        });
-        nomalizedIntervals.push({
-          interval: interval,
-          index: i,
-          start: 1,
-          // stop: interval.stop,
-          stop: this.end(interval),
-          crossesOrigin: true
-        });
+    while ( (match = re.exec(seq)) !== null) {
+      start = (strand === 1) ? (match.index + 1) : (seqLength - match.index - match[0].length + 1);
+      if (startPatternArray.indexOf(match[0]) >= 0) {
+        type = 'start-codon';
+      } else if (stopPatternArray.indexOf(match[0]) >= 0) {
+        type = 'stop-codon';
+      }
+
+      featureData = {
+        type: type,
+        start: start,
+        stop: start + match[0].length - 1,
+        strand: strand,
+        source: source,
+        contig: options.contigID,
+        extractedFromSequence: true
+      };
+      featureDataArray.push(featureData);
+
+      // Progress
+      progress = Math.round( (strand === 1) ? (start / seqLength * 100) : ( (seqLength - start) / seqLength * 100) );
+      savedProgress = postProgress(progress, savedProgress, progressState);
+
+      re.lastIndex = match.index + 1;
+    }
+    return featureDataArray;
+  };
+
+  const postProgress = function(currentProgress, savedProgress, progressState = {}) {
+    const progressStart = Math.round(progressState.start || 0);
+    const progressStop = Math.round(progressState.stop || 100)
+    const progressIncrement = progressState.increment || 1;
+    const progressRange = progressStop - progressStart;
+    if ( (currentProgress > savedProgress) &amp;&amp; (currentProgress % progressIncrement === 0) ) {
+      savedProgress = currentProgress;
+      const messageProgress = progressStart + (progressRange * currentProgress / 100);
+      if (messageProgress % progressIncrement === 0) {
+        // console.log(messageProgress)
+        postMessage({ messageType: 'progress', progress: messageProgress });
       }
     }
-    return nomalizedIntervals;
-  }
+    return savedProgress;
+  };
 
-  /**
-   * Fils the NCList with the given intervals
-   * @param {Array} intervals - Array of intervals
-   */
-  fill(intervals) {
-    this._length = intervals.length;
-    if (intervals.length === 0) {
-      this.topList = [];
-      return;
-    }
-    // const start = this.start;
-    // const end = this.end;
-    const sublist = this.sublist;
+  const extractORFs = function(seq, options, progressState = {}) {
+    const minORFLength = options.minORFLength;
+    const seqLength = seq.length;
+    let featureDataArray = [];
 
-    intervals = this._normalize(intervals);
-    this.intervals = intervals;
+    const progressStart = progressState.start || 0;
+    const progressStop = progressState.stop || 100;
+    const progressRange = progressStop - progressStart;
+    const progressPortion = progressRange / 4;
 
-    // Sort by overlap
-    // intervals.sort(function(a, b) {
-    intervals.sort( (a, b) => {
-      if (this.start(a) !== this.start(b)) return this.start(a) - this.start(b);
-      else return this.end(b) - this.end(a);
-    });
-    const sublistStack = [];
-    let curList = [];
-    this.topList = curList;
-    curList.push(intervals[0]);
-    if (intervals.length === 1) return;
-    let curInterval, topSublist;
-    for (let i = 1, len = intervals.length; i &lt; len; i++) {
-      curInterval = intervals[i];
-      // if this interval is contained in the previous interval,
-      if (this.end(curInterval) &lt; this.end(intervals[i - 1])) {
-        // create a new sublist starting with this interval
-        sublistStack.push(curList);
-        curList = new Array(curInterval);
-        sublist(intervals[i - 1], curList);
-      } else {
-        // find the right sublist for this interval
-        while (true) {
-          if (0 === sublistStack.length) {
-            curList.push(curInterval);
+    // progressState = {start: 0, stop: 25};
+    progressState = {start: progressStart, stop: progressStart + progressPortion};
+    let codonDataArray = extractStartStopCodons(seq, 1, options, progressState);
+    // progressState = {start: 25, stop: 50};
+    progressState = {start: progressState.stop, stop: progressStart + progressPortion * 2};
+    codonDataArray = codonDataArray.concat( extractStartStopCodons(seq, -1, options, progressState) );
+    const startFeatures = codonDataArray.filter( f => f.type === 'start-codon' );
+    const stopFeatures = codonDataArray.filter( f => f.type === 'stop-codon' );
+
+    const startsByRF = featuresByReadingFrame(startFeatures, seqLength);
+    const stopsByRF = featuresByReadingFrame(stopFeatures, seqLength);
+
+    // progressState = {start: 50, stop: 75};
+    progressState = {start: progressState.stop, stop: progressStart + progressPortion * 3};
+    featureDataArray =  orfsByStrand(1, startsByRF, stopsByRF, seqLength, options, progressState);
+    // progressState = {start: 75, stop: 100};
+    progressState = {start: progressState.stop, stop: progressStop};
+    featureDataArray = featureDataArray.concat( orfsByStrand(-1, startsByRF, stopsByRF, seqLength, options, progressState) );
+    return featureDataArray;
+  };
+
+  const orfsByStrand = function(strand, startsByRF, stopsByRF, seqLength, options= {}, progressState = {}) {
+    let position, orfLength, starts, stops;
+    let start, stop, stopIndex, featureData;
+    let progress, savedProgress;
+    const minORFLength = options.minORFLength || 100;
+    const type = 'ORF';
+    const source = 'orfs';
+    const featureDataArray = [];
+    const readingFrames = (strand === 1) ? ['rfPlus1', 'rfPlus2', 'rfPlus3'] : ['rfMinus1', 'rfMinus2', 'rfMinus3'];
+    // for (let rf of readingFrames) {
+    readingFrames.forEach( function(rf) {
+      position = (strand === 1) ? 1 : seqLength;
+      stopIndex = 0;
+      starts = startsByRF[rf];
+      stops = stopsByRF[rf];
+      const progressInitial = 33 * readingFrames.indexOf(rf);
+      progress = 0;
+      savedProgress = 0;
+      if (strand === -1) {
+        // Sort descending by start
+        starts.sort( (a, b) => b.start - a.start );
+        stops.sort( (a, b) => b.start - a.start );
+      }
+      for (let i = 0, iLen = starts.length; i &lt; iLen; i++) {
+        start = starts[i];
+        progress = progressInitial + Math.round( i / iLen * 33);
+        savedProgress = postProgress(progress, savedProgress, progressState);
+        if ( ((strand === 1) &amp;&amp; (start.start &lt; position)) || ((strand === -1) &amp;&amp; (start.start > position)) ) {
+          continue;
+        }
+        for (let j = stopIndex, jLen = stopsByRF[rf].length; j &lt; jLen; j++) {
+          stop = stops[j];
+          orfLength = (strand === 1) ? stop.stop - start.start : start.stop - stop.start;
+          // ORF length is measure in codons
+          if (orfLength >= (minORFLength * 3)) {
+            position = (strand === 1) ? stop.stop : stop.start;
+
+            featureData = {
+              type: type,
+              start: (strand === 1) ? start.start : stop.start,
+              stop: (strand === 1) ? stop.stop : start.stop,
+              strand: strand,
+              source: source,
+              contig: options.contigID,
+              extractedFromSequence: true
+            };
+            featureDataArray.push(featureData);
+
+            // progress = Math.round(start / seqLength * 100);
+            // if ( (progress > savedProgress) &amp;&amp; (progress % progressIncrement === 0) ) {
+            //   savedProgress = progress;
+            //   postMessage({ messageType: 'progress', progress: progress });
+            // }
+
+            stopIndex = j;
             break;
-          } else {
-            topSublist = sublistStack[sublistStack.length - 1];
-            if (this.end(topSublist[topSublist.length - 1])
-                        > this.end(curInterval)) {
-              // curList is the first (deepest) sublist that
-              // curInterval fits into
-              curList.push(curInterval);
-              break;
-            } else {
-              curList = sublistStack.pop();
-            }
+          } else if (orfLength > 0) {
+            position = (strand === 1) ? stop.stop : stop.start;
+            stopIndex = j;
+            break;
           }
         }
       }
-    }
-  }
-
-  /**
-   * Method to retrieve the stop coordinate of the interval
-   */
-  end(interval) {
-    // return interval.stop || interval.interval.stop;
-    // return interval.stop || interval.interval[this.stopProperty];
-    return interval[this.stopProperty] || interval.interval[this.stopProperty];
-  }
-
-  /**
-   * Method to retrieve the start coordinate of the interval
-   */
-  start(interval) {
-    // return interval.start || interval.interval.start;
-    // return interval.start || interval.interval[this.startProperty];
-    return interval[this.startProperty] || interval.interval[this.startProperty];
-  }
-
-  /**
-   * Method to set the sublist for the given interval.
-   */
-  sublist(interval, list) {
-    interval.sublist = list;
-  }
-
-  _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
-    let skip;
-    const len = list.length;
-    let i, direction;
-    if (step > 0) {
-      direction = 1;
-      i = this._binarySearch(list, start, true, 'end');
-    } else if (step &lt; 0) {
-      direction = -1;
-      i = this._binarySearch(list, stop, false, 'start');
-    }
-    while (i >= 0 &amp;&amp; i &lt; len &amp;&amp;
-      ( (direction === 1) ? (this.start(list[i]) &lt;= stop) : (this.end(list[i]) >= start) ) ) {
-      skip = false;
-      if (list[i].crossesOrigin) {
-        if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) !== -1) {
-          skip = true;
-        } else {
-          this._runIntervalsCrossingOrigin.push(list[i].interval);
-        }
-      }
-
-      if (!skip &amp;&amp; list[i].index % step === 0) {
-        callback.call(list[i].interval, list[i].interval);
-      }
-      if (list[i].sublist) {
-        this._run(start, stop, step, callback, list[i].sublist);
-      }
-      i += direction;
-    }
-  }
-
-  /*
-   * Run the callback for each interval that overlaps with the given range.
-   * @param {Number} start - Start position of the range
-   * @param {Number} stop - Stop position of the range [Default: same as start]
-   * @param {Number} step - Skip intervals by increasing the step [Default: 1]
-   */
-  run(start, stop = start, step = 1, callback = function() {}) {
-    this._runIntervalsCrossingOrigin = [];
-    if (this.circularLength &amp;&amp; stop &lt; start) {
-      this._run(start, this.circularLength, step,  callback);
-      this._run(1, stop, step,  callback);
-    } else {
-      this._run(start, stop, step, callback);
-    }
-  }
-
-  /*
-   * Count the number of intervals that overlaps with the given range.
-   * @param {Number} start - Start position of the range
-   * @param {Number} stop - Stop position of the range [Default: same as start]
-   * @param {Number} step - Skip intervals by increasing the step [Default: 1]
-   * @return {Number}
-   */
-  count(start, stop, step) {
-    let count = 0;
-    this.run(start, stop, step, () => {
-      count++;
     });
-    return count;
-  }
+    return featureDataArray;
+  };
 
-  /*
-   * Return intervals that overlaps with the given range.
-   * @param {Number} start - Start position of the range
-   * @param {Number} stop - Stop position of the range [Default: same as start]
-   * @param {Number} step - Skip intervals by increasing the step [Default: 1]
-   * @return {Array}
-   */
-  find(start, stop, step) {
-    const overlaps = [];
-    this.run(start, stop, step, (i) => {
-      overlaps.push(i);
-    });
-    return overlaps;
-  }
+  const reverseComplement = function(seq) {
+    return complement( seq.split('').reverse().join('') );
+  };
 
+  const complement = function(seq) {
+    let compSeq = '';
+    let char, compChar;
+    for (let i = 0, len = seq.length; i &lt; len; i++) {
+      char = seq.charAt(i);
+      switch (char) {
+      case 'A':
+        compChar = 'T';
+        break;
+      case 'T':
+        compChar = 'A';
+        break;
+      case 'G':
+        compChar = 'C';
+        break;
+      case 'C':
+        compChar = 'G';
+      }
+      compSeq = compSeq + compChar;
+    }
+    return compSeq;
+  };
 
-  _binarySearch(data, searchValue, upper, getter) {
-    let minIndex = -1;
-    let maxIndex = data.length;
-    let currentIndex, currentValue;
-
-    while (maxIndex - minIndex > 1) {
-      currentIndex = (minIndex + maxIndex) / 2 | 0;
-      currentValue = this[getter](data[currentIndex]);
-      if (currentValue &lt; searchValue) {
-        minIndex = currentIndex;
-      } else if (currentValue > searchValue) {
-        maxIndex = currentIndex;
+  const featuresByReadingFrame = function(features, seqLength) {
+    const featuresByRF = {
+      rfPlus1: [],
+      rfPlus2: [],
+      rfPlus3: [],
+      rfMinus1: [],
+      rfMinus2: [],
+      rfMinus3: []
+    };
+    let rf, feature;
+    for (let i = 0, len = features.length; i &lt; len; i++) {
+      feature = features[i];
+      if (feature.strand === -1) {
+        rf = (seqLength - feature.stop + 1) % 3;
+        if (rf === 0) { rf = 3; }
+        featuresByRF[`rfMinus${rf}`].push(feature);
       } else {
-        return currentIndex;
+        rf = feature.start % 3;
+        if (rf === 0) { rf = 3; }
+        featuresByRF[`rfPlus${rf}`].push(feature);
       }
     }
-    return (upper ? maxIndex : minIndex);
-  }
+    return featuresByRF;
+  };
+};
 
 
-  /*
-   * Test that the correct intervals are returned especially for circular sequences
-   */
-  static test() {
-    function testInterval(nc, start, stop, expected) {
-      const result = nc.find(start, stop).map( n => n.name ).sort().join(', ');
-      expected = expected.sort().join(', ');
-      let testOut = `${start}..${stop}: ${expected} - `;
-      testOut += (result === expected) ? 'Pass' : `${'FAIL' + ' - '}${result}`;
-      console.log(testOut);
-    }
-
-    const intervals = [
-      {name: 'A', start: 1, stop: 20},
-      {name: 'B', start: 10, stop: 15},
-      {name: 'C', start: 10, stop: 20},
-      {name: 'D', start: 15, stop: 30},
-      {name: 'E', start: 20, stop: 30},
-      {name: 'F', start: 20, stop: 50},
-      {name: 'G', start: 80, stop: 100},
-      {name: 'H', start: 90, stop: 95},
-      {name: 'I', start: 90, stop: 5},
-      {name: 'J', start: 95, stop: 15},
-      {name: 'K', start: 95, stop: 2},
-      {name: 'L', start: 92, stop: 50}
-    ];
-    const nc = new NCList(intervals, { circularLength: 100 });
-
-    testInterval(nc, 10, 20, ['A', 'B', 'C', 'D', 'E', 'F', 'J', 'L']);
-    testInterval(nc, 40, 85, ['F', 'G', 'L']);
-    testInterval(nc, 40, 95, ['F', 'G', 'H', 'I', 'J', 'K', 'L']);
-    testInterval(nc, 95, 10, ['A', 'B', 'C', 'G', 'H', 'I', 'J', 'K', 'L']);
-
-    return nc;
-  }
-
-}
-
-export default NCList;
 </code></pre>
         </article>
     </section>

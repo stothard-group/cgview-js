@@ -13,9 +13,9 @@ class SequenceExtractor {
 
   /**
    * Create a Sequence Extractor
-   *
    * @param {Viewer} sequence - The sequence to extract from.
    * @param {Object} options - Options and stuff
+   * @private
    */
   constructor(sequence, options = {}) {
     this.sequence = sequence;

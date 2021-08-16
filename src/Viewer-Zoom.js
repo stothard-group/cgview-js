@@ -12,6 +12,10 @@ import * as d3 from 'd3';
 //   }
 // };
 
+/**
+ * Add zoom/drag abilities to the Viewer map
+ * @private
+ */
 export default function initializeZooming(viewer) {
   const zoomMax = viewer.backbone.maxZoomFactor();
   viewer._zoom = d3.zoom()
