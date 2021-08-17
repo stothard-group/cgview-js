@@ -186,7 +186,7 @@ class IO {
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer._dividers = new Dividers(viewer, data.dividers);
     // Highlighter
-    viewer.highlighter = new Highlighter(viewer, data.highlighter);
+    viewer._highlighter = new Highlighter(viewer, data.highlighter);
 
     // Load Bookmarks
     if (data.bookmarks) {
@@ -199,7 +199,7 @@ class IO {
     }
 
     // Load Legend
-    viewer.legend = new Legend(viewer, data.legend);
+    viewer._legend = new Legend(viewer, data.legend);
 
     // Create features
     if (data.features) {

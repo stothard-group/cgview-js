@@ -158,7 +158,7 @@ class Viewer {
     // Initialize Ruler
     this._ruler = new Ruler(this, options.ruler);
     // Initialize Highlighter
-    this.highlighter = new Highlighter(this, options.highlighter);
+    this._highlighter = new Highlighter(this, options.highlighter);
     // Initialize Codon Tables
     this.codonTables = new CodonTables;
     // Initialize Debug
@@ -280,6 +280,13 @@ class Viewer {
    */
   get backbone() {
     return this._backbone;
+  }
+
+  /**
+   * @member {Highlighter} - Get the [Highlighter](Highlighter.html)
+   */
+  get highlighter() {
+    return this._highlighter;
   }
 
 
@@ -849,6 +856,7 @@ class Viewer {
    * Returns a CGArray of the records that have had the attributesOfInterest changed.
    * If attributes has any of the attributesOfInterest then all the records are returned.
    * Otherwise any record in updates that has an attributesOfInterest of changed is returned.
+   * @private
    */
   recordsWithChangedAttributes(attributesOfInterest, records, attributes = {}, updates) {
     records = CGArray.arrayerize(records);
@@ -1075,6 +1083,7 @@ class Viewer {
 
   /**
   * Flash a message on the center of the viewer.
+  * @private
   */
   flash(msg) {
     this.messenger.flash(msg);
@@ -1096,6 +1105,11 @@ class Viewer {
     this.layout.drawExport();
   }
 
+  /**
+   * Draw the map. By default the full version of the map is drawn. The map can be drawnn faster but this will
+   * reduce the number of features and other components are drawn.
+   * @param {Boolean} fast - If true, a fast version of the map is draw. Fast drawing is best for zooming and scrolling.
+   */
   draw(fast) {
     this.layout.draw(fast);
   }

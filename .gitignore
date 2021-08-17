@@ -3,7 +3,8 @@ template/dash
 OLD/
 node_modules/
 docs/formatting_example.*
-# dist/
+docs/dist/cgview.esm.*
+docs/dist/cgview.js
 # docs/dist
 # docs/api
 

@@ -6,7 +6,7 @@
   "homepage": "https://cgview.ca",
   "bugs": "https://github.com/sciguy/cgviewXXXXXXX/issues",
   "repository": "github:XXXXXXXX/cgview",
-  "file": [
+  "files": [
     "dist/**"
   ],
   "keywords": [
