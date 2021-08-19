@@ -50,6 +50,7 @@ class ColorPicker {
     // this.pickerIndicator.style.pointerEvents = 'none';
     // this.alphaIndicator.style.pointerEvents = 'none';
 
+    // D3Event will be passed the the listerners as first argument
     d3.select(this.slideElement).on('mousedown.click', this.slideListener());
     d3.select(this.pickerElement).on('mousedown.click', this.pickerListener());
     d3.select(this.alphaElement).on('mousedown.click', this.alphaListener());
@@ -267,17 +268,17 @@ class ColorPicker {
    * @private
   */
   enableDragging(ctx, element, listener) {
-    d3.select(element).on('mousedown', function() {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
-      const mouseStart = mousePosition(element);
-      d3.select(document).on('mousemove.colordrag', function() {
+    d3.select(element).on('mousedown', function(d3EventMouseDown) {
+      d3EventMouseDown.preventDefault();
+      d3EventMouseDown.stopPropagation();
+      const mouseStart = mousePosition(element, d3EventMouseDown);
+      d3.select(document).on('mousemove.colordrag', function(d3EventMouseMove) {
         if (document.selection) {
           document.selection.empty();
         } else {
           window.getSelection().removeAllRanges();
         }
-        listener(mouseStart);
+        listener(d3EventMouseMove, mouseStart);
       });
       d3.select(document).on('mouseup', function() {
         d3.select(document).on('mousemove.colordrag', null);
@@ -293,8 +294,8 @@ class ColorPicker {
   slideListener() {
     const cp = this;
     const slideElement = cp.slideElement;
-    return function() {
-      const mouse = mousePosition(slideElement);
+    return function(d3Event, mouseStart) {
+      const mouse = mousePosition(slideElement, d3Event);
       cp.hsv.h = mouse.y / slideElement.offsetHeight * 360;// + cp.hueOffset;
       // Hack to fix indicator bug
       if (cp.hsv.h >= 359) { cp.hsv.h = 359;}
@@ -310,10 +311,10 @@ class ColorPicker {
   pickerListener() {
     const cp = this;
     const pickerElement = cp.pickerElement;
-    return function() {
+    return function(d3Event, mouseStart) {
       const width = pickerElement.offsetWidth;
       const height = pickerElement.offsetHeight;
-      const mouse = mousePosition(pickerElement);
+      const mouse = mousePosition(pickerElement, d3Event);
       cp.hsv.s = mouse.x / width;
       cp.hsv.v = (height - mouse.y) / height;
       cp.updateColor();
@@ -328,8 +329,8 @@ class ColorPicker {
   alphaListener() {
     const cp = this;
     const alphaElement = cp.alphaElement;
-    return function() {
-      const mouse = mousePosition(alphaElement);
+    return function(d3Event, mouseStart) {
+      const mouse = mousePosition(alphaElement, d3Event);
       const opacity =  mouse.x / alphaElement.offsetWidth;
       cp.opacity = Number(opacity.toFixed(2));
       cp.updateColor();
@@ -343,12 +344,12 @@ class ColorPicker {
   dialogListener() {
     const cp = this;
     const container = cp.container;
-    return function(mouseStart) {
+    return function(d3Event, mouseStart) {
       const parentOffset = utils.getOffset(container.offsetParent);
       const offsetX = parentOffset.left;
       const offsetY = parentOffset.top;
-      container.style.left = `${d3.event.pageX - offsetX - mouseStart.x}px`;
-      container.style.top = `${d3.event.pageY - offsetY - mouseStart.y}px`;
+      container.style.left = `${d3Event.pageX - offsetX - mouseStart.x}px`;
+      container.style.top = `${d3Event.pageY - offsetY - mouseStart.y}px`;
     };
   }
 
@@ -423,11 +424,12 @@ function $el(el, attrs, children) {
  * Return mouse position relative to the element el.
  * @private
  */
-function mousePosition(element) {
+function mousePosition(element, d3Event) {
   const width = element.offsetWidth;
   const height = element.offsetHeight;
 
-  const pos = d3.mouse(element);
+  const pos = d3.pointer(d3Event, element);
+
   const mouse = {x: pos[0], y: pos[1]};
   if (mouse.x > width) {
     mouse.x = width;

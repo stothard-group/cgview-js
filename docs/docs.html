@@ -97,8 +97,10 @@
 
 ### TODO TEST DIFFERENT TYPES OF INSTALLAION...
 
-CGView.js has only one dependency: [D3](http://d3js.org) (Version 4).
-When using CGView via script tags, D3 will have to be sourced first (see below).
+### Dependencies
+
+- CGView.js has only one dependency: [D3](http://d3js.org) (Version 6 or 7).
+- When using CGView via script tags, D3 will have to be sourced first.
 
 ### Install via [npm](https://npmjs.com) or [yarn](https://yarnpkg.com)
 
@@ -110,32 +112,44 @@ npm install --save cgview
 yarn add cgview
 ```
 
+- The following files will be available in <em>node_modules/cgview/dist</em>:
+```bash
+# Required CSS file
+  - cgview.css
+# Use one of the following (ESM or IIFE):
+  - cgview.esm.js
+  - cgview.esm.min.js
+  - cgview.js
+  - cgview.min.js
+```
+
 - Source CGView.js files (JavaScript and CSS):
 <pre class="prettyprint language-html" tabindex="0"><code class=" language-html"><span class="token comment">&lt;!-- Javscript --&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dist/cgview.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cgview.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
 <span class="token comment">&lt;!-- CSS --&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dist/cgview.css<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>cgview.css<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
 </code></pre>
 
 <!-- ```html -->
 <!-- <!&#45;&#45; Javscript &#45;&#45;> -->
-<!-- <script src='dist/cgview.min.js'></script> -->
+<!-- <script src='cgview.min.js'></script> -->
 <!-- <!&#45;&#45; CSS &#45;&#45;> -->
-<!-- <link rel="stylesheet" href="dist/cgview.css" /> -->
+<!-- <link rel="stylesheet" href="cgview.css" /> -->
 <!-- ``` -->
 
 
 - Or import as an ES6 module:
 ```js
-import CGV from 'dist/cgview.es.min.js'
+import CGV from 'cgview.esm.min.js'
+import 'cgview.css';
 ```
 
 ### Install via [jsDelivr](https://www.jsdelivr.com)
 
-- Install (See jsDelivr for specfying specific versions):
+- Install (See [jsDelivr](https://www.jsdelivr.com) for specfying specific versions):
 <pre class="prettyprint language-html" tabindex="0"><code class=" language-html"><span class="token comment">&lt;!-- Javscript --&gt;</span>
 <span class="token comment">&lt;!-- Source D3 before CGView --&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://d3js.org/d3.v4.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://d3js.org/d3.v7.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/cgview/cgview.min.js<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
 <span class="token comment">&lt;!-- CSS --&gt;</span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/cgview/cgview.css<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
@@ -144,7 +158,7 @@ import CGV from 'dist/cgview.es.min.js'
 <!-- ```html -->
 <!-- <!&#45;&#45; Javscript &#45;&#45;> -->
 <!-- <!&#45;&#45; Source D3 before CGView &#45;&#45;> -->
-<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+<!-- <script src="https://d3js.org/d3.v7.min.js"></script> -->
 <!-- <script src='https://cdn.jsdelivr.net/npm/cgview/cgview.min.js'></script> -->
 <!-- <!&#45;&#45; CSS &#45;&#45;> -->
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cgview/cgview.css" /> -->

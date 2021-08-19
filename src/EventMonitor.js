@@ -44,6 +44,9 @@ class EventMonitor {
   /**
    * Adds event handlers for mouse clicks and movement
    */
+  // NOTE: - a mouse property will be updated with every mouse move
+  //       - This will be aliased to Viewer.mouse
+  //       - Eventually add to API but for now private
   constructor(viewer) {
     this._viewer = viewer;
 
@@ -92,14 +95,25 @@ class EventMonitor {
   }
 
   /**
+   * @member {Object} - Get the last mouse position on canvas
+   * @private
+   */
+  get mouse() {
+    return this._mouse;
+  }
+
+  /**
    * Initialize mouse move events under 'cgv' namespace.
    * @private
    */
   _initializeMousemove() {
     const viewer = this.viewer;
-    d3.select(this.canvas.node('ui')).on('mousemove.cgv', () => {
+    d3.select(this.canvas.node('ui')).on('mousemove.cgv', (d3Event) => {
+      const event = this._createEvent(d3Event);
+      this._mouse = event;
       viewer.clear('ui');
-      this.events.trigger('mousemove', this._createEvent(d3.event));
+      this.events.trigger('mousemove', event);
+      // this.events.trigger('mousemove', this._createEvent(d3Event));
     });
   }
 
@@ -108,9 +122,8 @@ class EventMonitor {
    * @private
    */
   _initializeClick() {
-    d3.select(this.canvas.node('ui')).on('click.cgv', () => {
-      // event = {d3: d3.event, canvasX: d3.event.x, canvasY: d3.event.y}
-      this.events.trigger('click', this._createEvent(d3.event));
+    d3.select(this.canvas.node('ui')).on('click.cgv', (d3Event) => {
+      this.events.trigger('click', this._createEvent(d3Event));
     });
   }
 
@@ -165,7 +178,7 @@ class EventMonitor {
       canvasY: canvasY,
       mapX: mapX,
       mapY: mapY,
-      d3: d3.event
+      d3: d3Event
     };
   }
 

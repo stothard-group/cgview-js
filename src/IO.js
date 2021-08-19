@@ -344,27 +344,28 @@ class IO {
 
   /**
    * Initialize Viewer Drag-n-Drop.
+   * TODO: Check if this works still
    * @private
    */
   initializeDragAndDrop() {
     const viewer = this.viewer;
     const canvas = viewer.canvas;
-    d3.select(canvas.node('ui')).on('dragleave.dragndrop', () => {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
+    d3.select(canvas.node('ui')).on('dragleave.dragndrop', (d3Event) => {
+      d3Event.preventDefault();
+      d3Event.stopPropagation();
       viewer.drawFull();
     });
 
-    d3.select(canvas.node('ui')).on('dragover.dragndrop', () => {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
+    d3.select(canvas.node('ui')).on('dragover.dragndrop', (d3Event) => {
+      d3Event.preventDefault();
+      d3Event.stopPropagation();
     });
 
-    d3.select(canvas.node('ui')).on('drop.dragndrop', () => {
-      d3.event.preventDefault();
-      d3.event.stopPropagation();
+    d3.select(canvas.node('ui')).on('drop.dragndrop', (d3Event) => {
+      d3Event.preventDefault();
+      d3Event.stopPropagation();
       viewer.drawFull();
-      const file = d3.event.dataTransfer.files[0];
+      const file = d3Event.dataTransfer.files[0];
       const reader = new FileReader();
       reader.onload = function() {
         const jsonObj = reader.result;

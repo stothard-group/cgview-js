@@ -460,6 +460,13 @@ class Viewer {
     return this._events;
   }
 
+  /**
+   * @member {Object} - Get the last mouse position on canvas
+   * @private
+   */
+  get mouse() {
+    return this.eventMonitor.mouse;
+  }
 
   ///////////////////////////////////////////////////////////////////////////
   // METHODS

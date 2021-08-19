@@ -5,7 +5,10 @@
   "description": "CGView: Circular Genome Viewer",
   "homepage": "https://cgview.ca",
   "bugs": "https://github.com/sciguy/cgviewXXXXXXX/issues",
-  "repository": "github:XXXXXXXX/cgview",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stothard-group/cgview-js.git"
+  },
   "files": [
     "dist/**"
   ],
@@ -27,7 +30,8 @@
     "testEnvironment": "jsdom",
     "setupFiles": [
       "jest-canvas-mock"
-    ]
+    ],
+    "testMatch": ["**/*.test.js"]
   },
   "browserslist": "> 1%, not dead",
   "devDependencies": {
@@ -41,6 +45,6 @@
   "author": "Jason Grant",
   "license": "Apache-2.0",
   "dependencies": {
-    "d3": "5.10"
+    "d3": "7.0.1"
   }
 }

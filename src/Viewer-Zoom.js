@@ -35,21 +35,21 @@ export default function initializeZooming(viewer) {
     viewer.highlighter.hidePopoverBox();
   }
 
-  function zooming() {
+  function zooming(d3Event) {
     const startTime = new Date().getTime();
 
     const bp = viewer.canvas.bpForMouse();
 
-    const dx = d3.event.transform.x - panX;
-    const dy = d3.event.transform.y - panY;
-    panX = d3.event.transform.x;
-    panY = d3.event.transform.y;
+    const dx = d3Event.transform.x - panX;
+    const dy = d3Event.transform.y - panY;
+    panX = d3Event.transform.x;
+    panY = d3Event.transform.y;
     // Only translate of not Zooming
-    if (viewer.zoomFactor === d3.event.transform.k) {
+    if (viewer.zoomFactor === d3Event.transform.k) {
       viewer.layout.translate(dx, dy);
     }
 
-    viewer.layout.zoom(d3.event.transform.k, bp);
+    viewer.layout.zoom(d3Event.transform.k, bp);
 
     viewer.drawFast();
     viewer.trigger('zoom');

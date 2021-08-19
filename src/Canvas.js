@@ -441,8 +441,12 @@ class Canvas {
    * @private
    */
   bpForMouse() {
-    const pos = d3.mouse(this.node('ui'));
-    return this.bpForPoint({x: pos[0], y: pos[1]});
+    // const pos = d3.mouse(this.node('ui'));
+    // return this.bpForPoint({x: pos[0], y: pos[1]});
+    const event = this.viewer.mouse
+    if (event) {
+      return this.bpForPoint({x: event.canvasX, y: event.canvasY});
+    }
   }
 
   /**
