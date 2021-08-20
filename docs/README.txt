@@ -9,3 +9,5 @@ Example Map JSON can be updated by running:
 
 $ ./scripts/create_examples.sh
 
+Note:
+  - Local copies of D3 and Bootstrap are used for easier offline development
