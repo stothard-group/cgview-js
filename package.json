@@ -1,6 +1,6 @@
 {
   "name": "cgview",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "main": "dist/cgview.esm.js",
   "description": "CGView: Circular Genome Viewer",
   "homepage": "https://js.cgview.ca",
@@ -31,7 +31,9 @@
     "setupFiles": [
       "jest-canvas-mock"
     ],
-    "testMatch": ["**/*.test.js"]
+    "testMatch": [
+      "**/*.test.js"
+    ]
   },
   "browserslist": "> 1%, not dead",
   "devDependencies": {
