@@ -3,8 +3,8 @@
   "version": "0.5.0",
   "main": "dist/cgview.esm.js",
   "description": "CGView: Circular Genome Viewer",
-  "homepage": "https://cgview.ca",
-  "bugs": "https://github.com/sciguy/cgviewXXXXXXX/issues",
+  "homepage": "https://js.cgview.ca",
+  "bugs": "https://github.com/stothard-group/cgview-js/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/stothard-group/cgview-js.git"
