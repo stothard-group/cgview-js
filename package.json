@@ -16,7 +16,8 @@
     "CGView",
     "circular",
     "genome",
-    "visualization"
+    "visualization",
+    "bioinformatics"
   ],
   "scripts": {
     "dev": "echo \"Error: no dev specified\" && exit 1",
