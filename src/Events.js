@@ -20,7 +20,7 @@
  * zoom-end          | Called once after the viewer is zoomed or moved
  * click             | Called when a click occurs in the viewer
  * mousemove         | Calleed when the mouse moves in the viewer
- * bookmark-shortcut | Called when a bookmark shortcur key is clicked
+ * bookmarks-shortcut | Called when a bookmark shortcut key is clicked
  */
 class Events {
 

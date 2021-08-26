@@ -1438,7 +1438,7 @@ class Viewer {
   trigger(event, object) {
     this.events.trigger(event, object);
     // Almost all events will results in data changing with the following exceptions
-    const eventsToIgnoreForDataChange = ['viewer-update', 'cgv-json-load', 'bookmark-shortcut', 'zoom-start', 'zoom', 'zoom-end'];
+    const eventsToIgnoreForDataChange = ['viewer-update', 'cgv-json-load', 'bookmarks-shortcut', 'zoom-start', 'zoom', 'zoom-end'];
     if (!this.loading && !eventsToIgnoreForDataChange.includes(event)) {
       // Also need to ignore track-update with loadProgress
       const attributeKeys = object && object.attributes && Object.keys(object.attributes);
