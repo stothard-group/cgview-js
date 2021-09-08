@@ -25,7 +25,7 @@ import utils from './Utils';
  *
  * Attribute                        | Type      | Description
  * ---------------------------------|-----------|------------
- * [font](#font)                    | String    | A string describing the font [Default: 'sans-serif, plain, 12']. See {@link Font} for details.
+ * [font](#font)                    | String    | A string describing the font [Default: 'monospace, plain, 12']. See {@link Font} for details.
  * [color](#color)                  | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
  * [onlyDrawFavorites](#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
  * [visible](CGObject.html#visible) | Boolean   | Labels are visible [Default: true]
@@ -51,7 +51,7 @@ class Annotation extends CGObject {
   constructor(viewer, options = {}, meta = {}) {
     super(viewer, options, meta);
     this._labels = new CGArray();
-    this.font = utils.defaultFor(options.font, 'sans-serif, plain, 12');
+    this.font = utils.defaultFor(options.font, 'monospace, plain, 12');
     this.labelLineLength = utils.defaultFor(options.labelLineLength, 20);
     this.priorityMax = utils.defaultFor(options.priorityMax, 50);
     this._labelLineMarginInner = 10;

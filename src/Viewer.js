@@ -959,6 +959,21 @@ class Viewer {
         track.refresh();
       }
     }
+    // Refresh labels if any attribute is start or stop
+    let positionChanged;
+    if (updates) {
+      const values = Object.values(updates);
+      for (let value of values) {
+        if (Object.keys(value).includes('start') || Object.keys(value).includes('stop')) {
+          positionChanged = true;
+        }
+      }
+    } else {
+      positionChanged = attributes && (Object.keys(attributes).includes('start') || Object.keys(attributes).includes('stop'));
+    }
+    if (positionChanged) {
+      this.annotation.refresh();
+    }
     this.trigger('features-update', { features, attributes, updates });
   }
 
