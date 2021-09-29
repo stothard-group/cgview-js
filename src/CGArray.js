@@ -254,6 +254,15 @@ class CGArray extends Array {
   }
 
   /**
+   * Return the CGArray as an Array
+   * @return {Array}
+   * @private
+   */
+  asArray() {
+    return Array.from(this);
+  }
+
+  /**
    * Returns the object incased as a CGArray. If it's already a CGArray, it is returned untouched.
    * Helpfull to handle method parameters that can submit a single object or a CGArray of objects.
    * @param {Object} object

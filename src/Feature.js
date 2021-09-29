@@ -6,6 +6,7 @@ import CGObject from './CGObject';
 import CGArray from './CGArray';
 import CGRange from './CGRange';
 import Label from './Label';
+import Contig from './Contig';
 import utils from './Utils';
 
 /**
@@ -70,7 +71,8 @@ class Feature extends CGObject {
     this.type = utils.defaultFor(data.type, '');
     this.source = utils.defaultFor(data.source, '');
     this.favorite = utils.defaultFor(data.favorite, false);
-    this.contig = data.contig || viewer.sequence.mapContig;
+    // this.contig = data.contig || viewer.sequence.mapContig;
+    this.contig = data.contig;
     // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
     this.updateRanges(data.start, data.stop);
     this.strand = utils.defaultFor(data.strand, 1);
@@ -364,14 +366,18 @@ class Feature extends CGObject {
   set contig(value) {
     const oldContig = this._contig;
     let newContig;
-    if (value === undefined) {
+    if (value === undefined || value === this.sequence.mapContig) {
       // this._contig = undefined;
-      newContig = undefined;
+      newContig = this.sequence.mapContig;
+      // If feature was on a contig update the positions
+      if (oldContig) {
+      }
     } else if (value && value.toString() === 'Contig') {
       // this._contig  = value;
       newContig = value;
     } else {
       const contig = this.viewer.sequence.contigs(value);
+      // const contig = this.viewer.sequence.contigs().filter( c => c.id && c.id.toLowerCase() === value.toLowerCase() )[0];
       if (contig) {
         // this._contig  = contig;
         newContig = contig;
@@ -394,7 +400,38 @@ class Feature extends CGObject {
     if (oldContig) {
       // FIXME: adjust start/stop if the new contig is shorter than old contig
       // and the position needs to be constrained. Try to keep the same length.
-      this.updateRanges(this.start, this.stop);
+      if (newContig.isMapContig) {
+        this.updateRanges(this.mapStart, this.mapStop);
+      } else {
+        this.updateRanges(this.start, this.stop);
+      }
+    }
+  }
+
+  /**
+   * Moves the feature, if it's on the mapContig, to the appropriate contig
+   * based on the start position. This may truncate the feature if it does not 
+   * fit completely
+   * @private
+   */
+  moveToContig() {
+    if (this.contig.isMapContig) {
+      const contig = this.sequence.contigForBp(this.start);
+      const start = this.start - contig.lengthOffset;
+      const stop = this.stop - contig.lengthOffset;
+      this.update({contig, start, stop});
+    }
+  }
+
+  /**
+   * Moves the feature, if it's on the mapContig, to the appropriate contig
+   * based on the start position. This may truncate the feature if it does not 
+   * fit completely
+   * @private
+   */
+  moveToMapContig() {
+    if (!this.contig.isMapContig) {
+      this.contig = undefined;
     }
   }
 
@@ -641,7 +678,8 @@ class Feature extends CGObject {
     if (this.geneticCode && this.geneticCode != this.viewer.geneticCode) {
       json.geneticCode = this.geneticCode;
     }
-    if (this.sequence.hasMultipleContigs) {
+    if (this.sequence.hasMultipleContigs && !this.contig.isMapContig) {
+      // json.contig = this.contig.id;
       json.contig = this.contig.name;
     }
     // Optionally add default values

@@ -53,8 +53,9 @@ class Contig extends CGObject {
     this._sequence = sequence;
     this._viewer = sequence.viewer;
 
-    this.id = utils.defaultFor(options.id, this.cgvID);
-    this.name = utils.defaultFor(options.name, this.id);
+    // this.id = utils.defaultFor(options.id, this.cgvID);
+    // this.name = utils.defaultFor(options.name, this.id);
+    this.name = utils.defaultFor(options.name, '');
     this.orientation = utils.defaultFor(options.orientation, '+');
     this.seq = options.seq;
     this.color = options.color;
@@ -65,7 +66,7 @@ class Contig extends CGObject {
       this.length = options.length;
     }
     if (!this.length) {
-      console.error(`Contig ${this.name} [${this.id}] has no sequence or length set!`)
+      console.error(`Contig '${this.name}'  has no sequence or length set!`)
     }
 
   }
@@ -115,17 +116,17 @@ class Contig extends CGObject {
     return this._sequence;
   }
 
-  /**
-   * @member {String} - Get or set the contig ID. Must be unique for all contigs
-   */
-  get id() {
-    return this._id;
-  }
-
-  set id(value) {
-    // TODO: Check if id is unique
-    this._id = value;
-  }
+  // /**
+  //  * @member {String} - Get or set the contig ID. Must be unique for all contigs
+  //  */
+  // get id() {
+  //   return this._id;
+  // }
+  //
+  // set id(value) {
+  //   // TODO: Check if id is unique
+  //   this._id = value;
+  // }
 
   /**
    * @member {String} - Get or set the contig name
@@ -135,7 +136,20 @@ class Contig extends CGObject {
   }
 
   set name(value) {
-    this._name = value;
+    // this._name = value;
+    const valueString = `${value}`;
+    const allNames = this.sequence._contigs.map( i => i.name);
+    this._name = utils.uniqueName(valueString, allNames)
+    if (this._name !== valueString) {
+      console.log(`Contig with name '${valueString}' already exists, using name '${this._name}' instead.`)
+    }
+  }
+
+  /**
+   * @member {Number} - Returns true if this contig is the mapContig
+   */
+  get isMapContig() {
+    return (this.sequence.mapContig === this);
   }
 
   /**
@@ -280,9 +294,9 @@ class Contig extends CGObject {
   }
 
   /**
-   * Returns true if this contig has a sequence
+   * @member {Boolean} - Return true of this contig has a sequence
    */
-  hasSeq() {
+  get hasSeq() {
     return typeof this.seq === 'string';
   }
 
@@ -358,7 +372,7 @@ class Contig extends CGObject {
    * Returns sequence of this contig in fasta format
    */
   asFasta() {
-    return `>${this.id}\n${this.seq}`;
+    return `>${this.name}\n${this.seq}`;
   }
 
   /**
@@ -393,7 +407,7 @@ class Contig extends CGObject {
    */
   toJSON(options = {}) {
     const json = {
-      id: this.id,
+      // id: this.id,
       name: this.name,
       orientation: this.orientation,
       length: this.length,

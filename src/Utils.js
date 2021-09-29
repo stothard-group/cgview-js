@@ -455,10 +455,24 @@ utils.scaleValue = function(value, from = {min: 0, max: 1}, to = {min: 0, max: 1
 };
 
 
-
-
-
-
+/**
+ * Returns a string id using the _name_ and _start_ while
+ * making sure the id is not in _currentIds_.
+ * ```javascript
+ * JSV.uniqueName('CDS', ['RNA', 'CDS']);
+ * //=> 'CDS-2'
+ * ```
+ * @param {String} name - Name to check
+ * @param {Array} allNames - Array of all names to compare against
+ * @return {String}
+ */
+utils.uniqueName = function(name, allNames) {
+  if (allNames.includes(name)) {
+    return utils.uniqueId(`${name}-`, 2, allNames);
+  } else {
+    return name;
+  }
+};
 
 /**
  * Returns a string id using the _idBase_ and _start_ while

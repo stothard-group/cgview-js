@@ -466,7 +466,7 @@ class Legend extends CGObject {
    * @return {LegendItem} Returns undefined if not found
    */
   findLegendItemByName(name) {
-    if (!name) { return; }
+    if (typeof name !== 'string') { return; }
     // console.log(name)
     return this._items.find( i => name.toLowerCase() === i.name.toLowerCase() );
   }

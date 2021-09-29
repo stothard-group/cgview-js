@@ -70,6 +70,12 @@ describe('CGArray', () => {
   });
 
 
+  test('can be return as an Array', () => {
+    const cga = new CGArray(1, 2, 3);
+    expect(cga.constructor.name).toBe('CGArray')
+    expect(cga.asArray().constructor.name).toBe('Array')
+  });
+
 });
 
 

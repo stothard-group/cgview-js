@@ -53,7 +53,7 @@ class LegendItem extends CGObject {
     super(legend.viewer, options, meta);
     this.legend = legend;
 
-    this._name = utils.defaultFor(options.name, '');
+    this.name = utils.defaultFor(options.name, '');
     this.font = options.font;
     this.fontColor = options.fontColor;
     this._drawSwatch = utils.defaultFor(options.drawSwatch, true);
@@ -101,7 +101,12 @@ class LegendItem extends CGObject {
   }
 
   set name(value) {
-    this._name = value;
+    const valueString = `${value}`;
+    const allNames = this.legend._items.map( i => i.name);
+    this._name = utils.uniqueName(valueString, allNames)
+    if (this._name !== valueString) {
+      console.log(`LegendItem with name '${valueString}' already exists, using name '${this._name}' instead.`)
+    }
     this.refresh();
   }
 

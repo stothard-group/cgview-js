@@ -408,6 +408,9 @@ class Sequence extends CGObject {
     return typeof this.seq === 'string';
   }
 
+  /**
+   * @member {Boolean} - Return true if the sequence consists of multple contigs.
+   */
   get hasMultipleContigs() {
     return this._contigs.length > 1;
   }
