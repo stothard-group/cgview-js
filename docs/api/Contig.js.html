@@ -781,9 +781,11 @@
             
                 <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
-                <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#index"><a href="Contig.html#index">index</a></li>
+            
+                <li data-name="Contig#isMapContig"><a href="Contig.html#isMapContig">isMapContig</a></li>
             
                 <li data-name="Contig#layout"><a href="Contig.html#layout">layout</a></li>
             
@@ -824,8 +826,6 @@
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
-            
-                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
             
@@ -1686,6 +1686,8 @@
             
                 <li data-name="Sequence#font"><a href="Sequence.html#font">font</a></li>
             
+                <li data-name="Sequence#hasMultipleContigs"><a href="Sequence.html#hasMultipleContigs">hasMultipleContigs</a></li>
+            
                 <li data-name="Sequence#hasSeq"><a href="Sequence.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Sequence#layout"><a href="Sequence.html#layout">layout</a></li>
@@ -2122,7 +2124,6 @@ import utils from './Utils';
  * Attribute                        | Type      | Description
  * ---------------------------------|-----------|------------
  * [name](#name)                    | String    | Contig name.
- * [id](#id)                        | String    | Contig ID.
  * [seq](#seq)&lt;sup>iu&lt;/sup>         | String    | The contig sequence.
  * [length](#length)&lt;sup>iu&lt;/sup>   | Number    | The length of the sequence. This is ignored if a seq is provided.
  * [orientation](#orientation)      | String    | '+' for forward orientation and '-' for the reverse.
@@ -2147,8 +2148,9 @@ class Contig extends CGObject {
     this._sequence = sequence;
     this._viewer = sequence.viewer;
 
-    this.id = utils.defaultFor(options.id, this.cgvID);
-    this.name = utils.defaultFor(options.name, this.id);
+    // this.id = utils.defaultFor(options.id, this.cgvID);
+    // this.name = utils.defaultFor(options.name, this.id);
+    this.name = utils.defaultFor(options.name, '');
     this.orientation = utils.defaultFor(options.orientation, '+');
     this.seq = options.seq;
     this.color = options.color;
@@ -2159,7 +2161,7 @@ class Contig extends CGObject {
       this.length = options.length;
     }
     if (!this.length) {
-      console.error(`Contig ${this.name} [${this.id}] has no sequence or length set!`)
+      console.error(`Contig '${this.name}'  has no sequence or length set!`)
     }
 
   }
@@ -2209,27 +2211,42 @@ class Contig extends CGObject {
     return this._sequence;
   }
 
-  /**
-   * @member {String} - Get or set the contig ID. Must be unique for all contigs
-   */
-  get id() {
-    return this._id;
-  }
+  // /**
+  //  * @member {String} - Get or set the contig ID. Must be unique for all contigs
+  //  */
+  // get id() {
+  //   return this._id;
+  // }
+  //
+  // set id(value) {
+  //   // TODO: Check if id is unique
+  //   this._id = value;
+  // }
 
-  set id(value) {
-    // TODO: Check if id is unique
-    this._id = value;
-  }
-
   /**
-   * @member {String} - Get or set the contig name
+   * @member {String} - Get or set the contig name.
+   * When setting a name, if it's not unique it will be appended with a number.
+   * For example, if 'my_name' already exists, it will be changed to 'my_name-2'.
    */
   get name() {
     return this._name;
   }
 
   set name(value) {
-    this._name = value;
+    // this._name = value;
+    const valueString = `${value}`;
+    const allNames = this.sequence._contigs.map( i => i.name);
+    this._name = utils.uniqueName(valueString, allNames)
+    if (this._name !== valueString) {
+      console.log(`Contig with name '${valueString}' already exists, using name '${this._name}' instead.`)
+    }
+  }
+
+  /**
+   * @member {Number} - Returns true if this contig is the mapContig
+   */
+  get isMapContig() {
+    return (this.sequence.mapContig === this);
   }
 
   /**
@@ -2374,9 +2391,9 @@ class Contig extends CGObject {
   }
 
   /**
-   * Returns true if this contig has a sequence
+   * @member {Boolean} - Return true of this contig has a sequence
    */
-  hasSeq() {
+  get hasSeq() {
     return typeof this.seq === 'string';
   }
 
@@ -2452,7 +2469,7 @@ class Contig extends CGObject {
    * Returns sequence of this contig in fasta format
    */
   asFasta() {
-    return `>${this.id}\n${this.seq}`;
+    return `>${this.name}\n${this.seq}`;
   }
 
   /**
@@ -2487,7 +2504,7 @@ class Contig extends CGObject {
    */
   toJSON(options = {}) {
     const json = {
-      id: this.id,
+      // id: this.id,
       name: this.name,
       orientation: this.orientation,
       length: this.length,
@@ -2522,7 +2539,7 @@ export default Contig;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Aug 20 2021 10:02:59 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:19 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

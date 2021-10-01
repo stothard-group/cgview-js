@@ -781,9 +781,11 @@
             
                 <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
-                <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#index"><a href="Contig.html#index">index</a></li>
+            
+                <li data-name="Contig#isMapContig"><a href="Contig.html#isMapContig">isMapContig</a></li>
             
                 <li data-name="Contig#layout"><a href="Contig.html#layout">layout</a></li>
             
@@ -824,8 +826,6 @@
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
-            
-                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
             
@@ -1686,6 +1686,8 @@
             
                 <li data-name="Sequence#font"><a href="Sequence.html#font">font</a></li>
             
+                <li data-name="Sequence#hasMultipleContigs"><a href="Sequence.html#hasMultipleContigs">hasMultipleContigs</a></li>
+            
                 <li data-name="Sequence#hasSeq"><a href="Sequence.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Sequence#layout"><a href="Sequence.html#layout">layout</a></li>
@@ -2158,11 +2160,6 @@
 <td>Contig name.</td>
 </tr>
 <tr>
-<td><a href="#id">id</a></td>
-<td>String</td>
-<td>Contig ID.</td>
-</tr>
-<tr>
 <td><a href="#seq">seq</a><sup>iu</sup></td>
 <td>String</td>
 <td>The contig sequence.</td>
@@ -2213,7 +2210,7 @@
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line51">line 51</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line50">line 50</a>
         </div>
         
     </div>
@@ -2497,7 +2494,7 @@
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="id">id<span class="type-signature type string">String</span> </h4>
+        <h4 class="name" id="hasSeq">hasSeq<span class="type-signature type boolean">Boolean</span> </h4>
     </div>
     
     
@@ -2505,7 +2502,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the contig ID. Must be unique for all contigs</p>
+        <p>Return true of this contig has a sequence</p>
     </div>
     
     
@@ -2551,6 +2548,51 @@
     
     <div class="description">
         <p>Get the contig index (base-1) in relation to all the other contigs.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isMapContig">isMapContig<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Returns true if this contig is the mapContig</p>
     </div>
     
     
@@ -2914,7 +2956,9 @@ The stop is the total length of the contigs before this one plus this contigs le
 <dd>
     
     <div class="description">
-        <p>Get or set the contig name</p>
+        <p>Get or set the contig name.
+When setting a name, if it's not unique it will be appended with a number.
+For example, if 'my_name' already exists, it will be changed to 'my_name-2'.</p>
     </div>
     
     
@@ -3191,7 +3235,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line360">line 360</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line375">line 375</a>
         </div>
         
     </div>
@@ -3335,7 +3379,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line294">line 294</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line309">line 309</a>
         </div>
         
     </div>
@@ -3479,77 +3523,6 @@ adjust all the features on this contig.</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="hasSeq">
-            
-            hasSeq<span class="signature">()</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line285">line 285</a>
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns true if this contig has a sequence</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="move">
             
             move<span class="signature">(newIndex)</span>
@@ -3557,7 +3530,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line309">line 309</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line324">line 324</a>
         </div>
         
     </div>
@@ -3673,7 +3646,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line319">line 319</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line334">line 334</a>
         </div>
         
     </div>
@@ -3812,7 +3785,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line301">line 301</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line316">line 316</a>
         </div>
         
     </div>
@@ -3883,7 +3856,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line269">line 269</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line284">line 284</a>
         </div>
         
     </div>
@@ -3954,7 +3927,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line394">line 394</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line409">line 409</a>
         </div>
         
     </div>
@@ -4127,7 +4100,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line278">line 278</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line293">line 293</a>
         </div>
         
     </div>
@@ -4250,7 +4223,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Aug 20 2021 10:02:59 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:20 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

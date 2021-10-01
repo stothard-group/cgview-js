@@ -781,9 +781,11 @@
             
                 <li data-name="Contig#color"><a href="Contig.html#color">color</a></li>
             
-                <li data-name="Contig#id"><a href="Contig.html#id">id</a></li>
+                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#index"><a href="Contig.html#index">index</a></li>
+            
+                <li data-name="Contig#isMapContig"><a href="Contig.html#isMapContig">isMapContig</a></li>
             
                 <li data-name="Contig#layout"><a href="Contig.html#layout">layout</a></li>
             
@@ -824,8 +826,6 @@
                 <li data-name="Contig#deleteFromObjects"><a href="Contig.html#deleteFromObjects">deleteFromObjects</a></li>
             
                 <li data-name="Contig#features"><a href="Contig.html#features">features</a></li>
-            
-                <li data-name="Contig#hasSeq"><a href="Contig.html#hasSeq">hasSeq</a></li>
             
                 <li data-name="Contig#move"><a href="Contig.html#move">move</a></li>
             
@@ -1685,6 +1685,8 @@
                 <li data-name="Sequence#color"><a href="Sequence.html#color">color</a></li>
             
                 <li data-name="Sequence#font"><a href="Sequence.html#font">font</a></li>
+            
+                <li data-name="Sequence#hasMultipleContigs"><a href="Sequence.html#hasMultipleContigs">hasMultipleContigs</a></li>
             
                 <li data-name="Sequence#hasSeq"><a href="Sequence.html#hasSeq">hasSeq</a></li>
             
@@ -2547,6 +2549,51 @@ positions relative to the entire map.</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="hasMultipleContigs">hasMultipleContigs<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Return true if the sequence consists of multple contigs.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="hasSeq">hasSeq<span class="type-signature type boolean">Boolean</span> </h4>
     </div>
     
@@ -3214,7 +3261,7 @@ The Sequence.seq (or length) is the same as Sequence.mapContig.seq (or length).<
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line431">line 431</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line434">line 434</a>
         </div>
         
     </div>
@@ -3363,7 +3410,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line705">line 705</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line708">line 708</a>
         </div>
         
     </div>
@@ -3502,7 +3549,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line648">line 648</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line651">line 651</a>
         </div>
         
     </div>
@@ -3730,7 +3777,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line774">line 774</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line777">line 777</a>
         </div>
         
     </div>
@@ -3898,7 +3945,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line509">line 509</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line512">line 512</a>
         </div>
         
     </div>
@@ -4037,7 +4084,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line458">line 458</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line461">line 461</a>
         </div>
         
     </div>
@@ -4163,7 +4210,7 @@ Notes:</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line929">line 929</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line932">line 932</a>
         </div>
         
     </div>
@@ -4336,7 +4383,7 @@ Notes:</p>
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line918">line 918</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line921">line 921</a>
         </div>
         
     </div>
@@ -4453,7 +4500,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line485">line 485</a>
+            <a href="Sequence.js.html">Sequence.js</a>, <a href="Sequence.js.html#line488">line 488</a>
         </div>
         
     </div>
@@ -4605,7 +4652,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Aug 20 2021 10:02:59 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:20 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

@@ -28,7 +28,6 @@ import utils from './Utils';
  * Attribute                        | Type      | Description
  * ---------------------------------|-----------|------------
  * [name](#name)                    | String    | Contig name.
- * [id](#id)                        | String    | Contig ID.
  * [seq](#seq)<sup>iu</sup>         | String    | The contig sequence.
  * [length](#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided.
  * [orientation](#orientation)      | String    | '+' for forward orientation and '-' for the reverse.
@@ -129,7 +128,9 @@ class Contig extends CGObject {
   // }
 
   /**
-   * @member {String} - Get or set the contig name
+   * @member {String} - Get or set the contig name.
+   * When setting a name, if it's not unique it will be appended with a number.
+   * For example, if 'my_name' already exists, it will be changed to 'my_name-2'.
    */
   get name() {
     return this._name;

@@ -95,6 +95,8 @@ class LegendItem extends CGObject {
 
   /**
    * @member {String} - Get or set the name. The name is the text shown for the legendItem.
+   * When setting a name, if it's not unique it will be appended with a number.
+   * For example, if 'my_name' already exists, it will be changed to 'my_name-2'.
    */
   get name() {
     return this._name;
