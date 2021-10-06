@@ -45,7 +45,6 @@ import utils from './Utils';
  * Attribute                        | Type      | Description
  * ---------------------------------|-----------|------------
  * [name](#name)                    | String    | Sequence name. [TODO]
- * [id](S#id)                       | String    | Sequence ID. [TODO]
  * [seq](#seq)<sup>iu</sup>         | String    | The map sequence.
  * [length](#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided. [Default: 1000]
  * [contigs](#contigs)<sup>iu</sup> | Array     | Array of contigs. Contigs are ignored if a seq is provided.
@@ -409,7 +408,7 @@ class Sequence extends CGObject {
   }
 
   /**
-   * @member {Boolean} - Return true if the sequence consists of multple contigs.
+   * @member {Boolean} - Return true if the sequence 
    */
   get hasMultipleContigs() {
     return this._contigs.length > 1;
@@ -545,7 +544,6 @@ class Sequence extends CGObject {
   createMapContig(data) {
     if (data.seq) {
       // this._mapContig = new Contig(this, data);
-      // FIXME: name and id stuff
       this.addContigs([{seq: data.seq}]);
     } else if (data.contigs) {
       this.addContigs(data.contigs);
@@ -581,13 +579,13 @@ class Sequence extends CGObject {
             seq += contig.seq;
             length += contig.seq.length;
           } else {
-            console.error(`Expecting Sequence but Contig ${contig.name} [${contig.id}] has no sequence !`)
+            console.error(`Expecting Sequence but Contig '${contig.name}' has no sequence !`)
           }
         } else {
           if (contig.length) {
             length += contig.length;
           } else {
-            console.error(`Expecting Length but Contig ${contig.name} [${contig.id}] has no length!`)
+            console.error(`Expecting Length but Contig '${contig.name}' has no length!`)
           }
         }
       }
@@ -677,7 +675,6 @@ class Sequence extends CGObject {
    * @private
    */
   bpForContig(contig, bp = 1) {
-    // FIXME: contig can be contig or contig ID
     return contig.mapStart + bp - 1;
   }
 
@@ -708,7 +705,7 @@ class Sequence extends CGObject {
   asFasta(id, options = {}) {
     const concatenate = options.concatenateContigs;
     if (concatenate || !this.hasMultipleContigs) {
-      const name = id || this.contigs(1).id;
+      const name = id || this.contigs(1).name;
       return `>${name}\n${this.seq}`;
     } else {
       let fasta = '';
