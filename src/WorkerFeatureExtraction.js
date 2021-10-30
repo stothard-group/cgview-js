@@ -1,5 +1,7 @@
 /**
  * Worker to extract features from the sequence (e.g. orfs, start-stop codons)
+ * The progress is calculated for the entire sequence and we keep track of the
+ * progressState as we find features for each contig.
  */
 export default function WorkerFeatureExtraction() {
   onmessage = function(e) {
@@ -20,9 +22,11 @@ export default function WorkerFeatureExtraction() {
     // featureDataArray.sort( (a, b) => {
     //   return a.start - b.start;
     // });
+
     // Return results
     postMessage({ messageType: 'complete', featureDataArray: featureDataArray });
-    console.log(`Done ${e.data.type}`);
+    close();
+    // console.log(`Done ${e.data.type}`);
   };
   onerror = function(e) {
     console.error(`Oops. Problem with ${e.data.type}`);
@@ -46,13 +50,13 @@ export default function WorkerFeatureExtraction() {
       seq = seqData[i].seq;
 
       // Percentage of sequence processed in this iteration.
-      progressForStep = Math.round(seq.length / seqTotalLength * 100);
-      progressStart = Math.round(seqLengthCompleted / seqTotalLength * 100);
+      progressForStep = seq.length / seqTotalLength * 100;
+      progressStart = seqLengthCompleted / seqTotalLength * 100;
       progressStop = progressStart + progressForStep;
       // console.log(progressForStep)
 
       if (seqType === 'contigs') {
-        options.contigID = seqData[i].id;
+        options.contigID = seqData[i].name;
       }
       if (type === 'start-stop-codons') {
         progressState = { start: progressStart, stop: progressStart + (progressForStep / 2)};
@@ -125,10 +129,10 @@ export default function WorkerFeatureExtraction() {
     const progressIncrement = progressState.increment || 1;
     const progressRange = progressStop - progressStart;
     if ( (currentProgress > savedProgress) && (currentProgress % progressIncrement === 0) ) {
+      const oldMessageProgress = progressStart + (progressRange * savedProgress / 100);
       savedProgress = currentProgress;
       const messageProgress = progressStart + (progressRange * currentProgress / 100);
-      if (messageProgress % progressIncrement === 0) {
-        // console.log(messageProgress)
+      if (messageProgress > oldMessageProgress && messageProgress % progressIncrement === 0) {
         postMessage({ messageType: 'progress', progress: messageProgress });
       }
     }
