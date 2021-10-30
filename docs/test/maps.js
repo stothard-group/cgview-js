@@ -27,4 +27,12 @@ maps = {
     name: 'Builder',
     url: 'maps/builder.json',
   },
+  test: {
+    name: 'Test',
+    url: 'maps/test.json',
+  },
+  testBig: {
+    name: 'Test Big',
+    url: 'maps/test-big.json',
+  },
 }
