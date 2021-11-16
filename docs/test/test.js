@@ -2,7 +2,8 @@
 // Settings
 ///////////////////////////////////////////////////////////////////////////////
 
-const defaultMap = 'small';
+// const defaultMap = 'small';
+const defaultMap = 'version_0_1';
 const defaultSize = 600; // 6oo is the size to run perfance test at
 // 'maps' is from maps.js
 // console.log('Maps (from map.js):')

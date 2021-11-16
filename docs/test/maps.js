@@ -35,4 +35,8 @@ maps = {
     name: 'Test Big',
     url: 'maps/test-big.json',
   },
+  version_0_1: {
+    name: 'Mitochondia [69,034 bp]; Version 0.1',
+    url: 'maps/mito-0.1.json',
+  },
 }

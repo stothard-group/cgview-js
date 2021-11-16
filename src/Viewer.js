@@ -1,8 +1,8 @@
 /**
  * @author Jason Grant <jason.grant@ualberta.ca>
- * @version 0.2
  * @requires D3
  */
+import { version } from '../package.json';
 import utils from './Utils';
 import CGArray from './CGArray';
 import Canvas from './Canvas';
@@ -31,6 +31,8 @@ import Bookmark from './Bookmark';
 import CGRange from './CGRange';
 import initializeZooming from './Viewer-Zoom';
 import * as d3 from 'd3';
+
+console.log(`CGView.js Version: ${version}`)
 
 /**
  * The Viewer is the main container class for CGView. It controls the
@@ -87,6 +89,7 @@ import * as d3 from 'd3';
  * See the [tutorials](../tutorials/index.html) to learn more about making maps.
  */
 class Viewer {
+
 
   /**
    * Create a viewer
@@ -201,6 +204,13 @@ class Viewer {
   //////////////////////////////////////////////////////////////////////////
   // MEMBERS
   //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @member {String} - Get CGView version
+   */
+  get version() {
+    return version;
+  }
 
   /**
    * @member {String} - Get map id
@@ -1128,7 +1138,7 @@ class Viewer {
   }
 
   /**
-   * Draw the map. By default the full version of the map is drawn. The map can be drawnn faster but this will
+   * Draw the map. By default the full version of the map is drawn. The map can be drawn faster but this will
    * reduce the number of features and other components are drawn.
    * @param {Boolean} fast - If true, a fast version of the map is draw. Fast drawing is best for zooming and scrolling.
    */

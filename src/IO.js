@@ -4,7 +4,7 @@
 
 // FIXME: Check at the end: A low performance polyfill based on toDataURL.
 
-import { version } from '../package.json';
+import { version as currentVersion } from '../package.json';
 import CGArray from './CGArray';
 import Sequence from './Sequence';
 import Settings from './Settings';
@@ -73,7 +73,7 @@ class IO {
 
     const json = {
       cgview: {
-        version,
+        version: currentVersion,
         created: jsonInfo.created || this.formatDate(new Date()),
         updated: this.formatDate(new Date()),
         id: v.id,
@@ -127,11 +127,26 @@ class IO {
    * @param {Object} data - JSON string or Object Literal
    */
   loadJSON(json) {
+    try {
+      this._loadJSON(json);
+    } catch (error) {
+      const msg = `Loading Error: ${error}`
+      console.log(msg);
+      const canvas = this.viewer.canvas;
+      canvas.clear('debug');
+      const ctx = canvas.context('debug');
+      ctx.fillText(msg, 5, 15);
+    }
+  }
+
+  _loadJSON(json) {
 
     let data = json;
     if (typeof json === 'string') {
       data = JSON.parse(json);
     }
+
+    data = this.updateJSON(data);
 
     data = data && data.cgview;
 
@@ -155,8 +170,7 @@ class IO {
       geneticCode: data.geneticCode,
     });
 
-    // data Info
-    viewer._dataInfo = {
+    viewer._jsonInfo = {
       version: data.version,
       created: data.created
     };
@@ -225,6 +239,114 @@ class IO {
     // viewer._layout = new Layout(viewer, data.layout);
     viewer.format = utils.defaultFor(data.format, 'circular');
     viewer.zoomTo(0, 1, {duration: 0});
+  }
+
+  /**
+   * Update old CGView JSON formats to the current version.
+   * The map data must be contained within a top level "cgview" property.
+   * @param {Object} data - Object Literal
+   */
+  updateJSON(data) {
+    data = data && data.cgview;
+
+    if (!data) {
+      throw new Error("No 'cgview' property found in JSON.");
+    }
+
+    const version = data.version;
+    console.log(`Loading map JSON version: '${version}'`);
+
+    // NOTE: we may use major/minor values for cascading updates in the future
+    // let major, minor;
+    // const result = version.match(/^(\d+)\.(\d+)/)
+    // if (result) {
+    //   major = result[1];
+    //   minor = result[2];
+    // } else {
+    //   throw new Error(`Can not read cgview version '${version}'`);
+    // }
+    // console.log('major', major)
+    // console.log('minor', minor)
+
+    switch (true) {
+      case (version === '0.1'):
+        data = this._updateVersion_0_1(data)
+        break;
+      case (version === '1.0.0'):
+        data = this._updateVersion_1_0(data);
+        break;
+      case (version === currentVersion):
+        console.log('No need to convert.')
+        break;
+      default:
+        throw new Error(`Unknown cgview version '${version}'`);
+    }
+    return {cgview: data};
+  }
+
+  _updateVersion_0_1(data) {
+    const positionMap = {
+      'lower-left': 'bottom-left',
+      'lower-center': 'bottom-center',
+      'lower-right': 'bottom-right',
+      'upper-left': 'top-left',
+      'upper-center': 'top-center',
+      'upper-right': 'top-right',
+    }
+    // Captions
+    const captions = data.captions;
+    if (captions) {
+      for (const caption of captions) {
+        caption.position = positionMap[caption.position] || caption.position;
+        caption.font = caption.items[0].font || caption.font;
+        caption.fontColor = caption.items[0].fontColor || caption.fontColor;
+        caption.name = caption.items.map(i => i.name).join('\n');
+      }
+    }
+    // Legend
+    const legend = data.legend;
+    legend.position = positionMap[legend.position] || legend.position;
+    legend.defaultFont = legend.font;
+    // Tracks
+    const tracks = data.layout.tracks || [];
+    for (const track of tracks) {
+      if (track.readingFrame === 'separated') {
+        track.separateFeaturesBy = 'readingFrame';
+      } else if (track.strand === 'separated') {
+        track.separateFeaturesBy = 'strand';
+      } else {
+        track.separateFeaturesBy = 'none';
+      }
+      track.dataType = track.contents.type;
+      track.dataMethod = track.contents.from;
+      track.dataKeys = track.contents.extract;
+    }
+    data.tracks = tracks;
+    // From Settings
+    data.annotaion = data.settings.annotaion;
+    data.backbone = data.settings.backbone;
+    data.dividers = data.settings.dividers;
+    data.ruler = data.settings.ruler;
+    data.settings = data.settings.general;
+    // Plots aren't saved properly on CGView Server so we can ignore
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
+  }
+
+  _updateVersion_1_0(data) {
+    // Contigs are the only chagne for this version
+    const contigs = data.sequence && data.sequence.contigs;
+    if (contigs) {
+      for (const contig of contigs) {
+        contig.name = contig.id;
+      }
+    }
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
   }
 
   /**
