@@ -410,23 +410,21 @@ class Legend extends CGObject {
    */
   setColorPickerPosition(cp) {
     const margin = 5;
-    let pos;
-    let viewerRect = {top: 0, left: 0};
-    // FIXME: this needs to be improved (also in Highlighter)
-    // if (this.viewer._container.style('position') !== 'fixed') {
-    //   viewerRect = this.viewer._container.node().getBoundingClientRect();
-    // }
+    const originX = this.box.x;
+    const originY = this.box.y;
 
-    viewerRect = this.viewer._container.node().getBoundingClientRect();
+    // Default: left of legend and aligned with top
+    let pos = {x: originX - cp.width - margin, y: originY + margin};
 
-    const originX = this.box.x + viewerRect.left + window.pageXOffset;
-    const originY = this.box.y + viewerRect.top + window.pageYOffset;
-    const legendWidth = this.width;
-    if (/-left$/.exec(this.position)) {
-      pos = {x: originX + legendWidth + margin, y: originY};
-    } else {
-      pos = {x: originX - cp.width - margin, y: originY};
+    const legendWidth = this.box.width;
+    const legendHeight = this.box.height;
+    if (originX < cp.width) {
+      pos.x = originX + legendWidth + margin;
     }
+    if ( (this.viewer.height - originY) < cp.height) {
+      pos.y = this.box.bottom - cp.height - margin;
+    }
+
     cp.setPosition(pos);
   }
 

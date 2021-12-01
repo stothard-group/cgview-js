@@ -416,7 +416,7 @@ class Viewer {
     if (this._colorPicker === undefined) {
       // Create Color Picker
       const colorPickerId = `${this.containerId}-color-picker`;
-      this._container.append('div')
+      this._wrapper.append('div')
         // .classed('cp-color-picker-dialog', true)
         .attr('id', `${this.containerId}-color-picker`);
       this._colorPicker = new ColorPicker(colorPickerId);
