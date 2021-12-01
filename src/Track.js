@@ -30,8 +30,8 @@ import utils from './Utils';
  * ----------------------------------|-----------|------------
  * [name](#name)                     | String    | Name of track [Default: "Unknown"]
  * [dataType](#dataType)             | String    | Type of data shown by the track: plot, feature [Default: feature]
- * [dataMethod](#dataMethod)         | String\|Array | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
- * [dataKeys](#dataKeys)             | String    | Values used by dataMethod to extract features or a plot.
+ * [dataMethod](#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
+ * [dataKeys](#dataKeys)             | String\|Array | Values used by dataMethod to extract features or a plot.
  * [position](#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
  * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
  * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]

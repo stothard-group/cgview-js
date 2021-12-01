@@ -256,15 +256,14 @@ class IO {
     const version = data.version;
     console.log(`Loading map JSON version: '${version}'`);
 
-    // NOTE: we may use major/minor values for cascading updates in the future
-    // let major, minor;
-    // const result = version.match(/^(\d+)\.(\d+)/)
-    // if (result) {
-    //   major = result[1];
-    //   minor = result[2];
-    // } else {
-    //   throw new Error(`Can not read cgview version '${version}'`);
-    // }
+    let major, minor;
+    const result = version.match(/^(\d+)\.(\d+)/)
+    if (result) {
+      major = Number(result[1]);
+      minor = Number(result[2]);
+    } else {
+      throw new Error(`Can not read cgview version '${version}'`);
+    }
     // console.log('major', major)
     // console.log('minor', minor)
 
@@ -278,7 +277,7 @@ class IO {
       case (version === '1.0.0'):
         data = this._updateVersion_1_0(data);
         break;
-      case (version === currentVersion):
+      case (major === 1):
         console.log('No need to convert.')
         break;
       default:

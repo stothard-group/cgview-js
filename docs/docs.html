@@ -546,6 +546,7 @@ Attribute                        | Type     | Description
 [type](api/Feature.html#type)                    | String   | Feature type (e.g. CDS, rRNA, etc)
 [legend](api/Feature.html#legend)                | String\|LegendItem | Name of legendItem or the legendItem itself
 [source](api/Feature.html#source)                | String   | Source of the feature
+[tags](api/Feature.html#tags)                    | String\|Array | A single string or an array of strings associated with the feature as tags
 [contig](api/Feature.html#contig)                | String\|Contig | Name of contig or the contig itself
 [start](api/Feature.html#start)<sup>rc</sup>     | Number   | Start base pair on the contig
 [stop](api/Feature.html#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
@@ -608,8 +609,8 @@ Attribute                         | Type      | Description
 ----------------------------------|-----------|------------
 [name](api/Track.html#name)                     | String    | Name of track [Default: "Unknown"]
 [dataType](api/Track.html#dataType)             | String    | Type of data shown by the track: plot, feature [Default: feature]
-[dataMethod](api/Track.html#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type [Default: source]
-[dataKeys](api/Track.html#dataKeys)             | String    | Values used by dataMethod to extract features or a plot.
+[dataMethod](api/Track.html#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
+[dataKeys](api/Track.html#dataKeys)             | String\|Array | Values used by dataMethod to extract features or a plot.
 [position](api/Track.html#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
 [separateFeaturesBy](api/Track.html#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
 [thicknessRatio](api/Track.html#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
@@ -786,7 +787,6 @@ Action                                  | Viewer Method                    | Seq
 Attribute                        | Type      | Description
 ---------------------------------|-----------|------------
 [name](api/Sequence.html#name)                    | String    | Sequence name. [TODO]
-[id](api/S#id)                       | String    | Sequence ID. [TODO]
 [seq](api/Sequence.html#seq)<sup>iu</sup>         | String    | The map sequence.
 [length](api/Sequence.html#length)<sup>iu</sup>   | Number    | The length of the sequence. This is ignored if a seq is provided. [Default: 1000]
 [contigs](api/Sequence.html#contigs)<sup>iu</sup> | Array     | Array of contigs. Contigs are ignored if a seq is provided.
