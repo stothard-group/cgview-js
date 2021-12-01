@@ -35,17 +35,17 @@ class Highlighter extends CGObject {
     super(viewer, options, meta);
     this._viewer = viewer;
     this.showMetaData = utils.defaultFor(options.showMetaData, true);
-    this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
+    // this.popoverBox = viewer._container.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
+    this.popoverBox = viewer._wrapper.append('div').attr('class', 'cgv-highlighter-popover-box').style('visibility', 'hidden');
     this._feature = new HighlighterElement('feature', options.feature);
     this._plot = new HighlighterElement('plot', options.plot);
     this._contig = new HighlighterElement('contig', options.contig);
     this._backbone = new HighlighterElement('backbone', options.contig);
     this.initializeEvents();
 
-    // Set up position constants
-    this._offsetLeft = parseInt(this.viewer._container.style('padding-left')) + 10;
-    // this._offsetTop = parseInt(this.viewer._container.style('padding-top')) - 20;
-    this._offsetTop = parseInt(this.viewer._container.style('padding-top'));
+    // Set up position constants (Distance from mouse pointer to top-left of popup)
+    this._offsetLeft = 8;
+    this._offsetTop = -18;
   }
 
   /**
@@ -84,22 +84,9 @@ class Highlighter extends CGObject {
   }
 
   position(e) {
-    let viewerRect = {top: 0, left: 0};
-    // FIXME: this needs to be improved (also this._offsetTop above and in Legend)
-    // if (this.viewer._container.style('position') !== 'fixed') {
-    //   viewerRect = this.viewer._container.node().getBoundingClientRect();
-    // }
-    viewerRect = this.viewer._container.node().getBoundingClientRect();
-
-    const originX = e.canvasX + viewerRect.left + window.pageXOffset;
-    const originY = e.canvasY + viewerRect.top + window.pageYOffset;
-
-    // const originX = e.canvasX + viewerRect.left;
-    // const originY = e.canvasY + viewerRect.top;
-    // const originX = e.canvasX;
-    // const originY = e.canvasY;
-
-    return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
+    const originX = e.canvasX + this._offsetLeft;
+    const originY = e.canvasY + this._offsetTop;
+    return { x: originX,  y: originY};
   }
 
   initializeEvents() {
