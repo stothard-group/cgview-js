@@ -30,6 +30,7 @@ import utils from './Utils';
  * [type](#type)                    | String   | Feature type (e.g. CDS, rRNA, etc)
  * [legend](#legend)                | String\|LegendItem | Name of legendItem or the legendItem itself
  * [source](#source)                | String   | Source of the feature
+ * [tags](#tags)                    | String\|Array | A single string or an array of strings associated with the feature as tags
  * [contig](#contig)                | String\|Contig | Name of contig or the contig itself
  * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig
  * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
@@ -70,6 +71,7 @@ class Feature extends CGObject {
     this.viewer = viewer;
     this.type = utils.defaultFor(data.type, '');
     this.source = utils.defaultFor(data.source, '');
+    this.tags = data.tags;
     this.favorite = utils.defaultFor(data.favorite, false);
     // this.contig = data.contig || viewer.sequence.mapContig;
     this.contig = data.contig;
@@ -105,6 +107,17 @@ class Feature extends CGObject {
 
   set type(value) {
     this._type = value;
+  }
+
+  /**
+   * @member {tag} - Get or set the *tags*
+   */
+  get tags() {
+    return this._tags;
+  }
+
+  set tags(value) {
+    this._tags = (value == undefined || value === '') ? new CGArray() : new CGArray(value);
   }
 
   /**
@@ -575,6 +588,7 @@ class Feature extends CGObject {
       if (track.type === 'feature') {
         if ( (track.dataMethod === 'source' && track.dataKeys.includes(this.source)) ||
              (track.dataMethod === 'type' && track.dataKeys.includes(this.type)) ||
+             (track.dataMethod === 'tag' && track.dataKeys.some( k => this.tags.includes(k))) ||
              (track.dataMethod === 'sequence' && this.extractedFromSequence && track.features().includes(this)) ) {
           tracks.push(track);
         }
@@ -681,6 +695,10 @@ class Feature extends CGObject {
     if (this.sequence.hasMultipleContigs && !this.contig.isMapContig) {
       // json.contig = this.contig.id;
       json.contig = this.contig.name;
+    }
+    // Tags
+    if (this.tags !== undefined) {
+      json.tags = (this.tags.length === 1) ? this.tags[0] : [...this.tags];
     }
     // Optionally add default values
     // Visible is normally true

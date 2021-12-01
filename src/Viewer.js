@@ -806,6 +806,25 @@ class Viewer {
     return new CGArray([...new Set(allSources)]).get(term);
   }
 
+  /**
+   * Returns an [CGArray](CGArray.html) of all Feature/Plot tags or a single item.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {CGArray}
+   */
+  // FIXME: need better way to keep track of tags
+  // FIXME: add plots tags
+  tags(term) {
+    const featureTags = this._features.map( f => f.tags );
+    // const plotTags = this._plots.map( p => p.tags );
+    const trackTags = this.tracks().
+      filter( c => c.dataMethod === 'tag').
+      map( c => c.dataKeys );
+
+    // const allTags = featureTags.concat(plotTags).concat(trackTags).flat();
+    const allTags = featureTags.concat(trackTags).flat();
+    return new CGArray([...new Set(allTags)]).get(term);
+  }
+
   updateRecordsWithAttributes(records, attributes, options = {}) {
     const validKeys = options.validKeys;
     const recordClass = options.recordClass;
@@ -950,21 +969,19 @@ class Viewer {
   updateFeatures(featuresOrUpdates, attributes) {
     const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
       recordClass: 'Feature',
-      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
     });
-    // Refresh tracks if any attribute is source
-    let sourceChanged;
+    // Refresh tracks if any attribute is source, type, tags
+    let refreshTracks;
     if (updates) {
       const values = Object.values(updates);
       for (let value of values) {
-        if (Object.keys(value).includes('source')) {
-          sourceChanged = true;
-        }
+        refreshTracks = Object.keys(values).some( a => ['source', 'type', 'tags'].includes(a));
       }
-    } else {
-      sourceChanged = attributes && Object.keys(attributes).includes('source');
+    } else if (attributes) {
+      refreshTracks = Object.keys(attributes).some( a => ['source', 'type', 'tags'].includes(a));
     }
-    if (sourceChanged) {
+    if (refreshTracks) {
       for (let track of cgv.tracks()) {
         track.refresh();
       }

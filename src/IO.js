@@ -160,7 +160,7 @@ class IO {
     // Reset objects
     viewer._objects = {};
 
-    viewer.trigger('cgv-json-load', data);
+    viewer.trigger('cgv-json-load', data); // would 'io-load' be a better name?
     // In events this should mention how everything is reset (e.g. tracks, features, etc)
 
     // Viewer attributes
@@ -272,6 +272,9 @@ class IO {
       case (version === '0.1'):
         data = this._updateVersion_0_1(data)
         break;
+      case (version === '0.2'):
+        data = this._updateVersion_0_2(data)
+        break;
       case (version === '1.0.0'):
         data = this._updateVersion_1_0(data);
         break;
@@ -282,6 +285,30 @@ class IO {
         throw new Error(`Unknown cgview version '${version}'`);
     }
     return {cgview: data};
+  }
+
+  // This version is all over the place so concentrate on tracks
+  // Version 0.2 started on 2018-08-22
+  _updateVersion_0_2(data) {
+    // Tracks
+    const tracks = data.layout && data.layout.tracks || data.tracks;
+    for (const track of tracks) {
+      if (track.readingFrame === 'separated') {
+        track.separateFeaturesBy = 'readingFrame';
+      } else if (track.strand === 'separated') {
+        track.separateFeaturesBy = 'strand';
+      } else {
+        track.separateFeaturesBy = 'none';
+      }
+      track.dataType = track.contents && track.contents.type || track.dataType;
+      track.dataMethod = track.contents && track.contents.from || track.dataMethod;
+      track.dataKeys = track.contents && track.contents.extract || track.dataKeys;
+    }
+    data.tracks = tracks;
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
   }
 
   _updateVersion_0_1(data) {

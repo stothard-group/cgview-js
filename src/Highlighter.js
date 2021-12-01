@@ -93,6 +93,12 @@ class Highlighter extends CGObject {
 
     const originX = e.canvasX + viewerRect.left + window.pageXOffset;
     const originY = e.canvasY + viewerRect.top + window.pageYOffset;
+
+    // const originX = e.canvasX + viewerRect.left;
+    // const originY = e.canvasY + viewerRect.top;
+    // const originX = e.canvasX;
+    // const originY = e.canvasY;
+
     return { x: originX + this._offsetLeft, y: originY + this._offsetTop };
   }
 

@@ -30,7 +30,7 @@ import utils from './Utils';
  * ----------------------------------|-----------|------------
  * [name](#name)                     | String    | Name of track [Default: "Unknown"]
  * [dataType](#dataType)             | String    | Type of data shown by the track: plot, feature [Default: feature]
- * [dataMethod](#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type [Default: source]
+ * [dataMethod](#dataMethod)         | String\|Array | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
  * [dataKeys](#dataKeys)             | String    | Values used by dataMethod to extract features or a plot.
  * [position](#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
  * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
@@ -153,14 +153,14 @@ class Track extends CGObject {
 
   /**
    * @member {String} - Get or set the *dataMethod* attribute. *dataMethod* describes how the features/plot should be extracted.
-   *    Options are 'source', 'type', or 'sequence' [Default: 'source']
+   *    Options are 'source', 'type', 'tag', or 'sequence' [Default: 'source']
    */
   get dataMethod() {
     return this._dataMethod;
   }
 
   set dataMethod(value) {
-    if ( utils.validate(value, ['source', 'type', 'sequence']) ) {
+    if ( utils.validate(value, ['source', 'type', 'tag', 'sequence']) ) {
       this._dataMethod = value;
     }
   }
@@ -368,9 +368,17 @@ class Track extends CGObject {
   }
 
   updateFeatures() {
+    // Methods where the feature will contain a single value
     if (this.dataMethod === 'source' || this.dataMethod === 'type') {
       this.viewer.features().each( (i, feature) => {
         if (this.dataKeys.includes(feature[this.dataMethod]) && feature.contig.visible) {
+          this._features.push(feature);
+        }
+      });
+    // Methods where the feature will contain an array of values
+    } else if (this.dataMethod === 'tag') {
+      this.viewer.features().each( (i, feature) => {
+        if (this.dataKeys.some( k => feature.tags.includes(k)) && feature.contig.visible) {
           this._features.push(feature);
         }
       });
