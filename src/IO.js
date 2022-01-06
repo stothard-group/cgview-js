@@ -78,6 +78,7 @@ class IO {
         updated: this.formatDate(new Date()),
         id: v.id,
         name: v.name,
+        format: v.format,
         geneticCode: v.geneticCode,
         settings: v.settings.toJSON(options),
         backbone: v.backbone.toJSON(options),

@@ -20,6 +20,7 @@ import utils from './Utils';
  *
  * Attribute                           | Type      | Description
  * ------------------------------------|-----------|------------
+ * [format](#format)                   | String    | The layout format of the map: circular, linear [Default: circular]
  * [backgroundColor](#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
  * [showShading](#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
  * [arrowHeadLength](#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
@@ -36,6 +37,10 @@ class Settings {
    */
   constructor(viewer, options = {}) {
     this.viewer = viewer;
+    // Only set format if provided. Otherwiase the defaults in the Viewer constructor are used.
+    if (options.format) {
+      this.format = options.format
+    }
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
     this._showShading = utils.defaultFor(options.showShading, true);
@@ -122,7 +127,8 @@ class Settings {
     return {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
-      arrowHeadLength: this.arrowHeadLength
+      arrowHeadLength: this.arrowHeadLength,
+      format: this.format
     };
   }
 

@@ -127,7 +127,7 @@ class Viewer {
     // Initialize Canvas
     this.canvas = new Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-    // Initialize Layout and set the default map format.
+    // Initialize Layout and set the default map format (ie. topology).
     this._layout = new Layout(this, options.layout);
     this.format = utils.defaultFor(options.format, 'circular');
 
