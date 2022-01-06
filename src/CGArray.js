@@ -234,18 +234,19 @@ class CGArray extends Array {
   }
 
   /**
- * Iterates through each element of the CGArray and run the callback.
- * In the callback _this_ will refer to the element.
- * ```javascript
- * .each(function(index, element))
- * ```
- *
- * Note: This is slower then a _forEach_ or a _for loop_ directly on the set.
- * @param {Function} callback Callback run on each element of CGArray.
- *   The callback will be called with 2 parameters: the index of the element
- *   and the element itself.
- * @return {CGArray}
- */
+  * iterates through each element of the cgarray and run the callback.
+  * In the callback _this_ will refer to the element.
+  * ```javascript
+  * .each(function(index, element))
+  * ```
+  *
+  * Note: This is slower then a _forEach_ or a _for loop_ directly on the set.
+  * @param {Function} callback Callback run on each element of CGArray.
+  *   The callback will be called with 2 parameters: the index of the element
+  *   and the element itself.
+  * @return {CGArray}
+  */
+  // NOTE: it may feel better if this was (item, index) not (index, item)
   each(callback) {
     for (let i = 0, len = this.length; i < len; i++) {
       callback.call(this[i], i, this[i]);

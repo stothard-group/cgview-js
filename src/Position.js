@@ -45,6 +45,9 @@ import utils from './Utils';
  * Map-based position examples:
  * - value: { lengthPercent: 23, mapOffset: 10 }
  */
+
+// Note: A better name may be Location over Position
+//
 // - value: { lengthPercent: 23, bbOffsetPercent: 10 }     // NOT IMPLEMENTED
 // - value: { contig: 'contig-1', bp: 100, mapOffset: 10 } // NOT IMPLEMENTED
 //

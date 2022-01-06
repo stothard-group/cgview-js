@@ -79,7 +79,7 @@ class IO {
         id: v.id,
         name: v.name,
         format: v.format,
-        geneticCode: v.geneticCode,
+        // geneticCode: v.geneticCode,
         settings: v.settings.toJSON(options),
         backbone: v.backbone.toJSON(options),
         ruler: v.ruler.toJSON(options),
@@ -168,7 +168,7 @@ class IO {
     viewer.update({
       id: data.id,
       name: data.name,
-      geneticCode: data.geneticCode,
+      // geneticCode: data.geneticCode,
     });
 
     viewer._jsonInfo = {
