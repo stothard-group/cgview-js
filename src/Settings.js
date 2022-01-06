@@ -37,11 +37,12 @@ class Settings {
    */
   constructor(viewer, options = {}) {
     this.viewer = viewer;
-    // Only set format if provided. Otherwiase the defaults in the Viewer constructor are used.
+    // Only set format if provided. Otherwise the defaults in the Viewer constructor are used.
     if (options.format) {
-      this.format = options.format
+      this.format = options.format;
     }
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
+    this._geneticCode = utils.defaultFor(options.geneticCode, 11);
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
     this._showShading = utils.defaultFor(options.showShading, true);
     this.viewer.trigger('settings-update', {attributes: this.toJSON({includeDefaults: true})});
@@ -64,6 +65,19 @@ class Settings {
 
   set format(value) {
     this.viewer.format = value;
+  }
+
+  /**
+   * @member {Number} - Get or set the genetic code used for translation.
+   * This genetic code will be used unless a feature has an overriding genetic code.
+   * Default: 11
+   */
+  get geneticCode() {
+    return this._geneticCode || 11;
+  }
+
+  set geneticCode(value) {
+    this._geneticCode = value;
   }
 
   /**
@@ -115,7 +129,7 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength']
+      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength', 'geneticCode']
     });
     this.viewer.trigger('settings-update', { attributes });
   }
@@ -125,10 +139,11 @@ class Settings {
    */
   toJSON() {
     return {
+      format: this.format,
+      geneticCode: this.geneticCode,
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
-      arrowHeadLength: this.arrowHeadLength,
-      format: this.format
+      arrowHeadLength: this.arrowHeadLength
     };
   }
 

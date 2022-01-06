@@ -68,20 +68,21 @@ The example below is shown as an object literal and only shows some of the possi
 Click on a key (e.g. backbone, captions, etc) for options and defaults.
 
 The following two options are available for most sections of the JSON but are
-only present when they have non-default values (see the first [feature](#lines.94-107) for an example with non-default values):
+only present when they have non-default values (see the first [feature](#lines.95-108) for an example with non-default values):
 - _visible_ [Default: true]
 - _meta_ [Default: {}].  The _meta_ key is a place to store [user/app-defined meta data](tutorials/details-meta-data.html).
 
 ```json
 {
     "cgview": {
-        "version": "0.2",
+        "version": "1.0",
         "created": "2017-06-21 13:29:07",
         "updated": "2017-06-21 13:29:07",
         "name": "My Cool Map",
         "id": "f078a696a89c4c97d526f588933ddcbafd6ba037",
-        "geneticCode": "11",
         "settings": {
+            "format": "circular",
+            "geneticCode": "11",
             "backgroundColor": "rgba(255,255,255,1)",
             "showShading": true,
             "arrowHeadLength": 0.3

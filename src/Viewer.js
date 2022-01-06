@@ -314,14 +314,17 @@ class Viewer {
   /**
    * @member {Number} - Get or set the genetic code used for translation.
    * This genetic code will be used unless a feature has an overriding genetic code.
+   * Alias for Settings.geneticCode.
    * Default: 11
    */
   get geneticCode() {
-    return this._geneticCode || 11;
+    // return this._geneticCode || 11;
+    return this.settings.geneticCode;
   }
 
   set geneticCode(value) {
-    this._geneticCode = value;
+    // this._geneticCode = value;
+    this.settings.geneticCode = value;
   }
 
   /**
@@ -573,7 +576,7 @@ class Viewer {
   update(attributes) {
     // Validate attribute keys
     let keys = Object.keys(attributes);
-    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged', 'geneticCode'];
+    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
     if (!utils.validate(keys, validKeys)) { return; }
 
     // Special Case for Resizing - we don't want to update width and height separately
