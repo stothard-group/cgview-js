@@ -408,7 +408,7 @@ class Sequence extends CGObject {
   }
 
   /**
-   * @member {Boolean} - Return true if the sequence 
+   * @member {Boolean} - Return true if the sequence consists of muliple contigs.
    */
   get hasMultipleContigs() {
     return this._contigs.length > 1;
