@@ -1044,6 +1044,8 @@
             
                 <li data-name="Feature#stop"><a href="Feature.html#stop">stop</a></li>
             
+                <li data-name="Feature#tags"><a href="Feature.html#tags">tags</a></li>
+            
                 <li data-name="Feature#type"><a href="Feature.html#type">type</a></li>
             
                 <li data-name="Feature#viewer"><a href="Feature.html#viewer">viewer</a></li>
@@ -1229,6 +1231,8 @@
                 <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
                 <li data-name="IO#toJSON"><a href="IO.html#toJSON">toJSON</a></li>
+            
+                <li data-name="IO#updateJSON"><a href="IO.html#updateJSON">updateJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1761,6 +1765,8 @@
             
                 <li data-name="Settings#format"><a href="Settings.html#format">format</a></li>
             
+                <li data-name="Settings#geneticCode"><a href="Settings.html#geneticCode">geneticCode</a></li>
+            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1980,6 +1986,8 @@
             
                 <li data-name="Viewer#settings"><a href="Viewer.html#settings">settings</a></li>
             
+                <li data-name="Viewer#version"><a href="Viewer.html#version">version</a></li>
+            
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
                 <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
@@ -2052,6 +2060,8 @@
             
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
+                <li data-name="Viewer#tags"><a href="Viewer.html#tags">tags</a></li>
+            
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
                 <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
@@ -2096,9 +2106,9 @@
         <article>
             <pre class="prettyprint source "><code>/**
  * @author Jason Grant &lt;jason.grant@ualberta.ca>
- * @version 0.2
  * @requires D3
  */
+import { version } from '../package.json';
 import utils from './Utils';
 import CGArray from './CGArray';
 import Canvas from './Canvas';
@@ -2127,6 +2137,8 @@ import Bookmark from './Bookmark';
 import CGRange from './CGRange';
 import initializeZooming from './Viewer-Zoom';
 import * as d3 from 'd3';
+
+console.log(`CGView.js Version: ${version}`)
 
 /**
  * The Viewer is the main container class for CGView. It controls the
@@ -2184,6 +2196,7 @@ import * as d3 from 'd3';
  */
 class Viewer {
 
+
   /**
    * Create a viewer
    * @param {String} containerId - The ID (with or without '#') of the element to contain the viewer.
@@ -2220,7 +2233,7 @@ class Viewer {
     // Initialize Canvas
     this.canvas = new Canvas(this, this._wrapper, {width: this.width, height: this.height});
 
-    // Initialize Layout and set the default map format.
+    // Initialize Layout and set the default map format (ie. topology).
     this._layout = new Layout(this, options.layout);
     this.format = utils.defaultFor(options.format, 'circular');
 
@@ -2297,6 +2310,13 @@ class Viewer {
   //////////////////////////////////////////////////////////////////////////
   // MEMBERS
   //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @member {String} - Get CGView version
+   */
+  get version() {
+    return version;
+  }
 
   /**
    * @member {String} - Get map id
@@ -2400,14 +2420,17 @@ class Viewer {
   /**
    * @member {Number} - Get or set the genetic code used for translation.
    * This genetic code will be used unless a feature has an overriding genetic code.
+   * Alias for Settings.geneticCode.
    * Default: 11
    */
   get geneticCode() {
-    return this._geneticCode || 11;
+    // return this._geneticCode || 11;
+    return this.settings.geneticCode;
   }
 
   set geneticCode(value) {
-    this._geneticCode = value;
+    // this._geneticCode = value;
+    this.settings.geneticCode = value;
   }
 
   /**
@@ -2502,7 +2525,7 @@ class Viewer {
     if (this._colorPicker === undefined) {
       // Create Color Picker
       const colorPickerId = `${this.containerId}-color-picker`;
-      this._container.append('div')
+      this._wrapper.append('div')
         // .classed('cp-color-picker-dialog', true)
         .attr('id', `${this.containerId}-color-picker`);
       this._colorPicker = new ColorPicker(colorPickerId);
@@ -2659,7 +2682,7 @@ class Viewer {
   update(attributes) {
     // Validate attribute keys
     let keys = Object.keys(attributes);
-    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged', 'geneticCode'];
+    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
     if (!utils.validate(keys, validKeys)) { return; }
 
     // Special Case for Resizing - we don't want to update width and height separately
@@ -2892,6 +2915,25 @@ class Viewer {
     return new CGArray([...new Set(allSources)]).get(term);
   }
 
+  /**
+   * Returns an [CGArray](CGArray.html) of all Feature/Plot tags or a single item.
+   * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
+   * @return {CGArray}
+   */
+  // FIXME: need better way to keep track of tags
+  // FIXME: add plots tags
+  tags(term) {
+    const featureTags = this._features.map( f => f.tags );
+    // const plotTags = this._plots.map( p => p.tags );
+    const trackTags = this.tracks().
+      filter( c => c.dataMethod === 'tag').
+      map( c => c.dataKeys );
+
+    // const allTags = featureTags.concat(plotTags).concat(trackTags).flat();
+    const allTags = featureTags.concat(trackTags).flat();
+    return new CGArray([...new Set(allTags)]).get(term);
+  }
+
   updateRecordsWithAttributes(records, attributes, options = {}) {
     const validKeys = options.validKeys;
     const recordClass = options.recordClass;
@@ -3036,21 +3078,19 @@ class Viewer {
   updateFeatures(featuresOrUpdates, attributes) {
     const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
       recordClass: 'Feature',
-      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
     });
-    // Refresh tracks if any attribute is source
-    let sourceChanged;
+    // Refresh tracks if any attribute is source, type, tags
+    let refreshTracks;
     if (updates) {
       const values = Object.values(updates);
       for (let value of values) {
-        if (Object.keys(value).includes('source')) {
-          sourceChanged = true;
-        }
+        refreshTracks = Object.keys(values).some( a => ['source', 'type', 'tags'].includes(a));
       }
-    } else {
-      sourceChanged = attributes &amp;&amp; Object.keys(attributes).includes('source');
+    } else if (attributes) {
+      refreshTracks = Object.keys(attributes).some( a => ['source', 'type', 'tags'].includes(a));
     }
-    if (sourceChanged) {
+    if (refreshTracks) {
       for (let track of cgv.tracks()) {
         track.refresh();
       }
@@ -3224,7 +3264,7 @@ class Viewer {
   }
 
   /**
-   * Draw the map. By default the full version of the map is drawn. The map can be drawnn faster but this will
+   * Draw the map. By default the full version of the map is drawn. The map can be drawn faster but this will
    * reduce the number of features and other components are drawn.
    * @param {Boolean} fast - If true, a fast version of the map is draw. Fast drawing is best for zooming and scrolling.
    */
@@ -3575,7 +3615,7 @@ export default Viewer;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:20 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jan 21 2022 13:05:43 GMT-0700 (Mountain Standard Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

@@ -1044,6 +1044,8 @@
             
                 <li data-name="Feature#stop"><a href="Feature.html#stop">stop</a></li>
             
+                <li data-name="Feature#tags"><a href="Feature.html#tags">tags</a></li>
+            
                 <li data-name="Feature#type"><a href="Feature.html#type">type</a></li>
             
                 <li data-name="Feature#viewer"><a href="Feature.html#viewer">viewer</a></li>
@@ -1229,6 +1231,8 @@
                 <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
                 <li data-name="IO#toJSON"><a href="IO.html#toJSON">toJSON</a></li>
+            
+                <li data-name="IO#updateJSON"><a href="IO.html#updateJSON">updateJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1761,6 +1765,8 @@
             
                 <li data-name="Settings#format"><a href="Settings.html#format">format</a></li>
             
+                <li data-name="Settings#geneticCode"><a href="Settings.html#geneticCode">geneticCode</a></li>
+            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1980,6 +1986,8 @@
             
                 <li data-name="Viewer#settings"><a href="Viewer.html#settings">settings</a></li>
             
+                <li data-name="Viewer#version"><a href="Viewer.html#version">version</a></li>
+            
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
                 <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
@@ -2052,6 +2060,8 @@
             
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
             
+                <li data-name="Viewer#tags"><a href="Viewer.html#tags">tags</a></li>
+            
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
                 <li data-name="Viewer#trigger"><a href="Viewer.html#trigger">trigger</a></li>
@@ -2100,7 +2110,7 @@
 
 // FIXME: Check at the end: A low performance polyfill based on toDataURL.
 
-import { version } from '../package.json';
+import { version as currentVersion } from '../package.json';
 import CGArray from './CGArray';
 import Sequence from './Sequence';
 import Settings from './Settings';
@@ -2169,12 +2179,13 @@ class IO {
 
     const json = {
       cgview: {
-        version,
+        version: currentVersion,
         created: jsonInfo.created || this.formatDate(new Date()),
         updated: this.formatDate(new Date()),
         id: v.id,
         name: v.name,
-        geneticCode: v.geneticCode,
+        format: v.format,
+        // geneticCode: v.geneticCode,
         settings: v.settings.toJSON(options),
         backbone: v.backbone.toJSON(options),
         ruler: v.ruler.toJSON(options),
@@ -2223,11 +2234,26 @@ class IO {
    * @param {Object} data - JSON string or Object Literal
    */
   loadJSON(json) {
+    try {
+      this._loadJSON(json);
+    } catch (error) {
+      const msg = `Loading Error: ${error}`
+      console.log(msg);
+      const canvas = this.viewer.canvas;
+      canvas.clear('debug');
+      const ctx = canvas.context('debug');
+      ctx.fillText(msg, 5, 15);
+    }
+  }
+
+  _loadJSON(json) {
 
     let data = json;
     if (typeof json === 'string') {
       data = JSON.parse(json);
     }
+
+    data = this.updateJSON(data);
 
     data = data &amp;&amp; data.cgview;
 
@@ -2241,18 +2267,17 @@ class IO {
     // Reset objects
     viewer._objects = {};
 
-    viewer.trigger('cgv-json-load', data);
+    viewer.trigger('cgv-json-load', data); // would 'io-load' be a better name?
     // In events this should mention how everything is reset (e.g. tracks, features, etc)
 
     // Viewer attributes
     viewer.update({
       id: data.id,
       name: data.name,
-      geneticCode: data.geneticCode,
+      // geneticCode: data.geneticCode,
     });
 
-    // data Info
-    viewer._dataInfo = {
+    viewer._jsonInfo = {
       version: data.version,
       created: data.created
     };
@@ -2321,6 +2346,140 @@ class IO {
     // viewer._layout = new Layout(viewer, data.layout);
     viewer.format = utils.defaultFor(data.format, 'circular');
     viewer.zoomTo(0, 1, {duration: 0});
+  }
+
+  /**
+   * Update old CGView JSON formats to the current version.
+   * The map data must be contained within a top level "cgview" property.
+   * @param {Object} data - Object Literal
+   */
+  updateJSON(data) {
+    data = data &amp;&amp; data.cgview;
+
+    if (!data) {
+      throw new Error("No 'cgview' property found in JSON.");
+    }
+
+    const version = data.version;
+    console.log(`Loading map JSON version: '${version}'`);
+
+    let major, minor;
+    const result = version.match(/^(\d+)\.(\d+)/)
+    if (result) {
+      major = Number(result[1]);
+      minor = Number(result[2]);
+    } else {
+      throw new Error(`Can not read cgview version '${version}'`);
+    }
+    // console.log('major', major)
+    // console.log('minor', minor)
+
+    switch (true) {
+      case (version === '0.1'):
+        data = this._updateVersion_0_1(data)
+        break;
+      case (version === '0.2'):
+        data = this._updateVersion_0_2(data)
+        break;
+      case (version === '1.0.0'):
+        data = this._updateVersion_1_0(data);
+        break;
+      case (major === 1):
+        console.log('No need to convert.')
+        break;
+      default:
+        throw new Error(`Unknown cgview version '${version}'`);
+    }
+    return {cgview: data};
+  }
+
+  // This version is all over the place so concentrate on tracks
+  // Version 0.2 started on 2018-08-22
+  _updateVersion_0_2(data) {
+    // Tracks
+    const tracks = data.layout &amp;&amp; data.layout.tracks || data.tracks;
+    for (const track of tracks) {
+      if (track.readingFrame === 'separated') {
+        track.separateFeaturesBy = 'readingFrame';
+      } else if (track.strand === 'separated') {
+        track.separateFeaturesBy = 'strand';
+      } else {
+        track.separateFeaturesBy = 'none';
+      }
+      track.dataType = track.contents &amp;&amp; track.contents.type || track.dataType;
+      track.dataMethod = track.contents &amp;&amp; track.contents.from || track.dataMethod;
+      track.dataKeys = track.contents &amp;&amp; track.contents.extract || track.dataKeys;
+    }
+    data.tracks = tracks;
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
+  }
+
+  _updateVersion_0_1(data) {
+    const positionMap = {
+      'lower-left': 'bottom-left',
+      'lower-center': 'bottom-center',
+      'lower-right': 'bottom-right',
+      'upper-left': 'top-left',
+      'upper-center': 'top-center',
+      'upper-right': 'top-right',
+    }
+    // Captions
+    const captions = data.captions;
+    if (captions) {
+      for (const caption of captions) {
+        caption.position = positionMap[caption.position] || caption.position;
+        caption.font = caption.items[0].font || caption.font;
+        caption.fontColor = caption.items[0].fontColor || caption.fontColor;
+        caption.name = caption.items.map(i => i.name).join('\n');
+      }
+    }
+    // Legend
+    const legend = data.legend;
+    legend.position = positionMap[legend.position] || legend.position;
+    legend.defaultFont = legend.font;
+    // Tracks
+    const tracks = data.layout.tracks || [];
+    for (const track of tracks) {
+      if (track.readingFrame === 'separated') {
+        track.separateFeaturesBy = 'readingFrame';
+      } else if (track.strand === 'separated') {
+        track.separateFeaturesBy = 'strand';
+      } else {
+        track.separateFeaturesBy = 'none';
+      }
+      track.dataType = track.contents.type;
+      track.dataMethod = track.contents.from;
+      track.dataKeys = track.contents.extract;
+    }
+    data.tracks = tracks;
+    // From Settings
+    data.annotaion = data.settings.annotaion;
+    data.backbone = data.settings.backbone;
+    data.dividers = data.settings.dividers;
+    data.ruler = data.settings.ruler;
+    data.settings = data.settings.general;
+    // Plots aren't saved properly on CGView Server so we can ignore
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
+  }
+
+  _updateVersion_1_0(data) {
+    // Contigs are the only chagne for this version
+    const contigs = data.sequence &amp;&amp; data.sequence.contigs;
+    if (contigs) {
+      for (const contig of contigs) {
+        contig.name = contig.id;
+      }
+    }
+    // Version
+    data.version = '1.1.0';
+    console.log(`Update JSON to version '${data.version}'`);
+    return data;
   }
 
   /**
@@ -2512,7 +2671,7 @@ export default IO;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:20 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jan 21 2022 13:05:43 GMT-0700 (Mountain Standard Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

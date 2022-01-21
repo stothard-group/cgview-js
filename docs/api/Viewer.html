@@ -1044,6 +1044,8 @@
             
                 <li data-name="Feature#stop"><a href="Feature.html#stop">stop</a></li>
             
+                <li data-name="Feature#tags"><a href="Feature.html#tags">tags</a></li>
+            
                 <li data-name="Feature#type"><a href="Feature.html#type">type</a></li>
             
                 <li data-name="Feature#viewer"><a href="Feature.html#viewer">viewer</a></li>
@@ -1229,6 +1231,8 @@
                 <li data-name="IO#loadJSON"><a href="IO.html#loadJSON">loadJSON</a></li>
             
                 <li data-name="IO#toJSON"><a href="IO.html#toJSON">toJSON</a></li>
+            
+                <li data-name="IO#updateJSON"><a href="IO.html#updateJSON">updateJSON</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -1761,6 +1765,8 @@
             
                 <li data-name="Settings#format"><a href="Settings.html#format">format</a></li>
             
+                <li data-name="Settings#geneticCode"><a href="Settings.html#geneticCode">geneticCode</a></li>
+            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1980,6 +1986,8 @@
             
                 <li data-name="Viewer#settings"><a href="Viewer.html#settings">settings</a></li>
             
+                <li data-name="Viewer#version"><a href="Viewer.html#version">version</a></li>
+            
                 <li data-name="Viewer#width"><a href="Viewer.html#width">width</a></li>
             
                 <li data-name="Viewer#zoomFactor"><a href="Viewer.html#zoomFactor">zoomFactor</a></li>
@@ -2051,6 +2059,8 @@
                 <li data-name="Viewer#slots"><a href="Viewer.html#slots">slots</a></li>
             
                 <li data-name="Viewer#sources"><a href="Viewer.html#sources">sources</a></li>
+            
+                <li data-name="Viewer#tags"><a href="Viewer.html#tags">tags</a></li>
             
                 <li data-name="Viewer#tracks"><a href="Viewer.html#tracks">tracks</a></li>
             
@@ -2239,7 +2249,7 @@ cgv.draw()
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line97">line 97</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line100">line 100</a>
         </div>
         
     </div>
@@ -2761,6 +2771,7 @@ used. It is reset to false automatically when a new JSON is loaded via
     <div class="description">
         <p>Get or set the genetic code used for translation.
 This genetic code will be used unless a feature has an overriding genetic code.
+Alias for Settings.geneticCode.
 Default: 11</p>
     </div>
     
@@ -3474,6 +3485,51 @@ that at the maximum, the sequence can be clearly seen.</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="version">version<span class="type-signature type string">String</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get CGView version</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="width">width<span class="type-signature type number">Number</span> </h4>
     </div>
     
@@ -3578,7 +3634,7 @@ Increasing the zoom level to 2 will double the length of the backbone, and so on
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1061">line 1061</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1091">line 1091</a>
         </div>
         
     </div>
@@ -3727,7 +3783,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line732">line 732</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line745">line 745</a>
         </div>
         
     </div>
@@ -3798,7 +3854,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line900">line 900</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line932">line 932</a>
         </div>
         
     </div>
@@ -3947,7 +4003,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line986">line 986</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1016">line 1016</a>
         </div>
         
     </div>
@@ -4096,7 +4152,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line603">line 603</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line616">line 616</a>
         </div>
         
     </div>
@@ -4245,7 +4301,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1051">line 1051</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1081">line 1081</a>
         </div>
         
     </div>
@@ -4400,7 +4456,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line721">line 721</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line734">line 734</a>
         </div>
         
     </div>
@@ -4551,7 +4607,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1102">line 1102</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1132">line 1132</a>
         </div>
         
     </div>
@@ -4622,7 +4678,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line559">line 559</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line572">line 572</a>
         </div>
         
     </div>
@@ -4773,7 +4829,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1135">line 1135</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1165">line 1165</a>
         </div>
         
     </div>
@@ -4784,7 +4840,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
     
     <div class="description">
-        <p>Draw the map. By default the full version of the map is drawn. The map can be drawnn faster but this will
+        <p>Draw the map. By default the full version of the map is drawn. The map can be drawn faster but this will
 reduce the number of features and other components are drawn.</p>
     </div>
     
@@ -4890,7 +4946,7 @@ reduce the number of features and other components are drawn.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line550">line 550</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line563">line 563</a>
         </div>
         
     </div>
@@ -5045,7 +5101,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1422">line 1422</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1452">line 1452</a>
         </div>
         
     </div>
@@ -5116,7 +5172,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line764">line 764</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line777">line 777</a>
         </div>
         
     </div>
@@ -5255,7 +5311,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1296">line 1296</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1326">line 1326</a>
         </div>
         
     </div>
@@ -5428,7 +5484,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1314">line 1314</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1344">line 1344</a>
         </div>
         
     </div>
@@ -5601,7 +5657,7 @@ would be 500 bp.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1218">line 1218</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1248">line 1248</a>
         </div>
         
     </div>
@@ -5797,7 +5853,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line710">line 710</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line723">line 723</a>
         </div>
         
     </div>
@@ -5936,7 +5992,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line515">line 515</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line528">line 528</a>
         </div>
         
     </div>
@@ -6112,7 +6168,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1446">line 1446</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1476">line 1476</a>
         </div>
         
     </div>
@@ -6183,7 +6239,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1439">line 1439</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1469">line 1469</a>
         </div>
         
     </div>
@@ -6254,7 +6310,7 @@ the viewer will center the image on that bp with the current zoom level.</p>
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line776">line 776</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line789">line 789</a>
         </div>
         
     </div>
@@ -6409,7 +6465,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1407">line 1407</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1437">line 1437</a>
         </div>
         
     </div>
@@ -6480,7 +6536,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1073">line 1073</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1103">line 1103</a>
         </div>
         
     </div>
@@ -6600,7 +6656,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line916">line 916</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line948">line 948</a>
         </div>
         
     </div>
@@ -6720,7 +6776,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line999">line 999</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1029">line 1029</a>
         </div>
         
     </div>
@@ -6840,7 +6896,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line623">line 623</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line636">line 636</a>
         </div>
         
     </div>
@@ -6960,7 +7016,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1400">line 1400</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1430">line 1430</a>
         </div>
         
     </div>
@@ -7031,7 +7087,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line483">line 483</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line496">line 496</a>
         </div>
         
     </div>
@@ -7236,7 +7292,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line536">line 536</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line549">line 549</a>
         </div>
         
     </div>
@@ -7387,7 +7443,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line788">line 788</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line801">line 801</a>
         </div>
         
     </div>
@@ -7531,6 +7587,157 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="tags">
+            
+            tags<span class="signature">(term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="CGArray.html">CGArray</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line819">line 819</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns an <a href="CGArray.html">CGArray</a> of all Feature/Plot tags or a single item.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>term</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>See <a href="CGArray.html#get">CGArray.get</a> for details.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="CGArray.html">CGArray</a>
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="tracks">
             
             tracks<span class="signature">(term)</span><span class="bi bi-arrow-right-circle-fill"></span><span class="type-signature returnType">{<a href="Track.html">Track</a>|<a href="CGArray.html">CGArray</a>}</span>
@@ -7538,7 +7745,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line593">line 593</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line606">line 606</a>
         </div>
         
     </div>
@@ -7693,7 +7900,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1453">line 1453</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1483">line 1483</a>
         </div>
         
     </div>
@@ -7764,7 +7971,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1091">line 1091</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1121">line 1121</a>
         </div>
         
     </div>
@@ -7910,7 +8117,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line940">line 940</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line972">line 972</a>
         </div>
         
     </div>
@@ -8056,7 +8263,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1019">line 1019</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1049">line 1049</a>
         </div>
         
     </div>
@@ -8202,7 +8409,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line674">line 674</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line687">line 687</a>
         </div>
         
     </div>
@@ -8348,7 +8555,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1383">line 1383</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1413">line 1413</a>
         </div>
         
     </div>
@@ -8472,7 +8679,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1392">line 1392</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1422">line 1422</a>
         </div>
         
     </div>
@@ -8596,7 +8803,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1334">line 1334</a>
+            <a href="Viewer.js.html">Viewer.js</a>, <a href="Viewer.js.html#line1364">line 1364</a>
         </div>
         
     </div>
@@ -8797,7 +9004,7 @@ If <em>bp</em> is falsy (inc. 0), the map is centered.</p>
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 01 2021 09:16:20 GMT-0600 (Mountain Daylight Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jan 21 2022 13:05:43 GMT-0700 (Mountain Standard Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
