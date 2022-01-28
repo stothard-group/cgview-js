@@ -1485,11 +1485,35 @@ class Viewer {
     // Almost all events will results in data changing with the following exceptions
     const eventsToIgnoreForDataChange = ['viewer-update', 'cgv-json-load', 'bookmarks-shortcut', 'zoom-start', 'zoom', 'zoom-end'];
     if (!this.loading && !eventsToIgnoreForDataChange.includes(event)) {
+      // console.log(event, object)
       // Also need to ignore track-update with loadProgress
+      // const attributeKeys = object && object.attributes && Object.keys(object.attributes);
+      // if ( !(attributeKeys && attributeKeys.length === 1 && attributeKeys[0] === 'loadProgress')) {
+      //   this.update({dataHasChanged: true});
+      // }
+      // Special conditions where we do not want to say dataHasChanged
+      // Ignore track-update with loadProgress
       const attributeKeys = object && object.attributes && Object.keys(object.attributes);
-      if ( !(attributeKeys && attributeKeys.length === 1 && attributeKeys[0] === 'loadProgress')) {
-        this.update({dataHasChanged: true});
+      if ( attributeKeys && attributeKeys.length === 1 && attributeKeys[0] === 'loadProgress') {
+        // console.log('Skip loadProgress')
+        return;
       }
+      // Ignore plot-add with SequenceExtracted plots
+      if (event === 'plots-add') {
+        const plots = object;
+        if (plots.every( p => p.extractedFromSequence) ) {
+          // console.log('Skip Extracted Plot')
+          return;
+        }
+      }
+      if (event === 'tracks-update') {
+        const attributes = object && object.attributes;
+        if (attributes === undefined) {
+          // console.log('Skip track update with no attributes')
+          return;
+        }
+      }
+      this.update({dataHasChanged: true});
     }
   }
 
