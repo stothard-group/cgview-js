@@ -197,7 +197,7 @@ class EventMonitor {
 
     // Check Legend
     const legend = this.viewer.legend;
-    if (legend.box.containsPt(canvasX, canvasY)) {
+    if (legend.visible && legend.box.containsPt(canvasX, canvasY)) {
       for (let i = 0, len = legend.items().length; i < len; i++) {
         const item = legend.items()[i];
         if (item._textContainsPoint({x: canvasX, y: canvasY})) {
@@ -212,7 +212,7 @@ class EventMonitor {
       const captions = this.viewer.captions();
       for (let i = 0, len = captions.length; i < len; i++) {
         const caption = captions[i];
-        if (caption.box.containsPt(canvasX, canvasY)) {
+        if (caption.visible && caption.box.containsPt(canvasX, canvasY)) {
           elementType = 'caption';
           element = caption;
         }
@@ -226,11 +226,11 @@ class EventMonitor {
       let feature = features[0];
       for (let i = 0, len = features.length; i < len; i++) {
         const currentFeature = features[i];
-        if (currentFeature.length < feature.length) {
+        if (currentFeature.visible && currentFeature.length < feature.length) {
           feature = currentFeature;
         }
       }
-      if (feature) {
+      if (feature && feature.visible) {
         elementType = 'feature';
         element = feature;
       } else if (slot._plot) {
@@ -240,7 +240,7 @@ class EventMonitor {
     }
 
     // Check for Backbone or Contig
-    if (!elementType && this.viewer.backbone.containsCenterOffset(centerOffset)) {
+    if (!elementType && this.viewer.backbone.visible && this.viewer.backbone.containsCenterOffset(centerOffset)) {
       const backbone = this.viewer.backbone;
       const sequence = this.viewer.sequence;
       if (sequence.hasMultipleContigs) {
@@ -253,11 +253,11 @@ class EventMonitor {
     }
 
     // Check for Labels
-    if (!elementType) {
+    if (!elementType && this.viewer.annotation.visible) {
       const labels = this.viewer.annotation._visibleLabels;
       for (let i = 0, len = labels.length; i < len; i++) {
         const label = labels[i];
-        if (label.rect.containsPt(canvasX, canvasY)) {
+        if (label.rect.containsPt(canvasX, canvasY) && label.feature.visible) {
           elementType = 'label';
           element = label;
         }
@@ -271,6 +271,7 @@ class EventMonitor {
     const viewer = this.viewer;
     this.events.on('click.swatch', (e) => {
       const legend = viewer.legend;
+      if (!legend.visible) return;
       const swatchedLegendItems = legend.visibleItems();
       for (let i = 0, len = swatchedLegendItems.length; i < len; i++) {
         if ( swatchedLegendItems[i]._swatchContainsPoint( {x: e.canvasX, y: e.canvasY} ) ) {
@@ -303,6 +304,7 @@ class EventMonitor {
     const viewer = this.viewer;
     this.events.on('mousemove.swatch', (e) => {
       const legend = viewer.legend;
+      if (!legend.visible) return;
       const swatchedLegendItems = legend.visibleItems();
       const oldHighlightedItem = legend.highlightedSwatchedItem;
       legend.highlightedSwatchedItem = undefined;
