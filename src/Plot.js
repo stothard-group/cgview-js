@@ -57,6 +57,7 @@ class Plot extends CGObject {
     super(viewer, data, meta);
     this.viewer = viewer;
     this.name = data.name;
+    this.extractedFromSequence = utils.defaultFor(data.extractedFromSequence, false);
     this.positions = utils.defaultFor(data.positions, []);
     this.scores = utils.defaultFor(data.scores, []);
     this.type = utils.defaultFor(data.type, 'line');
@@ -64,8 +65,6 @@ class Plot extends CGObject {
     this.axisMin = utils.defaultFor(data.axisMin, d3.min([0, this.scoreMin]));
     this.axisMax = utils.defaultFor(data.axisMax, d3.max([0, this.scoreMax]));
     this.baseline = utils.defaultFor(data.baseline, 0);
-
-    this.extractedFromSequence = utils.defaultFor(data.extractedFromSequence, false);
 
     if (data.legend) {
       this.legendItem  = data.legend;
