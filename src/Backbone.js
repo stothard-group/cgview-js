@@ -258,17 +258,25 @@ class Backbone extends CGObject {
         const contigs = this.sequence.contigsForMapRange(this.visibleRange);
         for (let i = 0, len = contigs.length; i < len; i++) {
           const contig = contigs[i];
-          const start = this.sequence.bpForContig(contig);
-          const stop = this.sequence.bpForContig(contig, contig.length);
+          // Postions:
+          // Large arcs (ie contigs) car drawn wrong when zoomed in (Safari)
+          // So the start/stop should be adjusted to the visible range
+          let start = this.sequence.bpForContig(contig);
+          if (start < this.visibleRange.start && !this.visibleRange.isWrapped()) {
+            start = this.visibleRange.start;
+          }
+          let stop = this.sequence.bpForContig(contig, contig.length);
+          if (stop > this.visibleRange.stop && !this.visibleRange.isWrapped()) {
+            stop = this.visibleRange.stop;
+          }
           let color = (contig.index % 2 === 0) ? this.color : this.colorAlternate;
-          // let color = (i % 2 === 0) ? this.color : this.colorAlternate;
           if (contig.color) {
             color = contig.color;
           }
           this.viewer.canvas.drawElement('map', start, stop, this.adjustedCenterOffset, color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(contig));
         }
       } else {
-        if (this.visibleRange.isWrapped && this.decoration === 'arrow') {
+        if (this.visibleRange.isWrapped() && this.decoration === 'arrow') {
           this.viewer.canvas.drawElement('map', this.visibleRange.start, this.sequence.length, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(this.sequence.mapContig));
           this.viewer.canvas.drawElement('map', 1, this.visibleRange.stop, this.adjustedCenterOffset, this.color.rgbaString, this.adjustedThickness, this.directionalDecorationForContig(this.sequence.mapContig));
         } else {

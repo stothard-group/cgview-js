@@ -8,4 +8,5 @@ docs/dist/cgview.js
 scripts/copy*
 # docs/dist
 # docs/api
+docs/test/maps/test.json
 
