@@ -14,7 +14,7 @@ export default function WorkerBaseContent() {
   const calculateBaseContent = function(data) {
     let progress = 0;
     let savedProgress = 0;
-    const progressIncrement = 1;
+    const progressIncrement = 5;
     const positions = [];
     let scores = [];
     const type = data.type;
