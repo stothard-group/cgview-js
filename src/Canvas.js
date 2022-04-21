@@ -273,6 +273,21 @@ class Canvas {
 
 
     if (decoration === 'arc') {
+
+      // Adjust feature start and stop based on minimum arc length.
+      // Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
+      // At some scales, small features will have an arc length of a fraction
+      // of a pixel. In these cases, the arcs are hard to see.
+      // A minArcLength of 0 means no adjustments will be made.
+      const minArcLengthPixels = settings.minArcLength;
+      const featureLengthBp = this.sequence.lengthOfRange(start, stop);
+      const minArcLengthBp = minArcLengthPixels / this.pixelsPerBp(centerOffset);
+      if ( featureLengthBp < minArcLengthBp ) {
+        const middleBP = start + ( featureLengthBp / 2 );
+        start = middleBP - (minArcLengthBp / 2);
+        stop = middleBP + (minArcLengthBp / 2);
+      }
+
       if (showShading) {
         const shadowWidth = width * shadowFraction;
         // Main Arc
