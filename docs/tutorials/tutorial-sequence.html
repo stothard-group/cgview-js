@@ -105,7 +105,7 @@ cgv = new CGV.Viewer('#my-viewer', {
 });
 ```
 
-## Create a [Track](../api/Track.html) with ORFs extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with ORFs extracted from the sequence ##
 
 ```js
 cgv.addTracks({
@@ -132,7 +132,7 @@ cgv.addTracks({
   // For 'source', the dataKeys can be a single value or an array of values.
   // For 'sequence', the dataKeys can be one of the following:
   //   'orfs', 'start-stop-codons', 'gc-skew', 'gc-content'
-  // e.g. In this example, the ORF features will be extracted from the seqeunce.
+  // e.g. In this example, the ORF features will be extracted from the sequence.
   dataKeys: 'orfs',
   // Additional options may be passed to the data extractor
   // The following are the default options
@@ -144,7 +144,7 @@ cgv.addTracks({
 });
 ```
 
-## Create a [Track](../api/Track.html) with a GC Skew plot extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with a GC Skew plot extracted from the sequence ##
 
 ```js
 cgv.addTracks({
@@ -152,7 +152,7 @@ cgv.addTracks({
   position: 'inside',
   dataType: 'feature',
   dataMethod: 'sequence',
-  // e.g. In this example, GC Skew plot will be extracted from the seqeunce.
+  // e.g. In this example, GC Skew plot will be extracted from the sequence.
   dataKeys: 'gc-skew',
   // By default, the step and window values are calculated based on the sequence length,
   // but they can be overridden here.
@@ -163,7 +163,7 @@ cgv.addTracks({
 });
 ```
 
-## Create a [Track](../api/Track.html) with a GC Content plot extracted from the seqeunce ##
+## Create a [Track](../api/Track.html) with a GC Content plot extracted from the sequence ##
 
 ```js
 cgv.addTracks({
@@ -171,7 +171,7 @@ cgv.addTracks({
   position: 'inside',
   dataType: 'feature',
   dataMethod: 'sequence',
-  // e.g. In this example, GC Content plot will be extracted from the seqeunce.
+  // e.g. In this example, GC Content plot will be extracted from the sequence.
   dataKeys: 'gc-content',
   // By default, the step and window values are calculated based on the sequence length,
   // but they can be overridden here.
@@ -194,7 +194,7 @@ cgv.draw();
 
 The resulting Viewer (id='my-viewer') is below. You can move the map around by clicking and dragging.
 You can zoom, using your mouse scroll wheel. The Legend colors can be changed by clicking on the swatches in the Legend.
-If you want play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
+If you want to play around with the viewer object, open your browser web inspector. In the console, you can access the viewer as *cgv*.
 
 
     </div> <!-- End of markdown in -->
