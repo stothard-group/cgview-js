@@ -160,7 +160,8 @@ class Settings {
       geneticCode: this.geneticCode,
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
-      arrowHeadLength: this.arrowHeadLength
+      arrowHeadLength: this.arrowHeadLength,
+      minArcLength: this.minArcLength
     };
   }
 
