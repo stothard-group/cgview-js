@@ -383,6 +383,8 @@ class IO {
    * @param {String} filename - Name to save image file as
    */
   downloadImage(width, height, filename = 'image.png') {
+    this.downloadSVG(width, height, filename);
+    return;
     const viewer = this._viewer;
     const canvas = viewer.canvas;
     width = width || viewer.width;
@@ -431,6 +433,87 @@ class IO {
     // let image = tempLayers['export'].node.toDataURL();
     tempLayers.export.node.toBlob( (blob) => { this.download(blob, filename, 'image/png');} );
     // console.log(tempLayers.map.ctx.getSerializedSvg(true));
+
+    // Restore original layers and settings
+    canvas._layers = origLayers;
+    viewer.debug = debug;
+
+    // Delete temp canvas layers
+    for (const name of layerNames) {
+      d3.select(tempLayers[name].node).remove();
+    }
+  }
+
+  /**
+   * Download the currently visible map as a SVG image.
+   * TESTING FOR NOW!
+   * If this works, merge/extract common code in downloadImage
+   * Requires svgcanvas to be available.
+   * @param {Number} width - Width of image
+   * @param {Number} height - Height of image
+   * @param {String} filename - Name to save image file as
+   */
+  downloadSVG(width, height, filename = 'image.png') {
+    if (!svgcanvas) {
+      console.log('SVG Canvas not available. Please see...')
+      return;
+    }
+    const viewer = this._viewer;
+    const canvas = viewer.canvas;
+    width = width || viewer.width;
+    height = height || viewer.height;
+
+    // Save current settings
+    // let origContext = canvas.ctx;
+    const origLayers = canvas._layers;
+    const debug = viewer.debug;
+    viewer.debug = false;
+
+    // Create new layers and add export layer
+    const layerNames = canvas.layerNames.concat(['export']);
+    const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height, false);
+
+    // Calculate scaling factor
+    const minNewDimension = d3.min([width, height]);
+    const scaleFactor = minNewDimension / viewer.minDimension;
+
+    // Scale context of layers, excluding the 'export' layer
+    for (const name of canvas.layerNames) {
+      tempLayers[name].ctx.scale(scaleFactor, scaleFactor);
+    }
+    canvas._layers = tempLayers;
+
+   // tempLayers.map.ctx = new C2S(1000, 1000); 
+   tempLayers.map.ctx = new svgcanvas.Context(width, height); 
+
+    // Draw map on to new layers
+    viewer.drawExport();
+    viewer.fillBackground();
+    // Legend
+    viewer.legend.draw();
+    // Captions
+    for (let i = 0, len = viewer._captions.length; i < len; i++) {
+      viewer._captions[i].draw();
+    }
+
+    // Copy drawing layers to export layer
+    const exportContext = tempLayers.export.ctx;
+    exportContext.drawImage(tempLayers.background.node, 0, 0);
+    exportContext.drawImage(tempLayers.map.node, 0, 0);
+    exportContext.drawImage(tempLayers.foreground.node, 0, 0);
+    exportContext.drawImage(tempLayers.canvas.node, 0, 0);
+
+    // Generate image from export layer
+    // let image = tempLayers['export'].node.toDataURL();
+    // tempLayers.export.node.toBlob( (blob) => { this.download(blob, filename, 'image/png');} );
+    // console.log(tempLayers.map.ctx.getSerializedSvg(true));
+    const svg = tempLayers.map.ctx.getSerializedSvg();
+    console.log('SVG-1')
+    console.log(svg)
+    this.download(svg, 'TEST.svg', 'text/plain');
+    // this.download('svg', 'TEST.svg', 'text/plain');
+    console.log('SVG-2')
+
 
     // Restore original layers and settings
     canvas._layers = origLayers;

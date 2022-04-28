@@ -3,6 +3,10 @@ maps = {
     name: 'Mitochondia [69,034 bp]',
     url: 'maps/mito.json',
   },
+  small_noplots: {
+    name: 'Mitochondia No Plots [69,034 bp]',
+    url: 'maps/mito_no_plots.json',
+  },
   medium: {
     name: 'E. coli [4,641,652 bp]',
     url: 'maps/ecoli.json',

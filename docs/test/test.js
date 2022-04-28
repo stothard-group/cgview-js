@@ -3,7 +3,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
-const defaultMap = 'version_0_1';
+// const defaultMap = 'version_0_1';
+const defaultMap = 'small_noplots';
 const defaultSize = 600; // 6oo is the size to run perfance test at
 // 'maps' is from maps.js
 // console.log('Maps (from map.js):')
