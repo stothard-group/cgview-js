@@ -383,8 +383,8 @@ class IO {
    * @param {String} filename - Name to save image file as
    */
   downloadImage(width, height, filename = 'image.png') {
-    this.downloadSVG(width, height, filename);
-    return;
+    // this.downloadSVG(width, height, filename);
+    // return;
     const viewer = this._viewer;
     const canvas = viewer.canvas;
     width = width || viewer.width;
@@ -446,74 +446,72 @@ class IO {
 
   /**
    * Download the currently visible map as a SVG image.
-   * TESTING FOR NOW!
-   * If this works, merge/extract common code in downloadImage
-   * Requires svgcanvas to be available.
+   * Requires SVGCanvas external dependency:
+   * https://github.com/zenozeng/svgcanvas
    * @param {Number} width - Width of image
    * @param {Number} height - Height of image
    * @param {String} filename - Name to save image file as
    */
-  downloadSVG(width, height, filename = 'image.png') {
-    if (!svgcanvas) {
-      console.log('SVG Canvas not available. Please see...')
+  downloadSVG(width, height, filename = 'image.svg') {
+    const SVGCanvas = this.viewer.externals.SVGCanvas;
+    if (!SVGCanvas) {
+      console.error('SVG Canvas not available. Please see...')
       return;
     }
     const viewer = this._viewer;
     const canvas = viewer.canvas;
-    width = width || viewer.width;
-    height = height || viewer.height;
+    width = viewer.width;
+    height = viewer.height;
+    // width = width || viewer.width;
+    // height = height || viewer.height;
 
     // Save current settings
-    // let origContext = canvas.ctx;
     const origLayers = canvas._layers;
     const debug = viewer.debug;
     viewer.debug = false;
 
     // Create new layers and add export layer
-    const layerNames = canvas.layerNames.concat(['export']);
+    // const layerNames = canvas.layerNames.concat(['export']);
+    const layerNames = canvas.layerNames;
     const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height, false);
 
     // Calculate scaling factor
-    const minNewDimension = d3.min([width, height]);
-    const scaleFactor = minNewDimension / viewer.minDimension;
+    // const minNewDimension = d3.min([width, height]);
+    // const scaleFactor = minNewDimension / viewer.minDimension;
 
     // Scale context of layers, excluding the 'export' layer
-    for (const name of canvas.layerNames) {
-      tempLayers[name].ctx.scale(scaleFactor, scaleFactor);
-    }
+    // for (const name of canvas.layerNames) {
+    //   tempLayers[name].ctx.scale(scaleFactor, scaleFactor);
+    // }
     canvas._layers = tempLayers;
 
-   // tempLayers.map.ctx = new C2S(1000, 1000); 
-   tempLayers.map.ctx = new svgcanvas.Context(width, height); 
+    const svgContext = new SVGCanvas.Context(width, height); 
+    // svgContext.scale(scaleFactor, scaleFactor);
+    tempLayers.map.ctx = svgContext;
+    tempLayers.foreground.ctx = svgContext;
+    tempLayers.canvas.ctx = svgContext;
 
+    // Override the clearRect method as it's not required for SVG drawing.
+    // Otherwise, an additional SVG rect will be drawn obscuring the background.
+    svgContext.clearRect = () => {};
+
+    // Draw background
+    svgContext.fillStyle = viewer.settings.backgroundColor.rgbaString;
+    svgContext.fillRect(0, 0, width, height);
     // Draw map on to new layers
     viewer.drawExport();
-    viewer.fillBackground();
     // Legend
     viewer.legend.draw();
     // Captions
     for (let i = 0, len = viewer._captions.length; i < len; i++) {
       viewer._captions[i].draw();
     }
-
-    // Copy drawing layers to export layer
-    const exportContext = tempLayers.export.ctx;
-    exportContext.drawImage(tempLayers.background.node, 0, 0);
-    exportContext.drawImage(tempLayers.map.node, 0, 0);
-    exportContext.drawImage(tempLayers.foreground.node, 0, 0);
-    exportContext.drawImage(tempLayers.canvas.node, 0, 0);
-
-    // Generate image from export layer
-    // let image = tempLayers['export'].node.toDataURL();
-    // tempLayers.export.node.toBlob( (blob) => { this.download(blob, filename, 'image/png');} );
-    // console.log(tempLayers.map.ctx.getSerializedSvg(true));
+    // Create SVG
     const svg = tempLayers.map.ctx.getSerializedSvg();
-    console.log('SVG-1')
-    console.log(svg)
-    this.download(svg, 'TEST.svg', 'text/plain');
-    // this.download('svg', 'TEST.svg', 'text/plain');
-    console.log('SVG-2')
-
+    // Download
+    this.download(svg, filename, 'text/plain');
+    // Causes issues with Affinity Designer for some reason
+    // this.download(svg, filename, 'image/svg+xml');
 
     // Restore original layers and settings
     canvas._layers = origLayers;

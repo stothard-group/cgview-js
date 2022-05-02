@@ -169,6 +169,11 @@ class Viewer {
 
     this.layout.updateScales();
 
+    // Integrate external dependencies for specific features
+    this.externals = {};
+    // Adding SVG using svgcanvas
+    // https://github.com/zenozeng/svgcanvas
+    this.externals.SVGCanvas = options.SVGCanvas;
 
     // TEMP adding
     if (options.features) {

@@ -14,6 +14,7 @@ const defaultSize = 600; // 6oo is the size to run perfance test at
 cgv = new CGV.Viewer('#my-viewer', {
   height: defaultSize,
   width: defaultSize,
+  SVGCanvas: svgcanvas,
   // debug: {sections: ['time', 'position']}
 });
 loadMapFromID(defaultMap);

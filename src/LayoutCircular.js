@@ -167,7 +167,28 @@ class LayoutCircular {
         ctx.lineTo(p2.x, p2.y);
       }
     } else {
-      ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      // ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+
+      // This code is required to draw SVG images correctly
+      // SVG can not handle arcs drawn as circles
+      // So for arcs that are close to becoming full circles, 
+      // they are split into 2 arcs
+      if ( (rangeLength / canvas.sequence.length) > 0.95) {
+        const startRads = scale.bp(startBp);
+        const stopRads = scale.bp(stopBp);
+        let midRads = startRads + ((stopRads - startRads) / 2);
+        // 1 bp of cushion is given to prevent calling this when start and stop are the same
+        // but floating point issues cause one to be larger than the other
+        if ( (startBp > (stopBp+1) && !anticlockwise) || (startBp < (stopBp-1) && anticlockwise) ) {
+          // Mid point is on opposite side of circle
+          midRads += Math.PI;
+        }
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, startRads, midRads, anticlockwise);
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, midRads, stopRads, anticlockwise);
+      } else {
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      }
+
     }
   }
 
