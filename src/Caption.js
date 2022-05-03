@@ -369,7 +369,8 @@ class Caption extends CGObject {
     box.refresh();
 
     this.fillBackground();
-    ctx.textBaseline = 'top';
+    // ctx.textBaseline = 'top';
+    ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
     ctx.font = this.font.css;
     ctx.textAlign = this.textAlignment;
     // Draw Text Label
@@ -377,7 +378,8 @@ class Caption extends CGObject {
     // ctx.fillText(this.name, box.paddedX, box.paddedY);
 
     const lineHeight = (box.height - box.padding) / this.lines.length;
-    let lineY = box.paddedY;
+    // let lineY = box.paddedY;
+    let lineY = box.y + lineHeight;
     for (let i = 0, len = this.lines.length; i < len; i++) {
       ctx.fillText(this.lines[i], this.textX(), lineY);
       lineY += lineHeight;
