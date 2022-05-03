@@ -11,7 +11,7 @@ import Events from './Events';
  *
  *   Component   | Description
  *   ------------|---------------
- *   *family*    | This can be a generic family (e.g. serif, sans-serif, monospace) or a specific font family (e.g. Times New Roman, Arail, or Courier)
+ *   *family*    | This can be a generic family (e.g. serif, sans-serif, monospace) or a specific font family (e.g. Times New Roman, Arial, or Courier)
  *   *style*     | One of *plain*, *bold*, *italic*, or *bold-italic*
  *   *size*      | The size of the font in pixels. The size will be adjusted for retina displays.
  *

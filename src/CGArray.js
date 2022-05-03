@@ -28,9 +28,10 @@ class CGArray extends Array {
     if (elements.length === 1) {
       super();
       this.push(elements[0]);
-    } else if (elements.length > 30000) {
+    } else if (elements.length > 20000) {
       // Note: 50,000 was too large, so we're trying 40,000
       // Note: 40,000 was too large (on Chrome), so now we're trying 30,000 - 2022-02-22
+      // Note: 30,000 was too large (on Chrome), so now we're trying 20,000 - 2022-05-03
       super();
       for (let i = 0, len = elements.length; i < len; i++) {
         this.push(elements[i]);
