@@ -383,8 +383,6 @@ class IO {
    * @param {String} filename - Name to save image file as
    */
   downloadImage(width, height, filename = 'image.png') {
-    // this.downloadSVG(width, height, filename);
-    // return;
     const viewer = this._viewer;
     const canvas = viewer.canvas;
     width = width || viewer.width;
@@ -445,14 +443,11 @@ class IO {
   }
 
   /**
-   * Download the currently visible map as a SVG image.
+   * Return the currently visible map as a SVG string.
    * Requires SVGCanvas external dependency:
    * https://github.com/zenozeng/svgcanvas
-   * @param {Number} width - Width of image
-   * @param {Number} height - Height of image
-   * @param {String} filename - Name to save image file as
    */
-  downloadSVG(width, height, filename = 'image.svg') {
+  getSVG() {
     const SVGCanvas = this.viewer.externals.SVGCanvas;
     if (!SVGCanvas) {
       console.error('SVG Canvas not available. Please see...')
@@ -460,8 +455,8 @@ class IO {
     }
     const viewer = this._viewer;
     const canvas = viewer.canvas;
-    width = viewer.width;
-    height = viewer.height;
+    const width = viewer.width;
+    const height = viewer.height;
     // width = width || viewer.width;
     // height = height || viewer.height;
 
@@ -508,10 +503,10 @@ class IO {
     }
     // Create SVG
     const svg = tempLayers.map.ctx.getSerializedSvg();
-    // Download
-    this.download(svg, filename, 'text/plain');
-    // Causes issues with Affinity Designer for some reason
-    // this.download(svg, filename, 'image/svg+xml');
+    // // Download
+    // this.download(svg, filename, 'text/plain');
+    // // Causes issues with Affinity Designer for some reason
+    // // this.download(svg, filename, 'image/svg+xml');
 
     // Restore original layers and settings
     canvas._layers = origLayers;
@@ -521,6 +516,20 @@ class IO {
     for (const name of layerNames) {
       d3.select(tempLayers[name].node).remove();
     }
+
+    return svg;
+  }
+  /**
+   * Download the currently visible map as a SVG image.
+   * Requires SVGCanvas external dependency:
+   * https://github.com/zenozeng/svgcanvas
+   * @param {String} filename - Name to save image file as
+   */
+  downloadSVG(filename = 'image.svg') {
+    const svg = this.getSVG();
+    this.download(svg, filename, 'text/plain');
+    // Causes issues with Affinity Designer for some reason
+    // this.download(svg, filename, 'image/svg+xml');
   }
 
   /**
