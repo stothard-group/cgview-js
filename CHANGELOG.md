@@ -8,7 +8,7 @@
 - Fixed ColorPicker and Highlighter Popup placement
 - GeneticCode and format now saved with settings
 - Fixed issue with extracting ORFs from contigs
-- Ready for release with https://proksse.ca
+- Ready for release with https://proksee.ca
 
 ## v1.1.0 - 2021-09-29
 - Remove 'id' attribute from Contig (Use 'name' instead)
