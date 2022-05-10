@@ -891,7 +891,7 @@ class Sequence extends CGObject {
       ctx.textAlign = 'center';
       // ctx.textBaseline = 'middle';
       ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
-      const yOffset = (this.font.height / 2) - 1;
+      const yOffset = (this.font.height * scaleFactor / 2) - 1;
       // Distance from the center of the backbone to place sequence text
       const centerOffsetDiff = ((this.bpSpacing / 2) + this.bpMargin) * scaleFactor;
       for (let i = 0, len = range.length; i < len; i++) {
