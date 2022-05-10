@@ -169,6 +169,10 @@ class LayoutCircular {
     } else {
       // ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
 
+      // console.log(startBp, stopBp)
+      // console.log(scale.bp(startBp))
+      // console.log(scale.bp(stopBp))
+
       // This code is required to draw SVG images correctly
       // SVG can not handle arcs drawn as circles
       // So for arcs that are close to becoming full circles, 

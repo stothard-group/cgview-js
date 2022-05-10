@@ -331,8 +331,13 @@ class Canvas {
       const featureLength = this.sequence.lengthOfRange(start, stop);
       if ( featureLength < arrowHeadLengthBp ) {
         const middleBP = start + ( featureLength / 2 );
-        start = middleBP - (arrowHeadLengthBp / 2);
-        stop = middleBP + (arrowHeadLengthBp / 2);
+        // Originally, the feature was adjusted to be the arrow head length.
+        // However, this caused an issue with SVG drawing because the arc part of
+        // the arrow would essentially be 0 bp. Drawing an arc of length 0 caused weird artifacts.
+        // So here we add an additional 0.1 bp to the adjusted length.
+        const adjustedFeatureHalfLength = (arrowHeadLengthBp + 0.1) / 2;
+        start = middleBP - adjustedFeatureHalfLength;
+        stop = middleBP + adjustedFeatureHalfLength;
       }
 
       // Set up drawing direction

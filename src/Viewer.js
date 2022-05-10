@@ -173,7 +173,7 @@ class Viewer {
     this.externals = {};
     // Adding SVG using svgcanvas
     // https://github.com/zenozeng/svgcanvas
-    this.externals.SVGCanvas = options.SVGCanvas;
+    this.externals.SVGContext = options.SVGContext;
 
     // TEMP adding
     if (options.features) {

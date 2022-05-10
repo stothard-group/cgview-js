@@ -448,17 +448,15 @@ class IO {
    * https://github.com/zenozeng/svgcanvas
    */
   getSVG() {
-    const SVGCanvas = this.viewer.externals.SVGCanvas;
-    if (!SVGCanvas) {
-      console.error('SVG Canvas not available. Please see...')
+    const SVGContext = this.viewer.externals.SVGContext;
+    if (!SVGContext) {
+      console.error('SVGContext is not set. This should be set to svgcanvas.Context from https://github.com/zenozeng/svgcanvas')
       return;
     }
     const viewer = this._viewer;
     const canvas = viewer.canvas;
     const width = viewer.width;
     const height = viewer.height;
-    // width = width || viewer.width;
-    // height = height || viewer.height;
 
     // Save current settings
     const origLayers = canvas._layers;
@@ -469,19 +467,9 @@ class IO {
     // const layerNames = canvas.layerNames.concat(['export']);
     const layerNames = canvas.layerNames;
     const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height, false);
-
-    // Calculate scaling factor
-    // const minNewDimension = d3.min([width, height]);
-    // const scaleFactor = minNewDimension / viewer.minDimension;
-
-    // Scale context of layers, excluding the 'export' layer
-    // for (const name of canvas.layerNames) {
-    //   tempLayers[name].ctx.scale(scaleFactor, scaleFactor);
-    // }
     canvas._layers = tempLayers;
 
-    const svgContext = new SVGCanvas.Context(width, height); 
-    // svgContext.scale(scaleFactor, scaleFactor);
+    const svgContext = new SVGContext(width, height); 
     tempLayers.map.ctx = svgContext;
     tempLayers.foreground.ctx = svgContext;
     tempLayers.canvas.ctx = svgContext;
@@ -490,9 +478,10 @@ class IO {
     // Otherwise, an additional SVG rect will be drawn obscuring the background.
     svgContext.clearRect = () => {};
 
-    // Draw background
+    // Manually Draw background here
     svgContext.fillStyle = viewer.settings.backgroundColor.rgbaString;
     svgContext.fillRect(0, 0, width, height);
+
     // Draw map on to new layers
     viewer.drawExport();
     // Legend
@@ -503,10 +492,6 @@ class IO {
     }
     // Create SVG
     const svg = tempLayers.map.ctx.getSerializedSvg();
-    // // Download
-    // this.download(svg, filename, 'text/plain');
-    // // Causes issues with Affinity Designer for some reason
-    // // this.download(svg, filename, 'image/svg+xml');
 
     // Restore original layers and settings
     canvas._layers = origLayers;
@@ -521,13 +506,16 @@ class IO {
   }
   /**
    * Download the currently visible map as a SVG image.
-   * Requires SVGCanvas external dependency:
+   * Requires SVGContext external dependency:
    * https://github.com/zenozeng/svgcanvas
    * @param {String} filename - Name to save image file as
    */
   downloadSVG(filename = 'image.svg') {
     const svg = this.getSVG();
-    this.download(svg, filename, 'text/plain');
+    if (svg) {
+      // this.download(svg, filename, 'text/plain');
+    this.download(svg, filename, 'image/svg+xml');
+    }
     // Causes issues with Affinity Designer for some reason
     // this.download(svg, filename, 'image/svg+xml');
   }
