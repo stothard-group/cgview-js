@@ -745,7 +745,10 @@ class Viewer {
   }
 
   /**
-   * Adds Captions to the viewer. See
+   * Add one or more [captions](Caption.html) (see [attributes](Caption.html#attributes)).
+   * See [adding records](../docs.html#s.adding-records) for details.
+   * @param {Object|Array} data - Object or array of objects describing the captions
+   * @return {CGArray<Caption>} CGArray of added captions
    */
   addCaptions(captionData = []) {
     captionData = CGArray.arrayerize(captionData);
@@ -1189,6 +1192,96 @@ class Viewer {
     }
     this.legend && this.legend.refresh();
   }
+
+  // FIXME: documentation
+  // Animate through a set of elments.
+  // Animations can be cancelled by calling stopAnimate or clicking on canvas
+  // Each element must have a moveTo function.
+    // elements: array of elements, or number (of randomly chosen features) or undefined (5 random features will be chosen)
+    // options (with defaults):
+    // - noReset: false
+    // - resetPosition: element with moveTo (default is the viewer)
+    // - resetDuration: animation time for reset (1000?)
+    // - resetPause: length of time to stay at reset position (0)
+    // - elementDuration: 1000?
+    // - elementPause: 0
+  /**
+   * Animate through a defined set of elements (eg. features, bookmarks) or a
+   * random number of features. By default the map will reset between
+   * animations. To stop the animation, click the map canvas or call
+   * [Viewer.stopAnimate()](Viewer.html#stopAnimate).
+   * @param {Number|Array} elements - An array of [features](Feature.html) or
+   *   [bookmarks](Bookmark.html). If a number is provided, that number of random
+   *   features will be animated.
+   * @param {Object} options - Options for the animations:
+   * <br />
+   * Name         | Type    | Description
+   * -------------|---------|------------
+   * noReset      | Boolean | If set to true, the map will not reset between animations [Default: false]
+   * resetPosition  | Feature,Bookmark | A feature or bookmark to reset the map to between animations [Default: call [Viewer.reset()](Viewer.html#reset)]
+   * resetDuration  | Number | Number of milliseconds for the reset animation [Default: 1500]
+   * resetPause  | Number | Number of milliseconds to pause on the reset position [Default: 500]
+   * elementDuration  | Number | Number of milliseconds for each element animation [Default: 1500]
+   * elementPause  | Number | Number of milliseconds to pause on each element position [Default: 500]
+   *
+   * @param {Number} step - The element index (base-0) to start the animation with [Default: 0]
+   * @param {Boolean} reset - Whether this is a reset animation or not [Default: false]
+   */
+  animate(elements=5, options={}, step=0, reset=false) {
+    const noReset = options.noReset;
+    const resetPosition = options.resetPosition;
+    const resetDuration = utils.defaultFor(options.resetDuration, 1500);
+    const resetPause = utils.defaultFor(options.resetPause, 500);
+    const elementDuration = utils.defaultFor(options.elementDuration, 1500);
+    const elementPause = utils.defaultFor(options.elementPause, 500);
+
+    // Get random features if an integer was provided for elements
+    if (Number.isInteger(elements)) {
+      const allFeatures = this.features();
+      if (allFeatures.length > 0) {
+        let animateFeatures = [];
+        for (let i = 0; i < elements; i++) {
+          const randomIndex = Math.floor(Math.random() * allFeatures.length);
+          const randomFeature = allFeatures[randomIndex];
+          animateFeatures.push(randomFeature);
+        }
+        elements = animateFeatures;
+      } else {
+        console.error('No features to animate');
+        return;
+      }
+    }
+
+    // Is this step reseting the animation?
+    const resetStep = reset && !noReset;
+
+    // Duration for timeout depends on resetStep and element/resetDuration and element/resetPause
+    const timeoutDuration = resetStep ? (resetDuration + resetPause) : (elementDuration + elementPause);
+
+    // console.log(`Animate: Step ${step}; Reseting: ${resetStep}; Duration: ${timeoutDuration}`);
+
+    if (resetStep) {
+      if (resetPosition) {
+        resetPosition.moveTo(resetDuration);
+      } else {
+        this.reset(resetDuration);
+      }
+    } else {
+      elements[step].moveTo(elementDuration);
+      step = (step >= (elements.length - 1)) ? 0 : step + 1;
+    }
+    this._animateTimeoutID = setTimeout( () => {
+      this.animate(elements, options, step, !reset)
+    }, timeoutDuration);
+  }
+
+  /**
+   * Stops an animation started with [Viewer.animate()](Viewer.html#animate).
+   */
+  stopAnimate() {
+    clearTimeout(this._animateTimeoutID);
+  }
+
 
   test2MoveTo(start, stop) {
     // TODO: check for visibile range

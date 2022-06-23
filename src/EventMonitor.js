@@ -123,6 +123,8 @@ class EventMonitor {
    */
   _initializeClick() {
     d3.select(this.canvas.node('ui')).on('click.cgv', (d3Event) => {
+      // If the canvas is clicked, stop any animations
+      this.viewer.stopAnimate();
       this.events.trigger('click', this._createEvent(d3Event));
     });
   }
