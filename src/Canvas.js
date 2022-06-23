@@ -271,6 +271,13 @@ class Canvas {
     // ctx.lineJoin = 'round';
     showShading = (showShading === undefined) ? settings.showShading : showShading;
 
+    // When drawing elements (arcs or arrows), the element should be offset by
+    // half a bp on each side. This will allow single base features to be
+    // drawn. It also reduces ambiguity for where features start/stop.
+    // For example, if the start and stop is 10, the feature will be drwan from
+    // 9.5 to 10.5.
+    start -= 0.5;
+    stop += 0.5;
 
     if (decoration === 'arc') {
 

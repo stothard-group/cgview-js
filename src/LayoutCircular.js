@@ -81,10 +81,17 @@ class LayoutCircular {
     return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
   }
 
-  // Zoom Factor does not affect circular bp scale
+  // Zoom Factor does not affect circular bp scale so we only need
+  // to set this once on initialization
+  // Note that since the domain will be from 1 to length,
+  // the range goes from the top of the circle to 1 bp less
+  // than the top of the circle.
   adjustBpScaleRange(initialize = false) {
     if (initialize) {
-      this.scale.bp.range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
+      const radiansPerBp = (2 * Math.PI) / this.sequence.length;
+      const rangeStart = -1 / 2 * Math.PI;
+      const rangeStop = (3 / 2 * Math.PI) - radiansPerBp;
+      this.scale.bp.range([rangeStart, rangeStop]);
     }
   }
 

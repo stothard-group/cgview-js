@@ -209,6 +209,3 @@ downloadSVGBtn.addEventListener('click', (e) => {
   cgv.io.downloadSVG('cgview.svg');
 });
 
-// SVG Test (Not done)
-// $('#download-svg').on('click', function() { cgv.io.downloadImage(600,600); return false });
-

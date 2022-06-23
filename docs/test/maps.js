@@ -39,6 +39,10 @@ maps = {
     name: 'Test Big',
     url: 'maps/test-big.json',
   },
+  test_single_bases: {
+    name: 'Test Single Base Features',
+    url: 'maps/test_single_base_features.json',
+  },
   version_0_1: {
     name: 'Mitochondia [69,034 bp]; Version 0.1',
     url: 'maps/mito-0.1.json',

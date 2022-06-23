@@ -105,7 +105,7 @@ hr {
   float: left;
   margin-left: 5px;
   /* Default should be hidden unless doing a lot of testing */
-  /* visibility: hidden; */
+  visibility: hidden;
 }
 #svg-section .btn {
   width: 200px;

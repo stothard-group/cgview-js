@@ -19,7 +19,8 @@ class Label {
   constructor(feature, options = {}) {
     this._feature = feature;
     this.name = options.name;
-    this.bp = this.feature.mapStart + (this.feature.length / 2);
+    // Minus 0.5 since features are drawn from start-0.5 to stop+0.5
+    this.bp = this.feature.mapStart - 0.5 + (this.feature.length / 2);
     this.bpDefault = this.bp;
 
     // this.lineAttachmentDefault = this.viewer.layout.clockPositionForBp(this.bp);
