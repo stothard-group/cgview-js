@@ -6,7 +6,7 @@
         "id": "1eb18c97a030363e64aff2215cc53c6ae6c92a78",
         "name": "SVG TEST",
         "settings": {
-            "backgroundColor": "rgba(200,200,200,1)",
+            "backgroundColor": "rgba(255,255,255,1)",
             "showShading": false,
             "arrowHeadLength": 0.3
         },
@@ -161,26 +161,6 @@
                 "strand": -1,
                 "source": "sequence-features",
                 "legend": "Arrow",
-                "visible": true
-            },
-            {
-                "name": "-1F-2bp",
-                "type": "CDS",
-                "start": 950,
-                "stop":  5,
-                "strand": 1,
-                "source": "sequence-features",
-                "legend": "Arc",
-                "visible": true
-            },
-            {
-                "name": "-1R-2bp",
-                "type": "CDS",
-                "start": 1000,
-                "stop":  1,
-                "strand": -1,
-                "source": "sequence-features",
-                "legend": "Arc",
                 "visible": true
             }
         ],

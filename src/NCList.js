@@ -54,16 +54,19 @@ class NCList {
           interval: interval,
           index: i,
           // start: interval.start,
-          start: this.start(interval),
-          stop: this.circularLength,
+          // start: this.start(interval),
+          // stop: this.circularLength,
+          [this.startProperty]: this.start(interval),
+          [this.stopProperty]: this.circularLength,
           crossesOrigin: true
         });
         nomalizedIntervals.push({
           interval: interval,
           index: i,
-          start: 1,
-          // stop: interval.stop,
-          stop: this.end(interval),
+          // start: 1,
+          // stop: this.end(interval),
+          [this.startProperty]: 1,
+          [this.stopProperty]: this.end(interval),
           crossesOrigin: true
         });
       }
@@ -287,6 +290,49 @@ class NCList {
     testInterval(nc, 40, 85, ['F', 'G', 'L']);
     testInterval(nc, 40, 95, ['F', 'G', 'H', 'I', 'J', 'K', 'L']);
     testInterval(nc, 95, 10, ['A', 'B', 'C', 'G', 'H', 'I', 'J', 'K', 'L']);
+
+    return nc;
+  }
+
+  static testMapStarts() {
+    function testInterval(nc, start, stop, expected) {
+      const result = nc.find(start, stop).map( n => n.name ).sort().join(', ');
+      expected = expected.sort().join(', ');
+      let testOut = `${start}..${stop}: ${expected} - `;
+      testOut += (result === expected) ? 'Pass' : `${'FAIL' + ' - '}${result}`;
+      console.log(testOut);
+    }
+
+    const intervals = [
+      {name: 'A', mapStart: 10, mapStop: 10},
+      {name: 'B', mapStart: 20, mapStop: 21},
+      {name: 'C', mapStart: 950, mapStop: 5},
+    ];
+    // const nc = new NCList(intervals, { circularLength: 1000 });
+    const nc = new NCList(intervals, { circularLength: 1000, startProperty: 'mapStart', stopProperty: 'mapStop'});
+
+    testInterval(nc, 900, 200, ['A', 'B', 'C']);
+
+    return nc;
+  }
+  static testMapStarts2() {
+    function testInterval(nc, start, stop, expected) {
+      const result = nc.find(start, stop).map( n => n.name ).sort().join(', ');
+      expected = expected.sort().join(', ');
+      let testOut = `${start}..${stop}: ${expected} - `;
+      testOut += (result === expected) ? 'Pass' : `${'FAIL' + ' - '}${result}`;
+      console.log(testOut);
+    }
+
+    const intervals = [
+      {name: 'A', start: 10, stop: 10},
+      {name: 'B', start: 20, stop: 21},
+      {name: 'C', start: 950, stop: 5},
+    ];
+    // const nc = new NCList(intervals, { circularLength: 1000 });
+    const nc = new NCList(intervals, { circularLength: 1000, startProperty: 'start', stopProperty: 'stop'});
+
+    testInterval(nc, 900, 200, ['A', 'B', 'C']);
 
     return nc;
   }

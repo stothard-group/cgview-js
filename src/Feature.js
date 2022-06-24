@@ -514,10 +514,12 @@ class Feature extends CGObject {
       const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');
 
       if (zoomedSplitFeature || unzoomedSplitLinearFeature) {
-        canvas.drawElement(layer, visibleRange.start - 100, stop,
+        const visibleStart = Math.max((visibleRange.start - 100), 1); // Do not draw off the edge of linear maps
+        const visibleStop = Math.min((visibleRange.stop + 100), this.sequence.length); // Do not draw off the edge of linear maps
+        canvas.drawElement(layer, visibleStart, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
           color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
-        canvas.drawElement(layer, start, visibleRange.stop + 100,
+        canvas.drawElement(layer, start, visibleStop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
           color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
       } else {

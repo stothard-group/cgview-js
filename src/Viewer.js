@@ -1226,14 +1226,20 @@ class Viewer {
    *
    * @param {Number} step - The element index (base-0) to start the animation with [Default: 0]
    * @param {Boolean} reset - Whether this is a reset animation or not [Default: false]
+   * @param {Boolean} newAnimation - Whether this is a newAnimation or a continuation of a previous one [Default: true]
    */
-  animate(elements=5, options={}, step=0, reset=false) {
+  animate(elements=5, options={}, step=0, reset=false, newAnimation=true) {
     const noReset = options.noReset;
     const resetPosition = options.resetPosition;
     const resetDuration = utils.defaultFor(options.resetDuration, 1500);
     const resetPause = utils.defaultFor(options.resetPause, 500);
     const elementDuration = utils.defaultFor(options.elementDuration, 1500);
     const elementPause = utils.defaultFor(options.elementPause, 500);
+
+    if (newAnimation) {
+      // Stop previous animations
+      this.stopAnimate();
+    }
 
     // Get random features if an integer was provided for elements
     if (Number.isInteger(elements)) {
@@ -1271,7 +1277,7 @@ class Viewer {
       step = (step >= (elements.length - 1)) ? 0 : step + 1;
     }
     this._animateTimeoutID = setTimeout( () => {
-      this.animate(elements, options, step, !reset)
+      this.animate(elements, options, step, !reset, false)
     }, timeoutDuration);
   }
 
