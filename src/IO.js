@@ -443,6 +443,81 @@ class IO {
   }
 
   /**
+   * Return the currently visible map as a SVG string.
+   * Requires SVGCanvas external dependency:
+   * https://github.com/zenozeng/svgcanvas
+   */
+  getSVG() {
+    const SVGContext = this.viewer.externals.SVGContext;
+    if (!SVGContext) {
+      console.error('SVGContext is not set. This should be set to svgcanvas.Context from https://github.com/zenozeng/svgcanvas')
+      return;
+    }
+    const viewer = this._viewer;
+    const canvas = viewer.canvas;
+    const width = viewer.width;
+    const height = viewer.height;
+
+    // Save current settings
+    const origLayers = canvas._layers;
+    const debug = viewer.debug;
+    viewer.debug = false;
+
+    // Create new layers and add export layer
+    // const layerNames = canvas.layerNames.concat(['export']);
+    const layerNames = canvas.layerNames;
+    const tempLayers = canvas.createLayers(d3.select('body'), layerNames, width, height, false);
+    canvas._layers = tempLayers;
+
+    const svgContext = new SVGContext(width, height); 
+    tempLayers.map.ctx = svgContext;
+    tempLayers.foreground.ctx = svgContext;
+    tempLayers.canvas.ctx = svgContext;
+
+    // Override the clearRect method as it's not required for SVG drawing.
+    // Otherwise, an additional SVG rect will be drawn obscuring the background.
+    svgContext.clearRect = () => {};
+
+    // Manually Draw background here
+    svgContext.fillStyle = viewer.settings.backgroundColor.rgbaString;
+    svgContext.fillRect(0, 0, width, height);
+
+    // Draw map on to new layers
+    viewer.drawExport();
+    // Legend
+    viewer.legend.draw();
+    // Captions
+    for (let i = 0, len = viewer._captions.length; i < len; i++) {
+      viewer._captions[i].draw();
+    }
+    // Create SVG
+    const svg = tempLayers.map.ctx.getSerializedSvg();
+
+    // Restore original layers and settings
+    canvas._layers = origLayers;
+    viewer.debug = debug;
+
+    // Delete temp canvas layers
+    for (const name of layerNames) {
+      d3.select(tempLayers[name].node).remove();
+    }
+
+    return svg;
+  }
+  /**
+   * Download the currently visible map as a SVG image.
+   * Requires SVGContext external dependency:
+   * https://github.com/zenozeng/svgcanvas
+   * @param {String} filename - Name to save image file as
+   */
+  downloadSVG(filename = 'image.svg') {
+    const svg = this.getSVG();
+    if (svg) {
+    this.download(svg, filename, 'image/svg+xml');
+    }
+  }
+
+  /**
    * Download the map sequence in FASTA format.
    * @param {String} fastaId - ID line for FASTA (i.e. text after '>')
    * @param {String} filename - Name for saved file

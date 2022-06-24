@@ -2,8 +2,10 @@
 // Settings
 ///////////////////////////////////////////////////////////////////////////////
 
-// const defaultMap = 'small';
-const defaultMap = 'version_0_1';
+const defaultMap = 'small';
+// const defaultMap = 'version_0_1';
+// const defaultMap = 'small_noplots';
+// const defaultMap = 'test';
 const defaultSize = 600; // 6oo is the size to run perfance test at
 // 'maps' is from maps.js
 // console.log('Maps (from map.js):')
@@ -13,6 +15,7 @@ const defaultSize = 600; // 6oo is the size to run perfance test at
 cgv = new CGV.Viewer('#my-viewer', {
   height: defaultSize,
   width: defaultSize,
+  SVGContext: svgcanvas.Context,
   // debug: {sections: ['time', 'position']}
 });
 loadMapFromID(defaultMap);
@@ -184,8 +187,25 @@ debugMode.addEventListener('click', (e) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Future SVG Tests
+// SVG Testing
 ///////////////////////////////////////////////////////////////////////////////
-// SVG Test (Not done)
-// $('#download-svg').on('click', function() { cgv.io.downloadImage(600,600); return false });
+
+const svgMode = document.getElementById('option-svg');
+svgMode.addEventListener('click', (e) => {
+  const svgSection = document.getElementById('svg-section');
+  if (e.target.checked) {
+    svgSection.style.visibility = 'visible';
+  } else {
+    svgSection.style.visibility = 'hidden';
+  }
+});
+const createSVGBtn = document.getElementById('create-svg');
+createSVGBtn.addEventListener('click', (e) => {
+  const svgDiv = document.getElementById('svg-map');
+  svgDiv.innerHTML = cgv.io.getSVG();
+});
+const downloadSVGBtn = document.getElementById('download-svg');
+downloadSVGBtn.addEventListener('click', (e) => {
+  cgv.io.downloadSVG('cgview.svg');
+});
 

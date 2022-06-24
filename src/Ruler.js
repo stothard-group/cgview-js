@@ -307,7 +307,8 @@ class Ruler extends CGObject {
     ctx.fillStyle = this.color.rgbaString; // Label Color
     ctx.font = this.font.css;
     ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
+    // ctx.textBaseline = 'top';
+    ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
     // Draw Tick for first bp (Origin)
     this.canvas.radiantLine('map', 1, centerOffset, tickLength, this.tickWidth * 2, this.color.rgbaString, this.lineCap);
     // Draw Major ticks
@@ -334,7 +335,8 @@ class Ruler extends CGObject {
     const attachmentPosition = this.layout.clockPositionForBp(bp);
     const labelWidth = this.font.width(ctx, label);
     const labelPt = utils.rectOriginForAttachementPoint(innerPt, attachmentPosition, labelWidth, this.font.height);
-    ctx.fillText(label, labelPt.x, labelPt.y);
+    // ctx.fillText(label, labelPt.x, labelPt.y);
+    ctx.fillText(label, labelPt.x, labelPt.y + this.font.height);
   }
 
   invertColors() {

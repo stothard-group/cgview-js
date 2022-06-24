@@ -2,6 +2,19 @@
 # CGView.js Changelog
 --------------------------------------------------------------------------------
 
+## v1.3.0 - 2022-06-24
+### Added
+- SVG downloads (IO.downloadSVG). Requires [svgcanvas](https://github.com/zenozeng/svgcanvas)
+- Ability to animate map between random number of features or an array of features/bookmarks (Viewer.animate)
+
+### Fixed
+- Features are now drawn from start-0.5bp to stop+0.5bp. Fixes [issue#3](https://github.com/stothard-group/cgview-js/issues/3)
+- Labels now center properly on small features
+- Circle bp scale fixed. Top of circle is equal to 1bp and sequence length + 1
+- Fixed disappearing features that wrap origin
+- Fixed features that wrap origin from drawing past map boundaries on linear maps
+
+
 ## v1.2.0 - 2022-01-21
 - Add tags for features and track dataMethod
 - Added IO JSON converter for older versions

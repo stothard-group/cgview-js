@@ -1,6 +1,6 @@
 {
   "name": "cgview",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "main": "dist/cgview.esm.js",
   "description": "CGView: Circular Genome Viewer",
   "homepage": "https://js.cgview.ca",
@@ -51,6 +51,7 @@
   "author": "Jason Grant",
   "license": "Apache-2.0",
   "dependencies": {
-    "d3": "7.0.1"
+    "d3": "7.0.1",
+    "svgcanvas": "^2.3.0"
   }
 }

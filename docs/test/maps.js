@@ -3,6 +3,10 @@ maps = {
     name: 'Mitochondia [69,034 bp]',
     url: 'maps/mito.json',
   },
+  small_noplots: {
+    name: 'Mitochondia No Plots [69,034 bp]',
+    url: 'maps/mito_no_plots.json',
+  },
   medium: {
     name: 'E. coli [4,641,652 bp]',
     url: 'maps/ecoli.json',
@@ -34,6 +38,14 @@ maps = {
   testBig: {
     name: 'Test Big',
     url: 'maps/test-big.json',
+  },
+  test_single_bases: {
+    name: 'Test Single Base Features',
+    url: 'maps/test_single_base_features.json',
+  },
+  test_wrapping_features: {
+    name: 'Test Wrapping Features',
+    url: 'maps/test_wrapping_features.json',
   },
   version_0_1: {
     name: 'Mitochondia [69,034 bp]; Version 0.1',

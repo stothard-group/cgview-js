@@ -135,7 +135,9 @@ class CGRange {
    * @member {Number} - Get the middle of the range.
    */
   get middle() {
-    const _middle = this.start + (this.length / 2);
+    // Subtract 0.5 from the start like we do in Canvas.drawElement
+    // So the middle of a 1 bp range will be itself.
+    const _middle = this.start - 0.5 + (this.length / 2);
     if (_middle > this.contig.length) {
       return (_middle - this.contig.length);
     } else {

@@ -1,0 +1,179 @@
+{
+    "cgview": {
+        "version": "1.1.0",
+        "created": "2017-11-23 10:38:26",
+        "updated": "2017-11-23 10:38:26",
+        "id": "1eb18c97a030363e64aff2215cc53c6ae6c92a78",
+        "name": "SVG TEST",
+        "settings": {
+            "backgroundColor": "rgba(255,255,255,1)",
+            "showShading": false,
+            "arrowHeadLength": 0.3
+        },
+        "backbone": {
+            "color": "rgba(128,128,128,1)",
+            "thickness": 5,
+            "visible": true
+        },
+        "ruler": {
+            "font": "sans-serif,plain,10",
+            "color": "rgba(0,0,0,1)",
+            "visible": true
+        },
+        "annotation": {
+            "font": "sans-serif,plain,12",
+            "visible": true
+        },
+        "dividers": {
+            "slot": {
+                "visible": true,
+                "color": "rgba(150, 150,150,1)",
+                "thickness": 1,
+                "spacing": 1
+            },
+            "track": {
+                "visible": true,
+                "color": "rgba(0,0,0,1)",
+                "thickness": 1,
+                "spacing": 1
+            }
+        },
+        "captions": [
+            {
+                "name": "Single base features",
+                "position": "bottom-center",
+                "textAlignment": "left",
+                "font": "sans-serif,plain,24",
+                "backgroundColor": "rgba(255,255,255,0.4)",
+                "visible": true
+            }
+        ],
+        "legend": {
+            "name": "Legend",
+            "position": "top-right",
+            "textAlignment": "left",
+            "font": "sans-serif,plain,14",
+            "backgroundColor": "rgba(255,255,255,0.75)",
+            "visible": true,
+            "items": [
+                {
+                    "name": "Arc",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,0,153,0.5)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "Arrow",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(253,153,0,0.5)",
+                    "decoration": "arrow"
+                }
+            ]
+        },
+        "sequence": {
+            "font": "sans-serif,plain,10",
+            "color": "rgb(0,0,0)",
+            "seq": "TAAAAAAATCGGTATAATTAAGAATTTTTTTCTTAAATATGCAATAAAAATATTATAAAGACAAAAGAAGGTATTCAATGGATGCCTTGGTATTCGGTTATGGACGTAATACGTTGCGATAAGTCATGGGGAGAAACGTAGAAAAACTGTGATCCATGAATTGCCAAAGAGAAAACTCACTCGTAATGAGTAGAGTCATTTATATATGATTCTATATACTTGGTGAACTGAAACATCTAAGTAGCCAAAGGAAAAGAAATCAAAAGAGATTCCGTTAGTAGTGGCGAGCGAATACGGATTAGGCCTTTCTATCTAAAAAGTAGAAACTATTTAATGATAATAATATTAGAAAAGATTGGAAAATCTTGCCATAGAAGGTGATAGCCCTGTATAATAAAGAATAAATTGAATAGAGGAGTAAGACGGAACACGTGAAATTTTGTCTGAATATAGCAGGACCACCTGCTAAGCCTAAATATAACCGAATAACCGATAGTGAACAAGTACCGTGAGGGAAAGGTGAAAAGAACCCTGAGAAGGGAGTGAAAAGAACCTGAAATTGAATACTTACAAGCAGTCGAAGTGAACTTTACTTTATGTTAAGTTTATGACGGCGTACCTTTTGCATAATGGGTCAGCGAGTTCATATACGCAGCAAGCTTAATCCGATAGGAATAGGCGTAGTGAAAACGAGTTTGAAAAATAGCGTTAAGTTGCGTGTGTGAGACCCGAAACTGAGTGATCTATCCATGAGCAGGTTGAAAGTGCGGTGATACGCACTGGAGGACCGAACCCACGTATGTGGAAAAATACGGGGATGACTTGTGGATAGGGGTGAAAGGCTAATCAAACTCAGAGATAGCTGGTTTTCTGCGAAATCTATTTAGGTAGAGCGTTGTGTAAACATCATTTGGGGTAGAGCACTCAATGAGTACTTGGGGGGTGTCAAACTACTTCAGGCTCAAGGAAACTCCGAATACGAATGATGAATAACAGCAGA",
+            "visible": true
+        },
+        "features": [
+            {
+                "name": "10F-1bp",
+                "type": "CDS",
+                "start": 10,
+                "stop":  10,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "Arc",
+                "visible": true
+            },
+            {
+                "name": "20F-2bp",
+                "type": "CDS",
+                "start": 20,
+                "stop":  21,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "Arc",
+                "visible": true
+            },
+            {
+                "name": "15R-1bp",
+                "type": "CDS",
+                "start": 15,
+                "stop":  15,
+                "strand": -1,
+                "source": "sequence-features",
+                "legend": "Arc",
+                "visible": true
+            },
+            {
+                "name": "25R-2bp",
+                "type": "CDS",
+                "start": 25,
+                "stop":  26,
+                "strand": -1,
+                "source": "sequence-features",
+                "legend": "Arc",
+                "visible": true
+            },
+            {
+                "name": "30F-1bp",
+                "type": "CDS",
+                "start": 30,
+                "stop":  30,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "Arrow",
+                "visible": true
+            },
+            {
+                "name": "40F-2bp",
+                "type": "CDS",
+                "start": 40,
+                "stop":  41,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "Arrow",
+                "visible": true
+            },
+            {
+                "name": "35R-1bp",
+                "type": "CDS",
+                "start": 35,
+                "stop":  35,
+                "strand": -1,
+                "source": "sequence-features",
+                "legend": "Arrow",
+                "visible": true
+            },
+            {
+                "name": "45R-2bp",
+                "type": "CDS",
+                "start": 45,
+                "stop":  46,
+                "strand": -1,
+                "source": "sequence-features",
+                "legend": "Arrow",
+                "visible": true
+            }
+        ],
+        "plots": [],
+        "tracks": [
+            {
+                "name": "Features",
+                "separateFeatureBy": "strand",
+                "position": "both",
+                "dataType": "feature",
+                "dataMethod": "source",
+                "dataKeys": "sequence-features"
+            }
+        ]
+    }
+}

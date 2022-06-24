@@ -18,10 +18,10 @@ import * as d3 from 'd3';
  * ------------------|---------------
  * background        | for drawing behind the map
  * map               | main layer, where the map is drawn
- * forground         | for drawing in front of the map (e.g. map based captions)
+ * foreground         | for drawing in front of the map (e.g. map based captions)
  * canvas            | layer for traning static components (e.g. canvas based captions and legend)
  * debug             | layer to draw debug information
- * ui                | layer for captuing interactions
+ * ui                | layer for capturing interactions
  */
 class Canvas {
 
@@ -271,6 +271,13 @@ class Canvas {
     // ctx.lineJoin = 'round';
     showShading = (showShading === undefined) ? settings.showShading : showShading;
 
+    // When drawing elements (arcs or arrows), the element should be offset by
+    // half a bp on each side. This will allow single base features to be
+    // drawn. It also reduces ambiguity for where features start/stop.
+    // For example, if the start and stop is 10, the feature will be drwan from
+    // 9.5 to 10.5.
+    start -= 0.5;
+    stop += 0.5;
 
     if (decoration === 'arc') {
 
@@ -331,8 +338,13 @@ class Canvas {
       const featureLength = this.sequence.lengthOfRange(start, stop);
       if ( featureLength < arrowHeadLengthBp ) {
         const middleBP = start + ( featureLength / 2 );
-        start = middleBP - (arrowHeadLengthBp / 2);
-        stop = middleBP + (arrowHeadLengthBp / 2);
+        // Originally, the feature was adjusted to be the arrow head length.
+        // However, this caused an issue with SVG drawing because the arc part of
+        // the arrow would essentially be 0 bp. Drawing an arc of length 0 caused weird artifacts.
+        // So here we add an additional 0.1 bp to the adjusted length.
+        const adjustedFeatureHalfLength = (arrowHeadLengthBp + 0.1) / 2;
+        start = middleBP - adjustedFeatureHalfLength;
+        stop = middleBP + adjustedFeatureHalfLength;
       }
 
       // Set up drawing direction

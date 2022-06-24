@@ -81,10 +81,17 @@ class LayoutCircular {
     return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
   }
 
-  // Zoom Factor does not affect circular bp scale
+  // Zoom Factor does not affect circular bp scale so we only need
+  // to set this once on initialization
+  // Note that since the domain will be from 1 to length,
+  // the range goes from the top of the circle to 1 bp less
+  // than the top of the circle.
   adjustBpScaleRange(initialize = false) {
     if (initialize) {
-      this.scale.bp.range([-1 / 2 * Math.PI, 3 / 2 * Math.PI]);
+      const radiansPerBp = (2 * Math.PI) / this.sequence.length;
+      const rangeStart = -1 / 2 * Math.PI;
+      const rangeStop = (3 / 2 * Math.PI) - radiansPerBp;
+      this.scale.bp.range([rangeStart, rangeStop]);
     }
   }
 
@@ -167,7 +174,32 @@ class LayoutCircular {
         ctx.lineTo(p2.x, p2.y);
       }
     } else {
-      ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      // ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+
+      // console.log(startBp, stopBp)
+      // console.log(scale.bp(startBp))
+      // console.log(scale.bp(stopBp))
+
+      // This code is required to draw SVG images correctly
+      // SVG can not handle arcs drawn as circles
+      // So for arcs that are close to becoming full circles, 
+      // they are split into 2 arcs
+      if ( (rangeLength / canvas.sequence.length) > 0.95) {
+        const startRads = scale.bp(startBp);
+        const stopRads = scale.bp(stopBp);
+        let midRads = startRads + ((stopRads - startRads) / 2);
+        // 1 bp of cushion is given to prevent calling this when start and stop are the same
+        // but floating point issues cause one to be larger than the other
+        if ( (startBp > (stopBp+1) && !anticlockwise) || (startBp < (stopBp-1) && anticlockwise) ) {
+          // Mid point is on opposite side of circle
+          midRads += Math.PI;
+        }
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, startRads, midRads, anticlockwise);
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, midRads, stopRads, anticlockwise);
+      } else {
+        ctx.arc(scale.x(0), scale.y(0), centerOffset, scale.bp(startBp), scale.bp(stopBp), anticlockwise);
+      }
+
     }
   }
 

@@ -31,7 +31,8 @@ main {
 
 .map-area {
   /* width: 600px; */
-  display: inline-block;
+  /* display: inline-block; */
+  float: left;
 }
 
 #my-viewer {
@@ -97,4 +98,26 @@ hr {
 #draw-range:hover {
   border-width: 2px;
   transition: 0.5s;
+}
+
+
+#svg-section {
+  float: left;
+  margin-left: 5px;
+  /* Default should be hidden unless doing a lot of testing */
+  visibility: hidden;
+}
+#svg-section .btn {
+  width: 200px;
+}
+.svg-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+#svg-map {
+	width: 600px;
+	height: 600px;
+  border: 1px lightgrey solid;
+  overflow: hidden;
+	margin-bottom: 5px;
 }

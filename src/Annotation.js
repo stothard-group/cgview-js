@@ -368,7 +368,8 @@ class Annotation extends CGObject {
     let label, rect;
     ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
     ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
+    // ctx.textBaseline = 'top';
+    ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
     // Draw label lines first so that label text will draw over them
     for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
       label = this._visibleLabels[i];
@@ -414,7 +415,8 @@ class Annotation extends CGObject {
       ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
       ctx.fillStyle = color.rgbaString;
-      ctx.fillText(label.name, label.rect.x, label.rect.y);
+      // ctx.fillText(label.name, label.rect.x, label.rect.y);
+      ctx.fillText(label.name, label.rect.x, label.rect.bottom - 1);
     }
 
     if (this.viewer.debug && this.viewer.debug.data.n) {

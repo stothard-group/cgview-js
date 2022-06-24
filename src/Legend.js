@@ -569,7 +569,8 @@ class Legend extends CGObject {
     this.fillBackground();
     let swatchX;
     ctx.lineWidth = 1;
-    ctx.textBaseline = 'top';
+    // ctx.textBaseline = 'top';
+    ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
     for (let i = 0, len = this._items.length; i < len; i++) {
       const legendItem = this._items[i];
       if (!legendItem.visible) { continue; }
@@ -597,7 +598,8 @@ class Legend extends CGObject {
       }
       // Draw Text Label
       ctx.fillStyle = legendItem.fontColor.rgbaString;
-      ctx.fillText(legendItem.name, legendItem.textX(), y);
+      // ctx.fillText(legendItem.name, legendItem.textX(), y);
+      ctx.fillText(legendItem.name, legendItem.textX(), y + legendItem.height - 1);
     }
   }
 
