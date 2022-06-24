@@ -513,11 +513,8 @@ class IO {
   downloadSVG(filename = 'image.svg') {
     const svg = this.getSVG();
     if (svg) {
-      // this.download(svg, filename, 'text/plain');
     this.download(svg, filename, 'image/svg+xml');
     }
-    // Causes issues with Affinity Designer for some reason
-    // this.download(svg, filename, 'image/svg+xml');
   }
 
   /**

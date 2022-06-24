@@ -1193,18 +1193,6 @@ class Viewer {
     this.legend && this.legend.refresh();
   }
 
-  // FIXME: documentation
-  // Animate through a set of elments.
-  // Animations can be cancelled by calling stopAnimate or clicking on canvas
-  // Each element must have a moveTo function.
-    // elements: array of elements, or number (of randomly chosen features) or undefined (5 random features will be chosen)
-    // options (with defaults):
-    // - noReset: false
-    // - resetPosition: element with moveTo (default is the viewer)
-    // - resetDuration: animation time for reset (1000?)
-    // - resetPause: length of time to stay at reset position (0)
-    // - elementDuration: 1000?
-    // - elementPause: 0
   /**
    * Animate through a defined set of elements (eg. features, bookmarks) or a
    * random number of features. By default the map will reset between
@@ -1219,10 +1207,10 @@ class Viewer {
    * -------------|---------|------------
    * noReset      | Boolean | If set to true, the map will not reset between animations [Default: false]
    * resetPosition  | Feature,Bookmark | A feature or bookmark to reset the map to between animations [Default: call [Viewer.reset()](Viewer.html#reset)]
-   * resetDuration  | Number | Number of milliseconds for the reset animation [Default: 1500]
-   * resetPause  | Number | Number of milliseconds to pause on the reset position [Default: 500]
-   * elementDuration  | Number | Number of milliseconds for each element animation [Default: 1500]
-   * elementPause  | Number | Number of milliseconds to pause on each element position [Default: 500]
+   * resetDuration  | Number | Number of milliseconds for the reset animation [Default: 3000]
+   * resetPause  | Number | Number of milliseconds to pause on the reset position [Default: 1000]
+   * elementDuration  | Number | Number of milliseconds for each element animation [Default: 3000]
+   * elementPause  | Number | Number of milliseconds to pause on each element position [Default: 1000]
    *
    * @param {Number} step - The element index (base-0) to start the animation with [Default: 0]
    * @param {Boolean} reset - Whether this is a reset animation or not [Default: false]
@@ -1231,10 +1219,10 @@ class Viewer {
   animate(elements=5, options={}, step=0, reset=false, newAnimation=true) {
     const noReset = options.noReset;
     const resetPosition = options.resetPosition;
-    const resetDuration = utils.defaultFor(options.resetDuration, 1500);
-    const resetPause = utils.defaultFor(options.resetPause, 500);
-    const elementDuration = utils.defaultFor(options.elementDuration, 1500);
-    const elementPause = utils.defaultFor(options.elementPause, 500);
+    const resetDuration = utils.defaultFor(options.resetDuration, 3000);
+    const resetPause = utils.defaultFor(options.resetPause, 1000);
+    const elementDuration = utils.defaultFor(options.elementDuration, 3000);
+    const elementPause = utils.defaultFor(options.elementPause, 1000);
 
     if (newAnimation) {
       // Stop previous animations

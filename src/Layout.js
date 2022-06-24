@@ -756,7 +756,7 @@ class Layout {
     this._adjustProportions();
   }
 
-  // Draw everyting but the slots and thier features.
+  // Draw everything but the slots and thier features.
   // e.g. draws backbone, dividers, ruler, labels, progress
   drawMapWithoutSlots() {
     const viewer = this.viewer;
