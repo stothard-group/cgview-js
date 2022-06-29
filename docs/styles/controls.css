@@ -75,3 +75,8 @@
   content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:transparent; stroke:black; stroke-width: 1px;'%3E%3Ccircle cx='12' cy='18' r='5.5'/%3E %3Cpath d='M18 13 l3 -3 M12 11 l0 -4 M18 21 l3 1'/%3E %3Cpath d='M18 8 h9 M8 5 h8 M20 24 h7' stroke-width='1.5'/%3E %3C/svg%3E");
 }
 
+.btn-animate,
+#btn-animate {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' style='fill:black; stroke:black; stroke-width: 2.5px;'%3E%3Cpath d='M5 10 l7 5 l-7 5 Z'/%3E %3Cpath d='M19 8 v14' stroke-width='3.5'/%3E %3Cpath d='M25 8 v14' stroke-width='3.5'/%3E %3C/svg%3E");
+}
+

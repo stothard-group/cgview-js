@@ -86,6 +86,7 @@
         <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
         <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
         <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+        <div class='cgv-btn' id='btn-animate' title='Start/Stop Animation'></div>
       </div>
 
       <!-- Compiled final code will be inserted here -->
@@ -125,6 +126,7 @@ Here is the HTML
     <div class='cgv-btn' id='btn-random-feature' title='Move to Random Feature'></div>
     <div class='cgv-btn' id='btn-download' title='Download Map PNG'></div>
     <div class='cgv-btn' id='btn-toggle-labels' title='Toggle Labels'></div>
+    <div class='cgv-btn' id='btn-animate' title='Start/Stop Animation'></div>
   </div>
 ```
 
@@ -140,6 +142,7 @@ Here is what the controls will look like:
   <div class='cgv-btn btn-random-feature' title='Move to Random Feature'></div>
   <div class='cgv-btn btn-download' title='Download Map PNG'></div>
   <div class='cgv-btn btn-toggle-labels' title='Toggle Labels'></div>
+  <div class='cgv-btn btn-animate' title='Start/Stop Animation'></div>
 </div>
 
 <br />
@@ -301,6 +304,17 @@ This button toggles the visibility of the labels using annotation [update()](../
 onClick('btn-toggle-labels', () => {
   cgv.annotation.update({visible: !cgv.annotation.visible});
   cgv.draw();
+});
+```
+
+## <div class='cgv-btn btn-animate btn-heading' title='Start/Stop Animation'></div> Start/Stop Animation
+
+This button starts or stops an animation cycling through 5 random features using [animate()](../api/viewer.html#animate).
+
+```js
+// Start/Stop Animation
+onClick('btn-animate', () => {
+  cgv.isAnimating ? cgv.stopAnimate() : cgv.animate();
 });
 ```
 

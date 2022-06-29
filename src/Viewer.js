@@ -486,6 +486,14 @@ class Viewer {
     return this.eventMonitor.mouse;
   }
 
+  /**
+   * @member {Boolean} - Returns true if an animation started with 
+   * [Viewer.animate()](IOViewer.html#animate) is in progress.
+   */
+  get isAnimating() {
+    return Boolean(this._animateTimeoutID);
+  }
+
   ///////////////////////////////////////////////////////////////////////////
   // METHODS
   ///////////////////////////////////////////////////////////////////////////
@@ -1274,7 +1282,11 @@ class Viewer {
    */
   stopAnimate() {
     clearTimeout(this._animateTimeoutID);
+    this._animateTimeoutID = undefined;
+    d3.select(this.canvas.node('ui')).interrupt();
   }
+
+
 
 
   test2MoveTo(start, stop) {
