@@ -1286,53 +1286,6 @@ class Viewer {
     d3.select(this.canvas.node('ui')).interrupt();
   }
 
-
-
-
-  test2MoveTo(start, stop) {
-    // TODO: check for visibile range
-    const startRange = this.backbone.visibleRange;
-    const startBp = startRange.middle;
-    const endBp = new CGRange(this.sequence.mapContig, start, stop).middle;
-    const startEndLength = Math.abs(endBp - startBp);
-
-    const zoomScale = d3.scalePow()
-      .exponent(5)
-    // let zoomScale = d3.scaleLinear()
-      .domain([1, this.sequence.length / 4])
-      .range([this.backbone.maxZoomFactor(), 1]);
-
-    const zoomThrough = zoomScale(startEndLength);
-
-    this.testMoveTo(start, stop, {zoomThrough: zoomThrough});
-  }
-
-  // testMoveTo(start, stop, options = {}) {
-  //   const duration = options.duration || 1000;
-  //   const ease = options.ease || d3.easeCubic;
-  //   const zoomThrough = options.zoomThrough;
-  //   const zoomFactor = this.zoomFactor;
-  //
-  //   if (zoomThrough && zoomThrough <= zoomFactor) {
-  //     const startRange = this.backbone.visibleRange;
-  //     const startBp = startRange.middle;
-  //     const endBp = new CGRange(this.sequence, start, stop).middle;
-  //     let startEndLength = Math.abs(endBp - startBp);
-  //     let middleBp;
-  //     if ( startEndLength < (this.sequence.length / 2) ) {
-  //       middleBp = Math.min(startBp, endBp) + (startEndLength / 2);
-  //     } else {
-  //       startEndLength = this.sequence.length - startEndLength;
-  //       middleBp = this.sequence.addBp( Math.max(startBp, endBp), startEndLength );
-  //     }
-  //     this.zoomTo(middleBp, zoomThrough, duration, d3.easePolyOut.exponent(5), () => {
-  //       this.moveTo(start, stop, duration, d3.easePolyIn.exponent(5));
-  //     });
-  //   } else {
-  //     this.moveTo(start, stop, duration, ease);
-  //   }
-  // }
-
   /**
    * Move the viewer to show the map from the *start* to the *stop* position.
    * If only the *start* position is provided,
@@ -1403,37 +1356,6 @@ class Viewer {
         callback ? callback.call() : self.drawFull();
       });
   }
-  // _moveToORIG(bp, options = {}) {
-  //   const self = this;
-  //
-  //   const {
-  //     bbOffset = utils.defaultFor(options.bbOffset, 0),
-  //     duration = utils.defaultFor(options.duration, 1000),
-  //     ease = utils.defaultFor(options.ease, d3.easeCubic),
-  //     callback
-  //   } = options;
-  //
-  //   const domainX = this.scale.x.domain();
-  //   const domainY = this.scale.y.domain();
-  //
-  //   const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-  //   const endDomains = this.layout.domainsFor(bp, undefined, bbOffset);
-  //
-  //   d3.select(this.canvas.node('ui')).transition()
-  //     .duration(duration)
-  //     .ease(ease)
-  //     .tween('move', function() {
-  //       const intermDomains = d3.interpolateArray(startDomains, endDomains);
-  //       return function(t) {
-  //         self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
-  //         self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
-  //         self.trigger('zoom');
-  //         self.drawFast();
-  //       };
-  //     }).on('end', function() {
-  //       callback ? callback.call() : self.drawFull();
-  //     });
-  // }
 
   _moveLeftRight(factor=0.5, direction, options = {}) {
     const currentBp = this.canvas.bpForCanvasCenter();
@@ -1602,50 +1524,6 @@ class Viewer {
         callback ? callback.call() : self.drawFull();
       });
   }
-  // zoomToORIG(bp, zoomFactor, options = {}) {
-  //   const self = this;
-  //
-  //   const {
-  //     bbOffset = utils.defaultFor(options.bbOffset, 0),
-  //     duration = utils.defaultFor(options.duration, 1000),
-  //     ease = utils.defaultFor(options.ease, d3.easeCubic),
-  //     callback
-  //   } = options;
-  //
-  //   const zoomExtent = self._zoom.scaleExtent();
-  //   zoomFactor = utils.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
-  //
-  //   // Current Domains
-  //   const domainX = this.scale.x.domain();
-  //   const domainY = this.scale.y.domain();
-  //
-  //   const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-  //   const endDomains = this.layout.domainsFor(bp, zoomFactor, bbOffset);
-  //
-  //   d3.select(this.canvas.node('ui')).transition()
-  //     .duration(duration)
-  //     .ease(ease)
-  //     .tween('move', function() {
-  //       const intermDomains = d3.interpolateArray(startDomains, endDomains);
-  //       const intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
-  //       return function(t) {
-  //         self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
-  //         self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
-  //         self._zoomFactor = intermZoomFactors(t);
-  //         d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
-  //
-  //         self.layout.adjustBpScaleRange();
-  //
-  //         self.trigger('zoom');
-  //         self.drawFast();
-  //       };
-  //     }).on('start', function() {
-  //       self.trigger('zoom-start');
-  //     }).on('end', function() {
-  //       self.trigger('zoom-end');
-  //       callback ? callback.call() : self.drawFull();
-  //     });
-  // }
 
   /**
    * Zoom in on the current bp a factor
