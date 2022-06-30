@@ -488,7 +488,7 @@ class Viewer {
 
   /**
    * @member {Boolean} - Returns true if an animation started with 
-   * [Viewer.animate()](IOViewer.html#animate) is in progress.
+   * [Viewer.animate()](Viewer.html#animate) is in progress.
    */
   get isAnimating() {
     return Boolean(this._animateTimeoutID);
@@ -1366,6 +1366,7 @@ class Viewer {
 
   _moveTo(bp, options = {}) {
     const self = this;
+    const layout = this.layout;
 
     const {
       bbOffset = utils.defaultFor(options.bbOffset, 0),
@@ -1374,20 +1375,27 @@ class Viewer {
       callback
     } = options;
 
-    const domainX = this.scale.x.domain();
-    const domainY = this.scale.y.domain();
+    const { startProps, endProps } = this._moveProps(bp, undefined, bbOffset);
 
-    const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-    const endDomains = this.layout.domainsFor(bp, undefined, bbOffset);
+    const isCircular = this.settings.format === 'circular';
 
     d3.select(this.canvas.node('ui')).transition()
       .duration(duration)
       .ease(ease)
       .tween('move', function() {
-        const intermDomains = d3.interpolateArray(startDomains, endDomains);
+        const intermProps = d3.interpolateObject(startProps, endProps);
         return function(t) {
-          self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
-          self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+          if (isCircular && startProps.zoomFactor > 10 && endProps.zoomFactor > 10) {
+            // Move along map backbone
+            const domains = layout.domainsFor(intermProps(t).bp, intermProps(t).zoomFactor, intermProps(t).bbOffset);
+            self.scale.x.domain([domains[0], domains[1]]);
+            self.scale.y.domain([domains[2], domains[3]]);
+          } else {
+            // Move from linearly from start to stop
+            self.scale.x.domain([intermProps(t).domainX0, intermProps(t).domainX1]);
+            self.scale.y.domain([intermProps(t).domainY0, intermProps(t).domainY1]);
+          }
+
           self.trigger('zoom');
           self.drawFast();
         };
@@ -1395,6 +1403,37 @@ class Viewer {
         callback ? callback.call() : self.drawFull();
       });
   }
+  // _moveToORIG(bp, options = {}) {
+  //   const self = this;
+  //
+  //   const {
+  //     bbOffset = utils.defaultFor(options.bbOffset, 0),
+  //     duration = utils.defaultFor(options.duration, 1000),
+  //     ease = utils.defaultFor(options.ease, d3.easeCubic),
+  //     callback
+  //   } = options;
+  //
+  //   const domainX = this.scale.x.domain();
+  //   const domainY = this.scale.y.domain();
+  //
+  //   const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+  //   const endDomains = this.layout.domainsFor(bp, undefined, bbOffset);
+  //
+  //   d3.select(this.canvas.node('ui')).transition()
+  //     .duration(duration)
+  //     .ease(ease)
+  //     .tween('move', function() {
+  //       const intermDomains = d3.interpolateArray(startDomains, endDomains);
+  //       return function(t) {
+  //         self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
+  //         self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+  //         self.trigger('zoom');
+  //         self.drawFast();
+  //       };
+  //     }).on('end', function() {
+  //       callback ? callback.call() : self.drawFull();
+  //     });
+  // }
 
   _moveLeftRight(factor=0.5, direction, options = {}) {
     const currentBp = this.canvas.bpForCanvasCenter();
@@ -1449,6 +1488,48 @@ class Viewer {
     this._moveLeftRight(factor, 'right', options);
   }
 
+  // Returns a number of properties for the current position and the position
+  // at the provdied bp, zoomFactor and bbOffset.
+  // These properties can be interpolated with d3.interpolateObject(startProps, endProps);
+  // Returns an object: {startProps, endProps}
+  // Both startProps and endProps contain:
+  // - bp, zoomFactor, bbOffset, domainX0, domainX1, domainY0, domainY1
+  _moveProps(bp=this.bp, zoomFactor=this.zoomFactor, bbOffset=this.bbOffset) {
+    // Current Domains
+    const domainX = this.scale.x.domain();
+    const domainY = this.scale.y.domain();
+
+    let startBp = this.bp;
+    let endBp = bp;
+
+    // For circular maps take the shortest root (e.g. across origin)
+    // NOTE: Negative values and values above length only work on circular maps
+    const isCircular = this.settings.format === 'circular';
+    if (isCircular) {
+      const distance = Math.abs(endBp - startBp);
+      if (distance > (this.sequence.length / 2)) {
+        if (endBp > startBp) {
+          endBp  = endBp - this.sequence.length;
+        } else {
+          startBp  = startBp - this.sequence.length;
+        }
+      }
+    }
+      
+    const endDomains = this.layout.domainsFor(bp, zoomFactor, bbOffset);
+
+    const startProps = {
+      bp: startBp, zoomFactor: this.zoomFactor, bbOffset: this.bbOffset,
+      domainX0: domainX[0], domainX1: domainX[1], domainY0: domainY[0], domainY1: domainY[1]
+    };
+
+    const endProps = {
+      bp: endBp, zoomFactor: zoomFactor, bbOffset: bbOffset,
+      domainX0: endDomains[0], domainX1: endDomains[1], domainY0: endDomains[2], domainY1: endDomains[3]
+    };
+
+    return {startProps, endProps};
+  }
 
   /**
    * Move the viewer to *bp* position at the provided *zoomFactor*.
@@ -1465,8 +1546,15 @@ class Viewer {
    * ease         | Number | The d3 animation ease [Default: d3.easeCubic]
    * callback     | Function | Function called after the animation is complete.
    */
+  // Implementation Notes:
+  // For linear maps:
+  // - Interpolate linearly between start and end domains
+  // For cicular maps:
+  // - when zoomed out (zoomFactor <= 10) do as with linear maps
+  // - when zoomed in (zoomFactor > 10) use bp to interpolate along backbone
   zoomTo(bp, zoomFactor, options = {}) {
     const self = this;
+    const layout = this.layout;
 
     const {
       bbOffset = utils.defaultFor(options.bbOffset, 0),
@@ -1478,24 +1566,29 @@ class Viewer {
     const zoomExtent = self._zoom.scaleExtent();
     zoomFactor = utils.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
 
-    // Current Domains
-    const domainX = this.scale.x.domain();
-    const domainY = this.scale.y.domain();
+    const { startProps, endProps } = this._moveProps(bp, zoomFactor, bbOffset);
 
-    const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
-    const endDomains = this.layout.domainsFor(bp, zoomFactor, bbOffset);
+    const isCircular = this.settings.format === 'circular';
 
     d3.select(this.canvas.node('ui')).transition()
       .duration(duration)
       .ease(ease)
       .tween('move', function() {
-        const intermDomains = d3.interpolateArray(startDomains, endDomains);
-        const intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
+        const intermProps = d3.interpolateObject(startProps, endProps);
         return function(t) {
-          self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
-          self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
-          self._zoomFactor = intermZoomFactors(t);
-          d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
+
+          if (isCircular && startProps.zoomFactor > 10 && endProps.zoomFactor > 10) {
+            // Move along map backbone
+            const domains = layout.domainsFor(intermProps(t).bp, intermProps(t).zoomFactor, intermProps(t).bbOffset);
+            self.scale.x.domain([domains[0], domains[1]]);
+            self.scale.y.domain([domains[2], domains[3]]);
+          } else {
+            // Move from linearly from start to stop
+            self.scale.x.domain([intermProps(t).domainX0, intermProps(t).domainX1]);
+            self.scale.y.domain([intermProps(t).domainY0, intermProps(t).domainY1]);
+          }
+          self._zoomFactor = intermProps(t).zoomFactor;
+          d3.zoomTransform(self.canvas.node('ui')).k = intermProps(t).zoomFactor;
 
           self.layout.adjustBpScaleRange();
 
@@ -1509,6 +1602,50 @@ class Viewer {
         callback ? callback.call() : self.drawFull();
       });
   }
+  // zoomToORIG(bp, zoomFactor, options = {}) {
+  //   const self = this;
+  //
+  //   const {
+  //     bbOffset = utils.defaultFor(options.bbOffset, 0),
+  //     duration = utils.defaultFor(options.duration, 1000),
+  //     ease = utils.defaultFor(options.ease, d3.easeCubic),
+  //     callback
+  //   } = options;
+  //
+  //   const zoomExtent = self._zoom.scaleExtent();
+  //   zoomFactor = utils.constrain(zoomFactor, zoomExtent[0], zoomExtent[1]);
+  //
+  //   // Current Domains
+  //   const domainX = this.scale.x.domain();
+  //   const domainY = this.scale.y.domain();
+  //
+  //   const startDomains = [domainX[0], domainX[1], domainY[0], domainY[1]];
+  //   const endDomains = this.layout.domainsFor(bp, zoomFactor, bbOffset);
+  //
+  //   d3.select(this.canvas.node('ui')).transition()
+  //     .duration(duration)
+  //     .ease(ease)
+  //     .tween('move', function() {
+  //       const intermDomains = d3.interpolateArray(startDomains, endDomains);
+  //       const intermZoomFactors = d3.interpolate(self._zoomFactor, zoomFactor);
+  //       return function(t) {
+  //         self.scale.x.domain([intermDomains(t)[0], intermDomains(t)[1]]);
+  //         self.scale.y.domain([intermDomains(t)[2], intermDomains(t)[3]]);
+  //         self._zoomFactor = intermZoomFactors(t);
+  //         d3.zoomTransform(self.canvas.node('ui')).k = intermZoomFactors(t);
+  //
+  //         self.layout.adjustBpScaleRange();
+  //
+  //         self.trigger('zoom');
+  //         self.drawFast();
+  //       };
+  //     }).on('start', function() {
+  //       self.trigger('zoom-start');
+  //     }).on('end', function() {
+  //       self.trigger('zoom-end');
+  //       callback ? callback.call() : self.drawFull();
+  //     });
+  // }
 
   /**
    * Zoom in on the current bp a factor

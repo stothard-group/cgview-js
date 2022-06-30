@@ -2,6 +2,13 @@
 # CGView.js Changelog
 --------------------------------------------------------------------------------
 
+## Unreleased
+###Added
+- Viewer.isAnimating property
+- Added animation button to tutorial on controls
+- Viewer.moveTo() and Viewer.zoomTo() now move along the backbone for circular maps when the zoomFactor is above 10.
+
+
 ## v1.3.0 - 2022-06-24
 ### Added
 - SVG downloads (IO.downloadSVG). Requires [svgcanvas](https://github.com/zenozeng/svgcanvas)
