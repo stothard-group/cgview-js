@@ -1320,6 +1320,7 @@ class Viewer {
   _moveTo(bp, options = {}) {
     const self = this;
     const layout = this.layout;
+    const backboneZoomThreshold = 3;
 
     const {
       bbOffset = utils.defaultFor(options.bbOffset, 0),
@@ -1338,7 +1339,7 @@ class Viewer {
       .tween('move', function() {
         const intermProps = d3.interpolateObject(startProps, endProps);
         return function(t) {
-          if (isCircular && startProps.zoomFactor > 10 && endProps.zoomFactor > 10) {
+          if (isCircular && startProps.zoomFactor > backboneZoomThreshold && endProps.zoomFactor > backboneZoomThreshold) {
             // Move along map backbone
             const domains = layout.domainsFor(intermProps(t).bp, intermProps(t).zoomFactor, intermProps(t).bbOffset);
             self.scale.x.domain([domains[0], domains[1]]);
@@ -1472,11 +1473,12 @@ class Viewer {
   // For linear maps:
   // - Interpolate linearly between start and end domains
   // For cicular maps:
-  // - when zoomed out (zoomFactor <= 10) do as with linear maps
-  // - when zoomed in (zoomFactor > 10) use bp to interpolate along backbone
+  // - when zoomed out (zoomFactor <= backboneZoomThreshold) do as with linear maps
+  // - when zoomed in (zoomFactor > backboneZoomThreshold) use bp to interpolate along backbone
   zoomTo(bp, zoomFactor, options = {}) {
     const self = this;
     const layout = this.layout;
+    const backboneZoomThreshold = 3;
 
     const {
       bbOffset = utils.defaultFor(options.bbOffset, 0),
@@ -1499,7 +1501,7 @@ class Viewer {
         const intermProps = d3.interpolateObject(startProps, endProps);
         return function(t) {
 
-          if (isCircular && startProps.zoomFactor > 10 && endProps.zoomFactor > 10) {
+          if (isCircular && startProps.zoomFactor > backboneZoomThreshold && endProps.zoomFactor > backboneZoomThreshold) {
             // Move along map backbone
             const domains = layout.domainsFor(intermProps(t).bp, intermProps(t).zoomFactor, intermProps(t).bbOffset);
             self.scale.x.domain([domains[0], domains[1]]);
