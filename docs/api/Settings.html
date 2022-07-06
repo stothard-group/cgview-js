@@ -1270,6 +1270,10 @@
             
                 <li data-name="Layout#height"><a href="Layout.html#height">height</a></li>
             
+                <li data-name="Layout#initialMapThicknessProportion"><a href="Layout.html#initialMapThicknessProportion">initialMapThicknessProportion</a></li>
+            
+                <li data-name="Layout#maxMapThicknessProportion"><a href="Layout.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
+            
                 <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
             
                 <li data-name="Layout#minSlotThickness"><a href="Layout.html#minSlotThickness">minSlotThickness</a></li>
@@ -1774,6 +1778,10 @@
             
                 <li data-name="Settings#geneticCode"><a href="Settings.html#geneticCode">geneticCode</a></li>
             
+                <li data-name="Settings#initialMapThicknessProportion"><a href="Settings.html#initialMapThicknessProportion">initialMapThicknessProportion</a></li>
+            
+                <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
+            
                 <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
             
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
@@ -2186,6 +2194,16 @@
 <td>Number</td>
 <td>Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 0]</td>
 </tr>
+<tr>
+<td><a href="#initialMapThicknessProportion">initialMapThicknessProportion</a></td>
+<td>Number</td>
+<td>Proportion of canvas size to use for drawing map tracks at a zoomFactor of 1 [Default: 0.1]</td>
+</tr>
+<tr>
+<td><a href="#maxMapThicknessProportion">maxMapThicknessProportion</a></td>
+<td>Number</td>
+<td>Proportion of canvas size to use for drawing map tracks at max zoom level [Default: 0.5]</td>
+</tr>
 </tbody>
 </table>
 <h3>Examples</h3></div>
@@ -2207,7 +2225,7 @@
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line39">line 39</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line41">line 41</a>
         </div>
         
     </div>
@@ -2537,6 +2555,101 @@ Default: 11</p>
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="initialMapThicknessProportion">initialMapThicknessProportion<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the initial width/thickness of the map as a
+proportion of the canvas dimension (Circular: minDimension; Linear:
+height). The width will grow/shrink with the zoomFactor (Default: 0.1).
+This value will be ignored if the
+<a href="#maxMapThicknessProportion">maxMapThicknessProportion</a> value is smaller.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="maxMapThicknessProportion">maxMapThicknessProportion<span class="type-signature type boolean">Boolean</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the maximum width/thickness of the map as a
+proportion of the canvas width or height (Default: 0.5).</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="minArcLength">minArcLength<span class="type-signature type number">Number</span> </h4>
     </div>
     
@@ -2644,7 +2757,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line157">line 157</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line188">line 188</a>
         </div>
         
     </div>
@@ -2715,7 +2828,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line57">line 57</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line61">line 61</a>
         </div>
         
     </div>
@@ -2817,7 +2930,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line146">line 146</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line177">line 177</a>
         </div>
         
     </div>
@@ -2940,7 +3053,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jun 30 2022 13:46:50 GMT-0600 (Mountain Daylight Saving Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 06 2022 12:57:22 GMT-0600 (Mountain Daylight Saving Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

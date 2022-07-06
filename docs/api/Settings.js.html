@@ -1270,6 +1270,10 @@
             
                 <li data-name="Layout#height"><a href="Layout.html#height">height</a></li>
             
+                <li data-name="Layout#initialMapThicknessProportion"><a href="Layout.html#initialMapThicknessProportion">initialMapThicknessProportion</a></li>
+            
+                <li data-name="Layout#maxMapThicknessProportion"><a href="Layout.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
+            
                 <li data-name="Layout#maxSlotThickness"><a href="Layout.html#maxSlotThickness">maxSlotThickness</a></li>
             
                 <li data-name="Layout#minSlotThickness"><a href="Layout.html#minSlotThickness">minSlotThickness</a></li>
@@ -1774,6 +1778,10 @@
             
                 <li data-name="Settings#geneticCode"><a href="Settings.html#geneticCode">geneticCode</a></li>
             
+                <li data-name="Settings#initialMapThicknessProportion"><a href="Settings.html#initialMapThicknessProportion">initialMapThicknessProportion</a></li>
+            
+                <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
+            
                 <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
             
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
@@ -2146,6 +2154,8 @@ import utils from './Utils';
  * [showShading](#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
  * [arrowHeadLength](#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
  * [minArcLength](#minArcLength)       | Number    | Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 0]
+ * [initialMapThicknessProportion](#initialMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at a zoomFactor of 1 [Default: 0.1]
+ * [maxMapThicknessProportion](#maxMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at max zoom level [Default: 0.5]
  *
  * ### Examples
  *
@@ -2168,6 +2178,8 @@ class Settings {
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
     this.minArcLength = utils.defaultFor(options.minArcLength, 0);
     this._showShading = utils.defaultFor(options.showShading, true);
+    this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
+    this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
     this.viewer.trigger('settings-update', {attributes: this.toJSON({includeDefaults: true})});
   }
 
@@ -2260,6 +2272,33 @@ class Settings {
   }
 
   /**
+   * @member {Boolean} - Get or set the initial width/thickness of the map as a
+   * proportion of the canvas dimension (Circular: minDimension; Linear:
+   * height). The width will grow/shrink with the zoomFactor (Default: 0.1).
+   * This value will be ignored if the
+    * [maxMapThicknessProportion](#maxMapThicknessProportion) value is smaller.
+   */
+  get initialMapThicknessProportion() {
+    return this.viewer.layout.initialMapThicknessProportion;
+  }
+
+  set initialMapThicknessProportion(value) {
+    this.viewer.layout.initialMapThicknessProportion = value;
+  }
+
+  /**
+   * @member {Boolean} - Get or set the maximum width/thickness of the map as a
+   * proportion of the canvas width or height (Default: 0.5).
+   */
+  get maxMapThicknessProportion() {
+    return this.viewer.layout.maxMapThicknessProportion;
+  }
+
+  set maxMapThicknessProportion(value) {
+    this.viewer.layout.maxMapThicknessProportion = value;
+  }
+
+  /**
    * Update settings [attributes](#attributes).
    * See [updating records](../docs.html#s.updating-records) for details.
    * @param {Object} attributes - Object describing the properties to change
@@ -2267,7 +2306,7 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode']
+      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
     });
     this.viewer.trigger('settings-update', { attributes });
   }
@@ -2282,7 +2321,9 @@ class Settings {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
       arrowHeadLength: this.arrowHeadLength,
-      minArcLength: this.minArcLength
+      minArcLength: this.minArcLength,
+      initialMapThicknessProportion: this.initialMapThicknessProportion,
+      maxMapThicknessProportion: this.maxMapThicknessProportion
     };
   }
 
@@ -2303,7 +2344,7 @@ export default Settings;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Jun 30 2022 13:46:50 GMT-0600 (Mountain Daylight Saving Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 06 2022 12:57:22 GMT-0600 (Mountain Daylight Saving Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
