@@ -14,6 +14,7 @@ import * as d3 from 'd3';
 //      - change in number, visibility or thickness
 //      - layout format changes
 //      - max/min slot thickness change
+//      - initial/max map thickness proportion
 //  - updateLayout is called when
 //      - proportions are updated
 //      - every draw loop only if the zoom level has changed
@@ -553,7 +554,9 @@ class Layout {
 
   /**
    * Calculate the backbone centerOffset and slot proportions based on the Viewer size and
-   * the number of slots.
+   * the number of slots. Note, that since this will usually move the map
+   * backbone for circular maps, it also recenters the map backbone If the 
+   * zoomFactor is above 2.
    * @private
    */
   _adjustProportions() {
@@ -601,6 +604,10 @@ class Layout {
     this._calculateMaxMapThickness();
 
     this.updateLayout(true);
+    // Recenter map
+    if (viewer.zoomFactor > 2) {
+      viewer.moveTo(undefined, undefined, {duration: 0});
+    }
   }
   // NOTE:
   // - Also calculate the maxSpace
