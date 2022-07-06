@@ -116,7 +116,8 @@ class LayoutCircular {
   }
 
   maxMapThickness() {
-    return this.viewer.minDimension / 2;
+    // return this.viewer.minDimension / 2;
+    return this.viewer.minDimension * this.layout._maxMapThicknessProportion;
   }
 
   pixelsPerBp(centerOffset = this.backbone.adjustedCenterOffset) {
@@ -136,7 +137,8 @@ class LayoutCircular {
   }
 
   initialWorkingSpace() {
-    return 0.25 * this.viewer.minDimension;
+    // return 0.25 * this.viewer.minDimension;
+    return this.viewer.minDimension * this.layout._initialMapThicknessProportion;
   }
 
   // Calculate the backbone centerOffset (radius) so that the map is centered between the
@@ -145,7 +147,11 @@ class LayoutCircular {
     // midRadius is the point between the circle center and the edge of the canvas
     // on the minDimension.
     const midRadius = this.viewer.minDimension * 0.25;
-    this.backbone.centerOffset = midRadius - ((outsideThickness - insideThickness) / 2);
+    // Minimum extra space inside of map
+    const insideBuffer = 40; 
+    // The mid radius has to have enough space for the inside thickness
+    const adjustedMidRadius = Math.max(midRadius, insideThickness + insideBuffer)
+    this.backbone.centerOffset = adjustedMidRadius - ((outsideThickness - insideThickness) / 2);
   }
 
   adjustedBackboneCenterOffset(centerOffset) {

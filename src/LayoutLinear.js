@@ -97,7 +97,8 @@ class LayoutLinear {
   }
 
   maxMapThickness() {
-    return this.viewer.height / 2;
+    // return this.viewer.height / 2;
+    return this.viewer.height * this.layout._maxMapThicknessProportion;
   }
 
   // For linear maps the pixels per bp is independent of the centerOffset
@@ -116,7 +117,8 @@ class LayoutLinear {
   }
 
   initialWorkingSpace() {
-    return 0.25 * this.viewer.minDimension;
+    // return 0.25 * this.viewer.minDimension;
+    return this.viewer.minDimension * this.layout._initialMapThicknessProportion;
   }
 
   // The backbone will be the center of the map

@@ -47,6 +47,8 @@ class Settings {
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
     this.minArcLength = utils.defaultFor(options.minArcLength, 0);
     this._showShading = utils.defaultFor(options.showShading, true);
+    this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
+    this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
     this.viewer.trigger('settings-update', {attributes: this.toJSON({includeDefaults: true})});
   }
 
@@ -139,6 +141,33 @@ class Settings {
   }
 
   /**
+   * @member {Boolean} - Get or set the initial width/thickness of the map as a
+   * proportion of the canvas dimension (Circular: minDimension; Linear:
+   * height). The width will grow/shrink with the zoomFactor (Default: 0.1).
+   * This value will be ignored if the
+    * [maxMapThicknessProportion](#maxMapThicknessProportion) value is smaller.
+   */
+  get initialMapThicknessProportion() {
+    return this.viewer.layout.initialMapThicknessProportion;
+  }
+
+  set initialMapThicknessProportion(value) {
+    this.viewer.layout.initialMapThicknessProportion = value;
+  }
+
+  /**
+   * @member {Boolean} - Get or set the maximum width/thickness of the map as a
+   * proportion of the canvas width or height (Default: 0.5).
+   */
+  get maxMapThicknessProportion() {
+    return this.viewer.layout.maxMapThicknessProportion;
+  }
+
+  set maxMapThicknessProportion(value) {
+    this.viewer.layout.maxMapThicknessProportion = value;
+  }
+
+  /**
    * Update settings [attributes](#attributes).
    * See [updating records](../docs.html#s.updating-records) for details.
    * @param {Object} attributes - Object describing the properties to change
@@ -146,7 +175,7 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode']
+      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
     });
     this.viewer.trigger('settings-update', { attributes });
   }
@@ -161,7 +190,9 @@ class Settings {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
       arrowHeadLength: this.arrowHeadLength,
-      minArcLength: this.minArcLength
+      minArcLength: this.minArcLength,
+      initialMapThicknessProportion: this.initialMapThicknessProportion,
+      maxMapThicknessProportion: this.maxMapThicknessProportion
     };
   }
 

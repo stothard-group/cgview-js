@@ -39,6 +39,9 @@ class Layout {
     // this._maxSlotThickness = CGV.defaultFor(data.maxSlotThickness, 50);
     this._minSlotThickness = 1;
     this._maxSlotThickness = 50;
+    // Default values. These will be overridden by the values in Settings.
+    this._maxMapThicknessProportion = 0.5;
+    this._initialMapThicknessProportion = 0.1;
 
     // Setup scales
     this._scale = {};
@@ -517,7 +520,8 @@ class Layout {
     const maxSlotThickness = this.maxSlotThickness;
     const minThicknessRatio = this.slotThicknessRatioStats.min;
     const maxThicknessRatio = this.slotThicknessRatioStats.max;
-    let space = this._nonSlotSpace(visibleSlots);
+    // let space = this._nonSlotSpace(visibleSlots);
+    let space = this._nonSlotSpace();
     // If the min and max slot thickness range is too small for the min/max thickness ratio,
     // we have to scale the ratios
     const scaleRatios = (minSlotThickness / minThicknessRatio * maxThicknessRatio > maxSlotThickness);
@@ -561,19 +565,24 @@ class Layout {
     const workingSpace = this.initialWorkingSpace();
     // Minimum Space required (based on minSlotThickness)
     const minSpace = this._minSpace(visibleSlots);
-    // Maximum Space possible (based on maxSlotThickness)
-    // let maxSpace = this._maxSpace(visibleSlots);
     // May need to scale slots, backbone, dividers and spacing to fit everything
     const thicknessScaleFactor = Math.min(workingSpace / minSpace, 1);
     // Calculate nonSlotSpace
-    const nonSlotSpace = this._nonSlotSpace(visibleSlots) * thicknessScaleFactor;
-    const slotSpace = (workingSpace * thicknessScaleFactor) - nonSlotSpace;
+    // const nonSlotSpace = this._nonSlotSpace() * thicknessScaleFactor;
+    // let slotSpace = (workingSpace * thicknessScaleFactor) - nonSlotSpace;
+
+    // FIXME: Issues with negative slot space for above. Try this for now:
+    // I really need to rethink this
+    const minSize = this.initialWorkingSpace() * viewer.zoomFactor;
+    const mapThickness = Math.min(minSize, this.maxMapThickness());
+    const slotSpace = mapThickness;
+    // console.log(workingSpace, slotSpace, thicknessScaleFactor, nonSlotSpace)
 
     // The sum of the thickness ratios
     const thicknessRatioSum = this.slotThicknessRatioStats.sum;
 
-    let outsideThickness = this._nonSlotSpace(visibleSlots, 'outside');
-    let insideThickness = this._nonSlotSpace(visibleSlots, 'inside');
+    let outsideThickness = this._nonSlotSpace('outside');
+    let insideThickness = this._nonSlotSpace('inside');
 
     // Update slot thick proportions
     this.visibleSlots().each( (i, slot) => {
@@ -753,6 +762,33 @@ class Layout {
 
   set minSlotThickness(value) {
     this._minSlotThickness = Number(value);
+    this._adjustProportions();
+  }
+
+  /**
+   * Get or set the initial map thickness as a proportion of a viewer dimension
+   * (height for linear maps, minimum dimension for circular maps). The initial
+   * map thickness is at a zoomFactor of 1.
+   */
+  get initialMapThicknessProportion() {
+    return this._initialMapThicknessProportion;
+  }
+
+  set initialMapThicknessProportion(value) {
+    this._initialMapThicknessProportion = Number(value);
+    this._adjustProportions();
+  }
+
+  /**
+   * Get or set the maximum map thickness as a proportion of a viewer dimension
+   * (height for linear maps, minimum dimension for circular maps).
+   */
+  get maxMapThicknessProportion() {
+    return this._maxMapThicknessProportion;
+  }
+
+  set maxMapThicknessProportion(value) {
+    this._maxMapThicknessProportion = Number(value);
     this._adjustProportions();
   }
 
@@ -952,7 +988,9 @@ class Layout {
     // TEMP
     // Maybe this should be based on slotSpace from adjust proportions.
     // Should slot space be saved
-    const minSize = this.maxMapThickness() / 6 * viewer.zoomFactor;
+    // const minSize = this.maxMapThickness() / 6 * viewer.zoomFactor;
+    // const minSize = this.testSlotSpace * viewer.zoomFactor;
+    const minSize = this.initialWorkingSpace() * viewer.zoomFactor;
     const mapThickness = Math.min(minSize, this.maxMapThickness());
 
     const maxAllowedProportion = this.maxSlotThickness / mapThickness;
