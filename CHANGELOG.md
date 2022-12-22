@@ -4,6 +4,7 @@
 
 ## Unreleased
 ###Added
+- Default minArcLength changed from 0 to 1
 - Viewer.isAnimating property
 - Added animation button to tutorial on controls
 - Viewer.moveTo() and Viewer.zoomTo() now move along the backbone for circular maps when the zoomFactor is above 10.

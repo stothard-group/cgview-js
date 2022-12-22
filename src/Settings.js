@@ -47,7 +47,7 @@ class Settings {
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this._geneticCode = utils.defaultFor(options.geneticCode, 11);
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
-    this.minArcLength = utils.defaultFor(options.minArcLength, 0);
+    this.minArcLength = utils.defaultFor(options.minArcLength, 1);
     this._showShading = utils.defaultFor(options.showShading, true);
     this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
     this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
