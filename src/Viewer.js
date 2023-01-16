@@ -715,11 +715,17 @@ class Viewer {
             tracksToRefresh.push(track);
           }
         }
+        if (keys.includes('visible')) {
+          this.annotation.refresh();
+        }
       }
     } else if (attributes) {
       const keys = Object.keys(attributes);
       if (keys.includes('dataMethod') || keys.includes('dataType') || keys.includes('dataKeys')) {
         tracksToRefresh = tracks;
+      }
+      if (keys.includes('visible')) {
+        this.annotation.refresh();
       }
     }
     for (const track of tracksToRefresh) {
@@ -1005,19 +1011,19 @@ class Viewer {
         track.refresh();
       }
     }
-    // Refresh labels if any attribute is start or stop
-    let positionChanged;
+    // Refresh labels if any attribute is start, stop or visible
+    let updateLabels;
     if (updates) {
       const values = Object.values(updates);
       for (let value of values) {
-        if (Object.keys(value).includes('start') || Object.keys(value).includes('stop')) {
-          positionChanged = true;
+        if (Object.keys(value).includes('start') || Object.keys(value).includes('stop') || Object.keys(value).includes('visible')) {
+          updateLabels = true;
         }
       }
     } else {
-      positionChanged = attributes && (Object.keys(attributes).includes('start') || Object.keys(attributes).includes('stop'));
+      updateLabels = attributes && (Object.keys(attributes).includes('start') || Object.keys(attributes).includes('stop') || Object.keys(attributes).includes('visible'));
     }
-    if (positionChanged) {
+    if (updateLabels) {
       this.annotation.refresh();
     }
     this.trigger('features-update', { features, attributes, updates });

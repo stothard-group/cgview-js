@@ -172,10 +172,17 @@ class Annotation extends CGObject {
     this.refresh();
   }
 
-  // Called from Viewer.add/removeFeatures() and Sequence.updateContigs()
+  // Called from Viewer.add/removeFeatures() and Sequence.updateContigs(), Viewer.updateFeatures(), Viewer.updateTracks()
   refresh() {
     // Remove labels that are on invisible contigs
-    const labels = this._labels.filter( (l) => l.feature.contig.visible);
+    // const labels = this._labels.filter( (l) => l.feature.contig.visible);
+
+    // Remove labels:
+    // - on invisible features
+    // - with features on invisible contigs
+    // - with features on invisible tracks
+    const labels = this._labels.filter( (l) => l.feature.visible && l.feature.contig.visible && l.feature.tracks().some( (t) => t.visible ));
+
     this._availableLabels = labels;
     // Update default Bp for labels
     for (const label of labels) {

@@ -233,6 +233,9 @@ class IO {
     if (data.tracks) {
       viewer.addTracks(data.tracks);
     }
+    // Refresh Annotations
+    viewer.annotation.refresh();
+
     viewer._loading = false;
     viewer.update({dataHasChanged: false});
 
