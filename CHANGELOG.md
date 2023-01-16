@@ -3,11 +3,15 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
-###Added
+### Added
 - Default minArcLength changed from 0 to 1
 - Viewer.isAnimating property
 - Added animation button to tutorial on controls
 - Viewer.moveTo() and Viewer.zoomTo() now move along the backbone for circular maps when the zoomFactor is above 10.
+- Added additional default window & step size for genomes larger than 10 million bp.
+
+## FIXED
+- Hide annotation labels if feature or track is hidden
 
 
 ## v1.3.0 - 2022-06-24

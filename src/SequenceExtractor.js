@@ -283,6 +283,9 @@ class SequenceExtractor {
     } else if (length < 1e7) {
       windowSize = 10000;
       step = 100;
+    } else if (length < 1e8) {
+      windowSize = 50000;
+      step = 1000;
     }
     return { step: step, window: windowSize };
   }
