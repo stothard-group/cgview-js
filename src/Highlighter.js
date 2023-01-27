@@ -135,6 +135,14 @@ class Highlighter extends CGObject {
     return trackDiv;
   }
 
+  getPositionDiv(e) {
+    const bp = utils.commaNumber(e.bp);
+      // <div>${bp} bp</div>
+    return (`
+      <div class='track-data'>Map: ${bp} bp</div>
+    `);
+  }
+
   featurePopoverContentsDefault(e) {
     const feature = e.element;
     // return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
@@ -171,13 +179,25 @@ class Highlighter extends CGObject {
 
   backbonePopoverContentsDefault(e) {
     const length = utils.commaNumber(this.sequence.length);
-    return `<div style='margin: 0 5px; font-size: 14px'>Backbone: ${length} bp</div>`;
+    // return `<div style='margin: 0 5px; font-size: 14px'>Backbone: ${length} bp</div>`;
+    return (`
+      <div style='margin: 0 5px; font-size: 14px'>
+        <div>Backbone: ${length} bp</div>
+        ${this.getPositionDiv(e)}
+      </div>
+    `);
   }
 
   contigPopoverContentsDefault(e) {
     const contig = e.element;
     const length = utils.commaNumber(contig.length);
-    return `<div style='margin: 0 5px; font-size: 14px'>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>`;
+    // return `<div style='margin: 0 5px; font-size: 14px'>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>`;
+    return (`
+      <div style='margin: 0 5px; font-size: 14px'>
+        <div>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>
+        ${this.getPositionDiv(e)}
+      </div>
+    `);
   }
 
   highlightFeature(e) {
