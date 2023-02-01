@@ -326,6 +326,11 @@ pre[class*="language-"] {
   margin-bottom: 10px;
 }
 
+.citation {
+  white-space: pre-line;
+  text-align: left;
+}
+
 .btn-proksee {
   width: 120px;
   height: 45px;
