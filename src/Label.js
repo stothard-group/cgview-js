@@ -167,16 +167,43 @@ class Label {
   /**
    * Highlgith this label
    */
-  highlight() {
+  // highlight() {
+  //   const canvas = this.viewer.canvas;
+  //   canvas.clear('ui');
+  //   const color = this.annotation.color || this.feature.color;
+  //   const ctx = canvas.context('ui');
+  //   const rect = this.rect;
+  //   ctx.strokeStyle = color.rgbaString;
+  //   ctx.lineWidth = 1;
+  //   const padding = 2;
+  //   ctx.strokeRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding) );
+  // }
+  hightlight() {
+    this.feature.hightlight();
+    // this._highlight();
+  }
+  // Called from feature.highlight()
+  _highlight() {
+    if (!this.rect) { return; }
+    if (!this.annotation._visibleLabels.includes(this)) { return; }
+
     const canvas = this.viewer.canvas;
-    canvas.clear('ui');
+    // canvas.clear('ui');
     const color = this.annotation.color || this.feature.color;
     const ctx = canvas.context('ui');
     const rect = this.rect;
     ctx.strokeStyle = color.rgbaString;
     ctx.lineWidth = 1;
     const padding = 2;
-    ctx.strokeRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding) );
+
+    // Rectangle Outline
+    // ctx.strokeRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding) );
+
+    // Rounded Rectangle Outline
+    const corner = this.height / 4;
+    ctx.beginPath();
+    ctx.roundRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding), [corner] );
+    ctx.stroke();
   }
 
 }

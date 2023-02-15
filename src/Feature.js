@@ -538,6 +538,10 @@ class Feature extends CGObject {
   highlight(slot) {
     if (!this.visible) { return; }
     this.canvas.clear('ui');
+
+    this.label._highlight();
+
+
     const color = this.color.copy();
     color.highlight();
     if (slot && slot.features().includes(this)) {
