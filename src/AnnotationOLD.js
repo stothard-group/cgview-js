@@ -2,13 +2,6 @@
 // Annotation
 //////////////////////////////////////////////////////////////////////////////
 
-// for each label index
-// - new index = find island (index)
-//
-// findIsland(index)
-//   - get rect label
-//   - if label clahs with prev label
-
 import CGObject from './CGObject';
 import CGArray from './CGArray';
 import Font from './Font';
@@ -248,10 +241,6 @@ class Annotation extends CGObject {
         // This might need to be recalculated of the label has moved alot
         label.lineAttachment = this.viewer.layout.clockPositionForBp(label.bp, true);
       }
-      // TESTING changing attachment
-      // if (label.lineAttachment == 6) {
-      //   label.lineAttachment = 5;
-      // }
     }
   }
 
@@ -301,6 +290,13 @@ class Annotation extends CGObject {
 
     // Sort labels
     labels.sort( (a, b) => a.bp - b.bp );
+    // console.log(labels)
+
+    // length of pixel in bp times the label height
+    // Using 20 but this would come from the label height
+    // TODO: adjust to proper radius of (right now it's the backbone by default
+    const bpAdustIncrement = 1 / this.viewer.layout.pixelsPerBp() / 2;
+    // console.log(`BP Adjust Increment: ${bpAdustIncrement}`)
 
     // let overlap = false;
     let loop_count = 1;
@@ -309,18 +305,53 @@ class Annotation extends CGObject {
       label._tbp = label.bp;
       label._lineLength = this.labelLineLength;
       label._angle = 0; // 0: straight; -1: back; 1: forward;
-      label._popped = false;
     }
 
-    // const maxBpAdjustment = this.sequence.length / 20;
-    // CHECK OLD for code ideas
+    const maxBpAdjustment = this.sequence.length / 20;
+    // const maxBpAdjustment = this.sequence.length / 10;
+        // // PAUL
+        // //if close to vertical (angle more up/down ie top/bottom of map)
+        // if (Math.abs(Math.sin(lineStartRadians)) > 0.70d) {
+        //     allowedRadiansDelta = (1.0d / 16.0d) * (2.0d * Math.PI);
+        // } else {
+        //     allowedRadiansDelta = (1.0d / 10.0d) * (2.0d * Math.PI);
+        // }
+    // const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
+    // const outerPt = canvas.pointForBp(label.bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
+
+    // const labelLineCenterOffsetStart = this._outerCenterOffset + this._labelLineMarginInner;
+    // // DOES NOT CHANGE UNLESS POPPED
+    // const labelLineCenterOffsetStop = labelLineCenterOffsetStart + this.labelLineLength + this._labelLineMarginOuter);
+    // Max BP Adjustment
+    // HAS TO BE LAYOUT SPECIFIC
+    // const Math.acos(labelLineCenterOffsetStart / labelLineCenterOffsetStop);
+
+
+    // const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+    // label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+    // bp = canvas.bpForPoint({x: outerPtX, y: outerPtY});
+    // Extract above to method
+    // - should return outerPt 
+    //
+    // Then have method to take outerPt, label and return new rect
+      // const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+      // label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+
+
+
+    // const DO_MAX = 1000;
+    // let prevIndex;
 
     // Place first label
     label = labels[0];
     if (!label) {return}
 
+    // const outerPt = canvas.pointForBp(label.bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
+    // const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+    // label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+    // label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
+    // placedLabels.push(label);
 
-    // Place Islands of labels
     for (let labelIndex = 0, len = labels.length; labelIndex < len; labelIndex++) {
       const { startIndex, stopIndex } = this._placeIslandLabels(labels, labelIndex, placedLabels);
       labelIndex = stopIndex; // index will increment next loop
@@ -329,6 +360,7 @@ class Annotation extends CGObject {
     // NOTE: get rid of these attachmentPt lines in the rest of the code. DO IT HERE only
     for (let labelIndex = 0, len = labels.length; labelIndex < len; labelIndex++) {
       const label = labels[labelIndex];
+      // label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       if (label.rect) {
         label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
       }
@@ -341,49 +373,68 @@ class Annotation extends CGObject {
   // Instead of moving by a bp amount, find the next rantangle that would fit by
   // line height. Would work until near top/bottom. Then actually figure out the
   // next rect whether it top/bottom or left/right. => CRICLE MATH
+
   _placeIslandLabels(labels, startIndex, placedLabels) {
     const canvas = this.canvas;
 
-    const rectOffset = this._outerCenterOffset + this._labelLineMarginInner + this.labelLineLength + this._labelLineMarginOuter;
+    const MAX_LOOPS = 100;
+    const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
 
     // FIX: 
-    // const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
+    const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
+    const bpAdustIncrement = 1 / this.viewer.layout.pixelsPerBp() / 2;
     // Need to determine from visible range as well
     const maxBpAdjustment = Math.min(
-      (this.sequence.length / 20),
-      // (this.sequence.length / 50),
+      // (this.sequence.length / 20),
+      (this.sequence.length / 50),
       (this._visibleRange.length / 6)
     );
+    let totalBpAdjustment;
     let maxBpAdjustmentReached;
-    let poppedLabels = [];
 
-    let label, bp, prevLabel, overlap, stopIndex;
+    let label, bp, prevLabel, overlap, stopIndex, popRequired;
 
     for (let labelIndex = startIndex, len = labels.length; labelIndex < len; labelIndex++) {
-      poppedLabels = [];
+      popRequired = false;
       label = labels[labelIndex];
-      stopIndex = labelIndex;
-      // bp = label._tbp; // _tbp will become _attachBp
-      // prevLabel = labels[labelIndex-1];
-      prevLabel = this._prevLabel(labels, labelIndex);
+      bp = label._tbp; // _tbp will become _attachBp
+      prevLabel = labels[labelIndex-1];
       // const prevIndex = (labelIndex === 0) ? len-1 : labelIndex-1;
       // prevLabel = labels[prevIndex];
+      const lineLength = this.labelLineLength; // 
+      let loop = 0;
+
+      // do {
+      //   loop++;
+			// 	label._tbp = bp;
+      //   // given bp, offset, label; return rect
+      //   const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
+      //   const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+      //   label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+      //   overlap = prevLabel && prevLabel.rect && label.rect.overlap([prevLabel.rect]);
+      //
+			// 	bp = bp + bpAdustIncrement;
+      //   totalBpAdjustment = Math.abs(label._tbp - label.bp);
+      //   maxBpAdjustmentReached = totalBpAdjustment > maxBpAdjustment;
+      // } while (loop < MAX_LOOPS && !maxBpAdjustmentReached && (overlap || (prevLabel?._tbp > label._tbp)) );
+
 
       // Get normal rect for the label
       // - if it overlaps, find next availabe spot
       // - if no overlap, break from loop
-      const outerPt = canvas.pointForBp(label._tbp, rectOffset);
+
+      stopIndex = labelIndex;
+
+
+      const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
       const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
       label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-      // overlap = prevLabel && prevLabel.rect && label.rect.overlap([prevLabel.rect]);
-      // if (overlap || (prevLabel?._tbp > label._tbp)) {
-      if (this._clashesWithPrevLabel(labels, labelIndex)) {
+			// label._tbp = label.bp;
+      overlap = prevLabel && prevLabel.rect && label.rect.overlap([prevLabel.rect]);
 
-        if (startIndex === labelIndex) {
-          // Clashing with the label before the start index so move the start index back one
-          startIndex = labelIndex - 1;
-        }
 
+			// console.log(overlap)
+      if (overlap || (prevLabel?._tbp > label._tbp)) {
         const labelAttathPt = this._getNextAttachPt(label, prevLabel);
         const rectOrigin = utils.rectOriginForAttachementPoint(labelAttathPt, label.lineAttachment, label.width, label.height);
         label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
@@ -395,7 +446,24 @@ class Annotation extends CGObject {
         break;
       }
 
+    // Extract above to method
+    // - should return outerPt 
+    //
+    // Then have method to take outerPt, label and return new rect
+      // const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+      // label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+
+
+      // Overlaps will occur
+      if (loop >= MAX_LOOPS) {
+        this._debug && console.log(`Island LOOP MAX Reached: ${label.name}`)
+        popRequired = true;
+        break;
+      }
+
       if (maxBpAdjustmentReached) {
+        this._debug && console.log(`Island BP Adjust MAX Reached: ${label.name}; ${totalBpAdjustment} bp`)
+        popRequired = true;
         break;
       }
     }
@@ -404,7 +472,7 @@ class Annotation extends CGObject {
     // Islands of One should always be straight (no angle)
     if (startIndex === stopIndex) {
       this._debug && console.log(`ISLAND of ONE: ${labels[startIndex]?.name}`)
-      label._direction = 0;
+      console.log(`ISLAND of ONE: ${labels[startIndex]?.name}`)
       return {startIndex, stopIndex};
     }
 
@@ -416,192 +484,124 @@ class Annotation extends CGObject {
 
     // Center is defined as label closest to it's acutally position. Where other labels will
     // BETTER: center is middle index so there is equal labels on either side
-    let centerLabelIndex = Math.floor( startIndex + (stopIndex - startIndex) / 2);
-    this._debug && console.log(`INITIAL ISLAND - Start: ${startLabel?.name}; Stop: ${stopLabel?.name}; Center: ${labels[centerLabelIndex]?.name}`)
+    let centerLabelIndex = Math.floor((stopIndex - startIndex) / 2);
+    // this._debug && console.log(`ISLAND - Start: ${startLabel?.name}; Stop: ${stopLabel?.name}; Center: ${labels[centerLabelIndex]?.name}`)
+    console.log(`ISLAND - Start: ${startLabel?.name}; Stop: ${stopLabel?.name}; Center: ${labels[centerLabelIndex]?.name}`)
 
     // Back
-    const newStartIndex = this._placeLabelsWithHardBoundary(labels, centerLabelIndex, placedLabels, -1, poppedLabels);
+    this._placeLabelsWithHardBoundary(labels, centerLabelIndex+1, placedLabels, -1);
     // Forward
-    const newStopIndex = this._placeLabelsWithHardBoundary(labels, centerLabelIndex, placedLabels, 1, poppedLabels);
-
-
-    // Get popped labels and readjust
-    // - Get pooped from hard method
-    // - join together (sort?)
-    // - angle and set in place
-    // - remove placement from popLabel method.
-    console.log(poppedLabels)
-    if (poppedLabels.length > 0) {
-      poppedLabels.sort( (a, b) => a.bp - b.bp );
-      const startPoppedIndex = labels.indexOf(poppedLabels[0]);
-      const stopPoppedIndex = labels.indexOf(poppedLabels[poppedLabels.length-1]);
-      const prevLabel2 = this._prevLabel(labels, startPoppedIndex, 1);
-      const nextLabel = this._prevLabel(labels, stopPoppedIndex, -1);
-      const startBp = prevLabel2 ? prevLabel2._tbp : poppedLabels[startPoppedIndex]._tbp;
-      const stopBp = nextLabel ? nextLabel._tbp : poppedLabels[stopPoppedIndex]._tbp;
-      const bpDiff = (stopBp - startBp) / (poppedLabels.length + 1);
-      for (let labelIndex = 0, len = poppedLabels.length; labelIndex < len; labelIndex++) {
-        const poppedLabel = poppedLabels[labelIndex];
-        //Get from prev non-popped and first after popped-label tbp
-        // FIXME:
-        //
-        this._popLabel2(poppedLabels[labelIndex], placedLabels, bpDiff)
-      }
-    }
+    // const lastPoppedIndex = this._placeLabelsWithHardBoundary(labels, centerLabelIndex, placedLabels, 1);
+    this._placeLabelsWithHardBoundary(labels, centerLabelIndex, placedLabels, 1);
 
     // FIXME: need to alter stopIndex if new stop is reach in _placeLabelsWithHardBoundary
-    // this._debug && console.log(`FINAL ISLAND - Start: ${startLabel?.name}; Stop: ${stopLabel?.name}; Center: ${labels[centerLabelIndex]?.name}`)
-    this._debug && console.log(`FINAL ISLAND - Start: ${labels[newStartIndex]?.name}; Stop: ${labels[newStopIndex]?.name}; Center: ${labels[centerLabelIndex]?.name}`)
 
-    // return {startIndex, stopIndex};
-    return {startIndex: newStartIndex, stopIndex: newStopIndex};
+    return {startIndex, stopIndex};
+    // return {startIndex, lastPoppedIndex+1};
   }
 
-  _placeLabelsWithHardBoundary(labels, hardIndex, placedLabels, direction=1, poppedLabels=[]) {
+
+  _placeLabelsWithHardBoundary(labels, hardIndex, placedLabels, direction=1) {
 
     this._debug && console.log(`HARD: ${hardIndex}; DIRECTION: ${direction}`)
     // console.log(`HARD: ${hardIndex}; DIRECTION: ${direction}`)
     const canvas = this.canvas;
 
-    // const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
-    const rectOffset = this._outerCenterOffset + this._labelLineMarginInner + this.labelLineLength + this._labelLineMarginOuter;
+    const MAX_LOOPS = 200;
+    const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
 
     // FIX: 
-    // const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
+    const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
     // let labelIndex = hardIndex++;
+    const bpAdustIncrement = 1 / this.viewer.layout.pixelsPerBp() / 2;
     // Need to determin from visible range as well
     const maxBpAdjustment = Math.min(
-      (this.sequence.length / 20),
-      // (this.sequence.length / 50),
+      // (this.sequence.length / 20),
+      (this.sequence.length / 50),
       (this._visibleRange.length / 6)
     );
+    let totalBpAdjustment;
     let maxBpAdjustmentReached;
-    // let reachedOtherIsland;
-    let lastLabelIndex;
 
     let label, bp, prevLabel, overlap;
 
-    // Need to reset the rect for the hard boundary label
-    // FIXME: the hard label does not have to straight, but for now it will be
-    const hardLabel = labels[hardIndex];
-    if (!hardLabel._popped) {
-      const outerPt = canvas.pointForBp(hardLabel.bp, rectOffset);
-      const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, hardLabel.lineAttachment, hardLabel.width, hardLabel.height);
-      hardLabel.rect = new Rect(rectOrigin.x, rectOrigin.y, hardLabel.width, hardLabel.height);
-      // hardLabel._direction = 0;
-    }
-
+    // for (let labelIndex = hardIndex+direction, len = labels.length; labelIndex < len; labelIndex+=direction) {
     for (let labelIndex = hardIndex+direction, len = labels.length; (direction > 0) ? labelIndex < len : labelIndex >= 0; labelIndex+=direction) {
       label = labels[labelIndex];
       // console.log(label, labelIndex)
+      // bp = label._tbp; // _tbp will become _attachBp
       bp = label.bp; // _tbp will become _attachBp
+      // prevLabel = labels[labelIndex-1];
+      prevLabel = labels[labelIndex-direction];
+      const lineLength = this.labelLineLength; // 
+      let loop = 0;
+      let bpOverlap;
 
+      // do {
+      //   loop++;
+			// 	label._tbp = bp;
+      //   const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
+      //   const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+      //   label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+      //   overlap = prevLabel && prevLabel.rect && label.rect.overlap([prevLabel.rect]);
+      //
+      //   // Extract to variable outside of loop
+			// 	bp = bp + (direction * bpAdustIncrement);
+      //   // console.log(label.bp, bp)
+      //   totalBpAdjustment = Math.abs(label._tbp - label.bp);
+      //   maxBpAdjustmentReached = totalBpAdjustment > maxBpAdjustment;
+      //   // console.log(maxBpAdjustmentReached, totalBpAdjustment, maxBpAdjustment)
+      //   // if (overlap) {
+      //   //   label._angle = 1;
+      //   // }
+      //
+      //   bpOverlap = (direction > 0) ? (prevLabel._tbp > label._tbp) : (prevLabel._tbp < label._tbp);
+      // } while (loop < MAX_LOOPS && !maxBpAdjustmentReached && (overlap || bpOverlap) );
 
-      if (label._direction === -direction) {
-        // reachedOtherIsland = true;
-        this._debug && console.log('OTHER ISLAND Reached: POP')
-        const popIndex = hardIndex + direction;
-        // this._popLabel(labels, popIndex, placedLabels, direction);
-        poppedLabels.push(label);
-        return this._placeLabelsWithHardBoundary(labels, popIndex, placedLabels, direction, poppedLabels);
-      }
-
-
-      // Reset _tbp
-      label._tbp = label.bp; // _tbp will become _attachBp
-      label._direction = direction;
-
-      // this._adjustLinAttachment(label, direction);
-
-      // prevLabel = labels[labelIndex-direction];
-      prevLabel = this._prevLabel(labels, labelIndex, direction);
-      lastLabelIndex = labelIndex;
-
-      // Get normal rect for the label (unless it's been popped)
-      // - if it overlaps, find next availabe spot
-      // - if no overlap, break from loop
-      if (!label._popped || !label.rect) {
-        const outerPt = canvas.pointForBp(bp, rectOffset);
-        const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-        label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-      }
-
-      // if (overlap || (prevLabel?._tbp > label._tbp)) {
-      if (this._clashesWithPrevLabel(labels, labelIndex, direction)) {
-        const labelAttathPt = this._getNextAttachPt(label, prevLabel, direction);
-        // console.log(label.name, prevLabel?.name, labelAttathPt.x, labelAttathPt.y)
-        const rectOrigin = utils.rectOriginForAttachementPoint(labelAttathPt, label.lineAttachment, label.width, label.height);
-        label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-        label._tbp = canvas.bpForPoint(labelAttathPt);
-        maxBpAdjustmentReached = Math.abs(label._tbp - label.bp) > maxBpAdjustment;
-
-        if (label.name === 'second') {
-          console.log(label.name, prevLabel?.name)
-        }
-      } else {
-        break;
-      }
+      const labelAttathPt = this._getNextAttachPt(label, prevLabel, direction);
+      // console.log(label.name, prevLabel?.name, labelAttathPt.x, labelAttathPt.y)
+      const rectOrigin = utils.rectOriginForAttachementPoint(labelAttathPt, label.lineAttachment, label.width, label.height);
+      label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+      label._tbp = canvas.bpForPoint(labelAttathPt);
+      maxBpAdjustmentReached = Math.abs(label._tbp - label.bp) > maxBpAdjustment;
 
       this._debug && console.log(labelIndex, label.name, label.bp, label._tbp)
+
+      // Overlaps will occur
+      if (loop >= MAX_LOOPS) {
+        this._debug && console.log('LOOP MAX Reached: POP')
+        // TEMP: Should pop as well
+        const popIndex = hardIndex + direction;
+        this._popLabel(labels, popIndex, placedLabels);
+        this._placeLabelsWithHardBoundary(labels, popIndex, placedLabels, direction);
+        // this._popLabel(labels, labelIndex, placedLabels);
+        // this._placeLabelsWithHardBoundary(labels, labelIndex, placedLabels, direction);
+        // return labelIndex;
+        break;
+      }
 
       if (maxBpAdjustmentReached) {
         this._debug && console.log('MAX ADJUSTMENT Reached: POP')
         const popIndex = hardIndex + direction;
-        // this._popLabel(labels, popIndex, placedLabels, direction);
-        poppedLabels.push(label);
-        return this._placeLabelsWithHardBoundary(labels, popIndex, placedLabels, direction);
+        this._popLabel(labels, popIndex, placedLabels);
+        this._placeLabelsWithHardBoundary(labels, popIndex, placedLabels, direction);
+        // this._popLabel(labels, labelIndex, placedLabels);
+        // this._placeLabelsWithHardBoundary(labels, labelIndex, placedLabels, direction);
         // return labelIndex;
-        // break;
+        break;
       }
       label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
     }
-    return lastLabelIndex;
-  }
-
-  // TODO: on circles use last label if current is first
-  // Need to exclude popped labels for now so we don't clash with labels on other side of popped ones
-  _prevLabel(labels, currentIndex, direction=1) {
-    // return labels[currentIndex - direction];
-    let label;
-    for (let labelIndex = currentIndex-direction, len = labels.length; (direction > 0) ? labelIndex < len : labelIndex >= 0; labelIndex+=direction) {
-      label = labels[labelIndex];
-      if (!label?._popped) {
-        break;
-      }
-    }
-    return label;
-  }
-
-  // Returns true if current label overlaps with previous label or their lines cross
-  _clashesWithPrevLabel(labels, currentIndex, direction=1) {
-    const label = labels[currentIndex];
-    const prevLabel = this._prevLabel(labels, currentIndex, direction);
-    const overlap = prevLabel?.rect?.overlap([label.rect]);
-    const linesCross = (direction > 0) ? (label._tbp < prevLabel?._tbp) : (label._tbp > prevLabel?._tbp);
-
-    // if (label.name == 'first') {
-    //   console.log(!!overlap, linesCross, label._tbp, label.bp)
-    //   console.log(prevLabel?.name, !!prevLabel?.rect)
-    // }
-
-    // console.log('Clash', !!(overlap || linesCross), direction, label.name, prevLabel?.name)
-    return (overlap || linesCross);
   }
 
   // direction: 1 for forward, -1 for backward
   // prevLabel
   // Returns the attachPt for the next label. The point where the label line attaches to the next label.
   // AttachPt is the point on the rect that the line attaches too
-  // FIXME: NEED TO ADD MARGIN between rects
-  // Coordinates:
-  // - outerPtX/Y are on the canvas coordinates and refer to where on the label, the label line will attach.
-  // - mapX/Y are on the map coordinates
-  // Note the sign for map coordinates.
-  // - when getting the sqrt of attachPt for 1,2,3,4,5: mapX is negative.
-  // - when getting the sqrt of attachPt for 7,8,9,10,11: mapX is positive.
   _getNextAttachPt(label, prevLabel, direction=1) {
     const scale = this.viewer.scale;
     const goingForward = (direction > 0);
+    // console.log(goingForward)
     // Distance from the map center to where the label rect will be attached
     // FIXME: offset should be argument (or optional)
     const rectOffset = this._outerCenterOffset + this._labelLineMarginInner + this.labelLineLength + this._labelLineMarginOuter;
@@ -612,130 +612,98 @@ class Annotation extends CGObject {
     const prevRect = prevLabel?.rect;
     // Return the default point for the label when their is no previous label to compare
     if (!prevRect) {
-      console.log('NO PREV')
+      // console.log('NO PREV')
       return this.canvas.pointForBp(label.bp, rectOffset);
     }
     // console.log(prevRect)
-    //
 
-    //  10,11       12       1,2
-    //      \_______|_______/
-    //   9 -|_______________|- 3
-    //      /       |       \
-    //  8,7         6        5,4
+    // FIXME: NEED TO ADD MARGIN between rects
     switch (label.lineAttachment) {
       case 7:
       case 8:
-        outerPtY = goingForward ? (prevRect.bottom + height) : prevRect.top;
+        outerPtY = goingForward ? (prevRect.bottom + height) : prevRect.bottom;
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         mapY = scale.y.invert(outerPtY);
         mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 9:
+        // outerPtY = goingForward ? (prevRect.bottom - (height/2)) : (prevRect.top + (height/2));
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         outerPtY = goingForward ? (prevRect.bottom + (height/2)) : (prevRect.top - (height/2));
         mapY = scale.y.invert(outerPtY);
         mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
+        // console.log(outerPtX, outerPtY, rectOffset, (outerPtY*outerPtY))
         break;
       case 10:
       case 11:
-        outerPtY = goingForward ? prevRect.bottom : (prevRect.top - height);
+        // Same as 7,8
+        outerPtY = goingForward ? prevRect.bottom : (prevRect.top + height);
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         mapY = scale.y.invert(outerPtY);
-        mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
-        outerPtX = scale.x(mapX);
+        outerPtX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         break;
       case 12:
         // Won't work for linear
         outerPtX = goingForward ? (prevRect.left - (width/2)) : (prevRect.right + (width/2));
+        // outerPtY = Math.sqrt( (rectOffsetSquared) - (outerPtX*outerPtX) );
         mapX = scale.x.invert(outerPtX);
-        // FIXME: mapY can be negative
-        mapY = -Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
-        outerPtY = scale.y(mapY);
+        // outerPtY = Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
+        mapY = Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
+        outerPtY = scale.x(mapY);
         break;
       case 1:
       case 2:
-        outerPtY = goingForward ? (prevRect.top - height) : prevRect.bottom;
+        outerPtY = goingForward ? (prevRect.top + height) : prevRect.bottom;
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         mapY = scale.y.invert(outerPtY);
-        mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
+        mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 3:
-        outerPtY = goingForward ? (prevRect.top - (height/2)) : (prevRect.bottom + (height/2));
+        outerPtY = goingForward ? (prevRect.top + (height/2)) : (prevRect.bottom - (height/2));
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         mapY = scale.y.invert(outerPtY);
-        mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
+        mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 4:
       case 5:
-        outerPtY = goingForward ? prevRect.top : (prevRect.bottom + height);
+        outerPtY = goingForward ? prevRect.top : (prevRect.bottom - height);
+        // outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
         mapY = scale.y.invert(outerPtY);
-        mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
+        mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 6:
         // FIXME: Won't work for linear
         outerPtX = goingForward ? (prevRect.right + (width/2)) : (prevRect.left - (width/2));
+        // outerPtY = Math.sqrt( (rectOffsetSquared) - (outerPtX*outerPtX) );
         mapX = scale.x.invert(outerPtX);
+        // outerPtY = Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
         mapY = Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
-        outerPtY = scale.y(mapY);
+        outerPtY = scale.x(mapY);
         break;
     }
+
+    // if (outerPtY) {
+    //   outerPtX = Math.sqrt( (rectOffsetSquared) - (outerPtY*outerPtY) );
+    // } else {
+    //   // CIRCLE
+    //   outerPtY = Math.sqrt( (rectOffsetSquared) - (outerPtX*outerPtX) );
+    //   // LINEAR
+    //   // outerPtY = radius;
+    // }
     return {x: outerPtX, y: outerPtY};
   }
 
-  // Adjust the lineAttahcment point based on the direction of the label
-  // - angled forward: add 1 to the clock position of the attachment
-  // - angled backward: subtract 1 to the clock position of the attachment
-  _adjustLinAttachment(label, direction) {
-    let newLineAttacment = label.lineAttachment;
-    newLineAttacment+= direction;
-    if (newLineAttacment > 12) {
-      newLineAttacment = 1;
-    } else if (newLineAttacment < 1) {
-      newLineAttacment = 12;
-    }
-    label.lineAttachment = newLineAttacment;
-  }
-
-  // _popLabel2(labels, popIndex, placedLabels, direction) {
-  _popLabel2(label, placedLabels, bpDiff) {
-    this._debug && console.log('POP:', popIndex)
-    const canvas = this.canvas;
-    // const label = labels[popIndex];
-    label._popped = true;
-    // label._direction = 0;
-    const bp = label.bp + (label._direction*bpDiff);
-    console.log(bp, label.bp)
-    // const prevLabel = labels[popIndex-1];
-    // const prevLabel = this._prevLabel(labels, popIndex, direction);
-    let lineLength = this.labelLineLength;
-    const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
-    const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
-    let overlappingRect;
-    // if (prevLabel && prevLabel.rect) {
-    //   rectsToCheck.push(prevLabel.rect);
-    // }
-    do {
-      const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
-      const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-      label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-      overlappingRect = label.rect.overlap(rectsToCheck);
-      lineLength += label.height;
-    } while (overlappingRect);
-    label._tbp = bp;
-    placedLabels.push(label);
-    label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
-  }
-
-  _popLabel(labels, popIndex, placedLabels, direction) {
+  _popLabel(labels, popIndex, placedLabels) {
     this._debug && console.log('POP:', popIndex)
     const canvas = this.canvas;
     const label = labels[popIndex];
-    label._popped = true;
-    label._direction = 0;
     const bp = label.bp;
-    // const prevLabel = labels[popIndex-1];
-    const prevLabel = this._prevLabel(labels, popIndex, direction);
+    const prevLabel = labels[popIndex-1];
     let lineLength = this.labelLineLength;
     const rectsToCheck = placedLabels.map( l => l.rect ).filter( i => i);
     const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;

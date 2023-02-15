@@ -1,0 +1,1750 @@
+{
+    "cgview": {
+        "version": "1.1.0",
+        "created": "2017-11-23 10:38:26",
+        "updated": "2017-11-23 10:38:26",
+        "id": "1eb18c97a030363e64aff2215cc53c6ae6c92a78",
+        "name": "Reclinomonas americana mitochondrion, complete genome.",
+        "settings": {
+            "general": {
+                "backgroundColor": "rgba(255,255,255,1)",
+                "showShading": true,
+                "arrowHeadLength": 0.3
+            },
+            "backbone": {
+                "color": "rgba(128,128,128,1)",
+                "thickness": 5,
+                "visible": true
+            },
+            "ruler": {
+                "font": "sans-serif,plain,10",
+                "color": "rgba(0,0,0,1)",
+                "visible": true
+            },
+            "annotation": {
+                "font": "sans-serif,plain,12",
+                "visible": true
+            },
+            "dividers": {
+                "slot": {
+                    "visible": true,
+                    "color": "rgba(150, 150,150,1)",
+                    "thickness": 1,
+                    "spacing": 1
+                },
+                "track": {
+                    "visible": true,
+                    "color": "rgba(0,0,0,1)",
+                    "thickness": 1,
+                    "spacing": 1
+                }
+            }
+        },
+        "captions": [
+            {
+                "name": "Title",
+                "position": "bottom-center",
+                "textAlignment": "left",
+                "font": "sans-serif,plain,24",
+                "backgroundColor": "rgba(255,255,255,0.4)",
+                "visible": true,
+                "items": [
+                    {
+                        "name": "Reclinomonas americana mitochondrion, complete genome.",
+                        "font": "sans-serif,plain,24",
+                        "fontColor": "rgba(255,165,0,1)",
+                        "textAlignment": "left",
+                        "visible": true
+                    }
+                ]
+            }
+        ],
+        "legend": {
+            "name": "Legend",
+            "position": "top-right",
+            "textAlignment": "left",
+            "font": "sans-serif,plain,14",
+            "backgroundColor": "rgba(255,255,255,0.75)",
+            "visible": false,
+            "items": [
+                {
+                    "name": "CDS",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,0,153,0.5)",
+                    "decoration": "arrow"
+                },
+                {
+                    "name": "tRNA",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(153,0,153,0.5)",
+                    "decoration": "arrow"
+                },
+                {
+                    "name": "rRNA",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,153,53,0.5)",
+                    "decoration": "arrow"
+                },
+                {
+                    "name": "stem_loop",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(229,156,4,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "intron",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(106,24,237,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "misc_feature",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(60,254,91,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "GC Skew+",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,153,0,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "GC Skew-",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(153,0,153,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "GC Content",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,0,0,1)",
+                    "decoration": "arc"
+                },
+                {
+                    "name": "ORF",
+                    "font": "sans-serif,plain,14",
+                    "fontColor": "rgba(0,0,0,1)",
+                    "textAlignment": "left",
+                    "visible": true,
+                    "swatchColor": "rgba(0,128,0,1)",
+                    "decoration": "arc"
+                }
+            ]
+        },
+        "sequence": {
+            "font": "sans-serif,plain,10",
+            "color": "rgb(0,0,0)",
+            "seq": "AGATCTAACATCCAAAGACGAAAGGTTGAATGAAACCTTTTTGCCATCCGACATCCACAGGTCCATTCTCACACATAAGTGCCAAACGCAACAGGAGGGGATACACTAGCAGCAGACCGTTGCAAACGCAGGACCTCCACTCCTCTTCTCCTCAACACCCACTTTTGCCATCGAAAAACCAGCCCAGTTATTGGGCTTGATTGGAGCTCGCTCATTCCAATTCCTTCTATTAGGCTACTAACACCATGACTTTATTAGCCTGTCTATCCTGGCCCCCCTGGCGAGGTTCATGTTTGTTTATTTCCGAATGCAACAAGCTCCGCATTACACCCGAACATCACTCCAGATGAGGGCTTTCTGAGTGTGGGGTCAAATAGTTTCATGTTCCCCAAATGGCCCAAAACTGACAGTTTAAACGCTGTCTTGGAACCTAATATGACAAAAGCGTGATCTCATCCAAGATGAACTAAGTTTGGTTCGTTGAAATGCTAACGGCCAGTTGGTCAAAAAGAAACTTCCAAAAGTCGGCATACCGTTTGTCTTGTTTGGTATTGATTGACGAATGCTCAAAAATAATCTCATTAATGCTTAGCGCAGTCTCTCTATCGCTTCTGAACCCCGGTGCACCTGTGCCGAAACGCAAATGGGGAAACACCCGCTTTTTGGATGATTATGCATTGTCTCCACATTGTATGCTTCCAAGATTCTGGTGGGAATACTGCTGATAGCCTAACGTTCATGATCAAAATTTAACTGTTCTAACCCCTACTTGACAGCAATATATAAACAGAAGGAAGCTGCCCTGTCTTAAACCTTTTTTTTTATCATCATTATTAGCTTACTTTCATAATTGCGACTGGTTCCAATTGACAAGCTTTTGATTTTAACGACTTTTAACGACAACTTGAGAAGATCAAAAAACAACTAATTATTCGAAACGATGAGATTTCCTTCAATTTTTACTGCTGTTTTATTCGCAGCATCCTCCGCATTAGCTGCTCCAGTCAACACTACAACAGAAGATGAAACGGCACAAATTCCGGCTGAAGCTGTCATCGGTTACTCAGATTTAGAAGGGGATTTCGATGTTGCTGTTTTGCCATTTTCCAACAGCACAAATAACGGGTTATTGTTTATAAATACTACTATTGCCAGCATTGCTGCTAAAGAAGAAGGGGTATCTCTCGAGAAAAGAGAGGCTGAAGCTGAATTCACGTGGCCCAGCCGGCCGTCTCGGATCGGTACCTCGAGCCGCGGCGGCCGCCAGCTTTCTAGAACAAAAACTCATCTCAGAAGAGGATCTGAATAGCGCCGTCGACCATCATCATCATCATCATTGAGTTTGTAGCCTTAGACATGACTGTTCCTCAGTTCAAGTTGGGCACTTACGAGAAGACCGGTCTTGCTAGATTCTAATCAAGAGGATGTCAGAATGCCATTTGCCTGAGAGATGCAGGCTTCATTTTTGATACTTTTTTATTTGTAACCTATATAGTATAGGATTTTTTTTGTCATTTTGTTTCTTCTCGTACGAGCTTGCTCCTGATCAGCCTATCTCGCAGCTGATGAATATCTTGTGGTAGGGGTTTGGGAAAATCATTCGAGTTTGATGTTTTTCTTGGTATTTCCCACTCCTCTTCAGAGTACAGAAGATTAAGTGAGACCTTCGTTTGTGCGGATCCCCCACACACCATAGCTTCAAAATGTTTCTACTCCTTTTTTACTCTTCCAGATTTTCTCGGACTCCGCGCATCGCCGTACCACTTCAAAACACCCAAGCACAGCATACTAAATTTTCCCTCTTTCTTCCTCTAGGGTGTCGTTAATTACCCGTACTAAAGGTTTGGAAAAGAAAAAAGAGACCGCCTCGTTTCTTTTTCTTCGTCGAAAAAGGCAATAAAAATTTTTATCACGTTTCTTTTTCTTGAAATTTTTTTTTTTAGTTTTTTTCTCTTTCAGTGACCTCCATTGATATTTAAGTTAATAAACGGTCTTCAATTTCTCAAGTTTCAGTTTCATTTTTCTTGTTCTATTACAACTTTTTTTACTTCTTGTTCATTAGAAAGAAAGCATAGCAATCTAATCTAAGGGGCGGTGTTGACAATTAATCATCGGCATAGTATATCGGCATAGTATAATACGACAAGGTGAGGAACTAAACCATGGCCAAGTTGACCAGTGCCGTTCCGGTGCTCACCGCGCGCGACGTCGCCGGAGCGGTCGAGTTCTGGACCGACCGGCTCGGGTTCTCCCGGGACTTCGTGGAGGACGACTTCGCCGGTGTGGTCCGGGACGACGTGACCCTGTTCATCAGCGCGGTCCAGGACCAGGTGGTGCCGGACAACACCCTGGCCTGGGTGTGGGTGCGCGGCCTGGACGAGCTGTACGCCGAGTGGTCGGAGGTCGTGTCCACGAACTTCCGGGACGCCTCCGGGCCGGCCATGACCGAGATCGGCGAGCAGCCGTGGGGGCGGGAGTTCGCCCTGCGCGACCCGGCCGGCAACTGCGTGCACTTCGTGGCCGAGGAGCAGGACTGACACGTCCGACGGCGGCCCACGGGTCCCAGGCCTCGGAGATCCGTCCCCCTTTTCCTTTGTCGATATCATGTAATTAGTTATGTCACGCTTACATTCACGCCCTCCCCCCACATCCGCTCTAACCGAAAAGGAAGGAGTTAGACAACCTGAAGTCTAGGTCCCTATTTATTTTTTTATAGTTATGTTAGTATTAAGAACGTTATTTATATTTCAAATTTTTCTTTTTTTTCTGTACAGACGCGTGTACGCATGTAACATTATACTGAAAACCTTGCTTGAGAAGGTTTTGGGACGCTCGAAGGCTTTAATTTGCAAGCTGGAGACCAACATGTGAGCAAAAGGCCAGCAAAAGGCCAGGAACCGTAAAAAGGCCGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGACGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCAATGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGGACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTTCGGAAAAAGAGTTGGTAGCTCTTGATCCGGCAAACAAACCACCGCTGGTAGCGGTGGTTTTTTTGTTTGCAAGCAGCAGATTACGCGCAGAAAAAAAGGATCTCAAGAAGATCCTTTGATCTTTTCTACGGGGTCTGACGCTCAGTGGAACGAAAACTCACGTTAAGGGATTTTGGTCATGAGATC",
+            "visible": true
+        },
+        "features": [
+        {
+            "name": "AOX1_promoter_fragment",
+            "start": 1,
+            "stop": 940,
+            "legend": "Promoters",
+            "source": "json-feature",
+            "tags": 0,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "TEF1_promoter(fragment_containing_TEF1_promoter)",
+            "start": 1683,
+            "stop": 2091,
+            "legend": "Promoters",
+            "source": "json-feature",
+            "tags": 1,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "EM7_promoter",
+            "start": 2095,
+            "stop": 2162,
+            "legend": "Promoters",
+            "source": "json-feature",
+            "tags": 2,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "AOX1_transcription_termination_region",
+            "start": 1341,
+            "stop": 1682,
+            "legend": "Terminators",
+            "source": "json-feature",
+            "tags": 3,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "CYC1_terminator",
+            "start": 2538,
+            "stop": 2855,
+            "legend": "Terminators",
+            "source": "json-feature",
+            "tags": 4,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "AOX1_transcription_termination(TT)_fragment2",
+            "start": 1349,
+            "stop": 1676,
+            "legend": "Terminators",
+            "source": "json-feature",
+            "tags": 5,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "pBR322_origin",
+            "start": 2910,
+            "stop": 3529,
+            "legend": "Replication Origins",
+            "source": "json-feature",
+            "tags": 6,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "bleo",
+            "start": 2163,
+            "stop": 2534,
+            "legend": "Selectable Markers",
+            "source": "json-feature",
+            "tags": 7,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "c_myc_tag",
+            "start": 1275,
+            "stop": 1304,
+            "legend": "Affinity Tags",
+            "source": "json-feature",
+            "tags": 8,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "polyhistidine_tag2(6xHis)",
+            "start": 1320,
+            "stop": 1337,
+            "legend": "Affinity Tags",
+            "source": "json-feature",
+            "tags": 9,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "alpha_factor_primer",
+            "start": 1144,
+            "stop": 1164,
+            "legend": "Primers",
+            "source": "json-feature",
+            "tags": 10,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "3_AOX1_primer",
+            "start": 1423,
+            "stop": 1443,
+            "legend": "Primers",
+            "source": "json-feature",
+            "tags": 11,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "pYESTrp_rev_primer",
+            "start": 2619,
+            "stop": 2637,
+            "legend": "Primers",
+            "source": "json-feature",
+            "tags": 12,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "CYC1_primer",
+            "start": 2619,
+            "stop": 2637,
+            "legend": "Primers",
+            "source": "json-feature",
+            "tags": 13,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "zeocin_resistance_ORF",
+            "start": 2163,
+            "stop": 2537,
+            "legend": "Miscellaneous",
+            "source": "json-feature",
+            "tags": 14,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "alpha_factor_signal_sequence",
+            "start": 941,
+            "stop": 1207,
+            "legend": "Miscellaneous",
+            "source": "json-feature",
+            "tags": 15,
+            "visible": true,
+            "strand": 1
+        },
+        {
+            "name": "HpaII",
+            "start": 618,
+            "stop": 622,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": true
+        },
+        {
+            "name": "HpaII",
+            "start": 1039,
+            "stop": 1043,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 1224,
+            "stop": 1228,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 1396,
+            "stop": 1400,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2186,
+            "stop": 2190,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2211,
+            "stop": 2215,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2236,
+            "stop": 2240,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2251,
+            "stop": 2255,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2277,
+            "stop": 2281,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2287,
+            "stop": 2291,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2336,
+            "stop": 2340,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2419,
+            "stop": 2423,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2430,
+            "stop": 2434,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2435,
+            "stop": 2439,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2492,
+            "stop": 2496,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 2496,
+            "stop": 2500,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 3070,
+            "stop": 3074,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 3217,
+            "stop": 3221,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 3243,
+            "stop": 3247,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "HpaII",
+            "start": 3433,
+            "stop": 3437,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 20,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 745,
+            "stop": 751,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": true
+        },
+        {
+            "name": "ApoI",
+            "start": 1034,
+            "stop": 1040,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 1207,
+            "stop": 1213,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 1790,
+            "stop": 1796,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 1900,
+            "stop": 1906,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 1927,
+            "stop": 1933,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "ApoI",
+            "start": 2749,
+            "stop": 2755,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 7,
+            "firstSite": false
+        },
+        {
+            "name": "SacI",
+            "start": 203,
+            "stop": 209,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "EcoRI",
+            "start": 1207,
+            "stop": 1213,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "AlwNI",
+            "start": 3274,
+            "stop": 3283,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "AluI",
+            "start": 204,
+            "stop": 208,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": true
+        },
+        {
+            "name": "AluI",
+            "start": 315,
+            "stop": 319,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 795,
+            "stop": 799,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 835,
+            "stop": 839,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 872,
+            "stop": 876,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 993,
+            "stop": 997,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1047,
+            "stop": 1051,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1203,
+            "stop": 1207,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1265,
+            "stop": 1269,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1533,
+            "stop": 1537,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1560,
+            "stop": 1564,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 1694,
+            "stop": 1698,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 2379,
+            "stop": 2383,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 2851,
+            "stop": 2855,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 3030,
+            "stop": 3034,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 3166,
+            "stop": 3170,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AluI",
+            "start": 3423,
+            "stop": 3427,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 17,
+            "firstSite": false
+        },
+        {
+            "name": "AccI",
+            "start": 1313,
+            "stop": 1319,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "MboI",
+            "start": 1,
+            "stop": 5,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": true
+        },
+        {
+            "name": "MboI",
+            "start": 448,
+            "stop": 452,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 740,
+            "stop": 744,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 911,
+            "stop": 915,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 1236,
+            "stop": 1240,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 1298,
+            "stop": 1302,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 1544,
+            "stop": 1548,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 1677,
+            "stop": 1681,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 2449,
+            "stop": 2453,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 2574,
+            "stop": 2578,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 3430,
+            "stop": 3434,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 3505,
+            "stop": 3509,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 3516,
+            "stop": 3520,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 3524,
+            "stop": 3528,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "MboI",
+            "start": 3589,
+            "stop": 3593,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 1,
+            "stop": 5,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": true
+        },
+        {
+            "name": "Sau3AI",
+            "start": 448,
+            "stop": 452,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 740,
+            "stop": 744,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 911,
+            "stop": 915,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 1236,
+            "stop": 1240,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 1298,
+            "stop": 1302,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 1544,
+            "stop": 1548,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 1677,
+            "stop": 1681,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 2449,
+            "stop": 2453,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 2574,
+            "stop": 2578,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 3430,
+            "stop": 3434,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 3505,
+            "stop": 3509,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 3516,
+            "stop": 3520,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 3524,
+            "stop": 3528,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "Sau3AI",
+            "start": 3589,
+            "stop": 3593,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 15,
+            "firstSite": false
+        },
+        {
+            "name": "SfiI",
+            "start": 1217,
+            "stop": 1230,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "HincII",
+            "start": 1003,
+            "stop": 1009,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": true
+        },
+        {
+            "name": "HincII",
+            "start": 1313,
+            "stop": 1319,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "HincII",
+            "start": 2096,
+            "stop": 2102,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "HincII",
+            "start": 2170,
+            "stop": 2176,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "BglI",
+            "start": 271,
+            "stop": 282,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": true
+        },
+        {
+            "name": "BglI",
+            "start": 1218,
+            "stop": 1229,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "BglI",
+            "start": 1250,
+            "stop": 1261,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "BglI",
+            "start": 2461,
+            "stop": 2472,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvrI",
+            "start": 1183,
+            "stop": 1189,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": true
+        },
+        {
+            "name": "AvrI",
+            "start": 1245,
+            "stop": 1251,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvrI",
+            "start": 2240,
+            "stop": 2246,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvrI",
+            "start": 2250,
+            "stop": 2256,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "XmaI",
+            "start": 2250,
+            "stop": 2256,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "DraI",
+            "start": 410,
+            "stop": 416,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "PvuII",
+            "start": 1559,
+            "stop": 1565,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "HindIII",
+            "start": 871,
+            "stop": 877,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "KpnI",
+            "start": 1240,
+            "stop": 1246,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "BglII",
+            "start": 0,
+            "stop": 6,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "StuI",
+            "start": 2564,
+            "stop": 2570,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "NcoI",
+            "start": 2160,
+            "stop": 2166,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "BclI",
+            "start": 739,
+            "stop": 745,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 2,
+            "firstSite": true
+        },
+        {
+            "name": "BclI",
+            "start": 1543,
+            "stop": 1549,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 2,
+            "firstSite": false
+        },
+        {
+            "name": "SmaI",
+            "start": 2250,
+            "stop": 2256,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "AvaI",
+            "start": 1183,
+            "stop": 1189,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": true
+        },
+        {
+            "name": "AvaI",
+            "start": 1245,
+            "stop": 1251,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvaI",
+            "start": 2240,
+            "stop": 2246,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvaI",
+            "start": 2250,
+            "stop": 2256,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 4,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 59,
+            "stop": 64,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": true
+        },
+        {
+            "name": "AvaII",
+            "start": 130,
+            "stop": 135,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2229,
+            "stop": 2234,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2284,
+            "stop": 2289,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2317,
+            "stop": 2322,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2323,
+            "stop": 2328,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2558,
+            "stop": 2563,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "AvaII",
+            "start": 2693,
+            "stop": 2698,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 8,
+            "firstSite": false
+        },
+        {
+            "name": "EcoRV",
+            "start": 2598,
+            "stop": 2604,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "BamHI",
+            "start": 1676,
+            "stop": 1682,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "HaeIII",
+            "start": 270,
+            "stop": 274,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": true
+        },
+        {
+            "name": "HaeIII",
+            "start": 394,
+            "stop": 398,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 493,
+            "stop": 497,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 1217,
+            "stop": 1221,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 1226,
+            "stop": 1230,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 1258,
+            "stop": 1262,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2164,
+            "stop": 2168,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2350,
+            "stop": 2354,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2369,
+            "stop": 2373,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2433,
+            "stop": 2437,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2437,
+            "stop": 2441,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2494,
+            "stop": 2498,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2518,
+            "stop": 2522,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2550,
+            "stop": 2554,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2565,
+            "stop": 2569,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2877,
+            "stop": 2881,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2888,
+            "stop": 2892,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 2906,
+            "stop": 2910,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "HaeIII",
+            "start": 3340,
+            "stop": 3344,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 19,
+            "firstSite": false
+        },
+        {
+            "name": "NotI",
+            "start": 1256,
+            "stop": 1264,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        },
+        {
+            "name": "XhoI",
+            "start": 1183,
+            "stop": 1189,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 2,
+            "firstSite": true
+        },
+        {
+            "name": "XhoI",
+            "start": 1245,
+            "stop": 1251,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": false,
+            "count": 2,
+            "firstSite": false
+        },
+        {
+            "name": "XbaI",
+            "start": 1270,
+            "stop": 1276,
+            "legend": "Restriction Sites",
+            "source": "json-feature",
+            "visible": true,
+            "count": 1,
+            "firstSite": true
+        }
+        ],
+        "plots": [],
+        "tracks": [
+            {
+                "name": "Features",
+                "separateFeatureBy": "strand",
+                "position": "both",
+                "dataType": "feature",
+                "dataMethod": "source",
+                "dataKeys": "json-feature"
+            },
+            {
+                "name": "GC Content",
+                "position": "inside",
+                "thicknessRatio": 2,
+                "dataType": "plot",
+                "dataMethod": "sequence",
+                "dataKeys": "gc-content",
+                "visible": true
+              },
+            {
+                "name": "GC Skew",
+                "position": "inside",
+                "thicknessRatio": 2,
+                "dataType": "plot",
+                "dataMethod": "sequence",
+                "dataKeys": "gc-skew",
+                "visible": true
+              }
+        ]
+    }
+}

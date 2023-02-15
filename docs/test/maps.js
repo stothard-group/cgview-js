@@ -1,4 +1,24 @@
 maps = {
+  labels: {
+    name: 'Label Test [69,034 bp]',
+    url: 'maps/labels.json',
+  },
+  labels2: {
+    name: 'Label 2 Test [69,034 bp]',
+    url: 'maps/labels2.json',
+  },
+  pcDNA3: {
+    name: 'pcDNA3.1',
+    url: 'maps/labels-pcDNA3.1.json',
+  },
+  pcET30c: {
+    name: 'pET-30c',
+    url: 'maps/labels-pET-30c.json',
+  },
+  pPICZ: {
+    name: 'pPICZ',
+    url: 'maps/labels-pPICZ.json',
+  },
   small: {
     name: 'Mitochondia [69,034 bp]',
     url: 'maps/mito.json',

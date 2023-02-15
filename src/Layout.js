@@ -801,7 +801,7 @@ class Layout {
 
   // Draw everything but the slots and thier features.
   // e.g. draws backbone, dividers, ruler, labels, progress
-  drawMapWithoutSlots() {
+  drawMapWithoutSlots(fast) {
     const viewer = this.viewer;
     const backbone = viewer.backbone;
     const canvas = this.canvas;
@@ -832,7 +832,7 @@ class Layout {
     viewer.ruler.draw(this.centerInsideOffset - rulerOffsetAdjustment, this.centerOutsideOffset + rulerOffsetAdjustment);
     // Labels
     if (viewer.annotation.visible) {
-      viewer.annotation.draw(this.centerInsideOffset, this.centerOutsideOffset);
+      viewer.annotation.draw(this.centerInsideOffset, this.centerOutsideOffset, fast);
     }
 
     // Captions on the Map layer
@@ -866,7 +866,7 @@ class Layout {
 
   drawFast() {
     const startTime = new Date().getTime();
-    this.drawMapWithoutSlots();
+    this.drawMapWithoutSlots(true);
     this.drawAllSlots(true);
     // Debug
     if (this.viewer.debug) {

@@ -137,10 +137,14 @@ class Highlighter extends CGObject {
 
   getPositionDiv(e) {
     const bp = utils.commaNumber(e.bp);
-      // <div>${bp} bp</div>
-    return (`
-      <div class='track-data'>Map: ${bp} bp</div>
-    `);
+    let div = `<div class='track-data'>Map: ${bp} bp</div>`;
+    if (e.elementType === 'contig') {
+      const contig = e.element;
+      console.log(contig)
+      const contigBp = utils.commaNumber(e.bp - contig.lengthOffset);
+      div = `<div class='track-data'>Contig: ${contigBp} bp</div>` + div;
+    }
+    return div;
   }
 
   featurePopoverContentsDefault(e) {

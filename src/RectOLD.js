@@ -16,16 +16,11 @@ class Rect {
    * @param {Number} width - Width of the rectangle
    * @param {Number} height - Height of the rectangle
    */
-  constructor(x, y, width, height, label) {
+  constructor(x, y, width, height) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-
-    // TESTING
-    // this._pressureBack = 0;
-    // this._pressureFront = 0;
-    this._label = label;
   }
 
   /**

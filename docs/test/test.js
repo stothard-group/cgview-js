@@ -2,7 +2,9 @@
 // Settings
 ///////////////////////////////////////////////////////////////////////////////
 
-const defaultMap = 'small';
+// const defaultMap = 'small';
+const defaultMap = 'labels';
+// const defaultMap = 'pcDNA3';
 // const defaultMap = 'version_0_1';
 // const defaultMap = 'small_noplots';
 // const defaultMap = 'test';
@@ -19,6 +21,7 @@ cgv = new CGV.Viewer('#my-viewer', {
   // debug: {sections: ['time', 'position']}
 });
 loadMapFromID(defaultMap);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,6 +54,15 @@ function loadMapFromID(id) {
     const json = JSON.parse(request.responseText);
     cgv.io.loadJSON(json);
     cgv.name = maps[id].name;
+
+    // Testing annotation (default is 50)
+    // cgv.annotation.priorityMax = 200;
+
+    // Label stuff (Below)
+    const distance = cgv.sequence.length / 100;
+    labelDistance.value = Math.floor(distance);
+    labelFontSize.value = cgv.annotation.font.size;
+
     cgv.draw();
   };
   request.send();
@@ -61,7 +73,28 @@ function loadMapFromID(id) {
 // Events
 ///////////////////////////////////////////////////////////////////////////////
 
-cgv.on('click', (e) => console.log(e));
+// cgv.on('click', (e) => console.log(e));
+cgv.on('click', (e) => {
+  if (e.elementType === 'label') {
+    const label = e.element;
+    console.log(`${label.name}: BP:${label.bp}, TBP:${label._tbp}, D:${label._direction}, P:${label._popped}`)
+    console.log(label)
+  }
+});
+
+cgv.on('mousemove', (e) => {
+  // const elements = ['caption', 'legendItem', 'label'];
+  const elements = ['caption', 'legendItem'];
+  if (elements.includes(e.elementType)) {
+    e.element.highlight();
+  }
+  if (e.elementType === 'label') {
+    const label = e.element;
+    label.feature.highlight();
+  }
+  if (e.elementType === 'feature') {
+  }
+});
 
 ///////////////////////////////////////////////////////////////////////////////
 // Performance Test
@@ -209,3 +242,43 @@ downloadSVGBtn.addEventListener('click', (e) => {
   cgv.io.downloadSVG('cgview.svg');
 });
 
+///////////////////////////////////////////////////////////////////////////////
+// Label Testing
+///////////////////////////////////////////////////////////////////////////////
+function newPostion(bp, change, length) {
+  if (change > 0) {
+    return  ((bp + change) > length) ? (bp + change - length) : (bp + change);
+  } else {
+    return  ((bp + change) < 1) ? (bp + change + length) : (bp + change);
+  }
+}
+function moveFeatures(distance) {
+  distance = Math.floor(distance);
+  console.log(`Move Labels: ${distance} bp`)
+  const changes = {};
+  cgv.features().forEach( f => {
+    const start = newPostion(f.start, distance, cgv.sequence.length);
+    const stop = newPostion(f.stop, distance, cgv.sequence.length);
+    changes[f.cgvID] = {start, stop};
+  });
+  cgv.updateFeatures(changes);
+  cgv.draw();
+}
+
+const labelDistance = document.getElementById('labels-move-distance');
+const labelFontSize = document.getElementById('labels-font-size');
+labelFontSize.addEventListener('change', (e) => {
+  cgv.annotation.update({font: `monospace, plain, ${labelFontSize.value}`});
+  cgv.draw();
+});
+
+const labelsForward = document.getElementById('labels-move-forward');
+labelsForward.addEventListener('click', (e) => {
+  const distance = labelDistance.value;
+  moveFeatures(distance);
+});
+const labelsBackward = document.getElementById('labels-move-back');
+labelsBackward.addEventListener('click', (e) => {
+  const distance = labelDistance.value;
+  moveFeatures(-distance);
+});
