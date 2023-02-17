@@ -72,16 +72,6 @@ function loadMapFromID(id) {
 ///////////////////////////////////////////////////////////////////////////////
 // Events
 ///////////////////////////////////////////////////////////////////////////////
-
-// cgv.on('click', (e) => console.log(e));
-cgv.on('click', (e) => {
-  if (e.elementType === 'label') {
-    const label = e.element;
-    console.log(`${label.name}: BP:${label.bp}, TBP:${label._tbp}, D:${label._direction}, P:${label._popped}`)
-    console.log(label)
-  }
-});
-
 cgv.on('mousemove', (e) => {
   // const elements = ['caption', 'legendItem', 'label'];
   const elements = ['caption', 'legendItem'];

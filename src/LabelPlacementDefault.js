@@ -79,12 +79,12 @@ class LabelPlacementDefault {
   /**
    * Return the distance from the map center to where the label rect should be placed.
    * If lineLength is provided it will be included in the calculation, otherwise,
-   * the deafult labelLineLength will be used.
+   * the default labelLineLength will be used.
    * @param {Number} lineLength - Length of the label line
    * @return {Number} - Distance from map center ot where label rect should be placed.
    */
-  rectCenterOffset(lineLength) {
-    return this._rectOffsetWithoutLineLength + (lineLength ? lineLength : this.initialLabelLineLength)
+  rectCenterOffset(lineLength=this.initialLabelLineLength) {
+    return this._rectOffsetWithoutLineLength + lineLength;
   }
 
   /**
