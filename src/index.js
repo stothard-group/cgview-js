@@ -2,6 +2,7 @@ import { version } from '../package.json';
 
 import Anchor from './Anchor';
 import Annotation from './Annotation';
+import LabelPlacementDefault from './LabelPlacementDefault';
 import Backbone from './Backbone';
 import Bookmark from './Bookmark';
 import Box from './Box';
