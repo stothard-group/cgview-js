@@ -3,16 +3,23 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
+- N/A
+
+## v1.3.1 - 2023-02-17
 ### Added
-- Default minArcLength changed from 0 to 1
 - Viewer.isAnimating property
 - Added animation button to tutorial on controls
-- Viewer.moveTo() and Viewer.zoomTo() now move along the backbone for circular maps when the zoomFactor is above 10.
-- Added additional default window & step size for genomes larger than 10 million bp.
+- Added additional default window & step size for genomes larger than 10 million bp
+- Added map and contig position to feature popovers
+- Mousing over features will highlight feature label
 
-## FIXED
+## Changed
+- Default minArcLength changed from 0 to 1
+- Viewer.moveTo() and Viewer.zoomTo() now move along the backbone for circular maps when the zoomFactor is above 10
+
+## Fixed
 - Hide annotation labels if feature or track is hidden
-
+- Changing layout will reset map position so canvas isn't empty. Fixes [issue#4](https://github.com/stothard-group/cgview-js/issues/4)
 
 ## v1.3.0 - 2022-06-24
 ### Added
@@ -25,7 +32,6 @@
 - Circle bp scale fixed. Top of circle is equal to 1bp and sequence length + 1
 - Fixed disappearing features that wrap origin
 - Fixed features that wrap origin from drawing past map boundaries on linear maps
-
 
 ## v1.2.0 - 2022-01-21
 - Add tags for features and track dataMethod
