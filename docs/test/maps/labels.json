@@ -225,6 +225,16 @@
                 "source": "sequence-features",
                 "legend": "CDS",
                 "visible": true
+            },
+            {
+                "name": "seventh",
+                "type": "CDS",
+                "start": 17000,
+                "stop": 17100,
+                "strand": 1,
+                "source": "sequence-features",
+                "legend": "CDS",
+                "visible": true
             }
         ],
         "plots": [],

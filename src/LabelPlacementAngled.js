@@ -39,7 +39,7 @@ class LabelPlacementAngled extends LabelPlacementDefault {
   constructor(annotation, options = {}) {
     super(annotation, options);
     // this._debug = false;
-    this._debug = true;
+    // this._debug = true;
 
     // Debuging labels
     // - add what to log when a label is clicked
@@ -47,8 +47,8 @@ class LabelPlacementAngled extends LabelPlacementDefault {
       if (e.elementType === 'label') {
         const label = e.element;
         console.log(`${label.name}: BP:${label.bp}, aBP:${label._attachBp}, D:${label._direction}, P:${label._popped}`)
-        // console.log(label._island)
-        // console.log(label)
+        console.log(label._island)
+        console.log(label)
       }
     });
   }
@@ -70,7 +70,8 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     labels.sort( (a, b) => a.bp - b.bp );
 
     // The approximate bp adjustment for the label ine to reach the given angle (Degrees)
-    const maxLineAngle = 45;
+    // const maxLineAngle = 45;
+    const maxLineAngle = 80;
     this.maxBpAdjustment = this.maxBpAdjustForAngle(maxLineAngle)
     // Reduce angle for 6/12 attachments (maybe by half)
 
@@ -90,10 +91,14 @@ class LabelPlacementAngled extends LabelPlacementDefault {
       const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
       label._defaultRect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
       label.rect = label._defaultRect;
+
+      // Default maxBp Adjustment
+      // Top/bottom labels will have half the max adjust
+      label._maxBpAdjustment = [6,12].includes(label.lineAttachment) ? this.maxBpAdjustment / 2 : this.maxBpAdjustment;
     }
 
     // Find Initial Islands
-    const islands = this.findIslands(labels);
+    let islands = this.findIslands(labels);
 
     // Next step
     // - Find extent of islands based on angle of label line and position on map
@@ -110,6 +115,16 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     //  - and method for length of popped labels
 
     // Place island labels
+    // INITIAL PLACEMENT
+    for (let islandIndex = 0, len = islands.length; islandIndex < len; islandIndex++) {
+      const island = islands[islandIndex];
+      island.placeLabels();
+    }
+    // MERGE ISALNDS
+    // console.log('BEFORE', islands.length)
+    islands = LabelIsland.mergeIslands(this, islands);
+    // console.log('AFTER', islands.length)
+    // FINAL PLACEMENT
     for (let islandIndex = 0, len = islands.length; islandIndex < len; islandIndex++) {
       const island = islands[islandIndex];
       island.placeLabels();
@@ -134,7 +149,7 @@ class LabelPlacementAngled extends LabelPlacementDefault {
       label = labels[labelIndex];
       prevLabel = this._prevLabel(label);
       if (label._defaultRect.overlap([prevLabel._defaultRect])) {
-        island.addLabel(label)
+        island.addLabels(label)
       } else {
         islands.push(island);
         island = new LabelIsland(this, label);
@@ -282,13 +297,35 @@ export default LabelPlacementAngled;
 //////////////////////////////////////////////////////////////////////////////
 class LabelIsland {
 
-  constructor(labelPlacement, label) {
+  constructor(labelPlacement, labels) {
     this.labelPlacement = labelPlacement;
     this._labels = [];
     this.canvas = labelPlacement.canvas;
-    if (label) {
-      this.addLabel(label);
+    this.addLabels(labels);
+  }
+
+  static mergeIslands(labelPlacement, islands) {
+    // place labels of curent isalnd and next island
+    // do they clash
+    // yes - merge and re-place island and try to merge again
+    //  no - continue on
+
+
+
+    const mergedIslands = [];
+    let labelsToMerge = islands[0]?.labels;
+    for (let islandIndex = 0, len = islands.length; islandIndex < len; islandIndex++) {
+      const island = islands[islandIndex];
+      const nextIndex = (islandIndex >= (len-1)) ? 0 : islandIndex + 1;
+      const nextIsland = islands[nextIndex];
+      if (island.clash(nextIsland)) {
+        labelsToMerge = labelsToMerge.concat(nextIsland.labels);
+      } else {
+        mergedIslands.push(new LabelIsland(labelPlacement, labelsToMerge));
+        labelsToMerge = nextIsland.labels;
+      }
     }
+    return mergedIslands;
   }
 
   get labels() {
@@ -311,9 +348,21 @@ class LabelIsland {
     return this.labels[this.labels.length-1];
   }
 
-  addLabel(label) {
-    this._labels.push(label);
-    label._island = this;
+  // Add a label or an array of labels
+  addLabels(labels) {
+    if (labels) {
+      if (Array.isArray(labels)) {
+        // Labels is an array of labels
+        this._labels = this._labels.concat(labels);
+        for (const label of labels) {
+          label._island = this;
+        }
+      } else {
+        // Labels is a single label
+        this._labels.push(labels);
+        labels._island = this;
+      }
+    }
   }
 
   // Find middle label and adjust outward from there.
@@ -331,7 +380,7 @@ class LabelIsland {
       // Place labels with max angle until labels overlap again
       this.placeWithMaxAngle();
       // Place remaining labels as popped
-      this.placePoppedLabels();
+      // this.placePoppedLabels();
     }
   }
 
@@ -343,9 +392,13 @@ class LabelIsland {
       // Before getting rect, check if line angle is too large
       let attachBp = canvas.bpForPoint(labelAttachPt);
       // This may be different for different labels based on clock position
-      const maxBpAdjustment = this.labelPlacement.maxBpAdjustment;
+      // const maxBpAdjustment = [6,12].includes(label.lineAttachment) ?
+      //   this.labelPlacement.maxBpAdjustment / 2 :
+      //   this.labelPlacement.maxBpAdjustment;
+
+
       // If max bp adjustemnt is reached, return so labels can be placed from the outside inward
-      if (Math.abs(attachBp - label.bp) > maxBpAdjustment) {
+      if (Math.abs(attachBp - label.bp) > label._maxBpAdjustment) {
         return true;
       }
       // TODO: MERGING ISLANDS
@@ -425,10 +478,27 @@ class LabelIsland {
 
   // Adjust label, so that is label line is at the maximum allowed angle
   adjustLabelToMaxAngle(label, direction) {
-    const maxBpAdjustment = this.labelPlacement.maxBpAdjustment;
+    // const maxBpAdjustment = this.labelPlacement.maxBpAdjustment;
+    const maxBpAdjustment = label._maxBpAdjustment;
     const labelAttachPt = this.canvas.pointForBp(label.bp + (direction * maxBpAdjustment), this.labelPlacement.rectCenterOffset());
     this.adjustLabelWithAttachPt(label, labelAttachPt);
   }
+
+  // Looking Forward
+  clash(island) {
+    return this.labelsClash(this.lastLabel, island.firstLabel);
+  }
+
+  labelsClash(label1, label2) {
+    const rectsOverlap = label1.rect.overlap([label2.rect]);
+    const linesCross = (label1.bp < label2.bp) ? (label1._attachBp > label2._attachBp) : (label1._attachBp < label2._attachBp);
+    return (rectsOverlap || linesCross);
+  }
+
+  // merge(island) {
+  //   this._labels = this._labels.concat(island.labels);
+  //   // TODO: may need to resort but maybe not if we only go forward
+  // }
 
 }
 
