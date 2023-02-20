@@ -399,11 +399,7 @@ class Layout {
       // At larger zoom levels and when a bp was given, center the map on that bp
       const zoomFactorCutoff = 1.25;
       if (this.viewer.zoomFactor > zoomFactorCutoff && bp) {
-        // Get point for bp and backbone centerOffset (NOTE: bp scale must be set first)
-        const point = this.pointForBp(bp);
-        const dx = scale.x.invert(point.x);
-        const dy = scale.y.invert(point.y);
-        this.translate(-dx, dy);
+        this.viewer.zoomTo(bp, this.viewer.zoomFactor, {duration: 0});
       }
     } else {
       // The canvas is being resized or initialized
