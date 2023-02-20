@@ -634,6 +634,7 @@ class Viewer {
     if (!(this.backbone.visibleRange && this.backbone.visibleRange.overHalfMapLength())) {
       this.recenterTracks();
     }
+    this.annotation.refresh();
 
     this.dirty = true;
 
