@@ -305,6 +305,7 @@ class LabelIsland {
     this.labelPlacement = labelPlacement;
     this._labels = [];
     this.canvas = labelPlacement.canvas;
+    this.viewer = labelPlacement.viewer;
     this.addLabels(labels);
   }
 
@@ -373,6 +374,7 @@ class LabelIsland {
             // Add boundaries betwen the 2 islands
             // TODO: add margin
             // - This could become an island method: centerBpBetweenIslands or something
+            // - NEED to take into account circle origin
             const boundaryBp = island.lastLabel.bp + ((nextIsland.firstLabel.bp - island.lastLabel.bp) / 2);
             console.log('NO MERGE', boundaryBp)
             island.stopBoundaryBp = boundaryBp;
@@ -457,7 +459,7 @@ class LabelIsland {
       // Place labels with max angle until labels overlap again
       this.placeWithMaxAngle();
       // Place remaining labels as popped
-      // this.placePoppedLabels();
+      this.placePoppedLabels();
     }
   }
 
@@ -501,6 +503,7 @@ class LabelIsland {
   // Set the first and last label to their maximum angle and place labels
   // inwards from there until the labels overlap. Return the overlapping
   // labels and the remaining unplaced labels.
+  // FIXME: if any labels pop, label lines have to be angled way from popped labels
   placeWithMaxAngle() {
     const canvas = this.canvas;
     let forwardIndex, backwardIndex, backLabel, frontLabel;
@@ -520,37 +523,55 @@ class LabelIsland {
       this.adjustLabelToNextAttachPt(backLabel, 1);
       this.adjustLabelToNextAttachPt(frontLabel, -1);
       // FIXME: test with "clash" instead of overlap (when i have a clash method)
-      if (backLabel.rect.overlap([frontLabel.rect])) {
+      // if (backLabel.rect.overlap([frontLabel.rect])) {
+      if (this.labelsClash(backLabel, frontLabel)) {
         // Return the current label indices as the limits of popping labels
-        // console.log('overlap', forwardIndex, backwardIndex);
-        this.poppedStartIndex = forwardIndex;
-        this.poppedStopIndex = backwardIndex;
+        console.log('Pop Indices Before', forwardIndex, backwardIndex);
+        this.poppedStartIndex = this.adjustPopIndex(forwardIndex, -1);
+        this.poppedStopIndex = this.adjustPopIndex(backwardIndex, 1);
+        // this.poppedStartIndex = forwardIndex;
+        // this.poppedStopIndex = backwardIndex;
+        console.log('Pop Indices After', forwardIndex, backwardIndex);
         return;
       }
     }
   }
 
+  // Need to adjust pop indices to add any labels whose label line is angled towards island middle
+  adjustPopIndex(index, direction) {
+    let newIndex = index;
+    for (let i = index+direction, len = this.labels.length; (direction > 0) ? i < len : i >= 0; i+=direction) {
+      const label = this.labels[i];
+      if (label._direction == direction) {
+        return newIndex;
+      }
+      newIndex = i;
+    }
+    return newIndex;
+  }
+
+
   // TODO: proper popping label placement
   // - For now just extend line length until there is no overlap
   // - Future:
   //  - angle popped labels based on the inner labels, that were not popped
-  // placePoppedLabels() {
-  //   let label, bp, lineLength, overlappingRect;
-  //   const placedRects = [];
-  //   for (let i = this.poppedStartIndex; i <= this.poppedStopIndex; i++) {
-  //     label = this.labels[i];
-  //     bp = label.bp;
-  //     lineLength = this.labelPlacement.initialLabelLineLength;
-  //     do {
-  //       const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
-  //       this.adjustLabelWithAttachPt(label, outerPt);
-  //       // FIXME: need label rect of island and more??
-  //       overlappingRect = label.rect.overlap(placedRects);
-  //       lineLength += label.height;
-  //     } while (overlappingRect);
-  //     placedRects.push(label.rect);
-  //   }
-  // }
+  placePoppedLabels() {
+    let label, bp, lineLength, overlappingRect;
+    const placedRects = [];
+    for (let i = this.poppedStartIndex; i <= this.poppedStopIndex; i++) {
+      label = this.labels[i];
+      bp = label.bp;
+      lineLength = this.labelPlacement.initialLabelLineLength;
+      do {
+        const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
+        this.adjustLabelWithAttachPt(label, outerPt);
+        // FIXME: need label rect of island and more??
+        overlappingRect = label.rect.overlap(placedRects);
+        lineLength += label.height;
+      } while (overlappingRect);
+      placedRects.push(label.rect);
+    }
+  }
 
   // Adjust label to the next closest position from the previous label
   adjustLabelToNextAttachPt(label, direction) {
@@ -563,25 +584,72 @@ class LabelIsland {
     const rectOrigin = utils.rectOriginForAttachementPoint(labelAttachPt, label.lineAttachment, label.width, label.height);
     label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
     label._attachBp = this.canvas.bpForPoint(labelAttachPt);
+
+    // FIXME: circle origin issue
+    if (label._attachBp < label.bp) {
+      label._direction = -1;
+    } else if (label._attachBp > label.bp) {
+      label._direction = 1;
+    } else {
+      label._direction = 0;
+    }
+  }
+
+  // The forward boundary of the island. Based on the following:
+  // - the max angle a boundary label can go
+  // - the next island's first label
+  // - if merging with the net island could not occur then the boundary is in between the islands
+  // - need to consider
+  //   - linear/circular maps and the origin
+  //   - Is there a next island?
+  forwardBoundary() {
+    if (this.stopBoundaryBp) return this.stopBoundaryBp;
+    const lastLabel = this.lastLabel;
+    const nextLabel = lastLabel._next;
+    const sequenceLength = this.viewer.sequence.length;
+    let distance;
+    if (nextLabel?.bp < lastLabel.bp) {
+      // Cross origin
+      distance = sequenceLength - lastLabel.bp + nextLabel.bp;
+    } else if (nextLabel) {
+      distance = nextLabel.bp - lastLabel.bp;
+    }
+    distance = (distance > lastLabel._maxBpAdjustment) ? lastLabel._maxBpAdjustment : distance;
+    return lastLabel.bp + distance;
+  }
+  backwardBoundary() {
+    if (this.startBoundaryBp) return this.startBoundaryBp;
+    const firstLabel = this.firstLabel;
+    const prevLabel = this.firstLabel._prev;
+    const sequenceLength = this.viewer.sequence.length;
+    let distance;
+    if (prevLabel?.bp > firstLabel.bp) {
+      // Cross origin
+      distance = sequenceLength - prevLabel.bp + firstLabel.bp;
+    } else if (prevLabel) {
+      distance = firstLabel.bp - prevLabel.bp;
+    }
+    distance = (distance > firstLabel._maxBpAdjustment) ? firstLabel._maxBpAdjustment : distance;
+    return firstLabel.bp - distance;
   }
 
   // Adjust label, so that is label line is at the maximum allowed angle
   // Boudnaries are either set by islands that tried to merge and couldn't: boundary half way between them
   // Or it's just the next/prev label bp (for now)
+  // // should be MaxBoundary?
   adjustLabelToMaxAngle(label, direction) {
     // const maxBpAdjustment = this.labelPlacement.maxBpAdjustment;
     const maxBpAdjustment = label._maxBpAdjustment;
-
-
     const maxBp = label.bp + (direction * maxBpAdjustment);
     let newBp, boundary;
     if (direction > 0) {
-      boundary = this.stopBoundaryBp || this.lastLabel._next.bp;
-      newBp = (maxBp > boundary) ? boundary : maxBp;
+      // boundary = this.stopBoundaryBp || this.lastLabel._next.bp;
+      // newBp = (maxBp > boundary) ? boundary : maxBp;
+      newBp = this.forwardBoundary();
     } else if (direction < 0) {
-      // newBp = (this.startBoundaryBp && maxBp < this.startBoundaryBp) ? this.startBoundaryBp : maxBp;
-      boundary = this.startBoundaryBp || this.firstLabel._prev.bp;
-      newBp = (maxBp > boundary) ? boundary : maxBp;
+      // boundary = this.startBoundaryBp || this.firstLabel._prev.bp;
+      // newBp = (maxBp < boundary) ? boundary : maxBp;
+      newBp = this.backwardBoundary();
     }
     if (newBp != maxBp) {
       console.log('BP adjusted to BOUNDARY', maxBp, newBp)
@@ -611,10 +679,11 @@ class LabelIsland {
     // May need to merge first and test size
     const rangeFactor = 1;
     const maxBpRangeAllowed = rangeFactor * (this.firstLabel._maxBpAdjustment + island.lastLabel._maxBpAdjustment);
-    // Approximate range of islands were merged. Not exact because we have replaced labels after a merge.
+    // Approximate range if islands were merged. Not exact because we haven't re-placed labels after a merge.
     // FIXME: over origin
     const mergedIslandRange = island.lastLabel._attachBp - this.firstLabel._attachBp;
-    console.log('CAN?-', mergedIslandRange, maxBpRangeAllowed, mergedIslandRange <= maxBpRangeAllowed)
+    // console.log(`${this.firstLabel.name}: ${this.firstLabel._attachBp}; ${island.lastLabel.name}: ${island.lastLabel._attachBp}`);
+    // console.log('CAN?-', mergedIslandRange, maxBpRangeAllowed, mergedIslandRange <= maxBpRangeAllowed)
     return mergedIslandRange <= maxBpRangeAllowed;
   }
 

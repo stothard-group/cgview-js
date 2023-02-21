@@ -11,6 +11,10 @@ maps = {
     name: 'pcDNA3.1',
     url: 'maps/labels-pcDNA3.1.json',
   },
+  phastest: {
+    name: 'phastest',
+    url: 'maps/phastest.json',
+  },
   pcET30c: {
     name: 'pET-30c',
     url: 'maps/labels-pET-30c.json',
