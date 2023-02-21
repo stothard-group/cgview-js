@@ -13,4 +13,5 @@ docs/test/maps/test_wrapping_features.json
 
 # Temp
 src/LabelPlacementTemp.js
+src/LabelPlacementOrdered.js
 

@@ -6,6 +6,7 @@ import CGObject from './CGObject';
 import CGArray from './CGArray';
 import LabelPlacementDefault from './LabelPlacementDefault';
 import LabelPlacementAngled from './LabelPlacementAngled';
+import LabelPlacementOrdered from './LabelPlacementOrdered';
 import Font from './Font';
 import Color from './Color';
 import NCList from './NCList';
@@ -66,8 +67,9 @@ class Annotation extends CGObject {
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
     // TODO: add way to change the class from here and/or from Viewer
-    this.labelPlacementFast = new LabelPlacementAngled(this);
     // this.labelPlacementFast = new LabelPlacementDefault(this);
+    this.labelPlacementFast = new LabelPlacementAngled(this);
+    // this.labelPlacementFast = new LabelPlacementOrdered(this);
     this.labelPlacementFull = this.labelPlacementFast;
 
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
@@ -352,6 +354,19 @@ class Annotation extends CGObject {
     }
   }
 
+  drawLabelLine(label, ctx, lineWidth) {
+    const innerPt = this.canvas.pointForBp(label.bp, this._outerCenterOffset + this._labelLineMarginInner);
+    const outerPt = label.attachementPt;
+    const color = this.color || label.feature.color;
+    ctx.beginPath();
+    ctx.moveTo(innerPt.x, innerPt.y);
+    ctx.lineTo(outerPt.x, outerPt.y);
+    ctx.strokeStyle = color.rgbaString;
+    ctx.lineCap = this.lineCap;
+    ctx.lineWidth = lineWidth || this._labelLineWidth;
+    ctx.stroke();
+  }
+
   draw(innerCenterOffset, outerCenterOffset, fast) {
     this._fastDraw = fast;
     // TRY refreshing through addFeatures/remove
@@ -417,16 +432,18 @@ class Annotation extends CGObject {
       //   outerCenterOffset + this._labelLineMarginInner,
       //   this.labelLineLength + this._labelLineMarginOuter,
       // this._labelLineWidth, color.rgbaString, this.lineCap);
-      const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
-      // console.log(label.attachementPt)
-      const outerPt = label.attachementPt;
-      ctx.beginPath();
-      ctx.moveTo(innerPt.x, innerPt.y);
-      ctx.lineTo(outerPt.x, outerPt.y);
-      ctx.strokeStyle = color.rgbaString;
-      ctx.lineCap = this.lineCap;
-      ctx.lineWidth = this._labelLineWidth;
-      ctx.stroke();
+      //
+      // const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
+      // // console.log(label.attachementPt)
+      // const outerPt = label.attachementPt;
+      // ctx.beginPath();
+      // ctx.moveTo(innerPt.x, innerPt.y);
+      // ctx.lineTo(outerPt.x, outerPt.y);
+      // ctx.strokeStyle = color.rgbaString;
+      // ctx.lineCap = this.lineCap;
+      // ctx.lineWidth = this._labelLineWidth;
+      // ctx.stroke();
+      this.drawLabelLine(label, ctx);
     }
 
     // Draw label text

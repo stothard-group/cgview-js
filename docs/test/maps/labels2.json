@@ -458,15 +458,6 @@
                 "dataKeys": "sequence-features"
             },
             {
-                "name": "ORFs",
-                "separateFeatureBy": "readingFrame",
-                "position": "both",
-                "dataType": "feature",
-                "dataMethod": "sequence",
-                "dataKeys": "orfs",
-                "visible": true
-            },
-            {
                 "name": "GC Content",
                 "position": "inside",
                 "thicknessRatio": 2,

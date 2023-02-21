@@ -204,6 +204,9 @@ class Label {
     ctx.beginPath();
     ctx.roundRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding), [corner] );
     ctx.stroke();
+
+    // Label Line
+    this.annotation.drawLabelLine(this, ctx, 1.5);
   }
 
 }
