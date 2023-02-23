@@ -417,10 +417,24 @@ class LabelIsland {
               bpDistanceBetweenIslands += labelPlacement.viewer.sequence.length;
             }
             // FIXME: this can be larger the sequence length
-            const boundaryBp = island.lastLabel.bp + (bpDistanceBetweenIslands / 2);
+            // const boundaryBp = island.lastLabel.bp + (bpDistanceBetweenIslands / 2);
+            let boundaryBp = island.lastLabel.bp + (bpDistanceBetweenIslands / 2);
+
+            // center has to be adjust to fit label text
+            const bpPerPixel = 1 / labelPlacement.canvas.pixelsPerBp(labelPlacement.rectCenterOffset());
+            const boundarMargin = (island.lastLabel.height * bpPerPixel / 2);
+            // boundaryBp = (boundaryBp < 0) ? 0 : boundaryBp;
+
+            // FIXME
+            // - the subtract/add of boundary margin has to deal with
+            //   - origin
+            //   - not cross back over boundary label bp
+
             // console.log('NO MERGE', boundaryBp)
-            island.stopBoundaryBp = boundaryBp;
-            nextIsland.startBoundaryBp = boundaryBp;
+            island.stopBoundaryBp = boundaryBp - boundarMargin;
+            nextIsland.startBoundaryBp = boundaryBp + boundarMargin;
+            // island.stopBoundaryBp = boundaryBp;
+            // nextIsland.startBoundaryBp = boundaryBp;
             // Re-place current island. Next island will be placed on next iteration.
             island.placeLabels();
           }
@@ -724,6 +738,15 @@ class LabelIsland {
     } else if (nextLabel) {
       distance = nextLabel.bp - lastLabel.bp;
     }
+    // TODO: this should be extracted elsewhere
+    // Adjust distance to give space between islands
+    // Use label height converted to bp
+    // const bpPerPixel = 1 / this.canvas.pixelsPerBp(this.labelPlacement.rectCenterOffset());
+    // console.log('bp/px', bpPerPixel)
+    // distance -= (lastLabel.height * bpPerPixel / 2);
+    // distance -= (lastLabel.height * bpPerPixel * 4);
+    // distance = (distance < 0) ? 0 : distance;
+
     distance = (distance > lastLabel._maxBpAdjustment) ? lastLabel._maxBpAdjustment : distance;
     return lastLabel.bp + distance;
   }
@@ -739,7 +762,21 @@ class LabelIsland {
     } else if (prevLabel) {
       distance = firstLabel.bp - prevLabel.bp;
     }
+    // Adjust distance to give space between islands
+    // Use label height
+    // distance -= (firstLabel.height/2);
+    // const bpPerPixel = 1 / this.canvas.pixelsPerBp(this.labelPlacement.rectCenterOffset());
+    // console.log('LABEL', prevLabel.name, firstLabel.name)
+    // console.log('Orig distance', distance)
+    // console.log('bp/px', bpPerPixel)
+    // console.log('distance to subtract', firstLabel.height * bpPerPixel)
+    // // distance -= (firstLabel.height * bpPerPixel / 2);
+    // distance -= (firstLabel.height * bpPerPixel * 4);
+    // distance = (distance < 0) ? 0 : distance;
+    // console.log('After label adjust distance', distance)
+
     distance = (distance > firstLabel._maxBpAdjustment) ? firstLabel._maxBpAdjustment : distance;
+    // console.log('After maxBp adjust distance', distance)
     return firstLabel.bp - distance;
   }
 
