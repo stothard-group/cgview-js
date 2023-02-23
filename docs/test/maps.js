@@ -15,6 +15,10 @@ maps = {
     name: 'phastest',
     url: 'maps/phastest.json',
   },
+  phastest2: {
+    name: 'phastest2',
+    url: 'maps/phastest2.json',
+  },
   pcET30c: {
     name: 'pET-30c',
     url: 'maps/labels-pET-30c.json',
