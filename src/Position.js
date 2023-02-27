@@ -106,7 +106,7 @@ class Position {
 
   /**
    * Return the class name as a string.
-   * @return {String} - 'Anchor'
+   * @return {String} - 'Position'
    */
   toString() {
     return 'Position';
@@ -351,9 +351,16 @@ class Position {
   }
 
   _originFromMapPercent(value = this.value) {
-    const bp = this.viewer.sequence.length * value.lengthPercent / 100;
-    const centerOffset = this.centerOffset(value);
-    const point = this.canvas.pointForBp(bp, centerOffset);
+    let point;
+    if (value.lengthPercent === 50 && value.mapOffset === 0) {
+      // Special case to center caption in the middle of the map
+      // point = this.canvas.pointForBp(0,0);
+      point = this.viewer.layout.centerCaptionPoint();
+    } else {
+      const bp = this.viewer.sequence.length * value.lengthPercent / 100;
+      const centerOffset = this.centerOffset(value);
+      point = this.canvas.pointForBp(bp, centerOffset);
+    }
     return point;
   }
 

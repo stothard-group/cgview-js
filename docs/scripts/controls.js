@@ -2,7 +2,7 @@
 // Helper to add click handlers to buttons
 const onClick = function(id, func) {
   const btn = document.getElementById(id);
-  btn.addEventListener('click', func);
+  btn?.addEventListener('click', func);
 }
 
 // Reset Map Button
@@ -66,7 +66,7 @@ onClick('btn-toggle-labels', () => {
 });
 
 // Toggle Random Animation
-onClick('btn-animate', () => {
-  cgv.isAnimating ? cgv.stopAnimate() : cgv.animate();
-});
+// onClick('btn-animate', () => {
+//   cgv.isAnimating ? cgv.stopAnimate() : cgv.animate();
+// });
 

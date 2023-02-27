@@ -361,10 +361,16 @@ class Layout {
     this.delegate.path(...args);
   }
 
+  // Returns appropriate center point for captions
+  // e.g. center of circlular map or right below linear map
+  centerCaptionPoint() {
+    return this.delegate.centerCaptionPoint();
+  }
+
 
   //////////////////////////////////////////////////////////////////////////
   // Common methods for current layouts: linear, circular
-  //  - This method may have to be altered if additional layouts are added
+  //  - These methods may have to be altered if additional layouts are added
   //////////////////////////////////////////////////////////////////////////
 
   // NOTES:
