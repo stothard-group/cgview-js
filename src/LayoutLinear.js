@@ -149,6 +149,11 @@ class LayoutLinear {
     }
   }
 
+  centerCaptionPoint() {
+    const bp = this.sequence.length / 2;
+    // FIXME: this should be calculated based on the thickness of the slots
+    return this.pointForBp(bp , -200);
+  }
 
   //////////////////////////////////////////////////////////////////////////
   // Helper Methods
