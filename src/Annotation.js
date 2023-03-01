@@ -65,8 +65,9 @@ class Annotation extends CGObject {
     this.lineCap = 'round';
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
-    this.labelPlacementFast = 'default';
-    this.labelPlacementFull = 'angled'
+    this.labelPlacement = 'default';
+    // this.labelPlacementFast = 'default';
+    // this.labelPlacementFull = 'angled'
 
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
 
