@@ -14,6 +14,9 @@
   - lengthPercent: 50
   - mapOffset: 0
 
+## Changed
+- Better highlighting of labels (and their lines)
+
 ## v1.3.1 - 2023-02-17
 ### Added
 - Viewer.isAnimating property
