@@ -272,3 +272,14 @@ labelsBackward.addEventListener('click', (e) => {
   const distance = labelDistance.value;
   moveFeatures(-distance);
 });
+
+const labelsDefault = document.getElementById('labels-default');
+labelsDefault.addEventListener('click', (e) => {
+  cgv.annotation.labelPlacement = 'default';
+  cgv.draw();
+});
+const labelsAngled = document.getElementById('labels-angled');
+labelsAngled.addEventListener('click', (e) => {
+  cgv.annotation.labelPlacement = 'angled';
+  cgv.draw();
+});

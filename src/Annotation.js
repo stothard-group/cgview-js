@@ -6,7 +6,6 @@ import CGObject from './CGObject';
 import CGArray from './CGArray';
 import LabelPlacementDefault from './LabelPlacementDefault';
 import LabelPlacementAngled from './LabelPlacementAngled';
-import LabelPlacementOrdered from './LabelPlacementOrdered';
 import Font from './Font';
 import Color from './Color';
 import NCList from './NCList';
@@ -66,11 +65,8 @@ class Annotation extends CGObject {
     this.lineCap = 'round';
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
-    // TODO: add way to change the class from here and/or from Viewer
-    // this.labelPlacementFast = new LabelPlacementDefault(this);
-    this.labelPlacementFast = new LabelPlacementAngled(this);
-    // this.labelPlacementFast = new LabelPlacementOrdered(this);
-    this.labelPlacementFull = this.labelPlacementFast;
+    this.labelPlacementFast = 'default';
+    this.labelPlacementFull = 'angled'
 
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
 
@@ -154,6 +150,54 @@ class Annotation extends CGObject {
    */
   get length() {
     return this._labels.length;
+  }
+
+  /**
+   * @member {LabelPlacement} - Set the label placement instance for both fast and full drawing.
+   * Value can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  set labelPlacement(value) {
+    const labelPlacement = this._initialializeLabelPlacement(value);
+    this._labelPlacementFast = labelPlacement;
+    this._labelPlacementFull = labelPlacement;
+  }
+
+  /**
+   * @member {LabelPlacement} - Get or set the label placement instance for fast drawing.
+   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  get labelPlacementFast() {
+    return this._labelPlacementFast;
+  }
+
+  set labelPlacementFast(value) {
+    this._labelPlacementFast = this._initialializeLabelPlacement(value);
+  }
+
+  /**
+   * @member {LabelPlacement} - Get or set the label placement instance for full drawing.
+   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  get labelPlacementFull() {
+    return this._labelPlacementFull;
+  }
+
+  set labelPlacementFull(value) {
+    this._labelPlacementFull = this._initialializeLabelPlacement(value);
+  }
+
+  _initialializeLabelPlacement(nameOrClass) {
+    if (typeof nameOrClass === 'string') {
+      switch (nameOrClass) {
+        case 'default': return new LabelPlacementDefault(this);
+        case 'angled': return new LabelPlacementAngled(this);
+        default: throw new Error(`Label Placement name '${nameOrClass}' unknown. Use one of 'default', 'angled'`);
+      }
+    } else {
+      // Use provided custom LabelPlacement class
+      // TODO: document making custom class and perhaps checking here that required methods are available in provided class
+      return new nameOrClass(this);
+    }
   }
 
   /**

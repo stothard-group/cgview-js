@@ -18,18 +18,15 @@ import utils from './Utils';
  * This class can be extended to provide new ways to place labels.
  *
  * TODO:
- * - How to change method within Annotation and Viewer?
- *   - Annotation can use 2 different classes. One for fast and one for full.
- *   - The default will be to use the same instance of LabelPlacementDefault for both.
  * - What is requires by the class
  *   - array of labels
  *   - access to annotation and viewer object
- *   - some defualt constants: ...
+ *   - some default constants: ...
  * - What should class do
+ *   - have placeLabels medthod that take an aray of labels to place
  *   - for each label
  *     - add rect
- *     - attchement point?
- *     - bp and tbp????
+ *     - attchement point
  *
  * @private
  */
@@ -46,6 +43,10 @@ class LabelPlacementDefault {
     this._labelLineMarginInner = annotation._labelLineMarginInner;
     this._labelLineMarginOuter = annotation._labelLineMarginOuter;
   }
+
+  //////////////////////////////////////////////////////////////////////////
+  // Methods / Properties proved to sub classes
+  //////////////////////////////////////////////////////////////////////////
 
   /**
    * @member {Viewer} - Get the *Viewer*
@@ -75,7 +76,6 @@ class LabelPlacementDefault {
     return this._initialLabelLineLength;
   }
 
-
   /**
    * Return the distance from the map center to where the label rect should be placed.
    * If lineLength is provided it will be included in the calculation, otherwise,
@@ -86,6 +86,11 @@ class LabelPlacementDefault {
   rectCenterOffset(lineLength=this.initialLabelLineLength) {
     return this._rectOffsetWithoutLineLength + lineLength;
   }
+
+
+  //////////////////////////////////////////////////////////////////////////
+  // Required Method to override in subclasses
+  //////////////////////////////////////////////////////////////////////////
 
   /**
    * Place provided labels.

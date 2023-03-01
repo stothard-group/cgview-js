@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
-- Captions can be centered on map (e.g center of circle) using the following settings:
+- Captions can be centered "on map" (e.g center of circle) using the following settings:
   - lengthPercent: 50
   - mapOffset: 0
 

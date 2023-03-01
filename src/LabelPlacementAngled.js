@@ -7,26 +7,39 @@ import Rect from './Rect';
 import CGArray from './CGArray';
 import utils from './Utils';
 
+
+
 // NEXT
+// - When finding backwardBoundary (or forwardBoundary), we haven't added any margin
+//   - AND we're using .bp to find distance with prev label (it should attachBp)
+// - Label lines crossing in islands can occur if the next label pops less then previous label
 // - When checking if we've merged with the first island or not (make sure to re-place the first island) as it may have a new boundary with the last island
 // - Instead of keeping track of all placed rects lets do it island by island
-//   - When an island is placing, compare against all other labels int ath island (already done)
 //   - We can also compare against just the previous islands rects as well
 //
 // - Add margin to boundary between islands. It only has to be label.height (x1.5) for now
 //
-// - The quickest way to fix this the remaining issues is to place all previous island rects in an array
-// - Then compare when doing the final placement for each label
-// - If clash occurs, increase line length
-//
 // - Island should know if it has a boundary from an other island
 //  - if so, adjust boundary labels to not clash
+//
+// DEFINITIONS:
+// Island:
+// - Group of labels that overlap and are placed together as a group
+// - Starts off with groups of labels where each label overlaps the previous label (when placed normally)
+// Boundary Labels:
+// - The first and last label in an island
+// - These labels should not clash with the next/previous island boundary labels
+// Popped Labels:
+// - Labels that can not be placed normally or angled without increasing the angle too much
+// - Popped labels increase their line length until they don't clash with any other labels (in their island or the previous one)
+// Label Properties:
+// - label.bp is where the label line will be on the map side
+// - label._attachBp is where the label line will be on the label side
 
-// IMRPOVEMENTS:
+// IMPROVEMENTS:
 // - use sequence.lengthOfRange(start, stop) for ORIGIN issues
 // - add sequence and sequence length properties to LabelIsland class
 // - change attachement to attachment!!!! (in utils and everywhere it's called
-//
 
 // Issues:
 // - When labels can't be placed the max angle is applied to the island edges
@@ -34,8 +47,6 @@ import utils from './Utils';
 //   at extreme angles
 
 // Notes:
-// - label.bp is where the label line will be on the map side
-// - label.attachBp is where the label line will be on the label side
 // - If needed we can sort by island size. Place bigger islands first (or other way around)
 
 /**
@@ -78,9 +89,11 @@ class LabelPlacementAngled extends LabelPlacementDefault {
   placeLabels(labels, outerOffset) {
     this._debug && console.log('LABELS -----------------------------------------')
     const canvas = this.canvas;
-    let label, bp, lineLength, overlappingRect;
-    // this._outerOffset = outerOffset;
+    let label, bp, overlappingRect;
     this._rectOffsetWithoutLineLength = outerOffset + this._labelLineMarginInner + this._labelLineMarginOuter;
+
+    const bpPerPixel = 1 / canvas.pixelsPerBp(this.rectCenterOffset());
+    this._boundaryMargin = (labels[0]?.height * bpPerPixel / 2);
 
     // Sort labels by bp position
     labels.sort( (a, b) => a.bp - b.bp );
@@ -146,6 +159,12 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     //   island.placeLabels();
     // }
 
+    // Goes through each label and if it overlaps any previous label, the line length in increased
+    // TODO:
+    //  - this using the default line length and increases it
+    //  - We may wwant to store the currently used line length in the label
+    this.finalLabelAdjust(labels);
+
     for (let labelIndex = 0, len = labels.length; labelIndex < len; labelIndex++) {
       const label = labels[labelIndex];
       if (label.rect) {
@@ -188,7 +207,7 @@ class LabelPlacementAngled extends LabelPlacementDefault {
   // Returns the attachPt for the next label. The point where the label line attaches to the next label.
   // AttachPt is the point on the rect that the line attaches to
   // Only works when the label overlaps with previous label
-  // FIXME: NEED TO ADD MARGIN between rects
+  // FIXME: ADD MARGIN between rects
   // Coordinates:
   // - outerPtX/Y are on the canvas coordinates and refer to where on the label, the label line will attach.
   // - mapX/Y are on the map coordinates
@@ -196,6 +215,7 @@ class LabelPlacementAngled extends LabelPlacementDefault {
   // - when getting the sqrt of attachPt for 1,2,3,4,5: mapX is negative.
   // - when getting the sqrt of attachPt for 7,8,9,10,11: mapX is positive.
   _getNextAttachPt(label, direction=1) {
+    const margin = 2;
     const scale = this.viewer.scale;
     const goingForward = (direction > 0);
     // Distance from the map center to where the label rect will be attached
@@ -207,7 +227,6 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     const prevRect = this._prevLabel(label, direction)?.rect;
     // Return the default point for the label when their is no previous label to compare
     if (!prevRect) {
-      // console.log('NO PREV')
       return this.canvas.pointForBp(label.bp, rectOffset);
     }
     // FIXME: it would be better of layout specific code could be in the Layout class
@@ -222,20 +241,20 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     switch (label.lineAttachment) {
       case 7:
       case 8:
-        outerPtY = goingForward ? (prevRect.bottom + height) : prevRect.top;
+        outerPtY = goingForward ? (prevRect.bottom + height + margin) : (prevRect.top - margin);
         mapY = scale.y.invert(outerPtY);
         mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 9:
-        outerPtY = goingForward ? (prevRect.bottom + (height/2)) : (prevRect.top - (height/2));
+        outerPtY = goingForward ? (prevRect.bottom + (height/2) + margin) : (prevRect.top - (height/2) - margin);
         mapY = scale.y.invert(outerPtY);
         mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 10:
       case 11:
-        outerPtY = goingForward ? prevRect.bottom : (prevRect.top - height);
+        outerPtY = goingForward ? (prevRect.bottom + margin) : (prevRect.top - height - margin);
         mapY = scale.y.invert(outerPtY);
         mapX = Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
@@ -243,34 +262,34 @@ class LabelPlacementAngled extends LabelPlacementDefault {
       case 12:
         // FIXME: Won't work for linear (if we ever have labels on the bottom of the map)
         // - see case 6 below
-        outerPtX = goingForward ? (prevRect.left - (width/2)) : (prevRect.right + (width/2));
+        outerPtX = goingForward ? (prevRect.left - (width/2) - margin) : (prevRect.right + (width/2) + margin);
         mapX = scale.x.invert(outerPtX);
         mapY = -Math.sqrt( (rectOffsetSquared) - (mapX*mapX) );
         outerPtY = scale.y(mapY);
         break;
       case 1:
       case 2:
-        outerPtY = goingForward ? (prevRect.top - height) : prevRect.bottom;
+        outerPtY = goingForward ? (prevRect.top - height - margin) : (prevRect.bottom + margin);
         mapY = scale.y.invert(outerPtY);
         mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 3:
-        outerPtY = goingForward ? (prevRect.top - (height/2)) : (prevRect.bottom + (height/2));
+        outerPtY = goingForward ? (prevRect.top - (height/2) - margin) : (prevRect.bottom + (height/2) + margin);
         mapY = scale.y.invert(outerPtY);
         mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 4:
       case 5:
-        outerPtY = goingForward ? prevRect.top : (prevRect.bottom + height);
+        outerPtY = goingForward ? (prevRect.top - margin) : (prevRect.bottom + height + margin);
         mapY = scale.y.invert(outerPtY);
         mapX = -Math.sqrt( (rectOffsetSquared) - (mapY*mapY) );
         outerPtX = scale.x(mapX);
         break;
       case 6:
         // FIXME: Won't work for linear
-        outerPtX = goingForward ? (prevRect.right + (width/2)) : (prevRect.left - (width/2));
+        outerPtX = goingForward ? (prevRect.right + (width/2) + margin) : (prevRect.left - (width/2) - margin);
         if (isLinear) {
           outerPtY = prevRect.top;
         } else {
@@ -311,6 +330,30 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     return bpDiff
   }
 
+  // Basically the same as the Default lable placement
+  // - except we are using ._attachBp instead of .bp
+  finalLabelAdjust(labels) {
+    const canvas = this.canvas;
+    let label, bp, lineLength, overlappingRect;
+
+    const placedRects = new CGArray();
+    for (let i = 0, len = labels.length; i < len; i++) {
+      label = labels[i];
+      bp = label._attachBp;
+      lineLength = this.initialLabelLineLength;
+      do {
+        const outerPt = canvas.pointForBp(bp, this.rectCenterOffset(lineLength));
+        const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
+        label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
+        overlappingRect = label.rect.overlap(placedRects);
+        lineLength += label.height;
+      } while (overlappingRect);
+      placedRects.push(label.rect);
+      label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
+    }
+
+  }
+
 }
 
 export default LabelPlacementAngled;
@@ -325,6 +368,7 @@ class LabelIsland {
     this._labels = [];
     this.canvas = labelPlacement.canvas;
     this.viewer = labelPlacement.viewer;
+    this._placedRects = [];
     this.addLabels(labels);
   }
 
@@ -353,7 +397,6 @@ class LabelIsland {
       mergeOccurred = false;
       mergedIslands = [];
       loopCount++;
-
 
       for (let islandIndex = 0, len = tempIslands.length; islandIndex < len; islandIndex++) {
         // if (tempIslands?.length === 1) {
@@ -417,9 +460,10 @@ class LabelIsland {
             // FIXME: this can be larger the sequence length
             let boundaryBp = island.lastLabel.bp + (bpDistanceBetweenIslands / 2);
             let boundaryDistance = bpDistanceBetweenIslands / 2;
-            const bpPerPixel = 1 / labelPlacement.canvas.pixelsPerBp(labelPlacement.rectCenterOffset());
-            const boundaryMargin = (island.lastLabel.height * bpPerPixel / 2);
-            boundaryDistance -= boundaryMargin;
+            // const bpPerPixel = 1 / labelPlacement.canvas.pixelsPerBp(labelPlacement.rectCenterOffset());
+            // const boundaryMargin = (island.lastLabel.height * bpPerPixel / 2);
+            // boundaryDistance -= boundaryMargin;
+            boundaryDistance -= labelPlacement._boundaryMargin;
             // Don't let distance be les than 0 or the then label line will go in the opposite direction
             boundaryDistance = (boundaryDistance < 0) ? 0 : boundaryDistance;
 
@@ -486,6 +530,10 @@ class LabelIsland {
     return this.labels[this.labels.length-1];
   }
 
+  get placedRects() {
+    return this._placedRects;
+  }
+
   // Add a label or an array of labels
   addLabels(labels) {
     if (labels) {
@@ -521,6 +569,7 @@ class LabelIsland {
       // Place remaining labels as popped
       this.placePoppedLabels();
     }
+    this._placedRects = this.labels.map(l => l.rect)
   }
 
   adjustLabels(centerIndex, direction) {
@@ -635,10 +684,16 @@ class LabelIsland {
     let label, bp, lineLength, overlappingRect;
     const sequenceLength = this.viewer.sequence.length;
     // console.log('LENGTH BEFORE', this.labels.length)
-    // Placed rects will start off with unpopped labels
-    // FIXME: placed rects should be created elsewhere for island
-    // const placedRects = [];
-    const placedRects = this.labels.filter( (label,i) => (i < this.poppedStartIndex || i > this.poppedStopIndex) ).map(l => l.rect)
+
+    // Add non-popped labels from this island to rectsToCheck
+    let rectsToCheck = this.labels.filter( (label,i) => (i < this.poppedStartIndex || i > this.poppedStopIndex) ).map(l => l.rect)
+
+
+    // FIXME: previous island may not exist in linear
+    const prevIsland = this.firstLabel?._prev?._island;
+    if (prevIsland) {
+      rectsToCheck = rectsToCheck.concat(prevIsland.placedRects);
+    }
     // Get labels before and after popped. Or use the the poppedIndex of there are no more labels
     const prePoppedIndex = Math.max(this.poppedStartIndex-1, 0);
     const postPoppedIndex = Math.min(this.poppedStopIndex+1, this.labels.length-1);
@@ -659,11 +714,10 @@ class LabelIsland {
       do {
         const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
         this.adjustLabelWithAttachPt(label, outerPt);
-        // FIXME: need label rect of island and more??
-        overlappingRect = label.rect.overlap(placedRects);
+        overlappingRect = label.rect.overlap(rectsToCheck);
         lineLength += label.height;
       } while (overlappingRect);
-      placedRects.push(label.rect);
+      rectsToCheck.push(label.rect);
       poppedNumber++;
     }
     // console.log('LENGTH AFTER', this.labels.length)
@@ -727,7 +781,7 @@ class LabelIsland {
   // The forward boundary of the island. Based on the following:
   // - the max angle a boundary label can go
   // - the next island's first label
-  // - if merging with the net island could not occur then the boundary is in between the islands
+  // - if merging with the next island could not occur then the boundary is in between the islands
   // - need to consider
   //   - linear/circular maps and the origin
   //   - Is there a next island?
@@ -761,11 +815,14 @@ class LabelIsland {
     const prevLabel = this.firstLabel._prev;
     const sequenceLength = this.viewer.sequence.length;
     let distance;
-    if (prevLabel?.bp > firstLabel.bp) {
+    // if (prevLabel?.bp > firstLabel.bp) {
+    if (prevLabel?._attachBp > firstLabel.bp) {
       // Cross origin
+      // FIXME: should use attachBp here as well for prevLabel
       distance = sequenceLength - prevLabel.bp + firstLabel.bp;
     } else if (prevLabel) {
-      distance = firstLabel.bp - prevLabel.bp;
+      // distance = firstLabel.bp - prevLabel.bp;
+      distance = firstLabel.bp - prevLabel._attachBp - this.labelPlacement._boundaryMargin;
     }
     // Adjust distance to give space between islands
     // Use label height
@@ -780,7 +837,7 @@ class LabelIsland {
   }
 
   // Adjust label, so that is label line is at the maximum allowed angle
-  // Boudnaries are either set by islands that tried to merge and couldn't: boundary half way between them
+  // Boundaries are either set by islands that tried to merge and couldn't: boundary half way between them
   // Or it's just the next/prev label bp (for now)
   // // should be MaxBoundary?
   adjustLabelToMaxAngle(label, direction) {
