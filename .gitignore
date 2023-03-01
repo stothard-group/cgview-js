@@ -10,6 +10,7 @@ scripts/copy*
 # docs/api
 docs/test/maps/test.json
 docs/test/maps/test_wrapping_features.json
+docs/test/maps/phastest*
 
 # Temp
 src/LabelPlacementTemp.js
