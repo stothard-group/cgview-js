@@ -5,7 +5,7 @@
 ## Unreleased
 - N/A
 
-## v1.4.0 - 2023-03-01
+## v1.4.1 - 2023-03-01
 ### Added
 - Label placement options (change with Annotation.labelPlacement)
   - Default labels (same as before): labels placed in straight line from map

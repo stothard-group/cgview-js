@@ -1,6 +1,6 @@
 {
   "name": "cgview",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "dist/cgview.esm.js",
   "description": "CGView: Circular Genome Viewer",
   "homepage": "https://js.cgview.ca",
@@ -10,7 +10,7 @@
     "url": "https://github.com/stothard-group/cgview-js.git"
   },
   "files": [
-    "dist/**"
+    "dist/**", "CHANGELOG.md"
   ],
   "keywords": [
     "CGView",
