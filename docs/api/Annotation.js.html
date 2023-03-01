@@ -144,6 +144,12 @@
             
                 <li data-name="Annotation#labelLineLength"><a href="Annotation.html#labelLineLength">labelLineLength</a></li>
             
+                <li data-name="Annotation#labelPlacement"><a href="Annotation.html#labelPlacement">labelPlacement</a></li>
+            
+                <li data-name="Annotation#labelPlacementFast"><a href="Annotation.html#labelPlacementFast">labelPlacementFast</a></li>
+            
+                <li data-name="Annotation#labelPlacementFull"><a href="Annotation.html#labelPlacementFull">labelPlacementFull</a></li>
+            
                 <li data-name="Annotation#layout"><a href="Annotation.html#layout">layout</a></li>
             
                 <li data-name="Annotation#length"><a href="Annotation.html#length">length</a></li>
@@ -2133,6 +2139,8 @@
 
 import CGObject from './CGObject';
 import CGArray from './CGArray';
+import LabelPlacementDefault from './LabelPlacementDefault';
+import LabelPlacementAngled from './LabelPlacementAngled';
 import Font from './Font';
 import Color from './Color';
 import NCList from './NCList';
@@ -2162,9 +2170,17 @@ import utils from './Utils';
  *
  * ### Examples
  * ```js
+ * // Only draw labels for features that have been marked as a favorite
  * cgv.annotation.update({
  *   onlyDrawFavorites: true
  * });
+ *
+ * // Changing the label placement from the default to angled (for both fast and full draw)
+ * cgv.annotation.labelPlacement = 'angled'
+ *
+ * // Changing the label placement so that fast draw uses the default labels and full draw uses the angled labels
+ * cgv.annotation.labelPlacementFast = 'default'
+ * cgv.annotation.labelPlacementFull = 'angled'
  * ```
  *
  * @extends CGObject
@@ -2192,7 +2208,13 @@ class Annotation extends CGObject {
     this.lineCap = 'round';
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
+    this.labelPlacement = 'default';
+    // this.labelPlacementFast = 'default';
+    // this.labelPlacementFull = 'angled'
+
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
+
+    // this._debug = true;
   }
 
   /**
@@ -2275,6 +2297,54 @@ class Annotation extends CGObject {
   }
 
   /**
+   * @member {LabelPlacement} - Set the label placement instance for both fast and full drawing.
+   * Value can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  set labelPlacement(value) {
+    const labelPlacement = this._initialializeLabelPlacement(value);
+    this._labelPlacementFast = labelPlacement;
+    this._labelPlacementFull = labelPlacement;
+  }
+
+  /**
+   * @member {LabelPlacement} - Get or set the label placement instance for fast drawing.
+   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  get labelPlacementFast() {
+    return this._labelPlacementFast;
+  }
+
+  set labelPlacementFast(value) {
+    this._labelPlacementFast = this._initialializeLabelPlacement(value);
+  }
+
+  /**
+   * @member {LabelPlacement} - Get or set the label placement instance for full drawing.
+   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
+   */
+  get labelPlacementFull() {
+    return this._labelPlacementFull;
+  }
+
+  set labelPlacementFull(value) {
+    this._labelPlacementFull = this._initialializeLabelPlacement(value);
+  }
+
+  _initialializeLabelPlacement(nameOrClass) {
+    if (typeof nameOrClass === 'string') {
+      switch (nameOrClass) {
+        case 'default': return new LabelPlacementDefault(this);
+        case 'angled': return new LabelPlacementAngled(this);
+        default: throw new Error(`Label Placement name '${nameOrClass}' unknown. Use one of 'default', 'angled'`);
+      }
+    } else {
+      // Use provided custom LabelPlacement class
+      // TODO: document making custom class and perhaps checking here that required methods are available in provided class
+      return new nameOrClass(this);
+    }
+  }
+
+  /**
    * Returns an [CGArray](CGArray.html) of Labels or a single Label.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
    * @return {CGArray}
@@ -2301,10 +2371,17 @@ class Annotation extends CGObject {
     this.refresh();
   }
 
-  // Called from Viewer.add/removeFeatures() and Sequence.updateContigs()
+  // Called from Viewer.add/removeFeatures() and Sequence.updateContigs(), Viewer.updateFeatures(), Viewer.updateTracks()
   refresh() {
     // Remove labels that are on invisible contigs
-    const labels = this._labels.filter( (l) => l.feature.contig.visible);
+    // const labels = this._labels.filter( (l) => l.feature.contig.visible);
+
+    // Remove labels:
+    // - on invisible features
+    // - with features on invisible contigs
+    // - with features on invisible tracks
+    const labels = this._labels.filter( (l) => l.feature.visible &amp;&amp; l.feature.contig.visible &amp;&amp; l.feature.tracks().some( (t) => t.visible ));
+
     this._availableLabels = labels;
     // Update default Bp for labels
     for (const label of labels) {
@@ -2365,7 +2442,8 @@ class Annotation extends CGObject {
   }
 
   // Calculates non overlapping rects for priority labels
-  _calculatePriorityLabelRects(labels) {
+  // ORIGINAL (Fast)
+  _calculatePriorityLabelRectsFast(labels) {
     labels = labels || this._labels;
     const canvas = this.canvas;
     let label, bp, lineLength, overlappingRect;
@@ -2386,6 +2464,16 @@ class Annotation extends CGObject {
       label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
     }
   }
+
+  _calculatePriorityLabelRects(labels) {
+    const labelLimit = 20;
+    if (!this._fastDraw || labels.length &lt; labelLimit) {
+      this.labelPlacementFull.placeLabels(labels, this._outerCenterOffset);
+    } else {
+      this.labelPlacementFast.placeLabels(labels, this._outerCenterOffset);
+    }
+  }
+
 
   // Should be called when
   //  - Labels are added or removed
@@ -2454,7 +2542,21 @@ class Annotation extends CGObject {
     }
   }
 
-  draw(innerCenterOffset, outerCenterOffset) {
+  drawLabelLine(label, ctx, lineWidth) {
+    const innerPt = this.canvas.pointForBp(label.bp, this._outerCenterOffset + this._labelLineMarginInner);
+    const outerPt = label.attachementPt;
+    const color = this.color || label.feature.color;
+    ctx.beginPath();
+    ctx.moveTo(innerPt.x, innerPt.y);
+    ctx.lineTo(outerPt.x, outerPt.y);
+    ctx.strokeStyle = color.rgbaString;
+    ctx.lineCap = this.lineCap;
+    ctx.lineWidth = lineWidth || this._labelLineWidth;
+    ctx.stroke();
+  }
+
+  draw(innerCenterOffset, outerCenterOffset, fast) {
+    this._fastDraw = fast;
     // TRY refreshing through addFeatures/remove
     // if (this._labels.length !== this._labelsNCList.length) {
     //   this.refresh();
@@ -2479,6 +2581,7 @@ class Annotation extends CGObject {
 
     this._calculatePriorityLabelRects(priorityLabels);
     this._calculateLabelRects(remainingLabels);
+    // console.log(priorityLabels[0] &amp;&amp; priorityLabels[0].rect)
 
     // Remove overlapping labels
     const labelRects = priorityLabels.map( p => p.rect);
@@ -2517,16 +2620,18 @@ class Annotation extends CGObject {
       //   outerCenterOffset + this._labelLineMarginInner,
       //   this.labelLineLength + this._labelLineMarginOuter,
       // this._labelLineWidth, color.rgbaString, this.lineCap);
-      const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
-      // console.log(label.attachementPt)
-      const outerPt = label.attachementPt;
-      ctx.beginPath();
-      ctx.moveTo(innerPt.x, innerPt.y);
-      ctx.lineTo(outerPt.x, outerPt.y);
-      ctx.strokeStyle = color.rgbaString;
-      ctx.lineCap = this.lineCap;
-      ctx.lineWidth = this._labelLineWidth;
-      ctx.stroke();
+      //
+      // const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
+      // // console.log(label.attachementPt)
+      // const outerPt = label.attachementPt;
+      // ctx.beginPath();
+      // ctx.moveTo(innerPt.x, innerPt.y);
+      // ctx.lineTo(outerPt.x, outerPt.y);
+      // ctx.strokeStyle = color.rgbaString;
+      // ctx.lineCap = this.lineCap;
+      // ctx.lineWidth = this._labelLineWidth;
+      // ctx.stroke();
+      this.drawLabelLine(label, ctx);
     }
 
     // Draw label text
@@ -2536,6 +2641,7 @@ class Annotation extends CGObject {
       label = this._visibleLabels[i];
       // FIXME: it would be better to remove invisible labels before calculating position
       // - this works to remove label, but the space is not available for another label
+      // NOTE: Has this been fixed????????
       if (!label.feature.visible) { continue; }
       const color = this.color || label.feature.color;
 
@@ -2588,7 +2694,6 @@ class Annotation extends CGObject {
 
 export default Annotation;
 
-
 </code></pre>
         </article>
     </section>
@@ -2601,7 +2706,7 @@ export default Annotation;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 06 2022 12:57:22 GMT-0600 (Mountain Daylight Saving Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:38 GMT-0700 (Mountain Standard Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

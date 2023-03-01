@@ -3,6 +3,13 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
+- N/A
+
+## v1.4.0 - 2023-03-01
+### Added
+- Label placement options (change with Annotation.labelPlacement)
+  - Default labels (same as before): labels placed in straight line from map
+  - Angled labels (in beta testing): labels spread (fan) out around map
 - Captions can be centered "on map" (e.g center of circle) using the following settings:
   - lengthPercent: 50
   - mapOffset: 0

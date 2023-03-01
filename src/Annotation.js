@@ -35,9 +35,17 @@ import utils from './Utils';
  *
  * ### Examples
  * ```js
+ * // Only draw labels for features that have been marked as a favorite
  * cgv.annotation.update({
  *   onlyDrawFavorites: true
  * });
+ *
+ * // Changing the label placement from the default to angled (for both fast and full draw)
+ * cgv.annotation.labelPlacement = 'angled'
+ *
+ * // Changing the label placement so that fast draw uses the default labels and full draw uses the angled labels
+ * cgv.annotation.labelPlacementFast = 'default'
+ * cgv.annotation.labelPlacementFull = 'angled'
  * ```
  *
  * @extends CGObject
