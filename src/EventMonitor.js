@@ -225,11 +225,13 @@ class EventMonitor {
     if (!elementType && slot) {
       // If mulitple features are returned, go with the smallest one
       const features = slot.findFeaturesForBp(bp);
-      let feature = features[0];
+      let feature;
       for (let i = 0, len = features.length; i < len; i++) {
         const currentFeature = features[i];
-        if (currentFeature.visible && currentFeature.length < feature.length) {
-          feature = currentFeature;
+        if (currentFeature.visible) {
+          if (!feature || (currentFeature.length < feature.length)) {
+            feature = currentFeature;
+          }
         }
       }
       if (feature && feature.visible) {

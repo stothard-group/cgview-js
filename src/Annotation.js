@@ -470,32 +470,11 @@ class Annotation extends CGObject {
     // Draw label lines first so that label text will draw over them
     for (let i = 0, len = this._visibleLabels.length; i < len; i++) {
       label = this._visibleLabels[i];
-      // if (label.name === 'AUI44_00380') {
-      // if (label.name === 'AUI44_00145') {
-      //   console.log('AT LABEL');
-      //   console.log(label.feature.contig.visible)
-      //   console.log(label.bp)
-      // }
       // FIXME: it would be better to remove invisible labels before calculating position
       // - this works to remove label, but the space is not available for another label
       if (!label.feature.visible) { continue; }
       const color = this.color || label.feature.color;
 
-      // canvas.radiantLine('map', label.bp,
-      //   outerCenterOffset + this._labelLineMarginInner,
-      //   this.labelLineLength + this._labelLineMarginOuter,
-      // this._labelLineWidth, color.rgbaString, this.lineCap);
-      //
-      // const innerPt = canvas.pointForBp(label.bp, outerCenterOffset + this._labelLineMarginInner);
-      // // console.log(label.attachementPt)
-      // const outerPt = label.attachementPt;
-      // ctx.beginPath();
-      // ctx.moveTo(innerPt.x, innerPt.y);
-      // ctx.lineTo(outerPt.x, outerPt.y);
-      // ctx.strokeStyle = color.rgbaString;
-      // ctx.lineCap = this.lineCap;
-      // ctx.lineWidth = this._labelLineWidth;
-      // ctx.stroke();
       this.drawLabelLine(label, ctx);
     }
 

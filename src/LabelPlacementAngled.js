@@ -11,7 +11,7 @@ import utils from './Utils';
 
 // NEXT
 // - When finding backwardBoundary (or forwardBoundary), we haven't added any margin
-//   - AND we're using .bp to find distance with prev label (it should attachBp)
+//   - AND we're using .bp to find distance with prev label (it should be attachBp)
 // - Label lines crossing in islands can occur if the next label pops less then previous label
 // - When checking if we've merged with the first island or not (make sure to re-place the first island) as it may have a new boundary with the last island
 // - Instead of keeping track of all placed rects lets do it island by island
