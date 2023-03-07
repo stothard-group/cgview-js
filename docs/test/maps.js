@@ -7,6 +7,10 @@ maps = {
     name: 'Label 2 Test [69,034 bp]',
     url: 'maps/labels2.json',
   },
+  labels3: {
+    name: 'Label 3 Test [69,034 bp]',
+    url: 'maps/labels3.json',
+  },
   pcDNA3: {
     name: 'pcDNA3.1',
     url: 'maps/labels-pcDNA3.1.json',

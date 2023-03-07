@@ -48,6 +48,7 @@ class LabelPlacementDefault {
   // Methods / Properties proved to sub classes
   //////////////////////////////////////////////////////////////////////////
 
+
   /**
    * @member {Viewer} - Get the *Viewer*
    */
@@ -91,6 +92,21 @@ class LabelPlacementDefault {
   //////////////////////////////////////////////////////////////////////////
   // Required Method to override in subclasses
   //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Return the class name as a string.
+   * @return {String} - 'LabelPlacementDefault'
+   */
+  toString() {
+    return 'LabelPlacementDefault';
+  }
+
+  /**
+   * @member {Viewer} - Get the name of this LabelPlacement
+   */
+  get name() {
+    return 'default';
+  }
 
   /**
    * Place provided labels.

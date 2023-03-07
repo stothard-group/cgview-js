@@ -3,7 +3,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
-const defaultMap = 'labels';
+// const defaultMap = 'labels';
+const defaultMap = 'labels3';
 // const defaultMap = 'pcDNA3';
 // const defaultMap = 'version_0_1';
 // const defaultMap = 'small_noplots';
@@ -20,7 +21,11 @@ cgv = new CGV.Viewer('#my-viewer', {
   SVGContext: svgcanvas.Context,
   // debug: {sections: ['time', 'position']}
 });
+cgv.annotation.labelPlacement = 'angled';
 loadMapFromID(defaultMap);
+setTimeout(function() {
+  moveFeatures(-15050);
+}, 500);
 
 
 

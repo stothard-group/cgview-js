@@ -5,6 +5,7 @@
 ## Unreleased
 ## Fixed
 - Feature popups no longer blocked by invisible features
+- Improvements to Angled Labels
 
 ## v1.4.1 - 2023-03-01
 ### Added

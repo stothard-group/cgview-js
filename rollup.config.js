@@ -7,27 +7,27 @@ export default {
   external: ['d3', 'svgcanvas'],
   output: [
     {
-      file: 'dist/cgview.js',
+      file: 'docs/dist/cgview.js',
       format: 'iife',
       name: 'CGV',
       globals: {d3: 'd3', svgcanvas: 'svgcanvas'},
       banner: '// +-------------------------------------------------------+\n// |             _____________    ___                      |\n// |            / ____/ ____/ |  / (_)__ _      __         |\n// |           / /   / / __ | | / / / _ \\ | /| / /         |\n// |          / /___/ /_/ / | |/ / /  __/ |/ |/ /          |\n// |          \\____/\\____/  |___/_/\\___/|__/|__/           |\n// +-------------------------------------------------------+\n'
     },
     {
-      file: 'dist/cgview.min.js',
+      file: 'docs/dist/cgview.min.js',
       format: 'iife',
       name: 'CGV',
       globals: {d3: 'd3', svgcanvas: 'svgcanvas'},
       plugins: [terser()],
     },
     {
-      file: 'dist/cgview.esm.min.js',
+      file: 'docs/dist/cgview.esm.min.js',
       format: 'es',
       globals: {d3: 'd3', svgcanvas: 'svgcanvas'},
       plugins: [terser()],
     },
     {
-      file: 'dist/cgview.esm.js',
+      file: 'docs/dist/cgview.esm.js',
       globals: {d3: 'd3', svgcanvas: 'svgcanvas'},
       format: 'es',
       banner: '// +-------------------------------------------------------+\n// |             _____________    ___                      |\n// |            / ____/ ____/ |  / (_)__ _      __         |\n// |           / /   / / __ | | / / / _ \\ | /| / /         |\n// |          / /___/ /_/ / | |/ / /  __/ |/ |/ /          |\n// |          \\____/\\____/  |___/_/\\___/|__/|__/           |\n// +-------------------------------------------------------+\n'
