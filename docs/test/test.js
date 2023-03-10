@@ -4,7 +4,8 @@
 
 // const defaultMap = 'small';
 // const defaultMap = 'labels';
-const defaultMap = 'labels3';
+// const defaultMap = 'labels3';
+const defaultMap = 'pcET30c';
 // const defaultMap = 'pcDNA3';
 // const defaultMap = 'version_0_1';
 // const defaultMap = 'small_noplots';
@@ -23,9 +24,9 @@ cgv = new CGV.Viewer('#my-viewer', {
 });
 cgv.annotation.labelPlacement = 'angled';
 loadMapFromID(defaultMap);
-setTimeout(function() {
-  moveFeatures(-15050);
-}, 500);
+// setTimeout(function() {
+//   moveFeatures(-15050);
+// }, 500);
 
 
 
@@ -223,8 +224,10 @@ svgMode.addEventListener('click', (e) => {
   const svgSection = document.getElementById('svg-section');
   if (e.target.checked) {
     svgSection.style.visibility = 'visible';
+    svgSection.style.display = 'block';
   } else {
     svgSection.style.visibility = 'hidden';
+    svgSection.style.display = 'none';
   }
 });
 const createSVGBtn = document.getElementById('create-svg');

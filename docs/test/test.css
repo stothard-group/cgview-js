@@ -106,6 +106,7 @@ hr {
   margin-left: 5px;
   /* Default should be hidden unless doing a lot of testing */
   visibility: hidden;
+  display: none; /* Set to none initially to prevent unwanted scrolling */
 }
 #svg-section .btn {
   width: 200px;
