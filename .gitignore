@@ -5,7 +5,6 @@ node_modules/
 docs/formatting_example.*
 docs/dist/cgview.esm.*
 docs/dist/cgview.js
-dist/
 scripts/copy*
 # docs/dist
 # docs/api
