@@ -13,7 +13,8 @@ import utils from './Utils';
 //   - Fix: After placing popped labels, iteratively move the pre/post popped label inward and then place remaining labels outward from there
 // - When placing popped labels, if a label line doesn't need to be extended it may cross labels that were extended
 //   - Label lines crossing in islands can occur if the next label pops less then previous label
-//   - Fix: place popped labels in order from both sides always extending the line
+//   - [DONE} Fix: place popped labels in order from both sides always extending the line
+//   - There can still be some line crossing but it is much better now
 
 // NEXT
 // - When finding backwardBoundary (or forwardBoundary), we haven't added any margin
@@ -116,10 +117,8 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     labels.sort( (a, b) => a.bp - b.bp );
 
     // The approximate bp adjustment for the label line to reach the given angle (Degrees)
-    // const maxLineAngle = 45;
     const maxLineAngle = 80;
     this.maxBpAdjustment = this.maxBpAdjustForAngle(maxLineAngle)
-    // Reduce angle for 6/12 attachments (maybe by half)
 
     // Reset label properties
     for (let i = 0, len = labels.length; i < len; i++) {
@@ -137,6 +136,7 @@ class LabelPlacementAngled extends LabelPlacementDefault {
       const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
       label._defaultRect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
       label.rect = label._defaultRect;
+      label._lineLength = this.initialLabelLineLength;
 
       // Default maxBp Adjustment
       // Top/bottom labels will have half the max adjust
@@ -146,21 +146,15 @@ class LabelPlacementAngled extends LabelPlacementDefault {
     // Find Initial Islands
     let islands = this.findIslands(labels);
 
-    // Place island labels
-    // INITIAL PLACEMENT
+    // Initial placement of island labels
     for (let islandIndex = 0, len = islands.length; islandIndex < len; islandIndex++) {
       const island = islands[islandIndex];
       island.placeLabels();
     }
-    // MERGE ISALNDS
-    // console.log('BEFORE', islands.length)
+    // Merge Islands
     islands = LabelIsland.mergeIslands(this, islands);
-    // console.log('AFTER', islands.length)
 
     // Goes through each label and if it overlaps any previous label, the line length in increased
-    // TODO:
-    //  - this uses the default line length and increases it
-    //  - We may want to store the currently used line length in the label
     this.finalLabelAdjust(labels);
 
     // Set the attachment point for each label line
@@ -341,12 +335,12 @@ class LabelPlacementAngled extends LabelPlacementDefault {
   finalLabelAdjust(labels) {
     const canvas = this.canvas;
     let label, bp, lineLength, overlappingRect;
-
     const placedRects = new CGArray();
     for (let i = 0, len = labels.length; i < len; i++) {
       label = labels[i];
       bp = label._attachBp;
-      lineLength = this.initialLabelLineLength;
+      // lineLength = this.initialLabelLineLength;
+      lineLength = label._lineLength;
       do {
         const outerPt = canvas.pointForBp(bp, this.rectCenterOffset(lineLength));
         const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
@@ -354,10 +348,10 @@ class LabelPlacementAngled extends LabelPlacementDefault {
         overlappingRect = label.rect.overlap(placedRects);
         lineLength += label.height;
       } while (overlappingRect);
+      label._lineLength = lineLength;
       placedRects.push(label.rect);
       label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
     }
-
   }
 
 }
@@ -416,12 +410,9 @@ class LabelIsland {
           break;
         }
 
-        // console.log('ISLANDS:', island.length, nextIsland.length)
         if (island.clash(nextIsland)) {
-          // console.log('CLASH')
           if (island.canMergeWith(nextIsland)) {
             labelsToMerge = island.labels.concat(nextIsland.labels);
-            // console.log(labelsToMerge)
             tempIsland = new LabelIsland(labelPlacement, labelsToMerge);
 
             // Add previous boundary to newly merged island
@@ -583,12 +574,10 @@ class LabelIsland {
       backwardIndex = len - 1 - i;
       if (forwardIndex > backwardIndex) {
         // Reached the middle
-        // console.log('MIDDLE', forwardIndex, backwardIndex)
         return;
       } else if (forwardIndex === backwardIndex) {
         middleLabel = this.labels[backwardIndex];
         this.adjustLabelToNextAttachPt(middleLabel, 1);
-
 
         // FIXME: .adjustLabelToNextAttachPt should return undefined if it can't be placed
         // - AND _getNextAttachPtshould return undefined 
@@ -643,7 +632,7 @@ class LabelIsland {
 
 
   // Take the labels that should be popped (ie, labels that don't have space to be right beside map)
-  // and place them by equaling apart (based on distance from pre to post popped label attchBp)
+  // and place them equally apart (based on distance from pre to post popped label attchBp)
   // and increasing line length until there are no clashes with other popped labels
   // - Get bp from label before popped and label after popped (may need to adjust)
   // - This is the bp range
@@ -652,14 +641,11 @@ class LabelIsland {
   // - Place each lable by incrementing the bp shift and extend line until it doesn't clash
   placePoppedLabels() {
     if (this.poppedStartIndex === undefined || this.poppedStopIndex === undefined) return;
-    let label, bp, lineLength, overlappingRect;
-    const sequenceLength = this.viewer.sequence.length;
-    // console.log('LENGTH BEFORE', this.labels.length)
-
+    let label, bp, overlappingRect;
+    const sequence = this.viewer.sequence;
+    const sequenceLength = sequence.length;
     // Add non-popped labels from this island to rectsToCheck
     let rectsToCheck = this.labels.filter( (label,i) => (i < this.poppedStartIndex || i > this.poppedStopIndex) ).map(l => l.rect)
-
-
     // FIXME: previous island may not exist in linear
     const prevIsland = this.firstLabel?._prev?._island;
     if (prevIsland) {
@@ -672,27 +658,76 @@ class LabelIsland {
     // console.log(this.poppedStartIndex, this.poppedStopIndex);
     const startBp = this.labels[prePoppedIndex]._attachBp;
     const stopBp = this.labels[postPoppedIndex]._attachBp;
-    // Check if we are crossing the origin
-    let bpDistance = (startBp > stopBp) ? (sequenceLength - startBp + stopBp) : stopBp - startBp; 
+    const bpDistance = sequence.lengthOfRange(startBp, stopBp);
     const bpIncrement = bpDistance / (this.poppedStopIndex - this.poppedStartIndex + 2);
     let poppedNumber = 1;
+    let lineLength = this.labelPlacement.initialLabelLineLength;
     for (let i = this.poppedStartIndex; i <= this.poppedStopIndex; i++) {
       label = this.labels[i];
-      // bp = label.bp;
       bp = startBp + (bpIncrement * poppedNumber);
-      lineLength = this.labelPlacement.initialLabelLineLength;
       label._popped = true;
+      // Try to reduce the line length first
+      // poppedFactor: the amount to reduce the line height should increase as we move through the popped labels
+      let poppedFactor = poppedNumber / (this.poppedStopIndex - this.poppedStartIndex + 1);
+      poppedFactor *= 5;
+      // lengthFactor: It is also dependent on the line length (ie. if the line is quite long work harder at reducing the length)
+      let lengthFactor = lineLength / this.labelPlacement.initialLabelLineLength;
+      lengthFactor /= 5;
+      // FIXME: Instead of reducing the line length and then then increasing until we fit
+      // - gradually reduce the line until it reaches the maximum allow reduced value
+      // - This will tighten up the labels in some cases
+      lineLength -= (label.height * 1.1 * poppedFactor * lengthFactor);
+      // Line length can't be less the intial value
+      lineLength = Math.max(lineLength, this.labelPlacement.initialLabelLineLength);
+      // lineLength = this.labelPlacement.initialLabelLineLength; // Old Way
       do {
         const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
         this.adjustLabelWithAttachPt(label, outerPt);
         overlappingRect = label.rect.overlap(rectsToCheck);
-        lineLength += label.height;
+        lineLength += (label.height * 1.1);
       } while (overlappingRect);
+      label._lineLength = lineLength;
       rectsToCheck.push(label.rect);
       poppedNumber++;
     }
-    // console.log('LENGTH AFTER', this.labels.length)
   }
+  // placePoppedLabels() {
+  //   if (this.poppedStartIndex === undefined || this.poppedStopIndex === undefined) return;
+  //   let label, bp, lineLength, overlappingRect;
+  //   const sequence = this.viewer.sequence;
+  //   const sequenceLength = sequence.length;
+  //   // Add non-popped labels from this island to rectsToCheck
+  //   let rectsToCheck = this.labels.filter( (label,i) => (i < this.poppedStartIndex || i > this.poppedStopIndex) ).map(l => l.rect)
+  //   // FIXME: previous island may not exist in linear
+  //   const prevIsland = this.firstLabel?._prev?._island;
+  //   if (prevIsland) {
+  //     rectsToCheck = rectsToCheck.concat(prevIsland.placedRects);
+  //   }
+  //   // Get labels before and after popped. Or use the the poppedIndex of there are no more labels
+  //   const prePoppedIndex = Math.max(this.poppedStartIndex-1, 0);
+  //   const postPoppedIndex = Math.min(this.poppedStopIndex+1, this.labels.length-1);
+  //   // console.log(this.poppedStartIndex, prePoppedIndex, this.labels)
+  //   // console.log(this.poppedStartIndex, this.poppedStopIndex);
+  //   const startBp = this.labels[prePoppedIndex]._attachBp;
+  //   const stopBp = this.labels[postPoppedIndex]._attachBp;
+  //   const bpDistance = sequence.lengthOfRange(startBp, stopBp);
+  //   const bpIncrement = bpDistance / (this.poppedStopIndex - this.poppedStartIndex + 2);
+  //   let poppedNumber = 1;
+  //   for (let i = this.poppedStartIndex; i <= this.poppedStopIndex; i++) {
+  //     label = this.labels[i];
+  //     bp = startBp + (bpIncrement * poppedNumber);
+  //     lineLength = this.labelPlacement.initialLabelLineLength;
+  //     label._popped = true;
+  //     do {
+  //       const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
+  //       this.adjustLabelWithAttachPt(label, outerPt);
+  //       overlappingRect = label.rect.overlap(rectsToCheck);
+  //       lineLength += label.height;
+  //     } while (overlappingRect);
+  //     rectsToCheck.push(label.rect);
+  //     poppedNumber++;
+  //   }
+  // }
   // Place popped labels only by line length
   // placePoppedLabels() {
   //   let label, bp, lineLength, overlappingRect;
@@ -837,7 +872,7 @@ class LabelIsland {
   }
 
   labelsClash(label1, label2) {
-    const sequence = this.labelPlacement.viewer.sequence;
+    const sequence = this.viewer.sequence;
     const rectsOverlap = label1.rect.overlap([label2.rect]);
     // The following does not work for crossing the origin
     // const linesCross = (label1.bp < label2.bp) ? (label1._attachBp > label2._attachBp) : (label1._attachBp < label2._attachBp);
@@ -858,7 +893,7 @@ class LabelIsland {
   // Max island range is based on labe._maxBpAdjustment of island boundaries
   canMergeWith(island) {
     // console.log('ISLANDS in:', this.length, island.length)
-    const sequence = this.labelPlacement.viewer.sequence;
+    const sequence = this.viewer.sequence;
     // May need to merge first and test size
     const rangeFactor = 1;
     const maxBpRangeAllowed = rangeFactor * (this.firstLabel._maxBpAdjustment + island.lastLabel._maxBpAdjustment);
@@ -872,11 +907,6 @@ class LabelIsland {
     // console.log('CAN?-', mergedIslandRangeAdjustedBp, mergedIslandRangeBp, maxBpRangeAllowed, mergedIslandRangeAdjustedBp <= maxBpRangeAllowed)
     return mergedIslandRangeAdjustedBp <= maxBpRangeAllowed && mergedIslandRangeBp <= maxBpRangeAllowed;
   }
-
-  // merge(island) {
-  //   this._labels = this._labels.concat(island.labels);
-  //   // TODO: may need to resort but maybe not if we only go forward
-  // }
 
 }
 
