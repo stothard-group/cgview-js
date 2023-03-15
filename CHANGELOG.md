@@ -3,7 +3,18 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
-- N/A
+### Added
+- Add labelPlacement to Annotation.toJSON()
+## Changed
+- Improvements to Angled Labels
+- LegendItem highighting uses rounded corners with padding
+- Captions highighting uses rounded corners
+- Contigs without names will be named 'Unknown'
+## Removed
+- Removed center alignement for legends
+## Fixed
+- Highlighting legend items in right-aligned legends now works
+- When annotation is not visible labels are no longer highlighted when their features are moused over 
 
 ## v1.4.2 - 2023-03-10
 ## Fixed

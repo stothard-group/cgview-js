@@ -18,6 +18,8 @@ import utils from './Utils';
 //   - Label lines crossing in islands can occur if the next label pops less then previous label
 //   - [DONE} Fix: place popped labels in order from both sides always extending the line
 //   - There can still be some line crossing but it is much better now
+//   - TRY: when reducing line length, start at current length and gradual get smaller.
+//     - This will look better and have fewer croseed lines
 
 // NEXT
 // - When finding backwardBoundary (or forwardBoundary), we haven't added any margin
@@ -656,6 +658,7 @@ class LabelIsland {
     const bpIncrement = bpDistance / (this.poppedStopIndex - this.poppedStartIndex + 2);
     let poppedNumber = 1;
     let lineLength = this.labelPlacement.initialLabelLineLength;
+    let minLineLength, direction;
     for (let i = this.poppedStartIndex; i <= this.poppedStopIndex; i++) {
       label = this.labels[i];
       bp = startBp + (bpIncrement * poppedNumber);
@@ -670,15 +673,25 @@ class LabelIsland {
       // FIXME: Instead of reducing the line length and then then increasing until we fit
       // - gradually reduce the line until it reaches the maximum allow reduced value
       // - This will tighten up the labels in some cases
-      lineLength -= (label.height * 1.1 * poppedFactor * lengthFactor);
+      // lineLength -= (label.height * 1.1 * poppedFactor * lengthFactor);
       // Line length can't be less the intial value
-      lineLength = Math.max(lineLength, this.labelPlacement.initialLabelLineLength);
+      // lineLength = Math.max(lineLength, this.labelPlacement.initialLabelLineLength);
       // lineLength = this.labelPlacement.initialLabelLineLength; // Old Way
+
+      minLineLength = lineLength - (label.height * 1.1 * poppedFactor * lengthFactor);
+      // Line length can't be less the intial value
+      minLineLength = Math.max(minLineLength, this.labelPlacement.initialLabelLineLength);
+      direction = -1;
       do {
         const outerPt = this.canvas.pointForBp(bp, this.labelPlacement.rectCenterOffset(lineLength));
         this.adjustLabelWithAttachPt(label, outerPt);
         overlappingRect = label.rect.overlap(rectsToCheck);
-        lineLength += (label.height * 1.1);
+        // lineLength += (label.height * 1.1);
+        lineLength += (label.height * 1.1 * direction);
+        if (lineLength < minLineLength) {
+          direction = 1;
+          lineLength = minLineLength;
+        }
       } while (overlappingRect);
       label._lineLength = lineLength;
       rectsToCheck.push(label.rect);

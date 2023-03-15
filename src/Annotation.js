@@ -30,6 +30,7 @@ import utils from './Utils';
  * [font](#font)                    | String    | A string describing the font [Default: 'monospace, plain, 12']. See {@link Font} for details.
  * [color](#color)                  | String   | A string describing the color [Default: undefined]. If the color is undefined, the legend color for the feature will be used. See {@link Color} for details.
  * [onlyDrawFavorites](#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
+ * [labelPlacement](#labelPlacement) | String   | The label placement method for positioning labels. Choices: 'default', 'angled' [Default: 'default']
  * [visible](CGObject.html#visible) | Boolean   | Labels are visible [Default: true]
  * [meta](CGObject.html#meta)       | Object    | [Meta data](tutorial-meta.html) for Annotation
  *
@@ -73,7 +74,7 @@ class Annotation extends CGObject {
     this.lineCap = 'round';
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
-    this.labelPlacement = 'default';
+    this.labelPlacement = utils.defaultFor(options.labelPlacement, 'default');
     // this.labelPlacementFast = 'default';
     // this.labelPlacementFull = 'angled'
 
@@ -511,7 +512,7 @@ class Annotation extends CGObject {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Annotation',
-      validKeys: ['color', 'font', 'onlyDrawFavorites', 'visible']
+      validKeys: ['color', 'font', 'onlyDrawFavorites', 'visible', 'labelPlacement']
     });
     this.viewer.trigger('annotation-update', { attributes });
   }
@@ -524,12 +525,15 @@ class Annotation extends CGObject {
       font: this.font.string,
       color: this.color && this.color.rgbaString,
       onlyDrawFavorites: this.onlyDrawFavorites,
+      // In most cases the full and fast method will be the same.
+      // We could export both but for now we will only use the 'full' and it will be for both fast and full.
+      labelPlacement: this.labelPlacementFull.name,
       visible: this.visible
     };
     // Optionally add default values
-    if (!this.visible || options.includeDefaults) {
-      json.visible = this.visible;
-    }
+    // if (!this.visible || options.includeDefaults) {
+    //   json.visible = this.visible;
+    // }
     return json;
   }
 

@@ -196,15 +196,15 @@ class IO {
     // Backbone
     viewer._backbone = new Backbone(viewer, data.backbone);
     // Annotation (save label placement methods to restore after loading
-    const labelPlacementFast = viewer.annotation.labelPlacementFast.name;
-    const labelPlacementFull = viewer.annotation.labelPlacementFull.name;
+    // const labelPlacementFast = viewer.annotation.labelPlacementFast.name;
+    // const labelPlacementFull = viewer.annotation.labelPlacementFull.name;
     viewer._annotation = new Annotation(viewer, data.annotation);
-    if (labelPlacementFull === labelPlacementFast) {
-      viewer.annotation.labelPlacement = labelPlacementFast;
-    } else {
-      viewer.annotation.labelPlacementFast = labelPlacementFast;
-      viewer.annotation.labelPlacementFull = labelPlacementFull;
-    }
+    // if (labelPlacementFull === labelPlacementFast) {
+    //   viewer.annotation.labelPlacement = labelPlacementFast;
+    // } else {
+    //   viewer.annotation.labelPlacementFast = labelPlacementFast;
+    //   viewer.annotation.labelPlacementFull = labelPlacementFull;
+    // }
     // Slot Dividers
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer._dividers = new Dividers(viewer, data.dividers);

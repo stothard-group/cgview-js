@@ -331,8 +331,13 @@ class Caption extends CGObject {
     ctx.lineWidth = 1;
     ctx.strokeStyle = color.rgbaString;
     const box = this.box;
-    ctx.strokeRect(box.x, box.y, box.width, box.height);
 
+    // ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+    const corner = Math.min((box.height / 4), 4);
+    ctx.beginPath();
+    ctx.roundRect(box.x, box.y, box.width, box.height, [corner]);
+    ctx.stroke();
   }
 
   /**

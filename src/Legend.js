@@ -30,7 +30,7 @@ import * as d3 from 'd3';
  * [anchor](#anchor)                  | String\|Object | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
  * [defaultFont](#defaultFont)        | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
  * [defaultFontColor](#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
- * [textAlignment](#textAlignment)    | String    | Alignment of legend text: *left*, *center*, or *right* [Default: 'left']
+ * [textAlignment](#textAlignment)    | String    | Alignment of legend text: *left*, or *right* [Default: 'left']
  * [backgroundColor](#font)           | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
  * [on](#on)<sup>ic</sup>             | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
  * [items](#items)<sup>iu</sup>       | Array     | Array of legend item data.
@@ -225,14 +225,14 @@ class Legend extends CGObject {
   }
 
   /**
-   * @member {String} - Get or set the text alignment. Possible values are *left*, *center*, or *right*.
+   * @member {String} - Get or set the text alignment. Possible values are *left*, or *right*.
    */
   get textAlignment() {
     return this._textAlignment;
   }
 
   set textAlignment(value) {
-    if ( utils.validate(value, ['left', 'center', 'right']) ) {
+    if ( utils.validate(value, ['left', 'right']) ) {
       this._textAlignment = value;
     }
     this.refresh();

@@ -326,8 +326,8 @@ class LegendItem extends CGObject {
     const legend = this.legend;
     if (this.textAlignment === 'left') {
       return this.drawSwatch ? (this.swatchX() + this.swatchWidth + legend.swatchPadding) : box.leftPadded;
-    } else if (this.textAlignment === 'center') {
-      return box.centerX;
+    // } else if (this.textAlignment === 'center') {
+    //   return box.centerX;
     } else if (this.textAlignment === 'right') {
       return this.drawSwatch ? (this.swatchX() - legend.swatchPadding) : box.rightPadded;
     }
@@ -359,8 +359,8 @@ class LegendItem extends CGObject {
     const box = this.legend.box;
     if (this.textAlignment === 'left') {
       return box.leftPadded;
-    } else if (this.textAlignment === 'center') {
-      return box.leftPadded;
+    // } else if (this.textAlignment === 'center') {
+    //   return box.leftPadded;
     } else if (this.textAlignment === 'right') {
       return box.rightPadded - this.swatchWidth;
     }
@@ -393,8 +393,14 @@ class LegendItem extends CGObject {
   _textContainsPoint(pt) {
     const textX = this.textX();
     const textY = this.textY();
-    if (pt.x >= textX && pt.x <= textX + this.width && pt.y >= textY && pt.y <= textY + this.height) {
-      return true;
+    if (this.textAlignment === 'right') {
+      if (pt.x <= textX && pt.x >= textX - this.width && pt.y >= textY && pt.y <= textY + this.height) {
+        return true;
+      }
+    } else {
+      if (pt.x >= textX && pt.x <= textX + this.width && pt.y >= textY && pt.y <= textY + this.height) {
+        return true;
+      }
     }
   }
 
@@ -409,14 +415,23 @@ class LegendItem extends CGObject {
     // ctx.fillRect(this.textX(), this.textY(), this.width, this.height);
     const ctx = this.canvas.context('ui');
     let x = this.textX();
-    if (this.textAlignment === 'center') {
-      x -= (this.width / 2);
-    } else if (this.textAlignment === 'right') {
+    // if (this.textAlignment === 'center') {
+    //   x -= (this.width / 2);
+    if (this.textAlignment === 'right') {
       x -= this.width;
     }
     ctx.lineWidth = 1;
     ctx.strokeStyle = color.rgbaString;
-    ctx.strokeRect(x, this.textY(), this.width, this.height);
+
+    // Rectangle Outline
+    // ctx.strokeRect(x, this.textY(), this.width, this.height);
+
+    // Rounded Rectangle Outline
+    const padding = 2;
+    const corner = this.height / 4;
+    ctx.beginPath();
+    ctx.roundRect(x - padding, this.textY() - padding, this.width + (2*padding), this.height + (2*padding), [corner]);
+    ctx.stroke();
   }
 
   /**

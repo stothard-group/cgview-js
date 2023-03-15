@@ -54,7 +54,7 @@ class Contig extends CGObject {
 
     // this.id = utils.defaultFor(options.id, this.cgvID);
     // this.name = utils.defaultFor(options.name, this.id);
-    this.name = utils.defaultFor(options.name, '');
+    this.name = utils.defaultFor(options.name, 'Unknown');
     this.orientation = utils.defaultFor(options.orientation, '+');
     this.seq = options.seq;
     this.color = options.color;
@@ -131,6 +131,7 @@ class Contig extends CGObject {
    * @member {String} - Get or set the contig name.
    * When setting a name, if it's not unique it will be appended with a number.
    * For example, if 'my_name' already exists, it will be changed to 'my_name-2'.
+   * Empty names will be changed to 'Unknown'.
    */
   get name() {
     return this._name;
@@ -138,7 +139,10 @@ class Contig extends CGObject {
 
   set name(value) {
     // this._name = value;
-    const valueString = `${value}`;
+    let valueString = `${value}`;
+    if (valueString == "") {
+      valueString = 'Unknown';
+    }
     const allNames = this.sequence._contigs.map( i => i.name);
     this._name = utils.uniqueName(valueString, allNames)
     if (this._name !== valueString) {

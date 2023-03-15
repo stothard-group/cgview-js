@@ -194,12 +194,12 @@ class Label {
     const rect = this.rect;
     ctx.strokeStyle = color.rgbaString;
     ctx.lineWidth = 1;
-    const padding = 2;
 
     // Rectangle Outline
     // ctx.strokeRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding) );
 
     // Rounded Rectangle Outline
+    const padding = 2;
     const corner = this.height / 4;
     ctx.beginPath();
     ctx.roundRect(rect.x - padding , rect.y - padding, rect.width + (2*padding), rect.height + (2*padding), [corner] );

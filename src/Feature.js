@@ -539,8 +539,9 @@ class Feature extends CGObject {
     if (!this.visible) { return; }
     this.canvas.clear('ui');
 
-    this.label._highlight();
-
+    if (this.viewer.annotation.visible) {
+      this.label._highlight();
+    }
 
     const color = this.color.copy();
     color.highlight();
