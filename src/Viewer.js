@@ -1369,7 +1369,7 @@ class Viewer {
     const currentBp = this.canvas.bpForCanvasCenter();
     const length = this.sequence.length;
     let bpChange = length * factor / this.zoomFactor;
-    console.log(factor)
+    // console.log(factor)
 
     if (direction !== 'right') {
       bpChange *= -1;
@@ -1536,20 +1536,22 @@ class Viewer {
 
   /**
    * Zoom in on the current bp a factor
-   * @param {Number} - Amount to zoom in by [Default: 2]
+   * @param {Number} factor - Amount to zoom in by [Default: 2]
+   * @param {Object} options - Options passed to [Viewer.zoomTo()](Viewer.html#zoomTo)
    */
-  zoomIn(factor=2) {
+  zoomIn(factor=2, options) {
     const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
-    this.zoomTo(bp, this.zoomFactor * factor);
+    this.zoomTo(bp, this.zoomFactor * factor, options);
   }
 
   /**
    * Zoom out on the current bp a factor
-   * @param {Number} - Amount to zoom out by [Default: 2]
+   * @param {Number} factor - Amount to zoom out by [Default: 2]
+   * @param {Object} options - Options passed to [Viewer.zoomTo()](Viewer.html#zoomTo)
    */
-  zoomOut(factor=2) {
+  zoomOut(factor=2, options) {
     const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
-    this.zoomTo(bp, this.zoomFactor / factor);
+    this.zoomTo(bp, this.zoomFactor / factor, options);
   }
 
   /**
@@ -1631,6 +1633,14 @@ class Viewer {
         const plots = object;
         if (plots.every( p => p.extractedFromSequence) ) {
           // console.log('Skip Extracted Plot')
+          return;
+        }
+      }
+      // Ignore features-add with SequenceExtracted features
+      if (event === 'features-add') {
+        const features = object;
+        if (features.every( f => f.extractedFromSequence) ) {
+          // console.log('Skip Extracted Features')
           return;
         }
       }

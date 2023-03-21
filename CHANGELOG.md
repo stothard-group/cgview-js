@@ -5,6 +5,7 @@
 ## Unreleased
 ### Added
 - Add labelPlacement to Annotation.toJSON()
+- zoomIn/Out options (duration, ease, callback, bbOffset)
 ## Changed
 - Improvements to Angled Labels
 - LegendItem highighting uses rounded corners with padding
@@ -15,6 +16,7 @@
 ## Fixed
 - Highlighting legend items in right-aligned legends now works
 - When annotation is not visible labels are no longer highlighted when their features are moused over 
+- Adding sequence extracted features (e.g. ORFs) no longer trigger dataHasChanged
 
 ## v1.4.2 - 2023-03-10
 ## Fixed
