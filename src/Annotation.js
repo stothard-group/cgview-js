@@ -72,6 +72,7 @@ class Annotation extends CGObject {
     this._visibleLabels = new CGArray();
     this.color = options.color;
     this.lineCap = 'round';
+    // this.lineCap = 'butt';
     this.onlyDrawFavorites = utils.defaultFor(options.onlyDrawFavorites, false);
 
     this.labelPlacement = utils.defaultFor(options.labelPlacement, 'default');
@@ -419,6 +420,19 @@ class Annotation extends CGObject {
     ctx.lineCap = this.lineCap;
     ctx.lineWidth = lineWidth || this._labelLineWidth;
     ctx.stroke();
+
+    // TESTING adding extra radiant line to label line
+    // NOTE: this would be added to previous stroke
+    // - Also would need to add this to label line highlighting
+    // const innerExtraPt = this.canvas.pointForBp(label.bp, this._outerCenterOffset);
+    // ctx.beginPath();
+    // ctx.moveTo(innerExtraPt.x, innerExtraPt.y);
+    // ctx.lineTo(innerPt.x, innerPt.y);
+    // ctx.stroke();
+    //
+    // ctx.arc(outerPt.x, outerPt.y, 1.5, 0, 2*Math.PI, false);
+    // ctx.fillStyle = color.rgbaString;
+    // ctx.fill();
   }
 
   draw(innerCenterOffset, outerCenterOffset, fast) {
