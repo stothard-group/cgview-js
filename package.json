@@ -2,6 +2,7 @@
   "name": "cgview",
   "version": "1.4.2",
   "main": "dist/cgview.esm.js",
+  "type": "module",
   "description": "CGView: Circular Genome Viewer",
   "homepage": "https://js.cgview.ca",
   "bugs": "https://github.com/stothard-group/cgview-js/issues",
