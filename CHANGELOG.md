@@ -18,6 +18,7 @@
 - When annotation is not visible labels are no longer highlighted when their features are moused over 
 - Adding sequence extracted features (e.g. ORFs) no longer triggers dataHasChanged
 - Added "type": "module" to package.json to allow the "import" syntax
+- Stop muliple features/plots (from sequence) from being added on every track refresh
 
 ## v1.4.2 - 2023-03-10
 ## Fixed

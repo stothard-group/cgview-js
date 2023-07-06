@@ -345,10 +345,16 @@ class Track extends CGObject {
     this.viewer.trigger('track-update', this);
   }
 
+  // NOTE:
+  // - features and plots extracted from sequence are empheral and will be removed and readded on refresh
   refresh() {
+    const tempPlot = this._plot;
+    const tempFeatures = this._features;
     this._features = new CGArray();
     this._plot = undefined;
     if (this.dataMethod === 'sequence') {
+      tempPlot?.remove();
+      this.viewer.removeFeatures(tempFeatures);
       this.extractFromSequence();
     } else if (this.type === 'feature') {
       this.updateFeatures();
