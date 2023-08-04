@@ -300,6 +300,44 @@
   border-radius: 2px;
 }
 
+.cp-dialog-numbers {
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 5px 0;
+  border-top: 0.5px solid lightgrey;
+  border-bottom: 0.5px solid lightgrey;
+}
+.cp-number-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25px;
+}
+.cp-number-div input {
+  width: 25px;
+  font-size: 10px;
+  text-align: center;
+  font-family: monospace;
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-sizing: border-box;
+
+}
+.cp-hex-div {
+  width: 45px;
+}
+.cp-hex-div input {
+  width: 45px;
+}
+.cp-number-label {
+  font-size: 9px;
+  font-weight: bold;
+  cursor: ew-resize;
+}
+
 /*******************************************/
 /* DIALOG BOX  */
 /*******************************************/

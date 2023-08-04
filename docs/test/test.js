@@ -3,9 +3,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
-// const defaultMap = 'labels';
+const defaultMap = 'labels';
 // const defaultMap = 'labels3';
-const defaultMap = 'pcET30c';
+// const defaultMap = 'pcET30c';
 // const defaultMap = 'pcDNA3';
 // const defaultMap = 'version_0_1';
 // const defaultMap = 'small_noplots';

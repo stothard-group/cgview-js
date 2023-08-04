@@ -42,6 +42,10 @@ class ColorPicker {
     this.alphaIndicator = this.container.getElementsByClassName('cp-alpha-slider-indicator')[0];
     this.currentColorIndicator = this.container.getElementsByClassName('cp-color-current')[0];
     this.originalColorIndicator = this.container.getElementsByClassName('cp-color-original')[0];
+    this.hexInput = this.container.getElementsByClassName('cp-hex-input')[0];
+    this.rgbRInput = this.container.getElementsByClassName('cp-rgb-r-input')[0];
+    this.rgbGInput = this.container.getElementsByClassName('cp-rgb-g-input')[0];
+    this.rgbBInput = this.container.getElementsByClassName('cp-rgb-b-input')[0];
     this.doneButton = this.container.getElementsByClassName('cp-done-button')[0];
     this._configureView();
 
@@ -60,12 +64,17 @@ class ColorPicker {
     this.enableDragging(this, this.slideElement, this.slideListener());
     this.enableDragging(this, this.pickerElement, this.pickerListener());
     this.enableDragging(this, this.alphaElement, this.alphaListener());
-    this.enableDragging(this, this.container, this.dialogListener());
+    // TEMP disable dragging of dialog until we work on number inputs
+    // this.enableDragging(this, this.container, this.dialogListener());
 
     this.enableDragging(this, this.slideIndicator, this.slideListener());
     this.enableDragging(this, this.pickerIndicator, this.pickerListener());
     this.enableDragging(this, this.alphaIndicator, this.alphaListener());
 
+    d3.select(this.hexInput).on('input', this.hexListener());
+    d3.select(this.rgbRInput).on('input', this.rgbListener());
+    d3.select(this.rgbGInput).on('input', this.rgbListener());
+    d3.select(this.rgbBInput).on('input', this.rgbListener());
 
     this.setColor(this._color);
 
@@ -90,6 +99,7 @@ class ColorPicker {
 
   updateColor() {
     this._color.hsv = this.hsv;
+    console.log(this.color.rgbString)
     this._color.opacity = this.opacity;
     this.updateIndicators();
     const pickerRgbString = Color.rgb2String( Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
@@ -124,6 +134,11 @@ class ColorPicker {
     pickerIndicator.style.top = `${pickerY - (pickerIndicator.offsetHeight / 2)}px`;
     pickerIndicator.style.left = `${pickerX - (pickerIndicator.offsetWidth / 2)}px`;
     alphaIndicator.style.left = `${alphaX - (alphaIndicator.offsetWidth / 2)}px`;
+
+    this.hexInput.value = this.color.hex;
+    this.rgbRInput.value = this.color.rgb.r;
+    this.rgbGInput.value = this.color.rgb.g;
+    this.rgbBInput.value = this.color.rgb.b;
   }
 
   setPosition(pos) {
@@ -164,6 +179,12 @@ class ColorPicker {
       '<div class="cp-alpha-indicator-rect-1"></div>',
       '<div class="cp-alpha-indicator-rect-2"></div>',
       '</div>',
+      '</div>',
+      '<div class="cp-dialog-numbers">',
+      '<div class="cp-number-div cp-hex-div"><input type="text" maxlength="6" class="cp-hex-input" /><div class="cp-number-label">Hex</div></div>',
+      '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-r-input" /><div class="cp-number-label">R</div></div>',
+      '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-g-input" /><div class="cp-number-label">G</div></div>',
+      '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-b-input" /><div class="cp-number-label">B</div></div>',
       '</div>',
       '<div class="cp-dialog-footer">',
       '<div class="cp-footer-color-section">',
@@ -333,6 +354,59 @@ class ColorPicker {
       const mouse = mousePosition(alphaElement, d3Event);
       const opacity =  mouse.x / alphaElement.offsetWidth;
       cp.opacity = Number(opacity.toFixed(2));
+      cp.updateColor();
+    };
+  }
+
+  /**
+   * Return change event handler for Hex input.
+   * @private
+   */
+  hexListener() {
+    const cp = this;
+    const hexInput = cp.hexInput;
+    return function(d3Event) {
+      // console.log(d3Event)
+      // console.log(rInput.value, gInput.value, bInput.value)
+
+      console.log(hexInput.value)
+      let hex = hexInput.value.replace(/[^0-9a-f]/ig, '');
+      console.log(hex)
+
+      const rgb = Color.hexString2rgba(hex);
+      const hsv = Color.rgb2hsv(rgb);
+      cp.hsv = hsv;
+      console.log(Color.hsv2rgb(hsv))
+
+      cp.updateColor();
+    };
+  }
+
+  /**
+   * Return change event handler for RGB input.
+   * @private
+   */
+  rgbListener() {
+    const cp = this;
+    const rInput = cp.rgbRInput;
+    const gInput = cp.rgbGInput;
+    const bInput = cp.rgbBInput;
+    return function(d3Event) {
+      console.log(d3Event)
+      console.log(rInput.value, gInput.value, bInput.value)
+
+      let r = parseInt(rInput.value.replace(/[^0-9]/g, ''));
+      if (r > 255) { r = 255; }
+      let g = parseInt(gInput.value.replace(/[^0-9]/g, ''));
+      if (g > 255) { g = 255; }
+      let b = parseInt(bInput.value.replace(/[^0-9]/g, ''));
+      if (b > 255) { b = 255; }
+      console.log(r, g, b)
+
+      const hsv = Color.rgb2hsv({r, g, b});
+      cp.hsv = hsv;
+      console.log(Color.hsv2rgb(hsv))
+
       cp.updateColor();
     };
   }

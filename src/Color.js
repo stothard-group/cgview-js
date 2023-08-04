@@ -152,6 +152,7 @@ class Color {
    * @private
    */
   get hex() {
+    return Color.rgb2hex(this.rgb);
   }
 
   /**
@@ -443,9 +444,12 @@ Color.hsv2rgb = function(hsv) {
   G += [X, C, C, X, 0, 0][h];
   B += [0, 0, X, C, C, X][h];
 
-  const r = Math.floor(R * 255);
-  const g = Math.floor(G * 255);
-  const b = Math.floor(B * 255);
+  // const r = Math.floor(R * 255);
+  // const g = Math.floor(G * 255);
+  // const b = Math.floor(B * 255);
+  const r = Math.round(R * 255);
+  const g = Math.round(G * 255);
+  const b = Math.round(B * 255);
   return { r: r, g: g, b: b };
 };
 
@@ -476,6 +480,25 @@ Color.hexString2rgba = function(hex, opacity = 1) {
     blue = parseInt(result[3], 16);
   }
   return { r: red, g: green, b: blue, a: opacity };
+};
+
+/**
+ * Converts an RGB color object to a Hex string (without the '#').
+ * @function rgb2hex
+ * @memberof Color
+ * @param {Object} rgb - object with r, g, b properties
+ * @return {String} The color as a Hex string (without the '#')
+ * @static
+ * @private
+ * Based on https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+ */
+Color.rgb2hex = function(rgb) {
+  function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+
+  return (componentToHex(rgb.r) + componentToHex(rgb.g) + componentToHex(rgb.b)).toUpperCase();
 };
 
 /**
