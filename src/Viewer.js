@@ -57,6 +57,7 @@ console.log(`CGView.js Version: ${version}`)
  * [width](#width)                   | Number    | Width of the viewer map in pixels [Default: 600]
  * [height](#height)                 | Number    | Height of the viewer map in pixels [Default: 600]
  * [dataHasChanged](#dataHasChanged) | Boolean   | Indicates that data been update/added since this attribute was reset
+ * [meta](#meta)                     | Boolean   | Meta data for the map. Updating this attribute will overwrite **all** the current meta data.
  * [sequence](#sequence)<sup>iu</sup>    | Object | [Sequence](Sequence.html) options
  * [settings](#settings)<sup>iu</sup>    | Object | [Settings](Settings.html) options
  * [legend](#legend)<sup>iu</sup>        | Object | [Legend](Legend.html) options
@@ -589,7 +590,7 @@ class Viewer {
   update(attributes) {
     // Validate attribute keys
     let keys = Object.keys(attributes);
-    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
+    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged', 'meta'];
     if (!utils.validate(keys, validKeys)) { return; }
 
     // Special Case for Resizing - we don't want to update width and height separately
@@ -995,7 +996,7 @@ class Viewer {
   updateFeatures(featuresOrUpdates, attributes) {
     const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
       recordClass: 'Feature',
-      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop','score', 'mapStart', 'mapStop']
     });
     // Refresh tracks if any attribute is source, type, tags
     let refreshTracks;

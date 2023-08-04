@@ -118,6 +118,10 @@ class IO {
     v.tracks().each( (i, track) => {
       json.cgview.tracks.push(track.toJSON(options));
     });
+    // Meta Data (TODO: add an option to exclude this)
+    if (v.meta && Object.keys(v.meta).length > 0) {
+      json.cgview.meta = v.meta;
+    }
     return json;
   }
 
@@ -241,6 +245,12 @@ class IO {
     if (data.tracks) {
       viewer.addTracks(data.tracks);
     }
+
+    // Add Meta data
+    if (data.meta) {
+      viewer.meta = data.meta;
+    }
+
     // Refresh Annotations
     viewer.annotation.refresh();
 

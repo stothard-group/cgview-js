@@ -11,6 +11,7 @@
 - LegendItem highighting uses rounded corners with padding
 - Captions highighting uses rounded corners
 - Contigs without names will be named 'Unknown'
+- toJSON for legendItems now exports meta object
 ## Removed
 - Removed center alignement for legends
 ## Fixed

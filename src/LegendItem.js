@@ -512,6 +512,10 @@ class LegendItem extends CGObject {
     if (!this.usingDefaultFont || options.includeDefaults) {
       json.font = this.font.string;
     }
+    // Meta Data (TODO: add an option to exclude this)
+    if (Object.keys(this.meta).length > 0) {
+      json.meta = this.meta;
+    }
     return json;
   }
 
