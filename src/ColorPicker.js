@@ -20,12 +20,15 @@ class ColorPicker {
     this.containerId = containerId;
     this._object = options.object;
     this.container = d3.select(`#${containerId}`).node();
+    this.localStorageKey = "cgv-colorpicker-favorites";
     this._width = utils.defaultFor(options.width, 100);
     this._height = utils.defaultFor(options.height, 100);
 
     this._color = new Color( utils.defaultFor(options.colorString, 'rgba(255,0,0,1)') );
     this.hsv = this._color.hsv;
     this.opacity = this._color.opacity;
+    this.favorites = [];
+    this.maxFavorites = 6;
 
     this.onChange = options.onChange;
     this.onClose = options.onClose;
@@ -46,8 +49,15 @@ class ColorPicker {
     this.rgbRInput = this.container.getElementsByClassName('cp-rgb-r-input')[0];
     this.rgbGInput = this.container.getElementsByClassName('cp-rgb-g-input')[0];
     this.rgbBInput = this.container.getElementsByClassName('cp-rgb-b-input')[0];
+    this.rgbRLabel = this.container.querySelector('.cp-rgb-r-input + .cp-number-label');
+    this.rgbGLabel = this.container.querySelector('.cp-rgb-g-input + .cp-number-label');
+    this.rgbBLabel = this.container.querySelector('.cp-rgb-b-input + .cp-number-label');
+    this.alphaNumber = this.container.getElementsByClassName('cp-alpha-number')[0];
+    this.swatchesElement = this.container.getElementsByClassName('cp-dialog-swatches')[0];
     this.doneButton = this.container.getElementsByClassName('cp-done-button')[0];
     this._configureView();
+    this.addSwatches();
+    this.favoritesElement = this.container.getElementsByClassName('cp-dialog-favorites')[0];
 
     // Prevent the indicators from getting in the way of mouse events
     // this.slideIndicator.style.pointerEvents = 'none';
@@ -65,16 +75,24 @@ class ColorPicker {
     this.enableDragging(this, this.pickerElement, this.pickerListener());
     this.enableDragging(this, this.alphaElement, this.alphaListener());
     // TEMP disable dragging of dialog until we work on number inputs
-    // this.enableDragging(this, this.container, this.dialogListener());
+    this.enableDragging(this, this.container, this.dialogListener());
 
     this.enableDragging(this, this.slideIndicator, this.slideListener());
     this.enableDragging(this, this.pickerIndicator, this.pickerListener());
     this.enableDragging(this, this.alphaIndicator, this.alphaListener());
 
-    d3.select(this.hexInput).on('input', this.hexListener());
+    d3.select(this.hexInput).on('blur', this.hexListener());
+    d3.select(this.hexInput).on('keydown', this.hexListener());
     d3.select(this.rgbRInput).on('input', this.rgbListener());
     d3.select(this.rgbGInput).on('input', this.rgbListener());
     d3.select(this.rgbBInput).on('input', this.rgbListener());
+
+    // Prevent the number inputs from getting in the way of mouse events
+    d3.selectAll('.cp-number-div input').on('mousedown', (e) => { e.stopPropagation() });
+
+    this.enableDragging(this, this.rgbRLabel, this.rgbLabelListener(this.rgbRLabel, 'red'));
+    this.enableDragging(this, this.rgbGLabel, this.rgbLabelListener(this.rgbGLabel, 'green'));
+    this.enableDragging(this, this.rgbBLabel, this.rgbLabelListener(this.rgbBLabel, 'blue'));
 
     this.setColor(this._color);
 
@@ -99,7 +117,7 @@ class ColorPicker {
 
   updateColor() {
     this._color.hsv = this.hsv;
-    console.log(this.color.rgbString)
+    // console.log(this.color.rgbString)
     this._color.opacity = this.opacity;
     this.updateIndicators();
     const pickerRgbString = Color.rgb2String( Color.hsv2rgb( {h: this.hsv.h, s: 1, v: 1} ) );
@@ -111,11 +129,13 @@ class ColorPicker {
     this.onChange && this.onChange(this.color);
   }
 
-  setColor(value) {
+  setColor(value, updateOriginalColor=true) {
     this._color.setColor(value);
     this.hsv = this._color.hsv;
     this.opacity = Number(this._color.opacity.toFixed(2));
-    this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
+    if (updateOriginalColor) {
+      this.originalColorIndicator.style.backgroundColor = this._color.rgbaString;
+    }
     this.updateColor();
   }
 
@@ -139,6 +159,12 @@ class ColorPicker {
     this.rgbRInput.value = this.color.rgb.r;
     this.rgbGInput.value = this.color.rgb.g;
     this.rgbBInput.value = this.color.rgb.b;
+
+    this.alphaNumber.innerHTML = `${Math.round(this.opacity * 100)}`;
+
+    this.updateFavorites();
+    this.highlightSwatches();
+    this.highlightFavoriteBtn();
   }
 
   setPosition(pos) {
@@ -172,6 +198,7 @@ class ColorPicker {
       '<div class="cp-color-indicator-rect-2"></div>',
       '</div>',
       '</div>',
+      '<div class="cp-alpha-wrapper">',
       '<div class="cp-alpha-slider-wrapper">',
       '<div class="cp-alpha-slider"></div>',
       // '<div class="cp-alpha-slider-indicator"></div>',
@@ -180,15 +207,19 @@ class ColorPicker {
       '<div class="cp-alpha-indicator-rect-2"></div>',
       '</div>',
       '</div>',
+      '<div class="cp-alpha-number"></div>',
+      '</div>',
       '<div class="cp-dialog-numbers">',
-      '<div class="cp-number-div cp-hex-div"><input type="text" maxlength="6" class="cp-hex-input" /><div class="cp-number-label">Hex</div></div>',
+      '<div class="cp-number-div cp-hex-div"><input type="text" class="cp-hex-input"  spellcheck="false" /><div class="cp-number-label">Hex</div></div>',
       '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-r-input" /><div class="cp-number-label">R</div></div>',
       '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-g-input" /><div class="cp-number-label">G</div></div>',
       '<div class="cp-number-div"><input type="text" maxlength="3" class="cp-rgb-b-input" /><div class="cp-number-label">B</div></div>',
       '</div>',
+      '<div class="cp-dialog-swatches">',
+      '</div>',
       '<div class="cp-dialog-footer">',
       '<div class="cp-footer-color-section">',
-      '<div class="cp-color-original"></div>',
+      '<div class="cp-color-original" title="Original Color"></div>',
       '<div class="cp-color-current"></div>',
       '</div>',
       '<div class="cp-footer-button-section">',
@@ -250,7 +281,7 @@ class ColorPicker {
       ]
     );
 
-    const alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '127px', height: '10px', style: 'position: absolute;' },
+    const alpha = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '10px', style: 'position: absolute;' },
       [
         $el('defs', {},
           [
@@ -269,8 +300,8 @@ class ColorPicker {
             )
           ]
         ),
-        $el('rect', { x: '0', y: '0', width: '127px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-squares)`}),
-        $el('rect', { x: '0', y: '0', width: '127px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-gradient)`})
+        $el('rect', { x: '0', y: '0', width: '100px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-squares)`}),
+        $el('rect', { x: '0', y: '0', width: '100px', height: '10px', rx: '2px', fill: `url(#${containerId}-alpha-gradient)`})
       ]
     );
 
@@ -279,7 +310,109 @@ class ColorPicker {
     this.alphaElement.appendChild(alpha);
   }
 
+  addSwatches() {
+    const cp = this;
+    // Paired R Brew Colors (light on top, dark on bottom)
+    const swatchHexColors = [
+      "#FFFFFF", "#A6CEE3", "#B2DF8A", "#FB9A99", "#FDBF6F", "#CAB2D6", "#FFFF99",
+      "#000000", "#1F78B4", "#33A02C", "#E31A1C", "#FF7F00", "#6A3D9A", "#B15928"
+    ];
 
+    const swatchColors = swatchHexColors.map(hexColor => new Color(hexColor).rgbaString);
+    // console.log(swatchColors);
+
+    const swatchDivs = swatchColors.map(color => `<div class="cp-swatch" data-rgba-string='${color}' title='${color}' style="background-color: ${color}"></div>`).join('');
+    cp.swatchesElement.innerHTML = `${swatchDivs}<div class='cp-dialog-favorites'></div>`;
+
+    const swatches = cp.swatchesElement.getElementsByClassName('cp-swatch');
+    for (const swatch of swatches) {
+      swatch.addEventListener('click', function(e) {
+        // console.log(swatch.dataset)
+        const color = swatch.dataset.rgbaString;
+        cp.setColor(color, false);
+      });
+    }
+  }
+
+  loadFavorites() {
+    const cp = this;
+    const favoritesString = localStorage.getItem(this.localStorageKey) || '[]';
+    let favorites = JSON.parse(favoritesString);
+    favorites = Array.isArray(favorites) ? favorites : [];
+    cp.favorites = favorites.slice(0, cp.maxFavorites);
+    this.updateFavorites();
+  }
+
+  updateFavorites() {
+    const cp = this;
+    // Favorite Swatches
+    const currentColor = cp.color.rgbaString;
+    const swatchDivs = cp.favorites?.map(color => `<div data-rgba-string='${color}' title="${color}" class="cp-swatch ${(color === currentColor) ? 'cp-swatch-active' : ''}" style="background-color: ${color}"></div>`).join('');
+
+    // Blank Swatches
+    const blanksCount = cp.maxFavorites - cp.favorites.length;
+    const blankSVG = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'><path d='M15 0 L0 15 '/><path d='M0 0 L15 15 ' /></svg>";
+    const blanks = Array(blanksCount).fill(`<div class="cp-swatch-blank">${blankSVG}</div>`).join('');
+
+    // Star Favorite SVG
+    const svgStar = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 51 48"><path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg>';
+
+    // Put is all together
+    cp.favoritesElement.innerHTML = `<div class='cp-favorite-btn' title='Favorite current color'>${svgStar}</div>${swatchDivs}${blanks}`;
+
+    // Add click handler to favorite star and store favorite color in local storage
+    this.favoriteBtn = this.container.querySelector('.cp-favorite-btn');
+    d3.select(this.favoriteBtn).on('click', () => {
+      if (cp.favorites.includes(cp.color.rgbaString)) {
+        cp.favorites = cp.favorites.filter(color => color !== cp.color.rgbaString);
+      } else {
+        cp.favorites.unshift(cp.color.rgbaString);
+      }
+      cp.favorites = cp.favorites.slice(0, cp.maxFavorites);
+      localStorage.setItem(this.localStorageKey, JSON.stringify(cp.favorites));
+      cp.updateIndicators();
+    });
+
+    // Highlight the favorite button if the current color is a favorite
+    cp.highlightFavoriteBtn();
+
+    // Add favorite swatch click handler
+    const swatches = cp.favoritesElement.getElementsByClassName('cp-swatch');
+    for (const swatch of swatches) {
+      swatch.addEventListener('click', function(e) {
+        const color = swatch.dataset.rgbaString;
+        cp.setColor(color, false);
+      });
+    }
+  }
+
+  // apply the active class to the swatches that matches the current color
+  highlightSwatches() {
+    const cp = this;
+    const currentColor = cp.color.rgbaString;
+    const swatches = cp.swatchesElement.getElementsByClassName('cp-swatch');
+    for (const swatch of swatches) {
+      const swatchColor = new Color(swatch.style.backgroundColor);
+      // console.log(swatchColor.rgbaString, currentColor)
+      if (swatchColor.rgbaString === currentColor) {
+        swatch.classList.add('cp-swatch-active');
+      } else {
+        swatch.classList.remove('cp-swatch-active');
+      }
+    }
+  }
+
+  highlightFavoriteBtn() {
+    const cp = this;
+    const currentColor = cp.color.rgbaString;
+    if (cp.favorites.includes(currentColor)) {
+      cp.favoriteBtn.classList.add('cp-favorite-btn-active');
+      cp.favoriteBtn.title = 'Unfavorite current color';
+    } else {
+      cp.favoriteBtn.classList.remove('cp-favorite-btn-active');
+      cp.favoriteBtn.title = 'Favorite current color';
+    }
+  }
 
   /**
   * Enable drag&drop color selection.
@@ -359,26 +492,60 @@ class ColorPicker {
   }
 
   /**
+   * Return click event handler for the RGB Labels.
+   * Sets alpha background color and calls ctx.callback if provided.
+   * @private
+   */
+  rgbLabelListener(labelElement, colorName) {
+    const cp = this;
+    const rInput = cp.rgbRInput;
+    const gInput = cp.rgbGInput;
+    const bInput = cp.rgbBInput;
+    return function(d3Event, mouseStart) {
+      let currentValue = parseInt(rInput.value);
+      if (colorName === 'green') { currentValue = parseInt(gInput.value); }
+      if (colorName === 'blue') { currentValue = parseInt(bInput.value); }
+      const mouse = mousePosition(labelElement, d3Event, false);
+      const mouseDistance = Math.floor(mouse.x - mouseStart.x);
+      let newValue = currentValue + mouseDistance
+      newValue = utils.constrain(newValue, 0, 255);
+      const hsv = Color.rgb2hsv({
+        r: (colorName === 'red')   ? newValue: parseInt(rInput.value),
+        g: (colorName === 'green') ? newValue: parseInt(gInput.value),
+        b: (colorName === 'blue')  ? newValue: parseInt(bInput.value),
+      });
+      cp.hsv = hsv;
+      cp.updateColor();
+      mouseStart.x = mouse.x;
+    };
+  }
+
+
+  /**
    * Return change event handler for Hex input.
+   * This will also allow Hex values, color names and rgb() values.
+   * SHould be called for blur and keydown events. But all keydown events are ignored unless it is the enter key.
    * @private
    */
   hexListener() {
     const cp = this;
     const hexInput = cp.hexInput;
     return function(d3Event) {
-      // console.log(d3Event)
-      // console.log(rInput.value, gInput.value, bInput.value)
+      if (d3Event.type === 'keydown' && d3Event.keyCode !== 13) { return; }
 
-      console.log(hexInput.value)
-      let hex = hexInput.value.replace(/[^0-9a-f]/ig, '');
-      console.log(hex)
+      // Add "#" if values are hex values
+      let value = hexInput.value;
+      let regex = new RegExp(/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/);
+      if (regex.test(value)) {
+        value = "#" + value;
+      }
 
-      const rgb = Color.hexString2rgba(hex);
-      const hsv = Color.rgb2hsv(rgb);
-      cp.hsv = hsv;
-      console.log(Color.hsv2rgb(hsv))
+      // If nothing is provided, set to current color
+      if (value === '') {
+        value = cp.color.rgbString;
+      }
 
-      cp.updateColor();
+      cp.setColor(value, false);
     };
   }
 
@@ -392,8 +559,8 @@ class ColorPicker {
     const gInput = cp.rgbGInput;
     const bInput = cp.rgbBInput;
     return function(d3Event) {
-      console.log(d3Event)
-      console.log(rInput.value, gInput.value, bInput.value)
+      // console.log(d3Event)
+      // console.log(rInput.value, gInput.value, bInput.value)
 
       let r = parseInt(rInput.value.replace(/[^0-9]/g, ''));
       if (r > 255) { r = 255; }
@@ -401,11 +568,11 @@ class ColorPicker {
       if (g > 255) { g = 255; }
       let b = parseInt(bInput.value.replace(/[^0-9]/g, ''));
       if (b > 255) { b = 255; }
-      console.log(r, g, b)
+      // console.log(r, g, b)
 
       const hsv = Color.rgb2hsv({r, g, b});
       cp.hsv = hsv;
-      console.log(Color.hsv2rgb(hsv))
+      // console.log(Color.hsv2rgb(hsv))
 
       cp.updateColor();
     };
@@ -460,6 +627,7 @@ class ColorPicker {
   }
 
   open(object) {
+    this.loadFavorites();
     if (object) { this.object = object; }
     const box = d3.select(this.container);
     box.style('visibility', 'visible');
@@ -496,24 +664,27 @@ function $el(el, attrs, children) {
 
 /**
  * Return mouse position relative to the element el.
+ * constrain (when true) keesp the mouse values within the element
  * @private
  */
-function mousePosition(element, d3Event) {
+function mousePosition(element, d3Event, constrain=true) {
   const width = element.offsetWidth;
   const height = element.offsetHeight;
 
   const pos = d3.pointer(d3Event, element);
 
   const mouse = {x: pos[0], y: pos[1]};
-  if (mouse.x > width) {
-    mouse.x = width;
-  } else if (mouse.x < 0) {
-    mouse.x = 0;
-  }
-  if (mouse.y > height) {
-    mouse.y = height;
-  } else if (mouse.y < 0) {
-    mouse.y = 0;
+  if (constrain) {
+    if (mouse.x > width) {
+      mouse.x = width;
+    } else if (mouse.x < 0) {
+      mouse.x = 0;
+    }
+    if (mouse.y > height) {
+      mouse.y = height;
+    } else if (mouse.y < 0) {
+      mouse.y = 0;
+    }
   }
   return mouse;
 }

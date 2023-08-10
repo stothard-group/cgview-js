@@ -180,8 +180,15 @@
   height: 5px;
 }
 
+.cp-alpha-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .cp-alpha-slider-wrapper {
-  width: 127px;
+  /* width: 127px; */
+  width: 100px;
   height: 10px;
   margin-top: 5px;
   position: relative;
@@ -279,7 +286,8 @@
   height: 20px;
   width: 20px;
   /* border: 1px solid #585858; */
-  border: 1px solid #B4B4B4;
+  /* border: 1px solid #B4B4B4; */
+  border: 0.5px solid #ccc;
 }
 .cp-color-current {
   border-left: none;
@@ -291,6 +299,9 @@
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   cursor: pointer;
+}
+.cp-color-original:hover {
+  outline: #0067F4 solid 1px;
 }
 
 .cp-color-picker {
@@ -305,7 +316,7 @@
   display: flex;
   justify-content: space-between;
   margin: 5px 0;
-  padding: 5px 0;
+  padding: 5px 0 3px;
   border-top: 0.5px solid lightgrey;
   border-bottom: 0.5px solid lightgrey;
 }
@@ -315,6 +326,19 @@
   align-items: center;
   width: 25px;
 }
+
+.cp-alpha-number {
+  width: 25px;
+  height: 10px;
+  font-size: 10px;
+  text-align: center;
+  font-family: monospace;
+  padding: 2px;
+  box-sizing: border-box;
+  color: #868E96;
+  line-height: 11px;;
+}
+/* .cp-alpha-input, */
 .cp-number-div input {
   width: 25px;
   font-size: 10px;
@@ -324,7 +348,7 @@
   border: 1px solid #ccc;
   border-radius: 2px;
   box-sizing: border-box;
-
+  outline-width: 2px;
 }
 .cp-hex-div {
   width: 45px;
@@ -336,6 +360,84 @@
   font-size: 9px;
   font-weight: bold;
   cursor: ew-resize;
+  color: #868E96;
+}
+.cp-hex-div .cp-number-label {
+  cursor: unset;
+}
+
+.cp-dialog-swatches {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border-bottom: 0.5px solid lightgrey;
+  /* width: 100%; */
+  width: 127px;
+  padding-bottom: 4px;
+  margin-bottom: 3px;
+}
+.cp-dialog-favorites {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.cp-dialog-swatches .cp-swatch,
+.cp-dialog-favorites .cp-swatch,
+.cp-dialog-favorites .cp-swatch-blank {
+  width: 15px;
+  height: 15px;
+  border: 0.5px solid #ccc;
+  border-radius: 2px;
+  margin: 0.5px;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+.cp-dialog-favorites .cp-swatch-blank {
+  cursor: unset;
+  display: flex;
+  overflow: hidden;
+}
+/* .cp-dialog-favorites .cp-swatch-blank svg {
+} */
+.cp-dialog-favorites .cp-swatch-blank svg path {
+  /* stroke: 0.5px solid #ccc; */
+  stroke: #ccc;
+  stroke-width: 0.5px;
+  stroke-opacity: 0.8;
+}
+
+.cp-dialog-swatches .cp-swatch:hover {
+  outline: #0067F4 solid 1px;
+}
+.cp-swatch-active {
+  outline: #0067F4 solid 1px;
+}
+
+/* .cp-dialog-favorites {
+} */
+
+.cp-dialog-favorites .cp-favorite-btn {
+  height: 15px;
+  width: 15px;
+  border: 0.5px solid transparent;
+  margin: 0.5px;
+  cursor: pointer;
+  display: flex;
+}
+.cp-dialog-favorites .cp-favorite-btn-active svg path {
+  /* fill: yellow; */
+  fill: #868E96;
+}
+
+.cp-dialog-favorites .cp-favorite-btn svg path {
+  stroke: #868E96;
+  stroke-width: 4px;
+}
+.cp-favorite-btn:hover svg path {
+  stroke-width: 6px;
+  /* transition: stroke-width 0.2s ease-in-out; */
 }
 
 /*******************************************/

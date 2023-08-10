@@ -6,6 +6,7 @@
 ### Added
 - Add labelPlacement to Annotation.toJSON()
 - zoomIn/Out options (duration, ease, callback, bbOffset)
+- New Color Picker with Hex/RGB values, swatches and favorites
 ## Changed
 - Improvements to Angled Labels
 - LegendItem highighting uses rounded corners with padding
