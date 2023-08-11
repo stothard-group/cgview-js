@@ -29,7 +29,7 @@ class ColorPicker {
     this.hsv = this._color.hsv;
     this.opacity = this._color.opacity;
     this.favorites = [];
-    this.maxFavorites = 6;
+    this.maxFavorites = 13;
 
     this.onChange = options.onChange;
     this.onClose = options.onClose;
@@ -65,7 +65,7 @@ class ColorPicker {
     this.addModeSwatches();
     this.modeIconDefault = this.createHueSlide(16.5, 16)
     this.modeIconDefault.classList.add('cp-mode-hidden');
-    this.modeIconSwatches = this.createSwatchIcon(16.5, 16)
+    this.modeIconSwatches = this.createSwatchModeIcon(16.5, 16)
     this.modeButton.appendChild(this.modeIconDefault);
     this.modeButton.appendChild(this.modeIconSwatches);
     const xSVG = "<svg xmlns='http://www.w3.org/2000/svg' height='11px' width: '11px' viewBox='0 0 15 15'><path d='M15 0 L0 15 '/><path d='M0 0 L15 15 ' /></svg>";
@@ -195,24 +195,21 @@ class ColorPicker {
 
   _colorpickerHTMLSnippet() {
     return [
-      '<div class="cp-dialog-footer">',
-      '<div class="cp-footer-button-section">',
+      // Header
+      '<div class="cp-dialog-header">',
       '<button class="cp-mode-button" title="Toggle Swatches"></button>',
-      '</div>',
-      '<div class="cp-footer-color-section">',
+      '<div class="cp-header-color-section">',
       '<div class="cp-color-original" title="Original Color"></div>',
       '<div class="cp-color-current"></div>',
       '</div>',
-      '<div class="cp-footer-button-section">',
       '<button class="cp-done-button" title="Close"></button>',
       '</div>',
-      '</div>',
-      '<div class="cp-color-picker-mode-swatches cp-mode-hidden">',
-      '</div>',
+      // Swatches Mode
+      '<div class="cp-color-picker-mode-swatches cp-mode-hidden"></div>',
+      // HSV Mode
       '<div class="cp-color-picker-mode-default">',
       '<div class="cp-color-picker-wrapper">',
       '<div class="cp-color-picker"></div>',
-      // '<div class="cp-color-picker-indicator"></div>',
       '<div class="cp-color-picker-indicator">',
       '<div class="cp-picker-indicator-rect-1"></div>',
       '<div class="cp-picker-indicator-rect-2"></div>',
@@ -220,16 +217,15 @@ class ColorPicker {
       '</div>',
       '<div class="cp-color-slider-wrapper" title="Hue">',
       '<div class="cp-color-slider"></div>',
-      // '<div class="cp-color-slider-indicator"></div>',
       '<div class="cp-color-slider-indicator">',
       '<div class="cp-color-indicator-rect-1"></div>',
       '<div class="cp-color-indicator-rect-2"></div>',
       '</div>',
       '</div>',
+      // Alpha (Opacity)
       '<div class="cp-alpha-wrapper" title="Opacity">',
       '<div class="cp-alpha-slider-wrapper">',
       '<div class="cp-alpha-slider"></div>',
-      // '<div class="cp-alpha-slider-indicator"></div>',
       '<div class="cp-alpha-slider-indicator">',
       '<div class="cp-alpha-indicator-rect-1"></div>',
       '<div class="cp-alpha-indicator-rect-2"></div>',
@@ -237,6 +233,7 @@ class ColorPicker {
       '</div>',
       '<div class="cp-alpha-number"></div>',
       '</div>',
+      // Numbers (Hex, RGB)
       '<div class="cp-dialog-numbers">',
       '<div class="cp-number-div cp-hex-div"><input type="text" class="cp-hex-input"  spellcheck="false" /><div class="cp-number-label">Hex</div></div>',
       '<div class="cp-number-div" title="Red"><input type="text" maxlength="3" class="cp-rgb-r-input" /><div class="cp-number-label">R</div></div>',
@@ -244,13 +241,15 @@ class ColorPicker {
       '<div class="cp-number-div" title="Blue"><input type="text" maxlength="3" class="cp-rgb-b-input" /><div class="cp-number-label">B</div></div>',
       '</div>',
       '</div>',
+      // Swatches
       '<div class="cp-dialog-swatches">',
       '</div>',
 
     ].join('');
   }
 
-  createSwatchIcon(width, height) {
+  // Create grid of little squares to represent swatches mode
+  createSwatchModeIcon(width, height) {
     const containerId = this.containerId;
     const margin = 2;
     const rowCount = 3;
@@ -280,9 +279,6 @@ class ColorPicker {
     });
 
     const icon = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: `${width+1}px`, height: `${height}px` }, rects
-      // [
-      //   $el('rect', { x: '0', y: '0', width: `${swatchWidth}px`, height: `${swatchHeight}px`, rx: '1px', fill: `blue`})
-      // ]
     );
     return icon;
   }
@@ -321,26 +317,6 @@ class ColorPicker {
   _configureView() {
     const containerId = this.containerId;
     const slide = this.createHueSlide(20, 100);
-    // const slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '20px', height: '100px' },
-    //   [
-    //     $el('defs', {},
-    //       $el('linearGradient', { id: `${containerId}-gradient-hsv`, x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
-    //         [
-    //           $el('stop', { offset: '0%', 'stop-color': '#FF0000', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '13%', 'stop-color': '#FF00FF', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '25%', 'stop-color': '#8000FF', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '38%', 'stop-color': '#0040FF', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '50%', 'stop-color': '#00FFFF', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '63%', 'stop-color': '#00FF40', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '75%', 'stop-color': '#0BED00', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '88%', 'stop-color': '#FFFF00', 'stop-opacity': '1' }),
-    //           $el('stop', { offset: '100%', 'stop-color': '#FF0000', 'stop-opacity': '1' })
-    //         ]
-    //       )
-    //     ),
-    //     $el('rect', { x: '0', y: '0', width: '20px', height: '100px', rx: '2px', fill: `url(#${containerId}-gradient-hsv)`})
-    //   ]
-    // );
 
     const picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '100px' },
       [
@@ -470,7 +446,8 @@ class ColorPicker {
     const swatchDivs = cp.favorites?.map(color => `<div data-rgba-string='${color}' title="${color}" class="cp-swatch ${(color === currentColor) ? 'cp-swatch-active' : ''}" style="background-color: ${color}"></div>`).join('');
 
     // Blank Swatches
-    const blanksCount = cp.maxFavorites - cp.favorites.length;
+    const extraCount = cp.maxFavorites - cp.favorites.length;
+    const blanksCount = extraCount >= 7 ? (extraCount - 7) : extraCount;
     const blankSVG = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'><path d='M15 0 L0 15 '/><path d='M0 0 L15 15 ' /></svg>";
     const blanks = Array(blanksCount).fill(`<div class="cp-swatch-blank">${blankSVG}</div>`).join('');
 
