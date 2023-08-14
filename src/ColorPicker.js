@@ -63,7 +63,7 @@ class ColorPicker {
     this.addPairedSwatches();
     this.favoritesElement = this.container.getElementsByClassName('cp-dialog-favorites')[0];
     this.addModeSwatches();
-    this.modeIconDefault = this.createHueSlide(16.5, 16)
+    this.modeIconDefault = this.createHueSlide(16.5, 16, 'icon')
     this.modeIconDefault.classList.add('cp-mode-hidden');
     this.modeIconSwatches = this.createSwatchModeIcon(16.5, 16)
     this.modeButton.appendChild(this.modeIconDefault);
@@ -284,12 +284,12 @@ class ColorPicker {
   }
 
 
-  createHueSlide(width, height) {
+  createHueSlide(width, height, id) {
     const containerId = this.containerId;
     const slide = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: `${width}px`, height: `${height}px` },
       [
         $el('defs', {},
-          $el('linearGradient', { id: `${containerId}-gradient-hsv`, x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
+          $el('linearGradient', { id: `${containerId}-${id}-gradient-hsv`, x1: '0%', y1: '100%', x2: '0%', y2: '0%'},
             [
               $el('stop', { offset: '0%', 'stop-color': '#FF0000', 'stop-opacity': '1' }),
               $el('stop', { offset: '13%', 'stop-color': '#FF00FF', 'stop-opacity': '1' }),
@@ -303,7 +303,7 @@ class ColorPicker {
             ]
           )
         ),
-        $el('rect', { x: '0', y: '0', width: `${width}px`, height: `${height}px`, rx: '2px', fill: `url(#${containerId}-gradient-hsv)`})
+        $el('rect', { x: '0', y: '0', width: `${width}px`, height: `${height}px`, rx: '2px', fill: `url(#${containerId}-${id}-gradient-hsv)`})
       ]
     );
     return slide;
@@ -316,7 +316,7 @@ class ColorPicker {
    */
   _configureView() {
     const containerId = this.containerId;
-    const slide = this.createHueSlide(20, 100);
+    const slide = this.createHueSlide(20, 100, 'main');
 
     const picker = $el('svg', { xmlns: 'http://www.w3.org/2000/svg', version: '1.1', width: '100px', height: '100px' },
       [
