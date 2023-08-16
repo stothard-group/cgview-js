@@ -274,7 +274,7 @@ class ColorPicker {
       const x = (swatchWidth * col) + (margin * col);
       const y = (swatchHeight * row) + (margin * row);
       const color = colors[row][col];
-      console.log(color);
+      // console.log(color);
       return $el('rect', { x: `${x}px`, y: `${y}px`, width: `${swatchWidth}px`, height: `${swatchHeight}px`, rx: '1px', fill: `${color}`})
     });
 
@@ -395,7 +395,7 @@ class ColorPicker {
     }).join('');
 
     this.modeSwatchesElement = this.container.getElementsByClassName('cp-color-picker-mode-swatches')[0];
-    console.log(this.modeSwatchesElement);
+    // console.log(this.modeSwatchesElement);
     this.modeSwatchesElement.innerHTML = `${swatchDivs}`;
     const swatches = cp.modeSwatchesElement.getElementsByClassName('cp-swatch');
     for (const swatch of swatches) {
