@@ -71,6 +71,18 @@ class Slot extends CGObject {
     }
   }
 
+  /** * @member {String} - Get the *Track* drawOrder
+   */
+  get drawOrder() {
+    return this._track.drawOrder;
+  }
+
+  /** * @member {Boolean} - Return true if drawing by score
+   */
+  get drawByScore() {
+    return this.drawOrder === 'score';
+  }
+
   /**
    * @member {Boolean} - Is the slot position inside the backbone
    */
@@ -257,10 +269,20 @@ class Slot extends CGObject {
         const showShading = fast ? false : undefined;
         // When drawing shadows, draw in reverse order to make them look better
         if (this.viewer.settings.showShading && this.isDirect()) { step *= -1; }
+
         // Draw Features
-        this._featureNCList.run(start, stop, step, (feature) => {
-          feature.draw('map', slotCenterOffset, slotThickness, range, {showShading: showShading});
-        });
+        if (this.drawByScore) {
+          // Special case where we draw with features sorted by score (draw highest score last)
+          const sortedFeatures = this._featureNCList.find(start, stop, step).sort((a, b) => (a.score - b.score) || (a.length - b.length) );
+          for (const feature of sortedFeatures) {
+            feature.draw('map', slotCenterOffset, slotThickness, range, {showShading: showShading});
+          }
+        } else {
+          // Draw by position (more efficient)
+          this._featureNCList.run(start, stop, step, (feature) => {
+            feature.draw('map', slotCenterOffset, slotThickness, range, {showShading: showShading});
+          });
+        }
 
         // Debug
         if (this.viewer.debug && this.viewer.debug.data.n) {

@@ -3,7 +3,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
-const defaultMap = 'labels';
+const defaultMap = 'blast';
+// const defaultMap = 'labels';
 // const defaultMap = 'labels3';
 // const defaultMap = 'pcET30c';
 // const defaultMap = 'pcDNA3';

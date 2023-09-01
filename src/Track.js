@@ -36,6 +36,7 @@ import utils from './Utils';
  * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
  * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
  * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
+ * [drawOrder](#loadProgress)        | String    | Order to draw features in: position, score [Default: position]
  * [favorite](#favorite)             | Boolean   | Track is a favorite [Default: false]
  * [visible](CGObject.html#visible)  | Boolean   | Track is visible [Default: true]
  * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html) for Track
@@ -61,6 +62,7 @@ class Track extends CGObject {
     this.name = utils.defaultFor(data.name, 'Unknown');
     this.separateFeaturesBy = utils.defaultFor(data.separateFeaturesBy, 'strand');
     this.position = utils.defaultFor(data.position, 'both');
+    this.drawOrder = utils.defaultFor(data.drawOrder, 'position');
     this.dataType = utils.defaultFor(data.dataType, 'feature');
     this.dataMethod = utils.defaultFor(data.dataMethod, 'source');
     this.dataKeys = data.dataKeys;
@@ -129,6 +131,22 @@ class Track extends CGObject {
    */
   get layout() {
     return this.viewer.layout;
+  }
+
+
+  /**
+   * @member {String} - Get or set the *drawOrder*. Must be one of 'position' or 'score' [Default: 'position']
+   * - position: Features are drawn in the (opposite) order they appear in the sequence. From end of strand backwards. This makes the arrow heads apear above features.
+   * - score: Features are drawn in order of score (lowest to highest).
+   */
+  get drawOrder() {
+    return this._drawOrder;
+  }
+
+  set drawOrder(value) {
+    if ( utils.validate(value, ['position', 'score']) ) {
+      this._drawOrder = value;
+    }
   }
 
   /**
@@ -498,6 +516,9 @@ class Track extends CGObject {
     // Optionally add default values
     if (!this.visible || options.includeDefaults) {
       json.visible = this.visible;
+    }
+    if (this.drawOrder != 'position') {
+      json.drawOrder = this.drawOrder;
     }
     // This could be a new Track specific toJSON option
     if (options.includeDefaults) {

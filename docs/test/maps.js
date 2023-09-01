@@ -1,4 +1,12 @@
 maps = {
+  blast: {
+    name: 'Blast Overlap Test [69,034 bp]',
+    url: 'maps/blast_overlap.json',
+  },
+  blast_big: {
+    name: 'Blast BIG',
+    url: 'maps/blast_big.json',
+  },
   labels: {
     name: 'Label Test [69,034 bp]',
     url: 'maps/labels.json',
