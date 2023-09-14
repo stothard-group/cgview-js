@@ -702,7 +702,7 @@ class Viewer {
   updateTracks(tracksOrUpdates, attributes) {
     const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
       recordClass: 'Track',
-      validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'dataOptions', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
+      validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'dataOptions', 'favorite', 'visible', 'loadProgress', 'thicknessRatio', 'drawOrder']
     });
     let tracksToRefresh = [];
     if (updates) {

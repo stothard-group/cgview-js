@@ -7,6 +7,8 @@
 - Add labelPlacement to Annotation.toJSON()
 - zoomIn/Out options (duration, ease, callback, bbOffset)
 - New Color Picker with Hex/RGB values, swatches and favorites
+- Add drawOrder (position [default] or score) to Track
+- Add length to default feature popups
 ## Changed
 - Improvements to Angled Labels
 - LegendItem highighting uses rounded corners with padding

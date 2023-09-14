@@ -140,7 +140,6 @@ class Highlighter extends CGObject {
     let div = `<div class='track-data'>Map: ${bp} bp</div>`;
     if (e.elementType === 'contig') {
       const contig = e.element;
-      console.log(contig)
       const contigBp = utils.commaNumber(e.bp - contig.lengthOffset);
       div = `<div class='track-data'>Contig: ${contigBp} bp</div>` + div;
     }
@@ -156,14 +155,10 @@ class Highlighter extends CGObject {
       metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${feature.meta[k]}</span></div>`).join('');
       metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
     }
-    let trackDiv = '';
-    if (e.slot) {
-      const track = e.slot.track;
-      trackDiv = `<div class='track-data'>Track: ${track.name}</div>`;
-    }
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>${feature.type}: ${feature.name}<div>
+        <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp</div>
         ${metaDivs}
         ${this.getTrackDiv(e)}
       </div>
