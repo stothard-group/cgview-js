@@ -1204,7 +1204,9 @@ class Viewer {
 
   refreshCanvasLayer() {
     for (let i = 0, len = this._captions.length; i < len; i++) {
-      this._captions[i].refresh();
+      if (this._captions[i].visible) {
+        this._captions[i].refresh();
+      }
     }
     this.legend && this.legend.refresh();
   }
