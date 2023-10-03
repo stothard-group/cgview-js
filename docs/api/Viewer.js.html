@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2192,6 +2202,7 @@ console.log(`CGView.js Version: ${version}`)
  * [width](#width)                   | Number    | Width of the viewer map in pixels [Default: 600]
  * [height](#height)                 | Number    | Height of the viewer map in pixels [Default: 600]
  * [dataHasChanged](#dataHasChanged) | Boolean   | Indicates that data been update/added since this attribute was reset
+ * [meta](#meta)                     | Boolean   | Meta data for the map. Updating this attribute will overwrite **all** the current meta data.
  * [sequence](#sequence)&lt;sup>iu&lt;/sup>    | Object | [Sequence](Sequence.html) options
  * [settings](#settings)&lt;sup>iu&lt;/sup>    | Object | [Settings](Settings.html) options
  * [legend](#legend)&lt;sup>iu&lt;/sup>        | Object | [Legend](Legend.html) options
@@ -2724,7 +2735,7 @@ class Viewer {
   update(attributes) {
     // Validate attribute keys
     let keys = Object.keys(attributes);
-    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged'];
+    const validKeys = ['name', 'id', 'width', 'height', 'dataHasChanged', 'meta'];
     if (!utils.validate(keys, validKeys)) { return; }
 
     // Special Case for Resizing - we don't want to update width and height separately
@@ -2836,7 +2847,7 @@ class Viewer {
   updateTracks(tracksOrUpdates, attributes) {
     const { records: tracks, updates } = this.updateRecords(tracksOrUpdates, attributes, {
       recordClass: 'Track',
-      validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'dataOptions', 'favorite', 'visible', 'loadProgress', 'thicknessRatio']
+      validKeys: ['name', 'position', 'separateFeaturesBy', 'dataType', 'dataMethod', 'dataKeys', 'dataOptions', 'favorite', 'visible', 'loadProgress', 'thicknessRatio', 'drawOrder']
     });
     let tracksToRefresh = [];
     if (updates) {
@@ -3130,7 +3141,7 @@ class Viewer {
   updateFeatures(featuresOrUpdates, attributes) {
     const { records: features, updates } = this.updateRecords(featuresOrUpdates, attributes, {
       recordClass: 'Feature',
-      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop', 'mapStart', 'mapStop']
+      validKeys: ['name', 'type', 'contig', 'legendItem', 'source', 'tags', 'favorite', 'visible', 'strand', 'start', 'stop','score', 'mapStart', 'mapStop']
     });
     // Refresh tracks if any attribute is source, type, tags
     let refreshTracks;
@@ -3338,7 +3349,9 @@ class Viewer {
 
   refreshCanvasLayer() {
     for (let i = 0, len = this._captions.length; i &lt; len; i++) {
-      this._captions[i].refresh();
+      if (this._captions[i].visible) {
+        this._captions[i].refresh();
+      }
     }
     this.legend &amp;&amp; this.legend.refresh();
   }
@@ -3504,7 +3517,7 @@ class Viewer {
     const currentBp = this.canvas.bpForCanvasCenter();
     const length = this.sequence.length;
     let bpChange = length * factor / this.zoomFactor;
-    console.log(factor)
+    // console.log(factor)
 
     if (direction !== 'right') {
       bpChange *= -1;
@@ -3671,20 +3684,22 @@ class Viewer {
 
   /**
    * Zoom in on the current bp a factor
-   * @param {Number} - Amount to zoom in by [Default: 2]
+   * @param {Number} factor - Amount to zoom in by [Default: 2]
+   * @param {Object} options - Options passed to [Viewer.zoomTo()](Viewer.html#zoomTo)
    */
-  zoomIn(factor=2) {
+  zoomIn(factor=2, options) {
     const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
-    this.zoomTo(bp, this.zoomFactor * factor);
+    this.zoomTo(bp, this.zoomFactor * factor, options);
   }
 
   /**
    * Zoom out on the current bp a factor
-   * @param {Number} - Amount to zoom out by [Default: 2]
+   * @param {Number} factor - Amount to zoom out by [Default: 2]
+   * @param {Object} options - Options passed to [Viewer.zoomTo()](Viewer.html#zoomTo)
    */
-  zoomOut(factor=2) {
+  zoomOut(factor=2, options) {
     const bp = utils.constrain(this.canvas.bpForCanvasCenter(), 1, this.sequence.length);
-    this.zoomTo(bp, this.zoomFactor / factor);
+    this.zoomTo(bp, this.zoomFactor / factor, options);
   }
 
   /**
@@ -3769,6 +3784,14 @@ class Viewer {
           return;
         }
       }
+      // Ignore features-add with SequenceExtracted features
+      if (event === 'features-add') {
+        const features = object;
+        if (features.every( f => f.extractedFromSequence) ) {
+          // console.log('Skip Extracted Features')
+          return;
+        }
+      }
       if (event === 'tracks-update') {
         const attributes = object &amp;&amp; object.attributes;
         if (attributes === undefined) {
@@ -3796,7 +3819,7 @@ export default Viewer;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

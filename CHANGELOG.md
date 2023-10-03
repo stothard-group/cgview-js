@@ -3,6 +3,8 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
+
+## v1.5.0 - 2023-10-03
 ### Added
 - Add labelPlacement to Annotation.toJSON()
 - zoomIn/Out options (duration, ease, callback, bbOffset)
@@ -15,6 +17,7 @@
 - Captions highighting uses rounded corners
 - Contigs without names will be named 'Unknown'
 - toJSON for legendItems now exports meta object
+- Moved minArcLength from Settings to Legend and LegendItems
 ## Removed
 - Removed center alignement for legends
 ## Fixed

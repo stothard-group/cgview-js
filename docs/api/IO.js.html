@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2253,6 +2263,10 @@ class IO {
     v.tracks().each( (i, track) => {
       json.cgview.tracks.push(track.toJSON(options));
     });
+    // Meta Data (TODO: add an option to exclude this)
+    if (v.meta &amp;&amp; Object.keys(v.meta).length > 0) {
+      json.cgview.meta = v.meta;
+    }
     return json;
   }
 
@@ -2282,6 +2296,7 @@ class IO {
       data = JSON.parse(json);
     }
 
+    console.log(`Loading map JSON version: '${data?.cgview?.version}'`);
     data = this.updateJSON(data);
 
     data = data &amp;&amp; data.cgview;
@@ -2330,8 +2345,16 @@ class IO {
     viewer._ruler = new Ruler(viewer, data.ruler);
     // Backbone
     viewer._backbone = new Backbone(viewer, data.backbone);
-    // Annotation
+    // Annotation (save label placement methods to restore after loading
+    // const labelPlacementFast = viewer.annotation.labelPlacementFast.name;
+    // const labelPlacementFull = viewer.annotation.labelPlacementFull.name;
     viewer._annotation = new Annotation(viewer, data.annotation);
+    // if (labelPlacementFull === labelPlacementFast) {
+    //   viewer.annotation.labelPlacement = labelPlacementFast;
+    // } else {
+    //   viewer.annotation.labelPlacementFast = labelPlacementFast;
+    //   viewer.annotation.labelPlacementFull = labelPlacementFull;
+    // }
     // Slot Dividers
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer._dividers = new Dividers(viewer, data.dividers);
@@ -2368,6 +2391,12 @@ class IO {
     if (data.tracks) {
       viewer.addTracks(data.tracks);
     }
+
+    // Add Meta data
+    if (data.meta) {
+      viewer.meta = data.meta;
+    }
+
     // Refresh Annotations
     viewer.annotation.refresh();
 
@@ -2383,6 +2412,7 @@ class IO {
   /**
    * Update old CGView JSON formats to the current version.
    * The map data must be contained within a top level "cgview" property.
+   * This method will continue to call itself until the JSON is updated to the latest version.
    * @param {Object} data - Object Literal
    */
   updateJSON(data) {
@@ -2392,37 +2422,72 @@ class IO {
       throw new Error("No 'cgview' property found in JSON.");
     }
 
-    const version = data.version;
-    console.log(`Loading map JSON version: '${version}'`);
-
-    let major, minor;
-    const result = version.match(/^(\d+)\.(\d+)/)
-    if (result) {
-      major = Number(result[1]);
-      minor = Number(result[2]);
-    } else {
-      throw new Error(`Can not read cgview version '${version}'`);
+    function parseVersion(version) {
+      const result = version.match(/^(\d+)\.(\d+)/)
+      if (result) {
+        return { string: version, major: Number(result[1]), minor: Number(result[2]), };
+      } else {
+        throw new Error(`Can not read cgview version '${version}'`);
+      }
     }
-    // console.log('major', major)
-    // console.log('minor', minor)
+
+    const version = parseVersion(data.version);
+    const lastestVersion = parseVersion(currentVersion);
 
     switch (true) {
-      case (version === '0.1'):
+      case (version.string === '0.1'):
         data = this._updateVersion_0_1(data)
-        break;
-      case (version === '0.2'):
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === '0.2'):
         data = this._updateVersion_0_2(data)
-        break;
-      case (version === '1.0.0'):
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === '1.0.0'):
         data = this._updateVersion_1_0(data);
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.major &lt;= 1 &amp;&amp; version.minor &lt;= 4):
+        data = this._updateVersion_1_4(data);
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === lastestVersion.string):
+        console.log(`JSON at latest version: ${version.string}`)
         break;
-      case (major === 1):
-        console.log('No need to convert.')
+      case (version.major &lt;= lastestVersion.major &amp;&amp; version.minor &lt;= lastestVersion.minor):
+        console.log(`Update JSON to latest version: ${version.string} -> ${currentVersion}`)
+        data.version = currentVersion;
         break;
+      // case (version.major === 1):
+      //   console.log('No need to convert.')
+      //   break;
       default:
-        throw new Error(`Unknown cgview version '${version}'`);
+        throw new Error(`Unknown cgview version '${version.string}'`);
     }
     return {cgview: data};
+  }
+
+
+  // Version 1.5 started on 2023-09-28
+  // Moves the minArcLength from Settings to Legend and LegendItems
+  _updateVersion_1_4(data) {
+    data.legend.defaultMinArcLength = data.settings.minArcLength;
+    // Version
+    data.version = '1.5.0';
+    return data;
+  }
+
+  _updateVersion_1_0(data) {
+    // Contigs are the only change for this version
+    const contigs = data.sequence &amp;&amp; data.sequence.contigs;
+    if (contigs) {
+      for (const contig of contigs) {
+        contig.name = contig.id;
+      }
+    }
+    // Version
+    data.version = '1.1.0';
+    return data;
   }
 
   // This version is all over the place so concentrate on tracks
@@ -2445,7 +2510,6 @@ class IO {
     data.tracks = tracks;
     // Version
     data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
     return data;
   }
 
@@ -2496,21 +2560,6 @@ class IO {
     // Plots aren't saved properly on CGView Server so we can ignore
     // Version
     data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
-    return data;
-  }
-
-  _updateVersion_1_0(data) {
-    // Contigs are the only chagne for this version
-    const contigs = data.sequence &amp;&amp; data.sequence.contigs;
-    if (contigs) {
-      for (const contig of contigs) {
-        contig.name = contig.id;
-      }
-    }
-    // Version
-    data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
     return data;
   }
 
@@ -2778,7 +2827,7 @@ export default IO;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

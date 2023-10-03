@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2196,11 +2206,6 @@
 <td>Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]</td>
 </tr>
 <tr>
-<td><a href="#minArcLength">minArcLength</a></td>
-<td>Number</td>
-<td>Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 0]</td>
-</tr>
-<tr>
 <td><a href="#initialMapThicknessProportion">initialMapThicknessProportion</a></td>
 <td>Number</td>
 <td>Proportion of canvas size to use for drawing map tracks at a zoomFactor of 1 [Default: 0.1]</td>
@@ -2231,7 +2236,7 @@
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line41">line 41</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line40">line 40</a>
         </div>
         
     </div>
@@ -2656,55 +2661,6 @@ proportion of the canvas width or height (Default: 0.5).</p>
             
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="minArcLength">minArcLength<span class="type-signature type number">Number</span> </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Set or get the minimum arc length. The value must be between 0 and 2 [Default: 0].
-Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
-At some scales, small features will have an arc length of a fraction
-of a pixel. In these cases, the arcs are hard to see.
-A minArcLength of 0 means no adjustments will be made.</p>
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <div class="nameContainer">
         <h4 class="name" id="showShading">showShading<span class="type-signature type boolean">Boolean</span> </h4>
     </div>
     
@@ -2763,7 +2719,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line188">line 188</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line171">line 171</a>
         </div>
         
     </div>
@@ -2834,7 +2790,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line61">line 61</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line59">line 59</a>
         </div>
         
     </div>
@@ -2936,7 +2892,7 @@ A minArcLength of 0 means no adjustments will be made.</p>
     
         
         <div class="tag-source">
-            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line177">line 177</a>
+            <a href="Settings.js.html">Settings.js</a>, <a href="Settings.js.html#line160">line 160</a>
         </div>
         
     </div>
@@ -3059,7 +3015,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

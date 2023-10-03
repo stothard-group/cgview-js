@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2196,9 +2206,14 @@
 <td>A string describing the default font color [Default: 'black']. See <a href="Color.html"><code>Color</code></a> for details.</td>
 </tr>
 <tr>
+<td><a href="#defaultMinArcLength">defaultMinArcLength</a></td>
+<td>Number</td>
+<td>Default minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 1]</td>
+</tr>
+<tr>
 <td><a href="#textAlignment">textAlignment</a></td>
 <td>String</td>
-<td>Alignment of legend text: <em>left</em>, <em>center</em>, or <em>right</em> [Default: 'left']</td>
+<td>Alignment of legend text: <em>left</em>, or <em>right</em> [Default: 'left']</td>
 </tr>
 <tr>
 <td><a href="#font">backgroundColor</a></td>
@@ -2248,7 +2263,7 @@
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line55">line 55</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line56">line 56</a>
         </div>
         
     </div>
@@ -2667,6 +2682,55 @@
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="defaultMinArcLength">defaultMinArcLength<span class="type-signature type number">Number</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Get or set the defaultMinArcLength for legend items. The value must be between 0 to 2 pixels [Default: 1].
+Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
+At some scales, small features will have an arc length of a fraction
+of a pixel. In these cases, the arcs are hard to see.
+A minArcLength of 0 means no adjustments will be made.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="layout">layout<span class="type-signature type layout"><a href="Layout.html">Layout</a></span> </h4>
     </div>
     
@@ -2900,7 +2964,7 @@
 <dd>
     
     <div class="description">
-        <p>Get or set the text alignment. Possible values are <em>left</em>, <em>center</em>, or <em>right</em>.</p>
+        <p>Get or set the text alignment. Possible values are <em>left</em>, or <em>right</em>.</p>
     </div>
     
     
@@ -3040,7 +3104,7 @@
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line305">line 305</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line329">line 329</a>
         </div>
         
     </div>
@@ -3189,7 +3253,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details</p>
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line554">line 554</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line578">line 578</a>
         </div>
         
     </div>
@@ -3333,7 +3397,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details</p>
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line466">line 466</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line490">line 490</a>
         </div>
         
     </div>
@@ -3478,7 +3542,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details</p>
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line480">line 480</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line504">line 504</a>
         </div>
         
     </div>
@@ -3689,7 +3753,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details</p>
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line453">line 453</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line477">line 477</a>
         </div>
         
     </div>
@@ -3760,7 +3824,7 @@ See <a href="../docs.html#s.adding-records">adding records</a> for details</p>
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line287">line 287</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line311">line 311</a>
         </div>
         
     </div>
@@ -3915,7 +3979,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line346">line 346</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line370">line 370</a>
         </div>
         
     </div>
@@ -4054,7 +4118,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line356">line 356</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line380">line 380</a>
         </div>
         
     </div>
@@ -4170,7 +4234,7 @@ See <a href="../docs.html#s.reading-records">reading records</a> for details.</p
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line317">line 317</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line341">line 341</a>
         </div>
         
     </div>
@@ -4290,7 +4354,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details</
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line609">line 609</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line633">line 633</a>
         </div>
         
     </div>
@@ -4361,7 +4425,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details</
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line82">line 82</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line84">line 84</a>
         </div>
         
     </div>
@@ -4463,7 +4527,7 @@ See <a href="../docs.html#s.removing-records">removing records</a> for details</
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line270">line 270</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line294">line 294</a>
         </div>
         
     </div>
@@ -4580,7 +4644,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
     
         
         <div class="tag-source">
-            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line333">line 333</a>
+            <a href="Legend.js.html">Legend.js</a>, <a href="Legend.js.html#line357">line 357</a>
         </div>
         
     </div>
@@ -4732,7 +4796,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

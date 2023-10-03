@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2997,7 +3007,8 @@ The stop is the total length of the contigs before this one plus this contigs le
     <div class="description">
         <p>Get or set the contig name.
 When setting a name, if it's not unique it will be appended with a number.
-For example, if 'my_name' already exists, it will be changed to 'my_name-2'.</p>
+For example, if 'my_name' already exists, it will be changed to 'my_name-2'.
+Empty names will be changed to 'Unknown'.</p>
     </div>
     
     
@@ -3274,7 +3285,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line375">line 375</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line379">line 379</a>
         </div>
         
     </div>
@@ -3418,7 +3429,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line309">line 309</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line313">line 313</a>
         </div>
         
     </div>
@@ -3569,7 +3580,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line324">line 324</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line328">line 328</a>
         </div>
         
     </div>
@@ -3685,7 +3696,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line334">line 334</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line338">line 338</a>
         </div>
         
     </div>
@@ -3824,7 +3835,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line316">line 316</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line320">line 320</a>
         </div>
         
     </div>
@@ -3895,7 +3906,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line284">line 284</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line288">line 288</a>
         </div>
         
     </div>
@@ -3966,7 +3977,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line409">line 409</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line413">line 413</a>
         </div>
         
     </div>
@@ -4139,7 +4150,7 @@ adjust all the features on this contig.</p>
     
         
         <div class="tag-source">
-            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line293">line 293</a>
+            <a href="Contig.js.html">Contig.js</a>, <a href="Contig.js.html#line297">line 297</a>
         </div>
         
     </div>
@@ -4262,7 +4273,7 @@ See <a href="../docs.html#s.updating-records">updating records</a> for details.<
         
 
         <footer>
-           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

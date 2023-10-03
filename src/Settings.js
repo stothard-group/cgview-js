@@ -24,7 +24,6 @@ import utils from './Utils';
  * [backgroundColor](#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
  * [showShading](#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
  * [arrowHeadLength](#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
- * [minArcLength](#minArcLength)       | Number    | Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 0]
  * [initialMapThicknessProportion](#initialMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at a zoomFactor of 1 [Default: 0.1]
  * [maxMapThicknessProportion](#maxMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at max zoom level [Default: 0.5]
  *
@@ -47,7 +46,6 @@ class Settings {
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this._geneticCode = utils.defaultFor(options.geneticCode, 11);
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
-    // this.minArcLength = utils.defaultFor(options.minArcLength, 1);
     this._showShading = utils.defaultFor(options.showShading, true);
     this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
     this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
@@ -116,21 +114,6 @@ class Settings {
   }
 
   /**
-   * @member {Number} - Set or get the minimum arc length. The value must be between 0 and 2 [Default: 0].
-   *   Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
-   *   At some scales, small features will have an arc length of a fraction
-   *   of a pixel. In these cases, the arcs are hard to see.
-   *   A minArcLength of 0 means no adjustments will be made.
-   */
-  // set minArcLength(value) {
-  //   this._minArcLength = utils.constrain(Number(value), 0, 2);
-  // }
-
-  // get minArcLength() {
-  //   return this._minArcLength;
-  // }
-
-  /**
    * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
    */
   get showShading() {
@@ -177,7 +160,6 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      // validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
       validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
     });
     this.viewer.trigger('settings-update', { attributes });
@@ -193,7 +175,6 @@ class Settings {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
       arrowHeadLength: this.arrowHeadLength,
-      // minArcLength: this.minArcLength,
       initialMapThicknessProportion: this.initialMapThicknessProportion,
       maxMapThicknessProportion: this.maxMapThicknessProportion
     };

@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2171,6 +2181,7 @@ import utils from './Utils';
  * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
  * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
  * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
+ * [drawOrder](#loadProgress)        | String    | Order to draw features in: position, score [Default: position]
  * [favorite](#favorite)             | Boolean   | Track is a favorite [Default: false]
  * [visible](CGObject.html#visible)  | Boolean   | Track is visible [Default: true]
  * [meta](CGObject.html#meta)        | Object    | [Meta data](../tutorials/details-meta-data.html) for Track
@@ -2196,6 +2207,7 @@ class Track extends CGObject {
     this.name = utils.defaultFor(data.name, 'Unknown');
     this.separateFeaturesBy = utils.defaultFor(data.separateFeaturesBy, 'strand');
     this.position = utils.defaultFor(data.position, 'both');
+    this.drawOrder = utils.defaultFor(data.drawOrder, 'position');
     this.dataType = utils.defaultFor(data.dataType, 'feature');
     this.dataMethod = utils.defaultFor(data.dataMethod, 'source');
     this.dataKeys = data.dataKeys;
@@ -2264,6 +2276,22 @@ class Track extends CGObject {
    */
   get layout() {
     return this.viewer.layout;
+  }
+
+
+  /**
+   * @member {String} - Get or set the *drawOrder*. Must be one of 'position' or 'score' [Default: 'position']
+   * - position: Features are drawn in the (opposite) order they appear in the sequence. From end of strand backwards. This makes the arrow heads apear above features.
+   * - score: Features are drawn in order of score (lowest to highest).
+   */
+  get drawOrder() {
+    return this._drawOrder;
+  }
+
+  set drawOrder(value) {
+    if ( utils.validate(value, ['position', 'score']) ) {
+      this._drawOrder = value;
+    }
   }
 
   /**
@@ -2480,10 +2508,16 @@ class Track extends CGObject {
     this.viewer.trigger('track-update', this);
   }
 
+  // NOTE:
+  // - features and plots extracted from sequence are empheral and will be removed and readded on refresh
   refresh() {
+    const tempPlot = this._plot;
+    const tempFeatures = this._features;
     this._features = new CGArray();
     this._plot = undefined;
     if (this.dataMethod === 'sequence') {
+      tempPlot?.remove();
+      this.viewer.removeFeatures(tempFeatures);
       this.extractFromSequence();
     } else if (this.type === 'feature') {
       this.updateFeatures();
@@ -2628,6 +2662,9 @@ class Track extends CGObject {
     if (!this.visible || options.includeDefaults) {
       json.visible = this.visible;
     }
+    if (this.drawOrder != 'position') {
+      json.drawOrder = this.drawOrder;
+    }
     // This could be a new Track specific toJSON option
     if (options.includeDefaults) {
       json.loadProgress = this.loadProgress;
@@ -2652,7 +2689,7 @@ export default Track;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>

@@ -1345,6 +1345,8 @@
             
                 <li data-name="Legend#defaultFontColor"><a href="Legend.html#defaultFontColor">defaultFontColor</a></li>
             
+                <li data-name="Legend#defaultMinArcLength"><a href="Legend.html#defaultMinArcLength">defaultMinArcLength</a></li>
+            
                 <li data-name="Legend#layout"><a href="Legend.html#layout">layout</a></li>
             
                 <li data-name="Legend#meta"><a href="Legend.html#meta">meta</a></li>
@@ -1430,6 +1432,8 @@
             
                 <li data-name="LegendItem#meta"><a href="LegendItem.html#meta">meta</a></li>
             
+                <li data-name="LegendItem#minArcLength"><a href="LegendItem.html#minArcLength">minArcLength</a></li>
+            
                 <li data-name="LegendItem#name"><a href="LegendItem.html#name">name</a></li>
             
                 <li data-name="LegendItem#sequence"><a href="LegendItem.html#sequence">sequence</a></li>
@@ -1439,6 +1443,8 @@
                 <li data-name="LegendItem#swatchWidth"><a href="LegendItem.html#swatchWidth">swatchWidth</a></li>
             
                 <li data-name="LegendItem#usingDefaultFont"><a href="LegendItem.html#usingDefaultFont">usingDefaultFont</a></li>
+            
+                <li data-name="LegendItem#usingDefaultMinArcLength"><a href="LegendItem.html#usingDefaultMinArcLength">usingDefaultMinArcLength</a></li>
             
                 <li data-name="LegendItem#viewer"><a href="LegendItem.html#viewer">viewer</a></li>
             
@@ -1788,8 +1794,6 @@
             
                 <li data-name="Settings#maxMapThicknessProportion"><a href="Settings.html#maxMapThicknessProportion">maxMapThicknessProportion</a></li>
             
-                <li data-name="Settings#minArcLength"><a href="Settings.html#minArcLength">minArcLength</a></li>
-            
                 <li data-name="Settings#showShading"><a href="Settings.html#showShading">showShading</a></li>
             
             </ul>
@@ -1826,6 +1830,10 @@
                 <li data-name="Slot#canvas"><a href="Slot.html#canvas">canvas</a></li>
             
                 <li data-name="Slot#centerOffset"><a href="Slot.html#centerOffset">centerOffset</a></li>
+            
+                <li data-name="Slot#drawByScore"><a href="Slot.html#drawByScore">drawByScore</a></li>
+            
+                <li data-name="Slot#drawOrder"><a href="Slot.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Slot#inside"><a href="Slot.html#inside">inside</a></li>
             
@@ -1891,6 +1899,8 @@
                 <li data-name="Track#dataOptions"><a href="Track.html#dataOptions">dataOptions</a></li>
             
                 <li data-name="Track#dataType"><a href="Track.html#dataType">dataType</a></li>
+            
+                <li data-name="Track#drawOrder"><a href="Track.html#drawOrder">drawOrder</a></li>
             
                 <li data-name="Track#id"><a href="Track.html#id">id</a></li>
             
@@ -2159,7 +2169,6 @@ import utils from './Utils';
  * [backgroundColor](#backgroundColor) | String    | A string describing the background color of the map [Default: 'white']. See {@link Color} for details.
  * [showShading](#showShading)         | Boolean   | Should a shading effect be drawn on the features [Default: true]
  * [arrowHeadLength](#arrowHeadLength) | Number    | Length of feature arrowheads as a proportion of the feature thickness. From 0 (no arrowhead) to 1 (arrowhead as long on the feature is thick) [Default: 0.3]
- * [minArcLength](#minArcLength)       | Number    | Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 0]
  * [initialMapThicknessProportion](#initialMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at a zoomFactor of 1 [Default: 0.1]
  * [maxMapThicknessProportion](#maxMapThicknessProportion) | Number  | Proportion of canvas size to use for drawing map tracks at max zoom level [Default: 0.5]
  *
@@ -2182,7 +2191,6 @@ class Settings {
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this._geneticCode = utils.defaultFor(options.geneticCode, 11);
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
-    this.minArcLength = utils.defaultFor(options.minArcLength, 1);
     this._showShading = utils.defaultFor(options.showShading, true);
     this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
     this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
@@ -2251,21 +2259,6 @@ class Settings {
   }
 
   /**
-   * @member {Number} - Set or get the minimum arc length. The value must be between 0 and 2 [Default: 0].
-   *   Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
-   *   At some scales, small features will have an arc length of a fraction
-   *   of a pixel. In these cases, the arcs are hard to see.
-   *   A minArcLength of 0 means no adjustments will be made.
-   */
-  set minArcLength(value) {
-    this._minArcLength = utils.constrain(Number(value), 0, 2);
-  }
-
-  get minArcLength() {
-    return this._minArcLength;
-  }
-
-  /**
    * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
    */
   get showShading() {
@@ -2312,7 +2305,7 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
+      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
     });
     this.viewer.trigger('settings-update', { attributes });
   }
@@ -2327,7 +2320,6 @@ class Settings {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
       arrowHeadLength: this.arrowHeadLength,
-      minArcLength: this.minArcLength,
       initialMapThicknessProportion: this.initialMapThicknessProportion,
       maxMapThicknessProportion: this.maxMapThicknessProportion
     };
@@ -2350,7 +2342,7 @@ export default Settings;
         
 
         <footer>
-           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Mar 01 2023 09:57:39 GMT-0700 (Mountain Standard Time) -->
+           <!--  Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Oct 03 2023 09:12:52 GMT-0600 (Mountain Daylight Time) -->
            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>. See <a href='index.html'>API Home</a> for documentation generation date.
         </footer>
     </div>
