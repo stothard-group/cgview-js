@@ -30,6 +30,7 @@ import * as d3 from 'd3';
  * [anchor](#anchor)                  | String\|Object | Where to anchor the legend box to the position [Default: 'auto']. See {@link Anchor} for details.
  * [defaultFont](#defaultFont)        | String    | A string describing the default font [Default: 'SansSerif, plain, 8']. See {@link Font} for details.
  * [defaultFontColor](#defaultFontColor) | String    | A string describing the default font color [Default: 'black']. See {@link Color} for details.
+ * [defaultMinArcLength](#defaultMinArcLength) | Number    | Default minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 1]
  * [textAlignment](#textAlignment)    | String    | Alignment of legend text: *left*, or *right* [Default: 'left']
  * [backgroundColor](#font)           | String    | A string describing the background color of the legend [Default: 'white']. See {@link Color} for details.
  * [on](#on)<sup>ic</sup>             | String    | Place the legend relative to the 'canvas' or 'map' [Default: 'canvas']
@@ -65,6 +66,7 @@ class Legend extends CGObject {
     });
     // Setting font will refresh legend and draw
     this.defaultFont = utils.defaultFor(options.defaultFont, 'sans-serif, plain, 14');
+    this.defaultMinArcLength = utils.defaultFor(options.defaultMinArcLength, 1);
 
     this.viewer.trigger('legend-update', { attributes: this.toJSON({includeDefaults: true}) });
 
@@ -239,6 +241,28 @@ class Legend extends CGObject {
   }
 
   /**
+   * @member {Number} - Get or set the defaultMinArcLength for legend items. The value must be between 0 to 2 pixels [Default: 1].
+   *   Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
+   *   At some scales, small features will have an arc length of a fraction
+   *   of a pixel. In these cases, the arcs are hard to see.
+   *   A minArcLength of 0 means no adjustments will be made.
+   */
+  get defaultMinArcLength() {
+    return this._defaultMinArcLength;
+  }
+
+  set defaultMinArcLength(value) {
+    this._defaultMinArcLength = utils.constrain(Number(value), 0, 2);
+
+    // Trigger update events for items with default font
+    for (let i = 0, len = this._items.length; i < len; i++) {
+      const item = this._items[i];
+      if (item.usingDefaultMinArcLength) {
+        item.update({minArcLength: undefined});
+      }
+    }
+  }
+  /**
    * @member {LegendItem} - Get or set the selected swatch legendItem
    * @private
    */
@@ -270,7 +294,7 @@ class Legend extends CGObject {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Legend',
-      validKeys: ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'textAlignment',  'backgroundColor', 'visible']
+      validKeys: ['on', 'position', 'anchor', 'defaultFont', 'defaultFontColor', 'defaultMinArcLength', 'textAlignment',  'backgroundColor', 'visible']
     });
     this.viewer.trigger('legend-update', { attributes });
   }
@@ -333,7 +357,7 @@ class Legend extends CGObject {
   updateItems(itemsOrUpdates, attributes) {
     const { records: items, updates } = this.viewer.updateRecords(itemsOrUpdates, attributes, {
       recordClass: 'LegendItem',
-      validKeys: ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'visible']
+      validKeys: ['name', 'font', 'fontColor', 'drawSwatch',  'swatchColor', 'decoration', 'minArcLength', 'visible']
     });
     this.viewer.trigger('legendItems-update', { items, attributes, updates });
   }
@@ -613,6 +637,7 @@ class Legend extends CGObject {
       textAlignment: this.textAlignment,
       defaultFont: this.defaultFont.string,
       defaultFontColor: this.defaultFontColor.rgbaString,
+      defaultMinArcLength: this.defaultMinArcLength,
       backgroundColor: this.backgroundColor.rgbaString,
       items: []
     };

@@ -47,7 +47,7 @@ class Settings {
     this._backgroundColor = new Color( utils.defaultFor(options.backgroundColor, 'white') );
     this._geneticCode = utils.defaultFor(options.geneticCode, 11);
     this.arrowHeadLength = utils.defaultFor(options.arrowHeadLength, 0.3);
-    this.minArcLength = utils.defaultFor(options.minArcLength, 1);
+    // this.minArcLength = utils.defaultFor(options.minArcLength, 1);
     this._showShading = utils.defaultFor(options.showShading, true);
     this.initialMapThicknessProportion = utils.defaultFor(options.initialMapThicknessProportion, 0.1);
     this.maxMapThicknessProportion = utils.defaultFor(options.maxMapThicknessProportion, 0.5);
@@ -122,13 +122,13 @@ class Settings {
    *   of a pixel. In these cases, the arcs are hard to see.
    *   A minArcLength of 0 means no adjustments will be made.
    */
-  set minArcLength(value) {
-    this._minArcLength = utils.constrain(Number(value), 0, 2);
-  }
+  // set minArcLength(value) {
+  //   this._minArcLength = utils.constrain(Number(value), 0, 2);
+  // }
 
-  get minArcLength() {
-    return this._minArcLength;
-  }
+  // get minArcLength() {
+  //   return this._minArcLength;
+  // }
 
   /**
    * @member {Boolean} - Get or set whether arrows and other components whould be draw with shading (Default: true).
@@ -177,7 +177,8 @@ class Settings {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Settings',
-      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
+      // validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength','minArcLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
+      validKeys: ['format', 'backgroundColor', 'showShading', 'arrowHeadLength', 'geneticCode', 'initialMapThicknessProportion', 'maxMapThicknessProportion']
     });
     this.viewer.trigger('settings-update', { attributes });
   }
@@ -192,7 +193,7 @@ class Settings {
       backgroundColor: this.backgroundColor.rgbaString,
       showShading: this.showShading,
       arrowHeadLength: this.arrowHeadLength,
-      minArcLength: this.minArcLength,
+      // minArcLength: this.minArcLength,
       initialMapThicknessProportion: this.initialMapThicknessProportion,
       maxMapThicknessProportion: this.maxMapThicknessProportion
     };

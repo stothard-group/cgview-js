@@ -261,7 +261,7 @@ class Canvas {
   // If the zoomFactor gets too large, the arc drawing becomes unstable.
   // (ie the arc wiggle in the map as zooming)
   // So when the zoomFactor is large, switch to drawing lines ([path](#path) handles this).
-  drawElement(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading) {
+  drawElement(layer, start, stop, centerOffset, color = '#000000', width = 1, decoration = 'arc', showShading, minArcLength) {
     if (decoration === 'none') { return; }
     const ctx = this.context(layer);
     const settings = this.viewer.settings;
@@ -286,7 +286,8 @@ class Canvas {
       // At some scales, small features will have an arc length of a fraction
       // of a pixel. In these cases, the arcs are hard to see.
       // A minArcLength of 0 means no adjustments will be made.
-      const minArcLengthPixels = settings.minArcLength;
+      // const minArcLengthPixels = settings.minArcLength;
+      const minArcLengthPixels = utils.defaultFor(minArcLength, this.viewer.legend.defaultMinArcLength);
       const featureLengthBp = this.sequence.lengthOfRange(start, stop);
       const minArcLengthBp = minArcLengthPixels / this.pixelsPerBp(centerOffset);
       if ( featureLengthBp < minArcLengthBp ) {

@@ -32,6 +32,7 @@ import utils from './Utils';
  * [fontColor](#fontColor)          | String    | A string describing the font color [Default: 'black']. See {@link Color} for details.
  * [decoration](#decoration)        | String    | How the features should be drawn. Choices: 'arc' [Default], 'arrow', 'score', 'none' [Default: 'arc']
  * [swatchColor](#swatchColor)      | String    | A string describing the legendItem display color [Default: 'black']. See {@link Color} for details.
+ * [minArcLength](#minArcLength)    | Number    | Minimum length in pixels to use when drawing arcs. From 0 to 2 pixels [Default: 1]
  * [drawSwatch](#drawSwatch)        | Boolean   | Draw the swatch beside the legendItem name [Default: true]
  * [favorite](#favorite)            | Boolean   | LegendItem is a favorite [Default: false]
  * [visible](CGObject.html#visible) | Boolean   | LegendItem is visible [Default: true]
@@ -56,6 +57,7 @@ class LegendItem extends CGObject {
     this.name = utils.defaultFor(options.name, '');
     this.font = options.font;
     this.fontColor = options.fontColor;
+    this.minArcLength = options.minArcLength;
     this._drawSwatch = utils.defaultFor(options.drawSwatch, true);
     this._swatchColor = new Color( utils.defaultFor(options.swatchColor, 'black') );
     this._decoration = utils.defaultFor(options.decoration, 'arc');
@@ -208,6 +210,33 @@ class LegendItem extends CGObject {
 
   get usingDefaultFontColor() {
     return this.fontColor === this.legend.defaultFontColor;
+  }
+
+  /**
+   * @member {Number} - Get or set the minArcLength for legend items. The value must be between 0 to 2 pixels [Default: 1].
+   *   Minimum arc length refers to the minimum size (in pixels) an arc will be drawn.
+   *   At some scales, small features will have an arc length of a fraction
+   *   of a pixel. In these cases, the arcs are hard to see.
+   *   A minArcLength of 0 means no adjustments will be made.
+   */
+  get minArcLength() {
+    return (this._minArcLength === undefined) ? this.legend.defaultMinArcLength : this._minArcLength;
+  }
+
+  set minArcLength(value) {
+    if (value === undefined) {
+      this._minArcLength = undefined;
+    } else {
+      this._minArcLength = utils.constrain(Number(value), 0, 2);
+    }
+  }
+
+  /**
+   * @member {Boolean} - Returns true if using the default min arc length
+   */
+  get usingDefaultMinArcLength() {
+    // return this.minArcLength === this.legend.defaultMinArcLength;
+    return this._minArcLength === undefined;
   }
 
   /**
@@ -511,6 +540,9 @@ class LegendItem extends CGObject {
     }
     if (!this.usingDefaultFont || options.includeDefaults) {
       json.font = this.font.string;
+    }
+    if (!this.usingDefaultMinArcLength || options.includeDefaults) {
+      json.minArcLength = this.minArcLength;
     }
     // Meta Data (TODO: add an option to exclude this)
     if (Object.keys(this.meta).length > 0) {

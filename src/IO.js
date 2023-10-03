@@ -151,6 +151,7 @@ class IO {
       data = JSON.parse(json);
     }
 
+    console.log(`Loading map JSON version: '${data?.cgview?.version}'`);
     data = this.updateJSON(data);
 
     data = data && data.cgview;
@@ -266,6 +267,7 @@ class IO {
   /**
    * Update old CGView JSON formats to the current version.
    * The map data must be contained within a top level "cgview" property.
+   * This method will continue to call itself until the JSON is updated to the latest version.
    * @param {Object} data - Object Literal
    */
   updateJSON(data) {
@@ -275,37 +277,72 @@ class IO {
       throw new Error("No 'cgview' property found in JSON.");
     }
 
-    const version = data.version;
-    console.log(`Loading map JSON version: '${version}'`);
-
-    let major, minor;
-    const result = version.match(/^(\d+)\.(\d+)/)
-    if (result) {
-      major = Number(result[1]);
-      minor = Number(result[2]);
-    } else {
-      throw new Error(`Can not read cgview version '${version}'`);
+    function parseVersion(version) {
+      const result = version.match(/^(\d+)\.(\d+)/)
+      if (result) {
+        return { string: version, major: Number(result[1]), minor: Number(result[2]), };
+      } else {
+        throw new Error(`Can not read cgview version '${version}'`);
+      }
     }
-    // console.log('major', major)
-    // console.log('minor', minor)
+
+    const version = parseVersion(data.version);
+    const lastestVersion = parseVersion(currentVersion);
 
     switch (true) {
-      case (version === '0.1'):
+      case (version.string === '0.1'):
         data = this._updateVersion_0_1(data)
-        break;
-      case (version === '0.2'):
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === '0.2'):
         data = this._updateVersion_0_2(data)
-        break;
-      case (version === '1.0.0'):
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === '1.0.0'):
         data = this._updateVersion_1_0(data);
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.major <= 1 && version.minor <= 4):
+        data = this._updateVersion_1_4(data);
+        console.log(`Update JSON version: ${version.string} -> ${data.version}`)
+        return this.updateJSON({cgview: data});
+      case (version.string === lastestVersion.string):
+        console.log(`JSON at latest version: ${version.string}`)
         break;
-      case (major === 1):
-        console.log('No need to convert.')
+      case (version.major <= lastestVersion.major && version.minor <= lastestVersion.minor):
+        console.log(`Update JSON to latest version: ${version.string} -> ${currentVersion}`)
+        data.version = currentVersion;
         break;
+      // case (version.major === 1):
+      //   console.log('No need to convert.')
+      //   break;
       default:
-        throw new Error(`Unknown cgview version '${version}'`);
+        throw new Error(`Unknown cgview version '${version.string}'`);
     }
     return {cgview: data};
+  }
+
+
+  // Version 1.5 started on 2023-09-28
+  // Moves the minArcLength from Settings to Legend and LegendItems
+  _updateVersion_1_4(data) {
+    data.legend.defaultMinArcLength = data.settings.minArcLength;
+    // Version
+    data.version = '1.5.0';
+    return data;
+  }
+
+  _updateVersion_1_0(data) {
+    // Contigs are the only change for this version
+    const contigs = data.sequence && data.sequence.contigs;
+    if (contigs) {
+      for (const contig of contigs) {
+        contig.name = contig.id;
+      }
+    }
+    // Version
+    data.version = '1.1.0';
+    return data;
   }
 
   // This version is all over the place so concentrate on tracks
@@ -328,7 +365,6 @@ class IO {
     data.tracks = tracks;
     // Version
     data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
     return data;
   }
 
@@ -379,21 +415,6 @@ class IO {
     // Plots aren't saved properly on CGView Server so we can ignore
     // Version
     data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
-    return data;
-  }
-
-  _updateVersion_1_0(data) {
-    // Contigs are the only chagne for this version
-    const contigs = data.sequence && data.sequence.contigs;
-    if (contigs) {
-      for (const contig of contigs) {
-        contig.name = contig.id;
-      }
-    }
-    // Version
-    data.version = '1.1.0';
-    console.log(`Update JSON to version '${data.version}'`);
     return data;
   }
 

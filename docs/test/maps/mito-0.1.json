@@ -1333,6 +1333,7 @@
             },
             "general": {
                 "arrowHeadLength": 0.3,
+                "minArcLength": 0.5,
                 "backgroundColor": "rgba(255,255,255,1)",
                 "showShading": true
             },

@@ -496,6 +496,7 @@ class Feature extends CGObject {
       const containsStop = visibleRange.containsMapBp(stop);
       const color = options.color || this.color;
       const showShading = options.showShading;
+      const minArcLength = this.legendItem.minArcLength;
       if (!containsStart) {
         // start = visibleRange.start - 100;
         start = Math.max(1, visibleRange.start - 100);
@@ -518,14 +519,14 @@ class Feature extends CGObject {
         const visibleStop = Math.min((visibleRange.stop + 100), this.sequence.length); // Do not draw off the edge of linear maps
         canvas.drawElement(layer, visibleStart, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
+          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
         canvas.drawElement(layer, start, visibleStop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
+          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
       } else {
         canvas.drawElement(layer, start, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading);
+          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
       }
     }
   }
