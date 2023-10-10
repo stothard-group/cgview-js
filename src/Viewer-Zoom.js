@@ -37,8 +37,16 @@ export default function initializeZooming(viewer) {
 
   function zooming(d3Event) {
     const startTime = new Date().getTime();
-
-    const bp = viewer.canvas.bpForMouse();
+    // console.log(d3Event)
+    // console.log(viewer.mouse)
+    // const bp = viewer.canvas.bpForMouse();
+    let bp;
+    if (d3Event?.sourceEvent?.offsetX) {
+      const sourceEvent = d3Event.sourceEvent;
+      bp = viewer.canvas.bpForPoint({x: sourceEvent.offsetX, y: sourceEvent.offsetY});
+    } else {
+      bp = viewer.canvas.bpForMouse();
+    }
 
     const dx = d3Event.transform.x - panX;
     const dy = d3Event.transform.y - panY;
