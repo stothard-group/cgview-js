@@ -44,9 +44,17 @@ export default function initializeZooming(viewer) {
     if (d3Event?.sourceEvent?.offsetX) {
       const sourceEvent = d3Event.sourceEvent;
       bp = viewer.canvas.bpForPoint({x: sourceEvent.offsetX, y: sourceEvent.offsetY});
+    } else if (d3Event?.sourceEvent?.touches?.length) {
+      // Looks like pageX/Y are the center of the touches
+      // But we have to remove the offset of the canvas
+      const offset = utils.getOffset(viewer.canvas.node('main'));
+      const x = d3Event.sourceEvent.pageX - offset.left;
+      const y = d3Event.sourceEvent.pageY - offset.top;
+      bp = viewer.canvas.bpForPoint({x, y});
     } else {
       bp = viewer.canvas.bpForMouse();
     }
+    // console.log('BP:', bp);
 
     const dx = d3Event.transform.x - panX;
     const dy = d3Event.transform.y - panY;
