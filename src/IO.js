@@ -332,6 +332,7 @@ class IO {
     return data;
   }
 
+  // Version 1.1 released on 2021-09-29
   _updateVersion_1_0(data) {
     // Contigs are the only change for this version
     const contigs = data.sequence && data.sequence.contigs;
