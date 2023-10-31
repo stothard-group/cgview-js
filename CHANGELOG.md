@@ -4,6 +4,7 @@
 
 ## Unreleased
 - Improve zoom position for touch
+- Fix wrapping features when visibleRange is over origin. Fixes [issue#12](https://github.com/stothard-group/cgview-js/issues/12)
 
 ## v1.5.0 - 2023-10-03
 ### Added
