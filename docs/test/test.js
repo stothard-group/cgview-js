@@ -3,7 +3,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
-const defaultMap = 'blast';
+// const defaultMap = 'blast';
+const defaultMap = 'full_circle_2mbp';
 // const defaultMap = 'labels';
 // const defaultMap = 'labels3';
 // const defaultMap = 'pcET30c';

@@ -1,4 +1,12 @@
 maps = {
+  full_circle_2mbp: {
+    name: 'Full Circle Feature Test [1,846,259 bp]',
+    url: 'maps/full_circle_feature.2Mbp.json',
+  },
+  full_circle_5mbp: {
+    name: 'Full Circle Feature Test [4,641,652 bp]',
+    url: 'maps/full_circle_feature.5Mbp.json',
+  },
   blast: {
     name: 'Blast Overlap Test [69,034 bp]',
     url: 'maps/blast_overlap.json',

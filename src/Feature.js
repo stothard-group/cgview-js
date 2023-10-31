@@ -507,9 +507,10 @@ class Feature extends CGObject {
       }
 
       // When zoomed in, if the feature starts in the visible range and wraps around to end
-      // in the visible range, the feature should be drawn as 2 arcs.
-      // const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overlapsMapRange();
-      const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.isWrapped();
+      // in the visible range, the feature should be drawn as 2 arcs. Using overHalfMapLength() instead of isWrapped()
+      // should catch features that wrap around the map but not the Origin (ie. almost fulll circle features)
+      // const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.isWrapped();
+      const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overHalfMapLength();
       //  When the feature wraps the origin on a linear map and both the start and stop
       //  can be seen, draw as 2 elements.
       const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');

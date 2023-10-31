@@ -160,7 +160,7 @@ class NCList {
   }
 
   _run(start, stop = start, step = 1, callback = function() {}, list = this.topList) {
-    let skip;
+    let skip, skipWrappingFeature;
     const len = list.length;
     let i, direction;
     if (step > 0) {
@@ -173,7 +173,15 @@ class NCList {
     while (i >= 0 && i < len &&
       ( (direction === 1) ? (this.start(list[i]) <= stop) : (this.end(list[i]) >= start) ) ) {
       skip = false;
-      if (list[i].crossesOrigin) {
+      skipWrappingFeature = false;
+      // Check for features that wrap around the visible region
+      // E.g. starts near beginning of sequence and ends near end of sequence and were zoomed into the origin region
+      if (this.visbleRangeCrossesOrigin) {
+        if (this.start(list[i]) < stop && this.end(list[i]) > start) {
+          skipWrappingFeature = true
+        }
+      }
+      if (list[i].crossesOrigin || skipWrappingFeature) {
         if (this._runIntervalsCrossingOrigin.indexOf(list[i].interval) !== -1) {
           skip = true;
         } else {
@@ -198,11 +206,15 @@ class NCList {
    * @param {Number} step - Skip intervals by increasing the step [Default: 1]
    */
   run(start, stop = start, step = 1, callback = function() {}) {
+    // Keep track of features that cross the origin OR wrap around the visible range (e.g. visible range is zoomed into origin and feature starts at 1 and end near end of the sequence)
+    // - so they will not be counted twice
     this._runIntervalsCrossingOrigin = [];
     if (this.circularLength && stop < start) {
+      this.visbleRangeCrossesOrigin = true;
       this._run(start, this.circularLength, step,  callback);
       this._run(1, stop, step,  callback);
     } else {
+      this.visbleRangeCrossesOrigin = false
       this._run(start, stop, step, callback);
     }
   }
