@@ -185,9 +185,11 @@ class SequenceExtractor {
       options: {
         window: utils.defaultFor(options.window, this.getWindowStep().window),
         step: utils.defaultFor(options.step, this.getWindowStep().step),
-        deviation: utils.defaultFor(options.deviation, 'scale') // 'scale' or 'average
+        // deviation: utils.defaultFor(options.deviation, 'scale') // 'scale' or 'average
+        deviation: utils.defaultFor(options.deviation, 'average') // 'scale' or 'average
       }
     };
+    console.log(message.options)
     worker.postMessage(message);
     worker.onmessage = (e) => {
       const messageType = e.data.messageType;
@@ -200,11 +202,16 @@ class SequenceExtractor {
         // track.loadProgress = 100;
         track.update({loadProgress: 100});
         const baseContent = e.data.baseContent;
-        const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
+        // const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
+        const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average, axisMin: baseContent.min, axisMax: baseContent.max };
         data.legendPositive = this.getLegendItem(extractType, '+').name;
         data.legendNegative = this.getLegendItem(extractType, '-').name;
         data.name = extractType;
         data.extractedFromSequence = true;
+        // Set baseline to 0 for GC Skew
+        if (extractType === 'gc-skew') {
+          data.baseline = 0;
+        }
 
         // const plot = new CGV.Plot(viewer, data);
         const plots = viewer.addPlots(data);

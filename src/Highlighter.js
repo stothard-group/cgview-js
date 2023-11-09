@@ -211,8 +211,12 @@ class Highlighter extends CGObject {
       const startIndex = utils.indexOfValue(plot.positions, e.bp, false);
       const start = plot.positions[startIndex];
       const stop = plot.positions[startIndex + 1] || viewer.sequence.length;
-      const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * plot.baseline);
-      const scoredCenterOffset = baselineCenterOffset + ((score - plot.baseline) * e.slot.thickness);
+      // const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * plot.baseline);
+      // const scoredCenterOffset = baselineCenterOffset + ((score - plot.baseline) * e.slot.thickness);
+      const baselineFactor = (plot.baseline - plot.axisMin) / (plot.axisMax - plot.axisMin);
+      const baselineCenterOffset = e.slot.centerOffset - (e.slot.thickness / 2) + (e.slot.thickness * baselineFactor);
+      const scoreFactor = (score - plot.baseline) / (plot.axisMax - plot.axisMin);
+      const scoredCenterOffset = baselineCenterOffset + (scoreFactor * e.slot.thickness);
       const thickness = Math.abs(baselineCenterOffset - scoredCenterOffset);
       const centerOffset = Math.min(baselineCenterOffset, scoredCenterOffset) + (thickness / 2);
       const color = (score >= plot.baseline) ? plot.colorPositive.copy() : plot.colorNegative.copy();

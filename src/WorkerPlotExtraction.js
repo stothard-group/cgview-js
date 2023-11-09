@@ -63,6 +63,10 @@ export default function WorkerBaseContent() {
         postMessage({ messageType: 'progress', progress: progress });
       }
     }
+    console.log(`Deviation: ${deviation}`)
+    console.log(`Min: ${min}`)
+    console.log(`Max: ${max}`)
+    console.log(`Average: ${average}`)
 
     // Adjust scores if scaled
     // Min value becomes 0
@@ -106,7 +110,8 @@ export default function WorkerBaseContent() {
     // Gives value between -1 and 1
     const value = (g - c) / (g + c);
     // Scale to a value between 0 and 1
-    return  0.5 + (value / 2);
+    // return  0.5 + (value / 2);
+    return  value;
   };
 
   const count = function(seq, pattern) {
