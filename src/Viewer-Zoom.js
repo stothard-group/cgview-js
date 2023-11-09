@@ -47,7 +47,7 @@ export default function initializeZooming(viewer) {
     } else if (d3Event?.sourceEvent?.touches?.length) {
       // Looks like pageX/Y are the center of the touches
       // But we have to remove the offset of the canvas
-      const offset = utils.getOffset(viewer.canvas.node('main'));
+      const offset = utils.getOffset(viewer.canvas.node('map'));
       const x = d3Event.sourceEvent.pageX - offset.left;
       const y = d3Event.sourceEvent.pageY - offset.top;
       bp = viewer.canvas.bpForPoint({x, y});

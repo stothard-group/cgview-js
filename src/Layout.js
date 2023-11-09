@@ -578,7 +578,10 @@ class Layout {
 
     // FIXME: Issues with negative slot space for above. Try this for now:
     // I really need to rethink this
-    const minSize = this.initialWorkingSpace() * viewer.zoomFactor;
+    // NOTE: Mulitplying by the zoomFactor was causing an issue when adding tracks at a zoom level close to max
+    //       Removing the zoomFactor seems to fix the issue. Keep an eye on this.
+    // const minSize = this.initialWorkingSpace() * viewer.zoomFactor;
+    const minSize = this.initialWorkingSpace();
     const mapThickness = Math.min(minSize, this.maxMapThickness());
     const slotSpace = mapThickness;
     // console.log(workingSpace, slotSpace, thicknessScaleFactor, nonSlotSpace)

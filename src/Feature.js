@@ -350,7 +350,7 @@ class Feature extends CGObject {
 
   set legendItem(value) {
     if (this.legendItem && value === undefined) { return; }
-    if (value && value.toString() === 'LegendItem') {
+    if (value && (value.toString() === 'LegendItem') && value !== 'LegendItem') {
       this._legendItem  = value;
     } else {
       this._legendItem  = this.viewer.legend.findLegendItemOrCreate(value);
@@ -385,7 +385,7 @@ class Feature extends CGObject {
       // If feature was on a contig update the positions
       if (oldContig) {
       }
-    } else if (value && value.toString() === 'Contig') {
+    } else if (value && (value.toString() === 'Contig') && value !== 'Contig') {
       // this._contig  = value;
       newContig = value;
     } else {
@@ -396,6 +396,7 @@ class Feature extends CGObject {
         newContig = contig;
       } else {
         console.error(`Feature '${this.name}' could not find contig '${value}'`)
+        return;
       }
     }
     if (oldContig !== newContig) {
