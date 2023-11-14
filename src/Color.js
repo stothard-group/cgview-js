@@ -650,9 +650,10 @@ Color.getColor = function(notColors = [], center = 128, width = 127, alpha = 1) 
   const freq1  = 2.4;
   const freq2  = 2.4;
   const freq3  = 2.4;
+  // Originally: 0, 2, 4 which gave a first color of  (128, 243, 32)
   const phase1 = 0;
-  const phase2 = 2;
-  const phase3 = 4;
+  const phase2 = 4;
+  const phase3 = 2;
   // Generate Colors
   for (let i = 0; i < len; ++i) {
     const red   = Math.round(Math.sin(freq1 * i + phase1) * width + center);
