@@ -18,3 +18,5 @@ docs/test/maps/full_circle*.json
 src/LabelPlacementTemp.js
 src/LabelPlacementOrdered.js
 
+docs/dist/cgview.min.js
+
