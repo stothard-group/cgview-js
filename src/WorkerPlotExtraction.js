@@ -63,7 +63,7 @@ export default function WorkerBaseContent() {
         postMessage({ messageType: 'progress', progress: progress });
       }
     }
-    console.log(`Deviation: ${deviation}`)
+    // console.log(`Deviation: ${deviation}`)
     console.log(`Min: ${min}`)
     console.log(`Max: ${max}`)
     console.log(`Average: ${average}`)

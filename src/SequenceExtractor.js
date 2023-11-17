@@ -204,6 +204,14 @@ class SequenceExtractor {
         const baseContent = e.data.baseContent;
         // const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average };
         const data = { positions: baseContent.positions, scores: baseContent.scores, baseline: baseContent.average, axisMin: baseContent.min, axisMax: baseContent.max };
+        data.source = extractType
+        // if (extractType === 'gc-content') {
+        //   data.axisMin = 0;
+        //   data.axisMax = 1;
+        // } else if (extractType === 'gc-skew') {
+        //   data.axisMin = -1;
+        //   data.axisMax = 1;
+        // }
         data.legendPositive = this.getLegendItem(extractType, '+').name;
         data.legendNegative = this.getLegendItem(extractType, '-').name;
         data.name = extractType;
