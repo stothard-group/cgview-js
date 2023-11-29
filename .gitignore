@@ -5,7 +5,7 @@ node_modules/
 docs/formatting_example.*
 docs/dist/cgview.esm.*
 docs/dist/cgview.js
-dist/
+# dist/
 scripts/copy*
 scripts/open*
 docs/test/maps/test.json
@@ -18,5 +18,5 @@ docs/test/maps/full_circle*.json
 src/LabelPlacementTemp.js
 src/LabelPlacementOrdered.js
 
-docs/dist/cgview.min.js
+#docs/dist/cgview.min.js
 
