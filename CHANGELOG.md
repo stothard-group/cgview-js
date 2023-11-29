@@ -3,9 +3,12 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
-## v1.6.0 - 2023-11-??
+- N/A
+
+
+## v1.6.0 - 2023-11-29
 ## Changed
-- GC Skew/Content plots no longer scales the scores.
+- GC Skew/Content plots no longer scale the scores.
   - GC Content plots have values between 0 and 1
   - GC Skew plots have values between -1 and 1
 - Change Color.getColor so first set of colors returned look better
