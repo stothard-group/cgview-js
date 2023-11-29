@@ -3,9 +3,16 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
+## v1.6.0 - 2023-11-??
+## Changed
+- GC Skew/Content plots no longer scales the scores.
+  - GC Content plots have values between 0 and 1
+  - GC Skew plots have values between -1 and 1
+- Change Color.getColor so first set of colors returned look better
+## Fixed
 - Improve zoom position for touch
 - Fix wrapping features when visibleRange is over origin. Fixes [issue#12](https://github.com/stothard-group/cgview-js/issues/12)
-- Change Color.getColor so first set of colors returned look better
+
 
 ## v1.5.0 - 2023-10-03
 ### Added
