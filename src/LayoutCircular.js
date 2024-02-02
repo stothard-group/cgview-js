@@ -75,13 +75,12 @@ class LayoutCircular {
     const centerOffset = (this.backbone.centerOffset * zoomFactor) - bbOffset;
     const centerPt = this._mapPointForBp(bp, centerOffset);
 
-    // const diff = 100
+    // const yOffset = this.viewer._yOffset ? this.viewer._yOffset : 0;
 
     const x = bp ? centerPt.x : 0;
     const y = bp ? centerPt.y : 0;
-    // const y = (bp ? centerPt.y : 0) - diff;
+    // const y = (bp ? centerPt.y : 0) - yOffset;
 
-    // return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight - diff, y - halfRangeHeight - diff];
     return [ x - halfRangeWidth, x + halfRangeWidth, y + halfRangeHeight, y - halfRangeHeight];
   }
 

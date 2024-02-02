@@ -1355,7 +1355,7 @@ class Viewer {
             self.scale.x.domain([domains[0], domains[1]]);
             self.scale.y.domain([domains[2], domains[3]]);
           } else {
-            // Move from linearly from start to stop
+            // Move linearly from start to stop
             self.scale.x.domain([intermProps(t).domainX0, intermProps(t).domainX1]);
             self.scale.y.domain([intermProps(t).domainY0, intermProps(t).domainY1]);
           }
@@ -1422,7 +1422,7 @@ class Viewer {
   }
 
   // Returns a number of properties for the current position and the position
-  // at the provdied bp, zoomFactor and bbOffset.
+  // at the provided bp, zoomFactor and bbOffset.
   // These properties can be interpolated with d3.interpolateObject(startProps, endProps);
   // Returns an object: {startProps, endProps}
   // Both startProps and endProps contain:

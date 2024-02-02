@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 
 ## Unreleased
-- N/A
+- Use Settings layout in JSON (instead of Viewer layout)
 
 
 ## v1.6.0 - 2023-11-29

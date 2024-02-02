@@ -78,7 +78,7 @@ class IO {
         updated: this.formatDate(new Date()),
         id: v.id,
         name: v.name,
-        format: v.format,
+        // format: v.format,
         // geneticCode: v.geneticCode,
         settings: v.settings.toJSON(options),
         backbone: v.backbone.toJSON(options),
@@ -192,6 +192,9 @@ class IO {
 
     // Load Sequence
     viewer._sequence = new Sequence(viewer, data.sequence);
+    // Format (This format will be overridden by the format in setting if it exists.)
+    // This lets us set the format from 2 places (settings and JSON)
+    viewer.format = utils.defaultFor(data.format, 'circular');
     // Load Settings
     // const settings = data.settings || {};
     // General Settings
@@ -260,7 +263,6 @@ class IO {
 
     // Load Layout
     // viewer._layout = new Layout(viewer, data.layout);
-    viewer.format = utils.defaultFor(data.format, 'circular');
     viewer.zoomTo(0, 1, {duration: 0});
   }
 
