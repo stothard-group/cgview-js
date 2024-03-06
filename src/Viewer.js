@@ -197,6 +197,8 @@ class Viewer {
     });
 
     this._loading = false;
+    // Call resize before loading fixes a bug where the map is not drawn!!!!!!!
+    this.resize();
     this.draw();
   }
 
