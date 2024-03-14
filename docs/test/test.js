@@ -4,7 +4,8 @@
 
 // const defaultMap = 'small';
 // const defaultMap = 'blast';
-const defaultMap = 'full_circle_2mbp';
+// const defaultMap = 'full_circle_2mbp';
+const defaultMap = 'linear_1_6';
 // const defaultMap = 'labels';
 // const defaultMap = 'labels3';
 // const defaultMap = 'pcET30c';
@@ -72,6 +73,10 @@ function loadMapFromID(id) {
     labelFontSize.value = cgv.annotation.font.size;
 
     cgv.draw();
+    setTimeout( () => {
+      cgv.resize();
+    },1);
+    // autoResizeMyViewer();
   };
   request.send();
 }
