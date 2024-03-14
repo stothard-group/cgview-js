@@ -76,7 +76,6 @@ function loadMapFromID(id) {
     setTimeout( () => {
       cgv.resize();
     },1);
-    // autoResizeMyViewer();
   };
   request.send();
 }
