@@ -184,6 +184,9 @@ class Ruler extends CGObject {
     } else if (tickStep <= 50e6) {
       tickPrecision = d3.precisionPrefix(tickStep, 1e6);
       tickFormat = d3.formatPrefix(`.${tickPrecision}`, 1e6);
+    } else if (tickStep <= 50e9) {
+      tickPrecision = d3.precisionPrefix(tickStep, 1e9);
+      tickFormat = d3.formatPrefix(`.${tickPrecision}`, 1e9);
     }
     return tickFormat;
   }
