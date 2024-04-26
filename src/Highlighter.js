@@ -146,20 +146,25 @@ class Highlighter extends CGObject {
     return div;
   }
 
+  getMetaDivs(metaData) {
+    if (!metaData) { return ''; }
+    let metaDivs = '';
+    const keys = Object.keys(metaData);
+    if (this.showMetaData && keys.length > 0) {
+      metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${metaData[k]}</span></div>`).join('');
+      metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
+    }
+    return metaDivs;
+  }
+
   featurePopoverContentsDefault(e) {
     const feature = e.element;
     // return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
-    const keys = Object.keys(feature.meta);
-    let metaDivs = '';
-    if (this.showMetaData && keys.length > 0) {
-      metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${feature.meta[k]}</span></div>`).join('');
-      metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
-    }
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>${feature.type}: ${feature.name}<div>
         <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp</div>
-        ${metaDivs}
+        ${this.getMetaDivs(feature.meta)}
         ${this.getTrackDiv(e)}
       </div>
     `);
@@ -183,6 +188,7 @@ class Highlighter extends CGObject {
       <div style='margin: 0 5px; font-size: 14px'>
         <div>Backbone: ${length} bp</div>
         ${this.getPositionDiv(e)}
+        ${this.getMetaDivs(this.viewer.backbone.meta)}
       </div>
     `);
   }
@@ -195,6 +201,7 @@ class Highlighter extends CGObject {
       <div style='margin: 0 5px; font-size: 14px'>
         <div>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>
         ${this.getPositionDiv(e)}
+        ${this.getMetaDivs(contig.meta)}
       </div>
     `);
   }

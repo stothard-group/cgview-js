@@ -611,7 +611,7 @@ class Layout {
     this.updateLayout(true);
     // Recenter map
     if (viewer.zoomFactor > 2) {
-      viewer.moveTo(undefined, undefined, {duration: 0});
+      viewer.moveTo(undefined, undefined, {duration: 500});
     }
   }
   // NOTE:
