@@ -183,12 +183,15 @@ class Highlighter extends CGObject {
 
   backbonePopoverContentsDefault(e) {
     const length = utils.commaNumber(this.sequence.length);
+    const contig = this.sequence.contigs()[0];
+    const contigMeta = contig.meta || {};
     // return `<div style='margin: 0 5px; font-size: 14px'>Backbone: ${length} bp</div>`;
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
-        <div>Backbone: ${length} bp</div>
+        <div>Backbone [${length} bp]: ${contig?.name}</div>
         ${this.getPositionDiv(e)}
         ${this.getMetaDivs(this.viewer.backbone.meta)}
+        ${this.getMetaDivs(contigMeta)}
       </div>
     `);
   }
