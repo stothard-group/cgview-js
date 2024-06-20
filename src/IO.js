@@ -231,6 +231,10 @@ class IO {
 
     // Load Legend
     viewer._legend = new Legend(viewer, data.legend);
+    // FIXME: This is a quick way to clear the previous legend box
+    // - but we should probably do this directly in the Legend constructor
+    viewer.clear('canvas');
+    viewer.legend.refresh();
 
     // Create features
     if (data.features) {

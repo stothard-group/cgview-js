@@ -18,8 +18,8 @@ import * as d3 from 'd3';
  * ------------------|---------------
  * background        | for drawing behind the map
  * map               | main layer, where the map is drawn
- * foreground         | for drawing in front of the map (e.g. map based captions)
- * canvas            | layer for traning static components (e.g. canvas based captions and legend)
+ * foreground        | for drawing in front of the map (e.g. map based captions)
+ * canvas            | layer for drawing static components (e.g. canvas based captions and legend)
  * debug             | layer to draw debug information
  * ui                | layer for capturing interactions
  */
