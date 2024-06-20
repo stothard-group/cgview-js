@@ -175,7 +175,7 @@ class Caption extends CGObject {
   set backgroundColor(color) {
     // this._backgroundColor.color = color;
     if (color === undefined) {
-      this._backgroundColor = this.viewer.settings.backgroundColor;
+      this._backgroundColor = new Color(this.viewer.settings.backgroundColor);
     } else if (color.toString() === 'Color') {
       this._backgroundColor = color;
     } else {
