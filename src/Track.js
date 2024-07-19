@@ -215,7 +215,7 @@ class Track extends CGObject {
   }
 
   set separateFeaturesBy(value) {
-    if ( utils.validate(value, ['none', 'strand', 'readingFrame']) ) {
+    if ( utils.validate(value, ['none', 'strand', 'readingFrame', 'type']) ) {
       this._separateFeaturesBy = value;
       this.updateSlots();
     }
@@ -432,7 +432,16 @@ class Track extends CGObject {
 
   updateFeatureSlots() {
     this._slots = new CGArray();
-    if (this.separateFeaturesBy === 'readingFrame') {
+    if (this.separateFeaturesBy === 'type') {
+      const features = this.featuresByType();
+      const types = Object.keys(features);
+      // Sort by number of features
+      types.sort((a, b) => features[b].length - features[a].length);
+      for (const type of types) {
+        const slot = new Slot(this, {strand: 'direct'});
+        slot.replaceFeatures(features[type]);
+      }
+    } else if (this.separateFeaturesBy === 'readingFrame') {
       const features = this.sequence.featuresByReadingFrame(this.features());
       // Direct Reading Frames
       for (const rf of [1, 2, 3]) {
@@ -477,6 +486,18 @@ class Track extends CGObject {
       } else {
         features.direct.push(feature);
       }
+    });
+    return features;
+  }
+
+  featuresByType() {
+    const features = {};
+    this.features().each( (i, feature) => {
+      const type = feature.type;
+      if (features[type] === undefined) {
+        features[type] = new CGArray();
+      }
+      features[type].push(feature);
     });
     return features;
   }
