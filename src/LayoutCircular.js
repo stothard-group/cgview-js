@@ -2,6 +2,7 @@
 // Layout for Circular Maps
 //////////////////////////////////////////////////////////////////////////////
 
+import { line } from 'd3';
 import CGRange from './CGRange';
 import utils from './Utils';
 
@@ -214,6 +215,44 @@ class LayoutCircular {
 
   centerCaptionPoint() {
     return this.pointForBp(0, 0);
+  }
+
+  drawCenterLine() {
+    const viewer = this.viewer;
+    const canvas = this.canvas;
+    const ruler = this.viewer.ruler;
+    const centerLine = viewer.centerLine;
+
+    // Setup
+    const color = centerLine.color.rgbaString;
+    const centerPt = this.pointForBp(0, 0);
+    const ctx = canvas.context('foreground');
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = centerLine.thickness;
+    // ctx.lineCap = 'round'
+    ctx.setLineDash(centerLine.dashes);
+
+    // Center point
+    if (viewer.zoomFactor < 4) {
+      ctx.beginPath();
+      ctx.arc(centerPt.x, centerPt.y, 1, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Center line (Radiant)
+    let lineLength, centerOffset;
+    if (viewer.zoomFactor < 4) {
+      centerOffset = 0;
+      lineLength =  this.layout.centerOutsideOffset + ruler.spacing;
+    } else {
+      const maxLength = viewer.maxDimension * 2
+      const fullLength =  this.layout.centerOutsideOffset + ruler.spacing;
+      lineLength = Math.min(fullLength, maxLength);
+      centerOffset = Math.max(fullLength - lineLength, 0);
+      console.log(centerOffset, fullLength, lineLength)
+    }
+    canvas.radiantLine('foreground', viewer.bp, centerOffset, lineLength, centerLine.thickness, centerLine.color.rgbaString, 'butt', centerLine.dashes);
   }
 
   //////////////////////////////////////////////////////////////////////////

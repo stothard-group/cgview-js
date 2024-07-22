@@ -367,6 +367,13 @@ class Layout {
     return this.delegate.centerCaptionPoint();
   }
 
+  // TODO: docs
+  /**
+   * Draw the center line.
+   */
+  drawCenterLine() {
+    this.delegate.drawCenterLine();
+  }
 
   //////////////////////////////////////////////////////////////////////////
   // Common methods for current layouts: linear, circular
@@ -804,7 +811,7 @@ class Layout {
     this._adjustProportions();
   }
 
-  // Draw everything but the slots and thier features.
+  // Draw everything but the slots and their features.
   // e.g. draws backbone, dividers, ruler, labels, progress
   drawMapWithoutSlots(fast) {
     const viewer = this.viewer;
@@ -829,6 +836,9 @@ class Layout {
 
     // Recalculate the slot offsets and thickness if the zoom level has changed
     this.updateLayout();
+
+    // TESTING: Draw center line for current bp
+    viewer.centerLine.draw();
 
     // Divider rings
     viewer.dividers.draw();

@@ -8,6 +8,7 @@ import Bookmark from './Bookmark';
 import Box from './Box';
 import Canvas from './Canvas';
 import Caption from './Caption';
+import CenterLine from './CenterLine';
 import CGArray from './CGArray';
 import CGObject from './CGObject';
 import CGRange from './CGRange';
@@ -56,6 +57,7 @@ export {
   Bookmark,
   Box,
   Canvas,
+  CenterLine,
   Caption,
   CGArray,
   CGObject,

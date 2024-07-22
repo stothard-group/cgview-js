@@ -431,15 +431,17 @@ class Canvas {
 
   /**
    * Draw a line radiating from the map at a particular basepair position.
+   * // TODO: change arguments to an object {}
    * @param {String} layer - Name of layer to draw the path on
    * @param {Number} bp - Basepair position of the line
-   * @param {Number} centerOffset - Distance form center of map to start the line
+   * @param {Number} centerOffset - Distance from center of map to start the line
    * @param {Number} length - Length of line
    * @param {Color} color - A string describing the color. {@link Color} for details.
    * @param {String} cap - The stroke linecap for the starting and ending points for the line. Values: 'butt', 'square', 'round'
+   * @param {Array} dashes - The dash pattern for the line [Default: []]
    * @private
    */
-  radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt') {
+  radiantLine(layer, bp, centerOffset, length, lineWidth = 1, color = 'black', cap = 'butt', dashes = []) {
     const innerPt = this.pointForBp(bp, centerOffset);
     const outerPt = this.pointForBp(bp, centerOffset + length);
     const ctx = this.context(layer);
@@ -450,6 +452,7 @@ class Canvas {
     ctx.strokeStyle = color;
 
     ctx.lineCap = cap;
+    ctx.setLineDash(dashes);
 
     ctx.lineWidth = lineWidth;
     ctx.stroke();

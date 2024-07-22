@@ -16,6 +16,7 @@ import Messenger from './Messenger';
 import Settings from './Settings';
 import Legend from './Legend';
 import Dividers from './Dividers';
+import CenterLine from './CenterLine';
 import Annotation from './Annotation';
 import Ruler from './Ruler';
 import { Highlighter } from './Highlighter';
@@ -65,6 +66,7 @@ console.log(`CGView.js Version: ${version}`)
  * [layout](#layout)<sup>iu</sup>        | Object | [Layout](Layout.html) options
  * [ruler](#ruler)<sup>iu</sup>          | Object | [Ruler](Ruler.html) options
  * [dividers](#dividers)<sup>iu</sup>    | Object | [Dividers](Dividers.html) options
+ * [centerLine](#centerLine)<sup>iu</sup> | Object | [CenterLine](CenterLine.html) options
  * [annotation](#annotation)<sup>iu</sup> | Object | [Annotation](Annotation.html) options
  * [highlighter](#highlighter)<sup>iu</sup> | Object | [Highlighter](Highlighter.html) options
  * 
@@ -157,6 +159,8 @@ class Viewer {
     this._legend = new Legend(this, options.legend);
     // Initialize Slot Divider
     this._dividers = new Dividers(this, options.dividers);
+    // Initialize Center Line
+    this._centerLine = new CenterLine(this, options.centerLine);
     // Initialize Annotation
     this._annotation = new Annotation(this, options.annotation);
     // Initialize Ruler
@@ -270,6 +274,13 @@ class Viewer {
    */
   get dividers() {
     return this._dividers;
+  }
+
+  /**
+   * @member {CenterLine} - Get the map [centerLine](CenterLine.html) object
+   */
+  get centerLine() {
+    return this._centerLine;
   }
 
   /**
@@ -1592,6 +1603,7 @@ class Viewer {
     this.refreshCanvasLayer();
     this.ruler.invertColors();
     this.dividers.invertColors();
+    this.centerLine.invertColors();
     this.backbone.invertColors();
     this.sequence.invertColors();
     this.annotation.invertColors();

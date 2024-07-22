@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 import CGRange from './CGRange';
+import utils from './Utils';
 
 /**
  * This Layout is in control of handling and drawing the map as a line
@@ -153,6 +154,36 @@ class LayoutLinear {
     const bp = this.sequence.length / 2;
     // FIXME: this should be calculated based on the thickness of the slots
     return this.pointForBp(bp , -200);
+  }
+
+  drawCenterLine() {
+    const viewer = this.viewer;
+    const canvas = this.canvas;
+    const ruler = this.viewer.ruler;
+    const centerLine = viewer.centerLine;
+    // Setup
+    const color = centerLine.color.rgbaString;
+    const ctx = canvas.context('foreground');
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = centerLine.thickness;
+    // ctx.lineCap = 'round'
+    ctx.setLineDash(centerLine.dashes);
+
+    // Center line
+    const bp = utils.constrain(viewer.bp, 1, this.sequence.length);
+    // const x = this.scale.x(this.scale.bp(viewer.bp));
+    const x = this.scale.x(this.scale.bp(bp));
+    ctx.beginPath();
+    // ctx.moveTo(x, 0);
+    // ctx.lineTo(x, viewer.height);
+    ctx.moveTo(x, viewer.height);
+    const lineLength =  this.layout.centerOutsideOffset + ruler.spacing;
+    const endPt = this.pointForBp(viewer.bp, lineLength);
+    // ctx.lineTo(endPt.x, endPt.y);
+    ctx.lineTo(x, endPt.y);
+
+    ctx.stroke();
   }
 
   //////////////////////////////////////////////////////////////////////////
