@@ -146,7 +146,9 @@ class CenterLine extends CGObject {
   }
 
   draw() {
-    this.layout.drawCenterLine();
+    if (this.visible) {
+      this.layout.drawCenterLine();
+    }
   }
 
   toJSON() {
