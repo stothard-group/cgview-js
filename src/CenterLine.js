@@ -58,7 +58,7 @@ class CenterLine extends CGObject {
     this.color = utils.defaultFor(options.color, 'grey');
     this._thickness = utils.defaultFor(options.thickness, 1);
     this._dashes = utils.defaultFor(options.dashes, [1,2]);
-    this.viewer.trigger('divider-update', { divider: this, attributes: this.toJSON({includeDefaults: true}) });
+    this.viewer.trigger('centerLine-update', { centerLine: this, attributes: this.toJSON({includeDefaults: true}) });
   }
 
   /**
@@ -113,10 +113,13 @@ class CenterLine extends CGObject {
    */
   set dashes(value) {
     if (Array.isArray(value)) {
+      // NOTE: we could filter out non-numeric values here
+      // newValue = value.map( v => parseInt(v) ).filter( v => !isNaN(v) );
       this._dashes = value;
     } else if (!value) {
       this._dashes = [];
     } else {
+      // Default dash pattern
       this._dashes = [1, 2];
     }
   }

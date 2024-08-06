@@ -234,9 +234,9 @@ class LayoutCircular {
     ctx.setLineDash(centerLine.dashes);
 
     // Center point
-    if (viewer.zoomFactor < 4) {
+    if (viewer.zoomFactor < 4 && centerLine.color.opacity == 1) {
       ctx.beginPath();
-      ctx.arc(centerPt.x, centerPt.y, 1, 0, 2 * Math.PI);
+      ctx.arc(centerPt.x, centerPt.y, centerLine.thickness, 0, 2 * Math.PI);
       ctx.fill();
     }
 
