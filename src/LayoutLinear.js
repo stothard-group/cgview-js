@@ -47,9 +47,12 @@ class LayoutLinear {
   }
 
   // NOTE: only the X coordinate of the point is required
-  bpForPoint(point) {
+  // Options: float - return bp as a float (default is rounded)
+  bpForPoint(point, options = {}) {
     const mapX = this.scale.x.invert(point.x);
-    return Math.round( this.scale.bp.invert( mapX) );
+    const bpFloat = this.scale.bp.invert(mapX);
+    return options.float ? bpFloat : Math.round(bpFloat);
+    // return Math.round( this.scale.bp.invert( mapX) );
   }
 
   centerOffsetForPoint(point) {
@@ -88,10 +91,13 @@ class LayoutLinear {
   }
 
   // TODO if undefined, see if centerOffset is visible
+  // TODO: have options for floating point bp range
   visibleRangeForCenterOffset(centerOffset, margin = 0) {
     const domainX = this.scale.x.domain();
     const start = Math.floor(this.scale.bp.invert(domainX[0] - margin));
     const end = Math.ceil(this.scale.bp.invert(domainX[1] + margin));
+    // const start = this.scale.bp.invert(domainX[0] - margin);
+    // const end = this.scale.bp.invert(domainX[1] + margin);
     return new CGRange(this.sequence.mapContig,
       Math.max(start, 1),
       Math.min(end, this.sequence.length));
@@ -170,8 +176,8 @@ class LayoutLinear {
     // ctx.lineCap = 'round'
     ctx.setLineDash(centerLine.dashes);
 
-    // Center line
-    const bp = utils.constrain(viewer.bp, 1, this.sequence.length);
+    // Center line (using bpFloat)
+    const bp = utils.constrain(viewer.bpFloat, 1, this.sequence.length);
     // const x = this.scale.x(this.scale.bp(viewer.bp));
     const x = this.scale.x(this.scale.bp(bp));
     ctx.beginPath();
@@ -179,7 +185,7 @@ class LayoutLinear {
     // ctx.lineTo(x, viewer.height);
     ctx.moveTo(x, viewer.height);
     const lineLength =  this.layout.centerOutsideOffset + ruler.spacing;
-    const endPt = this.pointForBp(viewer.bp, lineLength);
+    const endPt = this.pointForBp(bp, lineLength);
     // ctx.lineTo(endPt.x, endPt.y);
     ctx.lineTo(x, endPt.y);
 

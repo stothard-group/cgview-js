@@ -397,9 +397,18 @@ class Viewer {
 
   /**
    * @member {Number} - Get the bp for the center of the canvas. Alias for Canvas.bpForCanvasCenter().
+   * The returned bp is always a positive integer.
    */
   get bp() {
     return this.canvas.bpForCanvasCenter();
+  }
+
+  /**
+   * @member {Number} - Get the bp for the center of the canvas. Alias for Canvas.bpForCanvasCenter({float: true}).
+   * The returned bp is always a positive floating-point number.
+   */
+  get bpFloat() {
+    return this.canvas.bpForCanvasCenter({float: true});
   }
 
   /**

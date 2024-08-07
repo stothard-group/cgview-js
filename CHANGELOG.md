@@ -8,6 +8,7 @@
 - Add new values for separatedFeaturesBy: 'type', 'legend'
 - Add meta data to contig/backbone highlighter popups
 - Add new tick step for ruler of large genomes
+- Add Viewer.bpFloat property to access decimal/fraction base pairs for more accurate drawing
 ## Changed
 - Use Settings 'layout' in JSON (instead of Viewer 'layout')
 ## Fixed

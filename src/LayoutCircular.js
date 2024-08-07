@@ -50,10 +50,13 @@ class LayoutCircular {
     return {x: x, y: y};
   }
 
-  bpForPoint(point) {
+  // Options: float - return bp as a float (default is rounded)
+  bpForPoint(point, options = {}) {
     const mapX = this.scale.x.invert(point.x);
     const mapY = this.scale.y.invert(point.y);
-    return Math.round( this.scale.bp.invert( utils.angleFromPosition(mapX, mapY) ) );
+    const bpFloat = this.scale.bp.invert( utils.angleFromPosition(mapX, mapY) );
+    return options.float ? bpFloat : Math.round(bpFloat);
+    // return Math.round( this.scale.bp.invert( utils.angleFromPosition(mapX, mapY) ) );
   }
 
 
@@ -252,7 +255,7 @@ class LayoutCircular {
       centerOffset = Math.max(fullLength - lineLength, 0);
       console.log(centerOffset, fullLength, lineLength)
     }
-    canvas.radiantLine('foreground', viewer.bp, centerOffset, lineLength, centerLine.thickness, centerLine.color.rgbaString, 'butt', centerLine.dashes);
+    canvas.radiantLine('foreground', viewer.bpFloat, centerOffset, lineLength, centerLine.thickness, centerLine.color.rgbaString, 'butt', centerLine.dashes);
   }
 
   //////////////////////////////////////////////////////////////////////////

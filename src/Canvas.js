@@ -484,17 +484,19 @@ class Canvas {
    * Returns the bp for the center of the canvas.
    * @private
    */
-  bpForCanvasCenter() {
-    return this.bpForPoint({x: this.width / 2, y: this.height / 2});
+  bpForCanvasCenter(options={}) {
+    return this.bpForPoint({x: this.width / 2, y: this.height / 2}, options);
   }
 
   /**
    * Alias for Layout [bpForPoint](Layout.html#bpForPoint)
    * FIXME: this should be removed and everywhere should call layout method
+   * @param {Point} - Point object with x and y properties
+   * @param {Object} options - Options for the bpForPoint method (use float: true to get fractional bp)
    * @private
    */
-  bpForPoint(point) {
-    return this.layout.bpForPoint(point);
+  bpForPoint(point, options={}) {
+    return this.layout.bpForPoint(point, options);
   }
 
 
