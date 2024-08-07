@@ -820,8 +820,8 @@ class Layout {
     // let startTime = new Date().getTime();
 
     viewer.clear('map');
-    viewer.clear('foreground');
     viewer.clear('ui');
+    // Note: we clear the foreground in the drawForeground method
 
     if (viewer.messenger.visible) {
       viewer.messenger.close();
@@ -837,9 +837,6 @@ class Layout {
     // Recalculate the slot offsets and thickness if the zoom level has changed
     this.updateLayout();
 
-    // TESTING: Draw center line for current bp
-    viewer.centerLine.draw();
-
     // Divider rings
     viewer.dividers.draw();
     // Ruler
@@ -850,15 +847,8 @@ class Layout {
       viewer.annotation.draw(this.centerInsideOffset, this.centerOutsideOffset, fast);
     }
 
-    // Captions on the Map layer
-    for (let i = 0, len = viewer._captions.length; i < len; i++) {
-      if (viewer._captions[i].onMap) {
-        viewer._captions[i].draw();
-      }
-    }
-    if (viewer.legend.position.onMap) {
-      viewer.legend.draw();
-    }
+    // Draw foreground layer (centerLine, captions/legend on map)
+    this.drawForeground();
 
     // Progess
     this.drawProgress();
@@ -904,6 +894,24 @@ class Layout {
 
   draw(fast) {
     fast ? this.drawFast() : this.drawFull();
+  }
+
+  // Draw foreground layer (centerLine, map-based captions/legend)
+  drawForeground() {
+    const viewer = this.viewer;
+    viewer.clear('foreground');
+    // Draw center line for current bp
+    viewer.centerLine.draw();
+    // Captions positioned on the Map
+    for (let i = 0, len = viewer._captions.length; i < len; i++) {
+      if (viewer._captions[i].onMap) {
+        viewer._captions[i].draw();
+      }
+    }
+    // Legend positioned on the Map
+    if (viewer.legend.position.onMap) {
+      viewer.legend.draw();
+    }
   }
 
   drawAllSlots(fast) {
