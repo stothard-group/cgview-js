@@ -33,7 +33,7 @@ import utils from './Utils';
  * [dataMethod](#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
  * [dataKeys](#dataKeys)             | String\|Array | Values used by dataMethod to extract features or a plot.
  * [position](#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
- * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
+ * [separateFeaturesBy](#separateFeaturesBy) | String    | How features should be separated: none, strand, readingFrame, type, legend [Default: strand]
  * [thicknessRatio](#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
  * [loadProgress](#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
  * [drawOrder](#loadProgress)        | String    | Order to draw features in: position, score [Default: position]
@@ -208,14 +208,14 @@ class Track extends CGObject {
 
 
   /**
-   * @member {String} - Get or set separateFeaturesBy. Possible values are 'none', 'strand', or 'readingFrame'.
+   * @member {String} - Get or set separateFeaturesBy. Possible values are 'none', 'strand', 'readingFrame', 'type', or 'legend'.
    */
   get separateFeaturesBy() {
     return this._separateFeaturesBy;
   }
 
   set separateFeaturesBy(value) {
-    if ( utils.validate(value, ['none', 'strand', 'readingFrame', 'type']) ) {
+    if ( utils.validate(value, ['none', 'strand', 'readingFrame', 'type', 'legend']) ) {
       this._separateFeaturesBy = value;
       this.updateSlots();
     }
@@ -432,8 +432,8 @@ class Track extends CGObject {
 
   updateFeatureSlots() {
     this._slots = new CGArray();
-    if (this.separateFeaturesBy === 'type') {
-      const features = this.featuresByType();
+    if (['type', 'legend'].includes(this.separateFeaturesBy)) {
+      const features = this.featuresBy(this.separateFeaturesBy);
       const types = Object.keys(features);
       // Sort by number of features
       types.sort((a, b) => features[b].length - features[a].length);
@@ -490,17 +490,43 @@ class Track extends CGObject {
     return features;
   }
 
-  featuresByType() {
+  // Returns an object with keys as the type of feature (e.g. types or legend names) and values as an array of features
+  // by: 'type' or 'legend'
+  featuresBy(by='type') {
     const features = {};
     this.features().each( (i, feature) => {
-      const type = feature.type;
-      if (features[type] === undefined) {
-        features[type] = new CGArray();
+      const key = (by === 'legend') ? feature.legend.name : feature[by];
+      if (features[key] === undefined) {
+        features[key] = new CGArray();
       }
-      features[type].push(feature);
+      features[key].push(feature);
     });
     return features;
   }
+
+  // featuresByType() {
+  //   const features = {};
+  //   this.features().each( (i, feature) => {
+  //     const type = feature.type;
+  //     if (features[type] === undefined) {
+  //       features[type] = new CGArray();
+  //     }
+  //     features[type].push(feature);
+  //   });
+  //   return features;
+  // }
+
+  // featuresByLegend() {
+  //   const features = {};
+  //   this.features().each( (i, feature) => {
+  //     const legend = feature.legend.name;
+  //     if (features[legend] === undefined) {
+  //       features[legend] = new CGArray();
+  //     }
+  //     features[legend].push(feature);
+  //   });
+  //   return features;
+  // }
 
   updatePlotSlot() {
     this._slots = new CGArray();

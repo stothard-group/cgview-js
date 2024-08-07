@@ -2,8 +2,18 @@
 # CGView.js Changelog
 --------------------------------------------------------------------------------
 
-## Unreleased
-- Use Settings layout in JSON (instead of Viewer layout)
+## 1.6.1 - Unreleased
+## Added
+- Add CenterLine
+- Add new values for separatedFeaturesBy: 'type', 'legend'
+- Add meta data to contig/backbone highlighter popups
+- Add new tick step for ruler of large genomes
+## Changed
+- Use Settings 'layout' in JSON (instead of Viewer 'layout')
+## Fixed
+- Fix resize issue [issue#16](https://github.com/stothard-group/cgview-js/issues/16)
+- Fix invert colors of caption background
+- Fix legend box not clearing on load
 
 
 ## v1.6.0 - 2023-11-29
