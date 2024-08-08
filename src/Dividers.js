@@ -155,7 +155,8 @@ class Dividers {
       const bbOffset = this._bbOffsets[i];
       if (!this[bbOffset.type].visible) { continue; } 
       const centerOffset = backboneOffset + bbOffset.distance;
-      const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, 100);
+      // const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, 100);
+      const visibleRange = canvas.visibleRangeForCenterOffset(centerOffset, { margin: 100 });
       if (visibleRange) {
         canvas.drawElement('map', visibleRange.start, visibleRange.stop, centerOffset, this[bbOffset.type].color.rgbaString, this[bbOffset.type].adjustedThickness);
       }

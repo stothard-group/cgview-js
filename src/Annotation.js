@@ -442,7 +442,8 @@ class Annotation extends CGObject {
     //   this.refresh();
     // }
 
-    this._visibleRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset);
+    // this._visibleRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset);
+    this._visibleRange = this.canvas.visibleRangeForCenterOffset(outerCenterOffset, { float: true, margin: 100 });
 
     this._innerCenterOffset = innerCenterOffset;
     this._outerCenterOffset = outerCenterOffset;

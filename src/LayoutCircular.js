@@ -104,8 +104,11 @@ class LayoutCircular {
 
 
   // TODO if undefined, see if centerOffset is visible
-  visibleRangeForCenterOffset(centerOffset, margin = 0) {
-    const ranges = this._visibleRangesForRadius(centerOffset, margin);
+  // visibleRangeForCenterOffset(centerOffset, margin = 0) {
+  visibleRangeForCenterOffset(centerOffset, options = {}) {
+    // const ranges = this._visibleRangesForRadius(centerOffset, margin);
+    const margin = options.margin || 0;
+    const ranges = this._visibleRangesForRadius(centerOffset, options);
     if (ranges.length === 2) {
       return new CGRange(this.sequence.mapContig, ranges[0], ranges[1]);
     } else if (ranges.length > 2) {
@@ -313,14 +316,20 @@ class LayoutCircular {
     }
   }
 
-  _visibleRangesForRadius(radius, margin = 0) {
+  // _visibleRangesForRadius(radius, margin = 0) {
+  _visibleRangesForRadius(radius, options = {}) {
+    const margin = options.margin || 0;
     const angles = utils.circleAnglesFromIntersectingRect(radius,
       this.scale.x.invert(0 - margin),
       this.scale.y.invert(0 - margin),
       this.width + (margin * 2),
       this.height + (margin * 2)
     );
-    return angles.map( a => Math.round(this.scale.bp.invert(a)) );
+    if (options.float) {
+      return angles.map( a => this.scale.bp.invert(a) );
+    } else {
+      return angles.map( a => Math.round(this.scale.bp.invert(a)) );
+    }
   }
 
 }

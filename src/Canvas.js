@@ -490,7 +490,7 @@ class Canvas {
 
   /**
    * Alias for Layout [bpForPoint](Layout.html#bpForPoint)
-   * FIXME: this should be removed and everywhere should call layout method
+   * FIXME: this should be removed and everywhere should call layout method OR not
    * @param {Point} - Point object with x and y properties
    * @param {Object} options - Options for the bpForPoint method (use float: true to get fractional bp)
    * @private
@@ -504,8 +504,10 @@ class Canvas {
    * Alias for Layout [visibleRangeForCenterOffset](Layout.html#visibleRangeForCenterOffset)
    * @private
    */
-  visibleRangeForCenterOffset(centerOffset, margin = 0) {
-    return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
+  // visibleRangeForCenterOffset(centerOffset, margin = 0) {
+  visibleRangeForCenterOffset(centerOffset, options = {}) {
+    // return this.layout.visibleRangeForCenterOffset(centerOffset, margin);
+    return this.layout.visibleRangeForCenterOffset(centerOffset, options);
   }
 
   /**

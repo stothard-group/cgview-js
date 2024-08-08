@@ -91,11 +91,16 @@ class LayoutLinear {
   }
 
   // TODO if undefined, see if centerOffset is visible
-  // TODO: have options for floating point bp range
-  visibleRangeForCenterOffset(centerOffset, margin = 0) {
+  // visibleRangeForCenterOffset(centerOffset, margin = 0) {
+  visibleRangeForCenterOffset(centerOffset, options = {} ) {
+    const margin = options.margin || 0;
     const domainX = this.scale.x.domain();
-    const start = Math.floor(this.scale.bp.invert(domainX[0] - margin));
-    const end = Math.ceil(this.scale.bp.invert(domainX[1] + margin));
+    const startFloat = this.scale.bp.invert(domainX[0] - margin);
+    const endFloat = this.scale.bp.invert(domainX[1] + margin);
+    const start = (options.float) ? startFloat : Math.floor(startFloat);
+    const end = (options.float) ? endFloat : Math.ceil(endFloat);
+    // const start = Math.floor(this.scale.bp.invert(domainX[0] - margin));
+    // const end = Math.ceil(this.scale.bp.invert(domainX[1] + margin));
     // const start = this.scale.bp.invert(domainX[0] - margin);
     // const end = this.scale.bp.invert(domainX[1] + margin);
     return new CGRange(this.sequence.mapContig,

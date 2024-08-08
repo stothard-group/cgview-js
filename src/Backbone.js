@@ -250,7 +250,8 @@ class Backbone extends CGObject {
   }
 
   draw() {
-    this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
+    // this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, 100);
+    this._visibleRange = this.canvas.visibleRangeForCenterOffset( this.adjustedCenterOffset, { margin: 100 });
     if (this.visibleRange && this.visible) {
       this.refreshThickness();
 

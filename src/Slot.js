@@ -245,7 +245,8 @@ class Slot extends CGObject {
   draw(canvas, fast) {
     const slotCenterOffset = this.centerOffset;
     const slotThickness = this.thickness;
-    const range = canvas.visibleRangeForCenterOffset(slotCenterOffset, slotThickness);
+    // const range = canvas.visibleRangeForCenterOffset(slotCenterOffset, slotThickness);
+    const range = canvas.visibleRangeForCenterOffset(slotCenterOffset, { margin: slotThickness });
     this._visibleRange = range;
     if (range) {
       const start = range.start;

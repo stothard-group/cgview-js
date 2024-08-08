@@ -259,13 +259,17 @@ class Layout {
    * The *margin* is a distance in pixels added on to the Canvas size when
    * calculating the CGRange.
    * @param {Number} centerOffset - The distance from the center of them map.
-   * @param {Number} margin - An amount (in pixels) added to the Canvas in all dimensions.
+   * @param {Number} OLDmargin - An amount (in pixels) added to the Canvas in all dimensions.
+   * @param {Object} options - margin: An amount (in pixels) added to the Canvas in all dimensions (Default: 0)
+   *                         - float:  Return the range basepairs as a floats (default: false)
    *
    * @returns {CGRange} - the visible range.
    */
   // visibleRangeForCenterOffset(offset, margin = 0) {
-  visibleRangeForCenterOffset(...args) {
-    return this.delegate.visibleRangeForCenterOffset(...args);
+  // visibleRangeForCenterOffset(...args) {
+  visibleRangeForCenterOffset(centerOffset, options = {}) {
+    const defaultOptions = { margin: 0, float: false };
+    return this.delegate.visibleRangeForCenterOffset(centerOffset, {...defaultOptions, ...options});
   }
 
   /**
