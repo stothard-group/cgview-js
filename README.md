@@ -3,6 +3,8 @@
 CGView.js is a <strong>C</strong>ircular <strong>G</strong>enome <strong>View</strong>ing
 tool for visualizing and interacting with small genomes. 
 
+# TEST: private
+
 ## Resources
 
 - [CGView.js Home](http://js.cgview.ca)
