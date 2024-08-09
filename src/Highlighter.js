@@ -164,6 +164,7 @@ class Highlighter extends CGObject {
       <div style='margin: 0 5px; font-size: 14px'>
         <div>${feature.type}: ${feature.name}<div>
         <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp</div>
+        ${this.getMetaDivs(feature.qualifiers)}
         ${this.getMetaDivs(feature.meta)}
         ${this.getTrackDiv(e)}
       </div>

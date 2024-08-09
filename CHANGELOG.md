@@ -10,7 +10,9 @@
 - Add new tick step for ruler of large genomes
 - Add Viewer.bpFloat property to access decimal/fraction base pairs for more accurate drawing
 ## Changed
+- Labels move smoothly when at basepair level
 - Use Settings 'layout' in JSON (instead of Viewer 'layout')
+- Canvas.visibleRangeForCenterOffset now takes an options object as it's second param (instead of 'margin')
 ## Fixed
 - Fix resize issue [issue#16](https://github.com/stothard-group/cgview-js/issues/16)
 - Fix invert colors of caption background

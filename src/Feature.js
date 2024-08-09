@@ -41,6 +41,7 @@ import utils from './Utils';
  * [favorite](#favorite)            | Boolean  | Feature is a favorite [Default: false]
  * [visible](CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
  * [meta](CGObject.html#meta)       | Object   | [Meta data](../tutorials/details-meta-data.html) for Feature
+ * [qualifiers](#qualifiers)        | Object   | Qualifiers associated with the feature (from GenBank/EMBL) [Default: {}]
  * 
  * <sup>rc</sup> Required on Feature creation
  * <sup>ic</sup> Ignored on Record creation
@@ -82,6 +83,8 @@ class Feature extends CGObject {
     this.codonStart = data.codonStart;
     this.geneticCode = data.geneticCode;
     this.label = new Label(this, {name: data.name} );
+    this.qualifiers = {};
+    this.qualifiers = data.qualifiers;
     this._centerOffsetAdjustment = Number(data.centerOffsetAdjustment) || 0;
     this._proportionOfThickness = Number(data.proportionOfThickness) || 1;
 
@@ -132,6 +135,19 @@ class Feature extends CGObject {
       this.label.name = value;
     } else {
       this.label = new Label(this, {name: value} );
+    }
+  }
+
+  /**
+   * @member {qualifiers} - Get or set the *qualifiers*
+   */
+  get qualifiers() {
+    return this._qualifiers;
+  }
+
+  set qualifiers(value) {
+    if (typeof value === 'object' && value !== null) {
+      this._qualifiers = value;
     }
   }
 
@@ -726,6 +742,10 @@ class Feature extends CGObject {
     // Meta Data (TODO: add an option to exclude this)
     if (Object.keys(this.meta).length > 0) {
       json.meta = this.meta;
+    }
+    // Qualifiers Data (TODO: maybe add an option to exclude this)
+    if (Object.keys(this.qualifiers).length > 0) {
+      json.qualifiers = this.qualifiers;
     }
     return json;
   }
