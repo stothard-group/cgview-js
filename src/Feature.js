@@ -34,6 +34,7 @@ import utils from './Utils';
  * [contig](#contig)                | String\|Contig | Name of contig or the contig itself
  * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig
  * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
+ * [locations](#locations)          | Array    | Array of locations (start, stop) on the contig (e.g. [[1, 100], [200, 300]])
  * [mapStart](#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position)
  * [mapStop](#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position)
  * [strand](#strand)                | String   | Strand the features is on [Default: 1]
@@ -80,6 +81,7 @@ class Feature extends CGObject {
     this.updateRanges(data.start, data.stop);
     this.strand = utils.defaultFor(data.strand, 1);
     this.score = utils.defaultFor(data.score, 1);
+    this.locations = data.locations;
     this.codonStart = data.codonStart;
     this.geneticCode = data.geneticCode;
     this.label = new Label(this, {name: data.name} );
@@ -304,6 +306,29 @@ class Feature extends CGObject {
     this.range.mapStop = value;
   }
 
+  /**
+   * @member {Number} - Get or set the locations of the feature in basepair (bp).
+   *   An array of arrays where each sub-array contains the start and stop positions
+   *   (e.g. [[1, 100], [200, 300]]).
+   *   All start and stop positions are assumed to be going in a clockwise direction.
+   *   TODO:
+   *   - values should be checked:
+   *     - that each array has 2 numbers
+   *     - start must be less than stop (unless?)
+   *     - order of locations should be checked
+   *   - length can be different for locations
+   *     - length could change if locations or always be the max length
+   *     - could have locationsLength which is the length of the locations
+   *   - extracing sequence from locations
+   */
+  get locations() {
+    return this._locations || [[this.start, this.stop]];
+  }
+
+  set locations(value) {
+    this._locations = value;
+  }
+
   get length() {
     return this.range.length;
   }
@@ -503,15 +528,67 @@ class Feature extends CGObject {
     this.range = new CGRange(contig, start, stop);
   }
 
+  // Draw the feature on the map either as a single range or as multiple locations
+  // Multiple locations are drawn as separate ranges with connectors between them
+  // Currently all the connectors will be drawn if the feature is visible in any slot
+  // TODO: Only draw connectors if attached to a visible location
   draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
     if (!this.visible) { return; }
-    if (this.mapRange.overlapsMapRange(visibleRange)) {
+    const canvas = this.canvas;
+    if (this.locations.length > 1) {
+      const connectors = [];
+      // Draw each location
+      // for (const location of this.locations) {
+      for (let i = 0; i < this.locations.length; i++) {
+        const location = this.locations[i];
+        const range = new CGRange(this.contig, location[0], location[1]);
+        const newOptions = {...options};
+        if (this.decoration === 'arrow') {
+          if (this.isDirect() && i !== this.locations.length - 1) {
+            newOptions.directionalDecoration = 'arc';
+          } else if (this.isReverse() && i !== 0) {
+            newOptions.directionalDecoration = 'arc';
+          }
+        }
+        this.drawRange(range, layer, slotCenterOffset, slotThickness, visibleRange, newOptions);
+      }
+      for (let i = 0; i < this.locations.length - 1; i++) {
+        const location = this.locations[i];
+        const nextLocation = this.locations[i + 1];
+        if (nextLocation) {
+          connectors.push([location[1]+1, nextLocation[0]-1]);
+        }
+      }
+      // Draw connectors
+      // Connector width is 5% of the feature thickness
+      const connectorWidth = this.adjustedWidth(slotThickness) * 0.05;
+      const color = options.color || this.color;
+      const showShading = options.showShading;
+      const minArcLength = this.legendItem.minArcLength;
+      for (const connector of connectors) {
+        canvas.drawElement(layer, connector[0], connector[1],
+          this.adjustedCenterOffset(slotCenterOffset, slotThickness),
+          color.rgbaString, connectorWidth, 'arc', showShading, minArcLength);
+      }
+    } else {
+      this.drawRange(this.mapRange, layer, slotCenterOffset, slotThickness, visibleRange, options);
+    }
+  }
+
+  // drawRange(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
+  drawRange(range, layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
+    // if (!this.visible) { return; }
+    // if (this.mapRange.overlapsMapRange(visibleRange)) {
+    if (range.overlapsMapRange(visibleRange)) {
       const canvas = this.canvas;
-      let start = this.mapStart;
-      let stop = this.mapStop;
+      // let start = this.mapStart;
+      // let stop = this.mapStop;
+      let start = range.mapStart;
+      let stop = range.mapStop;
       const containsStart = visibleRange.containsMapBp(start);
       const containsStop = visibleRange.containsMapBp(stop);
       const color = options.color || this.color;
+      const directionalDecoration = options.directionalDecoration || this.directionalDecoration;
       const showShading = options.showShading;
       const minArcLength = this.legendItem.minArcLength;
       if (!containsStart) {
@@ -527,24 +604,26 @@ class Feature extends CGObject {
       // in the visible range, the feature should be drawn as 2 arcs. Using overHalfMapLength() instead of isWrapped()
       // should catch features that wrap around the map but not the Origin (ie. almost fulll circle features)
       // const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.isWrapped();
-      const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overHalfMapLength();
+      // const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && this.range.overHalfMapLength();
+      const zoomedSplitFeature = containsStart && containsStop && (this.viewer.zoomFactor > 1000) && range.overHalfMapLength();
       //  When the feature wraps the origin on a linear map and both the start and stop
       //  can be seen, draw as 2 elements.
-      const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');
+      // const unzoomedSplitLinearFeature = containsStart && containsStop && this.range.isWrapped() && (this.viewer.format === 'linear');
+      const unzoomedSplitLinearFeature = containsStart && containsStop && range.isWrapped() && (this.viewer.format === 'linear');
 
       if (zoomedSplitFeature || unzoomedSplitLinearFeature) {
         const visibleStart = Math.max((visibleRange.start - 100), 1); // Do not draw off the edge of linear maps
         const visibleStop = Math.min((visibleRange.stop + 100), this.sequence.length); // Do not draw off the edge of linear maps
         canvas.drawElement(layer, visibleStart, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
+          color.rgbaString, this.adjustedWidth(slotThickness), directionalDecoration, showShading, minArcLength);
         canvas.drawElement(layer, start, visibleStop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
+          color.rgbaString, this.adjustedWidth(slotThickness), directionalDecoration, showShading, minArcLength);
       } else {
         canvas.drawElement(layer, start, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
-          color.rgbaString, this.adjustedWidth(slotThickness), this.directionalDecoration, showShading, minArcLength);
+          color.rgbaString, this.adjustedWidth(slotThickness), directionalDecoration, showShading, minArcLength);
       }
     }
   }
@@ -721,6 +800,10 @@ class Feature extends CGObject {
     if (this.sequence.hasMultipleContigs && !this.contig.isMapContig) {
       // json.contig = this.contig.id;
       json.contig = this.contig.name;
+    }
+    // Locations
+    if (this.locations.length > 1) {
+      json.locations = this.locations;
     }
     // Tags
     if (this.tags !== undefined) {

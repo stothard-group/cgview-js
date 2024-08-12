@@ -293,6 +293,7 @@ class Ruler extends CGObject {
   }
 
   draw(innerCenterOffset, outerCenterOffset) {
+    // console.log(innerCenterOffset, outerCenterOffset);
     if (this.visible) {
       innerCenterOffset -= this.spacing;
       outerCenterOffset += this.spacing;

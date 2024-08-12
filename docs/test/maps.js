@@ -3,6 +3,10 @@ maps = {
     name: 'Linear Plasmid [90,229 bp]',
     url: 'maps/linear.1.6.json',
   },
+  locations: {
+    name: 'Locations Test [69,034 bp]',
+    url: 'maps/locations.json',
+  },
   full_circle_2mbp: {
     name: 'Full Circle Feature Test [1,846,259 bp]',
     url: 'maps/full_circle_feature.2Mbp.json',

@@ -3,9 +3,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // const defaultMap = 'small';
+const defaultMap = 'locations';
 // const defaultMap = 'blast';
 // const defaultMap = 'full_circle_2mbp';
-const defaultMap = 'linear_1_6';
+// const defaultMap = 'linear_1_6';
 // const defaultMap = 'labels';
 // const defaultMap = 'labels3';
 // const defaultMap = 'pcET30c';
