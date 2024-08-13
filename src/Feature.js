@@ -339,12 +339,11 @@ class Feature extends CGObject {
    *   All start and stop positions are assumed to be going in a clockwise direction.
    *   Locations shouldn't overlap the origin but can overlap each other (e.g. due to ribosomal slippage).
    *   Locations are ignored unless there is more than one location.
-   *   - Validations:
-   *     - that each array has 2 numbers
-   *     - start must be less than stop
+   *   Validations:
+   *   - that each array has 2 numbers
+   *   - start must be less than stop
    *   TODO:
-   *     - order of locations should be checked
-   *   - DOES THIS WORK WITH MAP CONTIGS?
+   *   - order of locations should be checked?
    */
   get locations() {
     return this._locations || [[this.start, this.stop]];
