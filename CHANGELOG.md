@@ -4,6 +4,7 @@
 
 ## 1.6.1 - Unreleased
 ## Added
+- Add locations to features to work with joins (i.e. complex features) (e.g. join(10..20, 25..30))
 - Add CenterLine
 - Add new values for separatedFeaturesBy: 'type', 'legend'
 - Add meta data to contig/backbone highlighter popups

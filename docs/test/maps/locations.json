@@ -119,7 +119,7 @@
                 "type": "CDS",
                 "start": 65000,
                 "stop": 2000,
-                "locations": [[65000, 67000], [68000, 1000], [1500, 2000]],
+                "locations": [[65000, 67000], [68000, 69034], [1, 1000], [1500, 2000]],
                 "strand": 1,
                 "source": "track-2",
                 "legend": "Arrow"
@@ -143,6 +143,26 @@
                 "strand": 1,
                 "source": "track-1",
                 "legend": "CDS"
+            },
+            {
+                "name": "location_overlap",
+                "type": "CDS",
+                "start": 2000,
+                "stop": 50000,
+                "locations": [[2000, 3000], [3000, 4000], [3990, 5000]],
+                "strand": 1,
+                "source": "track-3",
+                "legend": "Arrow"
+            },
+            {
+                "name": "1bp_apart",
+                "type": "CDS",
+                "start": 7000,
+                "stop": 10000,
+                "locations": [[7000, 8000], [8002, 10000]],
+                "strand": 1,
+                "source": "track-3",
+                "legend": "Arrow"
             }
         ],
         "plots": [],
@@ -163,6 +183,15 @@
                 "dataType": "feature",
                 "dataMethod": "source",
                 "dataKeys": "track-2"
+            },
+            {
+                "name": "Features - Extra",
+                "separateFeaturesBy": "none",
+                "drawOrder": "score",
+                "position": "both",
+                "dataType": "feature",
+                "dataMethod": "source",
+                "dataKeys": "track-3"
             }
         ]
     }

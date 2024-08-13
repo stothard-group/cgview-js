@@ -32,11 +32,11 @@ import utils from './Utils';
  * [source](#source)                | String   | Source of the feature
  * [tags](#tags)                    | String\|Array | A single string or an array of strings associated with the feature as tags
  * [contig](#contig)                | String\|Contig | Name of contig or the contig itself
- * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig
- * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
- * [locations](#locations)          | Array    | Array of locations (start, stop) on the contig (e.g. [[1, 100], [200, 300]])
- * [mapStart](#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position)
- * [mapStop](#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position)
+ * [start](#start)<sup>rc</sup>     | Number   | Start base pair on the contig. Ignored if locations are present.
+ * [stop](#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig. Ignored if locations are present.
+ * [locations](#locations)          | Array    | Array of locations (start, stop) on the contig (e.g. [[1, 100], [200, 300]]).
+ * [mapStart](#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position). Ignored if locations are present.
+ * [mapStop](#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position). Ignored if locations are present.
  * [strand](#strand)                | String   | Strand the features is on [Default: 1]
  * [score](#score)                  | Number   | Score associated with the feature
  * [favorite](#favorite)            | Boolean  | Feature is a favorite [Default: false]
@@ -78,10 +78,14 @@ class Feature extends CGObject {
     // this.contig = data.contig || viewer.sequence.mapContig;
     this.contig = data.contig;
     // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
-    this.updateRanges(data.start, data.stop);
+    // this.updateRanges(data.start, data.stop);
     this.strand = utils.defaultFor(data.strand, 1);
     this.score = utils.defaultFor(data.score, 1);
-    this.locations = data.locations;
+    if (Array.isArray(data.locations)) {
+      this.locations = data.locations;
+    } else {
+      this.updateRanges(data.start, data.stop);
+    }
     this.codonStart = data.codonStart;
     this.geneticCode = data.geneticCode;
     this.label = new Label(this, {name: data.name} );
@@ -258,52 +262,74 @@ class Feature extends CGObject {
    * @member {Number} - Get or set the start position of the feature in basepair (bp).
    *   All start and stop positions are assumed to be going in a clockwise direction.
    *   This position is relative to the contig the feature is on. If there is only one
-   *   contig, this value will be the same as mapStart.
+   *   contig, this value will be the same as mapStart. Setting the start position does
+   *   not work if the feature has multiple locations (use [locations](#locations) instead).
    */
   get start() {
     return this.range.start;
   }
 
   set start(value) {
-    this.range.start = value;
+    if (!this.hasLocations) {
+      this.range.start = value;
+    } else {
+      console.error('Feature has multiple locations. Use locations to set start position')
+    }
   }
 
   /**
    * @member {Number} - Get or set the stop position of the feature in basepair (bp).
    *   All start and stop positions are assumed to be going in a clockwise direction.
    *   This position is relative to the contig the feature is on. If there is only one
-   *   contig, this value will be the same as mapStop.
+   *   contig, this value will be the same as mapStop. Setting the stop position does
+   *   not work if the feature has multiple locations (use [locations](#locations) instead).
    */
   get stop() {
     return this.range.stop;
   }
 
   set stop(value) {
-    this.range.stop = value;
+    if (!this.hasLocations) {
+      this.range.stop = value;
+    } else {
+      console.error('Feature has multiple locations. Use locations to set start position')
+    }
   }
 
   /**
    * @member {Number} - Get or set the start position of the feature in basepair (bp).
    *   All start and stop positions are assumed to be going in a clockwise direction.
+   *   Setting the mapStart position does not work if the feature has multiple locations.
    */
   get mapStart() {
     return this.range.mapStart;
   }
 
   set mapStart(value) {
-    this.range.mapStart = value;
+    // this.range.mapStart = value;
+    if (!this.hasLocations) {
+      this.range.mapStart = value;
+    } else {
+      console.error('Feature has multiple locations.')
+    }
   }
 
   /**
    * @member {Number} - Get or set the stop position of the feature in basepair (bp).
    *   All start and stop positions are assumed to be going in a clockwise direction.
+   *   Setting the mapStop position does not work if the feature has multiple locations.
    */
   get mapStop() {
     return this.range.mapStop;
   }
 
   set mapStop(value) {
-    this.range.mapStop = value;
+    // this.range.mapStop = value;
+    if (!this.hasLocations) {
+      this.range.mapStop = value;
+    } else {
+      console.error('Feature has multiple locations.')
+    }
   }
 
   /**
@@ -311,23 +337,48 @@ class Feature extends CGObject {
    *   An array of arrays where each sub-array contains the start and stop positions
    *   (e.g. [[1, 100], [200, 300]]).
    *   All start and stop positions are assumed to be going in a clockwise direction.
-   *   TODO:
-   *   - values should be checked:
+   *   Locations shouldn't overlap the origin but can overlap each other (e.g. due to ribosomal slippage).
+   *   Locations are ignored unless there is more than one location.
+   *   - Validations:
    *     - that each array has 2 numbers
-   *     - start must be less than stop (unless?)
+   *     - start must be less than stop
+   *   TODO:
    *     - order of locations should be checked
-   *     - locations can overlap due to ribosomal slippage
-   *   - length can be different for locations
-   *     - length could change if locations or always be the max length
-   *     - could have locationsLength which is the length of the locations
-   *   - extracing sequence from locations
+   *   - DOES THIS WORK WITH MAP CONTIGS?
    */
   get locations() {
     return this._locations || [[this.start, this.stop]];
   }
 
   set locations(value) {
-    this._locations = value;
+    let locs = [];
+    if (Array.isArray(value)) {
+      for (const location of value) {
+        if (Array.isArray(location) && !isNaN(location[0]) && !isNaN(location[1])) {
+          if (location[0] <= location[1]) {
+            locs.push([location[0], location[1]]);
+          } else {
+            console.error('Feature location start must be less than stop: ', value);
+            return;
+          }
+        } else {
+          console.error('Feature locations must be an array of arrays of 2 numbers: ', value);
+          return;
+        }
+      }
+    } else {
+      console.error('Feature locations must be an array of arrays of numbers: ', value);
+      return;
+    }
+    this.updateRanges(locs[0][0], locs[locs.length - 1][1]);
+    this._locations = locs;
+  }
+
+  /**
+   * @member {Number} - Return true if the feature has multiple locations (i.e more than one).
+   */
+  get hasLocations() {
+    return this.locations?.length > 1;
   }
 
   /**
@@ -338,9 +389,9 @@ class Feature extends CGObject {
    */
   get length() {
     let length = 0;
-    if (this.locations?.length > 1) {
+    if (this.hasLocations) {
       for (const location of this.locations) {
-        // NOTE: locations should never overlap origin so we can probably simiplify this without ranges
+        // NOTE: locations should never overlap origin so we can probably simplify this without ranges
         let range = new CGRange(this.contig, location[0], location[1]);
         length += range.length;
       }
@@ -563,7 +614,7 @@ class Feature extends CGObject {
   draw(layer, slotCenterOffset, slotThickness, visibleRange, options = {}) {
     if (!this.visible) { return; }
     const canvas = this.canvas;
-    if (this.locations.length > 1) {
+    if (this.hasLocations) {
       const connectors = [];
       // Draw each location
       // for (const location of this.locations) {
@@ -583,11 +634,12 @@ class Feature extends CGObject {
       for (let i = 0; i < this.locations.length - 1; i++) {
         const location = this.locations[i];
         const nextLocation = this.locations[i + 1];
-        if (nextLocation && (location[1] < nextLocation[0] - 1)) {
+        if (nextLocation) {
+          // Skip connectors if the locations overlap
+          if ((location[1] <= nextLocation[1]) && (location[1] >= nextLocation[0])) {
+            continue;
+          }
           connectors.push([location[1]+1, nextLocation[0]-1]);
-          console.log(`Connector [${this.name}]:`, location[1]+1, nextLocation[0]-1);
-        } else {
-          console.log(`SKIPPED Connector [${this.name}]:`, location[1]+1, nextLocation[0]-1);
         }
       }
       // Draw connectors
@@ -597,7 +649,9 @@ class Feature extends CGObject {
       const showShading = options.showShading;
       const minArcLength = this.legendItem.minArcLength;
       for (const connector of connectors) {
-        canvas.drawElement(layer, connector[0], connector[1],
+        const start = connector[0] + this.contig.lengthOffset;
+        const stop = connector[1] + this.contig.lengthOffset;
+        canvas.drawElement(layer, start, stop,
           this.adjustedCenterOffset(slotCenterOffset, slotThickness),
           color.rgbaString, connectorWidth, 'arc', showShading, minArcLength);
       }
@@ -802,10 +856,33 @@ class Feature extends CGObject {
 
   /**
    * Returns the DNA sequence for the feature.
-   *
+   * If the feature has multiple locations, the sequence will be concatenated.
+   * In some cases (e.g. ribosomal slippage) the locations may overlap.
+   * Example: [[1, 100], [100, 200]] will return a sequence of 201 bp.
+   * To get the sequence of the feature's fullLenth ignoring sub locations, use [fullSeq](#fullSeq).
    * @return {String} - DNA sequence of feature.
    */
   get seq() {
+    let seq = '';
+    if (this.hasLocations) {
+      for (const location of this.locations) {
+        // NOTE: locations should never overlap origin so we can probably simplify this without ranges
+        let range = new CGRange(this.contig, location[0], location[1]);
+        seq += this.contig.forRange(range, this.isReverse());
+      }
+    } else {
+      // No locations or only one location
+      seq = this.contig.forRange(this.range, this.isReverse());
+    }
+    return seq
+  }
+
+  /**
+   * @member {Number} - Get the sequence of the feature using only the
+   * start and stop positions (ignores locations).
+   * To get sequence of the feature based on sub locations, use [seq](#seq).
+   */
+  get fullSeq() {
     return this.contig.forRange(this.range, this.isReverse());
   }
 
@@ -833,7 +910,7 @@ class Feature extends CGObject {
       json.contig = this.contig.name;
     }
     // Locations
-    if (this.locations.length > 1) {
+    if (this.hasLocations) {
       json.locations = this.locations;
     }
     // Tags

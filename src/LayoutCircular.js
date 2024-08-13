@@ -256,7 +256,7 @@ class LayoutCircular {
       const fullLength =  this.layout.centerOutsideOffset + ruler.spacing;
       lineLength = Math.min(fullLength, maxLength);
       centerOffset = Math.max(fullLength - lineLength, 0);
-      console.log(centerOffset, fullLength, lineLength)
+      // console.log(centerOffset, fullLength, lineLength)
     }
     canvas.radiantLine('foreground', viewer.bpFloat, centerOffset, lineLength, centerLine.thickness, centerLine.color.rgbaString, 'butt', centerLine.dashes);
   }

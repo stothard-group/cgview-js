@@ -160,10 +160,11 @@ class Highlighter extends CGObject {
   featurePopoverContentsDefault(e) {
     const feature = e.element;
     // return `<div style='margin: 0 5px; font-size: 14px'>${feature.type}: ${feature.name}</div>`;
+    const fullLength = feature.length !== feature.fullLength ? `(${utils.commaNumber(feature.fullLength)} bp)` : '';
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>${feature.type}: ${feature.name}<div>
-        <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp</div>
+        <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp ${fullLength}</div>
         ${this.getMetaDivs(feature.qualifiers)}
         ${this.getMetaDivs(feature.meta)}
         ${this.getTrackDiv(e)}
