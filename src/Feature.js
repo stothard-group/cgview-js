@@ -316,6 +316,7 @@ class Feature extends CGObject {
    *     - that each array has 2 numbers
    *     - start must be less than stop (unless?)
    *     - order of locations should be checked
+   *     - locations can overlap due to ribosomal slippage
    *   - length can be different for locations
    *     - length could change if locations or always be the max length
    *     - could have locationsLength which is the length of the locations
@@ -329,9 +330,36 @@ class Feature extends CGObject {
     this._locations = value;
   }
 
+  /**
+   * @member {Number} - Get the length of the feature in basepair (bp).
+   * If the feature has locations, the length is calculated as the sum of the length of each location.
+   * Otherwise, the length is the same as the range (i.e. stop - start + 1).
+   * To get the full length of the feature on the map, use [fullLength](#fullLength).
+   */
   get length() {
+    let length = 0;
+    if (this.locations?.length > 1) {
+      for (const location of this.locations) {
+        // NOTE: locations should never overlap origin so we can probably simiplify this without ranges
+        let range = new CGRange(this.contig, location[0], location[1]);
+        length += range.length;
+      }
+    } else {
+      // No locations or only one location
+      length = this.fullLength
+    }
+    return length
+  }
+
+  /**
+   * @member {Number} - Get the length of the feature in basepair (bp) using only the
+   * start and stop positions. This is the same as the range length.
+   * To get the length of the feature based on sub locations, use [length](#length).
+   */
+  get fullLength() {
     return this.range.length;
   }
+
 
   /**
    * @member {String} - Get or set the feature label.
@@ -555,8 +583,11 @@ class Feature extends CGObject {
       for (let i = 0; i < this.locations.length - 1; i++) {
         const location = this.locations[i];
         const nextLocation = this.locations[i + 1];
-        if (nextLocation) {
+        if (nextLocation && (location[1] < nextLocation[0] - 1)) {
           connectors.push([location[1]+1, nextLocation[0]-1]);
+          console.log(`Connector [${this.name}]:`, location[1]+1, nextLocation[0]-1);
+        } else {
+          console.log(`SKIPPED Connector [${this.name}]:`, location[1]+1, nextLocation[0]-1);
         }
       }
       // Draw connectors

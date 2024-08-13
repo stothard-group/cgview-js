@@ -439,7 +439,6 @@ class Layout {
     d3.zoomTransform(this.canvas.node('ui')).k = zoomFactor;
 
     // Update zoom factor
-    console.log(zoomFactor);
     this.viewer._zoomFactor = zoomFactor;
 
     // Update the BP scale, currently this is only needed for the linear layout
@@ -846,8 +845,6 @@ class Layout {
     viewer.dividers.draw();
     // Ruler
     const rulerOffsetAdjustment = viewer.dividers.track.adjustedThickness;
-    // console.log(this.centerInsideOffset, this.centerOutsideOffset);
-    // console.log(this._bbInsideOffset, this._bbOutsideOffset);
     viewer.ruler.draw(this.centerInsideOffset - rulerOffsetAdjustment, this.centerOutsideOffset + rulerOffsetAdjustment);
     // Labels
     if (viewer.annotation.visible) {
@@ -989,8 +986,6 @@ class Layout {
         }
       }
     }
-    console.log(position, this.backbone.adjustedThickness, bbOffset, direction)
-    console.log(this.viewer.zoomFactor, this.backbone.thickness, this.backbone.bpThicknessAddition);
     return direction * bbOffset;
   }
 

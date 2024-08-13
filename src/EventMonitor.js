@@ -224,12 +224,13 @@ class EventMonitor {
     // Check for feature or plot
     if (!elementType && slot) {
       // If mulitple features are returned, go with the smallest one
+      // We use fullLength (to ignore sub locations) here because we want to get the smallest feature
       const features = slot.findFeaturesForBp(bp);
       let feature;
       for (let i = 0, len = features.length; i < len; i++) {
         const currentFeature = features[i];
         if (currentFeature.visible) {
-          if (!feature || (currentFeature.length < feature.length)) {
+          if (!feature || (currentFeature.fullLength < feature.fullLength)) {
             feature = currentFeature;
           }
         }
