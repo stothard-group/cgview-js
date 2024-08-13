@@ -17,6 +17,7 @@
 - Fix resize issue [issue#16](https://github.com/stothard-group/cgview-js/issues/16)
 - Fix invert colors of caption background
 - Fix legend box not clearing on load
+- AdjustLayout after loading new JSON
 
 
 ## v1.6.0 - 2023-11-29
