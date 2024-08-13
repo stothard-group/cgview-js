@@ -267,6 +267,7 @@ class IO {
 
     // Load Layout
     // viewer._layout = new Layout(viewer, data.layout);
+    viewer.layout._adjustProportions();
     viewer.zoomTo(0, 1, {duration: 0});
   }
 
