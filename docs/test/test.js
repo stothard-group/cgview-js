@@ -2,8 +2,8 @@
 // Settings
 ///////////////////////////////////////////////////////////////////////////////
 
-// const defaultMap = 'small';
-const defaultMap = 'locations';
+const defaultMap = 'small';
+// const defaultMap = 'locations';
 // const defaultMap = 'blast';
 // const defaultMap = 'full_circle_2mbp';
 // const defaultMap = 'linear_1_6';
