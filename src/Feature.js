@@ -75,6 +75,9 @@ class Feature extends CGObject {
     this.source = utils.defaultFor(data.source, '');
     this.tags = data.tags;
     this.favorite = utils.defaultFor(data.favorite, false);
+    // This will hold the name temporarily until the Label is created
+    // Useful if there are errors in contig creation
+    this._tempName = data.name;
     // this.contig = data.contig || viewer.sequence.mapContig;
     this.contig = data.contig;
     // this.range = new CGV.CGRange(this.viewer.sequence, Number(data.start), Number(data.stop));
@@ -133,7 +136,7 @@ class Feature extends CGObject {
    * @member {String} - Get or set the name via the [Label](Label.html).
    */
   get name() {
-    return this.label && this.label.name;
+    return this.label && this.label.name || this._tempName;
   }
 
   set name(value) {
