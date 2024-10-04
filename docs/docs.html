@@ -525,6 +525,7 @@ Attribute                         | Type      | Description
 [layout](api/Viewer.html#layout)<sup>iu</sup>        | Object | [Layout](api/Layout.html) options
 [ruler](api/Viewer.html#ruler)<sup>iu</sup>          | Object | [Ruler](api/Ruler.html) options
 [dividers](api/Viewer.html#dividers)<sup>iu</sup>    | Object | [Dividers](api/Dividers.html) options
+[centerLine](api/Viewer.html#centerLine)<sup>iu</sup> | Object | [CenterLine](api/CenterLine.html) options
 [annotation](api/Viewer.html#annotation)<sup>iu</sup> | Object | [Annotation](api/Annotation.html) options
 [highlighter](api/Viewer.html#highlighter)<sup>iu</sup> | Object | [Highlighter](api/Highlighter.html) options
 
@@ -550,15 +551,17 @@ Attribute                        | Type     | Description
 [source](api/Feature.html#source)                | String   | Source of the feature
 [tags](api/Feature.html#tags)                    | String\|Array | A single string or an array of strings associated with the feature as tags
 [contig](api/Feature.html#contig)                | String\|Contig | Name of contig or the contig itself
-[start](api/Feature.html#start)<sup>rc</sup>     | Number   | Start base pair on the contig
-[stop](api/Feature.html#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig
-[mapStart](api/Feature.html#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position)
-[mapStop](api/Feature.html#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position)
+[start](api/Feature.html#start)<sup>rc</sup>     | Number   | Start base pair on the contig. Ignored if locations are present.
+[stop](api/Feature.html#stop)<sup>rc</sup>       | Number   | Stop base pair on the contig. Ignored if locations are present.
+[locations](api/Feature.html#locations)          | Array    | Array of locations (start, stop) on the contig (e.g. [[1, 100], [200, 300]]).
+[mapStart](api/Feature.html#mapStart)<sup>ic</sup> | Number   | Start base pair on the map (converted to contig position). Ignored if locations are present.
+[mapStop](api/Feature.html#mapStop)<sup>ic</sup> | Number   | Stop base pair on the map (converted to contig position). Ignored if locations are present.
 [strand](api/Feature.html#strand)                | String   | Strand the features is on [Default: 1]
 [score](api/Feature.html#score)                  | Number   | Score associated with the feature
 [favorite](api/Feature.html#favorite)            | Boolean  | Feature is a favorite [Default: false]
 [visible](api/CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object   | [Meta data](tutorials/details-meta-data.html) for Feature
+[qualifiers](api/Feature.html#qualifiers)        | Object   | Qualifiers associated with the feature (from GenBank/EMBL) [Default: {}]
 
 <sup>rc</sup> Required on Feature creation
 <sup>ic</sup> Ignored on Record creation
@@ -614,7 +617,7 @@ Attribute                         | Type      | Description
 [dataMethod](api/Track.html#dataMethod)         | String    | Methods used to extract/connect to features or a plot: sequence, source, type, tag [Default: source]
 [dataKeys](api/Track.html#dataKeys)             | String\|Array | Values used by dataMethod to extract features or a plot.
 [position](api/Track.html#position)             | String    | Position relative to backbone: inside, outside, or both [Default: both]
-[separateFeaturesBy](api/Track.html#separateFeaturesBy) | String    | How features should be separated: none, strand, or readingFrame [Default: strand]
+[separateFeaturesBy](api/Track.html#separateFeaturesBy) | String    | How features should be separated: none, strand, readingFrame, type, legend [Default: strand]
 [thicknessRatio](api/Track.html#thicknessRatio) | Number    | Thickness of track compared to other tracks [Default: 1]
 [loadProgress](api/Track.html#loadProgress)     | Number    | Number between 0 and 100 indicating progress of track loading. Used internally by workers.
 [drawOrder](api/Track.html#loadProgress)        | String    | Order to draw features in: position, score [Default: position]

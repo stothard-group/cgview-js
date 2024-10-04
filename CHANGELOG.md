@@ -2,7 +2,11 @@
 # CGView.js Changelog
 --------------------------------------------------------------------------------
 
-## 1.6.1 - Unreleased
+
+## Unreleased
+- 
+
+## 1.7.0 - 2024-10-03
 ## Added
 - Add locations to features to work with joins (i.e. complex features) (e.g. join(10..20, 25..30))
 - Add CenterLine

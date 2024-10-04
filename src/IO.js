@@ -329,6 +329,11 @@ class IO {
     return {cgview: data};
   }
 
+  // Version 1.7 started on 2024-10-02
+  // - no update required
+
+  // Version 1.6 started on 2023-11-29
+  // - no update required
 
   // Version 1.5 started on 2023-09-28
   // Moves the minArcLength from Settings to Legend and LegendItems
