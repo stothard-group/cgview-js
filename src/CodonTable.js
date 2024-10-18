@@ -306,24 +306,31 @@ class CodonTable {
     return definitions;
   }
 
-  /**
-   * Translate a sequence using this codon table
-   * @param {String} seq - The sequence to translate
-   * @param {Number} startCodon - Position (bp) of the first codon
+    /**
+   * Translate a sequence using this codon table. If the first codon, is a start codon,
+   * it will be translated as 'M' instead of the amino acid.
+   * @param {String} rawSeq - The sequence to translate
+   * @param {Number} codonStart - Position (bp) of the first codon
    */
-  translate(rawSeq, codonStart=1) {
-    const codonSize = 3;
-    const seq = rawSeq.toUpperCase();
-    let index = -1 + codonStart;
-    let codon = seq.slice(index, index + codonSize);
-    let translated = '';
-    while (codon.length === codonSize) {
-      translated += this.table[codon] || 'X';
-      index += codonSize;
-      codon = seq.slice(index, index + codonSize);
+    translate(rawSeq, codonStart=1) {
+      const codonSize = 3;
+      const seq = rawSeq.toUpperCase();
+      let index = -1 + codonStart;
+      let codon = seq.slice(index, index + codonSize);
+      let translated = '';
+      let firstCodon = true;
+      while (codon.length === codonSize) {
+        if (firstCodon && this.starts.includes(codon)) {
+          translated += 'M';
+        } else {
+          translated += this.table[codon] || 'X';
+        }
+        index += codonSize;
+        codon = seq.slice(index, index + codonSize);
+        firstCodon = false;
+      }
+      return translated;
     }
-    return translated;
-  }
 
 }
 

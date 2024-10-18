@@ -176,6 +176,12 @@ class Sequence extends CGObject {
       case 'N':
         compChar = 'N';
         break;
+      case '-':
+        compChar = '-';
+        break;
+      case '.':
+        compChar = '.';
+        break;
       }
       compSeq = compSeq + compChar;
     }

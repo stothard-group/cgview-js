@@ -43,6 +43,7 @@ import utils from './Utils';
  * [visible](CGObject.html#visible) | Boolean  | Feature is visible [Default: true]
  * [meta](CGObject.html#meta)       | Object   | [Meta data](../tutorials/details-meta-data.html) for Feature
  * [qualifiers](#qualifiers)        | Object   | Qualifiers associated with the feature (from GenBank/EMBL) [Default: {}]
+ * [translation](#translation)      | String   | Static translation of the feature. If set, this will be used instead of translating the sequence.
  * 
  * <sup>rc</sup> Required on Feature creation
  * <sup>ic</sup> Ignored on Record creation
@@ -91,6 +92,7 @@ class Feature extends CGObject {
     }
     this.codonStart = data.codonStart;
     this.geneticCode = data.geneticCode;
+    this.translation = data.translation;
     this.label = new Label(this, {name: data.name} );
     this.qualifiers = {};
     this.qualifiers = data.qualifiers;
@@ -846,14 +848,32 @@ class Feature extends CGObject {
    *
    * The source of the genetic code used for translation uses the following precedence:
    * geneticCode (provided to translate method) > geneticCode (of Feature) > geneticCode (of Viewer)
+   * 
+   * Note: if the feature has a translation property, it will be used instead of translating the sequence.
+   * - This can be overriden by providing a genetic code to the translate method. This forces the sequence to be translated.
    *
    * @param {Number} geneticCode - Number indicating the genetic code to use for the translation. This will override the any genetic code set for the feature or Viewer.
    * @return {String} - Amino acid sequence
    */
   translate(geneticCode) {
-    const code = geneticCode || this.geneticCode || this.viewer.geneticCode;
-    const table = this.viewer.codonTables.byID(code);
-    return table && table.translate(this.seq, this.start_codon);
+    if (this.translation && !geneticCode) {
+      return this.translation;
+    } else {
+      const code = geneticCode || this.geneticCode || this.viewer.geneticCode;
+      const table = this.viewer.codonTables.byID(code);
+      return table && table.translate(this.seq, this.start_codon);
+    }
+  }
+
+  /**
+   * @member {qualifiers} - Get or set the *translation*. If set, this translation will be used by [translate()](#translate) instead of translating the sequence
+   */
+  get translation() {
+    return this._translation;
+  }
+
+  set translation(value) {
+    this._translation = value;
   }
 
   /**

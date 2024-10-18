@@ -434,6 +434,7 @@ class Track extends CGObject {
     this._slots = new CGArray();
     if (['type', 'legend'].includes(this.separateFeaturesBy)) {
       const features = this.featuresBy(this.separateFeaturesBy);
+      // types can be 'type' or 'legend'
       const types = Object.keys(features);
       // Sort by number of features
       types.sort((a, b) => features[b].length - features[a].length);
