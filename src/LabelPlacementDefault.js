@@ -23,7 +23,7 @@ import utils from './Utils';
  *   - access to annotation and viewer object
  *   - some default constants: ...
  * - What should class do
- *   - have placeLabels medthod that take an aray of labels to place
+ *   - have placeLabels method that take an aray of labels to place
  *   - for each label
  *     - add rect
  *     - attchement point

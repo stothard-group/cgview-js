@@ -298,3 +298,8 @@ labelsAngled.addEventListener('click', (e) => {
   cgv.annotation.labelPlacement = 'angled';
   cgv.draw();
 });
+const labelsTest = document.getElementById('labels-test');
+labelsTest.addEventListener('click', (e) => {
+  cgv.annotation.labelPlacement = 'test';
+  cgv.draw();
+});

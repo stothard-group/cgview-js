@@ -6,6 +6,7 @@ import CGObject from './CGObject';
 import CGArray from './CGArray';
 import LabelPlacementDefault from './LabelPlacementDefault';
 import LabelPlacementAngled from './LabelPlacementAngled';
+import LabelPlacementTest from './LabelPlacementTest';
 import Font from './Font';
 import Color from './Color';
 import NCList from './NCList';
@@ -78,6 +79,7 @@ class Annotation extends CGObject {
     this.labelPlacement = utils.defaultFor(options.labelPlacement, 'default');
     // this.labelPlacementFast = 'default';
     // this.labelPlacementFull = 'angled'
+    this.labelPlacementFull = 'test'
 
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
 
@@ -202,6 +204,7 @@ class Annotation extends CGObject {
       switch (nameOrClass) {
         case 'default': return new LabelPlacementDefault(this);
         case 'angled': return new LabelPlacementAngled(this);
+        case 'test': return new LabelPlacementTest(this);
         default: throw new Error(`Label Placement name '${nameOrClass}' unknown. Use one of 'default', 'angled'`);
       }
     } else {
