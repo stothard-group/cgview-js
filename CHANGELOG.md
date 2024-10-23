@@ -4,9 +4,14 @@
 
 
 ## Unreleased
+- 
+
+
+## 1.7.1 - 2024-10-22
 - Add optional static translation to feature
   - When present, this is used by feature.translate(), instead of translated from the sequence
 - CodonTable translate uses correct M start codons
+
 
 ## 1.7.0 - 2024-10-03
 ## Added

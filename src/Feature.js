@@ -921,6 +921,9 @@ class Feature extends CGObject {
       // visible: this.visible,
       // favorite: this.favorite
     };
+    if (this.translation) {
+      json.translation = this.translation;
+    }
     if (this.codonStart && this.codonStart != 1) {
       json.codonStart = this.codonStart;
     }
