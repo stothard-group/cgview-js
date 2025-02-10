@@ -217,7 +217,10 @@ class IO {
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer._dividers = new Dividers(viewer, data.dividers);
     // Highlighter
-    viewer._highlighter = new Highlighter(viewer, data.highlighter);
+    // NOTE: The only option we kinda support (in toJSON) is 'visible' but 
+    // it's more of a manual override thing. Let's skip this for now.
+    // Also if we do this we override Highlighter settings from creating the Viewer.
+    // viewer._highlighter = new Highlighter(viewer, data.highlighter);
 
     // Load Bookmarks
     if (data.bookmarks) {

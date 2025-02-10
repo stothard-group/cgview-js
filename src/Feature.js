@@ -890,7 +890,10 @@ class Feature extends CGObject {
       for (const location of this.locations) {
         // NOTE: locations should never overlap origin so we can probably simplify this without ranges
         let range = new CGRange(this.contig, location[0], location[1]);
-        seq += this.contig.forRange(range, this.isReverse());
+        let locationSeq = this.contig.forRange(range, this.isReverse());
+        // Need to add the sequence in the correct order
+        seq = this.isReverse() ? locationSeq + seq : seq + locationSeq;
+        // seq += this.contig.forRange(range, this.isReverse());
       }
     } else {
       // No locations or only one location

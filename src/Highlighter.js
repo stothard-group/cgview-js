@@ -122,7 +122,7 @@ class Highlighter extends CGObject {
     }
   }
 
-  getTrackDiv(e) {
+  static getTrackDiv(e) {
     let trackDiv = '';
     if (e.slot) {
       const track = e.slot.track;
@@ -135,7 +135,7 @@ class Highlighter extends CGObject {
     return trackDiv;
   }
 
-  getPositionDiv(e) {
+  static getPositionDiv(e) {
     const bp = utils.commaNumber(e.bp);
     let div = `<div class='track-data'>Map: ${bp} bp</div>`;
     if (e.elementType === 'contig') {
@@ -146,11 +146,12 @@ class Highlighter extends CGObject {
     return div;
   }
 
-  getMetaDivs(metaData) {
+  static getMetaDivs(metaData) {
     if (!metaData) { return ''; }
     let metaDivs = '';
     const keys = Object.keys(metaData);
-    if (this.showMetaData && keys.length > 0) {
+    // if (this.showMetaData && keys.length > 0) {
+    if (keys.length > 0) {
       metaDivs = keys.map( k => `<div class='meta-data'><span class='meta-data-key'>${k}</span>: <span class='meta-data-value'>${metaData[k]}</span></div>`).join('');
       metaDivs = `<div class='meta-data-container'>${metaDivs}</div>`;
     }
@@ -165,9 +166,9 @@ class Highlighter extends CGObject {
       <div style='margin: 0 5px; font-size: 14px'>
         <div>${feature.type}: ${feature.name}<div>
         <div class='track-data'>Length: ${utils.commaNumber(feature.length)} bp ${fullLength}</div>
-        ${this.getMetaDivs(feature.qualifiers)}
-        ${this.getMetaDivs(feature.meta)}
-        ${this.getTrackDiv(e)}
+        ${Highlighter.getMetaDivs(feature.qualifiers)}
+        ${this.showMetaData && Highlighter.getMetaDivs(feature.meta)}
+        ${Highlighter.getTrackDiv(e)}
       </div>
     `);
   }
@@ -178,7 +179,7 @@ class Highlighter extends CGObject {
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>Score: ${score.toFixed(2)}</div>
-        ${this.getTrackDiv(e)}
+        ${Highlighter.getTrackDiv(e)}
       </div>
     `);
   }
@@ -191,9 +192,9 @@ class Highlighter extends CGObject {
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>Backbone [${length} bp]: ${contig?.name}</div>
-        ${this.getPositionDiv(e)}
-        ${this.getMetaDivs(this.viewer.backbone.meta)}
-        ${this.getMetaDivs(contigMeta)}
+        ${Highlighter.getPositionDiv(e)}
+        ${this.showMetaData && Highlighter.getMetaDivs(this.viewer.backbone.meta)}
+        ${this.showMetaData && Highlighter.getMetaDivs(contigMeta)}
       </div>
     `);
   }
@@ -205,8 +206,8 @@ class Highlighter extends CGObject {
     return (`
       <div style='margin: 0 5px; font-size: 14px'>
         <div>Contig ${contig.index}/${this.sequence.contigs().length} [${length} bp]: ${contig.name}</div>
-        ${this.getPositionDiv(e)}
-        ${this.getMetaDivs(contig.meta)}
+        ${Highlighter.getPositionDiv(e)}
+        ${this.showMetaData && Highlighter.getMetaDivs(contig.meta)}
       </div>
     `);
   }
