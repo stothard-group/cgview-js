@@ -15,6 +15,7 @@ body {
   line-height: normal;
   /* This color will fill in the letterbox on iPhone landscape mode */
   background-color: rgb(33, 37, 41);
+  /* background-color: black; */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -108,7 +109,8 @@ main.welcome {
 .welcome-bg {
   position: fixed;
   z-index: -1;
-  background-color: rgb(32, 32, 32);
+  /* background-color: rgb(32, 32, 32); */
+  background-color: black;
   width: 100%;
 }
 
@@ -332,6 +334,7 @@ pre[class*="language-"] {
 }
 
 .btn-proksee {
+  pointer-events: unset;
   width: 120px;
   height: 45px;
   border: 1px solid black;
@@ -349,7 +352,10 @@ pre[class*="language-"] {
 }
 
 .btn-proksee:hover {
-  filter: invert(89%) sepia(11%) saturate(1202%) hue-rotate(165deg) brightness(95%) contrast(92%);
+  /* filter: invert(89%) sepia(11%) saturate(1202%) hue-rotate(165deg) brightness(95%) contrast(92%); */
+  filter: invert(100%);
+  border: solid 2px #FFF;
+  cursor: pointer !important;
 }
 
 
