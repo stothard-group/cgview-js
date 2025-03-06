@@ -66,6 +66,7 @@ class Caption extends CGObject {
     });
     // Setting font will refresh the caption and draw
     this.font = utils.defaultFor(options.font, 'sans-serif, plain, 8');
+    this.pluginOptions = options.pluginOptions;
     // FIXME: go through caption initialization and reduce to calles to Refresh (we only need one)
   }
 
@@ -433,6 +434,9 @@ class Caption extends CGObject {
     // Optionally add default values
     if (!this.visible || options.includeDefaults) {
       json.visible = this.visible;
+    }
+    if (this.pluginOptions) {
+      json.pluginOptions = this.pluginOptions;
     }
     return json;
   }

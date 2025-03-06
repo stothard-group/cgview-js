@@ -13,8 +13,10 @@
 // Optional methods:
 // - install: function(cgv) {}
 //   - This function will be called when the plugin is installed.
+//   - Typlically this is where event listeners are added.
 // - uninstall: function(cgv) {}
-
+//   - (NIY) This function will be called when the plugin is unstalled.
+//   - Typlically this is where event listeners are removed.
 
 class Plugins {
 
@@ -43,6 +45,24 @@ class Plugins {
     return ['General', 'CaptionDynamicText', 'LabelPlacement', 'SVGContext'];
   }
 
+  // The following 2 methods could be added to CGObject so:
+  // - obj.hasPlugin(pluginName)
+  // - obj.optionsForPlugin(pluginName)
+  // static objectHasPlugin(pluginName, obj) {
+  //   if (obj.pluginOptions) {
+  //     const pluginIDs = Object.keys(obj.pluginOptions);
+  //     return pluginIDs.includes(pluginName);
+  //   }
+  //   // return obj.pluginOptions && obj.pluginOptions.some(plugin => plugin.name === pluginName);
+  // }
+
+  // static optionsForPlugin(pluginName, obj) {
+  //   if (this.objectHasPlugin(pluginName, obj)) {
+  //     return obj.pluginOptions[pluginName];
+  //   }
+  // }
+
+  // Adding a plugin to the viewer
   add(plugin) {
     console.log(`Plugin Add: ${plugin.name}`);
     console.log(plugin);

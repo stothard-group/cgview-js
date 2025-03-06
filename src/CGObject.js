@@ -115,6 +115,30 @@ class CGObject {
   }
 
   /**
+   * Does this obejct have a particular plugin?
+   * @param {String} pluginName - The name of the plugin
+   * @return {Boolean} - Whether the object has the plugin
+   */
+  hasPlugin(pluginName) {
+    if (this.pluginOptions) {
+      const pluginIDs = Object.keys(this.pluginOptions);
+      return pluginIDs.includes(pluginName);
+    }
+  }
+
+  /**
+   * Get the options for a particular plugin.
+   * @param {String} pluginName - The name of the plugin
+   * @return {Object} - The options for the plugin or undefined if the plugin is not found
+   */
+  optionsForPlugin(pluginName) {
+    if (this.hasPlugin(pluginName)) {
+      return this.pluginOptions[pluginName];
+    }
+  }
+
+
+  /**
    * Remove the object from Viewer.objects
    */
   deleteFromObjects() {
