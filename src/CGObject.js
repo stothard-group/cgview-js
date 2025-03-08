@@ -114,6 +114,46 @@ class CGObject {
     this._meta = value;
   }
 
+
+  /**
+   * Add a plugin to the object.
+   * @param {String} name - The name of the plugin
+   * @param {Object} options - The plugin options
+   */
+  addPluginOptions(name, options) {
+    if (this.hasPlugin(name)) {
+      throw new Error(`Plugin ${name} already exists.`);
+    }
+    if (!this.pluginOptions) {
+      this.pluginOptions = {};
+    }
+    if (this.viewer.plugins.includes(name)) {
+      this.pluginOptions[name] = options;
+    } else {
+      throw new Error(`Plugin '${name}' not found in viewer.`);
+    }
+  }
+
+  /**
+   * Update plugin options. Merge the new options with the old options.
+   * @param {String} name - The name of the plugin
+   * @param {Object} options - The plugin options
+   */
+  updatePluginOptions(name, options) {
+    if (this.hasPlugin(name)) {
+      const updates = {...this.pluginOptions[name], ...options};
+      const pluginOptions = {...this.pluginOptions, [name]: updates};
+      if (typeof this.update === 'function') {
+        this.update({pluginOptions});
+      } else {
+        console.log('No update function found.', this, pluginOptions);
+        // this.pluginOptions = pluginOptions;
+      }
+    } else {
+      throw new Error(`Plugin '${name}' not found.`);
+    }
+  }
+
   /**
    * Does this obejct have a particular plugin?
    * @param {String} pluginName - The name of the plugin
