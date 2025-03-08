@@ -3,6 +3,13 @@ import Plugins from "./Plugins";
 // Imaging multiple plugins for CaptionDynamicText
 // - TrackList
 // - Feature Count (show number of features)
+// OPTIONS
+// - Separator (return, semicolon, comma)
+// - Start Outside (true, false)
+// - Collapse Tracks (true, false)
+// collapse_tracks
+// start_outside
+// separator
 
 // Built-in plugins
 export const CaptionTrackList = {
@@ -27,6 +34,7 @@ export const CaptionTrackList = {
       });
     }
 
+    // FIXME: track-update MUST ignore the loading of GC content/skew
     cgv.on(`captions-update.${pluginName}`, () => { setDynamicText(cgv); });
     cgv.on(`tracks-add.${pluginName}`,    () => { setDynamicText(cgv); });
     cgv.on(`tracks-remove.${pluginName}`, () => { setDynamicText(cgv); });
