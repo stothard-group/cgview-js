@@ -121,8 +121,8 @@ class CGObject {
    */
   hasPlugin(pluginName) {
     if (this.pluginOptions) {
-      const pluginIDs = Object.keys(this.pluginOptions);
-      return pluginIDs.includes(pluginName);
+      const pluginIDs = Object.keys(this.pluginOptions).map(key => key.toLowerCase());
+      return pluginIDs.includes(pluginName.toLowerCase());
     }
   }
 
