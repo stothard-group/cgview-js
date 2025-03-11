@@ -34,6 +34,7 @@ import LegendItem from './LegendItem';
 import Messenger from './Messenger';
 import NCList from './NCList';
 import Plot from './Plot';
+import CaptionTrackList from './PluginCaptionTrackList';
 import Plugins from './Plugins';
 import { PluginsStandard } from './PluginsStandard';
 import Position from './Position';
@@ -88,6 +89,7 @@ export {
   Messenger,
   NCList,
   Plot,
+  CaptionTrackList,
   Plugins,
   PluginsStandard,
   Position,
