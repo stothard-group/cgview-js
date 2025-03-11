@@ -35,6 +35,7 @@ import Messenger from './Messenger';
 import NCList from './NCList';
 import Plot from './Plot';
 import Plugins from './Plugins';
+import { PluginsStandard } from './PluginsStandard';
 import Position from './Position';
 import Rect from './Rect';
 import Ruler from './Ruler';
@@ -88,6 +89,7 @@ export {
   NCList,
   Plot,
   Plugins,
+  PluginsStandard,
   Position,
   Rect,
   Ruler,

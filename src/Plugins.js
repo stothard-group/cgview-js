@@ -1,29 +1,64 @@
-// This file is the interface for the plugins.
-// This is a test of how to create a plugin system.
-// Initially, we will add a built-in plugin or two to test the system.
+//////////////////////////////////////////////////////////////////////////////
+// CGView Standard Builtin Plugins Export
+//////////////////////////////////////////////////////////////////////////////
 
-// Thoughts/Layout:
-// We can allow objects or classes to be passed in as plugins.
+import CaptionTrackList from './PluginCaptionTrackList';
 
-// Required properties:
-// - name
-// - version
-// - type
+/**
+ *  PluginsStandard is a collection of default plugins that are included with the CGview.
+ *  These plugins are installed when the CGview is created.
+ *
+ * Currently, the following plugins are included:
+ * - CaptionTrackList
+ *
+ */
+export const PluginsStandard = [
+  CaptionTrackList,
+];
 
-// Optional methods:
-// - install: function(cgv) {}
-//   - This function will be called when the plugin is installed.
-//   - Typlically this is where event listeners are added.
-// - uninstall: function(cgv) {}
-//   - (NIY) This function will be called when the plugin is unstalled.
-//   - Typlically this is where event listeners are removed.
 
-class Plugins {
+//////////////////////////////////////////////////////////////////////////////
+// CGview Plugins
+//////////////////////////////////////////////////////////////////////////////
 
-  // plugins: array of plugins or a single plugin object
+/**
+ * Plugins is the class that manages the plugins for the CGview. It allows
+ * plugins to be added to the viewer and manages the installation and
+ * uninstallation of the plugins.
+ *
+ * There are methods for adding plugins, checking if a plugin is included,
+ * and getting or settings the options for a particular plugin.
+ *
+ * Plugins are objects with the following properties:
+ * 
+ * Required plugin properties:
+ * - name: typically the class name (e.g. CaptionTrackList)
+ * - id:
+ *   - unique identifier for the plugin (case-sensitive)
+ *   - typically starts with plugin (e.g. pluginCaptionTrackList)
+ * - version: (NIY) version number of the plugin
+ * - type: (NIY) type of plugin (e.g. General, CaptionDynamicText, LabelPlacement, SVGContext)
+ *
+ * Optional plugin methods:
+ * - install: function(cgv) {}
+ *   - This function will be called when the plugin is installed.
+ *   - Typlically this is where event listeners are added.
+ * - uninstall: function(cgv) {}
+ *   - (NIY) This function will be called when the plugin is unstalled.
+ *   - Typlically this is where event listeners are removed.
+ *
+ */
+
+export default class Plugins {
+
+  /**
+   * Create a new Plugins object (one per viewer).
+   * @param {Viewer} viewer - The viewer
+   * @param {Array|Object} plugins - Plugin or array of plugins to add to the viewer
+   */
   constructor(viewer, plugins) {
     this.viewer = viewer;
-    this.plugins = [];
+    this._plugins = [];
     if (plugins) {
       // plugins are an array
       if (Array.isArray(plugins)) {
@@ -41,33 +76,24 @@ class Plugins {
     }
   }
 
+  // NOT USED YET
   static get types() {
     return ['General', 'CaptionDynamicText', 'LabelPlacement', 'SVGContext'];
   }
 
-  // The following 2 methods could be added to CGObject so:
-  // - obj.hasPlugin(pluginName)
-  // - obj.optionsForPlugin(pluginName)
-  // static objectHasPlugin(pluginName, obj) {
-  //   if (obj.pluginOptions) {
-  //     const pluginIDs = Object.keys(obj.pluginOptions);
-  //     return pluginIDs.includes(pluginName);
-  //   }
-  //   // return obj.pluginOptions && obj.pluginOptions.some(plugin => plugin.name === pluginName);
-  // }
-
-  // static optionsForPlugin(pluginName, obj) {
-  //   if (this.objectHasPlugin(pluginName, obj)) {
-  //     return obj.pluginOptions[pluginName];
-  //   }
-  // }
-
-  // Adding a plugin to the viewer
+  /**
+   * Add a plugin to the viewer.
+   * @param {Object} plugin - The plugin object to add
+   */
+  // 
   add(plugin) {
-    console.log(`Plugin Add: ${plugin.name}`);
+    // console.log(`Plugin Add: ${plugin.name}`);
     console.log(plugin);
     if (!plugin.name) {
       throw new Error('Plugin must have a name.');
+    }
+    if (!plugin.id) {
+      throw new Error('Plugin must have a ID.');
     }
     if (!plugin.version) {
       throw new Error('Plugin must have a version.');
@@ -84,11 +110,104 @@ class Plugins {
       }
       plugin.install(this.viewer);
     }
-    this.plugins.push(plugin);
+    this._plugins.push(plugin);
+  }
+
+  /**
+   * Is a particular plugin included in the viewer?
+   * @param {String} pluginID - The ID of the plugin
+   * @return {Boolean} - Whether the object has the plugin
+   */
+  includes(pluginID) {
+    return this._plugins.some(plugin => plugin.name === pluginID);
+  }
+
+  /**
+   * Return the plugin object for a particular plugin ID.
+   * This is useful for calling methods on the plugin (if they exist).
+   * @param {String} pluginID - The ID of the plugin to return
+   * @returns {Plugin|Object}
+   */
+  get(pluginID) {
+    return this._plugins.find(plugin => plugin.id === pluginID);
+  }
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // CGObject - PLUGIN METHODS
+  // These methods are used by CGObjects to add and update plugins
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Add a plugin to the object.
+   * @param {Object} obj - The object to which the plugin is being added
+   * @param {String} id - The id of the plugin
+   * @param {Object} options - The plugin options
+   */
+  _addPluginOptions(obj, id, options) {
+    if (obj.hasPlugin(id)) {
+      throw new Error(`Plugin '${id}' already exists.`);
+    }
+    if (!obj.pluginOptions) {
+      obj.pluginOptions = {};
+    }
+    if (this.viewer.plugins.includes(id)) {
+      obj.pluginOptions[id] = options;
+    } else {
+      throw new Error(`Plugin '${id}' not found in viewer.`);
+    }
+  }
+
+  /**
+   * Update plugin options. Merge the new options with the old options.
+   * If the object does not have the plugin, throw an error
+   * @param {Object} obj - Object that is being updated 
+   * @param {String} id - The id of the plugin
+   * @param {Object} options - The plugin options
+   */
+  _updatePluginOptions(obj, id, options) {
+    // console.log(id, options)
+    if (obj.hasPlugin(id)) {
+      const updates = {...obj.pluginOptions[id], ...options};
+      // console.log("UPDATES", updates)
+      const pluginOptions = {...obj.pluginOptions, [id]: updates};
+      // console.log("PLUGIN OPTIONS", pluginOptions)
+      if (typeof obj.update === 'function') {
+        obj.update({pluginOptions});
+      } else {
+        console.log('No update function found.', obj, pluginOptions);
+      }
+    } else {
+      throw new Error(`Plugin '${id}' not found.`);
+    }
+  }
+
+  /**
+   * Does the object have a particular plugin?
+   * @param {Object} obj - The object to check for the plugin
+   * @param {String} pluginID - The ID of the plugin
+   * @return {Boolean} - Whether the object has the plugin
+   */
+  _hasPlugin(obj, pluginID) {
+    if (obj.pluginOptions) {
+      // const pluginIDs = Object.keys(obj.pluginOptions).map(key => key.toLowerCase());
+      // return pluginIDs.includes(pluginID.toLowerCase());
+      const pluginIDs = Object.keys(obj.pluginOptions);
+      return pluginIDs.includes(pluginID);
+    }
+  }
+
+  /**
+   * Get the options for a particular plugin.
+   * @param {Object} obj - Object to retrieve the plugin options from
+   * @param {String} pluginName - The name of the plugin
+   * @return {Object} - The options for the plugin or undefined if the plugin is not found
+   */
+  _optionsForPlugin(obj, pluginID) {
+    if (obj.hasPlugin(pluginID)) {
+      return obj.pluginOptions[pluginID];
+    }
   }
 
 }
-
-export default Plugins;
-
 

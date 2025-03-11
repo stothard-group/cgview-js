@@ -1,19 +1,37 @@
-import Plugins from "./Plugins";
+//////////////////////////////////////////////////////////////////////////////
+// CGView Standard Builtin Plugins
+//////////////////////////////////////////////////////////////////////////////
 
-// Imaging multiple plugins for CaptionDynamicText
-// - TrackList
-// - Feature Count (show number of features)
+/**
+ *  PluginsStandard is a collection of default plugins that are included with the CGview.
+ *  These plugins are installed when the CGview is created.
+ *
+ * Currently, the following plugins are included:
+ * - CaptionTrackList
+ *
+ */
+export const PluginsStandard = [
+  CaptionTrackList,
+];
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Plugin: CaptionTrackList
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * CaptionTrackList is a plugin that adds a caption to the map that lists
+ * the tracks in the order they are displayed. The caption is updated whenever
+ * tracks are added, removed, updated, or moved.
+ */
+// Plugin: CaptionDynamicText
 // OPTIONS
-// - Separator (return, semicolon, comma)
-// - Start Outside (true, false)
-// - Collapse Tracks (true, false)
-// collapse_tracks
-// start_outside
-// separator
-
-// Built-in plugins
+// - collapseTracks: Bool [default: false]
+// - startFrom: String: outside, inside, backbone [default: 'outside']
+// - separator: String: return, semicolon, comma [default: 'return']
 export const CaptionTrackList = {
   name:    'CaptionTrackList',
+  id:      'pluginCaptionTrackList',
   version: '0.1.0',
   type:    'General',
   install: function(cgv) {
@@ -23,10 +41,8 @@ export const CaptionTrackList = {
     function setDynamicText(cgv) {
       const tracks = cgv.tracks();
       cgv.captions().forEach(caption => {
-        // if (Plugins.objectHasPlugin(pluginName, caption)) {
         if (caption.hasPlugin(pluginName)) {
           console.log("Setting dynamic text for caption", caption);
-          // const options = Plugins.optionsForPlugin(pluginName, caption);
           const options = caption.optionsForPlugin(pluginName);
           console.log("Options", options);
           caption.name = getListingText(tracks, cgv.format === 'linear', options);
@@ -35,6 +51,7 @@ export const CaptionTrackList = {
     }
 
     // FIXME: track-update MUST ignore the loading of GC content/skew
+    cgv.on(`captions-add.${pluginName}`,  () => { setDynamicText(cgv); });
     cgv.on(`captions-update.${pluginName}`, () => { setDynamicText(cgv); });
     cgv.on(`tracks-add.${pluginName}`,    () => { setDynamicText(cgv); });
     cgv.on(`tracks-remove.${pluginName}`, () => { setDynamicText(cgv); });
@@ -49,7 +66,8 @@ export const CaptionTrackList = {
   uninstall: function(cgv) {
     const pluginName = this.name;
     console.log(`Uninstalling ${pluginName}`);
-    cgv.ooff(`captions-update.${pluginName}`);
+    cgv.off(`captions-add.${pluginName}`);
+    cgv.off(`captions-update.${pluginName}`);
     cgv.off(`tracks-add.${pluginName}`);
     cgv.off(`tracks-remove.${pluginName}`);
     cgv.off(`tracks-update.${pluginName}`);
@@ -58,9 +76,6 @@ export const CaptionTrackList = {
   }
 };
 
-export const BuiltInPlugins = [
-  CaptionTrackList,
-];
 
 
 function getSeparator(separatorKey) {
@@ -76,7 +91,8 @@ function getSeparator(separatorKey) {
 
 function getListingText(tracks, isLinear=false, options={}) {
   // console.log(options)
-  const startOutside = options.start_outside;
+  //FIXME: This is a hack to get the startFrom option to work
+  const startOutside = options.startFrom === 'outside';
   const separator = getSeparator(options.separator);
   const label = isLinear ? 'lane' : 'ring';
   const direction = isLinear ? (startOutside ? 'top' : 'bottom') : (startOutside ? 'outermost' : 'innermost');
@@ -127,7 +143,7 @@ function getListingText(tracks, isLinear=false, options={}) {
 
   let entries = [];
   let slots = [];
-  if (options.collapse_tracks) {
+  if (options.collapseTracks) {
     for (let i=0, len=listing.length; i < len; i++) {
       const track = listing[i].track;
       const s = listing[i].slot;
@@ -146,9 +162,11 @@ function getListingText(tracks, isLinear=false, options={}) {
 }
 
 function displayLabel(index, slots=[], backbone=false, isLinear=false) {
+  const linearLabel = 'Lane';
+  const circularLabel = 'Ring';
   if (backbone) return '';
   slots = (Array.isArray(slots)) ? slots : [slots];
-  let label = isLinear ? 'Lane' : 'Ring';
+  let label = isLinear ? linearLabel : circularLabel;
   if (slots.length > 1) { label += 's'; }
 
   if (slots.length <= 1) {

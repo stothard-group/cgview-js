@@ -114,56 +114,70 @@ class CGObject {
     this._meta = value;
   }
 
+  /**
+   * Remove the object from Viewer.objects
+   */
+  deleteFromObjects() {
+    delete this.viewer._objects[this.cgvID];
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // PLUGIN METHODS
+  //////////////////////////////////////////////////////////////////////////////
 
   /**
    * Add a plugin to the object.
-   * @param {String} name - The name of the plugin
+   * @param {String} id - The id of the plugin
    * @param {Object} options - The plugin options
    */
-  addPluginOptions(name, options) {
-    if (this.hasPlugin(name)) {
-      throw new Error(`Plugin ${name} already exists.`);
-    }
-    if (!this.pluginOptions) {
-      this.pluginOptions = {};
-    }
-    if (this.viewer.plugins.includes(name)) {
-      this.pluginOptions[name] = options;
-    } else {
-      throw new Error(`Plugin '${name}' not found in viewer.`);
-    }
+  addPluginOptions(id, options) {
+    this.viewer.plugins?._addPluginOptions(this, id, options);
+    // if (this.hasPlugin(id)) {
+    //   throw new Error(`Plugin ${id} already exists.`);
+    // }
+    // if (!this.pluginOptions) {
+    //   this.pluginOptions = {};
+    // }
+    // if (this.viewer.plugins.includes(id)) {
+    //   this.pluginOptions[id] = options;
+    // } else {
+    //   throw new Error(`Plugin '${id}' not found in viewer.`);
+    // }
   }
 
   /**
    * Update plugin options. Merge the new options with the old options.
-   * @param {String} name - The name of the plugin
+   * @param {String} id - The id of the plugin
    * @param {Object} options - The plugin options
    */
-  updatePluginOptions(name, options) {
-    if (this.hasPlugin(name)) {
-      const updates = {...this.pluginOptions[name], ...options};
-      const pluginOptions = {...this.pluginOptions, [name]: updates};
-      if (typeof this.update === 'function') {
-        this.update({pluginOptions});
-      } else {
-        console.log('No update function found.', this, pluginOptions);
-        // this.pluginOptions = pluginOptions;
-      }
-    } else {
-      throw new Error(`Plugin '${name}' not found.`);
-    }
+  updatePluginOptions(id, options) {
+    this.viewer.plugins?._updatePluginOptions(this, id, options);
+    // if (this.hasPlugin(id)) {
+    //   const updates = {...this.pluginOptions[id], ...options};
+    //   const pluginOptions = {...this.pluginOptions, [id]: updates};
+    //   if (typeof this.update === 'function') {
+    //     this.update({pluginOptions});
+    //   } else {
+    //     console.log('No update function found.', this, pluginOptions);
+    //     // this.pluginOptions = pluginOptions;
+    //   }
+    // } else {
+    //   throw new Error(`Plugin '${id}' not found.`);
+    // }
   }
 
   /**
    * Does this obejct have a particular plugin?
-   * @param {String} pluginName - The name of the plugin
+   * @param {String} pluginID - The ID of the plugin
    * @return {Boolean} - Whether the object has the plugin
    */
-  hasPlugin(pluginName) {
-    if (this.pluginOptions) {
-      const pluginIDs = Object.keys(this.pluginOptions).map(key => key.toLowerCase());
-      return pluginIDs.includes(pluginName.toLowerCase());
-    }
+  hasPlugin(pluginID) {
+    return this.viewer.plugins?._hasPlugin(this, pluginID);
+    // return this.viewer.plugins.
+    // if (this.pluginOptions) {
+    //   const pluginIDs = Object.keys(this.pluginOptions).map(key => key.toLowerCase());
+    //   return pluginIDs.includes(pluginID.toLowerCase());
+    // }
   }
 
   /**
@@ -171,19 +185,13 @@ class CGObject {
    * @param {String} pluginName - The name of the plugin
    * @return {Object} - The options for the plugin or undefined if the plugin is not found
    */
-  optionsForPlugin(pluginName) {
-    if (this.hasPlugin(pluginName)) {
-      return this.pluginOptions[pluginName];
-    }
+  optionsForPlugin(pluginID) {
+    return this.viewer.plugins?._optionsForPlugin(this, pluginID);
+    // if (this.hasPlugin(pluginID)) {
+    //   return this.pluginOptions[pluginID];
+    // }
   }
 
-
-  /**
-   * Remove the object from Viewer.objects
-   */
-  deleteFromObjects() {
-    delete this.viewer._objects[this.cgvID];
-  }
 
 }
 

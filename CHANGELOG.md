@@ -7,6 +7,8 @@
 - Fix seq with locations for features on reverse strand
 - Removed jsdoc-dash: "jsdoc-dash-template": "^2.1.0"
 - Highlighter getTrackDiv, getPositionDiv, getMetaDivs are now static methods
+- Adding basic plugin system
+  - Testing with CaptionTrackList plugin
 
 
 ## 1.7.1 - 2024-10-22

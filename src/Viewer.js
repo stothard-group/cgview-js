@@ -29,8 +29,7 @@ import Feature from './Feature';
 import Contig from './Contig';
 import Plot from './Plot';
 import Plugins from './Plugins';
-// import * as PluginsDefault from './PluginsDefault';
-import { BuiltInPlugins } from './PluginsDefault';
+import { PluginsStandard } from './Plugins';
 import Bookmark from './Bookmark';
 import CGRange from './CGRange';
 import initializeZooming from './Viewer-Zoom';
@@ -184,9 +183,7 @@ class Viewer {
     this.externals.SVGContext = options.SVGContext;
 
     // Plugins
-    // console.log('PLUGINS', PluginsDefault.CaptionDynamicText);
-    console.log('PLUGINS', BuiltInPlugins);
-    this.plugins = new Plugins(this, BuiltInPlugins);
+    this.plugins = new Plugins(this, PluginsStandard);
     // FIXME: add plugin from options
     // this.plugins.add(options.plugins);
 
