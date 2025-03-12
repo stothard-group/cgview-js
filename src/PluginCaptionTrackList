@@ -143,7 +143,11 @@ const CaptionTrackList = (() => {
       const belowBackbone = listing.slice(backboneIndex + 1);
       const aboveBackboneEntries = _getListingSubsetText(aboveBackone, isLinear, options).reverse()
       const belowBackboneEntries = _getListingSubsetText(belowBackbone, isLinear, options, true);
-      text += aboveBackboneEntries.join(separator) + separator + listing[backboneIndex].track.name + separator + belowBackboneEntries.join(separator);
+      text += aboveBackboneEntries.join(separator) +
+              (aboveBackboneEntries.length ? separator : '') +
+              listing[backboneIndex].track.name +
+              (belowBackboneEntries.length ? separator : '') +
+              belowBackboneEntries.join(separator);
     } else {
       entries = _getListingSubsetText(listing, isLinear, options);
       text += entries.join(separator);
@@ -198,7 +202,7 @@ const CaptionTrackList = (() => {
       console.log(`Installing ${pluginName}`);
 
       const setDynamicText = () => {
-        const tracks = cgv.tracks();
+        const tracks = cgv.tracks().filter( (t) => t.visible );
         cgv.captions().forEach((caption) => {
           if (caption.hasPlugin(pluginID)) {
             const options = caption.optionsForPlugin(pluginID);
