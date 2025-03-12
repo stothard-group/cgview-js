@@ -29,7 +29,7 @@
  *   - The separator to use between entries. Options are 'return', 'semicolon', and 'comma'.
  *   - [Default: return].
  * - startFrom:
- *   - The direction to start listing tracks. Options are 'inside' and 'outside'.
+ *   - The direction to start listing tracks. Options are 'inside', 'outside', 'backbone'.
  *   - [Default: outside].
  */
 
@@ -46,7 +46,7 @@ const CaptionTrackList = (() => {
 
   // Display label (which lanes/rings) for the track
   // e.g. 'Lane 1: ', 'Lanes 1,2: ', 'Lanes 1-3: ', 'Ring 1: ', 'Rings 1,2: ', 'Rings 1-3: '
-  const displayLabel = (index, slots = [], backbone = false, isLinear = false) => {
+  const displayLabel = (index, slots = [], backbone = false, isLinear = false, negative = false) => {
     const linearLabel = 'Lane';
     const circularLabel = 'Ring';
     if (backbone) return '';
@@ -55,9 +55,15 @@ const CaptionTrackList = (() => {
     let label = isLinear ? linearLabel : circularLabel;
     label += slots.length > 1 ? 's' : '';
 
-    if (slots.length <= 1) return `${label} ${index + 1}: `;
-    if (slots.length === 2) return `${label} ${index},${index + 1}: `;
-    return `${label} ${index + 2 - slots.length}-${index + 1}: `;
+    if (negative) {
+      if (slots.length <= 1) return `${label} -${index + 1}: `;
+      if (slots.length === 2) return `${label} -${index},-${index + 1}: `;
+      return `${label} -${index + 2 - slots.length}-${index + 1}: `;
+    } else {
+      if (slots.length <= 1) return `${label} ${index + 1}: `;
+      if (slots.length === 2) return `${label} ${index},${index + 1}: `;
+      return `${label} ${index + 2 - slots.length}-${index + 1}: `;
+    }
   };
 
   // Slots is an array of strings that decribes specific slots
@@ -74,9 +80,10 @@ const CaptionTrackList = (() => {
     const startOutside = options.startFrom === 'outside';
     const separator = getSeparator(options.separator);
     const label = isLinear ? 'lane' : 'ring';
-    const direction = isLinear
+    let direction = isLinear
       ? startOutside ? 'top' : 'bottom'
       : startOutside ? 'outermost' : 'innermost';
+    if (options.startFrom === 'backbone') direction = 'backbone';
 
     // First line of the caption
     let text = `Starting from the ${direction} ${label}:${separator === '\n' ? '\n' : ' '}`;
@@ -124,11 +131,30 @@ const CaptionTrackList = (() => {
       }
     }
 
-    if (!startOutside) listing.reverse();
+    if (options.startFrom === 'inside') listing.reverse();
 
-    const entries = [];
+    let entries = [];
     let slots = [];
 
+    console.log(listing)
+    if (options.startFrom === 'backbone') {
+      const backboneIndex = listing.findIndex(item => item.track.backbone);
+      const aboveBackone = listing.slice(0, backboneIndex).reverse();
+      const belowBackbone = listing.slice(backboneIndex + 1);
+      const aboveBackboneEntries = _getListingSubsetText(aboveBackone, isLinear, options).reverse()
+      const belowBackboneEntries = _getListingSubsetText(belowBackbone, isLinear, options, true);
+      text += aboveBackboneEntries.join(separator) + separator + listing[backboneIndex].track.name + separator + belowBackboneEntries.join(separator);
+    } else {
+      entries = _getListingSubsetText(listing, isLinear, options);
+      text += entries.join(separator);
+    }
+
+    return text;
+  };
+
+  const _getListingSubsetText = (listing, isLinear = false, options = {}, negative = false) => {
+    const entries = [];
+    let slots = [];
     if (options.collapseTracks) {
       for (let i = 0; i < listing.length; i++) {
         const current = listing[i];
@@ -138,18 +164,17 @@ const CaptionTrackList = (() => {
         if (next && next.track === current.track) continue;
 
         entries.push(
-          `${displayLabel(i, slots, current.track.backbone, isLinear)}${current.track.name}${displaySlots(slots)}`
+          `${displayLabel(i, slots, current.track.backbone, isLinear, negative)}${current.track.name}${displaySlots(slots)}`
         );
         slots = [];
       }
     } else {
       listing.forEach((t, i) =>
-        entries.push(`${displayLabel(i, t.slot, t.track.backbone, isLinear)}${t.track.name}${displaySlots(t.slot)}`)
+        entries.push(`${displayLabel(i, t.slot, t.track.backbone, isLinear, negative)}${t.track.name}${displaySlots(t.slot)}`)
       );
     }
-
-    return text + entries.join(separator);
-  };
+    return entries;
+  }
 
   // Events to listen for
   const events = [
