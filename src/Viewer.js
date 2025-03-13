@@ -1611,7 +1611,7 @@ class Viewer {
   /**
    * Inverts the colors of all map elements (e.g. legendItems, backbone, background).
    */
-  invertColors() {
+  invertAllColors() {
     this.settings.update({backgroundColor: this.settings.backgroundColor.invert().rgbaString});
 
     this.legend.invertColors();
@@ -1624,6 +1624,31 @@ class Viewer {
     this.sequence.invertColors();
     this.annotation.invertColors();
     this.draw();
+  }
+  /**
+   * Inverts the colors of all map elements EXCEPT legendItems swatchColors
+   */
+  invertMapColors() {
+    this.settings.update({backgroundColor: this.settings.backgroundColor.invert().rgbaString});
+
+    this.legend.invertColors(false);
+    this.captions().each( (i, caption) => caption.invertColors() );
+    this.refreshCanvasLayer();
+    this.ruler.invertColors();
+    this.dividers.invertColors();
+    this.centerLine.invertColors();
+    this.backbone.invertColors();
+    this.sequence.invertColors();
+    this.annotation.invertColors();
+    this.draw();
+  }
+
+  /**
+   * DEPRECATED: use [Viewer.invertAllColors()](Viewer.html#invertAllColors) or [Viewer.invertMapColors()](Viewer.html#invertMapColors)
+   */
+  invertColors() {
+    console.warn('The invertColors method is deprecated. Use invertAllColors or invertMapColors instead.');
+    this.invertAllColors();
   }
 
   /**

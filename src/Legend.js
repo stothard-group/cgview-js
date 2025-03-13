@@ -474,12 +474,12 @@ class Legend extends CGObject {
   /**
    * Invert colors of all legendItems
    */
-  invertColors() {
+  invertColors(all = true) {
     this.update({
       backgroundColor: this.backgroundColor.invert().rgbaString,
       defaultFontColor: this.defaultFontColor.invert().rgbaString
     });
-    this.items().each( (i, item) => item.invertColors() );
+    this.items().each( (i, item) => item.invertColors(all) );
   }
 
   /**

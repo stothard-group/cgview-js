@@ -466,9 +466,11 @@ class LegendItem extends CGObject {
   /**
    * Invert the swatch color
    */
-  invertColors() {
-    const attributes = {
-      swatchColor: this.swatchColor.invert().rgbaString
+  invertColors(all = true) {
+    const attributes = {};
+    if (all) {
+      attributes.swatchColor = this.swatchColor.invert().rgbaString;
+      // swatchColor: this.swatchColor.invert().rgbaString
     };
     if (!this.usingDefaultFontColor) {
       attributes.fontColor = this.fontColor.invert().rgbaString;
