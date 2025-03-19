@@ -1644,11 +1644,15 @@ class Viewer {
   }
 
   /**
-   * DEPRECATED: use [Viewer.invertAllColors()](Viewer.html#invertAllColors) or [Viewer.invertMapColors()](Viewer.html#invertMapColors)
+   * Inverts the colors of the map. By default ALL map elements (e.g. legendItems, backbone, background) are inverted.
+   * @param {Boolean} excludeLegends - If true, legendItem swatchColors are NOT inverted.
    */
-  invertColors() {
-    console.warn('The invertColors method is deprecated. Use invertAllColors or invertMapColors instead.');
-    this.invertAllColors();
+  invertColors({excludeLegends=false} = {}) {
+    if (excludeLegends) {
+      this.invertMapColors();
+    } else {
+      this.invertAllColors();
+    }
   }
 
   /**

@@ -9,6 +9,7 @@
 - Highlighter getTrackDiv, getPositionDiv, getMetaDivs are now static methods
 - Adding basic plugin system
   - Testing with CaptionTrackList plugin
+- Added option to invertColors (`excludeLegends`) to exclude legend item swatch colors
 
 
 ## 1.7.1 - 2024-10-22
