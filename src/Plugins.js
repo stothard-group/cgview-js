@@ -3,19 +3,16 @@
 //////////////////////////////////////////////////////////////////////////////
 
 import CaptionTrackList from './PluginCaptionTrackList';
-
 /**
- *  PluginsStandard is a collection of default plugins that are included with the CGview.
- *  These plugins are installed when the CGview is created.
+ * PluginsStandard is a collection of default plugins that are included with the CGview.
+ * These plugins are installed when the CGview is created.
  *
  * Currently, the following plugins are included:
  * - CaptionTrackList
- *
  */
 export const PluginsStandard = [
   CaptionTrackList,
 ];
-
 
 //////////////////////////////////////////////////////////////////////////////
 // CGview Plugins
