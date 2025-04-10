@@ -66,7 +66,7 @@
         <li><a class="side-link indent" href="tutorial-controls.html">Map Controls</a></li>
         <p>Details</p>
         <li><a class="side-link indent" href="details-json-files.html">JSON Files</a></li>
-        <li class='active'><a class="side-link indent" href="details-meta-data.html">Meta Data</a></li>
+        <li class='active'><a class="side-link indent" href="details-meta-data.html">Meta & Qualifiers</a></li>
         <li><a class="side-link indent" href="details-map-scales.html">Map Scales</a></li>
       </ul>
     </nav>
@@ -78,31 +78,98 @@
 
     <div id='markdown-in' style='display:none;'>
 
-# Meta Data
 
-All the data driven components in CGView have the ability to contain meta data.
-Meta data (i.e. user-defined key:value pairs) can be stored simply as an object
-property named <em>meta</em> on most objects.
+# Metadata and Qualifiers
 
-TODO:
-* examples
-* adding through constructor
-* adding though add actions (e.g. addFeatures(data, meta))
-  * meta can be in data for per obejct data
-  * can also be added as second argument to be added  all features (NOT IMPLEMENTED YET)
-* meta data is never used by CGView
-* good place to store extra data for external projects (e.g. proksee)
-  * example would be extra qualifier tag data for features
-* only if meta data exists for an object, will it be exported in json
-* meta data will also be imported from json
-* HOW will meta data merge options.meta and constructor meta argument. Is the meta argument needed?
-* to_json: default will be to export all meta data. Have option to ignore meta data.
+In CGView, **Qualifiers** and **Metadata** serve distinct purposes for annotating features:
+
+- **Qualifiers**: Hold additional data about a feature as defined by the [GenBank Feature Table](https://www.insdc.org/submitting-standards/feature-table/#7.3). They provide standardized descriptors for features, ensuring consistency and interoperability.
+
+- **Metadata**: Store user-defined key-value pairs that are not covered by standard qualifiers. This allows for the inclusion of custom information relevant to specific applications or analyses.
+
+## What is Metadata?
+
+In CGView, all components that subclass `CGObject` (not just features) can store **metadata** — user-defined key:value pairs — in a property called `meta`.
+
+This allows developers to attach extra information to objects such as features, without modifying the core structure.
+
+## Why Use Metadata?
+
+- Provides a safe place to store extra values used by your app or plugin code.
+
+- Values in `meta` are preserved when exporting to JSON using `.toJSON()`.
+
+- Metadata is **not interpreted or modified by CGView**, making it ideal for storing custom annotations.
+
+## Example Use Case
+
+Say you want to add a `category` to a `feature`. You might try:
+
+```js
+// Wrong way to add a category
+feature.category = "bad";
+```
+
+However, `category` is not a recognized core property of `feature`, so it will **not be included** when exporting the map to CGView JSON (via toJSON()).
+
+Instead, use meta:
+
+```js
+// Correct way to add a category
+feature.meta = {
+  category: 'good'
+};
+```
+
+Then you can access the `category` like this:
+```js
+feature.meta.category
+// => 'good'
+```
+
+
+- This way, the category is preserved in the exported JSON.
+- Any custom key-value pairs added to `meta` will remain intact when saving and loading data.
+
+## Limitations
+
+- The `meta` property is not currently supported when using `viewer.updateFeatures`.
+
+## Feature Example
+```json
+{
+    "features": [
+        {
+            "name": "rnl",                   // --
+            "type": "rRNA",                  //   |
+            "contig": "CP021212",            //   |
+            "start": 56,                     //   |
+            "stop": 2806,                    //   |- Core Properties
+            "strand": 1,                     //   |
+            "source": "sequence-features",   //   |
+            "legend": "rRNA",                //   |
+            "visible": false,                // --
+            "qualifiers": {                  // -- 
+                "gene": "rnl",               //   |
+                "locus_tag": "ReamoMr68",    //   |- Qualifiers (e.g. GenBank)
+                "db_xref": "GeneID:801132"   //   |
+            },                               // --
+            "meta": {                        // --
+              "category": "good",            //   |- Metadata (user-defined)
+            }                                // --
+        },
+    ]
+}
+```
+
 
     </div> <!-- End of markdown in -->
 
     <script>
       tutorialMarkdown(marked);
     </script>
+
+    <script src="../scripts/prism.js"></script>
 
     <!-- Bootstrap JavaScript -->
     <script src="../scripts/bootstrap.min.js"></script>
