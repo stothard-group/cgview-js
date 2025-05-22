@@ -2,16 +2,33 @@
 // NCList
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * NCList.js - part of CGView.js
+ *
+ * This file is dual licensed under the GNU Lesser General Public License (LGPL) version 2.1 or later,
+ * OR the Artistic License 2.0, at your option.
+ *
+ * You may redistribute and/or modify this file under either license.
+ *
+ * The full license texts are included in the LICENSE file.
+ *
+ * Modifications made by Jason R. Grant, © 2016–2025.
+ *
+ * This code is adapted from code in the JBrowse project:
+ * https://searchcode.com/codesearch/view/17093141
+ * (https://github.com/GMOD/jbrowse)
+ *
+ * The original algorithm is described in the paper:
+ * Alekseyenko, A., and Lee, C. (2007).
+ * Nested Containment List (NCList): A new algorithm for accelerating
+ * interval query of genome alignment and interval databases.
+ * Bioinformatics, doi:10.1093/bioinformatics/btl647
+ * https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
+ */
+
+
 /**
  * The NCList is a container for intervals that allows fast searching of overlaping regions.
- *
- * - Nested Containment List (NCList): A new algorithm for accelerating
- * - interval query of genome alignment and interval databases.
- * - Alekseyenko, A., and Lee, C. (2007).
- * - Bioinformatics, doi:10.1093/bioinformatics/btl647
- * - https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
- * - Code adapted from
- *   https://searchcode.com/codesearch/view/17093141
  */
 class NCList {
 

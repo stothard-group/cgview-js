@@ -1,5 +1,19 @@
+//////////////////////////////////////////////////////////////////////////////
 // ColorPicker
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * ColorPicker.js - part of CGView.js
+ *
+ * Originally MIT licensed by David Durman, © 2011–2012.
+ *
+ * Modifications made by Jason R. Grant, © 2016–2025.
+ *
+ * The MIT License text is included in the LICENSE file.
+ *
+ * The ColorPicker is based on the [Flexi Color Picker](http://www.daviddurman.com/flexi-color-picker).
+ * (https://github.com/DavidDurman/FlexiColorPicker)
+ */
 
 import Color from './Color';
 import utils from './Utils';
@@ -12,7 +26,6 @@ class ColorPicker {
 
 
   /**
-   * The ColorPicker is based on the [Flexi Color Picker](http://www.daviddurman.com/flexi-color-picker).
    * Color is stored internally as HSV, as well as a Color object.
    * @private
    */
