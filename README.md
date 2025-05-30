@@ -1,9 +1,10 @@
 # [CGView.js](http://js.cgview.ca)
 
 [![npm version](https://img.shields.io/npm/v/cgview)](https://www.npmjs.com/package/cgview)
+![bundle size](https://img.shields.io/bundlephobia/min/cgview)
 [![jsDelivr hits](https://data.jsdelivr.com/v1/package/npm/cgview/badge)](https://www.jsdelivr.com/package/npm/cgview)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 ![Last Commit](https://img.shields.io/github/last-commit/stothard-group/CGView-js.svg)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Docs](https://img.shields.io/badge/docs-available-blue)](https://js.cgview.ca)
 
 CGView.js is a <strong>C</strong>ircular <strong>G</strong>enome <strong>View</strong>ing
