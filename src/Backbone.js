@@ -359,4 +359,3 @@ class Backbone extends CGObject {
 
 export default Backbone;
 
-
