@@ -1,0 +1,32 @@
+CGView.js – Interactive Circular Genome Viewer  
+https://github.com/sciguy/CGView.js
+
+Copyright © 2016–2025 Jason R. Grant
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+This product includes software developed by Jason R. Grant
+as part of the CGView.js project.
+
+Portions of this software have been adapted from third-party sources, as noted
+in the source code.
+
+Third-party attributions:
+
+- ColorPicker.js is based on the Flexi Color Picker by David Durman,
+  licensed under the MIT License.
+  See the file header for full attribution and licensing details.
+
+- NCList.js is adapted from code originally developed in the JBrowse project,
+  licensed under the Artistic License 2.0.
+  See the file header for licensing details and references.
