@@ -3,16 +3,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * NCList.js - part of CGView.js
+ * NCList.js – based on original code licensed under the Artistic License 2.0
+ * See https://www.perlfoundation.org/artistic-license-20.html for license details.
  *
- * This file is dual licensed under the GNU Lesser General Public License (LGPL) version 2.1 or later,
- * OR the Artistic License 2.0, at your option.
- *
- * You may redistribute and/or modify this file under either license.
- *
- * The full license texts are included in the LICENSE file.
- *
- * Modifications made by Jason R. Grant, © 2016–2025.
+ * Major modifications by Jason R. Grant, © 2016–2025.
  *
  * This code is adapted from code in the JBrowse project:
  * https://searchcode.com/codesearch/view/17093141
@@ -25,7 +19,6 @@
  * Bioinformatics, doi:10.1093/bioinformatics/btl647
  * https://academic.oup.com/bioinformatics/article/23/11/1386/199545/Nested-Containment-List-NCList-a-new-algorithm-for
  */
-
 
 /**
  * The NCList is a container for intervals that allows fast searching of overlaping regions.
