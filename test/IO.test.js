@@ -15,14 +15,14 @@ describe('IO', () => {
   describe('loadJSON', () => {
 
     test('load JSON object literal', () => {
-      const json = { cgview: { sequence: { length: 1234 } } };
+      const json = { cgview: { version: '1.7.0', sequence: { length: 1234 } } };
       expect(cgv.sequence.length).toBe(1000); // The default
       cgv.io.loadJSON(json);
       expect(cgv.sequence.length).toBe(1234);
     });
 
     test('load JSON string', () => {
-      const json = "{\"cgview\":{\"sequence\":{\"length\":1234}}}";
+      const json = "{\"cgview\":{\"version\":\"1.7.0\",\"sequence\":{\"length\":1234}}}";
       expect(cgv.sequence.length).toBe(1000); // The default
       cgv.io.loadJSON(json);
       expect(cgv.sequence.length).toBe(1234);

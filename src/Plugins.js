@@ -102,7 +102,7 @@ export default class Plugins {
   // 
   add(plugin) {
     // console.log(`Plugin Add: ${plugin.name}`);
-    console.log(plugin);
+    // console.log(plugin);
     if (!plugin.name) {
       throw new Error('Plugin must have a name.');
     }

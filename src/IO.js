@@ -158,6 +158,8 @@ class IO {
       canvas.clear('debug');
       const ctx = canvas.context('debug');
       ctx.fillText(msg, 5, 15);
+      // Re-throw the error so it can be caught by the caller
+      throw error;
     }
   }
 
@@ -168,14 +170,14 @@ class IO {
       data = JSON.parse(json);
     }
 
+    if (!data?.cgview) {
+      throw new Error("No 'cgview' property found in JSON.");
+    }
+
     console.log(`Loading map JSON version: '${data?.cgview?.version}'`);
     data = this.updateJSON(data);
 
     data = data && data.cgview;
-
-    if (!data) {
-      throw new Error("No 'cgview' property found in JSON.");
-    }
 
     const viewer = this._viewer;
     viewer.clear('all');
@@ -299,10 +301,6 @@ class IO {
    */
   updateJSON(data) {
     data = data && data.cgview;
-
-    if (!data) {
-      throw new Error("No 'cgview' property found in JSON.");
-    }
 
     function parseVersion(version) {
       const result = version.match(/^(\d+)\.(\d+)/)
