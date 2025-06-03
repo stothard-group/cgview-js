@@ -2,7 +2,7 @@
 // NCList
 //////////////////////////////////////////////////////////////////////////////
 
-/*!
+/**
  * NCList.js – based on original code licensed under the Artistic License 2.0
  * See https://www.perlfoundation.org/artistic-license-20.html for license details.
  *

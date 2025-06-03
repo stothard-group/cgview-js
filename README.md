@@ -1,3 +1,6 @@
+> [!Note]
+> This project was originally hosted under [stothard-group/cgview-js](https://github.com/stothard-group/cgview-js) and has been transferred with permission to [sciguy/cgview-js](https://github.com/sciguy/cgview-js).
+
 # [CGView.js](http://js.cgview.ca)
 
 [![npm version](https://img.shields.io/npm/v/cgview)](https://www.npmjs.com/package/cgview)

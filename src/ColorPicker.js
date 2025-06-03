@@ -2,7 +2,7 @@
 // ColorPicker
 //////////////////////////////////////////////////////////////////////////////
 
-/*!
+/**
  * ColorPicker.js - part of CGView.js
  *
  * Originally MIT licensed by David Durman, © 2011–2012.
@@ -827,7 +827,7 @@ function mousePosition(element, d3Event, constrain=true) {
 
 export default ColorPicker;
 
-/*!
+/**
  * MIT License
  *
  * Copyright (c) 2011 - 2012 David Durman

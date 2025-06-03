@@ -2,7 +2,7 @@
 // CodonTable and CodonTables
 //////////////////////////////////////////////////////////////////////////////
 
-/*!
+/**
  * CGView.js – Interactive Circular Genome Viewer
  * Copyright © 2016–2025 Jason R. Grant
  *
