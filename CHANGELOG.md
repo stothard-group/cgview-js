@@ -10,7 +10,7 @@
 - Adding basic plugin system
   - Testing with CaptionTrackList plugin
 - Added option to invertColors (`excludeLegends`) to exclude legend item swatch colors
-- Transferred repo to @sciguy
+- Transferred repo to @sciguy [2025-06-03]
 
 
 ## 1.7.1 - 2024-10-22
