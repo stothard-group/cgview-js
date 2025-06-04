@@ -3,7 +3,7 @@
 
 # [CGView.js](http://js.cgview.ca)
 
-[![Deploy Status](https://github.com/sciguy/cgview-js/actions/workflows/pages.yml/badge.svg)](https://github.com/sciguy/cgview-js/actions/workflows/deploy.yml)
+[![Deploy Status](https://github.com/sciguy/cgview-js/actions/workflows/pages.yml/badge.svg)](https://github.com/sciguy/cgview-js/actions/workflows/pages.yml)
 [![Build Status](https://github.com/sciguy/cgview-js/actions/workflows/tests.yml/badge.svg?branch=main&label=testpages&style=flat-square)](https://github.com/sciguy/cgview-js/actions/workflows/tests.yml)
 ![Last Commit](https://img.shields.io/github/last-commit/sciguy/CGView-js.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)

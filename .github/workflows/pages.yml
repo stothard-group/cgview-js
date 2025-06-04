@@ -1,4 +1,4 @@
-name: Deploy js.cgview.ca to GitHub Pages
+name: Pages
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build
-        run: yarn pages
+        run: yarn gh-pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
