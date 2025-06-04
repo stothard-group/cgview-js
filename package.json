@@ -24,6 +24,7 @@
     "dev": "echo \"Error: no dev specified\" && exit 1",
     "test": "jest --watch",
     "build": "rollup --config --watch",
+    "pages": "rollup --config",
     "api": "jsdoc --configure ./template/jsdoc_conf.json --template ./template/jaguarjs-jsdoc --destination ./docs/api --readme ./README.md ./src/*",
     "dash": "jsdoc --private --configure ./template/jsdoc_conf.json --template ./node_modules/jsdoc-dash-template --destination ./template/dash --readme ./README.md ./src/*"
   },
