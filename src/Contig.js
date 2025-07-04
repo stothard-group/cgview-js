@@ -425,6 +425,34 @@ class Contig extends CGObject {
   }
 
   /**
+   * Highlight a region (from start to stop) on the the contig.
+   * @param {Number} start - Start position (bp) of the highlight
+   * @param {Number} stop - Stop position (bp) of the highlight
+   * @param {Color} color - Color of the highlight
+   * @private
+   */
+  highlightRegion(start, stop, color) {
+    const backbone = this.viewer.backbone;
+    let highlightColor;
+    if (color) {
+      highlightColor = new Color(color);
+    } else {
+      let origColor = (this.index % 2 === 0) ? backbone.color : backbone.colorAlternate;
+      if (this.color) {
+        origColor = this.color;
+      }
+      highlightColor = origColor.copy();
+      highlightColor.highlight();
+      highlightColor.opacity = 0.5;
+    }
+    if (this.visible) {
+      const mapStart = this.sequence.bpForContig(this, start);
+      const mapStop = this.sequence.bpForContig(this, stop);
+      this.viewer.canvas.drawElement('ui', mapStart, mapStop, backbone.adjustedCenterOffset, highlightColor.rgbaString, backbone.adjustedThickness);
+    }
+  }
+
+  /**
    * Returns JSON representing the object
    */
   toJSON(options = {}) {

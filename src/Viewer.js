@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * @author Jason Grant <jason.grant@ualberta.ca>
+ * @author Jason R. Grant <jason.grant@ualberta.ca>
  * @requires D3
  */
 
