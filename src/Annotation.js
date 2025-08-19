@@ -264,7 +264,8 @@ class Annotation extends CGObject {
     // - on invisible features
     // - with features on invisible contigs
     // - with features on invisible tracks
-    const labels = this._labels.filter( (l) => l.feature.visible && l.feature.contig.visible && l.feature.tracks().some( (t) => t.visible ));
+    // - contig is undefined (contig?)
+    const labels = this._labels.filter( (l) => l.feature.visible && l.feature.contig?.visible && l.feature.tracks().some( (t) => t.visible ));
 
     this._availableLabels = labels;
     // Update default Bp for labels
