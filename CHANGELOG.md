@@ -24,6 +24,10 @@
 - Added explicit single-color or per-base nucleotide coloring with per-contig light and dark backbone palettes, plus optional curved sequence text on circular maps.
 - Added `showTrackLabels` for compact feature and plot track identification at close zoom in circular and linear maps. Feature slots include strand, reading-frame, type, or legend details, based on work by @paulstothard.
 - Added `Annotation.labelPosition` modes for outside, inline, and automatic feature labels, with automatic placement as the default. Inline labels include smooth bounded font shrinking, optional ellipsis truncation, internal padding, contrast-aware colors, collision handling, and circular or linear text rendering, based on work by @paulstothard.
+- Added `Annotation.labelMethod` with `adaptive` (the default) and `classic` outside label rendering. Adaptive smoothly animates label placement during panning and zooming and respects reduced-motion preferences.
+- Added shared, flat annotation settings: `labelDensity` (`0..1`, from Clean to Maximum), `keepLabelsInView`, `labelSpacing`, and `labelLineThickness`. Spacing also controls viewport padding. Each setting can be updated independently and is saved in map JSON.
+- Removed `labelPlacement`, `labelPlacementFast`, `labelPlacementFull`, and `priorityMax` from the annotation API. JSON import converts `angled` to `adaptive` and `default` to `classic`; maps saved before 1.9 without an explicit method retain Classic.
+- Added import conversion for earlier experimental `externalLabelRenderer` and nested `externalLabelRendererOptions` JSON to the flat annotation fields, with explicit flat settings taking precedence.
 - Fixed unnamed feature popovers showing `undefined`.
 - Kept hover highlights below legends and captions.
 - Cleared transient hover state when the pointer leaves the viewer.
