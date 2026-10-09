@@ -748,13 +748,36 @@ Attribute                        | Type      | Description
 [font](api/Annotation.html#font)                    | String    | A string describing the font [Default: 'monospace, plain, 12']. See <a href="api/Font.html"><code>Font</code></a> for details.
 [color](api/Annotation.html#color)                  | String   | A string describing the color of all labels [Default: undefined]. When undefined, outside labels use the feature legend color and inline labels choose black or white for contrast. See <a href="api/Color.html"><code>Color</code></a> for details.
 [onlyDrawFavorites](api/Annotation.html#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
-[labelPlacement](api/Annotation.html#labelPlacement) | String   | The label placement method for positioning labels. Choices: 'default', 'angled' [Default: 'default']
+[labelLineThickness](api/Annotation.html#labelLineThickness) | Number | Thickness of outside label leader lines in pixels. Must be positive; fractional values are supported [Default: 1]
+[labelMethod](api/Annotation.html#labelMethod) | String | Outside label method: 'adaptive', 'classic', or a registered custom renderer [Default: 'adaptive']
+[labelDensity](api/Annotation.html#labelDensity) | Number | Outside label density, from Clean (0) to Maximum (1). Shared by Classic and Adaptive [Default: 0]
+[keepLabelsInView](api/Annotation.html#keepLabelsInView) | Boolean | Keep outside labels within the viewport [Default: true]
+[labelSpacing](api/Annotation.html#labelSpacing) | Number | Minimum spacing between outside labels, also used as viewport padding, in pixels [Default: 3]
 [labelPosition](api/Annotation.html#labelPosition) | String | Where feature labels are drawn. Choices: 'outside', 'inline', 'auto'. With 'auto', outside labels are fallbacks for labels that do not fit inline [Default: 'auto']
 [inlineLabelAllowShrinking](api/Annotation.html#inlineLabelAllowShrinking) | Boolean | Shrink inline labels down to the renderer's minimum font size [Default: true]
 [inlineLabelAllowTruncation](api/Annotation.html#inlineLabelAllowTruncation) | Boolean | Truncate inline labels with an ellipsis when the full name cannot fit [Default: false]
 [inlineLabelColor](api/Annotation.html#inlineLabelColor) | String | Optional inline-label color override. When omitted, `color` is used if defined; otherwise black or white is selected for contrast against the rendered feature color.
 [visible](api/CGObject.html#visible) | Boolean   | Labels are visible [Default: true]
 [meta](api/CGObject.html#meta)       | Object    | [Meta data](tutorials/details-meta-data.html) for Annotation
+
+The outside label settings are saved directly under `annotation` in map JSON.
+Each can be updated independently, for example
+`cgv.annotation.update({labelSpacing: 5})`, without resetting the others.
+Classic and Adaptive share density, spacing, and viewport containment settings.
+Adaptive animates label movements, respecting reduced-motion preferences.
+
+When loading older JSON, `labelPlacement: "angled"` becomes
+`labelMethod: "adaptive"`, and `labelPlacement: "default"` becomes
+`labelMethod: "classic"`. Maps saved before 1.9 without a placement setting also
+use Classic. New viewers and current-format maps without a method use Adaptive.
+
+Earlier experimental JSON using `externalLabelRenderer` and
+`externalLabelRendererOptions` is also converted on import. The method becomes
+`labelMethod`; nested `labelDensity`, `constrainToViewport`, and `gap` become
+`labelDensity`, `keepLabelsInView`, and `labelSpacing`. Explicit flat fields take
+precedence, including zero and false. Resaving writes only the current fields.
+The old `priorityMax` count is not converted to density; when no density is
+provided, the default is used.
 
 </section>
 <section id='s.Bookmark'>

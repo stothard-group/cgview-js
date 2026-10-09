@@ -1,10 +1,21 @@
 import Viewer from '../src/Viewer';
 import CGRange from '../src/CGRange';
+import settleExternalLabels from './helpers/settleExternalLabels';
 
 describe('Inline feature labels', () => {
+  let viewers;
 
   beforeEach(() => {
+    viewers = [];
     document.body.innerHTML = '<div id="map"></div>';
+  });
+
+  afterEach(() => {
+    for (const viewer of viewers) {
+      viewer.stopAnimate();
+      clearTimeout(viewer.layout._slotTimeoutID);
+      viewer.annotation._externalLabels.destroy();
+    }
   });
 
   function viewerWithFeatures(options = {}) {
@@ -28,6 +39,7 @@ describe('Inline feature labels', () => {
       sequence,
       settings,
     });
+    viewers.push(cgv);
     if (track) {
       cgv.addTracks({
         name: 'Genes',
@@ -353,7 +365,7 @@ describe('Inline feature labels', () => {
     expect(linearContext.rotate).not.toHaveBeenCalled();
   });
 
-  test('uses outside labels only when automatic inline placement is unavailable', () => {
+  test('uses outside labels only when automatic inline placement is unavailable', async () => {
     const cgv = viewerWithFeatures({
       annotation: {labelPosition: 'auto'},
       features: [
@@ -367,13 +379,20 @@ describe('Inline feature labels', () => {
     jest.spyOn(cgv.canvas, 'visibleRangeForCenterOffset').mockReturnValue(visibleRange);
 
     cgv.annotation.draw(100, 150, false);
+    await settleExternalLabels(cgv);
 
     const outsideNames = cgv.annotation._visibleLabels.map(label => label.feature.name);
     expect(outsideNames).toContain('needs fallback');
     expect(outsideNames).not.toContain('fits inline');
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 1});
+    const slot = cgv.tracks(1).slots(1);
+    slot.draw(cgv.canvas, false);
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 2});
+    slot.draw(cgv.canvas, false);
+    expect(cgv.annotation.labelStats.drawn).toBe(2);
   });
 
-  test('skips outside-label membership checks when no inline labels fit', () => {
+  test('skips outside-label membership checks when no inline labels fit', async () => {
     const cgv = viewerWithFeatures({
       annotation: {labelPosition: 'auto'},
       features: [
@@ -387,6 +406,7 @@ describe('Inline feature labels', () => {
     jest.spyOn(renderer, 'visibleInlineFeatures').mockReturnValue(inlineFeatures);
 
     cgv.annotation.draw(100, 150, false);
+    await settleExternalLabels(cgv);
 
     expect(inlineFeatures.has).not.toHaveBeenCalled();
     expect(cgv.annotation._visibleLabels.map(label => label.feature.name))
@@ -479,10 +499,49 @@ describe('Inline feature labels', () => {
     renderer.beginDraw();
     renderer.draw([cgv.features(2)], slot.centerOffset, slot.thickness, visibleRange, slot);
     expect(drawCurvedLabel).not.toHaveBeenCalled();
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 0});
 
     renderer.draw([cgv.features(1)], slot.centerOffset, slot.thickness, visibleRange, slot);
     expect(drawCurvedLabel).toHaveBeenCalledTimes(1);
     expect(drawCurvedLabel.mock.calls[0][0]).toBe(cgv.features(1));
+    expect(cgv.annotation.labelStats.drawn).toBe(1);
+  });
+
+  test('live label counts exclude unnamed features and exports, and reset on clear/hide', () => {
+    const cgv = viewerWithFeatures({
+      format: 'linear', annotation: {labelPosition: 'inline'},
+      features: [
+        {name: 'first', start: 100, stop: 300, legend: 'Feature'},
+        {name: 'second', start: 600, stop: 900, legend: 'Feature'},
+        {start: 950, stop: 990, legend: 'Feature'},
+      ],
+    });
+    jest.spyOn(cgv.canvas, 'pixelsPerBp').mockReturnValue(1);
+    const renderer = cgv.annotation._featureLabelRenderer, range = fullRange(cgv);
+    renderer.beginDraw();
+    renderer.draw([cgv.features(1)], 0, 24, range);
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 1});
+    renderer.draw([cgv.features(1)], 0, 24, range);
+    renderer.draw([cgv.features(2)], 0, 24, range, undefined, 'ui');
+    expect(cgv.annotation.labelStats.drawn).toBe(1);
+
+    cgv.layout._exporting = true;
+    cgv.clear('map'); renderer.beginDraw();
+    renderer.draw(cgv.features(), 0, 24, range);
+    cgv.layout._exporting = false;
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 1});
+    expect(cgv.annotation.toJSON({includeDefaults: true})).not.toHaveProperty('labelStats');
+
+    const place = jest.spyOn(renderer, '_nonOverlappingPlacements');
+    for (let i = 0; i < 20; i++) { expect(cgv.annotation.labelStats.drawn).toBe(1); }
+    expect(place).not.toHaveBeenCalled();
+    cgv.annotation.visible = false;
+    expect(cgv.annotation.labelStats).toEqual({total: 2, drawn: 0});
+    cgv.annotation.visible = true;
+    cgv.clear('map');
+    expect(cgv.annotation.labelStats.drawn).toBe(0);
+    cgv.updateFeatures(cgv.features(2), {name: ''});
+    expect(cgv.annotation.labelStats.total).toBe(1);
   });
 
   test('gives favorite features collision priority', () => {

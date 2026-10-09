@@ -71,10 +71,11 @@ async function renderCase(browser, assets, scenario, checkProfile) {
         const contexts = viewer.canvas.layerNames.map(layer => viewer.canvas.context(layer));
         const targets = [viewer.canvas, viewer.layout, viewer.layout.delegate, viewer.annotation,
           viewer.annotation._featureLabelRenderer, viewer.layout._trackLabelRenderer, viewer.eventMonitor,
+          viewer.annotation._externalLabels?.renderer,
           viewer.annotation.labelPlacementFast, viewer.annotation.labelPlacementFull,
           ...contexts, ...[viewer.features()[0], viewer.slots()[0], viewer.plots()[0],
             viewer.slots()[0]._featureNCList, viewer.features()[0].color].map(Object.getPrototypeOf),
-          viewer.plots()[0]._renderer];
+          viewer.plots()[0]._renderer].filter(Boolean);
         const descriptors = target => Object.getOwnPropertyNames(target).map(key =>
           [key, Object.getOwnPropertyDescriptor(target, key)]).filter(([, descriptor]) =>
           typeof descriptor.value === 'function' || descriptor.get || descriptor.set);

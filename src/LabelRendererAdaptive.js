@@ -1,0 +1,437 @@
+/** Production label rendering. Copyright 2016-2026 Jason R. Grant. Apache-2.0. */
+import LabelProjection from './labels/LabelProjection';
+import AdaptiveLabelLayout from './labels/AdaptiveLabelLayout';
+import {measureLabelCapacity, measureOvalPressure} from './labels/LabelCapacity';
+import {packAdaptivePressureSteps, adaptiveTargetSteps, targetLayout} from './labels/AdaptiveLabelPacking';
+
+const TAU = Math.PI * 2;
+const ANIMATE_LABELS = true;
+
+const wrap = n => ((n % TAU) + TAU) % TAU;
+
+const angleDelta = (to, from) => wrap(to - from + Math.PI) - Math.PI;
+
+const attachmentAngle = (rect, end) => Math.atan2(end.y - rect.y - rect.height / 2, end.x - rect.x - rect.width / 2);
+
+function attachmentPoint(rect, angle, gap) {
+  const x = Math.cos(angle), y = Math.sin(angle);
+  const distance = Math.min((rect.width / 2 + gap) / Math.max(1e-12, Math.abs(x)),
+    (rect.height / 2 + gap) / Math.max(1e-12, Math.abs(y)));
+  return {x: rect.x + rect.width / 2 + x * distance, y: rect.y + rect.height / 2 + y * distance};
+}
+
+const inside = (rect, map, padding) => rect.x >= padding - 1e-7 && rect.y >= padding - 1e-7 &&
+  rect.x + rect.width <= map.width - padding + 1e-7 && rect.y + rect.height <= map.height - padding + 1e-7;
+const clamp = (n, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, n));
+const drain = steps => { let next; do { next = steps.next(); } while (!next.done); return next.value; };
+
+function remap(source, byFeature) {
+  if (!source) { return; }
+  const result = Object.assign(Object.create(Object.getPrototypeOf(source)), source);
+  for (const key of ['candidates', 'nodes', 'placed', 'additions']) {
+    if (source[key]) { result[key] = source[key].filter(n => byFeature.has(n.id.feature))
+      .map(n => ({...n, id: byFeature.get(n.id.feature)})); }
+  }
+  if (source.baseline) { result.baseline = remap(source.baseline, byFeature); }
+  return result;
+}
+
+// Export can read the last completed input/history, even while the live renderer
+// displays a reprojected preview. Disposable export jobs never advance live work.
+const liveWork = new WeakMap();
+
+/**
+ * Integrate a critically damped spring exactly for a fixed target over dt.
+ * @param {Number} value - Displayed coordinate (pixels, radians or opacity).
+ * @param {Number} velocity - Coordinate units per second.
+ * @param {Number} target - Desired coordinate.
+ * @param {Number} dt - Elapsed seconds, nonnegative.
+ * @param {Number} [rate=24] - Response rate in inverse seconds.
+ * @returns {Number[]} New [value, velocity]; no side effects or frame-rate dependence.
+ */
+export function advanceSpring(value, velocity, target, dt, rate = 24) {
+  dt = Math.max(0, dt);
+  const difference = value - target, impulse = velocity + rate * difference;
+  const decay = Math.exp(-rate * dt);
+  return [target + (difference + impulse * dt) * decay, (velocity - rate * impulse * dt) * decay];
+}
+
+/** Adaptive placement, cooperative planning and continuous presentation for one annotation. */
+export default class LabelRendererAdaptive {
+  /**
+   * @param {Annotation} annotation - Viewer, labels and styles.
+   * @param {Object} [options={}] - Label density, spacing and viewport containment.
+   * @returns {LabelRendererAdaptive} No frames are scheduled until draw(frame).
+   */
+  constructor(annotation, options = {}) {
+    this.annotation = annotation;
+    this.method = 'Adaptive';
+    this.attachmentGap = 4;
+    this.motion = new Map();
+    this.displayed = new Map();
+    this.edgeVisibility = new Map();
+    this.stats = {phase: 'idle'};
+    this.budgetMs = 4;
+    this.completedCount = 0;
+    this.updateOptions(options);
+  }
+
+  reset() {
+    if (liveWork.get(this.annotation) === this) { liveWork.delete(this.annotation); }
+    this.job = this.input = this.completed = this.prepared = this.scheduledFrame = this.workStats = undefined;
+    this.completedCount = 0;
+    this.layout = undefined;
+    this.motion.clear(); this.displayed.clear(); this.edgeVisibility.clear();
+    this.lastTime = undefined;
+    this.stats = {phase: 'idle'};
+  }
+
+  destroy() { this.reset(); }
+
+  /** Snapshot geometry and viewport spacing for planning, previews and export. @private */
+  _layoutOptions() {
+    return {...this.geometry.options, lineWidth: this.annotation.labelLineThickness,
+      obstacles: this.geometry._obstacles(), viewportPadding: this.geometry.options.gap};
+  }
+
+  _target(node) {
+    return {label: node.id, rect: node.placement.rect, points: node.placement.points, bp: node.bp, opacity: 1};
+  }
+
+  /**
+   * Apply JSON options in place, preserving all displayed positions and velocities.
+   * @param {Object} options - Complete replacement option set, not a partial patch.
+   * @returns {void} Invalidates targets on the next draw; does not schedule frames.
+   */
+  updateOptions(options) {
+    this.labelDensity = Number.isFinite(Number(options.labelDensity)) ? clamp(Number(options.labelDensity), 0, 1) : 0;
+    this.geometry = new LabelProjection(this.annotation, options);
+  }
+
+  _input(frame) {
+    const g = this.geometry, map = g._map(frame.outerCenterOffset);
+    const candidates = g._candidates(frame.labels, map);
+    const options = this._layoutOptions();
+    // A pending job must not read changing viewer scales to recover feature bp.
+    const scale = this.annotation.viewer.layout.scale, bp = scale.bp.copy(), x = scale.x.copy();
+    const length = this.annotation.viewer.sequence.length;
+    return {map, candidates, options, amount: this.labelDensity,
+      epoch: JSON.stringify([map.circular, map.width, map.height, this.annotation.font.css, options]),
+      bp: a => { const value = bp.invert(map.circular ? a : x.invert(a)); return ((value - 1) % length + length) % length + 1; }};
+  }
+
+  _same(input, old) {
+    return old && input.amount === old.amount && this.geometry._sameInput(input.candidates, input.map, input.options, old);
+  }
+
+  *_steps(input, previous, displayedFeatures) {
+    const sameClean = this.geometry._sameInput(input.candidates, input.map, input.options, previous?.clean);
+    const clean = sameClean ? previous.clean : new AdaptiveLabelLayout(input.candidates, input.map, input.options, previous?.clean,
+      {deferred: true, displayedFeatures});
+    if (!sameClean) { yield* clean.steps(); }
+    const pressure = sameClean ? previous.pressure : measureOvalPressure(clean, previous?.pressure);
+    let dense = sameClean ? previous.dense : undefined;
+    // Give a new viewer a useful Clean preview while Maximum is being packed.
+    yield {preview: targetLayout(input, clean, undefined, pressure, clean.placed)};
+    if (input.amount > 0 && !dense) {
+      dense = yield* packAdaptivePressureSteps(clean, pressure, previous?.dense);
+      if (dense.placed.length < clean.placed.length) { dense = {...dense, ...dense.baseline, attempts: dense.attempts}; }
+    }
+    const placed = yield* adaptiveTargetSteps(clean, dense, pressure, input.amount);
+    return targetLayout(input, clean, dense, pressure, placed);
+  }
+
+  _start(input) {
+    const displayedFeatures = new Set([...this.motion].filter(([, s]) => s.opacity >= 0.01).map(([feature]) => feature));
+    this.job = {input, previous: this.completed, displayedFeatures,
+      steps: this._steps(input, this.completed, displayedFeatures),
+      started: performance.now(), cpuMs: 0, slices: 0, maxSliceMs: 0};
+  }
+
+  _project(source, input) {
+    const {map, options, candidates, amount} = input, g = this.geometry;
+    const padding = options.viewportPadding ?? Math.max(6, options.lineWidth / 2 + 1);
+    const point = a => map.circular ? {x: map.x + map.radius * Math.cos(a), y: map.y + map.radius * Math.sin(a)} : {x: a, y: map.y};
+    const eligible = new Map(candidates.map(n => [n.id.feature, n]));
+    const placed = [];
+    for (const old of source?.placed || []) {
+      const node = eligible.get(old.id.feature);
+      if (!node || node.width !== old.width || node.height !== old.height) { continue; }
+      let bp = old.bp, a = g._parameter(bp, map);
+      if (map.circular) { a += Math.round((node.preferred - a) / TAU) * TAU; }
+      if (!node.ranges.some(([lo, hi]) => a >= lo && a <= hi)) { a = node.preferred; bp = input.bp(a); }
+      const root = point(a), p = old.placement;
+      const dx = root.x - p.points[0].x, dy = root.y - p.points[0].y;
+      placed.push({...node, bp, placement: {...p, a, rect: {...p.rect, x: p.rect.x + dx, y: p.rect.y + dy},
+        points: [root, {x: p.points[1].x + dx, y: p.points[1].y + dy}]}});
+    }
+    // This is explicitly provisional geometry. The motion renderer applies the
+    // viewport visibility filter; the final solver, not a shifted old layout, defines ready.
+    return {...source, map, options, candidates, placed, amount, point, padding,
+      constrainToViewport: options.constrainToViewport, pending: true, mode: source?.mode || 'pending'};
+  }
+
+  _present(frame, layout, cached = false) {
+    const previous = this.layout;
+    this.prepared = {...this.input, previous, cached, layout, capacity: layout.pressure?.capacity || this.stats.capacity || {}};
+    // The base renderer asks for a frame when springs move. Coalesce that request
+    // with solver work, so there is only one callback for this host generation.
+    const managed = {...frame, requestFrame: () => this._schedule(frame)};
+    this._presentTargets(managed);
+  }
+
+  draw(frame) {
+    const input = this._input(frame);
+    if (frame.exporting) {
+      const live = liveWork.get(this.annotation);
+      const byFeature = new Map(frame.labels.map(label => [label.feature, label]));
+      const history = live?.job?.previous || live?.completed;
+      const previous = history && {...remap(history, byFeature), clean: remap(history.clean, byFeature), dense: remap(history.dense, byFeature)};
+      const displayed = live?.job?.displayedFeatures || new Set(live?.motion.keys());
+      const layout = this._same(input, previous) ? previous : drain(this._steps(input, previous, displayed));
+      this._paint(frame, layout.placed.map(node => this._target(node, input.map)), false);
+      return;
+    }
+    this.input = input;
+    this.scheduledFrame = undefined; // The host cancelled the previous generation.
+    liveWork.set(this.annotation, this);
+    if (this._same(input, this.completed)) {
+      this.job = undefined;
+      this.workStats = this.completed.workStats;
+      this._present(frame, this.completed, true);
+      return;
+    }
+    // Finish camera snapshots instead of restarting on every pixel of movement.
+    // Data/format/font/options changes discard incompatible work immediately.
+    if (!this.job || this.job.input.epoch !== input.epoch) { this._start(input); }
+    this._present(frame, this._project(this.layout, input));
+    this._schedule(frame);
+  }
+
+  _schedule(frame) {
+    if (this.scheduledFrame === frame || !frame.isCurrent()) { return; }
+    this.scheduledFrame = frame;
+    frame.requestFrame(time => {
+      this.scheduledFrame = undefined;
+      let layout;
+      const job = this.job;
+      if (job) {
+        const start = performance.now();
+        let next;
+        do {
+          next = job.steps.next();
+          if (next.value?.preview && !this.layout.placed.length) { layout = this._project(next.value.preview, this.input); }
+        } while (!next.done && performance.now() - start < this.budgetMs);
+        const elapsed = performance.now() - start;
+        job.cpuMs += elapsed; job.slices++; job.maxSliceMs = Math.max(job.maxSliceMs, elapsed);
+        this.workStats = {budgetMs: this.budgetMs, cpuMs: job.cpuMs, slices: job.slices, maxSliceMs: job.maxSliceMs,
+          elapsedMs: performance.now() - job.started};
+        if (next.done) {
+          this.completed = {...next.value, workStats: this.workStats}; this.completedCount++;
+          if (this._same(this.input, this.completed)) {
+            layout = this.completed; this.job = undefined;
+          } else {
+            layout = this._project(this.completed, this.input);
+            this._start(this.input);
+          }
+        }
+      }
+      if (layout) { this._present(frame, layout); }
+      else { this._tick({...frame, requestFrame: () => this._schedule(frame)}, time); }
+      if (this.job) { this._schedule(frame); }
+    });
+  }
+
+  /**
+   * Solve targets on input changes, then reproject/retarget the current display.
+   * @param {Object} frame - Shared host draw contract and managed animation callbacks.
+   * @returns {void} Paints/publishes displayed geometry; export paints only final targets.
+   */
+  _presentTargets(frame) {
+    const started = performance.now(), g = this.geometry;
+    const {map, candidates, options, previous, cached, layout, capacityCandidates = candidates, capacity: measuredCapacity} = this.prepared;
+    if (frame.exporting) {
+      this._paint(frame, layout.placed.map(node => this._target(node, map)), false);
+      return;
+    }
+    const immediate = !ANIMATE_LABELS || frame.reducedMotion || !previous || previous.map.circular !== map.circular;
+    const wasMoving = this.stats.phase === 'animating';
+    const capacity = measuredCapacity ?? (cached ? this.stats.capacity : measureLabelCapacity(capacityCandidates, map, {...options, padding: layout.padding}));
+    this.layout = layout;
+    const eligible = new Map(candidates.map(n => [n.id.feature, n]));
+    // Carry the displayed box with its old feature anchor before applying new
+    // layout displacement. Text and gaps remain in screen pixels during zoom.
+    for (const [feature, state] of this.motion) {
+      const candidate = eligible.get(feature);
+      if (!candidate) { this.motion.delete(feature); continue; }
+      // A provider change can change the leader margin. Reproject the old margin
+      // first so that only camera movement, not that switch, carries the text box.
+      const rootOffset = state.rootMargin === undefined ?
+        layout.rootOffset ?? (map.circular ? map.radius : frame.outerCenterOffset + 2) : frame.outerCenterOffset + state.rootMargin;
+      const projected = frame.canvas.pointForBp(state.bp, rootOffset);
+      state.x += projected.x - state.root.x; state.y += projected.y - state.root.y;
+      state.root = projected;
+      state.target = undefined;
+      state.label = candidate.id;
+      let a = g._parameter(state.bp, map);
+      if (map.circular) { a += Math.round((candidate.preferred - a) / TAU) * TAU; }
+      if (!candidate.ranges.some(([lo, hi]) => a >= lo && a <= hi)) {
+        state.bp = g._bp(candidate.preferred, map);
+        state.root = state.rootMargin === undefined ? layout.point(candidate.preferred) : frame.canvas.pointForBp(state.bp, rootOffset);
+      }
+    }
+    let rowChanges = 0;
+    for (const node of layout.placed) {
+      const target = this._target(node, map), key = target.label.feature;
+      let state = this.motion.get(key);
+      if (state && state.row !== node.placement.row) { rowChanges++; }
+      if (!state || immediate) {
+        state = {x: target.rect.x, y: target.rect.y, vx: 0, vy: 0, angle: attachmentAngle(target.rect, target.points[1]),
+          va: 0, gap: target.attachmentGap ?? this.attachmentGap, vg: 0, opacity: immediate ? 1 : 0, vo: 0};
+        this.motion.set(key, state);
+      }
+      Object.assign(state, {target, label: target.label, bp: target.bp, root: target.points[0], row: node.placement.row,
+        width: target.rect.width, height: target.rect.height, rootMargin: target.rootMargin});
+    }
+    if (immediate) { for (const [key, state] of this.motion) { if (!state.target) { this.motion.delete(key); } } }
+    this.stats = {phase: 'ready', method: this.method, mode: layout.mode, cached, capacity, targetCount: layout.placed.length,
+      rowChanges, layoutMs: performance.now() - started};
+    // Time spent resting at the old target is not time spent moving to a new one.
+    if (immediate || !wasMoving) { this.lastTime = performance.now(); }
+    this._tick(frame, performance.now(), immediate);
+  }
+
+  // Hide immediately on exit, but require two pixels of extra room to return
+  // during navigation. Settled, checked targets may use the normal padding.
+  // Keeping this opacity separate preserves selection and the label's spring.
+  _visibility(feature, state, dt, immediate) {
+    let edge = this.edgeVisibility.get(feature);
+    if (!edge) { this.edgeVisibility.set(feature, edge = {hidden: false, opacity: 1, velocity: 0}); }
+    const {map, padding, constrainToViewport, pending} = this.layout;
+    if (!constrainToViewport) {
+      edge.hidden = false; edge.opacity = 1; edge.velocity = 0;
+    } else if (!inside(state, map, padding)) {
+      edge.hidden = true; edge.opacity = 0; edge.velocity = 0;
+    } else {
+      if (edge.hidden && (inside(state, map, padding + 2) ||
+        (!pending && state.settled && state.target && inside(state.target.rect, map, padding)))) {
+        edge.hidden = false;
+      }
+      if (!edge.hidden) {
+        [edge.opacity, edge.velocity] = immediate ? [1, 0] : advanceSpring(edge.opacity, edge.velocity, 1, dt, 48);
+        if (edge.opacity > 0.99 && Math.abs(edge.velocity) < 0.05) { edge.opacity = 1; edge.velocity = 0; }
+      }
+    }
+    return edge;
+  }
+
+  /**
+   * Advance shared spring equations, then publish only currently visible boxes.
+   * @param {Object} frame - Host-managed drawing and animation callbacks.
+   * @param {Number} time - Monotonic animation time in milliseconds.
+   * @param {Boolean} [immediate=false] - Snap motion for initial/reduced-motion draws.
+   * @returns {void} Updates live springs, visibility, hits and statistics; no layout mutation.
+   */
+  _tick(frame, time, immediate = false) {
+    const dt = this.lastTime === undefined ? 0 : Math.max(0, time - this.lastTime) / 1000;
+    this.lastTime = time;
+    let moving = 0, maxDistance = 0, suppressed = 0, returning = 0;
+    for (const [feature, state] of this.motion) {
+      const target = state.target;
+      if (target && !immediate) {
+        [state.x, state.vx] = advanceSpring(state.x, state.vx, target.rect.x, dt);
+        [state.y, state.vy] = advanceSpring(state.y, state.vy, target.rect.y, dt);
+        const angle = state.angle + angleDelta(attachmentAngle(target.rect, target.points[1]), state.angle);
+        [state.angle, state.va] = advanceSpring(state.angle, state.va, angle, dt);
+        [state.gap, state.vg] = advanceSpring(state.gap, state.vg, target.attachmentGap ?? this.attachmentGap, dt);
+      }
+      [state.opacity, state.vo] = immediate ? [1, 0] : advanceSpring(state.opacity, state.vo, target ? 1 : 0, dt, 32);
+      state.opacity = clamp(state.opacity);
+      if (!target && state.opacity < 0.01) { this.motion.delete(feature); continue; }
+
+      // Unlike the earlier tick, no bounds correction is written into x/y or
+      // their velocities. An off-screen box stays attached to its moving root.
+      const distance = target ? Math.hypot(state.x - target.rect.x, state.y - target.rect.y) : 0;
+      maxDistance = Math.max(maxDistance, distance);
+      state.settled = Boolean(target) && distance < 0.1 && Math.hypot(state.vx, state.vy) < 0.5 &&
+        Math.abs(angleDelta(attachmentAngle(target.rect, target.points[1]), state.angle)) < 0.001 &&
+        Math.abs(state.va) < 0.01 && Math.abs(state.gap - (target.attachmentGap ?? this.attachmentGap)) < 0.01 &&
+        Math.abs(state.vg) < 0.05 && state.opacity > 0.99 && Math.abs(state.vo) < 0.05;
+      if (state.settled) {
+        state.x = target.rect.x; state.y = target.rect.y;
+        state.vx = state.vy = state.va = state.vo = state.vg = 0;
+        state.gap = target.attachmentGap ?? this.attachmentGap;
+        state.angle = attachmentAngle(target.rect, target.points[1]); state.opacity = 1;
+      }
+      const edge = this._visibility(feature, state, dt, immediate || !ANIMATE_LABELS || frame.reducedMotion);
+      if (edge.hidden) { suppressed++; }
+      const fadingIn = !edge.hidden && edge.opacity < 1;
+      if (fadingIn) { returning++; }
+      if (!state.settled || fadingIn) { moving++; }
+    }
+    for (const feature of this.edgeVisibility.keys()) {
+      if (!this.motion.has(feature)) { this.edgeVisibility.delete(feature); }
+    }
+    const order = [...this.layout.placed.map(n => this.motion.get(n.id.feature)),
+      ...[...this.motion.values()].filter(state => !state.target)];
+    const placements = [];
+    for (const state of order) {
+      if (!state) { continue; }
+      const edge = this.edgeVisibility.get(state.label.feature), opacity = state.opacity * edge.opacity;
+      if (edge.hidden || opacity < 0.01) { continue; }
+      if (state.settled) {
+        placements.push(opacity === 1 ? state.target : {...state.target, opacity});
+      } else {
+        const rect = {x: state.x, y: state.y, width: state.width, height: state.height};
+        placements.push({label: state.label, bp: state.bp, rect, opacity,
+          points: [state.root, attachmentPoint(rect, state.angle, Math.max(0, state.gap))]});
+      }
+    }
+    frame.clear();
+    this._paint(frame, placements);
+    this.stats = {...this.stats, phase: this.job ? 'layout' : moving ? 'animating' : 'ready',
+      moving, maxDistance, visible: placements.length, density: this.layout.densityStats, pressure: this.layout.pressureStats,
+      planning: {...this.workStats, pending: Boolean(this.job), completed: this.completedCount},
+      edge: {suppressed, returning}};
+    if (moving) { frame.requestFrame(nextTime => this._tick(frame, nextTime)); }
+  }
+
+  _paint(frame, placements, publish = true) {
+    const ctx = frame.context, a = this.annotation;
+    const background = a.viewer.settings.backgroundColor.copy(); background.opacity = 0.9;
+    ctx.save();
+    try {
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.lineJoin = ctx.lineCap = 'round';
+      ctx.lineWidth = a.labelLineThickness;
+      for (const item of placements) {
+        ctx.globalAlpha = item.opacity;
+        this._stroke(ctx, item, a.labelLineThickness);
+      }
+      for (const {label, rect, opacity} of placements) {
+        ctx.globalAlpha = opacity;
+        ctx.fillStyle = background.rgbaString; ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+        ctx.font = label.font.css; ctx.fillStyle = (a.color || label.feature.color).rgbaString;
+        ctx.fillText(label.name, rect.x, rect.y + rect.height - 1);
+      }
+    } finally { ctx.restore(); }
+    if (publish) {
+      this.displayed = new Map(placements.map(p => [p.label.feature, p]));
+      frame.publish(placements);
+    }
+  }
+
+  _stroke(ctx, {label, points}, width) {
+    ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y); ctx.lineTo(points[1].x, points[1].y);
+    ctx.lineWidth = width; ctx.strokeStyle = (this.annotation.color || label.feature.color).rgbaString;
+    ctx.stroke();
+  }
+
+  /** Highlight the displayed leader, including while it is between target positions. */
+  drawLabelLine(label, ctx, width) {
+    const placement = this.displayed.get(label.feature);
+    if (!placement) { return; }
+    ctx.save();
+    try { ctx.lineJoin = ctx.lineCap = 'round'; this._stroke(ctx, placement, width || this.annotation.labelLineThickness); }
+    finally { ctx.restore(); }
+  }
+}

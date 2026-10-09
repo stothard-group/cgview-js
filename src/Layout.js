@@ -964,10 +964,24 @@ class Layout {
   }
 
   drawExport() {
-    this.drawMapWithoutSlots();
-    this.drawAllSlots(false);
-    this.sequence.draw();
-    this.drawForeground();
+    const exporting = this._exporting;
+    const previousTasks = this._exportLabelTasks;
+    this._exportLabelTasks = [];
+    this._exporting = true;
+    try {
+      this.drawMapWithoutSlots();
+      this.drawAllSlots(false);
+      this.sequence.draw();
+      for (const task of this._exportLabelTasks) { task.draw(); }
+      this.drawForeground();
+    } finally {
+      try {
+        for (const task of this._exportLabelTasks) { task.destroy(); }
+      } finally {
+        this._exportLabelTasks = previousTasks;
+        this._exporting = exporting;
+      }
+    }
   }
 
   draw(fast) {

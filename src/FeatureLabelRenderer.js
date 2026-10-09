@@ -52,6 +52,7 @@ class FeatureLabelRenderer {
     this._slotPlacements = new Map();
     this._trackBoundsBySlot = undefined;
     this._acceptedInlineFeatures = undefined;
+    this.drawnFeatures = new Set();
   }
 
   get viewer() {
@@ -68,6 +69,7 @@ class FeatureLabelRenderer {
    * @private
    */
   beginDraw() {
+    if (!this.viewer.layout._exporting) { this.drawnFeatures.clear(); }
     this._slotPlacements.clear();
     this._trackBoundsBySlot = undefined;
     this._acceptedInlineFeatures = undefined;
@@ -602,6 +604,7 @@ class FeatureLabelRenderer {
       } else {
         this._drawStraightLabel(ctx, feature, metrics);
       }
+      if (layer === 'map' && !this.viewer.layout._exporting) { this.drawnFeatures.add(feature); }
     }
   }
 

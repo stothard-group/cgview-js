@@ -181,6 +181,7 @@ class IO {
 
     const viewer = this._viewer;
     viewer.clear('all');
+    viewer.annotation?._externalLabels?.destroy();
 
     // Reset objects
     viewer._objects = {};
@@ -222,16 +223,8 @@ class IO {
     viewer._ruler = new Ruler(viewer, data.ruler);
     // Backbone
     viewer._backbone = new Backbone(viewer, data.backbone);
-    // Annotation (save label placement methods to restore after loading
-    // const labelPlacementFast = viewer.annotation.labelPlacementFast.name;
-    // const labelPlacementFull = viewer.annotation.labelPlacementFull.name;
+    // Annotation (legacy methods have already been converted by updateJSON).
     viewer._annotation = new Annotation(viewer, data.annotation);
-    // if (labelPlacementFull === labelPlacementFast) {
-    //   viewer.annotation.labelPlacement = labelPlacementFast;
-    // } else {
-    //   viewer.annotation.labelPlacementFast = labelPlacementFast;
-    //   viewer.annotation.labelPlacementFull = labelPlacementFull;
-    // }
     // Slot Dividers
     // viewer.slotDivider = new Divider(viewer, settings.dividers.slot);
     viewer._dividers = new Dividers(viewer, data.dividers);
@@ -300,7 +293,9 @@ class IO {
    * @param {Object} data - Object Literal
    */
   updateJSON(data) {
-    data = data && data.cgview;
+    // Keep the caller's version so repeatedly loading the same object preserves
+    // the distinction between legacy and current implicit label defaults.
+    data = data && {...data.cgview};
 
     function parseVersion(version) {
       const result = version.match(/^(\d+)\.(\d+)/)
@@ -344,7 +339,35 @@ class IO {
       default:
         throw new Error(`Unknown cgview version '${version.string}'`);
     }
-    return {cgview: data};
+    return {cgview: this._updateExternalLabels(data, version)};
+  }
+
+  /**
+   * Normalize legacy outside-label settings before Annotation is constructed.
+   * @param {Object} data - Map data after structural JSON upgrades.
+   * @param {Object} version - Parsed input version, before the final version upgrade.
+   * @returns {Object} Shallow copy with modern annotation settings. Does not mutate
+   *   the input annotation or its renderer options; repeated conversion is safe.
+   * @private
+   */
+  _updateExternalLabels(data, version) {
+    const annotation = {...data.annotation};
+    const method = annotation.labelMethod ?? annotation.externalLabelRenderer ?? annotation.labelPlacement;
+    const oldDefaults = version.major < 1 || (version.major === 1 && version.minor < 9) ||
+      Object.hasOwn(annotation, 'priorityMax');
+    annotation.labelMethod = method === 'angled' ? 'adaptive' : method === 'default' ? 'classic' :
+      method ?? (oldDefaults ? 'classic' : 'adaptive');
+    const options = annotation.externalLabelRendererOptions;
+    for (const [key, previous] of [['labelDensity', 'labelDensity'], ['keepLabelsInView', 'constrainToViewport'], ['labelSpacing', 'gap']]) {
+      if (annotation[key] === undefined && options?.[previous] !== undefined) { annotation[key] = options[previous]; }
+    }
+    delete annotation.externalLabelRenderer;
+    delete annotation.externalLabelRendererOptions;
+    delete annotation.labelPlacement;
+    delete annotation.labelPlacementFast;
+    delete annotation.labelPlacementFull;
+    delete annotation.priorityMax;
+    return {...data, annotation};
   }
 
   // TODO: When version 1.9 is released, add update function here
@@ -531,6 +554,7 @@ class IO {
       const exportContext = tempLayers.export.ctx;
       exportContext.drawImage(tempLayers.background.node, 0, 0);
       exportContext.drawImage(tempLayers.map.node, 0, 0);
+      exportContext.drawImage(tempLayers.labels.node, 0, 0);
       exportContext.drawImage(tempLayers.foreground.node, 0, 0);
       exportContext.drawImage(tempLayers.canvas.node, 0, 0);
 
@@ -559,6 +583,7 @@ class IO {
     return this._withTemporaryExportLayers(layerNames, width, height, (tempLayers) => {
       const svgContext = new SVGContext(width, height);
       tempLayers.map.ctx = svgContext;
+      tempLayers.labels.ctx = svgContext;
       tempLayers.foreground.ctx = svgContext;
       tempLayers.canvas.ctx = svgContext;
 

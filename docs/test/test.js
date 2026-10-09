@@ -39,11 +39,6 @@ const showLabelsTest = false;
 const showRulerTest = false;
 const showSVGTest = false; // fullSize must be turned off for this to be true
 
-// Other Options
-const labelPlacement = 'default';
-// const labelPlacement = 'angled';
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Initialize
 ///////////////////////////////////////////////////////////////////////////////
@@ -474,12 +469,6 @@ function loadMapJSON(json, name) {
   syncSequenceControls();
   syncTranslationControls();
 
-  // Default label placement
-  cgv.annotation.labelPlacement = labelPlacement;
-
-  // Testing annotation (default is 50)
-  // cgv.annotation.priorityMax = 200;
-
   // Label stuff (Below)
   const distance = cgv.sequence.length / 100;
   labelDistance.value = Math.floor(distance);
@@ -818,14 +807,14 @@ labelsBackward.addEventListener('click', (e) => {
   moveFeatures(-distance);
 });
 
-const labelsDefault = document.getElementById('labels-default');
-labelsDefault.addEventListener('click', (e) => {
-  cgv.annotation.labelPlacement = 'default';
+const labelsClassic = document.getElementById('labels-classic');
+labelsClassic.addEventListener('click', (e) => {
+  cgv.annotation.update({labelMethod: 'classic'});
   cgv.draw();
 });
-const labelsAngled = document.getElementById('labels-angled');
-labelsAngled.addEventListener('click', (e) => {
-  cgv.annotation.labelPlacement = 'angled';
+const labelsAdaptive = document.getElementById('labels-adaptive');
+labelsAdaptive.addEventListener('click', (e) => {
+  cgv.annotation.update({labelMethod: 'adaptive'});
   cgv.draw();
 });
 

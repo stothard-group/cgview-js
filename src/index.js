@@ -2,7 +2,7 @@ import { version } from '../package.json';
 
 import Anchor from './Anchor';
 import Annotation from './Annotation';
-import LabelPlacementDefault from './LabelPlacementDefault';
+import {registerExternalLabelRenderer, externalLabelRenderers} from './ExternalLabelRenderers';
 import Backbone from './Backbone';
 import Bookmark from './Bookmark';
 import Box from './Box';
@@ -58,6 +58,8 @@ export {
 
   Anchor,
   Annotation,
+  registerExternalLabelRenderer,
+  externalLabelRenderers,
   Backbone,
   Bookmark,
   Box,

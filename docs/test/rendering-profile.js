@@ -228,6 +228,7 @@ class CGVRenderingProfile {
     }
 
     this._wrap(annotation, 'draw', 'labels.annotation.draw');
+    this._wrap(annotation?._externalLabels?.renderer, 'draw', 'labels.external.draw');
     for (const method of ['visibleLabels', '_sortByPriority', '_onlyFavoriteLabels',
       '_calculatePositions', '_calculatePriorityLabelRectsFast', '_calculatePriorityLabelRects',
       '_calculateLabelRects']) {

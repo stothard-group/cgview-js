@@ -1290,6 +1290,15 @@ class Viewer {
    * Clear the viewer canvas
    */
   clear(layerName = 'map') {
+    if (['map', 'labels', 'all'].includes(layerName)) {
+      if (!this.layout?._exporting) {
+        const annotation = this.annotation;
+        const reason = annotation && (!annotation.visible || annotation.labelPosition === 'inline') ? 'hidden' : 'redraw';
+        annotation?._externalLabels?.clear(reason);
+        if (layerName === 'map' || layerName === 'all') { annotation?._featureLabelRenderer?.drawnFeatures.clear(); }
+      }
+      if (layerName === 'map') { this.canvas.clear('labels'); }
+    }
     this.canvas.clear(layerName);
   }
 
