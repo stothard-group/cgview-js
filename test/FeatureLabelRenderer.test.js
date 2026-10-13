@@ -583,44 +583,246 @@ describe('Inline feature labels', () => {
     expect(locationMetrics.bp).toBeCloseTo(500);
   });
 
-  test('reserves configured and automatic arrowheads from the label body', () => {
-    const cgv = viewerWithFeatures({
-      annotation: {labelPosition: 'inline'},
-      legend: {items: [
-        {name: 'Arrow', decoration: 'arrow'},
-        {name: 'Auto', decoration: 'auto'},
-      ]},
-      features: [
-        {name: 'gene', start: 100, stop: 200, strand: 1, legend: 'Arrow'},
-        {name: 'A', start: 300, stop: 307, strand: 1, legend: 'Auto'},
-        {name: 'B', start: 400, stop: 404, strand: 1, legend: 'Auto'},
-        {name: 'reverse', start: 600, stop: 700, strand: -1, legend: 'Arrow'},
-      ],
+  describe.each(['circular', 'linear'])('%s arrow label placement', format => {
+    // This radius gives circular labels their actual one-pixel-per-bp scale.
+    const centerOffset = 1000 / (2 * Math.PI);
+
+    function arrowViewer({strand, glyphWidth = 7, ...options}) {
+      const cgv = viewerWithFeatures({format, ...options});
+      if (format === 'linear') {
+        jest.spyOn(cgv.canvas, 'pixelsPerBp').mockReturnValue(1);
+      }
+      cgv.canvas.context('map').measureText.mockImplementation(text => ({
+        width: Array.from(String(text)).length * glyphWidth,
+      }));
+      for (const feature of cgv.features()) {
+        feature.strand = strand;
+        feature.label.width = Array.from(feature.name).length * glyphWidth;
+      }
+      return cgv;
+    }
+
+    test.each([1, -1])('centers arrow and auto labels for strand %i at every head length', strand => {
+      const cgv = arrowViewer({
+        strand,
+        annotation: {font: 'sans-serif, plain, 8', labelPosition: 'inline'},
+        legend: {items: [
+          {name: 'Arrow', decoration: 'arrow'},
+          {name: 'Auto', decoration: 'auto'},
+        ]},
+        features: [
+          {name: 'gene', start: 100, stop: 200, legend: 'Arrow'},
+          {name: 'gene', start: 100, stop: 200, legend: 'Auto'},
+        ],
+      });
+      const renderer = cgv.annotation._featureLabelRenderer;
+
+      for (const arrowHeadLength of [0, 0.3, 1]) {
+        cgv.settings.arrowHeadLength = arrowHeadLength;
+        for (const feature of cgv.features()) {
+          const metrics = renderer.metricsFor(feature, centerOffset, 20, fullRange(cgv));
+
+          expect(metrics.bp).toBeCloseTo(150);
+          expect(metrics.text).toBe('gene');
+          expect(metrics.textWidth).toBeLessThanOrEqual(metrics.availableWidth + 0.01);
+        }
+      }
     });
+
+    test.each([1, -1])('fits labels using the whole arrow for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        annotation: {
+          font: 'sans-serif, plain, 8',
+          labelPosition: 'inline',
+          inlineLabelAllowShrinking: false,
+        },
+        legend: {items: [
+          {name: 'Arrow', decoration: 'arrow'},
+          {name: 'Auto', decoration: 'auto'},
+        ]},
+        features: [
+          {name: 'fit', start: 100, stop: 130, legend: 'Arrow'},
+          {name: 'fit', start: 100, stop: 130, legend: 'Auto'},
+        ],
+      });
+      const renderer = cgv.annotation._featureLabelRenderer;
+
+      for (const feature of cgv.features()) {
+        // A 31px feature with a 12px head previously left only 11px for text.
+        const metrics = renderer.metricsFor(feature, centerOffset, 40, fullRange(cgv));
+
+        expect(metrics.bp).toBeCloseTo(115);
+        expect(metrics.fontSize).toBe(8);
+        expect(metrics.text).toBe('fit');
+        expect(metrics.textWidth).toBe(21);
+        expect(metrics.availableWidth).toBeCloseTo(23);
+      }
+    });
+
+    test.each([1, -1])('keeps auto labels centered as their heads grow with zoom for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        glyphWidth: 3,
+        annotation: {
+          font: 'sans-serif, plain, 8',
+          labelPosition: 'inline',
+          inlineLabelAllowShrinking: false,
+        },
+        settings: {arrowHeadLength: 1},
+        legend: {items: [{name: 'Auto', decoration: 'auto'}]},
+        features: [{name: 'fit', start: 100, stop: 130, legend: 'Auto'}],
+      });
+      const feature = cgv.features(1);
+      const renderer = cgv.annotation._featureLabelRenderer;
+      const arrowHeadLength = jest.spyOn(cgv.canvas, 'arrowHeadLengthPixels');
+      const stages = [
+        {pixelsPerBp: 0.1, headLength: 0, fits: false},
+        {pixelsPerBp: 1, headLength: 26, fits: true},
+        {pixelsPerBp: 2, headLength: 40, fits: true},
+      ];
+
+      for (const {pixelsPerBp, headLength, fits} of stages) {
+        const radius = centerOffset * pixelsPerBp;
+        if (format === 'linear') {
+          cgv.canvas.pixelsPerBp.mockReturnValue(pixelsPerBp);
+        }
+        expect(cgv.canvas.arrowHeadLengthPixels({
+          autoArrow: true,
+          centerOffset: radius,
+          featureLengthBp: feature.length,
+          width: 40,
+        })).toBeCloseTo(headLength);
+        arrowHeadLength.mockClear();
+
+        const metrics = renderer.metricsFor(feature, radius, 40, fullRange(cgv));
+
+        if (fits) {
+          expect(arrowHeadLength).toHaveReturnedWith(headLength);
+          expect(metrics.bp).toBeCloseTo(115);
+          expect(metrics.fontSize).toBe(8);
+          expect(metrics.text).toBe('fit');
+          expect(metrics.textWidth).toBeLessThanOrEqual(metrics.availableWidth + 0.01);
+        } else {
+          expect(metrics).toBeUndefined();
+        }
+      }
+    });
+
+    test.each([1, -1])('shrinks centered labels safely inside large heads for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        glyphWidth: 10,
+        annotation: {font: 'sans-serif, plain, 16', labelPosition: 'inline'},
+        settings: {arrowHeadLength: 1},
+        legend: {items: [{name: 'Arrow', decoration: 'arrow'}]},
+        features: [{name: 'shrink', start: 100, stop: 160, legend: 'Arrow'}],
+      });
+      const feature = cgv.features(1);
+      const renderer = cgv.annotation._featureLabelRenderer;
+      const metrics = renderer.metricsFor(feature, centerOffset, 40, fullRange(cgv));
+
+      expect(metrics.bp).toBeCloseTo(130);
+      expect(metrics.text).toBe('shrink');
+      expect(metrics.fontSize).toBeGreaterThanOrEqual(8);
+      expect(metrics.fontSize).toBeLessThan(16);
+      expect(metrics.textWidth).toBeLessThanOrEqual(metrics.availableWidth + 0.01);
+      expect(metrics.textWidth + 8).toBeLessThanOrEqual(feature.length + 0.01);
+      if (format === 'linear') {
+        // A straight head narrows by fontSize pixels at the text's outer edge.
+        expect(metrics.textWidth / 2 + metrics.fontSize)
+          .toBeLessThanOrEqual(feature.length / 2 + 0.01);
+      }
+
+      cgv.annotation.inlineLabelAllowShrinking = false;
+      expect(renderer.metricsFor(feature, centerOffset, 40, fullRange(cgv))).toBeUndefined();
+    });
+
+    test.each([1, -1])('truncates centered labels safely inside large heads for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        glyphWidth: 5,
+        annotation: {
+          font: 'sans-serif, plain, 8',
+          labelPosition: 'inline',
+          inlineLabelAllowShrinking: false,
+          inlineLabelAllowTruncation: true,
+        },
+        settings: {arrowHeadLength: 1},
+        legend: {items: [{name: 'Arrow', decoration: 'arrow'}]},
+        features: [{name: 'description', start: 100, stop: 150, legend: 'Arrow'}],
+      });
+      const feature = cgv.features(1);
+      const renderer = cgv.annotation._featureLabelRenderer;
+      const metrics = renderer.metricsFor(feature, centerOffset, 40, fullRange(cgv));
+
+      expect(metrics.bp).toBeCloseTo(125);
+      expect(metrics.fontSize).toBe(8);
+      expect(metrics.text.endsWith('…')).toBe(true);
+      expect(metrics.text.length).toBeGreaterThanOrEqual(4);
+      expect(feature.name.startsWith(metrics.text.slice(0, -1))).toBe(true);
+      expect(metrics.textWidth).toBeLessThanOrEqual(metrics.availableWidth + 0.01);
+      expect(metrics.textWidth + 8).toBeLessThanOrEqual(feature.length + 0.01);
+      if (format === 'linear') {
+        expect(metrics.textWidth / 2 + metrics.fontSize)
+          .toBeLessThanOrEqual(feature.length / 2 + 0.01);
+      }
+
+      cgv.annotation.inlineLabelAllowTruncation = false;
+      expect(renderer.metricsFor(feature, centerOffset, 40, fullRange(cgv))).toBeUndefined();
+    });
+
+    test.each([1, -1])('centers the visible segment when an arrow is clipped for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        annotation: {font: 'sans-serif, plain, 8', labelPosition: 'inline'},
+        settings: {arrowHeadLength: 1},
+        legend: {items: [{name: 'Arrow', decoration: 'arrow'}]},
+        features: [{name: 'gene', start: 100, stop: 200, legend: 'Arrow'}],
+      });
+      const feature = cgv.features(1);
+      const renderer = cgv.annotation._featureLabelRenderer;
+      const clippedRanges = [
+        {range: new CGRange(cgv.sequence.mapContig, 140, 250), center: 170.25},
+        {range: new CGRange(cgv.sequence.mapContig, 1, 160), center: 129.75},
+      ];
+
+      for (const {range, center} of clippedRanges) {
+        const metrics = renderer.metricsFor(feature, centerOffset, 20, range);
+
+        expect(metrics.bp).toBeCloseTo(center);
+        expect(metrics.text).toBe('gene');
+      }
+    });
+
+    test.each([1, -1])('centers wrapped and multi-location arrows for strand %i', strand => {
+      const cgv = arrowViewer({
+        strand,
+        annotation: {font: 'sans-serif, plain, 8', labelPosition: 'inline'},
+        settings: {arrowHeadLength: 1},
+        legend: {items: [{name: 'Arrow', decoration: 'arrow'}]},
+        features: [
+          {name: 'gene', start: 900, stop: 100, legend: 'Arrow'},
+          {name: 'gene', locations: [[100, 130], [400, 600]], legend: 'Arrow'},
+        ],
+      });
+      const renderer = cgv.annotation._featureLabelRenderer;
+      const wrappedRange = new CGRange(cgv.sequence.mapContig, 850, 150);
+      const wrappedMetrics = renderer.metricsFor(cgv.features(1), centerOffset, 20, wrappedRange);
+      const locationMetrics = renderer.metricsFor(cgv.features(2), centerOffset, 20, fullRange(cgv));
+
+      expect(wrappedMetrics.bp).toBeCloseTo(format === 'circular' ? 1000 : 950);
+      expect(locationMetrics.bp).toBeCloseTo(500);
+    });
+  });
+
+  test.each([1e8, 1e12])('circular arrow inset approaches linear geometry at radius %i', radius => {
+    const cgv = viewerWithFeatures();
     const renderer = cgv.annotation._featureLabelRenderer;
-    jest.spyOn(cgv.canvas, 'pixelsPerBp').mockReturnValue(1);
+    const inset = renderer._arrowHeadInset(40, 40, 8, radius);
 
-    const metrics = renderer.metricsFor(cgv.features(1), 100, 20, fullRange(cgv));
-    const reverseMetrics = renderer.metricsFor(cgv.features(4), 100, 20, fullRange(cgv));
-    const growingAuto = renderer._usableSegment(
-      cgv.features(2),
-      {start: 300, stop: 307, length: 8},
-      100,
-      20,
-      1
-    );
-    const shortAuto = renderer._usableSegment(
-      cgv.features(3),
-      {start: 400, stop: 404, length: 5},
-      100,
-      20,
-      1
-    );
-
-    expect(metrics.bp).toBeCloseTo(147);
-    expect(reverseMetrics.bp).toBeCloseTo(653);
-    expect(growingAuto.stop).toBeCloseTo(304.5);
-    expect(shortAuto.stop).toBeCloseTo(404.5);
+    expect(Number.isFinite(inset)).toBe(true);
+    expect(inset).toBeCloseTo(8, 5);
   });
 
   test('reserves track-label bounds before accepting feature labels', () => {

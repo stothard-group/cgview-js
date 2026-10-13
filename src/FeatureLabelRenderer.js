@@ -241,7 +241,7 @@ class FeatureLabelRenderer {
     return Math.min(fullWidth, truncatedWidth);
   }
 
-  _textPlan(feature, availableWidth, availableHeight, measurement) {
+  _textPlan(feature, availableWidth, availableHeight, measurement, widthForFontSize) {
     const annotation = this.annotation;
     const font = feature.label.font;
     const allowShrinking = annotation.inlineLabelAllowShrinking;
@@ -256,8 +256,9 @@ class FeatureLabelRenderer {
     if (maximumSize < minimumSize || fullBaseWidth <= 0 ||
       (!allowShrinking && availableHeight < naturalSize)) { return; }
 
+    const widthAtSize = size => widthForFontSize ? widthForFontSize(size) : availableWidth;
     const maximumScale = maximumSize / naturalSize;
-    if ((fullBaseWidth * maximumScale) <= (availableWidth + FIT_TOLERANCE)) {
+    if ((fullBaseWidth * maximumScale) <= (widthAtSize(maximumSize) + FIT_TOLERANCE)) {
       return {
         text: String(feature.name),
         fontSize: maximumSize,
@@ -269,10 +270,27 @@ class FeatureLabelRenderer {
     }
 
     if (allowShrinking) {
-      const fittedSize = Math.min(
+      let fittedSize = Math.min(
         maximumSize,
         fontSizeThatDoesNotExceed(naturalSize * availableWidth / fullBaseWidth)
       );
+      if (widthForFontSize) {
+        // Shorter text also fits farther into the taper. Find the largest
+        // tenth-pixel size that satisfies both constraints together.
+        let low = Math.ceil(minimumSize * FONT_SIZE_STEPS_PER_PIXEL);
+        let high = Math.floor(fittedSize * FONT_SIZE_STEPS_PER_PIXEL);
+        fittedSize = 0;
+        while (low <= high) {
+          const step = Math.floor((low + high) / 2);
+          const size = step / FONT_SIZE_STEPS_PER_PIXEL;
+          if (fullBaseWidth * size / naturalSize <= widthAtSize(size) + FIT_TOLERANCE) {
+            fittedSize = size;
+            low = step + 1;
+          } else {
+            high = step - 1;
+          }
+        }
+      }
       if (fittedSize >= minimumSize) {
         const scale = fittedSize / naturalSize;
         return {
@@ -290,7 +308,7 @@ class FeatureLabelRenderer {
       measurement.characters.length <= MIN_TRUNCATED_CHARACTERS) { return; }
 
     const fontSize = allowShrinking ? minimumSize : naturalSize;
-    const maximumBaseWidth = availableWidth * naturalSize / fontSize;
+    const maximumBaseWidth = widthAtSize(fontSize) * naturalSize / fontSize;
     let characterCount = measurement.characters.length - 1;
     while (characterCount >= MIN_TRUNCATED_CHARACTERS &&
       (measurement.prefixWidths[characterCount] + measurement.ellipsisWidth) >
@@ -332,11 +350,13 @@ class FeatureLabelRenderer {
     };
   }
 
-  _usableSegment(feature, segment, centerOffset, width, pixelsPerBp) {
-    let start = segment.startEdge ?? segment.start - 0.5;
-    let stop = start + segment.length;
+  _segmentGeometry(feature, segment, centerOffset, width) {
+    const start = segment.startEdge ?? segment.start - 0.5;
+    const stop = start + segment.length;
     const arrow = this._terminalArrow(feature);
-    if (!arrow || !this._segmentContains(segment, arrow.tip)) { return {start, stop}; }
+    if (!arrow || !this._segmentContains(segment, arrow.tip)) {
+      return {start, stop, arrowHeadLength: 0};
+    }
 
     const arrowHeadLength = this.canvas.arrowHeadLengthPixels({
       autoArrow: feature.decoration === 'auto',
@@ -344,13 +364,45 @@ class FeatureLabelRenderer {
       featureLengthBp: arrow.length,
       width,
     });
-    const arrowHeadLengthBp = arrowHeadLength / pixelsPerBp;
-    if (feature.isDirect()) {
-      stop -= arrowHeadLengthBp;
-    } else {
-      start += arrowHeadLengthBp;
+    return {start, stop, arrowHeadLength};
+  }
+
+  /**
+   * Return the distance from the arrow tip needed to contain the text height.
+   * Circular arrow sides are chords, so intersect each side with the matching
+   * text-edge radius instead of treating the head as a straightened triangle.
+   * @param {Number} length - Arrowhead length in pixels along the centerline.
+   * @param {Number} width - Feature thickness in pixels.
+   * @param {Number} fontSize - Candidate text height in pixels.
+   * @param {Number} radius - Feature center radius (unused on linear maps).
+   * @return {Number} Required centerline inset in pixels. No drawing occurs.
+   * @private
+   */
+  _arrowHeadInset(length, width, fontSize, radius) {
+    if (length <= 0) { return 0; }
+    if (this.viewer.format === 'linear') { return length * fontSize / width; }
+    if (radius <= width / 2) { return length; }
+
+    const angle = length / radius;
+    let inset = 0;
+    for (const side of [-1, 1]) {
+      const baseRadius = radius + side * width / 2;
+      const halfTextHeight = side * fontSize / 2;
+      const dx = radius * (Math.cos(angle) - 1) + side * width / 2 * Math.cos(angle);
+      const dy = baseRadius * Math.sin(angle);
+      const a = dx * dx + dy * dy;
+      const b = 2 * radius * dx;
+      // Factoring the radius difference and the quadratic roots avoids
+      // cancellation when a highly zoomed circle is nearly a straight line.
+      const c = -halfTextHeight * (2 * radius + halfTextHeight);
+      const discriminant = Math.max(0, b * b - 4 * a * c);
+      const q = -0.5 * (b + (b < 0 ? -1 : 1) * Math.sqrt(discriminant));
+      const roots = [q / a, c / q];
+      const t = roots.find(root => root >= 0 && root <= 1);
+      if (t === undefined) { return length; }
+      inset = Math.max(inset, radius * Math.atan2(t * dy, radius + t * dx));
     }
-    return {start, stop};
+    return inset;
   }
 
   metricsFor(feature, centerOffset, slotThickness, visibleRange, slot) {
@@ -397,22 +449,26 @@ class FeatureLabelRenderer {
       .sort((first, second) => (second.length - first.length) || (first.start - second.start));
 
     for (const segment of segments) {
-      const usableSegment = this._usableSegment(
+      const geometry = this._segmentGeometry(
         feature,
         segment,
         adjustedCenterOffset,
-        adjustedWidth,
-        pixelsPerBp
+        adjustedWidth
       );
-      const availableWidth = ((usableSegment.stop - usableSegment.start) * pixelsPerBp) - (padding * 2);
+      const segmentWidth = (geometry.stop - geometry.start) * pixelsPerBp;
+      const availableWidth = segmentWidth - (padding * 2);
       if (availableWidth <= 0) { continue; }
-      const textPlan = this._textPlan(feature, availableWidth, availableHeight, measurement);
+      const widthForFontSize = geometry.arrowHeadLength > 0 ? size => segmentWidth - 2 * Math.max(
+        padding,
+        this._arrowHeadInset(geometry.arrowHeadLength, adjustedWidth, size, adjustedCenterOffset)
+      ) : undefined;
+      const textPlan = this._textPlan(feature, availableWidth, availableHeight, measurement, widthForFontSize);
       if (!textPlan) { continue; }
 
       // When a feature spans the viewport, keep its label on the exact map
       // center instead of an integer base-pair approximation. The float
       // visible range handles one-sided clipping continuously as well.
-      let bp = this._normalizeBp((usableSegment.start + usableSegment.stop) / 2);
+      let bp = this._normalizeBp((geometry.start + geometry.stop) / 2);
       if (segment.startClipped && segment.stopClipped) {
         const viewportBp = this._normalizeBp(this.viewer.bpFloat);
         if (Number.isFinite(viewportBp) && this._segmentContains(segment, viewportBp)) {
@@ -422,7 +478,7 @@ class FeatureLabelRenderer {
       return {
         bp,
         centerOffset: adjustedCenterOffset,
-        availableWidth,
+        availableWidth: widthForFontSize ? widthForFontSize(textPlan.fontSize) : availableWidth,
         pixelsPerBp,
         color: this._labelColor(feature, slot, bp),
         ...textPlan,
