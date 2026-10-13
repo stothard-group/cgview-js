@@ -318,7 +318,8 @@ class Slot extends CGObject {
           const initialStep = Math.ceil(featureCount / this.layout.fastFeaturesPerSlot);
           step = utils.base2(initialStep);
         }
-        const showShading = fast ? false : undefined;
+        // Keep configured shading when visible features fit the fast-draw budget.
+        const showShading = fast && featureCount > this.layout.fastFeaturesPerSlot ? false : undefined;
         // When drawing shadows, draw in reverse order to make them look better
         if (this.viewer.settings.showShading && this.isDirect()) { step *= -1; }
 

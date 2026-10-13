@@ -112,6 +112,33 @@ describe('Slot feature drawing and visible counts', () => {
     expect(drawn[0].args).toEqual(['map', 120, 12, range, {showShading: false}]);
   });
 
+  describe.each(['position', 'score'])('shading during fast %s drawing', drawOrder => {
+    test.each([
+      ['sparse whole map', nestedRecords.slice(0, 2), 1, 1000, 2],
+      ['whole map at the feature budget', nestedRecords.slice(0, 3), 1, 1000, 3],
+      ['sparse window within a larger slot', nestedRecords, 100, 160, 2],
+      ['sparse window crossing the origin', wrappedRecords, 960, 10, 2],
+    ])('inherits configured shading for a %s', (name, records, start, stop, visibleCount) => {
+      const {slot, canvas, drawn} = createSlot(records, {start, stop, drawOrder, shading: true});
+      slot.draw(canvas, true);
+
+      expect(drawn).toHaveLength(visibleCount);
+      for (const {args} of drawn) {
+        expect(args[4].showShading).toBeUndefined();
+      }
+    });
+
+    test('disables shading above the visible feature budget', () => {
+      const {slot, canvas, drawn} = createSlot(nestedRecords, {drawOrder, shading: true});
+      slot.draw(canvas, true);
+
+      expect(drawn).toHaveLength(2);
+      for (const {args} of drawn) {
+        expect(args[4].showShading).toBe(false);
+      }
+    });
+  });
+
   test('reports exact debug counts for wrapped full draws', () => {
     const debug = {data: {n: {}}};
     const {slot, canvas, count, drawn} = createSlot(wrappedRecords,
