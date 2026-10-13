@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labels testing | CGView.js</title>
+  <link rel="icon" href="../images/logo-tab.png">
+  <link rel="stylesheet" href="../styles/controls.css">
+  <link rel="stylesheet" href="external-labels.css?v=adaptive-1">
+  <script src="../dist/cgview.standalone.min.js?v=adaptive-1"></script>
+  <script src="external-labels.js?v=adaptive-1" defer></script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a class="brand" href="../">CGView.js</a>
+      <div class="intro"><h1>Compare label methods.</h1><p>Explore the same map with two label methods. Pan and zoom together to compare placement and readability.</p></div>
+      <span class="branch">v1.9</span>
+      <a class="test-link" href="./">Test Page</a>
+    </div>
+  </header>
+  <main>
+    <form id="controls">
+      <label>Map<select id="map-select" aria-label="Map">
+              <option value="fan">5 genes, isolated fan</option>
+              <option value="fan-groups" selected>Three groups of 5 genes</option>
+              <option value="fan-dense">120 genes, crowded fans</option>
+              <option value="dense">240 genes, varied names</option>
+              <option value="plasmid">48 genes, uneven spacing</option>
+              <option value="clustered">160 genes in a crowded arc</option>
+              <option value="large">1,000 genes</option>
+              <option value="mixed">1,000 genes, crowded and sparse regions</option>
+              <option value="labels_1.json">Label fixture 1</option>
+              <option value="labels_2.json">Label fixture 2</option>
+              <option value="labels_3.json">Label fixture 3</option>
+              <option value="labels_pPICZ.json">pPICZ</option>
+              <option value="labels_pcDNA3.1.json">pcDNA3.1</option>
+              <option value="labels_phastest2.json">PHASTEST</option>
+              <option value="labels_s_cerevisiae_mitochondrion.json">S. cerevisiae S288c mitochondrion</option>
+              <option value="contigs_ecoli_pa2.json">E. coli PA2 contigs</option>
+              <option value="large_lentzea_no_plots.json">Lentzea, large genome</option>
+            </select></label>
+      <label>Label font size, px<input id="font-size" type="number" min="3" max="48" step="1" value="12" required></label>
+      <label>Label line thickness, px<input id="line-width" type="number" min="0.25" max="8" step="0.25" value="1" required></label>
+      <label>Labels<select id="position"><option value="outside">Outside</option><option value="auto">Inline + outside</option><option value="inline">Inline only</option></select></label>
+      <div class="control-actions">
+        <label class="check"><input id="sync-views" type="checkbox" checked>Sync pan and zoom</label>
+        <button id="format" type="button" value="linear" aria-label="Switch map format" aria-pressed="true" title="Switch to circular map"><span class="btn-toggle-format" aria-hidden="true"></span></button>
+        <button id="replay" type="button">Redraw</button><button id="reset" type="button">Reset both maps</button>
+      </div>
+    </form>
+    <div class="comparison">
+      <section class="panel experiment">
+        <div class="panel-heading">
+          <label class="renderer-choice"><span class="eyebrow">LEFT LABEL METHOD</span><select id="renderer-left" aria-label="Left label renderer"></select></label>
+          <div id="renderer-options-left" class="renderer-options" hidden></div>
+        </div>
+        <div id="new-map" class="map"></div>
+        <div class="metrics"><div><strong id="left-count">0</strong><span>outside in frame</span></div><div><strong id="left-total">0</strong><span>labels drawn</span></div><div><strong id="left-available">0</strong><span>labels total</span></div><div><strong id="left-candidates">0</strong><span>outside candidates</span></div><div><strong id="left-time">0</strong><span>label draw, ms</span></div></div>
+        <div class="audit" id="audit-left">Waiting for labels.</div>
+        <div class="renderer-diagnostics" id="diagnostics-left" hidden></div>
+      </section>
+      <section class="panel ">
+        <div class="panel-heading">
+          <label class="renderer-choice"><span class="eyebrow">RIGHT LABEL METHOD</span><select id="renderer-right" aria-label="Right label renderer"></select></label>
+          <div id="renderer-options-right" class="renderer-options" hidden></div>
+        </div>
+        <div id="old-map" class="map"></div>
+        <div class="metrics"><div><strong id="right-count">0</strong><span>outside in frame</span></div><div><strong id="right-total">0</strong><span>labels drawn</span></div><div><strong id="right-available">0</strong><span>labels total</span></div><div><strong id="right-candidates">0</strong><span>outside candidates</span></div><div><strong id="right-time">0</strong><span>label draw, ms</span></div></div>
+        <div class="audit" id="audit-right">Waiting for labels.</div>
+        <div class="renderer-diagnostics" id="diagnostics-right" hidden></div>
+      </section>
+    </div>
+    <div class="map-actions">
+      <div class="view-controls">
+        <label>View<select id="view"><option value="overview">Overview</option><option value="centered">Centered zoom</option><option value="top">Top / origin</option><option value="right">Right / quarter</option><option value="bottom">Bottom / halfway</option><option value="left">Left / three quarters</option></select></label>
+        <label>Preset zoom<input id="zoom-factor" type="number" min="0.5" max="1000" step="0.25" value="1.75"></label>
+        <button id="top-space" type="button">Top at 1.75×</button><button id="bottom-space" type="button">Bottom at 1.75×</button>
+      </div>
+      <div class="toolbar">
+        <label>Export panel<select id="export-panel"><option value="0">Left</option><option value="1">Right</option></select></label>
+        <button id="export-svg" type="button">Export SVG</button><button id="export-png" type="button">Export PNG</button>
+        <label class="file-button">Open JSON<input id="open-json" type="file" accept=".json,application/json"></label>
+      </div>
+    </div>
+    <p id="message" role="status" hidden></p>
+    <section class="experiment-history" aria-labelledby="experiment-heading">
+      <h2 id="experiment-heading">Label methods</h2>
+      <article class="experiment-record" id="method-adaptive">
+        <h3>Adaptive</h3>
+        <p>Current v1.9 baseline. Clean labels follow an oval on a complete circular map or stay near the visible arc on zoomed maps. Increasing density adds labels and moves crowded regions toward straight leaders. Labels animate as the layout changes.</p>
+        <nav aria-label="Adaptive notes"><a href="external-labels.md#adaptive">Method details and provenance</a></nav>
+      </article>
+      <article class="experiment-record" id="method-classic">
+        <h3>Classic</h3>
+        <p>Current v1.9 baseline. Straight leaders place labels in outward levels. Clean uses one level; increasing density allows more levels. Shares density, spacing, and viewport controls with Adaptive.</p>
+        <nav aria-label="Classic notes"><a href="external-labels.md#classic">Method details and provenance</a></nav>
+      </article>
+    </section>
+    <footer><p>Font size and line thickness apply to both panels. Density, spacing, and Keep in view are independent for each panel and stay the same when switching methods.</p><p>Labels drawn includes inline and outside labels, including clipped outside labels when Keep in view is off. Text overlaps, leader crossings, and leaders through text are checked for outside labels after movement settles. Label draw time measures the synchronous draw call; Adaptive layout work across animation frames is shown in the diagnostics.</p><p><a href="external-labels.md">Testing notes and adding experiments</a></p></footer>
+  </main>
+</body>
+</html>
