@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CGView.js</title>
+
+
+
+
+
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+
+    <meta property="og:url" content=""/>
+
+    <script src="../scripts/theme.js"></script>
+    <link rel="shortcut icon" type="image/png" href="../images/logo-tab.png">
+    <!-- CG Apps Logo -->
+    <script src='../scripts/logo.js'></script>
+    <link href="../styles/logo.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/bootstrap.min.css" />
+    <link rel="stylesheet" href="../styles/prism.css" />
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/general.js'></script>
+
+    <!-- Plausible Analytics -->
+    <script defer data-domain="js.cgview.ca" src="https://stats.stothardresearch.ca/js/plausible.outbound-links.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+
+
+
+</head>
+<body>
+
+
+
+<!-- Nav Bar -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- CG Apps Logo -->
+      <div id="logo-container">
+        <div class="logo-wrap">
+          <a href="/" id="app-logo" aria-haspopup="true" aria-expanded="false">
+            <img src="../images/cgview-logo.png" alt="CG Apps" />
+          </a>
+          <div id="cg-apps" role="menu" aria-label="CG Apps">
+            <a role="menuitem" href="https://js.cgview.ca"><img src='../images/cgview-logo.png' />CGView.js</a>
+            <a role="menuitem" href="https://parse.cgview.ca"><img src='../images/cgparse-logo.png' />CGParse.js</a>
+          </div>
+        </div>
+        <a class="navbar-brand" href="../index.html">CGView.js</a>
+      </div>
+
+      <!-- Docs Toggle -->
+      <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="sidebar-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="navbar-nav">
+        <a class="nav-link" href="../examples/index.html">Examples</a>
+        <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
+        <a class="nav-link" href="../docs.html">Docs</a>
+        <a class="nav-link active" aria-current="page" href="index.html">API</a>
+        <a class="nav-link" href="../json.html">JSON</a>
+        <a class="nav-link" href="../test/index.html">Test</a>
+        <a class="nav-link github-logo" href="https://github.com/sciguy/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<nav id='sidebar-nav' class='collapse' data-navigation-url='navigation.html' aria-busy='true'>
+  <a class='side-link nav-index' href='index.html'>API Home</a>
+  <p role='status'>API navigation requires JavaScript.</p>
+</nav>
+
+<main>
+<!-- Add 'jaguar' class to provide API-specific styling - JRG -->
+<div id="wrap" class="clearfix jaguar">
+    <div class="main">
+
+        <h1 class="page-title" data-filename="ExternalLabelRenderers.js.html">Source: ExternalLabelRenderers.js</h1>
+
+
+
+
+    <section>
+        <article>
+            <pre class="source language-javascript "><code class="language-javascript">/** External label renderer registration. Copyright 2026 Jason R. Grant. Apache-2.0. */
+import LabelRendererClassic from './LabelRendererClassic';
+import LabelRendererAdaptive from './LabelRendererAdaptive';
+
+const registry = new Map();
+
+/**
+ * Register a renderer class for annotation.labelMethod.
+ * @param {String} id - Unique, stable lowercase ID, also saved in map JSON.
+ * @param {Function} Renderer - Class with draw(frame); optional reset/destroy hooks.
+ * @param {Object} [metadata={}] - Label, description, optional usesPriority boolean, controls
+ *   [{key, type: 'checkbox'|'range'|'number', label, defaultValue, description?}]; numeric
+ *   controls specify min, step and max (optional for numbers). Ranges can add minLabel/maxLabel.
+ * @returns {void} Adds to this bundle's registry; existing entries cannot be replaced.
+ * @example
+ * registerExternalLabelRenderer('renderer-1', ExternalLabelRenderer1, {label: 'Renderer 1'});
+ */
+export function registerExternalLabelRenderer(id, Renderer, metadata = {}) {
+  if (typeof id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(id)) { throw new TypeError('Invalid external label renderer ID'); }
+  if (registry.has(id)) { throw new Error(`External label renderer '${id}' is already registered`); }
+  if (typeof Renderer !== 'function' || typeof Renderer.prototype?.draw !== 'function') {
+    throw new TypeError('An external label renderer must implement draw(frame)');
+  }
+  if (metadata.usesPriority !== undefined &amp;&amp; typeof metadata.usesPriority !== 'boolean') {
+    throw new TypeError('Renderer usesPriority must be a boolean');
+  }
+  const controls = (metadata.controls || []).map(control => {
+    const checkbox = control.type === 'checkbox' &amp;&amp; typeof control.defaultValue === 'boolean';
+    const numeric = ['range', 'number'].includes(control.type) &amp;&amp;
+      [control.min, control.step, control.defaultValue].every(Number.isFinite) &amp;&amp;
+      ((control.type === 'number' &amp;&amp; control.max === undefined) ||
+        (Number.isFinite(control.max) &amp;&amp; control.min &lt; control.max &amp;&amp; control.defaultValue &lt;= control.max)) &amp;&amp;
+      control.step > 0 &amp;&amp; control.defaultValue >= control.min &amp;&amp;
+      ['minLabel', 'maxLabel'].every(key => control[key] === undefined || typeof control[key] === 'string');
+    if ((!checkbox &amp;&amp; !numeric) || typeof control.key !== 'string' || !/^[a-z][a-zA-Z0-9]*$/.test(control.key) ||
+      typeof control.label !== 'string') {
+      throw new TypeError('Invalid renderer control');
+    }
+    return Object.freeze({...control});
+  });
+  if (new Set(controls.map(control => control.key)).size !== controls.length) {
+    throw new TypeError('Duplicate renderer control key');
+  }
+  registry.set(id, Object.freeze({id, Renderer, label: metadata.label || id, description: metadata.description || '',
+    usesPriority: metadata.usesPriority === true,
+    ...(controls.length &amp;&amp; {controls: Object.freeze(controls)})}));
+}
+
+/**
+ * List renderer choices without exposing mutable registry entries.
+ * @returns {Object[]} Copies of {id, label, description, usesPriority, controls?}; no side effects.
+ */
+export function externalLabelRenderers() {
+  return [...registry.values()].map(({id, label, description, usesPriority, controls}) => ({id, label, description, usesPriority,
+    ...(controls &amp;&amp; {controls: controls.map(control => ({...control}))})}));
+}
+
+/** Resolve a registered renderer, throwing for unknown IDs. @private */
+export function externalLabelRendererDefinition(id) {
+  const definition = registry.get(id);
+  if (!definition) { throw new Error(`Unknown external label renderer '${id}'`); }
+  return definition;
+}
+
+registerExternalLabelRenderer('adaptive', LabelRendererAdaptive, {label: 'Adaptive'});
+registerExternalLabelRenderer('classic', LabelRendererClassic, {label: 'Classic'});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        <footer>
+           Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a>. See <a href='index.html'>API Home</a> for documentation generation date.
+        </footer>
+    </div>
+</div>
+</main>
+    <!-- Bootstrap JavaScript -->
+    <script src="../scripts/bootstrap.min.js"></script>
+<script src="../scripts/prism.js" data-manual></script>
+<script src="scripts/highlight.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

@@ -56,7 +56,10 @@ export function advanceSpring(value, velocity, target, dt, rate = 24) {
   return [target + (difference + impulse * dt) * decay, (velocity - rate * impulse * dt) * decay];
 }
 
-/** Adaptive placement, cooperative planning and continuous presentation for one annotation. */
+/**
+ * Adaptive placement, cooperative planning and continuous presentation for one annotation.
+ * @private
+ */
 export default class LabelRendererAdaptive {
   /**
    * @param {Annotation} annotation - Viewer, labels and styles.

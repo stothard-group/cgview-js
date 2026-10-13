@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CGView.js</title>
+
+
+
+
+
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+
+    <meta property="og:url" content=""/>
+
+    <script src="../scripts/theme.js"></script>
+    <link rel="shortcut icon" type="image/png" href="../images/logo-tab.png">
+    <!-- CG Apps Logo -->
+    <script src='../scripts/logo.js'></script>
+    <link href="../styles/logo.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/bootstrap.min.css" />
+    <link rel="stylesheet" href="../styles/prism.css" />
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/general.js'></script>
+
+    <!-- Plausible Analytics -->
+    <script defer data-domain="js.cgview.ca" src="https://stats.stothardresearch.ca/js/plausible.outbound-links.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+
+
+
+</head>
+<body>
+
+
+
+<!-- Nav Bar -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- CG Apps Logo -->
+      <div id="logo-container">
+        <div class="logo-wrap">
+          <a href="/" id="app-logo" aria-haspopup="true" aria-expanded="false">
+            <img src="../images/cgview-logo.png" alt="CG Apps" />
+          </a>
+          <div id="cg-apps" role="menu" aria-label="CG Apps">
+            <a role="menuitem" href="https://js.cgview.ca"><img src='../images/cgview-logo.png' />CGView.js</a>
+            <a role="menuitem" href="https://parse.cgview.ca"><img src='../images/cgparse-logo.png' />CGParse.js</a>
+          </div>
+        </div>
+        <a class="navbar-brand" href="../index.html">CGView.js</a>
+      </div>
+
+      <!-- Docs Toggle -->
+      <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="sidebar-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="navbar-nav">
+        <a class="nav-link" href="../examples/index.html">Examples</a>
+        <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
+        <a class="nav-link" href="../docs.html">Docs</a>
+        <a class="nav-link active" aria-current="page" href="index.html">API</a>
+        <a class="nav-link" href="../json.html">JSON</a>
+        <a class="nav-link" href="../test/index.html">Test</a>
+        <a class="nav-link github-logo" href="https://github.com/sciguy/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<nav id='sidebar-nav' class='collapse' data-navigation-url='navigation.html' aria-busy='true'>
+  <a class='side-link nav-index' href='index.html'>API Home</a>
+  <p role='status'>API navigation requires JavaScript.</p>
+</nav>
+
+<main>
+<!-- Add 'jaguar' class to provide API-specific styling - JRG -->
+<div id="wrap" class="clearfix jaguar">
+    <div class="main">
+
+        <h1 class="page-title" data-filename="ExternalLabelRendererHost.js.html">Source: ExternalLabelRendererHost.js</h1>
+
+
+
+
+    <section>
+        <article>
+            <pre class="source language-javascript "><code class="language-javascript">/** Renderer lifecycle and interaction boundary. Copyright 2026 Jason R. Grant. Apache-2.0. */
+import CGArray from './CGArray';
+import Rect from './Rect';
+import {externalLabelRendererDefinition} from './ExternalLabelRenderers';
+
+const clone = value => Object.assign(Object.create(Object.getPrototypeOf(value)), value);
+
+/**
+ * Per-Annotation host. Renderer algorithms and painting stay in their own files.
+ * @private
+ */
+class ExternalLabelRendererHost {
+  constructor(annotation, id) {
+    this.annotation = annotation;
+    this.generation = 0;
+    this.frames = new Set();
+    this.placements = [];
+    this.lines = new Map();
+    this.stats = {visible: 0, candidates: 0, drawMs: 0};
+    this.select(id ?? 'adaptive');
+  }
+
+  /** Apply options without discarding motion when the renderer supports it. @private */
+  updateOptions(options) {
+    if (typeof this.renderer?.updateOptions === 'function') {
+      this.clear();
+      this.renderer.updateOptions(options);
+    } else { this.select(this.id, true); }
+  }
+
+  /** Select an independent renderer instance, disposing the previous one. @private */
+  select(id, force = false) {
+    const definition = externalLabelRendererDefinition(id);
+    if (id === this.id &amp;&amp; !force) { return; }
+    const renderer = new definition.Renderer(this.annotation, this.annotation._labelRendererOptions);
+    this.destroy();
+    this.id = id;
+    this.renderer = renderer;
+  }
+
+  /** Invalidate pending frames and hit geometry; reset caches on data/hide changes. @private */
+  clear(reason = 'redraw') {
+    this.generation++;
+    for (const id of this.frames) { cancelAnimationFrame(id); }
+    this.frames.clear();
+    this.placements = [];
+    this.lines.clear();
+    this.annotation._visibleLabels = new CGArray();
+    this.stats = {...this.stats, visible: 0};
+    if (reason !== 'redraw') { this.renderer?.reset?.(reason); }
+  }
+
+  /** Cancel managed animation and release renderer-owned resources. @private */
+  destroy() {
+    this.clear();
+    this.renderer?.destroy?.();
+    this.renderer = undefined;
+  }
+
+  /**
+   * Dispatch one external-label draw and own its publication/animation lifetime.
+   * @param {Label[]} labels - Eligible labels; the renderer chooses a visible subset.
+   * @param {Number} innerCenterOffset - Inner map boundary.
+   * @param {Number} outerCenterOffset - Outer map boundary.
+   * @param {Boolean} fast - Interactive preview draw.
+   * @returns {void} Updates live geometry/stats; exports use disposable instances.
+   */
+  draw(labels, innerCenterOffset, outerCenterOffset, fast) {
+    const a = this.annotation, viewer = a.viewer, exporting = !!viewer.layout._exporting;
+    const started = performance.now();
+    if (!exporting) { this.clear(); }
+    // Loading a map can briefly draw a queued move from an unfinished layout.
+    // Wait for a valid projection before invoking a renderer or publishing hits.
+    if (![...viewer.scale.x.domain(), ...viewer.scale.y.domain()].every(Number.isFinite)) { return; }
+    const generation = this.generation;
+    const current = () => !exporting &amp;&amp; generation === this.generation &amp;&amp; viewer.annotation === a &amp;&amp;
+      a.visible &amp;&amp; ['outside', 'auto'].includes(a.labelPosition);
+    const renderer = exporting ? new (externalLabelRendererDefinition(this.id).Renderer)(a, a._labelRendererOptions) : this.renderer;
+    const layer = renderer.layer === 'map' ? 'map' : 'labels';
+    const context = a.canvas.context(layer);
+    const candidates = new Set(labels);
+    const frame = {
+      annotation: a, viewer, canvas: a.canvas, context, layer, exporting, fast: !!fast,
+      width: a.canvas.width, height: a.canvas.height, format: viewer.format,
+      innerCenterOffset, outerCenterOffset, visibleRange: a._visibleRange,
+      options: a._labelRendererOptions,
+      reducedMotion: typeof matchMedia === 'function' &amp;&amp; matchMedia('(prefers-reduced-motion: reduce)').matches,
+      // Export labels are disposable; publication and animation are disabled.
+      labels: exporting ? new CGArray(Array.from(labels, clone)) : labels,
+      publish: placements => {
+        if (!current()) { return; }
+        const seen = new Set();
+        const prepared = placements.map(({label, rect, points = [], bp = label?.bp}) => {
+          if (!candidates.has(label) || seen.has(label) || !rect ||
+            ![rect.x, rect.y, rect.width, rect.height, bp].every(Number.isFinite) || rect.width &lt; 0 || rect.height &lt; 0 ||
+            points.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y))) {
+            throw new TypeError('Renderer published invalid label geometry');
+          }
+          seen.add(label);
+          return {label, rect: rect instanceof Rect ? rect : new Rect(rect.x, rect.y, rect.width, rect.height),
+            points: points.map(p => ({x: p.x, y: p.y})), bp};
+        });
+        for (const {label, rect, points, bp} of prepared) {
+          label.rect = rect;
+          label.bp = bp;
+          if (points.length) { label.attachementPt = points.at(-1); }
+        }
+        this.placements = prepared;
+        this.lines = new Map(prepared.map(n => [n.label, n.points]));
+        a._visibleLabels = new CGArray(prepared.map(n => n.label));
+        this.stats = {...this.stats, renderer: this.id, candidates: labels.length, visible: prepared.length};
+        if (viewer.debug?.data.n) { viewer.debug.data.n.labels = prepared.length; }
+      },
+      requestFrame: callback => {
+        if (!current()) { return undefined; }
+        const id = requestAnimationFrame(time => {
+          this.frames.delete(id);
+          if (current()) {
+            const frameStarted = performance.now();
+            callback(time);
+            this.stats = {...this.stats, frameMs: performance.now() - frameStarted};
+          }
+        });
+        this.frames.add(id);
+        return id;
+      },
+      clear: () => {
+        if (layer !== 'labels') { throw new Error('Only the labels layer can be cleared independently'); }
+        if (current()) { context.clearRect(0, 0, frame.width, frame.height); }
+      },
+      isCurrent: current,
+    };
+    // SVG shares one drawing context across layers. Defer the labels layer
+    // until map features are complete so its compositing matches Canvas/PNG.
+    if (exporting &amp;&amp; layer === 'labels') {
+      viewer.layout._exportLabelTasks.push({draw: () => renderer.draw(frame), destroy: () => renderer.destroy?.()});
+      return;
+    }
+    try { renderer.draw(frame); }
+    finally { if (exporting) { renderer.destroy?.(); } }
+    if (!exporting) { this.stats = {...this.stats, candidates: labels.length, drawMs: performance.now() - started}; }
+  }
+
+  drawLabelLine(label, context, width) {
+    if (this.renderer?.drawLabelLine) { this.renderer.drawLabelLine(label, context, width); return; }
+    const points = this.lines.get(label);
+    if (!points?.length) { return; }
+    context.save();
+    context.beginPath();
+    context.moveTo(points[0].x, points[0].y);
+    for (const point of points.slice(1)) { context.lineTo(point.x, point.y); }
+    context.strokeStyle = (this.annotation.color || label.feature.color).rgbaString;
+    context.lineWidth = width || this.annotation.labelLineThickness;
+    context.lineCap = this.annotation.lineCap;
+    context.stroke();
+    context.restore();
+  }
+}
+
+export default ExternalLabelRendererHost;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        <footer>
+           Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a>. See <a href='index.html'>API Home</a> for documentation generation date.
+        </footer>
+    </div>
+</div>
+</main>
+    <!-- Bootstrap JavaScript -->
+    <script src="../scripts/bootstrap.min.js"></script>
+<script src="../scripts/prism.js" data-manual></script>
+<script src="scripts/highlight.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

@@ -138,6 +138,7 @@ const AUTO_BORDER_BLEND = 0.5;
  * ------------------|---------------
  * background        | for drawing behind the map
  * map               | main layer, where the map is drawn
+ * labels            | external label renderers that animate independently of the map
  * foreground        | for drawing in front of the map (e.g. map-based captions/legend, centerLine)
  * canvas            | layer for drawing static components (e.g. canvas-based captions/legend)
  * debug             | layer to draw debug information
@@ -159,7 +160,7 @@ class Canvas {
 
     // Create layers
     this.determinePixelRatio(container);
-    this._layerNames = ['background', 'map', 'foreground', 'canvas', 'debug', 'ui'];
+    this._layerNames = ['background', 'map', 'labels', 'foreground', 'canvas', 'debug', 'ui'];
     this._layers = this.createLayers(container, this._layerNames, this._width, this._height);
 
     // This value is used to restrict the draw range for testing (see _testDrawRange)

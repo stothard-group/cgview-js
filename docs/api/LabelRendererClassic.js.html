@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CGView.js</title>
+
+
+
+
+
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+
+    <meta property="og:url" content=""/>
+
+    <script src="../scripts/theme.js"></script>
+    <link rel="shortcut icon" type="image/png" href="../images/logo-tab.png">
+    <!-- CG Apps Logo -->
+    <script src='../scripts/logo.js'></script>
+    <link href="../styles/logo.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/bootstrap.min.css" />
+    <link rel="stylesheet" href="../styles/prism.css" />
+    <link rel="stylesheet" href="../styles/tables.css" />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <script src='../scripts/general.js'></script>
+
+    <!-- Plausible Analytics -->
+    <script defer data-domain="js.cgview.ca" src="https://stats.stothardresearch.ca/js/plausible.outbound-links.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+
+
+
+</head>
+<body>
+
+
+
+<!-- Nav Bar -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- CG Apps Logo -->
+      <div id="logo-container">
+        <div class="logo-wrap">
+          <a href="/" id="app-logo" aria-haspopup="true" aria-expanded="false">
+            <img src="../images/cgview-logo.png" alt="CG Apps" />
+          </a>
+          <div id="cg-apps" role="menu" aria-label="CG Apps">
+            <a role="menuitem" href="https://js.cgview.ca"><img src='../images/cgview-logo.png' />CGView.js</a>
+            <a role="menuitem" href="https://parse.cgview.ca"><img src='../images/cgparse-logo.png' />CGParse.js</a>
+          </div>
+        </div>
+        <a class="navbar-brand" href="../index.html">CGView.js</a>
+      </div>
+
+      <!-- Docs Toggle -->
+      <button class="btn sidebar-toggle d-sm-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-nav" aria-controls="sidebar-nav" aria-expanded="false" aria-label="Toggle docs navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-expand" fill="currentColor" viewBox="0 0 16 16"> <title>Expand</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"></path> </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-collapse" fill="currentColor" viewBox="0 0 16 16"> <title>Collapse</title> <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"></path> </svg>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="navbar-nav">
+        <a class="nav-link" href="../examples/index.html">Examples</a>
+        <a class="nav-link" href="../tutorials/index.html">Tutorials</a>
+        <a class="nav-link" href="../docs.html">Docs</a>
+        <a class="nav-link active" aria-current="page" href="index.html">API</a>
+        <a class="nav-link" href="../json.html">JSON</a>
+        <a class="nav-link" href="../test/index.html">Test</a>
+        <a class="nav-link github-logo" href="https://github.com/sciguy/cgview-js"><img src='../images/GitHub-Mark-Light-64px.png' /></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<nav id='sidebar-nav' class='collapse' data-navigation-url='navigation.html' aria-busy='true'>
+  <a class='side-link nav-index' href='index.html'>API Home</a>
+  <p role='status'>API navigation requires JavaScript.</p>
+</nav>
+
+<main>
+<!-- Add 'jaguar' class to provide API-specific styling - JRG -->
+<div id="wrap" class="clearfix jaguar">
+    <div class="main">
+
+        <h1 class="page-title" data-filename="LabelRendererClassic.js.html">Source: LabelRendererClassic.js</h1>
+
+
+
+
+    <section>
+        <article>
+            <pre class="source language-javascript "><code class="language-javascript">/**
+ * Classic: Classic straight leaders in bounded outward levels.
+ * Copyright 2026 Jason R. Grant. Apache-2.0.
+ */
+import Rect from './Rect';
+import utils from './Utils';
+
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const overlaps = (a, b, gap) => a.x &lt; b.x + b.width + gap - 1e-7 &amp;&amp; b.x &lt; a.x + a.width + gap - 1e-7 &amp;&amp;
+  a.y &lt; b.y + b.height + gap - 1e-7 &amp;&amp; b.y &lt; a.y + a.height + gap - 1e-7;
+
+// Only nearby text boxes participate in exact collision tests. Oversized custom
+// labels use the overflow set, preserving correctness without huge cell loops.
+class BoxIndex {
+  constructor(gap) { this.gap = gap; this.cells = new Map(); this.all = []; this.overflow = []; this.serial = 0; }
+  cellsFor(rect, padding, visit) {
+    const left = Math.floor((rect.x - padding) / 32), right = Math.floor((rect.x + rect.width + padding) / 32);
+    const top = Math.floor((rect.y - padding) / 32), bottom = Math.floor((rect.y + rect.height + padding) / 32);
+    if ((right - left + 1) * (bottom - top + 1) > 4096) { return false; }
+    for (let x = left; x &lt;= right; x++) {
+      for (let y = top; y &lt;= bottom; y++) { if (visit(`${x},${y}`)) { return true; } }
+    }
+    return true;
+  }
+  add(rect) {
+    const entry = {rect, seen: 0}; this.all.push(entry);
+    if (!this.cellsFor(rect, 0, key => {
+      if (!this.cells.has(key)) { this.cells.set(key, []); }
+      this.cells.get(key).push(entry);
+    })) { this.overflow.push(entry); }
+  }
+  collision(rect) {
+    const serial = ++this.serial;
+    let hit;
+    const visit = entry => {
+      if (entry.seen === serial) { return false; }
+      entry.seen = serial;
+      if (overlaps(rect, entry.rect, this.gap)) { hit = entry.rect; return true; }
+      return false;
+    };
+    if (this.overflow.some(visit)) { return hit; }
+    if (!this.cellsFor(rect, this.gap, key => this.cells.get(key)?.some(visit))) { this.all.some(visit); }
+    return hit;
+  }
+}
+
+function rowRange(node, width, height, step, bounded, gap) {
+  let low = 0, high = Math.hypot(width, height);
+  if (bounded) {
+    for (const [axis, size, extent] of [['x', 'width', width], ['y', 'height', height]]) {
+      const start = node.rect[axis], direction = node.direction[axis], available = extent - node.rect[size] - gap;
+      if (available &lt; gap) { return; }
+      if (Math.abs(direction) &lt; 1e-9) {
+        if (start &lt; gap || start > available) { return; }
+      } else {
+        const a = (gap - start) / direction, b = (available - start) / direction;
+        low = Math.max(low, Math.min(a, b)); high = Math.min(high, Math.max(a, b));
+      }
+    }
+  }
+  const first = Math.max(0, Math.ceil((low - 1e-7) / step)), last = Math.floor((high + 1e-7) / step);
+  return last >= first ? {first, last} : undefined;
+}
+
+// Skip directly beyond a blocking rectangle along this label's straight ray.
+function nextRow(rect, hit, direction, row, step, gap) {
+  let exit = Infinity;
+  for (const [axis, size] of [['x', 'width'], ['y', 'height']]) {
+    const d = direction[axis];
+    if (d > 1e-9) { exit = Math.min(exit, (hit[axis] + hit[size] + gap - rect[axis]) / d); }
+    else if (d &lt; -1e-9) { exit = Math.min(exit, (hit[axis] - rect[axis] - rect[size] - gap) / d); }
+  }
+  return row + Math.max(1, Math.ceil((exit - 1e-7) / step));
+}
+
+/**
+ * Pack Classic boxes level by level, preserving each lower-density prefix.
+ * @param {Object[]} nodes - Priority-ordered {label, rect, root, direction} records.
+ * @param {Object} options - width, height, step, labelDensity (0..1), constrainToViewport, gap (pixels, default 3).
+ * @returns {Object} Selected placements and level/search counts. Inputs are not mutated.
+ * @example packClassicLabels(nodes, {width: 800, height: 600, step: 12, labelDensity: 0.5, constrainToViewport: true});
+ */
+export function packClassicLabels(nodes, {width, height, step, labelDensity, constrainToViewport, gap = 3}) {
+  const buckets = [], index = new BoxIndex(gap), placed = [];
+  let maximumLevel = 0, attempts = 0, clean = 0;
+  nodes.forEach((node, rank) => {
+    const range = rowRange(node, width, height, step, constrainToViewport, gap);
+    if (!range) { return; }
+    maximumLevel = Math.max(maximumLevel, range.last);
+    (buckets[range.first] ||= []).push({node, rank, last: range.last});
+  });
+  const depth = maximumLevel * labelDensity, fullLevels = Math.floor(depth + 1e-9);
+  const lastLevel = Math.ceil(depth - 1e-9), fraction = depth - fullLevels;
+  for (let row = 0; row &lt;= lastLevel; row++) {
+    const additions = [];
+    for (const item of (buckets[row] || []).sort((a, b) => a.rank - b.rank)) {
+      const {node} = item, offset = row * step;
+      const rect = new Rect(node.rect.x + node.direction.x * offset, node.rect.y + node.direction.y * offset,
+        node.rect.width, node.rect.height);
+      attempts++;
+      const hit = index.collision(rect);
+      if (hit) {
+        const next = nextRow(rect, hit, node.direction, row, step, gap);
+        if (next &lt;= item.last &amp;&amp; next &lt;= lastLevel) { (buckets[next] ||= []).push(item); }
+      } else {
+        index.add(rect); additions.push({...node, rect, row});
+      }
+    }
+    if (row === 0) { clean = additions.length; }
+    placed.push(...(row > fullLevels ? additions.slice(0, Math.floor(additions.length * fraction)) : additions));
+  }
+  return {placed, clean, maximumLevel, levels: new Set(placed.map(node => node.row)).size, attempts};
+}
+
+/**
+ * Classic geometry/painting with a density budget; no animation or priority cap.
+ * @private
+ */
+export default class LabelRendererClassic {
+  constructor(annotation, options = {}) {
+    this.annotation = annotation;
+    this.layer = 'map';
+    this.updateOptions(options);
+  }
+
+  /** Replace renderer options and invalidate layout; no annotation changes. @private */
+  updateOptions(options = {}) {
+    const density = Number(options.labelDensity ?? 0);
+    this.labelDensity = Number.isFinite(density) ? clamp(density, 0, 1) : 0;
+    const gap = Number(options.gap);
+    this.gap = Number.isFinite(gap) ? Math.max(0, gap) : 3;
+    this.constrainToViewport = options.constrainToViewport !== false;
+    this.reset();
+  }
+
+  reset() { this.layout = undefined; this.stats = {phase: 'ready'}; }
+  destroy() { this.reset(); }
+
+  /** Place, paint and publish synchronous Classic labels on the original map layer. @private */
+  draw(frame) {
+    const a = this.annotation, ctx = frame.context, started = performance.now();
+    a._calculatePositions(frame.labels);
+    const base = frame.outerCenterOffset + a._labelLineMarginInner;
+    const offset = base + a.labelLineLength + a._labelLineMarginOuter;
+    const nodes = Array.from(frame.labels, label => {
+      const point = a.canvas.pointForBp(label.bp, offset), next = a.canvas.pointForBp(label.bp, offset + 1);
+      const origin = utils.rectOriginForAttachementPoint(point, label.lineAttachment, label.width, label.height);
+      return {label, bp: label.bp, attachment: label.lineAttachment,
+        rect: {x: origin.x, y: origin.y, width: label.width, height: label.height},
+        root: a.canvas.pointForBp(label.bp, base), direction: {x: next.x - point.x, y: next.y - point.y}};
+    }).filter(node => node.label.feature.visible);
+    const options = {width: frame.width, height: frame.height, step: Math.max(3, a.font.height + this.gap), gap: this.gap,
+      labelDensity: this.labelDensity, constrainToViewport: this.constrainToViewport};
+    const old = this.layout;
+    const cached = old &amp;&amp; Object.keys(options).every(key => old.options[key] === options[key]) &amp;&amp;
+      old.nodes.length === nodes.length &amp;&amp; nodes.every((node, i) => {
+        const prev = old.nodes[i];
+        return node.label === prev.label &amp;&amp; node.bp === prev.bp &amp;&amp; node.attachment === prev.attachment &amp;&amp;
+          ['x', 'y', 'width', 'height'].every(key => node.rect[key] === prev.rect[key]) &amp;&amp;
+          ['x', 'y'].every(key => node.direction[key] === prev.direction[key] &amp;&amp; node.root[key] === prev.root[key]);
+      });
+    const layout = cached ? old : {nodes, options, ...packClassicLabels(nodes, options)};
+    this.layout = layout;
+    const placements = layout.placed.map(node => ({label: node.label, bp: node.bp, rect: node.rect,
+      points: [node.root, node.rect.ptForClockPosition(node.attachment)]}));
+    ctx.font = a.font.css; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.lineCap = a.lineCap; ctx.lineWidth = a.labelLineThickness;
+    for (const {label, points: [root, end]} of placements) {
+      ctx.beginPath(); ctx.moveTo(root.x, root.y); ctx.lineTo(end.x, end.y);
+      ctx.strokeStyle = (a.color || label.feature.color).rgbaString; ctx.stroke();
+    }
+    const background = a.viewer.settings.backgroundColor.copy(); background.opacity = 0.75;
+    for (const {label, rect} of placements) {
+      ctx.fillStyle = background.rgbaString; ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+      ctx.fillStyle = (a.color || label.feature.color).rgbaString;
+      ctx.fillText(label.name, rect.x, rect.y + rect.height - 1);
+    }
+    frame.publish(placements);
+    this.stats = {phase: 'ready', layoutMs: performance.now() - started, cached,
+      density: {value: this.labelDensity, clean: layout.clean, maximum: this.labelDensity === 1 ? placements.length : null,
+        selected: placements.length, straight: placements.length, levels: layout.levels, attempts: cached ? 0 : layout.attempts}};
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        <footer>
+           Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a>. See <a href='index.html'>API Home</a> for documentation generation date.
+        </footer>
+    </div>
+</div>
+</main>
+    <!-- Bootstrap JavaScript -->
+    <script src="../scripts/bootstrap.min.js"></script>
+<script src="../scripts/prism.js" data-manual></script>
+<script src="scripts/highlight.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

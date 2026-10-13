@@ -812,6 +812,1684 @@ transform. This lets horizontal letters sit inside directional circular cells.</
 
 
 
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_layoutOptions">
+
+            _layoutOptions<span class="signature">()</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line95">line 95</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Snapshot geometry and viewport spacing for planning, previews and export. @private</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_presentTargets">
+
+            _presentTargets<span class="signature">(frame)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{void}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line253">line 253</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Solve targets on input changes, then reproject/retarget the current display.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>frame</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Object</span>
+
+
+
+            </td>
+
+
+
+            <td class="description last">
+
+                <p>Shared host draw contract and managed animation callbacks.</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        void
+
+
+            </td>
+            <td class="description last">Paints/publishes displayed geometry; export paints only final targets.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="_tick">
+
+            _tick<span class="signature">(frame, time, <span class="optional">immediate</span>)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{void}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line338">line 338</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Advance shared spring equations, then publish only currently visible boxes.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+		<th>Default</th>
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>frame</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Object</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Host-managed drawing and animation callbacks.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>time</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Monotonic animation time in milliseconds.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>immediate</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Boolean</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                    false
+
+                </td>
+
+
+            <td class="description last">
+
+
+                        <span class="optional">optional</span>
+
+
+
+
+
+                <p>Snap motion for initial/reduced-motion draws.</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        void
+
+
+            </td>
+            <td class="description last">Updates live springs, visibility, hits and statistics; no layout mutation.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="advanceSpring">
+
+            advanceSpring<span class="signature">(value, velocity, target, dt, <span class="optional">rate</span>)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{Array.&lt;Number>}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line52">line 52</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Integrate a critically damped spring exactly for a fixed target over dt.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+		<th>Default</th>
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>value</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Displayed coordinate (pixels, radians or opacity).</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>velocity</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Coordinate units per second.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>target</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Desired coordinate.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>dt</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Elapsed seconds, nonnegative.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>rate</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Number</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                    24
+
+                </td>
+
+
+            <td class="description last">
+
+
+                        <span class="optional">optional</span>
+
+
+
+
+
+                <p>Response rate in inverse seconds.</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        Array.&lt;Number>
+
+
+            </td>
+            <td class="description last">New [value, velocity]; no side effects or frame-rate dependence.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="draw">
+
+            draw<span class="signature">()</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererClassic.js.html">LabelRendererClassic.js</a>, <a href="LabelRendererClassic.js.html#line140">line 140</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Place, paint and publish synchronous Classic labels on the original map layer. @private</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="drawLabelLine">
+
+            drawLabelLine<span class="signature">()</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line433">line 433</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Highlight the displayed leader, including while it is between target positions.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="externalLabelRendererDefinition">
+
+            externalLabelRendererDefinition<span class="signature">()</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="ExternalLabelRenderers.js.html">ExternalLabelRenderers.js</a>, <a href="ExternalLabelRenderers.js.html#line59">line 59</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Resolve a registered renderer, throwing for unknown IDs. @private</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="externalLabelRenderers">
+
+            externalLabelRenderers<span class="signature">()</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{Array.&lt;Object>}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="ExternalLabelRenderers.js.html">ExternalLabelRenderers.js</a>, <a href="ExternalLabelRenderers.js.html#line53">line 53</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>List renderer choices without exposing mutable registry entries.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        Array.&lt;Object>
+
+
+            </td>
+            <td class="description last">Copies of {id, label, description, usesPriority, controls?}; no side effects.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="packClassicLabels">
+
+            packClassicLabels<span class="signature">(nodes, options)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{Object}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererClassic.js.html">LabelRendererClassic.js</a>, <a href="LabelRendererClassic.js.html#line83">line 83</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Pack Classic boxes level by level, preserving each lower-density prefix.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>nodes</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Array.&lt;Object></span>
+
+
+
+            </td>
+
+
+
+            <td class="description last">
+
+                <p>Priority-ordered {label, rect, root, direction} records.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>options</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Object</span>
+
+
+
+            </td>
+
+
+
+            <td class="description last">
+
+                <p>width, height, step, labelDensity (0..1), constrainToViewport, gap (pixels, default 3).</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        Object
+
+
+            </td>
+            <td class="description last">Selected placements and level/search counts. Inputs are not mutated.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+        <h5>Example</h5>
+
+
+
+    <pre class="language-javascript"><code><p>packClassicLabels(nodes, {width: 800, height: 600, step: 12, labelDensity: 0.5, constrainToViewport: true});</p></code></pre>
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="registerExternalLabelRenderer">
+
+            registerExternalLabelRenderer<span class="signature">(id, Renderer, <span class="optional">metadata</span>)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{void}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="ExternalLabelRenderers.js.html">ExternalLabelRenderers.js</a>, <a href="ExternalLabelRenderers.js.html#line18">line 18</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Register a renderer class for annotation.labelMethod.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+		<th>Default</th>
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>id</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">String</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Unique, stable lowercase ID, also saved in map JSON.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>Renderer</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">function</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                </td>
+
+
+            <td class="description last">
+
+
+
+
+
+
+                <p>Class with draw(frame); optional reset/destroy hooks.</p></td>
+        </tr>
+
+
+
+        <tr>
+
+                <td class="name"><code>metadata</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Object</span>
+
+
+
+            </td>
+
+
+                <td class="default">
+
+                    {}
+
+                </td>
+
+
+            <td class="description last">
+
+
+                        <span class="optional">optional</span>
+
+
+
+
+
+                <p>Label, description, optional usesPriority boolean, controls
+[{key, type: 'checkbox'|'range'|'number', label, defaultValue, description?}]; numeric
+controls specify min, step and max (optional for numbers). Ranges can add minLabel/maxLabel.</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        void
+
+
+            </td>
+            <td class="description last">Adds to this bundle's registry; existing entries cannot be replaced.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+        <h5>Example</h5>
+
+
+
+    <pre class="language-javascript"><code><p>registerExternalLabelRenderer('renderer-1', ExternalLabelRenderer1, {label: 'Renderer 1'});</p></code></pre>
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="updateOptions">
+
+            updateOptions<span class="signature">(options)</span><span class="return-arrow" aria-hidden="true">➜</span><span class="type-signature returnType">{void}</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererAdaptive.js.html">LabelRendererAdaptive.js</a>, <a href="LabelRendererAdaptive.js.html#line109">line 109</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Apply JSON options in place, preserving all displayed positions and velocities.</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<table class="params">
+    <thead>
+	<tr>
+
+		<th>Name</th>
+
+
+		<th>Type</th>
+
+
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+
+        <tr>
+
+                <td class="name"><code>options</code></td>
+
+
+            <td class="type">
+
+
+<span class="param-type">Object</span>
+
+
+
+            </td>
+
+
+
+            <td class="description last">
+
+                <p>Complete replacement option set, not a partial patch.</p></td>
+        </tr>
+
+
+	</tbody>
+</table>
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Returns:</h5>
+
+
+
+<table class="params">
+    <thead>
+    <tr>
+
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+
+            <td class="type">
+
+                        void
+
+
+            </td>
+            <td class="description last">Invalidates targets on the next draw; does not schedule frames.</td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+</dd>
+
+
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="updateOptions">
+
+            updateOptions<span class="signature">()</span>
+        </h4>
+
+
+        <div class="tag-source">
+            <a href="LabelRendererClassic.js.html">LabelRendererClassic.js</a>, <a href="LabelRendererClassic.js.html#line127">line 127</a>
+        </div>
+
+    </div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Replace renderer options and invalidate layout; no annotation changes. @private</p>
+    </div>
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</dd>
+
+        </dl>
+
 
 
         <h3 class="subsection-title">Type Definitions</h3>

@@ -23,6 +23,7 @@
  * Worker to extract features from the sequence (e.g. orfs, start-stop codons)
  * The progress is calculated for the entire sequence and we keep track of the
  * progressState as we find features for each contig.
+ * @private
  */
 export default function WorkerFeatureExtraction() {
   onmessage = function(e) {

@@ -30,6 +30,8 @@ import FeatureLabelRenderer from './FeatureLabelRenderer';
 
 /**
  * Annotation controls the drawing and layout of features labels
+ * See [label settings and JSON migration](../docs.html#s.label-settings) for
+ * shared outside-label options and compatibility with older maps.
  *
  * ### Action and Events
  *

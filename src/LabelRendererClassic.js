@@ -112,7 +112,10 @@ export function packClassicLabels(nodes, {width, height, step, labelDensity, con
   return {placed, clean, maximumLevel, levels: new Set(placed.map(node => node.row)).size, attempts};
 }
 
-/** Classic geometry/painting with a density budget; no animation or priority cap. */
+/**
+ * Classic geometry/painting with a density budget; no animation or priority cap.
+ * @private
+ */
 export default class LabelRendererClassic {
   constructor(annotation, options = {}) {
     this.annotation = annotation;

@@ -21,6 +21,7 @@
 
 /**
  * Worker to extract plot data from the sequence (e.g. gc-content, gc-skew)
+ * @private
  */
 export default function WorkerBaseContent() {
   onmessage = function(e) {

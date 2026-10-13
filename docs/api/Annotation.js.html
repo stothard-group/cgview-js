@@ -120,17 +120,17 @@
 
 import CGObject from './CGObject';
 import CGArray from './CGArray';
-import LabelPlacementDefault from './LabelPlacementDefault';
-import LabelPlacementAngled from './LabelPlacementAngled';
+import ExternalLabelRendererHost from './ExternalLabelRendererHost';
 import Font from './Font';
 import Color from './Color';
 import NCList from './NCList';
-import Rect from './Rect';
 import utils from './Utils';
 import FeatureLabelRenderer from './FeatureLabelRenderer';
 
 /**
  * Annotation controls the drawing and layout of features labels
+ * See [label settings and JSON migration](../docs.html#s.label-settings) for
+ * shared outside-label options and compatibility with older maps.
  *
  * ### Action and Events
  *
@@ -147,7 +147,11 @@ import FeatureLabelRenderer from './FeatureLabelRenderer';
  * [font](#font)                    | String    | A string describing the font [Default: 'monospace, plain, 12']. See {@link Font} for details.
  * [color](#color)                  | String   | A string describing the color of all labels [Default: undefined]. When undefined, outside labels use the feature legend color and inline labels choose black or white for contrast. See {@link Color} for details.
  * [onlyDrawFavorites](#onlyDrawFavorites) | Boolean   | Only draw labels for features that are favorited [Default: false]
- * [labelPlacement](#labelPlacement) | String   | The label placement method for positioning labels. Choices: 'default', 'angled' [Default: 'default']
+ * [labelLineThickness](#labelLineThickness) | Number | Thickness of outside label leader lines in pixels. Must be positive; fractional values are supported [Default: 1]
+ * [labelMethod](#labelMethod) | String | Outside label method: 'adaptive', 'classic', or a registered custom renderer [Default: 'adaptive']
+ * [labelDensity](#labelDensity) | Number | Outside label density, from Clean (0) to Maximum (1). Shared by Classic and Adaptive [Default: 0]
+ * [keepLabelsInView](#keepLabelsInView) | Boolean | Keep outside labels within the viewport [Default: true]
+ * [labelSpacing](#labelSpacing) | Number | Minimum spacing between outside labels, also used as viewport padding, in pixels [Default: 3]
  * [labelPosition](#labelPosition) | String | Where feature labels are drawn. Choices: 'outside', 'inline', 'auto'. With 'auto', outside labels are fallbacks for labels that do not fit inline [Default: 'auto']
  * [inlineLabelAllowShrinking](#inlineLabelAllowShrinking) | Boolean | Shrink inline labels down to the renderer's minimum font size [Default: true]
  * [inlineLabelAllowTruncation](#inlineLabelAllowTruncation) | Boolean | Truncate inline labels with an ellipsis when the full name cannot fit [Default: false]
@@ -162,12 +166,13 @@ import FeatureLabelRenderer from './FeatureLabelRenderer';
  *   onlyDrawFavorites: true
  * });
  *
- * // Changing the label placement from the default to angled (for both fast and full draw)
- * cgv.annotation.labelPlacement = 'angled'
- *
- * // Changing the label placement so that fast draw uses the default labels and full draw uses the angled labels
- * cgv.annotation.labelPlacementFast = 'default'
- * cgv.annotation.labelPlacementFull = 'angled'
+ * // Choose Classic outside labels with shared density and spacing.
+ * cgv.annotation.update({
+ *   labelMethod: 'classic',
+ *   labelDensity: 0.5,
+ *   keepLabelsInView: true,
+ *   labelSpacing: 3
+ * });
  *
  * // Use inline labels where possible and outside labels as fallbacks.
  * cgv.annotation.update({
@@ -192,10 +197,9 @@ class Annotation extends CGObject {
     this._labels = new CGArray();
     this.font = utils.defaultFor(options.font, 'monospace, plain, 12');
     this.labelLineLength = utils.defaultFor(options.labelLineLength, 20);
-    this.priorityMax = utils.defaultFor(options.priorityMax, 50);
     this._labelLineMarginInner = 10;
     this._labelLineMarginOuter = 5; // NOT REALLY IMPLEMENTED YET
-    this._labelLineWidth = 1;
+    this.labelLineThickness = utils.defaultFor(options.labelLineThickness, 1);
     this.refresh();
     this._visibleLabels = new CGArray();
     this.color = options.color;
@@ -213,9 +217,10 @@ class Annotation extends CGObject {
     this.inlineLabelColor = options.inlineLabelColor;
     this._featureLabelRenderer = new FeatureLabelRenderer(this);
 
-    this.labelPlacement = utils.defaultFor(options.labelPlacement, 'default');
-    // this.labelPlacementFast = 'default';
-    // this.labelPlacementFull = 'angled'
+    this.labelDensity = options.labelDensity;
+    this.keepLabelsInView = options.keepLabelsInView;
+    this.labelSpacing = options.labelSpacing;
+    this._externalLabels = new ExternalLabelRendererHost(this, options.labelMethod);
 
     this.viewer.trigger('annotation-update', { attributes: this.toJSON({includeDefaults: true}) });
 
@@ -256,22 +261,6 @@ class Annotation extends CGObject {
 
   set labelLineLength(value) {
     this._labelLineLength = value;
-  }
-
-  /**
-   * @member {Number} - Get or set the number of priority labels that will be
-   * drawn for sure. If they overlap the label will be moved until they no
-   * longer overlap. Priority is defined as features that are marked as a
-   * "favorite". After favorites, features are sorted by size. For example, if
-   * priorityMax is 50 and there are 10 "favorite" features. The favorites will
-   * be drawn and then the 40 largest features will be drawn.
-   */
-  get priorityMax() {
-    return this._priorityMax;
-  }
-
-  set priorityMax(value) {
-    this._priorityMax = value;
   }
 
   /**
@@ -367,54 +356,6 @@ class Annotation extends CGObject {
   }
 
   /**
-   * @member {LabelPlacement} - Set the label placement instance for both fast and full drawing.
-   * Value can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
-   */
-  set labelPlacement(value) {
-    const labelPlacement = this._initialializeLabelPlacement(value);
-    this._labelPlacementFast = labelPlacement;
-    this._labelPlacementFull = labelPlacement;
-  }
-
-  /**
-   * @member {LabelPlacement} - Get or set the label placement instance for fast drawing.
-   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
-   */
-  get labelPlacementFast() {
-    return this._labelPlacementFast;
-  }
-
-  set labelPlacementFast(value) {
-    this._labelPlacementFast = this._initialializeLabelPlacement(value);
-  }
-
-  /**
-   * @member {LabelPlacement} - Get or set the label placement instance for full drawing.
-   * Values for setting can be one of the following: 'default', 'angled', or a custom LabelPlacement class.
-   */
-  get labelPlacementFull() {
-    return this._labelPlacementFull;
-  }
-
-  set labelPlacementFull(value) {
-    this._labelPlacementFull = this._initialializeLabelPlacement(value);
-  }
-
-  _initialializeLabelPlacement(nameOrClass) {
-    if (typeof nameOrClass === 'string') {
-      switch (nameOrClass) {
-        case 'default': return new LabelPlacementDefault(this);
-        case 'angled': return new LabelPlacementAngled(this);
-        default: throw new Error(`Label Placement name '${nameOrClass}' unknown. Use one of 'default', 'angled'`);
-      }
-    } else {
-      // Use provided custom LabelPlacement class
-      // TODO: document making custom class and perhaps checking here that required methods are available in provided class
-      return new nameOrClass(this);
-    }
-  }
-
-  /**
    * Returns a [CGArray](CGArray.html) of internal [feature labels](Feature.html#label) or a single label.
    * @param {Integer|String|Array} term - See [CGArray.get](CGArray.html#get) for details.
    * @return {CGArray}
@@ -443,6 +384,7 @@ class Annotation extends CGObject {
 
   // Called from Viewer.add/removeFeatures() and Sequence.updateContigs(), Viewer.updateFeatures(), Viewer.updateTracks()
   refresh() {
+    this._externalLabels?.clear('data');
     // Remove labels that are on invisible contigs
     // const labels = this._labels.filter( (l) => l.feature.contig.visible);
 
@@ -512,61 +454,6 @@ class Annotation extends CGObject {
     }
   }
 
-  // Calculates non overlapping rects for priority labels
-  // ORIGINAL (Fast)
-  _calculatePriorityLabelRectsFast(labels) {
-    labels = labels || this._labels;
-    const canvas = this.canvas;
-    let label, bp, lineLength, overlappingRect;
-    const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
-    const placedRects = new CGArray();
-    for (let i = 0, len = labels.length; i &lt; len; i++) {
-      label = labels[i];
-      bp = label.bp;
-      lineLength = this.labelLineLength;
-      do {
-        const outerPt = canvas.pointForBp(bp, centerOffset + lineLength + this._labelLineMarginOuter);
-        const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-        label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-        overlappingRect = label.rect.overlap(placedRects);
-        lineLength += label.height;
-      } while (overlappingRect);
-      placedRects.push(label.rect);
-      label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
-    }
-  }
-
-  _calculatePriorityLabelRects(labels) {
-    const labelLimit = 20;
-    if (!this._fastDraw || labels.length &lt; labelLimit) {
-      this.labelPlacementFull.placeLabels(labels, this._outerCenterOffset);
-    } else {
-      this.labelPlacementFast.placeLabels(labels, this._outerCenterOffset);
-    }
-  }
-
-
-  // Should be called when
-  //  - Labels are added or removed
-  //  - Font changes (Annotation or individual label)
-  //  - Label name changes
-  //  - Zoom level changes
-  _calculateLabelRects(labels) {
-    labels = labels || this._labels;
-    const canvas = this.canvas;
-    let label, bp;
-    const centerOffset = this._outerCenterOffset + this._labelLineMarginInner;
-    for (let i = 0, len = labels.length; i &lt; len; i++) {
-      label = labels[i];
-      bp = label.bp;
-      // let innerPt = canvas.pointForBp(bp, centerOffset);
-      const outerPt = canvas.pointForBp(bp, centerOffset + this.labelLineLength + this._labelLineMarginOuter);
-      const rectOrigin = utils.rectOriginForAttachementPoint(outerPt, label.lineAttachment, label.width, label.height);
-      label.rect = new Rect(rectOrigin.x, rectOrigin.y, label.width, label.height);
-      label.attachementPt = label.rect.ptForClockPosition(label.lineAttachment);
-    }
-  }
-
   visibleLabels() {
     let labelArray = new CGArray();
     const visibleRange = this._visibleRange;
@@ -620,30 +507,71 @@ class Annotation extends CGObject {
     }
   }
 
-  drawLabelLine(label, ctx, lineWidth) {
-    const innerPt = this.canvas.pointForBp(label.bp, this._outerCenterOffset + this._labelLineMarginInner);
-    const outerPt = label.attachementPt;
-    const color = this.color || label.feature.color;
-    ctx.beginPath();
-    ctx.moveTo(innerPt.x, innerPt.y);
-    ctx.lineTo(outerPt.x, outerPt.y);
-    ctx.strokeStyle = color.rgbaString;
-    ctx.lineCap = this.lineCap;
-    ctx.lineWidth = lineWidth || this._labelLineWidth;
-    ctx.stroke();
+  /** Registered outside-label renderer ID. Adaptive is the default. */
+  get labelMethod() { return this._externalLabels.id; }
+  set labelMethod(id) { this._externalLabels.select(id); }
 
-    // TESTING adding extra radiant line to label line
-    // NOTE: this would be added to previous stroke
-    // - Also would need to add this to label line highlighting
-    // const innerExtraPt = this.canvas.pointForBp(label.bp, this._outerCenterOffset);
-    // ctx.beginPath();
-    // ctx.moveTo(innerExtraPt.x, innerExtraPt.y);
-    // ctx.lineTo(innerPt.x, innerPt.y);
-    // ctx.stroke();
-    //
-    // ctx.arc(outerPt.x, outerPt.y, 1.5, 0, 2*Math.PI, false);
-    // ctx.fillStyle = color.rgbaString;
-    // ctx.fill();
+  /** Outside-label density from Clean (0) to Maximum (1), clamped to this range. */
+  get labelDensity() { return this._labelDensity; }
+  set labelDensity(value) {
+    const density = Number(value);
+    this._labelDensity = Number.isFinite(density) ? Math.max(0, Math.min(1, density)) : 0;
+    this._externalLabels?.updateOptions(this._labelRendererOptions);
+  }
+
+  /** Keep outside labels within the viewport, inset by labelSpacing. Defaults to true. */
+  get keepLabelsInView() { return this._keepLabelsInView; }
+  set keepLabelsInView(value) {
+    this._keepLabelsInView = value !== false;
+    this._externalLabels?.updateOptions(this._labelRendererOptions);
+  }
+
+  /** Nonnegative outside-label spacing and viewport padding in pixels. Defaults to 3. */
+  get labelSpacing() { return this._labelSpacing; }
+  set labelSpacing(value) {
+    const spacing = Number(value);
+    this._labelSpacing = Number.isFinite(spacing) ? Math.max(0, spacing) : 3;
+    this._externalLabels?.updateOptions(this._labelRendererOptions);
+  }
+
+  /**
+   * Assemble the renderer's internal option names from shared annotation settings.
+   * @returns {Object} Independent snapshot; changing it does not change Annotation.
+   * @private
+   */
+  get _labelRendererOptions() {
+    return {labelDensity: this.labelDensity, constrainToViewport: this.keepLabelsInView, gap: this.labelSpacing};
+  }
+
+  /** Latest displayed external label counts and synchronous draw time. */
+  get externalLabelStats() { return this._externalLabels.stats; }
+
+  /**
+   * Live label counts, independent of export and not saved in map JSON.
+   * @returns {{total: Number, drawn: Number}} Named feature labels in the map and
+   *   currently drawn labels (outside plus distinct inline features). Constant-time
+   *   read; does not calculate placement or trigger drawing. Outside placements
+   *   can extend offscreen when viewport containment is disabled.
+   */
+  get labelStats() {
+    const outside = this.labelPosition !== 'inline' ? this.externalLabelStats.visible : 0;
+    const inline = this.labelPosition !== 'outside' ? this._featureLabelRenderer.drawnFeatures.size : 0;
+    return {total: this._labels.length, drawn: this.visible ? outside + inline : 0};
+  }
+
+  /** Last published placements, including the displayed hit boxes and leaders. */
+  get externalLabelPlacements() { return this._externalLabels.placements; }
+
+  /** External label stroke thickness in pixels. */
+  get labelLineThickness() { return this._labelLineThickness; }
+  set labelLineThickness(value) {
+    const thickness = Number(value);
+    if (!Number.isFinite(thickness) || thickness &lt;= 0) { throw new RangeError('labelLineThickness must be positive'); }
+    this._labelLineThickness = thickness;
+  }
+
+  drawLabelLine(label, ctx, lineWidth) {
+    this._externalLabels.drawLabelLine(label, ctx, lineWidth);
   }
 
   draw(innerCenterOffset, outerCenterOffset, fast) {
@@ -680,68 +608,7 @@ class Annotation extends CGObject {
     if (this.onlyDrawFavorites) {
       possibleLabels = this._onlyFavoriteLabels(possibleLabels);
     }
-    this._calculatePositions(possibleLabels);
-
-    const priorityLabels = possibleLabels.slice(0, this.priorityMax);
-    const remainingLabels = possibleLabels.slice(this.priorityMax);
-
-    this._calculatePriorityLabelRects(priorityLabels);
-    this._calculateLabelRects(remainingLabels);
-    // console.log(priorityLabels[0] &amp;&amp; priorityLabels[0].rect)
-
-    // Remove overlapping labels
-    const labelRects = priorityLabels.map( p => p.rect);
-    this._visibleLabels = priorityLabels;
-    for (let i = 0, len = remainingLabels.length; i &lt; len; i++) {
-      const label = remainingLabels[i];
-      if (!label.rect.overlap(labelRects)) {
-        this._visibleLabels.push(label);
-        labelRects.push(label.rect);
-      }
-    }
-
-    // Draw nonoverlapping labels
-    const canvas = this.canvas;
-    const ctx = canvas.context('map');
-    let label, rect;
-    ctx.font = this.font.css; // TODO: move to loop, but only set if it changes
-    ctx.textAlign = 'left';
-    // ctx.textBaseline = 'top';
-    ctx.textBaseline = 'alphabetic'; // The default baseline works best across canvas and svg
-    // Draw label lines first so that label text will draw over them
-    for (let i = 0, len = this._visibleLabels.length; i &lt; len; i++) {
-      label = this._visibleLabels[i];
-      // FIXME: it would be better to remove invisible labels before calculating position
-      // - this works to remove label, but the space is not available for another label
-      if (!label.feature.visible) { continue; }
-      const color = this.color || label.feature.color;
-
-      this.drawLabelLine(label, ctx);
-    }
-
-    // Draw label text
-    const backgroundColor = this.viewer.settings.backgroundColor.copy();
-    backgroundColor.opacity = 0.75;
-    for (let i = 0, len = this._visibleLabels.length; i &lt; len; i++) {
-      label = this._visibleLabels[i];
-      // FIXME: it would be better to remove invisible labels before calculating position
-      // - this works to remove label, but the space is not available for another label
-      // NOTE: Has this been fixed????????
-      if (!label.feature.visible) { continue; }
-      const color = this.color || label.feature.color;
-
-      ctx.fillStyle = backgroundColor.rgbaString;
-      rect = label.rect;
-      ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-
-      ctx.fillStyle = color.rgbaString;
-      // ctx.fillText(label.name, label.rect.x, label.rect.y);
-      ctx.fillText(label.name, label.rect.x, label.rect.bottom - 1);
-    }
-
-    if (this.viewer.debug &amp;&amp; this.viewer.debug.data.n) {
-      this.viewer.debug.data.n.labels = this._visibleLabels.length;
-    }
+    this._externalLabels.draw(possibleLabels, innerCenterOffset, outerCenterOffset, fast);
   }
 
   /**
@@ -752,7 +619,7 @@ class Annotation extends CGObject {
   update(attributes) {
     this.viewer.updateRecords(this, attributes, {
       recordClass: 'Annotation',
-      validKeys: ['color', 'font', 'onlyDrawFavorites', 'visible', 'labelPlacement', 'labelPosition', 'inlineLabelAllowShrinking', 'inlineLabelAllowTruncation', 'inlineLabelColor']
+      validKeys: ['labelMethod', 'labelDensity', 'keepLabelsInView', 'labelSpacing', 'labelLineThickness', 'color', 'font', 'onlyDrawFavorites', 'visible', 'labelPosition', 'inlineLabelAllowShrinking', 'inlineLabelAllowTruncation', 'inlineLabelColor']
     });
     this.viewer.trigger('annotation-update', { attributes });
   }
@@ -769,9 +636,11 @@ class Annotation extends CGObject {
       inlineLabelAllowShrinking: this.inlineLabelAllowShrinking,
       inlineLabelAllowTruncation: this.inlineLabelAllowTruncation,
       inlineLabelColor: this.inlineLabelColor &amp;&amp; this.inlineLabelColor.rgbaString,
-      // In most cases the full and fast method will be the same.
-      // We could export both but for now we will only use the 'full' and it will be for both fast and full.
-      labelPlacement: this.labelPlacementFull.name,
+      labelMethod: this.labelMethod,
+      labelDensity: this.labelDensity,
+      keepLabelsInView: this.keepLabelsInView,
+      labelSpacing: this.labelSpacing,
+      labelLineThickness: this.labelLineThickness,
       visible: this.visible
     };
     // Optionally add default values

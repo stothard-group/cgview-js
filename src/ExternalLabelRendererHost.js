@@ -5,7 +5,10 @@ import {externalLabelRendererDefinition} from './ExternalLabelRenderers';
 
 const clone = value => Object.assign(Object.create(Object.getPrototypeOf(value)), value);
 
-/** Per-Annotation host. Renderer algorithms and painting stay in their own files. @private */
+/**
+ * Per-Annotation host. Renderer algorithms and painting stay in their own files.
+ * @private
+ */
 class ExternalLabelRendererHost {
   constructor(annotation, id) {
     this.annotation = annotation;
