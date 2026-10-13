@@ -94,6 +94,29 @@ body {
   /* background-color: black; */
 }
 
+/* Map hover popovers follow the website palette, including their pointer. */
+:root[data-bs-theme] .cgv-highlighter-popover-box {
+  color: var(--docs-text);
+  background-color: var(--docs-bg);
+  border-color: var(--docs-border);
+}
+
+:root[data-bs-theme] .cgv-highlighter-popover-box::after {
+  border-right-color: var(--docs-bg);
+}
+
+:root[data-bs-theme] .cgv-highlighter-popover-box::before {
+  border-right-color: var(--docs-border);
+}
+
+:root[data-bs-theme] .cgv-highlighter-popover-box .meta-data-container {
+  border-top-color: var(--docs-divider);
+}
+
+:root[data-bs-theme] .cgv-highlighter-popover-box .meta-data:not(:last-child) {
+  border-bottom-color: var(--docs-divider);
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }

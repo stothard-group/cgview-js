@@ -295,7 +295,9 @@ hr {
 } */
 
 .section-labels .btn {
-  width: 72px;
+  min-width: 80px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .section-labels div.label-row {
   display: flex;
