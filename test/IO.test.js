@@ -15,6 +15,41 @@ describe('IO', () => {
     cgv.annotation._externalLabels.destroy();
   });
 
+  describe('formatDate', () => {
+    // Local dates keep these expectations portable. Run with a non-UTC TZ
+    // (for example, America/Edmonton) to also catch accidental UTC formatting.
+    test.each([
+      ['pads single-digit components', [2026, 0, 2, 3, 4, 5], '2026-01-02 03:04:05'],
+      ['preserves two-digit components', [2026, 10, 23, 14, 56, 57], '2026-11-23 14:56:57'],
+      ['formats midnight on New Year\'s Day', [2026, 0, 1, 0, 0, 0], '2026-01-01 00:00:00'],
+      ['formats leap day', [2024, 1, 29, 12, 34, 56], '2024-02-29 12:34:56'],
+      ['formats the last second of the year', [2025, 11, 31, 23, 59, 59], '2025-12-31 23:59:59'],
+      ['omits milliseconds without rounding', [2025, 11, 31, 23, 59, 59, 999], '2025-12-31 23:59:59'],
+    ])('%s', (description, parts, expected) => {
+      expect(cgv.io.formatDate(new Date(...parts))).toBe(expected);
+    });
+
+    test.each([
+      [7, '0007-01-02 03:04:05'],
+      [42, '0042-01-02 03:04:05'],
+      [999, '0999-01-02 03:04:05'],
+    ])('pads year %i to four digits', (year, expected) => {
+      const date = new Date(2000, 0, 2, 3, 4, 5);
+      // The Date constructor interprets years 0–99 as 1900–1999.
+      date.setFullYear(year);
+      expect(cgv.io.formatDate(date)).toBe(expected);
+    });
+
+    test('does not modify the supplied date', () => {
+      const date = new Date(2026, 0, 2, 3, 4, 5, 678);
+      const timestamp = date.getTime();
+
+      cgv.io.formatDate(date);
+
+      expect(date.getTime()).toBe(timestamp);
+    });
+  });
+
   describe('outside label migration', () => {
     const map = (version, annotation) => ({cgview: {version, sequence: {length: 1234}, annotation}});
 
