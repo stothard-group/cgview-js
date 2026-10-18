@@ -753,6 +753,8 @@ const labelFontSize = document.getElementById('labels-font-size');
 const labelPositionRadios = document.querySelectorAll('input[name="labels-position"]');
 const labelInlineShrink = document.getElementById('labels-inline-shrink');
 const labelInlineTruncate = document.getElementById('labels-inline-truncate');
+const labelDensity = document.getElementById('labels-density');
+const labelDensityValue = document.getElementById('labels-density-value');
 
 function syncLabelOptions() {
   labelPositionRadios.forEach((radio) => {
@@ -763,7 +765,20 @@ function syncLabelOptions() {
   labelInlineTruncate.checked = cgv.annotation.inlineLabelAllowTruncation;
   labelInlineShrink.disabled = !inlineEnabled;
   labelInlineTruncate.disabled = !inlineEnabled;
+  labelDensity.value = cgv.annotation.labelDensity;
+  labelDensityValue.value = `${Math.round(cgv.annotation.labelDensity * 100)}%`;
+  for (const method of ['adaptive', 'classic']) {
+    const button = document.getElementById(`labels-${method}`);
+    const active = cgv.annotation.labelMethod === method;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  }
 }
+
+labelDensity.addEventListener('input', () => {
+  cgv.annotation.update({labelDensity: Number(labelDensity.value)});
+  cgv.draw();
+});
 
 labelPositionRadios.forEach((radio) => {
   radio.addEventListener('change', (e) => {

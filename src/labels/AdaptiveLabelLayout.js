@@ -3,8 +3,6 @@ import {packOrdered} from './LabelGeometry';
 import {CleanIndex} from './LabelPlacementIndex';
 
 const TAU = Math.PI * 2;
-// Fixed geometry from the former balanced preset; capacity is still measured per view.
-const OVAL_VIEWPORT_FRACTION = 0.87;
 const MAX_CLEAN_ROWS = 3;
 const MAX_LABELS = Infinity;
 const clamp = (n, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, n));
@@ -14,7 +12,7 @@ const drain = steps => { let next; do { next = steps.next(); } while (!next.done
 const indexes = new WeakMap();
 const positionCaches = new WeakMap();
 
-/** Ordered Oval/local guides and cooperative collision checks. Input geometry is read-only. @private */
+/** Ordered circular/local guides and cooperative collision checks. Input geometry is read-only. @private */
 export default class AdaptiveLabelLayout {
   constructor(candidates, map, options = {}, previous, work = {}) {
     this.map = map;
@@ -76,11 +74,13 @@ export default class AdaptiveLabelLayout {
     return ordered.filter(n => chosen.has(n));
   }
 
-  _contour(capacityScale = 1, omittedTips = []) {
+  _contour(capacityScale = 1, omittedTips = [], clearance = 24) {
     const m = this.map, p = this.padding;
     const fontHeight = median(this.nodes.map(n => n.height));
-    // Grow the shared ellipse only as much as the selected rows require.
-    const maxRy = Math.max(m.radius + 24, m.height * OVAL_VIEWPORT_FRACTION / 2);
+    // Fit the overview to the map, not the viewport's empty vertical space.
+    // Selection adapts to the circular guide's capacity instead of stretching
+    // the pole leaders to accommodate more rows.
+    const maxRy = m.radius + clearance;
     // When the opposite pole is clipped, use the free space beyond the visible
     // pole. Independent half-ellipses retain the side contour and meet smoothly
     // at the equator. The extension ramps with clipping, avoiding a mode jump.
@@ -103,7 +103,7 @@ export default class AdaptiveLabelLayout {
       clamp((m.radius - m.y) / (m.radius * 0.5), 0, 1) : 0;
     // Protect overlays when opening this extra space, while preserving the
     // existing side-arc and row behavior.
-    this.obstacles = topExtension > 0 || bottomExtension > 0 ? this.options.obstacles || [] : [];
+    this.obstacles = this.options.obstacles || [];
     const guideLow = m.y - maxRy - topExtension, guideHigh = m.y + maxRy + bottomExtension;
     const low = this.constrainToViewport ? Math.max(topExtension > 0 ? topBoundary : p, guideLow) : guideLow;
     const high = this.constrainToViewport ? Math.min(bottomExtension > 0 ? bottomBoundary : m.height - p, guideHigh) : guideHigh;
@@ -130,7 +130,7 @@ export default class AdaptiveLabelLayout {
       const share = Number.isFinite(remainingMax) ?
         Math.min(perSide, Math.ceil(remainingMax * group.length / Math.max(1, this.nodes.length - tips.length))) : perSide;
       const selected = this._select(group, share);
-      const ry = Math.min(maxRy, Math.max(m.radius + 24, selected.length * (fontHeight + this.gap) / 1.7));
+      const ry = maxRy;
       const span = group.length ? group[group.length - 1].root.y - group[0].root.y : 0;
       const crowded = clamp(group.length * (fontHeight + this.gap) / (span + fontHeight) - 0.5, 0, 1);
       return {side, selected, topRy: ry + topExtension * crowded, bottomRy: ry + bottomExtension * crowded};
@@ -147,7 +147,7 @@ export default class AdaptiveLabelLayout {
         rect.x + rect.width + this.gap > b.x && rect.y < b.y + b.height + this.gap && rect.y + rect.height + this.gap > b.y);
       if (!this._boxFits(rect) || blocked || outward * (end.y - root.y) < 0 ||
         root.x < 0 || root.x > m.width || root.y < 0 || root.y > m.height) {
-        return this._contour(capacityScale, [...omittedTips, outward]);
+        return this._contour(capacityScale, [...omittedTips, outward], clearance);
       }
       Object.assign(tip, {rect, end,
         row: outward < 0 ? 'top-tip' : 'bottom-tip', attachment: outward < 0 ? 'bottom' : 'top'});
@@ -158,14 +158,14 @@ export default class AdaptiveLabelLayout {
         // A rejected tip must release its feature and reserved space back to
         // the flanks. Each pole can be omitted only once, bounding the retry.
         this.placed.length = beforeTips;
-        return this._contour(capacityScale, [...omittedTips, tip.outward]);
+        return this._contour(capacityScale, [...omittedTips, tip.outward], clearance);
       }
     }
     const topTip = tips.find(t => t.outward < 0), bottomTip = tips.find(t => t.outward > 0);
     const all = [];
     for (const {side, topRy, bottomRy, selected: chosen} of flanks) {
       let selected = chosen;
-      const rx = m.radius + 24;
+      const rx = maxRy;
       // Retry once without infeasible wide/offscreen labels so they do not
       // consume packing space or push the rest of the contour outward.
       for (let pass = 0; pass < 2; pass++) {
@@ -257,18 +257,25 @@ export default class AdaptiveLabelLayout {
     if (!m.circular) { return 'linear'; }
     const clipped = Math.max(m.radius - m.x, m.x + m.radius - m.width,
       m.radius - m.y, m.y + m.radius - m.height);
-    // Keep the complete Oval whenever the circle fits. A small screen-space
+    // Keep the complete contour whenever the circle fits. A small screen-space
     // tolerance prevents repeated switches while a pole grazes the viewport.
     return clipped <= (previous === 'contour' ? 24 : 0) ? 'contour' : 'compact-contour';
   }
 
   // Text width matters on diagonal bands; font size sets the normal allowance.
   // Limits are in screen pixels, so zoom cannot stretch a leader with the map.
-  _leaderLimit(node) { return Math.max(48, node.height * 8, node.width / 2); }
+  _leaderLimit(node) { return Math.max(48, node.height * (this.mode === 'contour' ? 12 : 8), node.width / 2); }
 
-  // Counts and favorites dominate. On equal counts, choose the shorter layout.
+  // Reward coverage and favorites, but avoid buying extra labels with a band
+  // of nearly tangential leaders. Prefer shorter leaders on otherwise close fits.
   _quality(nodes) {
-    return nodes.length + nodes.filter(n => n.favorite).length -
+    const tangency = this.mode === 'contour' ? nodes.reduce((sum, node) => {
+      const [root, end] = node.placement.points, length = distance(root, end);
+      const outward = length > 0 ? ((root.x - this.map.x) * (end.x - root.x) +
+        (root.y - this.map.y) * (end.y - root.y)) / (this.map.radius * length) : 1;
+      return sum + (1 - clamp(outward)) ** 2;
+    }, 0) : 0;
+    return nodes.length + nodes.filter(n => n.favorite).length - tangency * 0.9 -
       nodes.reduce((sum, n) => sum + distance(...n.placement.points) / this._leaderLimit(n), 0) / Math.max(1, nodes.length) * 0.1;
   }
 
@@ -331,15 +338,84 @@ export default class AdaptiveLabelLayout {
       for (const outward of [-1, 1]) { yield* this._poleSteps(outward); }
       this.proposed = this.placed.length;
     } else {
-      // The overview Oval is a small ordered packing, retained intact. This is
-      // one indivisible stage; the frame budget is cooperative, not a deadline.
-      this._contour(); yield;
-      if (this.placed.length < this.proposed * 0.7) {
-        this._bestOf([0.65, 0.4], scale => this._contour(scale)); yield;
+      for (const side of [-1, 1]) { yield* this._sideSteps(side); }
+      for (const outward of [-1, 1]) { yield* this._poleSteps(outward); }
+      let best = this.placed;
+      const height = median(this.nodes.map(n => n.height));
+      for (const clearance of new Set([24, Math.max(24, height * 4), Math.max(24, height * 8)])) {
+        this.placed = [];
+        this._contour(1, [], clearance); yield;
+        if (this.placed.length < this.proposed * 0.7) {
+          this._bestOf([0.65, 0.4], scale => this._contour(scale, [], clearance)); yield;
+        }
+        if (this._quality(this.placed) > this._quality(best)) { best = this.placed; }
       }
+      this.placed = best;
+      yield* this._clusterFanSteps();
+      yield* this._relaxOverviewSteps();
     }
     this.done = true;
     return this;
+  }
+
+  // Isolated groups (restriction sites, phage regions) may need a longer local
+  // fan. Expand that group only, keeping the rest of the map close to its guide.
+  *_clusterFanSteps() {
+    const nodes = this.nodes, height = median(nodes.map(n => n.height));
+    const sorted = nodes.map(node => ({node, angle: ((node.preferred % TAU) + TAU) % TAU}))
+      .sort((a, b) => a.angle - b.angle);
+    const groups = [];
+    for (const entry of sorted) {
+      const group = groups.at(-1);
+      if (group && (entry.angle - group.at(-1).angle) * this.map.radius < height * 2) { group.push(entry); }
+      else { groups.push([entry]); }
+    }
+    if (groups.length > 1 && (sorted[0].angle + TAU - sorted.at(-1).angle) * this.map.radius < height * 2) {
+      groups[0] = [...groups.pop(), ...groups[0].map(entry => ({...entry, angle: entry.angle + TAU}))];
+    }
+    for (const group of groups) {
+      if (group.length < 2 || (group.at(-1).angle - group[0].angle) * this.map.radius > height * 4) { continue; }
+      const ids = new Set(group.map(entry => entry.node.id));
+      const reserved = this.placed.filter(node => !ids.has(node.id));
+      let best = this.placed;
+      for (const clearance of [24, height * 4, height * 8, height * 12]) {
+        this.placed = reserved.slice();
+        this.nodes = group.map(entry => entry.node);
+        this._contour(1, [], Math.max(24, clearance));
+        this.nodes = nodes;
+        if (this._quality(this.placed) > this._quality(best)) { best = this.placed; }
+        yield;
+      }
+      this.placed = best;
+    }
+  }
+
+  // A shared contour is useful for ordered clusters, but individual labels
+  // should use a shorter outward position whenever their neighbours allow it.
+  *_relaxOverviewSteps() {
+    const height = median(this.nodes.map(n => n.height));
+    const step = height + Math.max(10, this.gap * 2);
+    const cost = placement => {
+      const [root, end] = placement.points, length = distance(root, end);
+      const outward = length > 0 ? ((root.x - this.map.x) * (end.x - root.x) +
+        (root.y - this.map.y) * (end.y - root.y)) / (this.map.radius * length) : 1;
+      return length + height * 12 * (1 - clamp(outward)) ** 2;
+    };
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 0; i < this.placed.length; i++) {
+        const original = this.placed[i], index = this._index();
+        index.remove(original.id);
+        let best = original;
+        for (const item of this._positions(original, MAX_CLEAN_ROWS, step, height, true)) {
+          yield;
+          if (!this._acceptLocal(item)) { continue; }
+          const accepted = this.placed.pop();
+          if (cost(accepted.placement) < cost(best.placement) - 0.5) { best = accepted; }
+        }
+        this.placed[i] = best;
+        index.add(best);
+      }
+    }
   }
 
   _index() {
@@ -500,9 +576,6 @@ export default class AdaptiveLabelLayout {
   }
 
   _accept(item, alternativeSide = false) {
-    if (this.mode === 'compact-contour' && distance(this.point(item.anchor ?? item.node.preferred), item.end) > this._leaderLimit(item.node)) {
-      return false;
-    }
     if (this.placed.length >= this.maxLabels || !this._boxFits(item.rect)) { return false; }
     const {node, rect, row} = item, index = this._index();
     if (index.boxesOverlap(rect)) { return false; }
@@ -513,6 +586,7 @@ export default class AdaptiveLabelLayout {
       for (const a of item.anchor === undefined ? this._anchors(node, end) : [item.anchor]) {
         this.attempts++;
         const root = this.point(a);
+        if (this.map.circular && distance(root, end) > this._leaderLimit(node)) { continue; }
         if (root.x < -1e-6 || root.y < -1e-6 || root.x > this.map.width + 1e-6 || root.y > this.map.height + 1e-6) { continue; }
         if (this.map.circular && (root.x - this.map.x) * (end.x - root.x) + (root.y - this.map.y) * (end.y - root.y) < -1e-6) { continue; }
         if (index.linesConflict([root, end])) { continue; }

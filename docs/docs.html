@@ -482,6 +482,11 @@ Each can be updated independently, for example
 `cgv.annotation.update({labelSpacing: 5})`, without resetting the others.
 Classic and Adaptive share density, spacing, and viewport containment settings.
 Adaptive animates label movements, respecting reduced-motion preferences.
+At Clean density, Adaptive compares circular guides and local rows around the
+map, favoring short outward leaders over flattened or elongated layouts.
+Isolated groups such as cloning sites can spread into a local fan without
+stretching the whole overview. Increase density to add labels in the available
+space around the map; fewer labels may fit at Clean when zoomed out.
 See [Annotation](api/Annotation.html) for all label settings and defaults.
 
 When loading older JSON, `labelPlacement: "angled"` becomes

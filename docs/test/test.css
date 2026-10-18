@@ -296,9 +296,12 @@ hr {
 
 .section-labels .btn {
   width: 72px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .section-labels div.label-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   margin-bottom: 6px;
