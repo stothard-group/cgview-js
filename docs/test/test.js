@@ -539,6 +539,10 @@ updatePageLayout();
 // Events
 ///////////////////////////////////////////////////////////////////////////////
 
+// Inspect click payloads in the browser console.
+cgv.on('click.test-page', (event) => console.log('click', event));
+cgv.on('contextmenu.test-page', (event) => console.log('contextmenu', event));
+
 cgv.on('mousemove', (e) => {
   // const elements = ['caption', 'legendItem', 'label'];
   const elements = ['caption', 'legendItem'];

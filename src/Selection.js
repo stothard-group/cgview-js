@@ -137,7 +137,7 @@ class Selection {
   }
 
   /**
-   * Start marquee selection from empty map space while Shift is pressed.
+   * Start marquee selection over the map with a Shift+primary-button press.
    * @param {Object} event - Event-like object from EventMonitor.
    */
   handleMousedown(event = {}) {
@@ -157,14 +157,15 @@ class Selection {
   }
 
   /**
-   * Return whether a mousedown event should start marquee selection.
+   * Return whether a Shift+primary-button press should start marquee selection.
    * @param {Object} event - Event-like object from EventMonitor.
    * @return {Boolean}
    */
   canStartMarquee(event = {}) {
     const marqueeStartElementTypes = [undefined, 'feature', 'label', 'plot', 'backbone', 'contig'];
     const shiftKeyDown = Boolean(event.d3 && event.d3.shiftKey);
-    return Boolean(this.enabled && shiftKeyDown && marqueeStartElementTypes.includes(event.elementType));
+    const primaryButton = event.d3?.button === 0;
+    return Boolean(this.enabled && shiftKeyDown && primaryButton && marqueeStartElementTypes.includes(event.elementType));
   }
 
   /**

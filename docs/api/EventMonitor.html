@@ -102,7 +102,9 @@
     EventMonitor
     </h2>
 
-        <div class="class-description"><p>EventMonitor sets up mouse click and movement event handlers on the CGView canvas.</p>
+        <div class="class-description"><p>EventMonitor sets up mouse click, context menu, and movement event handlers on the CGView canvas.
+Context menu requests use the same event payload as clicks. The browser menu is
+preserved unless a listener calls <code>event.d3.preventDefault()</code> to display its own menu.</p>
 <p>CGView event contents (based on mouse position):</p>
 <table>
 <thead>
@@ -154,7 +156,7 @@
 </tr>
 <tr>
 <td>d3</td>
-<td>The d3 event object.</td>
+<td>The native browser event, including button, modifier keys, client coordinates, and preventDefault().</td>
 </tr>
 </tbody>
 </table>
@@ -164,6 +166,12 @@ cgv.on('click', (event) => {
   if (event.elementType === 'feature') {
     console.log(`Feature '${event.element.name}' was clicked`);
   }
+});
+
+// Inspect the element requesting a context menu
+cgv.on('contextmenu', (event) => {
+  console.log(event.elementType, event.element);
+  // Call event.d3.preventDefault() when displaying your own menu.
 });
 
 // Log the track and slot when a visible track label is clicked
@@ -196,7 +204,7 @@ cgv.on('mousemove', (event) => {
 
 
         <div class="tag-source">
-            <a href="EventMonitor.js.html">EventMonitor.js</a>, <a href="EventMonitor.js.html#line66">line 66</a>
+            <a href="EventMonitor.js.html">EventMonitor.js</a>, <a href="EventMonitor.js.html#line74">line 74</a>
         </div>
 
     </div>
@@ -207,7 +215,7 @@ cgv.on('mousemove', (event) => {
 
 
     <div class="description">
-        <p>Adds event handlers for mouse clicks, presses, releases, and movement</p>
+        <p>Adds event handlers for mouse clicks, context menus, presses, releases, and movement</p>
     </div>
 
 

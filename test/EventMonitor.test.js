@@ -10,7 +10,144 @@ describe('EventMonitor', () => {
   });
 
   afterEach(() => {
+    cgv.selection.detach();
+    cgv.stopAnimate();
+    clearTimeout(cgv.layout._slotTimeoutID);
+    cgv.annotation._externalLabels.destroy();
     jest.restoreAllMocks();
+  });
+
+  // Dispatch at canvas coordinates without relying on jsdom layout measurements.
+  function dispatchMouseEvent(type, point, options = {}) {
+    const event = new MouseEvent(type, {view: window, bubbles: true, cancelable: true, ...options});
+    Object.defineProperties(event, {
+      offsetX: {value: point.x},
+      offsetY: {value: point.y},
+    });
+    cgv.canvas.node('ui').dispatchEvent(event);
+    return event;
+  }
+
+  describe('context menu events', () => {
+    beforeEach(() => {
+      cgv = new Viewer('#map', {
+        width: 800,
+        height: 600,
+        sequence: {length: 1000},
+        legend: {visible: false},
+        annotation: {labelPosition: 'outside', labelMethod: 'classic'},
+        highlighter: {feature: {highlighting: false}},
+        features: [
+          {name: 'First', source: 'genes', start: 100, stop: 200, score: 0.7},
+          {name: 'Second', source: 'genes', start: 600, stop: 700},
+        ],
+      });
+      cgv.addTracks({
+        name: 'Genes', dataType: 'feature', dataMethod: 'source', dataKeys: 'genes',
+        position: 'outside', separateFeaturesBy: 'none',
+      });
+    });
+
+    test.each(['circular', 'linear'])('reports the current feature and label under the pointer in %s maps', (format) => {
+      cgv.format = format;
+      cgv.drawFull();
+      const feature = cgv.features(1);
+      const slot = cgv.tracks(1).slots(1);
+      const listener = jest.fn();
+      cgv.on('contextmenu.test', listener);
+
+      dispatchMouseEvent('mousemove', cgv.canvas.pointForBp(650, slot.centerOffset));
+      expect(cgv.mouse.element).toBe(cgv.features(2));
+
+      const point = cgv.canvas.pointForBp(150, slot.centerOffset);
+      const nativeEvent = dispatchMouseEvent('contextmenu', point, {button: 2});
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({
+        elementType: 'feature', element: feature, slot, bp: 150, score: 0.7,
+        canvasX: point.x, canvasY: point.y, d3: nativeEvent,
+      }));
+
+      const label = feature.label;
+      expect(cgv.annotation._visibleLabels.includes(label)).toBe(true);
+      const labelEvent = dispatchMouseEvent('contextmenu', {
+        x: label.rect.x + label.rect.width / 2,
+        y: label.rect.y + label.rect.height / 2,
+      }, {button: 2});
+      expect(listener).toHaveBeenCalledTimes(2);
+      expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({
+        elementType: 'label', element: label, d3: labelEvent,
+      }));
+      expect(listener.mock.calls[1][0].element.feature).toBe(feature);
+    });
+
+    test('reports empty map space without an element', () => {
+      cgv.drawFull();
+      const listener = jest.fn();
+      cgv.on('contextmenu.test', listener);
+      const nativeEvent = dispatchMouseEvent('contextmenu', {x: 0, y: 0}, {button: 2});
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
+        elementType: undefined, element: undefined, canvasX: 0, canvasY: 0, d3: nativeEvent,
+      }));
+    });
+
+    test('preserves the browser menu unless a listener cancels the native event', () => {
+      const point = {x: 0, y: 0};
+      expect(dispatchMouseEvent('contextmenu', point, {button: 2}).defaultPrevented).toBe(false);
+
+      const listener = jest.fn();
+      cgv.on('contextmenu.test', listener);
+      expect(dispatchMouseEvent('contextmenu', point, {button: 2}).defaultPrevented).toBe(false);
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      cgv.on('contextmenu.test', (event) => event.d3.preventDefault());
+      expect(dispatchMouseEvent('contextmenu', point, {button: 2}).defaultPrevented).toBe(true);
+
+      cgv.off('.test');
+      expect(dispatchMouseEvent('contextmenu', point, {button: 2}).defaultPrevented).toBe(false);
+    });
+
+    test('forwards context-menu requests with a primary button and preserves modifiers', () => {
+      const listener = jest.fn();
+      cgv.on('contextmenu.test', listener);
+      const nativeEvent = dispatchMouseEvent('contextmenu', {x: 0, y: 0}, {button: 0, ctrlKey: true});
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener.mock.calls[0][0].d3).toBe(nativeEvent);
+      expect(listener.mock.calls[0][0].d3.ctrlKey).toBe(true);
+    });
+
+    test('keeps context menus independent of clicks and feature selection', () => {
+      cgv.selection.enabled = true;
+      cgv.features(2).selected = true;
+      cgv.drawFull();
+      cgv.dataHasChanged = false;
+      const point = cgv.canvas.pointForBp(150, cgv.tracks(1).slots(1).centerOffset);
+      const clickListener = jest.fn();
+      const menuListener = jest.fn((event) => event.d3.preventDefault());
+      cgv.on('click.test', clickListener);
+      cgv.on('contextmenu.test', menuListener);
+
+      const press = dispatchMouseEvent('mousedown', point, {button: 2, shiftKey: true});
+      expect(press.defaultPrevented).toBe(false);
+      expect(Boolean(cgv.selection.marqueeRange())).toBe(false);
+      dispatchMouseEvent('contextmenu', point, {button: 2, shiftKey: true});
+      dispatchMouseEvent('mousemove', {x: 0, y: 0}, {buttons: 2, shiftKey: true});
+      dispatchMouseEvent('mouseup', {x: 0, y: 0}, {button: 2, shiftKey: true});
+
+      expect(menuListener).toHaveBeenCalledTimes(1);
+      expect(clickListener).not.toHaveBeenCalled();
+      expect(cgv.features(1).selected).toBe(false);
+      expect(cgv.features(2).selected).toBe(true);
+      expect(cgv.dataHasChanged).toBe(false);
+
+      dispatchMouseEvent('click', point, {button: 0});
+      expect(clickListener).toHaveBeenCalledTimes(1);
+      expect(menuListener).toHaveBeenCalledTimes(1);
+      expect(cgv.features(1).selected).toBe(true);
+      expect(cgv.features(2).selected).toBe(false);
+    });
   });
 
   describe('track label events', () => {
@@ -43,10 +180,10 @@ describe('EventMonitor', () => {
       return cgv.eventMonitor._createEvent({offsetX: point.x, offsetY: point.y});
     }
 
-    test.each(['circular', 'linear'])('reports the track and exact slot on click and hover events in %s maps', (format) => {
+    test.each(['circular', 'linear'])('reports the track and exact slot on click, hover, and context menu events in %s maps', (format) => {
       const plans = zoomedPlans(format);
       expect(plans).toHaveLength(3);
-      for (const type of ['mousemove', 'click']) {
+      for (const type of ['mousemove', 'click', 'contextmenu']) {
         const listener = jest.fn();
         cgv.on(`${type}.track-label-test`, listener);
         for (const plan of plans) {
@@ -57,6 +194,7 @@ describe('EventMonitor', () => {
             offsetY: {value: point.y},
           });
           cgv.canvas.node('ui').dispatchEvent(mouseEvent);
+          expect(listener).toHaveBeenCalled();
           expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({
             elementType: 'trackLabel', element: plan.track, slot: plan.slot, d3: mouseEvent,
           }));

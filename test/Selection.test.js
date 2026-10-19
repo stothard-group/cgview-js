@@ -162,7 +162,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 5,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault }
+      d3: { button: 0, shiftKey: true, preventDefault }
     });
 
     expect(cgv.selection.marqueeRange().start).toBe(5);
@@ -179,12 +179,34 @@ describe('Selection', () => {
       cgv.selection.handleMousedown({
         bp: 5,
         elementType,
-        d3: { shiftKey: true, preventDefault }
+        d3: { button: 0, shiftKey: true, preventDefault }
       });
 
       expect(cgv.selection.marqueeRange().start).toBe(5);
       expect(preventDefault).toHaveBeenCalledTimes(1);
       cgv.selection.handleMouseup({ bp: 5 });
+    }
+  });
+
+  test.each([1, 2])('Shift with mouse button %i does not start marquee selection', (button) => {
+    cgv.selection.enabled = true;
+    features[1].selected = true;
+    cgv.draw.mockClear();
+
+    for (const elementType of [undefined, 'feature', 'label', 'plot', 'backbone', 'contig']) {
+      const preventDefault = jest.fn();
+      cgv.selection.handleMousedown({
+        bp: 5,
+        elementType,
+        d3: { button, shiftKey: true, preventDefault }
+      });
+
+      expect(Boolean(cgv.selection.marqueeRange())).toBe(false);
+      expect(preventDefault).not.toHaveBeenCalled();
+      cgv.selection.handleMousemove({ bp: 65 });
+      cgv.selection.handleMouseup({ bp: 65 });
+      expect(features.map((feature) => feature.selected)).toEqual([false, true, false]);
+      expect(cgv.draw).not.toHaveBeenCalled();
     }
   });
 
@@ -194,7 +216,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 5,
       elementType: 'legendItem',
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
 
     expect(cgv.selection.marqueeRange()).toBeUndefined();
@@ -214,7 +236,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 5,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
     cgv.selection.handleMousemove({ bp: 35 });
 
@@ -243,7 +265,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 100,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
     cgv.selection.handleMousemove({ bp: 90 });
 
@@ -264,7 +286,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 10,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
     cgv.selection.handleMousemove({ bp: 990 });
 
@@ -283,7 +305,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 5,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
     cgv.selection.handleMousemove({ bp: 65 });
 
@@ -307,7 +329,7 @@ describe('Selection', () => {
     cgv.selection.handleMousedown({
       bp: 5,
       elementType: undefined,
-      d3: { shiftKey: true, preventDefault: jest.fn() }
+      d3: { button: 0, shiftKey: true, preventDefault: jest.fn() }
     });
     cgv.selection.handleMousemove({ bp: 35 });
     cgv.selection.handleMouseup({ bp: 35 });
