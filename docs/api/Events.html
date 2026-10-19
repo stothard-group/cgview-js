@@ -139,6 +139,10 @@ Use <a href="#on">on</a> to add a callback and <a href="#off">off</a> to remove 
 <td>Called when mouse clicks on the Viewer. Returns <a href="EventMonitor.html">event-like object</a></td>
 </tr>
 <tr>
+<td>contextmenu</td>
+<td>Called when a context menu is requested on the Viewer. Returns <a href="EventMonitor.html">event-like object</a>. Call event.d3.preventDefault() to replace the browser menu.</td>
+</tr>
+<tr>
 <td>zoom-start</td>
 <td>Called once before the viewer is zoomed or moved</td>
 </tr>
@@ -182,7 +186,7 @@ Use <a href="#on">on</a> to add a callback and <a href="#off">off</a> to remove 
 
 
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line45">line 45</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line46">line 46</a>
         </div>
 
     </div>
@@ -272,7 +276,7 @@ Accessible via <a href="Viewer.html#events">Viewer.events</a>.</p>
 
 
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line99">line 99</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line100">line 100</a>
         </div>
 
     </div>
@@ -424,7 +428,7 @@ cgv.off('.my_plugin');
 
 
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line70">line 70</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line71">line 71</a>
         </div>
 
     </div>
@@ -570,7 +574,7 @@ cgv.on('zoom-start.my_plugin', function() { console.log('Zooming has begun!') };
 
 
         <div class="tag-source">
-            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line139">line 139</a>
+            <a href="Events.js.html">Events.js</a>, <a href="Events.js.html#line140">line 140</a>
         </div>
 
     </div>

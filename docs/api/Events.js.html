@@ -134,6 +134,7 @@
  * mousedown         | Called when mouse button is pressed on the Viewer. Returns [event-like object](EventMonitor.html)
  * mouseup           | Called when mouse button is released on the Viewer. Returns [event-like object](EventMonitor.html)
  * click             | Called when mouse clicks on the Viewer. Returns [event-like object](EventMonitor.html)
+ * contextmenu       | Called when a context menu is requested on the Viewer. Returns [event-like object](EventMonitor.html). Call event.d3.preventDefault() to replace the browser menu.
  * zoom-start        | Called once before the viewer is zoomed or moved
  * zoom              | Called every frame of the zoom or move
  * zoom-end          | Called once after the viewer is zoomed or moved

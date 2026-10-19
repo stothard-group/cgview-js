@@ -447,10 +447,39 @@ Event             | Description
 cgv-load-json     | Called when [IO.loadJSON()](api/IO.html#loadJSON) is executed
 mousemove         | Called when mouse moves on the Viewer. Returns [event-like object](api/EventMonitor.html)
 click             | Called when mouse clicks on the Viewer. Returns [event-like object](api/EventMonitor.html)
+contextmenu       | Called when a context menu is requested on the Viewer. Returns [event-like object](api/EventMonitor.html)
 zoom-start        | Called once before the viewer is zoomed or moved
 zoom              | Called every frame of the zoom or move
 zoom-end          | Called once after the viewer is zoomed or moved
 bookmark-shortcut | Called when a bookmark shortcut key is clicked
+
+Context menu requests use the same payload as clicks, with the element under the
+pointer resolved for each request. The native browser event is available as `event.d3`.
+The browser menu remains available unless your handler calls `event.d3.preventDefault()`.
+
+```js
+// showFeatureMenu is provided by your application.
+cgv.on('contextmenu.featureMenu', (event) => {
+  let feature;
+  if (event.elementType === 'feature') {
+    feature = event.element;
+  } else if (event.elementType === 'label') {
+    feature = event.element.feature;
+  }
+  if (!feature) return;
+
+  event.d3.preventDefault();
+  showFeatureMenu({
+    feature,
+    x: event.d3.clientX,
+    y: event.d3.clientY,
+  });
+});
+```
+
+Here, `clientX` and `clientY` position a menu relative to the viewport. Use
+`event.canvasX` and `event.canvasY` for a menu positioned relative to the map canvas.
+Other element types and empty map space can be handled through the same event.
 
 
 </section>

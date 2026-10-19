@@ -23,7 +23,9 @@ import utils from './Utils';
 import * as d3 from 'd3';
 
 /**
- * EventMonitor sets up mouse click and movement event handlers on the CGView canvas.
+ * EventMonitor sets up mouse click, context menu, and movement event handlers on the CGView canvas.
+ * Context menu requests use the same event payload as clicks. The browser menu is
+ * preserved unless a listener calls `event.d3.preventDefault()` to display its own menu.
  *
  * CGView event contents (based on mouse position):
  *
@@ -39,7 +41,7 @@ import * as d3 from 'd3';
  *  canvasY   | Position on the canvas Y axis, where the origin is the top-left. See [scales](../tutorials/details-map-scales.html) for details.
  *  mapX      | Position on the map domain X axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
  *  mapY      | Position on the map domain Y axis, where the origin is the center of the map. See [scales](../tutorials/details-map-scales.html) for details.
- *  d3        | The d3 event object.
+ *  d3        | The native browser event, including button, modifier keys, client coordinates, and preventDefault().
  *
  * ### Examples
  * ```js
@@ -48,6 +50,12 @@ import * as d3 from 'd3';
  *   if (event.elementType === 'feature') {
  *     console.log(`Feature '${event.element.name}' was clicked`);
  *   }
+ * });
+ *
+ * // Inspect the element requesting a context menu
+ * cgv.on('contextmenu', (event) => {
+ *   console.log(event.elementType, event.element);
+ *   // Call event.d3.preventDefault() when displaying your own menu.
  * });
  *
  * // Log the track and slot when a visible track label is clicked
@@ -66,7 +74,7 @@ import * as d3 from 'd3';
 class EventMonitor {
 
   /**
-   * Adds event handlers for mouse clicks, presses, releases, and movement
+   * Adds event handlers for mouse clicks, context menus, presses, releases, and movement
    */
   // NOTE: - a mouse property will be updated with every mouse move
   //       - This will be aliased to Viewer.mouse
@@ -82,6 +90,7 @@ class EventMonitor {
     this._initializeMousedown();
     this._initializeMouseup();
     this._initializeClick();
+    this._initializeContextmenu();
     this._initializeBookmarkShortcuts();
     // this.events.on('mousemove', (e) => {console.log(e.bp)})
     // this.events.on('click', (e) => {console.log(e);});
@@ -190,6 +199,17 @@ class EventMonitor {
     });
   }
 
+  /**
+   * Forward context menu requests with the element under the pointer.
+   * Listeners may cancel the browser menu through the native event.
+   * @private
+   */
+  _initializeContextmenu() {
+    d3.select(this.canvas.node('ui')).on('contextmenu.cgv', (d3Event) => {
+      this.events.trigger('contextmenu', this._createEvent(d3Event));
+    });
+  }
+
   // FIXME: need to be able to turn this off
   // FIXME: there should be an option to turn this off, if it interferes with other program UI
   _initializeBookmarkShortcuts() {
@@ -206,8 +226,8 @@ class EventMonitor {
   }
 
   /**
-   * Create an event object that will be return on mouse clicks and movement
-   * @param {Object} d3Event - a d3 event object
+   * Create an event object for mouse interactions and context menu requests.
+   * @param {MouseEvent|PointerEvent} d3Event - The native browser event.
    * @private
    */
   _createEvent(d3Event) {
