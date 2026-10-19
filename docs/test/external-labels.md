@@ -13,8 +13,9 @@ or drawing.
 ## Adaptive
 
 As of **2026-10-19**, the standard `adaptive` method uses **Adaptive test 4**,
-promoted from experiment commit `5d29b25` on `v1.9-adaptive`. The experiments
-remain separate on that branch; production registers only Adaptive and Classic.
+promoted in production commit `a8683ae` from experiment commit `5d29b25` on
+`v1.9-adaptive`. The experiments remain separate on that branch; production
+registers only Adaptive and Classic.
 
 Clean uses spare horizontal room to make overview contours rounder. As a full
 circle fills the viewport, pole labels can use horizontal space to keep their
