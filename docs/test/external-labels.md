@@ -12,11 +12,19 @@ or drawing.
 
 ## Adaptive
 
-The current production `adaptive` method is the starting reference for new work.
-Clean follows an oval around a complete circular map, or uses compact local
-placement for a clipped circle or a linear map. Density adds labels and releases
-the oval arrangement in crowded regions. Adaptive animates label positions and
-visibility, with placement work spread across frames.
+As of **2026-10-19**, the standard `adaptive` method uses **Adaptive test 4**,
+promoted from experiment commit `5d29b25` on `v1.9-adaptive`. The experiments
+remain separate on that branch; production registers only Adaptive and Classic.
+
+Clean uses spare horizontal room to make overview contours rounder. As a full
+circle fills the viewport, pole labels can use horizontal space to keep their
+leaders pointing outward. Labels avoid visible legends and captions during
+placement, movement, and export. Clipped circles and linear maps use compact
+local placement. Density adds labels and releases the contour in crowded regions.
+
+Adaptive retains test 4's spring animation and cooperative placement scheduling.
+Existing maps continue to use `labelMethod: "adaptive"`; no experiment ID or
+configuration migration is needed.
 
 ## Classic
 

@@ -3,8 +3,10 @@ import {packOrdered} from './LabelGeometry';
 import {CleanIndex} from './LabelPlacementIndex';
 
 const TAU = Math.PI * 2;
-// Fixed geometry from the former balanced preset; capacity is still measured per view.
+// Vertical budget from the former balanced preset; horizontal room is measured below.
 const OVAL_VIEWPORT_FRACTION = 0.87;
+// Keep overview leaders within 60 degrees of the outward radius.
+const MIN_CONTOUR_OUTWARD = 0.5;
 const MAX_CLEAN_ROWS = 3;
 const MAX_LABELS = Infinity;
 const clamp = (n, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, n));
@@ -30,6 +32,7 @@ export default class AdaptiveLabelLayout {
     this.revision = 1;
     this.done = true;
     this.attempts = 0;
+    this.tangentialRejections = 0;
     this.mode = this._mode(previous?.mode);
     // Retention affects selection, not coordinates. Geometry is always solved
     // from the current projection, so repeated draws cannot slowly drift.
@@ -101,9 +104,9 @@ export default class AdaptiveLabelLayout {
       clamp((m.y + m.radius - m.height) / (m.radius * 0.5), 0, 1) : 0;
     const bottomExtension = apexVisible ? Math.max(0, bottomBoundary - m.y - maxRy) *
       clamp((m.radius - m.y) / (m.radius * 0.5), 0, 1) : 0;
-    // Protect overlays when opening this extra space, while preserving the
-    // existing side-arc and row behavior.
-    this.obstacles = topExtension > 0 || bottomExtension > 0 ? this.options.obstacles || [] : [];
+    // Overview labels must also leave room for legends and captions when the
+    // entire circle fits. Repack without blocked labels, then check acceptance.
+    this.obstacles = this.options.obstacles || [];
     const guideLow = m.y - maxRy - topExtension, guideHigh = m.y + maxRy + bottomExtension;
     const low = this.constrainToViewport ? Math.max(topExtension > 0 ? topBoundary : p, guideLow) : guideLow;
     const high = this.constrainToViewport ? Math.min(bottomExtension > 0 ? bottomBoundary : m.height - p, guideHigh) : guideHigh;
@@ -207,10 +210,37 @@ export default class AdaptiveLabelLayout {
         else { all.push(...placements); }
       }
     }
+    this._widenContour(all, Math.min(...flanks.flatMap(f => [f.topRy, f.bottomRy])));
     // Preserve high-priority labels when the opposite flanks compete at a pole.
     all.sort((a, b) => b.node.score - a.node.score);
     this.proposed = all.length + tips.length;
     for (const p of all) { this._accept(p); }
+  }
+
+  /** Widen the packed outline toward a circle, reserving space for every label. @private */
+  _widenContour(placements, verticalRadius) {
+    const m = this.map;
+    let scale = Math.max(1, verticalRadius / (m.radius + 24));
+    for (const {rect, end, row: side} of placements) {
+      // Already infeasible labels must not prevent the visible contour growing.
+      if (!this._boxFits(rect)) { continue; }
+      const offset = Math.abs(end.x - m.x);
+      if (offset < 1e-7) { continue; }
+      let room = side < 0 ? rect.x - this.padding : m.width - this.padding - rect.x - rect.width;
+      for (const box of this.options.obstacles || []) {
+        if (rect.y >= box.y + box.height + this.gap || rect.y + rect.height + this.gap <= box.y) { continue; }
+        const clearance = side < 0 ? rect.x - box.x - box.width - this.gap : box.x - this.gap - rect.x - rect.width;
+        if (clearance >= 0) { room = Math.min(room, clearance); }
+      }
+      scale = Math.min(scale, 1 + Math.max(0, room - 1e-7) / offset);
+    }
+    if (scale <= 1) { return; }
+    // One scale keeps both flanks balanced and preserves vertical ordering.
+    for (const item of placements) {
+      const dx = (item.end.x - m.x) * (scale - 1);
+      item.end.x += dx;
+      item.rect.x += dx;
+    }
   }
 
   _tipCandidate(outward, height, reserved) {
@@ -331,11 +361,20 @@ export default class AdaptiveLabelLayout {
       for (const outward of [-1, 1]) { yield* this._poleSteps(outward); }
       this.proposed = this.placed.length;
     } else {
-      // The overview Oval is a small ordered packing, retained intact. This is
-      // one indivisible stage; the frame budget is cooperative, not a deadline.
+      // Start with the existing ordered contour. This small stage is
+      // indivisible; the alternative fan packing yields between placements.
       this._contour(); yield;
       if (this.placed.length < this.proposed * 0.7) {
         this._bestOf([0.65, 0.4], scale => this._contour(scale)); yield;
+      }
+      if (this.tangentialRejections) {
+        // When vertical row packing flattens the pole leaders, let the poles
+        // use horizontal space and keep the better outward layout.
+        const contour = this.placed;
+        this.placed = [];
+        for (const side of [-1, 1]) { yield* this._sideSteps(side); }
+        for (const outward of [-1, 1]) { yield* this._poleSteps(outward); }
+        if (this._quality(contour) >= this._quality(this.placed)) { this.placed = contour; }
       }
     }
     this.done = true;
@@ -514,7 +553,14 @@ export default class AdaptiveLabelLayout {
         this.attempts++;
         const root = this.point(a);
         if (root.x < -1e-6 || root.y < -1e-6 || root.x > this.map.width + 1e-6 || root.y > this.map.height + 1e-6) { continue; }
-        if (this.map.circular && (root.x - this.map.x) * (end.x - root.x) + (root.y - this.map.y) * (end.y - root.y) < -1e-6) { continue; }
+        if (this.map.circular) {
+          const outward = (root.x - this.map.x) * (end.x - root.x) + (root.y - this.map.y) * (end.y - root.y);
+          const minimum = this.mode === 'contour' ? MIN_CONTOUR_OUTWARD * this.map.radius * distance(root, end) : 0;
+          if (outward < minimum - 1e-6) {
+            if (this.mode === 'contour') { this.tangentialRejections++; }
+            continue;
+          }
+        }
         if (index.linesConflict([root, end])) { continue; }
         const placement = {a, rect, points: [root, end], row};
         if (item.attachment) { placement.attachment = item.attachment; }

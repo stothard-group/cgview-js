@@ -3,7 +3,8 @@ import LabelRendererAdaptive from '../src/LabelRendererAdaptive';
 import LabelRendererClassic from '../src/LabelRendererClassic';
 
 function setup(Renderer = LabelRendererAdaptive, options = {}) {
-  const annotation = {labelLineThickness: 1, viewer: {settings: {backgroundColor: {copy: () => ({rgbaString: 'white'})}}}};
+  const annotation = {labelLineThickness: 1, viewer: {legend: {visible: false}, captions: () => [],
+    settings: {backgroundColor: {copy: () => ({rgbaString: 'white'})}}}};
   const renderer = new Renderer(annotation, options);
   const feature = {color: {rgbaString: 'blue'}};
   const label = {feature, name: 'edge label', font: {css: '12px sans-serif'}};

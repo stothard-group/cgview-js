@@ -169,7 +169,7 @@ export default class LabelRendererAdaptive {
         points: [root, {x: p.points[1].x + dx, y: p.points[1].y + dy}]}});
     }
     // This is explicitly provisional geometry. The motion renderer applies the
-    // viewport visibility filter; the final solver, not a shifted old layout, defines ready.
+    // viewport and overlay visibility filters; the final solver defines ready.
     return {...source, map, options, candidates, placed, amount, point, padding,
       constrainToViewport: options.constrainToViewport, pending: true, mode: source?.mode || 'pending'};
   }
@@ -391,9 +391,9 @@ export default class LabelRendererAdaptive {
       }
     }
     frame.clear();
-    this._paint(frame, placements);
+    const visible = this._paint(frame, placements);
     this.stats = {...this.stats, phase: this.job ? 'layout' : moving ? 'animating' : 'ready',
-      moving, maxDistance, visible: placements.length, density: this.layout.densityStats, pressure: this.layout.pressureStats,
+      moving, maxDistance, visible: visible.length, density: this.layout.densityStats, pressure: this.layout.pressureStats,
       planning: {...this.workStats, pending: Boolean(this.job), completed: this.completedCount},
       edge: {suppressed, returning}};
     if (moving) { frame.requestFrame(nextTime => this._tick(frame, nextTime)); }
@@ -401,6 +401,12 @@ export default class LabelRendererAdaptive {
 
   _paint(frame, placements, publish = true) {
     const ctx = frame.context, a = this.annotation;
+    // Projections and springs can cross an overlay before the new layout is
+    // ready. Hide the text, leader, and hit target together until it clears.
+    const obstacles = this.geometry._obstacles(), {gap} = this.geometry.options;
+    placements = placements.filter(({rect: r}) => !obstacles.some(b =>
+      r.x < b.x + b.width + gap - 1e-7 && r.x + r.width + gap > b.x + 1e-7 &&
+      r.y < b.y + b.height + gap - 1e-7 && r.y + r.height + gap > b.y + 1e-7));
     const background = a.viewer.settings.backgroundColor.copy(); background.opacity = 0.9;
     ctx.save();
     try {
@@ -421,6 +427,7 @@ export default class LabelRendererAdaptive {
       this.displayed = new Map(placements.map(p => [p.label.feature, p]));
       frame.publish(placements);
     }
+    return placements;
   }
 
   _stroke(ctx, {label, points}, width) {
